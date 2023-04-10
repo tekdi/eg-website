@@ -1,0 +1,22 @@
+{
+  "FILTER": "फ़िल्टर",
+  "RESET_FILTER": "फ़िल्टर रीसेट करें",
+  "SELECT": "चुनें",
+  "SELECT_ALL": "सबका चयन करें",
+  "HOME": "होम",
+  "SIGN_IN": "साइन इन करें",
+  "SIGN_UP": "साइन अप करें",
+  "WELCOME_BACK": "नमस्कार, हमारे अपने खाते में वापस स्वागत है!",
+  "PASSWORD": "पासवर्ड",
+  "USERNAME_IS_REQUIRED": "उपयोगकर्ता नाम आवश्यक है",
+  "PASSWORD_IS_REQUIRED": "पासवर्ड की आवश्यकता है",
+  "PLEASE_ENTER_VALID_CREDENTIALS": "कृपया मान्य क्रेडेंशियल दर्ज करें",
+  "ENTER": "प्रवेश करना",
+  "SUBMIT": "प्रस्तुत करना",
+  "FORGOT_PASSWORD": "पासवर्ड भूल गए?",
+  "DONT_HAVE_AN_ACCOUNT": "खाता नहीं है?",
+  "TODAY": "आज",
+  "YESTERDAY": "बीता हुआ कल",
+  "TOMORROW": "कल",
+  "USERNAME": "प्रयोक्ता नाम"
+}
