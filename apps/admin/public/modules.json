@@ -2,7 +2,7 @@
   "auth": {
     "url": "http://localhost:2001/modules/auth"
   },
-  "prerak": {
-    "url": "http://localhost:3001/modules/prerak"
+  "facilitator": {
+    "url": "http://localhost:3001/modules/facilitator"
   }
 }
