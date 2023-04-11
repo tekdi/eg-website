@@ -1,11 +1,10 @@
 const { dependencies } = require("./package.json");
 
 module.exports = {
-  name: "admin",
+  name: "frontend",
   exposes: {},
   remotes: {
     auth: `auth@[window.appModules.auth.url]/moduleEntry.js`,
-    facilitator: `facilitator@[window.appModules.facilitator.url]/moduleEntry.js`,
   },
   filename: "moduleEntry.js",
   shared: {
