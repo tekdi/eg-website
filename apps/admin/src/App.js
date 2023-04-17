@@ -3,13 +3,14 @@ import "./App.css";
 import { extendTheme } from "native-base";
 import { DEFAULT_THEME, initializeI18n, AppShell } from "@shiksha/common-lib";
 import Home from "./pages/Home";
+import   Profile  from "./pages/Profile";
 
 //TODO: separate out the theme related code from App
 initializeI18n(["translation", "core", "attendance"]);
 
 function App() {
   const theme = extendTheme(DEFAULT_THEME);
-  const routes = [{ path: "*", component: Home }];
+  const routes = [{ path: "/profile", component: Profile },{ path: "*", component: Home }];
 
   const LoginComponent = React.lazy(() => import("auth/Login"));
 
