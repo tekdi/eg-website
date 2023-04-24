@@ -16,9 +16,9 @@ export default function Sample() {
           >
             <Box
               rounded="full"
-              borderColor="button.500"
+              borderColor="primary.500"
               borderWidth="1"
-              _text={{ color: "button.500" }}
+              _text={{ color: "primary.500" }}
               px={6}
               py={2}
             >

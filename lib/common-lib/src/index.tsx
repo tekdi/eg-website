@@ -1,14 +1,3 @@
-import * as React from 'react'
-import styles from './styles.module.css'
-
-interface Props {
-  text: string
-}
-
-export const ExampleComponent = ({ text }: Props) => {
-  return <div className={styles.test}>Example Component: {text}</div>
-}
-
 import AppBar from './components/layout/AppBar'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
@@ -19,7 +8,6 @@ import IconByName from './components/IconByName'
 import Widget from './components/Widget'
 import Collapsible from './components/Collapsible'
 import Menu, { SubMenu } from './components/Menu'
-import DEFAULT_THEME from './components/theme'
 import initializeI18n from './services/i18n'
 import AppShell from './components/AppShell'
 import ProgressBar from './components/ProgressBar'
@@ -35,7 +23,10 @@ import * as questionRegistryService from './services/questionRegistryService'
 import * as likeRegistryService from './services/likeRegistryService'
 import * as commentRegistryService from './services/commentRegistryService'
 import * as assessmentRegistryService from './services/assessmentRegistryService'
+import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import { getApiConfig } from './services/configApiRegistryService'
+import { t } from 'i18next'
+import Camera from './components/Camera'
 
 export {
   AppBar,
@@ -50,7 +41,6 @@ export {
   Collapsible,
   Menu,
   SubMenu,
-  DEFAULT_THEME,
   initializeI18n,
   AppShell,
   ProgressBar,
@@ -65,7 +55,10 @@ export {
   likeRegistryService,
   commentRegistryService,
   assessmentRegistryService,
-  getApiConfig
+  facilitatorRegistryService,
+  getApiConfig,
+  t,
+  Camera
 }
 
 export * from './services/Auth'

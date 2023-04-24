@@ -1,5 +1,3 @@
-import { maxWidth } from './helper'
-
 const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '20px' : ''
 
@@ -56,28 +54,85 @@ const DEFAULT_THEME = {
   components: {
     Text: {
       baseStyle: {
-        textTransform: 'capitalize',
         fontFamily: fontFamily,
         fontSize: fontSize
       }
     },
     Actionsheet: {
       baseStyle: {
-        maxW: maxWidth,
+        maxW: 1080,
         alignSelf: 'center'
       }
     },
     Button: {
       baseStyle: {
-        rounded: 'lg'
+        rounded: 'lg',
+        size: 'lg'
       },
-      defaultProps: {
-        colorScheme: 'button',
-        _text: {
-          textTransform: 'uppercase',
-          fontSize: '12px',
-          fontWeight: '600'
-        }
+      sizes: {
+        md: () => ({
+          py: 2,
+          px: 3,
+          _text: {
+            fontSize: 'sm'
+          },
+          _icon: {
+            size: 'sm'
+          }
+        }),
+        lg: () => ({
+          py: 4,
+          px: 3,
+          _text: {
+            fontSize: 'lg'
+          },
+          _icon: {
+            size: 'lg'
+          }
+        })
+      },
+      variants: {
+        primary: () => ({
+          bg: `#666666`,
+          _hover: {
+            bg: `#555555`
+          },
+          _pressed: {
+            bg: `#444444`
+          },
+          _text: {
+            fontWeight: '600'
+          },
+          rounded: 'full'
+        }),
+        secondary: () => ({
+          bg: `#f2f2f2`,
+          _hover: {
+            bg: `#e9e9e9`
+          },
+          _pressed: {
+            bg: `#e6e6e6`
+          },
+          _text: {
+            color: `#666666`
+          },
+          rounded: 'full'
+        }),
+        outlinePrimary: ({ colorScheme }: any) => ({
+          bg: `${colorScheme}.50`,
+          borderWidth: '1',
+          borderColor: `${colorScheme}.500`,
+          _hover: {
+            bg: `${colorScheme}.100`
+          },
+          _pressed: {
+            bg: `${colorScheme}.200`
+          },
+          _text: {
+            color: `${colorScheme}.500`
+          },
+          rounded: 'full'
+        })
       }
     }
   },
@@ -214,14 +269,17 @@ const DEFAULT_THEME = {
       500: '#FEF1EE',
       600: '#ede7e6'
     },
-    button: {
-      50: '#fcf1ee',
-      100: '#fae2dd',
-      200: '#f5c8bc',
-      300: '#f2ab99',
-      400: '#ee8e78',
-      500: '#F87558',
-      600: '#d9654c'
+    primary: {
+      50: '#f2f2f2',
+      100: '#d9d9d9',
+      200: '#bfbfbf',
+      300: '#a6a6a6',
+      400: '#8c8c8c',
+      500: '#737373',
+      600: '#595959',
+      700: '#737373',
+      800: '#595959',
+      900: '#737373'
     },
     attendancePresent: {
       600: '#2BB639',
