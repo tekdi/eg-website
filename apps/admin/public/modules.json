@@ -1,8 +1,0 @@
-{
-  "auth": {
-    "url": "http://localhost:2001/modules/auth"
-  },
-  "facilitator": {
-    "url": "http://localhost:3001/modules/facilitator"
-  }
-}

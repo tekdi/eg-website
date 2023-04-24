@@ -18,5 +18,17 @@
   "TODAY": "Today",
   "YESTERDAY": "Yesterday",
   "TOMORROW": "Tomorrow",
-  "USERNAME": "Username"
+  "USERNAME": "Username",
+  "TELL_US_YOUR_NAME": "Tell us your Name",
+  "PROJECT_PRAGATI": "Project Pragati",
+  "SPLASHSCREEN_1": "Enable adolescent girls and young women to achieve their secondary credentials",
+  "ALREADY_APPLIED_CHECK_STATUS": "Already Applied? Check Status",
+  "PRERAK_DUTIES": "Prerak Duties",
+  "APPLY_NOW": "Apply Now",
+  "CLEAR_PROFILE_MESSAGE": "Make sure this image has a clear profile view of your Face. Improper Image might result in disqualification of the Application.",
+  "ADD_PROFILE_PHOTO": "Add Your Profile Photo",
+  "LOGIN": "Login",
+  "TEXT_MESSAGE_MOBILE_NUMBER": "We have sent you a text message with username and password on your mobile number",
+  "RESEND_MY_USERNAME": "Resend my UserName",
+  "CHANGE_MY_PASSWORD": "Change my Password"
 }
