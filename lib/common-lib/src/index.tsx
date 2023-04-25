@@ -14,17 +14,8 @@ import ProgressBar from './components/ProgressBar'
 import Tab from './components/Tab'
 import Loading from './components/Loading'
 import FilterButton from './components/FilterButton'
-import * as teacherRegistryService from './services/teacherRegistryService'
-import * as classRegistryService from './services/classRegistryService'
-import * as attendanceRegistryService from './services/attendanceRegistryService'
-import * as studentRegistryService from './services/studentRegistryService'
-import * as worksheetRegistryService from './services/worksheetRegistryService'
-import * as questionRegistryService from './services/questionRegistryService'
-import * as likeRegistryService from './services/likeRegistryService'
-import * as commentRegistryService from './services/commentRegistryService'
-import * as assessmentRegistryService from './services/assessmentRegistryService'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
-import { getApiConfig } from './services/configApiRegistryService'
+import * as authRegistryService from './services/authRegistryService'
 import { t } from 'i18next'
 import Camera from './components/Camera'
 
@@ -46,22 +37,12 @@ export {
   ProgressBar,
   Tab,
   Loading,
-  teacherRegistryService,
-  classRegistryService,
-  attendanceRegistryService,
-  studentRegistryService,
-  worksheetRegistryService,
-  questionRegistryService,
-  likeRegistryService,
-  commentRegistryService,
-  assessmentRegistryService,
   facilitatorRegistryService,
-  getApiConfig,
+  authRegistryService,
   t,
   Camera
 }
 
-export * from './services/Auth'
 export * from './services/RestClient'
 export * from './services/EventBus'
 export * from './components/helper'

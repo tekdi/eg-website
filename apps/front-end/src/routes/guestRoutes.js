@@ -9,11 +9,11 @@ export default [
     component: LoginComponent,
   },
   {
-    path: "/facilitator/:id",
+    path: "/facilitator-self-onbording/:id",
     component: Home,
   },
   {
     path: "*",
-    component: NotFound,
+    component: LoginComponent,
   },
 ];

@@ -2,7 +2,6 @@
 rm -rf prod-build
 mkdir prod-build
 mkdir prod-build/modules
-mkdir prod-build/admin
 find modules \( ! -path lib/common-ui -o ! -path apps/admin \) -type d -maxdepth 1 -mindepth 1 -exec bash -c '
 for f  do
     # echo $f
