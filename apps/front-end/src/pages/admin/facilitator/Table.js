@@ -111,7 +111,7 @@ function Table() {
         <HStack space={2}>
           <Button variant={"primary"}>Register prerak</Button>
           <Button variant={"primary"}>Send an invite</Button>
-          <Clipboard text={`${getBaseUrl()}facilitator/1`}>
+          <Clipboard text={`${getBaseUrl()}facilitator-self-onbording/1`}>
             <IconByName
               name="FileCopyLineIcon"
               isDisabled
