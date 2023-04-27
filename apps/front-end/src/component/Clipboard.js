@@ -1,7 +1,7 @@
 import { Pressable, Tooltip } from "native-base";
 import React from "react";
 
-export default function Clipboard({ label, text, children }) {
+export default function Clipboard({ label, text, children, onPress }) {
   const [messageText, setMessageText] = React.useState(
     label ? label : `Copy to Clipboard`
   );
@@ -15,6 +15,7 @@ export default function Clipboard({ label, text, children }) {
           setTimeout((e) => {
             setMessageText(`Copy to Clipboard`);
           }, 2000);
+          if (onPress) onPress();
         }}
       >
         {children}

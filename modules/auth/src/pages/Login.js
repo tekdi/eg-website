@@ -14,14 +14,14 @@ import {
 } from "native-base";
 import {
   useWindowSize,
-  authRegistryService,
   BodyMedium,
   Subtitle,
   H3,
   t,
   Caption,
   BodyLarge,
-  facilitatorRegistryService,
+  login,
+  logout,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,7 @@ const styles = {
   },
 };
 
-export default function Page2() {
+export default function Login() {
   const ref = React.useRef(null);
   const [width, Height] = useWindowSize();
   const [credentials, setCredentials] = useState();
@@ -64,39 +64,12 @@ export default function Page2() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const result = await authRegistryService.login(credentials);
-      if (result) {
-        let token = result.access_token;
-        const resultTeacher = await facilitatorRegistryService.getInfo(
-          {},
-          { Authorization: "Bearer " + token }
-        );
-
-        if (resultTeacher.id) {
-          let id = resultTeacher.id;
-          localStorage.setItem("id", id);
-          localStorage.setItem(
-            "fullName",
-            resultTeacher.fullName
-              ? resultTeacher.fullName
-              : `${resultTeacher.first_name} ${resultTeacher.last_name}`
-          );
-          localStorage.setItem("first_name", resultTeacher.first_name);
-          localStorage.setItem("last_name", resultTeacher.last_name);
-          localStorage.setItem("token", token);
-          // eventBus.publish("AUTH", {
-          //   eventType: "LOGIN_SUCCESS",
-          //   data: {
-          //     token: token,
-          //   },
-          // });
-          navigate("/");
-          navigate(0);
-        }
-      } else {
-        localStorage.removeItem("token");
-        setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
-      }
+      const loginData = await login(credentials);
+      navigate("/");
+      navigate(0);
+    } else {
+      logout();
+      setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
   return (

@@ -5,12 +5,12 @@ const LoginComponent = React.lazy(() => import("auth/Login"));
 
 export default [
   {
-    path: "/login",
-    component: LoginComponent,
-  },
-  {
     path: "/facilitator-self-onbording/:id",
     component: Home,
+  },
+  {
+    path: "/login",
+    component: LoginComponent,
   },
   {
     path: "*",
