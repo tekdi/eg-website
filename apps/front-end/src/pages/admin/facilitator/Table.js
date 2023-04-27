@@ -4,10 +4,20 @@ import {
   get,
   post,
   H1,
+  H3,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { Box, Button, HStack, Heading, Input, Text, VStack } from "native-base";
+import {
+  Box,
+  Button,
+  HStack,
+  Heading,
+  Input,
+  Text,
+  VStack,
+  Modal,
+} from "native-base";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -73,11 +83,14 @@ function getBaseUrl() {
   var re = new RegExp(/^.*\//);
   return re.exec(window.location.href);
 }
+
+// Table component
 function Table() {
-  const [data, setData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
-  const [filterInputs, setFilterInputs] = useState([]);
-  const [filterObj, setFilterObj] = useState([]);
+  const [data, setData] = React.useState([]);
+  const [filterData, setFilterData] = React.useState([]);
+  const [filterInputs, setFilterInputs] = React.useState([]);
+  const [filterObj, setFilterObj] = React.useState([]);
+  const [modal, setModal] = React.useState(false);
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -109,18 +122,64 @@ function Table() {
           variant="outline"
         />
         <HStack space={2}>
-          <Button variant={"primary"}>Register prerak</Button>
-          <Button variant={"primary"}>Send an invite</Button>
-          <Clipboard text={`${getBaseUrl()}facilitator-self-onbording/1`}>
-            <IconByName
-              name="FileCopyLineIcon"
-              isDisabled
-              bg="primary.600"
-              p="2.5"
-              rounded="full"
-              color="white"
-            />
-          </Clipboard>
+          <Button
+            variant={"primary"}
+            onPress={(e) => navigate("/admin/facilitator-onbording")}
+          >
+            Register prerak
+          </Button>
+
+          <Button variant={"primary"} onPress={() => setModal(true)}>
+            Send an invite
+          </Button>
+          <Modal
+            isOpen={modal}
+            onClose={() => setModal(false)}
+            safeAreaTop={true}
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header p="5" borderBottomWidth="0">
+                <H1 textAlign="center">Send an invite</H1>
+              </Modal.Header>
+              <Modal.Body p="5" pb="10">
+                <VStack space="5">
+                  <HStack
+                    space="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="gray.300"
+                    pb="5"
+                  >
+                    <H3>INVITATION LINK</H3>
+                    <Clipboard
+                      text={`${getBaseUrl()}facilitator-self-onbording/1`}
+                    >
+                      <HStack space="3">
+                        <IconByName
+                          name="FileCopyLineIcon"
+                          isDisabled
+                          rounded="full"
+                          color="blue.300"
+                        />
+                        <H3 color="blue.300">Click here to copy the link</H3>
+                      </HStack>
+                    </Clipboard>
+                  </HStack>
+                  <HStack space="5" pt="5">
+                    <Input
+                      flex={0.7}
+                      placeholder="Email ID or Phone Numbers"
+                      variant="underlined"
+                    />
+                    <Button flex={0.3} variant="primary">
+                      Send
+                    </Button>
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
         </HStack>
       </HStack>
 

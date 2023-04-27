@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { eventBus } from '../services/EventBus'
 import AppRoutesContainer from './AppRoutesContainer'
 import { getAppshellData } from './helper'
@@ -16,14 +16,14 @@ function AppShell({
   guestRoutes,
   ...otherProps
 }: any) {
-  const [token, setToken] = useState(localStorage.getItem('token'))
+  const [token, setToken] = React.useState(localStorage.getItem('token'))
   const [theme, setTheme] = React.useState<any>({})
   const [accessRoutes, setAccessRoutes] = React.useState<any>([])
   const [alert, setAlert] = React.useState<any>()
   if (localStorage.getItem('console')) {
     console.log({ accessRoutes })
   }
-  useEffect(() => {
+  React.useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search)
     const searchParams = Object.fromEntries(urlSearchParams.entries())
     if (searchParams.token != undefined) {
@@ -33,7 +33,7 @@ function AppShell({
     }
   }, [])
 
-  useEffect(() => {
+  React.useEffect(() => {
     const getData = async () => {
       const { newTheme, newRoutes, config } = await getAppshellData(
         routes,
@@ -97,7 +97,8 @@ function AppShell({
         basename,
         appName: 'Teacher App',
         alert,
-        setAlert
+        setAlert,
+        ...otherProps
       }}
     />
   )

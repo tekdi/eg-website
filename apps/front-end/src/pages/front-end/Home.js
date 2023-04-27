@@ -6,14 +6,28 @@ import Success from "./Success";
 import { facilitatorRegistryService } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 
-function Home({ footerLinks, appName }) {
+function Home({ userTokenInfo }) {
   const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
+  const [ip, setIp] = React.useState({});
   const { id } = useParams();
 
   React.useEffect(async () => {
-    const data = await facilitatorRegistryService.getOne({ id });
-    setFacilitator(data);
+    if (userTokenInfo) {
+      const fa_id = localStorage.getItem("id");
+      const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
+      console.log(fa_data);
+      setFacilitator(fa_data);
+      if (fa_data.program_faciltators?.parent_ip) {
+        const ip_id = fa_data.program_faciltators?.parent_ip;
+        const data = await facilitatorRegistryService.getOne({ id: ip_id });
+        setIp(data);
+      }
+      setPage("Form");
+    } else {
+      const data = await facilitatorRegistryService.getOne({ id });
+      setIp(data);
+    }
   }, []);
 
   return page === "success" ? (
@@ -27,7 +41,7 @@ function Home({ footerLinks, appName }) {
   ) : page === "Prerak_Duties" ? (
     <PrerakDuties page={page} onClick={() => setPage("Form")} />
   ) : (
-    <Form {...{ facilitator }} onClick={() => setPage("success")} />
+    <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
   );
 }
 export default Home;

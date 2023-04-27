@@ -2,7 +2,17 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
-import { Box, Button, Center, Image, Radio, Stack, VStack } from "native-base";
+import {
+  Box,
+  Button,
+  Center,
+  HStack,
+  Image,
+  Modal,
+  Radio,
+  Stack,
+  VStack,
+} from "native-base";
 import BaseInputTemplate from "../../component/BaseInput";
 import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
@@ -13,8 +23,14 @@ import {
   H1,
   Caption,
   t,
+  login,
+  H3,
+  IconByName,
+  BodySmall,
 } from "@shiksha/common-lib";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import Clipboard from "component/Clipboard.js";
 
 const CustomR = ({ options, value, onChange, required }) => {
   const items = options?.enumOptions?.map((e) => e.value);
@@ -61,21 +77,26 @@ const RadioBtn = ({ options, value, onChange, required }) => {
   );
 };
 
-export default function App({ facilitator, onClick }) {
+export default function App({ facilitator, ip, onClick }) {
   const [page, setPage] = React.useState();
   const [corePage, setCorePage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
   const [cameraModal, setCameraModal] = React.useState(true);
+  const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
+  const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
+  const navigate = useNavigate();
+  const { form_step_number } = facilitator;
+  if (form_step_number && parseInt(form_step_number) >= 13) {
+    navigate("/dashboard");
+  }
   const onPressBackButton = () => {
-    if (page !== "SplashScreen") {
-      setPage("SplashScreen");
-    } else {
-      navigate(-1);
+    const data = nextPreviewStep("p");
+    if (data && onClick) {
+      onClick("SplashScreen");
     }
   };
 
@@ -124,6 +145,26 @@ export default function App({ facilitator, onClick }) {
     },
   };
 
+  const nextPreviewStep = (pageStape = "n") => {
+    const index = pages.indexOf(page);
+    const properties = schema1.properties;
+    if (index !== undefined) {
+      let nextIndex = "";
+      if (pageStape.toLowerCase() === "n") {
+        nextIndex = pages[index + 1];
+      } else {
+        nextIndex = pages[index - 1];
+      }
+      if (nextIndex !== undefined) {
+        setPage(nextIndex);
+        setSchema(properties[nextIndex]);
+      } else if (pageStape.toLowerCase() === "n") {
+        setCorePage("camera");
+      } else {
+        return true;
+      }
+    }
+  };
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -131,16 +172,7 @@ export default function App({ facilitator, onClick }) {
         setPage(pageNumber);
         setSchema(properties[pageNumber]);
       } else {
-        const index = pages.indexOf(page);
-        if (index !== undefined) {
-          const nextIndex = pages[index + 1];
-          if (nextIndex !== undefined) {
-            setPage(nextIndex);
-            setSchema(properties[nextIndex]);
-          } else {
-            setCorePage("camera");
-          }
-        }
+        nextPreviewStep();
       }
     }
   };
@@ -149,9 +181,23 @@ export default function App({ facilitator, onClick }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      setPages(newSteps);
-      setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      const arr = ["1", "2"];
+      const { id, form_step_number } = facilitator;
+      let newPage = [];
+      if (id) {
+        if (form_step_number) {
+          newPage = newSteps.filter(
+            (e) => parseInt(e) >= parseInt(form_step_number)
+          );
+        } else {
+          newPage = newSteps.filter((e) => !arr.includes(e));
+        }
+      } else {
+        newPage = newSteps.filter((e) => arr.includes(e));
+      }
+      setPages(newPage);
+      setPage(newPage[0]);
+      setSchema(properties[newPage[0]]);
     }
   }, []);
 
@@ -159,12 +205,22 @@ export default function App({ facilitator, onClick }) {
     return await facilitatorRegistryService.isExist(filters);
   };
 
-  const formSubmit = async () => {
-    const result = await facilitatorRegistryService.create({
+  const formSubmitUpdate = async (formData) => {
+    const { id } = facilitator;
+    if (id) {
+      return await facilitatorRegistryService.stepUpdate({
+        ...formData,
+        parent_ip: ip?.id,
+        id: id,
+      });
+    }
+  };
+
+  const formSubmitCreate = async (formData) => {
+    return await facilitatorRegistryService.create({
       ...formData,
-      parent_ip: facilitator?.id,
+      parent_ip: ip?.id,
     });
-    onClick();
   };
 
   const goErrorPage = (key) => {
@@ -244,11 +300,42 @@ export default function App({ facilitator, onClick }) {
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const newFormData = data.formData;
-    setFormData({ ...formData, ...newFormData });
-    if (!errors) {
-      setStep();
+    const newData = {
+      ...formData,
+      ...newFormData,
+      ["form_step_number"]: parseInt(page) + 1,
+    };
+    setFormData(newData);
+    if (_.isEmpty(errors)) {
+      const { id } = facilitator;
+      let success = false;
+      if (id) {
+        const data = await formSubmitUpdate(newData);
+        if (!_.isEmpty(data)) {
+          success = true;
+        }
+      } else if (page === "2") {
+        const data = await formSubmitCreate(newFormData);
+        if (data?.error) {
+          const newErrors = {
+            mobile: {
+              __errors: ["mobile number already exists"],
+            },
+          };
+          setErrors(newErrors);
+        } else {
+          if (data?.username && data?.password) {
+            setCredentials(data);
+          }
+        }
+      } else if (page <= 1) {
+        success = true;
+      }
+      if (success) {
+        setStep();
+      }
     } else {
       const key = Object.keys(errors);
       if (key[0]) {
@@ -285,7 +372,12 @@ export default function App({ facilitator, onClick }) {
             />
           </Center>
           <Caption>{t("CLEAR_PROFILE_MESSAGE")}</Caption>
-          <Button variant={"primary"} onPress={formSubmit}>
+          <Button
+            variant={"primary"}
+            onPress={(e) => {
+              if (onClick) onClick("success");
+            }}
+          >
             {t("SUBMIT")}
           </Button>
         </VStack>
@@ -312,7 +404,7 @@ export default function App({ facilitator, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: `${facilitator?.first_name} ${facilitator?.last_name}`.trim(),
+        name: `${ip?.first_name} ${ip?.last_name}`.trim(),
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
@@ -357,6 +449,74 @@ export default function App({ facilitator, onClick }) {
           <React.Fragment />
         )}
       </Box>
+      <Modal
+        isOpen={credentials}
+        onClose={() => setCredentials(false)}
+        safeAreaTop={true}
+        size="xl"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header p="5" borderBottomWidth="0">
+            <H1 textAlign="center">Store your user credentials</H1>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <VStack alignItems="center">
+                <Box
+                  bg="gray.100"
+                  p="3"
+                  rounded="lg"
+                  borderWidth={1}
+                  borderColor="gray.300"
+                >
+                  <HStack alignItems="center" space="5">
+                    <H3>Username</H3>
+                    <BodySmall>{credentials?.username}</BodySmall>
+                  </HStack>
+                  <HStack alignItems="center" space="5">
+                    <H3>Password</H3>
+                    <BodySmall>{credentials?.password}</BodySmall>
+                  </HStack>
+                </Box>
+              </VStack>
+              <VStack alignItems="center">
+                <Clipboard
+                  text={`username:${credentials?.username}, password:${credentials?.password}`}
+                  onPress={(e) =>
+                    setCredentials({ ...credentials, copy: true })
+                  }
+                >
+                  <HStack space="3">
+                    <IconByName
+                      name="FileCopyLineIcon"
+                      isDisabled
+                      rounded="full"
+                      color="blue.300"
+                    />
+                    <H3 color="blue.300">Click here to copy and login</H3>
+                  </HStack>
+                </Clipboard>
+              </VStack>
+              <HStack space="5" pt="5">
+                <Button
+                  flex={1}
+                  variant="primary"
+                  isDisabled={!credentials?.copy}
+                  onPress={async (e) => {
+                    const { copy, ...cData } = credentials;
+                    const loginData = await login(cData);
+                    navigate("/");
+                    navigate(0);
+                  }}
+                >
+                  Login
+                </Button>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
