@@ -54,9 +54,9 @@ export default {
           title: "Gender",
           type: "string",
           anyOf: [
-            { title: "Female", const: "Female" },
-            { title: "Male", const: "Male" },
-            { title: "Other", const: "Other" },
+            { title: "Female", const: "female" },
+            { title: "Male", const: "male" },
+            { title: "Other", const: "other" },
           ],
         },
       },
@@ -176,24 +176,12 @@ export default {
         qualification: {
           title: "Your Highest Qualification:",
           type: "string",
-          anyOf: [
-            { title: "Bachelors", const: "Bachelors" },
-            { title: "Masters", const: "Masters" },
-            { title: "Diploma", const: "Diploma" },
-            { title: "Post Graduate", const: "Post Graduate" },
-            { title: "Ph.D.", const: "Ph.D." },
-            { title: "Other", const: "Other" },
-          ],
+          anyOf: [],
         },
         degree: {
           title: "Do you have any teaching degree?",
           type: "string",
-          anyOf: [
-            { title: "No", const: "No" },
-            { title: "B.Ed", const: "B.Ed" },
-            { title: "D.Ed", const: "D.Ed" },
-            { title: "M.Ed", const: "M.Ed" },
-          ],
+          anyOf: [],
         },
       },
     },
@@ -206,17 +194,17 @@ export default {
           items: {
             title: "Experience",
             required: [
-              "job_title",
-              "Company_Name",
+              "role_title",
+              "organization",
               "experience_in_years",
               "related_to_teaching",
             ],
             properties: {
-              job_title: {
+              role_title: {
                 title: "Job Title",
                 type: "string",
               },
-              Company_Name: {
+              organization: {
                 title: "Company Name",
                 type: "string",
               },
@@ -255,17 +243,17 @@ export default {
           items: {
             title: "Volunteer Experience",
             required: [
-              "job_title",
-              "Company_Name",
+              "role_title",
+              "organization",
               "experience_in_years",
               "related_to_teaching",
             ],
             properties: {
-              job_title: {
+              role_title: {
                 title: "Job Title",
                 type: "string",
               },
-              Company_Name: {
+              organization: {
                 title: "Company Name",
                 type: "string",
               },
@@ -325,26 +313,26 @@ export default {
           title: "Type of mobile phone?",
           type: "string",
           anyOf: [
-            { title: "Android", const: "Android" },
-            { title: "IPhone", const: "IPhone" },
+            { title: "Android", const: "android" },
+            { title: "IPhone", const: "iphone" },
           ],
         },
       },
     },
     13: {
       type: "object",
-      required: ["sourcing_channel"],
+      required: ["refreere"],
       properties: {
-        sourcing_channel: {
+        refreere: {
           title: "How did you find out about Project Pragati?",
           type: "string",
           anyOf: [
-            { title: "Prerak Referral", const: "Prerak Referral" },
-            { title: "NGO Referral", const: "NGO Referral" },
-            { title: "Advertisements", const: "Advertisements" },
-            { title: "Dropouts", const: "Dropouts" },
-            { title: "Old Prerak", const: "Old Prerak" },
-            { title: "Other", const: "Other" },
+            { title: "Prerak Referral", const: "prerak_referral" },
+            { title: "NGO Referral", const: "ngo_referral" },
+            { title: "Advertisements", const: "advertisements" },
+            { title: "Dropouts", const: "dropouts" },
+            { title: "Old Prerak", const: "old_prerak" },
+            { title: "Other", const: "other" },
           ],
         },
       },

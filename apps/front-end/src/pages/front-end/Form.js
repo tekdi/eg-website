@@ -33,10 +33,9 @@ import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 
 const CustomR = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions?.map((e) => e.value);
   return (
     <CustomRadio
-      items={items}
+      items={options?.enumOptions}
       value={value}
       required={required}
       onChange={(value) => onChange(value)}
@@ -113,7 +112,7 @@ export default function App({ facilitator, ip, onClick }) {
     type_mobile: {
       "ui:widget": CustomR,
     },
-    sourcing_channel: {
+    refreere: {
       "ui:widget": CustomR,
     },
     availability: {
@@ -141,6 +140,9 @@ export default function App({ facilitator, ip, onClick }) {
     experience: {
       items: {
         experience_in_years: { "ui:widget": CustomR },
+        related_to_teaching: {
+          "ui:widget": RadioBtn,
+        },
       },
     },
   };
@@ -177,6 +179,39 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
+  const getOptions = (schema, key, data) => {
+    return {
+      ...schema,
+      ["properties"]: {
+        ...schema["properties"],
+        [key]: {
+          ...schema["properties"][key],
+          ["anyOf"]: data,
+        },
+      },
+    };
+  };
+
+  React.useEffect(async () => {
+    if (schema?.properties?.qualification) {
+      const qData = await facilitatorRegistryService.getQualificationAll();
+      let newSchema = schema;
+      const qualificationData = qData
+        .filter((e) => e.type === "qualification")
+        .map((e) => ({ title: e?.name, const: `${e?.id}` }));
+      if (schema["properties"]["qualification"]["anyOf"]) {
+        newSchema = getOptions(newSchema, "qualification", qualificationData);
+      }
+      const degreeData = qData
+        .filter((e) => e.type === "teaching")
+        .map((e) => ({ title: e?.name, const: `${e?.id}` }));
+      if (schema["properties"]["degree"]["anyOf"]) {
+        newSchema = getOptions(newSchema, "degree", degreeData);
+      }
+      setSchema(newSchema);
+    }
+  }, [page && schema?.properties?.qualification?.anyOf?.length === 0]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -185,19 +220,16 @@ export default function App({ facilitator, ip, onClick }) {
       const { id, form_step_number } = facilitator;
       let newPage = [];
       if (id) {
-        if (form_step_number) {
-          newPage = newSteps.filter(
-            (e) => parseInt(e) >= parseInt(form_step_number)
-          );
-        } else {
-          newPage = newSteps.filter((e) => !arr.includes(e));
-        }
+        newPage = newSteps.filter((e) => !arr.includes(e));
+        const pageSet = form_step_number ? form_step_number : 3;
+        setPage(pageSet);
+        setSchema(properties[pageSet]);
       } else {
         newPage = newSteps.filter((e) => arr.includes(e));
+        setPage(newPage[0]);
+        setSchema(properties[newPage[0]]);
       }
       setPages(newPage);
-      setPage(newPage[0]);
-      setSchema(properties[newPage[0]]);
     }
   }, []);
 
@@ -295,7 +327,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   const onError = (data) => {
     if (data[0]) {
-      const key = data[0].property.slice(1);
+      const key = data[0]?.property?.slice(1);
       goErrorPage(key);
     }
   };
@@ -312,10 +344,10 @@ export default function App({ facilitator, ip, onClick }) {
       const { id } = facilitator;
       let success = false;
       if (id) {
-        const data = await formSubmitUpdate(newData);
-        if (!_.isEmpty(data)) {
-          success = true;
-        }
+        // const data = await formSubmitUpdate(newData);
+        // if (!_.isEmpty(data)) {
+        success = true;
+        // }
       } else if (page === "2") {
         const data = await formSubmitCreate(newFormData);
         if (data?.error) {
@@ -374,7 +406,8 @@ export default function App({ facilitator, ip, onClick }) {
           <Caption>{t("CLEAR_PROFILE_MESSAGE")}</Caption>
           <Button
             variant={"primary"}
-            onPress={(e) => {
+            onPress={async (e) => {
+              await formSubmitUpdate({ ...formData, form_step_number: "13" });
               if (onClick) onClick("success");
             }}
           >
@@ -428,7 +461,7 @@ export default function App({ facilitator, ip, onClick }) {
             noHtml5Validate={true}
             {...{
               validator,
-              schema,
+              schema: schema ? schema : {},
               uiSchema,
               formData,
               customValidate,
