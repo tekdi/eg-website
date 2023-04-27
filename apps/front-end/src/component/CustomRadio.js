@@ -14,7 +14,7 @@ export default function CustomRadio({
       <FormControl.Label>{label}</FormControl.Label>
       <HStack space={"2"} flexWrap="wrap">
         {items.map((item, key) => (
-          <Pressable {...{ key }} onPress={() => onChange(item)} mb="2">
+          <Pressable {...{ key }} onPress={() => onChange(item?.value)} mb="2">
             {itemElement ? (
               itemElement
             ) : (
@@ -24,11 +24,13 @@ export default function CustomRadio({
                 rounded={5}
                 borderWidth={1}
                 borderColor={"gray.400"}
-                shadow={value === item ? "2" : "0px"}
-                _text={{ color: value === item ? "gray.900" : "gray.300" }}
+                shadow={value === item?.value ? "2" : "0px"}
+                _text={{
+                  color: value === item?.value ? "gray.900" : "gray.300",
+                }}
                 {..._box}
               >
-                {item}
+                {item?.label}
               </Box>
             )}
           </Pressable>

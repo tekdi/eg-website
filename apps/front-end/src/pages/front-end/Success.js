@@ -6,18 +6,18 @@ import { useNavigate } from "react-router-dom";
 export default function Success() {
   const navigate = useNavigate();
   return (
-    <Layout isDisabledAppBar _page={{ _scollView: { bg: "white" } }}>
+    <Layout isDisabledAppBar isCenter _page={{ _scollView: { bg: "white" } }}>
       <VStack space="60" pt="60" p="5">
         <H3 textAlign={"center"}>
           your Application is submitted Successfully!
         </H3>
-        <Box>
+        {/* <Box>
           <Text fontWeight="700" fontSize="30px" textAlign={"center"}>
             Complete Aadhar Card Verification
           </Text>
-        </Box>
+        </Box> */}
         <VStack space={5}>
-          <Button variant="primary" py="12px" px="20px">
+          {/* <Button variant="primary" py="12px" px="20px">
             Aadhaar Number KYC
           </Button>
           <Button variant="secondary" bg="gray.200" py="12px" px="20px">
@@ -35,17 +35,17 @@ export default function Success() {
           <BodyMedium textAlign={"center"}>
             We have sent you a text message with username and password on your
             mobile number
-          </BodyMedium>
+          </BodyMedium> */}
           <Button
             variant="secondary"
             bg="gray.200"
             py="12px"
             px="20px"
             onPress={() => {
-              navigate("login");
+              navigate("/dashboard");
             }}
           >
-            Skip to Login
+            Login
           </Button>
         </VStack>
       </VStack>

@@ -244,7 +244,7 @@ export default function App({ footerLinks }) {
                   <Text color="#AFB1B6">Availability</Text>
                   <Text>
                     {data?.program_faciltators?.map((avai, key) => (
-                      <Text key={key}>{avai?.avaibility}</Text>
+                      <Text key={key}>{avai?.availability}</Text>
                     ))}
                   </Text>
                 </VStack>

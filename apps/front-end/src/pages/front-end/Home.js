@@ -16,7 +16,6 @@ function Home({ userTokenInfo }) {
     if (userTokenInfo) {
       const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
-      console.log(fa_data);
       setFacilitator(fa_data);
       if (fa_data.program_faciltators?.parent_ip) {
         const ip_id = fa_data.program_faciltators?.parent_ip;
