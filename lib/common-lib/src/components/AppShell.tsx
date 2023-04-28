@@ -2,7 +2,6 @@ import React from 'react'
 import { eventBus } from '../services/EventBus'
 import AppRoutesContainer from './AppRoutesContainer'
 import { getAppshellData } from './helper'
-import NotFound from './NotFound'
 
 function AppShell({
   colors,
@@ -53,13 +52,7 @@ function AppShell({
           setAccessRoutes([...(guestRoutes ? guestRoutes : [])])
         }
       } else {
-        setAccessRoutes([
-          ...routes,
-          {
-            path: '*',
-            component: NotFound
-          }
-        ])
+        setAccessRoutes(routes)
       }
       setTheme(newTheme)
     }

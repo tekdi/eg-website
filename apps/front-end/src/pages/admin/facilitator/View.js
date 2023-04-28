@@ -20,8 +20,9 @@ import {
   Text,
   VStack,
   Box,
+  Avatar,
 } from "native-base";
-import Chip, { ChipStatus } from "component/Chip";
+import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 
@@ -51,24 +52,35 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={0.82} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="3" pt="3">
-            <IconByName size="sm" name="ArrowLeftSLineIcon" isDisabled />
+            <IconByName
+              size="sm"
+              name="ArrowLeftSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
             <H3>Prerak Bio</H3>
           </HStack>
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <HStack space="5">
                 <VStack alignItems={"center"}>
-                  <IconByName
-                    _icon={{ size: "100px" }}
-                    color="#888"
-                    name="AccountCircleLineIcon"
-                    isDisabled
-                  />
-                  {data?.status ? (
-                    <ChipStatus status={data?.status} />
+                  {data?.profile_url ? (
+                    <Avatar
+                      source={{
+                        uri: data?.profile_url,
+                      }}
+                      // alt="Alternate Text"
+                      width={"100px"}
+                      height={"100px"}
+                    />
                   ) : (
-                    <React.Fragment />
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="#888"
+                      _icon={{ size: "100px" }}
+                    />
                   )}
+                  <ChipStatus status={data?.status} />
                 </VStack>
                 <VStack space={"3"}>
                   <H1>
@@ -251,11 +263,7 @@ export default function FacilitatorView({ footerLinks }) {
                 <Heading fontSize="16px">Other Details</Heading>
                 <VStack>
                   <Text color="#AFB1B6">Availability</Text>
-                  <Text>
-                    {data?.program_faciltators?.map((avai, key) => (
-                      <Text key={key}>{avai?.availability}</Text>
-                    ))}
-                  </Text>
+                  <Text>{data?.program_faciltators?.availability}</Text>
                 </VStack>
                 <VStack>
                   <Text color="#AFB1B6">Device Ownership</Text>

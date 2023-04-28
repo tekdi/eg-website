@@ -18,6 +18,7 @@ import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
+  geolocationRegistryService,
   Camera,
   Layout,
   H1,
@@ -212,6 +213,21 @@ export default function App({ facilitator, ip, onClick }) {
     }
   }, [page && schema?.properties?.qualification?.anyOf?.length === 0]);
 
+  React.useEffect(async () => {
+    if (schema?.properties?.state) {
+      const qData = await geolocationRegistryService.getStates();
+      let newSchema = schema;
+      const stateData = qData.map((e) => ({
+        title: e?.state_name,
+        const: `${e?.state_name}`,
+      }));
+      if (schema["properties"]["state"]["anyOf"]) {
+        newSchema = getOptions(newSchema, "state", stateData);
+      }
+      setSchema(newSchema);
+    }
+  }, [page && schema?.properties?.state?.anyOf?.length === 0]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -221,7 +237,8 @@ export default function App({ facilitator, ip, onClick }) {
       let newPage = [];
       if (id) {
         newPage = newSteps.filter((e) => !arr.includes(e));
-        const pageSet = form_step_number ? form_step_number : 3;
+        //  const pageSet = form_step_number ? form_step_number : 3;
+        const pageSet = 3;
         setPage(pageSet);
         setSchema(properties[pageSet]);
       } else {
@@ -321,6 +338,66 @@ export default function App({ facilitator, ip, onClick }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+
+    if (id === "root_state") {
+      if (schema?.properties?.district) {
+        const qData = await geolocationRegistryService.getDistricts({
+          name: data?.state,
+        });
+        let newSchema = schema;
+        const districtData = qData.map((e) => ({
+          title: e?.district_name,
+          const: `${e?.district_name}`,
+        }));
+        if (schema["properties"]["district"]["anyOf"]) {
+          newSchema = getOptions(newSchema, "district", districtData);
+        }
+        if (schema["properties"]["block"]["anyOf"]) {
+          newSchema = getOptions(newSchema, "block", []);
+        }
+        if (schema["properties"]["village"]["anyOf"]) {
+          newSchema = getOptions(newSchema, "village", []);
+        }
+        setSchema(newSchema);
+      }
+    }
+
+    if (id === "root_district") {
+      if (schema?.properties?.block) {
+        const qData = await geolocationRegistryService.getBlocks({
+          name: data?.district,
+        });
+        let newSchema = schema;
+        const blockData = qData.map((e) => ({
+          title: e?.block_name,
+          const: `${e?.block_name}`,
+        }));
+        if (schema["properties"]["block"]["anyOf"]) {
+          newSchema = getOptions(newSchema, "block", blockData);
+        }
+        if (schema["properties"]["village"]["anyOf"]) {
+          newSchema = getOptions(newSchema, "village", []);
+        }
+        setSchema(newSchema);
+      }
+    }
+
+    if (id === "root_block") {
+      if (schema?.properties?.village) {
+        const qData = await geolocationRegistryService.getVillages({
+          name: data?.block,
+        });
+        let newSchema = schema;
+        const villageData = qData.map((e) => ({
+          title: e?.village_ward_name,
+          const: `${e?.village_ward_name}`,
+        }));
+        if (schema["properties"]["village"]["anyOf"]) {
+          newSchema = getOptions(newSchema, "village", villageData);
+        }
+        setSchema(newSchema);
       }
     }
   };
@@ -437,7 +514,7 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: `${ip?.first_name} ${ip?.last_name}`.trim(),
+        name: `${ip?.name}`.trim(),
       }}
       _page={{ _scollView: { bg: "white" } }}
     >

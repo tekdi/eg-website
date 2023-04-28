@@ -31,6 +31,7 @@ const CRadio = ({ items, onChange }) => {
 export default function StatusButton({ data, setData }) {
   const [showModal, setShowModal] = React.useState();
   const [reason, setReason] = React.useState();
+  const [disabledBtn, setDisabledBtn] = React.useState([]);
 
   const update = async (status) => {
     if (data?.program_faciltator_id && status) {
@@ -44,6 +45,33 @@ export default function StatusButton({ data, setData }) {
     }
   };
 
+  React.useEffect(() => {
+    switch (data?.status.toLowerCase()) {
+      case "lead":
+      case "applied":
+        setDisabledBtn([]);
+        break;
+      case "selected":
+      case "screened":
+      case "approve":
+        setDisabledBtn(["Approve", "Reject", "Review_Later"]);
+        break;
+      case "shortlisted":
+        break;
+      case "reject":
+      case "rejected":
+        setDisabledBtn(["Approve", "Reject", "Review_Later"]);
+        break;
+      case "review later":
+      case "review_later":
+      case "marked_review":
+        setDisabledBtn(["Approve", "Review_Later"]);
+        break;
+      default:
+        setDisabledBtn([]);
+    }
+  }, [data?.status]);
+
   return (
     <HStack alignItems="center" justifyContent={"space-between"}>
       <Button
@@ -53,6 +81,7 @@ export default function StatusButton({ data, setData }) {
           setShowModal("Approve");
           setReason();
         }}
+        isDisabled={disabledBtn.includes("Approve")}
       >
         Approve Application
       </Button>
@@ -153,8 +182,87 @@ export default function StatusButton({ data, setData }) {
                 <Button variant="outlinePrimary" onPress={() => setShowModal()}>
                   Cancel
                 </Button>
-                <Button variant="primary" onPress={() => update("Approve")}>
+                <Button variant="primary" onPress={() => update("screened")}>
                   Schedule
+                </Button>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Button
+        variant={"outlinePrimary"}
+        colorScheme="warning"
+        onPress={(e) => setShowModal("Review_Later")}
+        isDisabled={disabledBtn.includes("Review_Later")}
+      >
+        Review Later
+      </Button>
+      <Modal
+        size={"xl"}
+        isOpen={showModal === "Review_Later"}
+        onClose={() => setShowModal()}
+      >
+        <Modal.Content rounded="2xl">
+          <Modal.CloseButton />
+          <Modal.Header borderBottomWidth={0}>
+            <HStack alignItems="center" space={2} justifyContent="center">
+              <H1>Review Later</H1>
+            </HStack>
+          </Modal.Header>
+          <Modal.Body pb="5" px="5" pt="0">
+            <VStack
+              p="3"
+              space="5"
+              flex={1}
+              borderWidth="1"
+              borderColor="gray.300"
+            >
+              <H2>Please mention your reason for reviewing the candidate*:</H2>
+              <CRadio
+                onChange={(e) => setReason(e)}
+                items={[
+                  {
+                    label: "Incomplete Form",
+                    value: "Incomplete Form",
+                  },
+                  { label: "Not Qualified", value: "Not Qualified" },
+                  {
+                    label: "Less experienced",
+                    value: "Less experienced",
+                  },
+                  { label: "Other", value: "Other" },
+                ]}
+              />
+              {reason &&
+              ![
+                "Incomplete Form",
+                "Not Qualified",
+                "Less experienced",
+              ].includes(reason) ? (
+                <Input
+                  onChange={(e) => setReason(e.target.value)}
+                  variant={"underlined"}
+                  placeholder="Mention your reason..."
+                />
+              ) : (
+                <React.Fragment />
+              )}
+              <HStack alignItems="center" space={5}>
+                <Button
+                  flex="1"
+                  variant="outlinePrimary"
+                  colorScheme="blueGray"
+                  onPress={() => setShowModal()}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  flex="1"
+                  variant="primary"
+                  onPress={() => update("marked_review")}
+                >
+                  Review Later
                 </Button>
               </HStack>
             </VStack>
@@ -165,6 +273,7 @@ export default function StatusButton({ data, setData }) {
         variant={"outlinePrimary"}
         colorScheme="danger"
         onPress={() => setShowModal("Reject")}
+        isDisabled={disabledBtn.includes("Reject")}
       >
         Reject Application
       </Button>
@@ -235,7 +344,7 @@ export default function StatusButton({ data, setData }) {
                 <Button
                   flex="1"
                   variant="primary"
-                  onPress={() => update("Reject")}
+                  onPress={() => update("rejected")}
                 >
                   Reject
                 </Button>
@@ -246,86 +355,9 @@ export default function StatusButton({ data, setData }) {
       </Modal>
       <Button
         variant={"outlinePrimary"}
-        colorScheme="warning"
-        onPress={(e) => setShowModal("Review_Later")}
-      >
-        Review Later
-      </Button>
-      <Modal
-        size={"xl"}
-        isOpen={showModal === "Review_Later"}
-        onClose={() => setShowModal()}
-      >
-        <Modal.Content rounded="2xl">
-          <Modal.CloseButton />
-          <Modal.Header borderBottomWidth={0}>
-            <HStack alignItems="center" space={2} justifyContent="center">
-              <H1>Review Later</H1>
-            </HStack>
-          </Modal.Header>
-          <Modal.Body pb="5" px="5" pt="0">
-            <VStack
-              p="3"
-              space="5"
-              flex={1}
-              borderWidth="1"
-              borderColor="gray.300"
-            >
-              <H2>Please mention your reason for reviewing the candidate*:</H2>
-              <CRadio
-                onChange={(e) => setReason(e)}
-                items={[
-                  {
-                    label: "Incomplete Form",
-                    value: "Incomplete Form",
-                  },
-                  { label: "Not Qualified", value: "Not Qualified" },
-                  {
-                    label: "Less experienced",
-                    value: "Less experienced",
-                  },
-                  { label: "Other", value: "Other" },
-                ]}
-              />
-              {reason &&
-              ![
-                "Incomplete Form",
-                "Not Qualified",
-                "Less experienced",
-              ].includes(reason) ? (
-                <Input
-                  onChange={(e) => setReason(e.target.value)}
-                  variant={"underlined"}
-                  placeholder="Mention your reason..."
-                />
-              ) : (
-                <React.Fragment />
-              )}
-              <HStack alignItems="center" space={5}>
-                <Button
-                  flex="1"
-                  variant="outlinePrimary"
-                  colorScheme="blueGray"
-                  onPress={() => setShowModal()}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  flex="1"
-                  variant="primary"
-                  onPress={() => update("Review Later")}
-                >
-                  Review Later
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
-      <Button
-        variant={"outlinePrimary"}
         colorScheme="gray"
         onPress={(e) => setShowModal("Schedule")}
+        isDisabled
       >
         Schedule Interview
       </Button>

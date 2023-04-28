@@ -5,7 +5,7 @@ const LoginComponent = React.lazy(() => import("auth/Login"));
 
 export default [
   {
-    path: "/facilitator-self-onbording/:id",
+    path: "/facilitator-self-onboarding/:id",
     component: Home,
   },
   {
