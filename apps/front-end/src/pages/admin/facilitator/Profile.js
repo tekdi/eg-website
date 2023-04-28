@@ -3,7 +3,6 @@ import {
   IconByName,
   AdminLayout as Layout,
   ProgressBar,
-  facilitatorRegistryService,
   H3,
   H1,
   H2,
@@ -11,27 +10,17 @@ import {
   BodySmall,
   Loading,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
-import {
-  Button,
-  Center,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-  Box,
-} from "native-base";
+import { Heading, HStack, Text, VStack, Box, Avatar } from "native-base";
 import Chip from "component/Chip";
 
-export default function App({ footerLinks }) {
-  const { id } = useParams();
+export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.getOne({ id });
-    setData(result);
+    // const result = await facilitatorRegistryService.getOne({ id });
+    setData(userTokenInfo?.authUser);
   }, []);
-
+  console.log(data, userTokenInfo);
   if (!data) {
     return <Loading />;
   } else if (_.isEmpty(data)) {
@@ -51,16 +40,27 @@ export default function App({ footerLinks }) {
             <IconByName size="sm" name="ArrowLeftSLineIcon" isDisabled />
             <H3>Prerak Bio</H3>
           </HStack>
-          <HStack alignItems={Center} space="9" pt="5">
+          <HStack alignItems={"center"} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <HStack space="5">
                 <VStack>
-                  <IconByName
-                    _icon={{ size: "100px" }}
-                    color="#888"
-                    name="AccountCircleLineIcon"
-                    isDisabled
-                  />
+                  {data?.profile_url ? (
+                    <Avatar
+                      source={{
+                        uri: data?.profile_url,
+                      }}
+                      // alt="Alternate Text"
+                      width={"100px"}
+                      height={"100px"}
+                    />
+                  ) : (
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="#888"
+                      _icon={{ size: "100px" }}
+                    />
+                  )}
                   {data?.status ? (
                     <Chip>{data?.status}</Chip>
                   ) : (
@@ -242,11 +242,7 @@ export default function App({ footerLinks }) {
                 <Heading fontSize="16px">Other Details</Heading>
                 <VStack>
                   <Text color="#AFB1B6">Availability</Text>
-                  <Text>
-                    {data?.program_faciltators?.map((avai, key) => (
-                      <Text key={key}>{avai?.availability}</Text>
-                    ))}
-                  </Text>
+                  <Text>{data?.program_faciltators?.availability}</Text>
                 </VStack>
                 <VStack>
                   <Text color="#AFB1B6">Device Ownership</Text>
@@ -276,12 +272,23 @@ export default function App({ footerLinks }) {
             ].map((item, key) => (
               <VStack key={key} space={"1"}>
                 <HStack space={"3"}>
-                  <IconByName
-                    isDisabled
-                    color="#888"
-                    _icon={{ size: "24px" }}
-                    name="AccountCircleLineIcon"
-                  />
+                  {item?.profile_url ? (
+                    <Avatar
+                      source={{
+                        uri: item?.profile_url,
+                      }}
+                      // alt="Alternate Text"
+                      width={"24px"}
+                      height={"24px"}
+                    />
+                  ) : (
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="#888"
+                      _icon={{ size: "24px" }}
+                    />
+                  )}
                   <BodyLarge>{item.name}</BodyLarge>
                 </HStack>
                 <Box bg="gray.200" p="4">

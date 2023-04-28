@@ -64,92 +64,27 @@ export default {
     5: {
       title: "What do you Identify as?",
       type: "object",
-      required: ["state_id", "district_id", "block_id", "village_Ward_id"],
+      required: ["state", "district", "block", "village"],
       properties: {
-        state_id: {
+        state: {
           title: "State",
           type: "string",
-          anyOf: [{ title: "Rajasthan", const: "Rajasthan" }],
+          anyOf: [],
         },
-        district_id: {
+        district: {
           title: "District",
           type: "string",
-          anyOf: [
-            { title: "BARAN", const: "BARAN" },
-            { title: "BARMER", const: "BARMER" },
-            { title: "DAUSA", const: "DAUSA" },
-            { title: "JAIPUR", const: "JAIPUR" },
-            { title: "JODHPUR", const: "JODHPUR" },
-          ],
+          anyOf: [],
         },
-        block_id: {
+        block: {
           title: "Block",
           type: "string",
-          anyOf: [
-            { title: "ANTA", const: "ANTA" },
-            { title: "ATRU", const: "ATRU" },
-            { title: "BARAN", const: "BARAN" },
-            { title: "CHHABRA", const: "CHHABRA" },
-            { title: "CHHIPABAROD", const: "CHHIPABAROD" },
-            { title: "BALOTRA", const: "BALOTRA" },
-            { title: "BARMER", const: "BARMER" },
-            { title: "BARMER RURAL", const: "BARMER RURAL" },
-            { title: "CHOHTAN", const: "CHOHTAN" },
-            { title: "DHANAU", const: "DHANAU" },
-            { title: "LALSOT", const: "LALSOT" },
-            { title: "LAWAN", const: "LAWAN" },
-            { title: "MAHWA", const: "MAHWA" },
-            { title: "NANGAL RAJAWATAN", const: "NANGAL RAJAWATAN" },
-            { title: "RAMGARH PACHWARA", const: "RAMGARH PACHWARA" },
-            { title: "AMBER", const: "AMBER" },
-            { title: "ANDHI", const: "ANDHI" },
-            { title: "BASSI", const: "BASSI" },
-            { title: "CHAKSU", const: "CHAKSU" },
-            { title: "DUDU", const: "DUDU" },
-            { title: "AAU", const: "AAU" },
-            { title: "BALESAR", const: "BALESAR" },
-            { title: "BAORI", const: "BAORI" },
-            { title: "BAP", const: "BAP" },
-            { title: "BAPINI", const: "BAPINI" },
-          ],
+          anyOf: [],
         },
-        village_Ward_id: {
+        village: {
           title: "Village/Ward",
           type: "string",
-          anyOf: [
-            { title: "AKHERI", const: "AKHERI" },
-            { title: "DELAHERI", const: "DELAHERI" },
-            { title: "DATURIYA", const: "DATURIYA" },
-            { title: "DABRIKAKAKAJI", const: "DABRIKAKAKAJI" },
-            { title: "DABRI NAKKI", const: "DABRI NAKKI" },
-            { title: "UMMEDGANJ", const: "UMMEDGANJ" },
-            { title: "BANPUR", const: "BANPUR" },
-            { title: "BARALA", const: "BARALA" },
-            { title: "BARAVDI", const: "BARAVDI" },
-            { title: "BARKHEDI", const: "BARKHEDI" },
-            {
-              title: "ND_BARAN - Ward No.- 12",
-              const: "ND_BARAN - Ward No.- 12",
-            },
-            {
-              title: "ND_BARAN - Ward No.- 13",
-              const: "ND_BARAN - Ward No.- 13",
-            },
-            {
-              title: "ND_BARAN - Ward No.- 15",
-              const: "ND_BARAN - Ward No.- 15",
-            },
-            {
-              title: "ND_BARAN - Ward No.- 16",
-              const: "ND_BARAN - Ward No.- 16",
-            },
-            { title: "PIPALDA", const: "PIPALDA" },
-            { title: "KHATOLI", const: "KHATOLI" },
-            { title: "AHAMAD PURA", const: "AHAMAD PURA" },
-            { title: " AKODIYAPAR", const: "AKODIYAPAR" },
-            { title: "ALAMPURA", const: "ALAMPURA" },
-            { title: "ALI NAGAR", const: "ALI NAGAR" },
-          ],
+          anyOf: [],
         },
         grampanchayat: {
           title: "Grampanchayat",
@@ -321,9 +256,9 @@ export default {
     },
     13: {
       type: "object",
-      required: ["refreere"],
+      required: ["sourcing_channel"],
       properties: {
-        refreere: {
+        sourcing_channel: {
           title: "How did you find out about Project Pragati?",
           type: "string",
           anyOf: [

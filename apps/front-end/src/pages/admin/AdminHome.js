@@ -44,11 +44,10 @@ const FilterSidebar = ({ items, element, _scrollView, _flex }) => {
   ));
 };
 
-export default function AdminHome({ footerLinks, appName }) {
+export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-
   return (
     <Layout
       _appBar={{
@@ -147,7 +146,7 @@ export default function AdminHome({ footerLinks, appName }) {
         </Box>
         <Box flex={0.8} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
           <ScrollView maxH={Height - refAppBar?.clientHeight}>
-            <Table />
+            <Table facilitator={userTokenInfo?.authUser} />
           </ScrollView>
         </Box>
       </HStack>

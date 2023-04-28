@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React from 'react'
 import { Center, NativeBaseProvider } from 'native-base'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Loading from './Loading'
@@ -18,7 +18,7 @@ const AppRoutesContainer = ({
   return (
     <NativeBaseProvider {...(Object.keys(theme).length ? { theme } : {})}>
       <Alert {...{ alert, setAlert }} />
-      <Suspense
+      <React.Suspense
         fallback={
           <Center>
             <Loading />
@@ -41,7 +41,7 @@ const AppRoutesContainer = ({
             ))}
           </Routes>
         </Router>
-      </Suspense>
+      </React.Suspense>
     </NativeBaseProvider>
   )
 }

@@ -16,15 +16,19 @@ function Home({ userTokenInfo }) {
     if (userTokenInfo) {
       const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
+      localStorage.setItem("profile_url", fa_data?.profile_url);
       setFacilitator(fa_data);
-      if (fa_data.program_faciltators?.parent_ip) {
-        const ip_id = fa_data.program_faciltators?.parent_ip;
-        const data = await facilitatorRegistryService.getOne({ id: ip_id });
+      if (fa_data?.program_faciltators?.parent_ip) {
+        const ip_id = fa_data?.program_faciltators?.parent_ip;
+        const data = await facilitatorRegistryService.getOrganization({
+          id: ip_id,
+        });
         setIp(data);
       }
       setPage("Form");
     } else {
-      const data = await facilitatorRegistryService.getOne({ id });
+      const data = await facilitatorRegistryService.getOrganization({ id });
+      localStorage.setItem("profile_url", data?.profile_url);
       setIp(data);
     }
   }, []);

@@ -17,6 +17,7 @@ import {
   Text,
   VStack,
   Modal,
+  Avatar,
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
@@ -27,12 +28,23 @@ const columns = [
     name: " First Name",
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
-        <IconByName
-          isDisabled
-          name="AccountCircleLineIcon"
-          color="#888"
-          _icon={{ size: "35" }}
-        />
+        {row?.profile_url ? (
+          <Avatar
+            source={{
+              uri: row?.profile_url,
+            }}
+            // alt="Alternate Text"
+            width={"35px"}
+            height={"35px"}
+          />
+        ) : (
+          <IconByName
+            isDisabled
+            name="AccountCircleLineIcon"
+            color="#888"
+            _icon={{ size: "35" }}
+          />
+        )}
         <Text>{row?.first_name + " " + row.last_name}</Text>
       </HStack>
     ),
@@ -47,7 +59,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row, index) => <ChipStatus status={row?.status} />,
+    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
     sortable: true,
     attr: "email",
   },
@@ -85,30 +97,27 @@ function getBaseUrl() {
 }
 
 // Table component
-function Table() {
+function Table({ facilitator }) {
   const [data, setData] = React.useState([]);
-  const [filterData, setFilterData] = React.useState([]);
-  const [filterInputs, setFilterInputs] = React.useState([]);
-  const [filterObj, setFilterObj] = React.useState([]);
+  const [limit, setLimit] = React.useState(10);
+  const [page, setPage] = React.useState(1);
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [filterObj, setFilterObj] = React.useState();
   const [modal, setModal] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const result = await facilitatorRegistryService.getAll();
-    setData(result);
-  }, []);
+    setLoading(true);
+    const result = await facilitatorRegistryService.getAll(filterObj);
+    setData(result.data);
+    setPaginationTotalRows(result?.totalCount);
+    setLoading(false);
+  }, [filterObj]);
 
   useEffect(() => {
-    setFilterData(filters(data, filterObj));
-  }, [data, filterObj]);
-
-  const [resetPaginationToggle, setResetPaginationToggle] =
-    React.useState(false);
-
-  const subHeaderComponentMemo = React.useMemo(() => {}, [
-    resetPaginationToggle,
-    filterInputs,
-  ]);
+    setFilterObj({ page, limit });
+  }, [page, limit]);
 
   return (
     <VStack>
@@ -153,7 +162,9 @@ function Table() {
                   >
                     <H3>INVITATION LINK</H3>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onbording/1`}
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${
+                        facilitator?.program_users[0]?.organisation_id
+                      }`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -192,7 +203,7 @@ function Table() {
               <Button
                 size={"xs"}
                 onPress={() => {
-                  navigate(`view/${row?.id}`);
+                  navigate(`/admin/view/${row?.id}`);
                 }}
               >
                 View
@@ -200,11 +211,21 @@ function Table() {
             ),
           },
         ]}
-        data={filterData}
-        pagination
+        data={data}
         subHeader
-        subHeaderComponent={subHeaderComponentMemo}
         persistTableHead
+        progressPending={loading}
+        pagination
+        paginationServer
+        paginationTotalRows={paginationTotalRows}
+        onChangeRowsPerPage={(e) => {
+          console.log(e);
+          setLimit(e);
+        }}
+        onChangePage={(e) => {
+          console.log(e);
+          setPage(e);
+        }}
       />
     </VStack>
   );
