@@ -16,6 +16,7 @@ import {
   H2,
   useWindowSize,
   H3,
+  t,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import Chip from "component/Chip";
@@ -49,17 +50,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   return (
-    <Layout
-      _appBar={{
-        isShowNotificationButton: true,
-      }}
-      getRefAppBar={(e) => setRefAppBar(e)}
-      _sidebar={footerLinks}
-    >
+    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
-        <Box flex={0.2}>
+        {/* <Box flex={0.2}>
           <Box p="10px" bg="primary.500" ref={ref}>
-            <H2 color="white">My Preraks</H2>
+            <H2 color="white">{t("MY_PRERAKS")}</H2>
           </Box>
           <ScrollView
             maxH={
@@ -69,7 +64,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             <VStack space={5} py="5" px="2">
               <HStack alignItems="center" space={1} width="200px" height="24px">
                 <IconByName isDisabled name="SortDescIcon" />
-                <Text>Sort by</Text>
+                <Text>{t("SORT_BY")}</Text>
               </HStack>
               <Select
                 minWidth="20"
@@ -87,12 +82,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               <VStack space={5}>
                 <HStack alignItems="center">
                   <IconByName isDisabled name="FilterLineIcon" />
-                  <Text>Filters</Text>
+                  <Text>{t("FILTER")}</Text>
                 </HStack>
                 <FilterSidebar
                   items={[
                     {
-                      name: "District",
+                      name: t("DISTRICT"),
                       data: [
                         { label: "All", value: "all" },
                         { label: "Ajmer", value: "ajmer" },
@@ -108,7 +103,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 <FilterSidebar
                   items={[
                     {
-                      name: "Qualification",
+                      name: t("QUALIFICATION"),
                       data: [
                         { label: "All", value: "all" },
                         { label: "12th", value: "12" },
@@ -126,7 +121,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   )}
                   items={[
                     {
-                      name: "Work Experience",
+                      name: t("WORK_EXPERIENCE"),
                       data: [
                         { label: "All", value: "all" },
                         { label: "0 yrs", value: "0" },
@@ -143,8 +138,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               </VStack>
             </VStack>
           </ScrollView>
-        </Box>
-        <Box flex={0.8} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
+        </Box> */}
+        <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
           <ScrollView maxH={Height - refAppBar?.clientHeight}>
             <Table facilitator={userTokenInfo?.authUser} />
           </ScrollView>

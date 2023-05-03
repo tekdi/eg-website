@@ -1,4 +1,4 @@
-import { H1, IconByName, Loading } from "@shiksha/common-lib";
+import { H1, IconByName, Loading, t } from "@shiksha/common-lib";
 import { Button, VStack } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,9 +15,9 @@ export default function NotFound({ goBack }) {
             _icon={{ size: "50" }}
           />
           <VStack space={"5"} alignItems="center">
-            <H1>Not Found</H1>
+            <H1>{t("NOT_FOUND")}</H1>
             <Button onPress={(e) => (goBack ? goBack : navigator("/login"))}>
-              Go to back
+              {t("GO_TO_BACK")}
             </Button>
           </VStack>
         </VStack>

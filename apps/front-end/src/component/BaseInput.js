@@ -1,8 +1,9 @@
-import { Input } from "native-base";
 import React from "react";
+import { Button, HStack, Input } from "native-base";
 import { getInputProps } from "@rjsf/utils";
+import { t } from "@shiksha/common-lib";
 
-export default function BaseInputTemplate(props) {
+export function BaseInputTemplate(props) {
   const {
     schema,
     id,
@@ -52,5 +53,25 @@ export default function BaseInputTemplate(props) {
       onFocus={onTextFocus}
       {...inputProps}
     />
+  );
+}
+
+export function AddButton({ icon, iconType, ...btnProps }) {
+  return (
+    <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
+      <HStack>
+        {icon} {t("ADD_MORE")}
+      </HStack>
+    </Button>
+  );
+}
+
+export function RemoveButton({ icon, iconType, ...btnProps }) {
+  return (
+    <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
+      <HStack>
+        {icon} {t("REMOVE")}
+      </HStack>
+    </Button>
   );
 }

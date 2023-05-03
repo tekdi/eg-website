@@ -20,7 +20,7 @@ export default function Dashboard({ userTokenInfo }) {
   return (
     <Layout>
       <H1>
-        👋🏻 Welcome, {facilitator?.first_name} {facilitator?.last_name}
+        👋🏻 {t("WELCOME")}, {facilitator?.first_name} {facilitator?.last_name}
       </H1>
     </Layout>
   );

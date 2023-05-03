@@ -53,11 +53,8 @@ export default {
         gender: {
           title: "Gender",
           type: "string",
-          anyOf: [
-            { title: "Female", const: "female" },
-            { title: "Male", const: "male" },
-            { title: "Other", const: "other" },
-          ],
+          enumNames: ["Female", "Male", "Other"],
+          enum: ["female", "male", "other"],
         },
       },
     },
@@ -69,22 +66,22 @@ export default {
         state: {
           title: "State",
           type: "string",
-          anyOf: [],
+          format: "select",
         },
         district: {
           title: "District",
           type: "string",
-          anyOf: [],
+          format: "select",
         },
         block: {
           title: "Block",
           type: "string",
-          anyOf: [],
+          format: "select",
         },
         village: {
           title: "Village/Ward",
           type: "string",
-          anyOf: [],
+          format: "select",
         },
         grampanchayat: {
           title: "Grampanchayat",
@@ -111,65 +108,16 @@ export default {
         qualification: {
           title: "Your Highest Qualification:",
           type: "string",
-          anyOf: [],
+          format: "select",
         },
         degree: {
           title: "Do you have any teaching degree?",
           type: "string",
-          anyOf: [],
+          format: "select",
         },
       },
     },
     8: {
-      type: "object",
-      properties: {
-        experience: {
-          title: "Do you have any Work Experience ?",
-          type: "array",
-          items: {
-            title: "Experience",
-            required: [
-              "role_title",
-              "organization",
-              "experience_in_years",
-              "related_to_teaching",
-            ],
-            properties: {
-              role_title: {
-                title: "Job Title",
-                type: "string",
-              },
-              organization: {
-                title: "Company Name",
-                type: "string",
-              },
-              experience_in_years: {
-                title: "Experience in years",
-                type: "string",
-                anyOf: [
-                  { title: "1", const: "1" },
-                  { title: "2", const: "2" },
-                  { title: "3", const: "3" },
-                  { title: "4", const: "4" },
-                  { title: "5+", const: "5" },
-                ],
-              },
-              related_to_teaching: {
-                title: "Is the job related to teaching?",
-                type: "string",
-                enum: ["Yes", "No"],
-              },
-              description: {
-                title: "Description",
-                type: "string",
-                format: "textarea",
-              },
-            },
-          },
-        },
-      },
-    },
-    9: {
       type: "object",
       properties: {
         vo_experience: {
@@ -200,18 +148,59 @@ export default {
               experience_in_years: {
                 title: "Experience in years",
                 type: "string",
-                anyOf: [
-                  { title: "1", const: "1" },
-                  { title: "2", const: "2" },
-                  { title: "3", const: "3" },
-                  { title: "4", const: "4" },
-                  { title: "5+", const: "5" },
-                ],
+                enumNames: ["1", "2", "3", "4", "+5"],
+                enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {
                 title: "Is the job related to teaching?",
                 type: "string",
-                enum: ["Yes", "No"],
+                enumNames: ["Yes", "No"],
+                enum: ["yes", "no"],
+              },
+            },
+          },
+        },
+      },
+    },
+    9: {
+      type: "object",
+      properties: {
+        experience: {
+          title: "Do you have any Work Experience ?",
+          type: "array",
+          items: {
+            title: "Experience",
+            required: [
+              "role_title",
+              "organization",
+              "experience_in_years",
+              "related_to_teaching",
+            ],
+            properties: {
+              role_title: {
+                title: "Job Title",
+                type: "string",
+              },
+              organization: {
+                title: "Company Name",
+                type: "string",
+              },
+              experience_in_years: {
+                title: "Experience in years",
+                type: "string",
+                enumNames: ["1", "2", "3", "4", "+5"],
+                enum: ["1", "2", "3", "4", "5"],
+              },
+              related_to_teaching: {
+                title: "Is the job related to teaching?",
+                type: "string",
+                enumNames: ["Yes", "No"],
+                enum: ["yes", "no"],
+              },
+              description: {
+                title: "Description",
+                type: "string",
+                format: "textarea",
               },
             },
           },
@@ -225,7 +214,8 @@ export default {
         availability: {
           title: "Your work availability will be?",
           type: "string",
-          enum: ["Part time", "Full time"],
+          enum: ["part_time", "full_time"],
+          enumNames: ["Part time", "Full time"],
         },
       },
     },
@@ -236,7 +226,8 @@ export default {
         device_ownership: {
           title: "Do you own a mobile phone?",
           type: "string",
-          enum: ["Yes", "No, I use a Family member's"],
+          enumNames: ["Yes", "No, I use a Family member's"],
+          enum: ["yes", "no"],
         },
       },
     },
@@ -247,10 +238,8 @@ export default {
         device_type: {
           title: "Type of mobile phone?",
           type: "string",
-          anyOf: [
-            { title: "Android", const: "android" },
-            { title: "IPhone", const: "iphone" },
-          ],
+          enumNames: ["Android", "IPhone"],
+          enum: ["android", "iphone"],
         },
       },
     },
@@ -261,13 +250,21 @@ export default {
         sourcing_channel: {
           title: "How did you find out about Project Pragati?",
           type: "string",
-          anyOf: [
-            { title: "Prerak Referral", const: "prerak_referral" },
-            { title: "NGO Referral", const: "ngo_referral" },
-            { title: "Advertisements", const: "advertisements" },
-            { title: "Dropouts", const: "dropouts" },
-            { title: "Old Prerak", const: "old_prerak" },
-            { title: "Other", const: "other" },
+          enumNames: [
+            "Prerak Referral",
+            "NGO Referral",
+            "Advertisements",
+            "Dropouts",
+            "Old Prerak",
+            "Other",
+          ],
+          enum: [
+            "prerak_referral",
+            "ngo_referral",
+            "advertisements",
+            "dropouts",
+            "old_prerak",
+            "other",
           ],
         },
       },
