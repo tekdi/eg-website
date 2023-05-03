@@ -28,6 +28,8 @@ import {
   IconByName,
   BodySmall,
   filtersByObject,
+  H2,
+  getBase64,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -85,8 +87,9 @@ export default function App({ facilitator, ip, onClick }) {
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState();
+  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
+  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
@@ -173,7 +176,7 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        setCameraModal(true);
+        setPage("upload");
       } else {
         return true;
       }
@@ -470,6 +473,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
+    if (addBtn !== t("YES")) setAddBtn(t("YES"));
     const newFormData = data.formData;
     const newData = {
       ...formData,
@@ -513,10 +517,25 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
+  const handleFileInputChange = async (e) => {
+    let file = e.target.files[0];
+    if (file.size <= 1048576 * 2) {
+      const data = await getBase64(file);
+      setCameraUrl(data);
+    } else {
+      setErrors({ fileSize: t("FILE_SIZE") });
+    }
+  };
+
   if (cameraUrl) {
     return (
       <Layout
-        // _appBar={{ onPressBackButton }}
+        _appBar={{
+          onPressBackButton: (e) => {
+            setCameraUrl();
+            setCameraModal(false);
+          },
+        }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
@@ -527,7 +546,7 @@ export default function App({ facilitator, ip, onClick }) {
                 { value: "3", label: "Work Details" },
                 { value: "4", label: "Other Details" },
               ]}
-              progress={page}
+              progress={page === "upload" ? 13 : page}
             />
           </Box>
           <H1>{t("ADD_PROFILE_PHOTO")}</H1>
@@ -550,6 +569,16 @@ export default function App({ facilitator, ip, onClick }) {
           >
             {t("SUBMIT")}
           </Button>
+          <Button
+            variant={"secondary"}
+            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            onPress={(e) => {
+              setCameraUrl();
+              setCameraModal(true);
+            }}
+          >
+            {t("TAKE_ANOTHER_PHOTO")}
+          </Button>
         </VStack>
       </Layout>
     );
@@ -570,6 +599,58 @@ export default function App({ facilitator, ip, onClick }) {
     );
   }
 
+  if (page === "upload") {
+    return (
+      <Layout
+        _appBar={{ onPressBackButton: (e) => setPage("13") }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <VStack py={6} px={4} mb={5} space="6">
+          <Box p="10">
+            <Steper
+              steps={[
+                { value: "6", label: "Basic Details" },
+                { value: "3", label: "Work Details" },
+                { value: "4", label: "Other Details" },
+              ]}
+              progress={page === "upload" ? 13 : page}
+            />
+          </Box>
+          <H1>{t("JUST_ONE_STEP")}</H1>
+          <H2>{t("ADD_PROFILE_PHOTO")} -</H2>
+          <Button
+            variant={"primary"}
+            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            onPress={(e) => {
+              setCameraUrl();
+              setCameraModal(true);
+            }}
+          >
+            {t("TAKE_PHOTO")}
+          </Button>
+          {errors?.fileSize ? <H2 color="red.400">{errors?.fileSize}</H2> : ""}
+          <VStack>
+            <input
+              accept="image/*"
+              type="file"
+              style={{ display: "none" }}
+              ref={uplodInputRef}
+              onChange={handleFileInputChange}
+            />
+            <Button
+              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+              variant={"secondary"}
+              onPress={(e) => {
+                uplodInputRef?.current?.click();
+              }}
+            >
+              {t("UPLOAD_PHOTO")}
+            </Button>
+          </VStack>
+        </VStack>
+      </Layout>
+    );
+  }
   const AddButton = ({ icon, iconType, ...btnProps }) => {
     return (
       <Button

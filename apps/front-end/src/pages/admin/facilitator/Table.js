@@ -124,13 +124,13 @@ function Table({ facilitator }) {
     <VStack>
       <HStack justifyContent={"space-between"} flexWrap="Wrap">
         <H1>{t("ALL_PRERAK")}</H1>
-        <Input
+        {/* <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
           }
           placeholder="search"
           variant="outline"
-        />
+        /> */}
         <HStack space={2}>
           <Button
             variant={"primary"}

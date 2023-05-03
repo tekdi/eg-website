@@ -101,5 +101,11 @@
   "NEXT": "Next",
   "YES": "Yes",
   "NO": "No",
-  "CAMERA_PERMISSION_DENIED": "Camera Permission denied"
+  "CAMERA_PERMISSION_DENIED": "Camera Permission denied",
+  "COMING_SOON": "Coming soon",
+  "JUST_ONE_STEP": "Just one more Step to go!",
+  "TAKE_PHOTO": "Take a Photo",
+  "UPLOAD_PHOTO": "Upload a Photo",
+  "FILE_SIZE": "file size must be less then 2MB",
+  "TAKE_ANOTHER_PHOTO": "Take another Photo"
 }
