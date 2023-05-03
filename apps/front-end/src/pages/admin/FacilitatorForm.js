@@ -5,13 +5,9 @@ import Form from "../front-end/Form";
 
 export default function FacilitatorForm() {
   return (
-    <Layout
-      _appBar={{
-        isShowNotificationButton: true,
-      }}
-    >
+    <Layout>
       {/* <Form /> */}
-      <Loading customComponent={<H1>{t("coming_soon")}</H1>} />
+      <Loading customComponent={<H1>{t("COMING_SOON")}</H1>} />
     </Layout>
   );
 }

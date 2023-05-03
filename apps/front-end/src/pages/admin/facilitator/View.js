@@ -44,12 +44,7 @@ export default function FacilitatorView({ footerLinks }) {
   }
 
   return (
-    <Layout
-      _appBar={{
-        isShowNotificationButton: true,
-      }}
-      _sidebar={footerLinks}
-    >
+    <Layout _sidebar={footerLinks}>
       <HStack>
         <VStack flex={0.82} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="3" pt="3">

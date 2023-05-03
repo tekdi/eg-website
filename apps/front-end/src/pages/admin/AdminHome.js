@@ -49,6 +49,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
+
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
@@ -139,11 +140,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             </VStack>
           </ScrollView>
         </Box> */}
-        <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
-          <ScrollView maxH={Height - refAppBar?.clientHeight}>
+        <ScrollView
+          maxH={Height - refAppBar?.clientHeight}
+          minH={Height - refAppBar?.clientHeight}
+        >
+          <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
             <Table facilitator={userTokenInfo?.authUser} />
-          </ScrollView>
-        </Box>
+          </Box>
+        </ScrollView>
       </HStack>
     </Layout>
   );

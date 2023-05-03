@@ -13,9 +13,11 @@ import {
 } from "@shiksha/common-lib";
 import { Heading, HStack, Text, VStack, Box, Avatar } from "native-base";
 import Chip from "component/Chip";
+import { useNavigate } from "react-router-dom";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
+  const navigate = useNavigate();
 
   React.useEffect(async () => {
     // const result = await facilitatorRegistryService.getOne({ id });
@@ -29,17 +31,16 @@ export default function App({ footerLinks, userTokenInfo }) {
   }
 
   return (
-    <Layout
-      _appBar={{
-        isShowNotificationButton: true,
-      }}
-      _sidebar={footerLinks}
-    >
+    <Layout _sidebar={footerLinks}>
       <HStack>
         <VStack flex={0.82} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="3" pt="3">
-            <IconByName size="sm" name="ArrowLeftSLineIcon" isDisabled />
-            <H3>{t("PRERAK_BIO")}</H3>
+            <IconByName
+              size="sm"
+              name="ArrowLeftSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
+            <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
           <HStack alignItems={"center"} space="9" pt="5">
             <VStack flex={0.3} space="5">
