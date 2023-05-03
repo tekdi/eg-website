@@ -1,4 +1,4 @@
-import { facilitatorRegistryService, H1, Layout } from "@shiksha/common-lib";
+import { facilitatorRegistryService, H1, Layout, t } from "@shiksha/common-lib";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 

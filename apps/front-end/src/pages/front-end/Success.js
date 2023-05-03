@@ -1,6 +1,6 @@
 import React from "react";
-import { BodyMedium, H3, Layout } from "@shiksha/common-lib";
-import { Box, Button, Center, Image, Text, VStack } from "native-base";
+import { H3, Layout, t } from "@shiksha/common-lib";
+import { Button, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
 
 export default function Success() {
@@ -45,7 +45,7 @@ export default function Success() {
               navigate("/dashboard");
             }}
           >
-            {t("LOGIN")}
+            {t("DASHBOARD")}
           </Button>
         </VStack>
       </VStack>

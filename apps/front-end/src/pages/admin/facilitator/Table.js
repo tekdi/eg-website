@@ -222,14 +222,8 @@ function Table({ facilitator }) {
         pagination
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        onChangeRowsPerPage={(e) => {
-          console.log(e);
-          setLimit(e);
-        }}
-        onChangePage={(e) => {
-          console.log(e);
-          setPage(e);
-        }}
+        onChangeRowsPerPage={(e) => setLimit(e)}
+        onChangePage={(e) => setPage(e)}
       />
     </VStack>
   );

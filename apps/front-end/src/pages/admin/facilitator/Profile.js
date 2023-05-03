@@ -23,7 +23,7 @@ export default function App({ footerLinks, userTokenInfo }) {
     // const result = await facilitatorRegistryService.getOne({ id });
     setData(userTokenInfo?.authUser);
   }, []);
-  console.log(data, userTokenInfo);
+
   if (!data) {
     return <Loading />;
   } else if (_.isEmpty(data)) {

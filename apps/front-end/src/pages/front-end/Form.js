@@ -3,6 +3,7 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
 import {
+  Alert,
   Box,
   Button,
   Center,
@@ -30,6 +31,7 @@ import {
   filtersByObject,
   H2,
   getBase64,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -79,6 +81,7 @@ const RadioBtn = ({ options, value, onChange, required }) => {
   );
 };
 
+// App
 export default function App({ facilitator, ip, onClick }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -92,6 +95,7 @@ export default function App({ facilitator, ip, onClick }) {
   const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
+  const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
@@ -163,6 +167,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const nextPreviewStep = (pageStape = "n") => {
+    setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
     if (index !== undefined) {
@@ -186,8 +191,10 @@ export default function App({ facilitator, ip, onClick }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       if (pageNumber !== "") {
-        setPage(pageNumber);
-        setSchema(properties[pageNumber]);
+        if (page !== pageNumber) {
+          setPage(pageNumber);
+          setSchema(properties[pageNumber]);
+        }
       } else {
         nextPreviewStep();
       }
@@ -229,6 +236,21 @@ export default function App({ facilitator, ip, onClick }) {
           value: "id",
           filters: { type: "qualification" },
         });
+        if (newSchema?.properties?.qualification) {
+          let valueIndex = "";
+          newSchema?.properties?.qualification?.enumNames?.forEach(
+            (e, index) => {
+              if (e.match("12")) {
+                valueIndex = newSchema?.properties?.qualification?.enum[index];
+              }
+            }
+          );
+          if (valueIndex !== "" && formData.qualification == valueIndex) {
+            setAlert(t("YOU_NOT_ELIGIBLE"));
+          } else {
+            setAlert();
+          }
+        }
       }
       if (schema["properties"]["degree"]) {
         newSchema = getOptions(newSchema, {
@@ -254,6 +276,14 @@ export default function App({ facilitator, ip, onClick }) {
         });
       }
       setSchema(newSchema);
+    }
+
+    if (schema?.properties?.device_ownership) {
+      if (formData?.device_ownership == "no") {
+        setAlert(t("YOU_NOT_ELIGIBLE"));
+      } else {
+        setAlert();
+      }
     }
   }, [page]);
 
@@ -364,7 +394,24 @@ export default function App({ facilitator, ip, onClick }) {
         errors?.dob?.addError("Minimum age 18 year old");
       }
     }
+    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z]*$/g)) {
+        errors?.[key]?.addError(t("REQUIRED_MESSAGE"));
+      }
+    });
+
     return errors;
+  };
+
+  const transformErrors = (errors, uiSchema) => {
+    return errors.map((error) => {
+      if (error.name === "required") {
+        error.message = `${t("REQUIRED_MESSAGE")}`;
+      } else if (error.name === "enum") {
+        error.message = `${t("SELECT_MESSAGE")}`;
+      }
+      return error;
+    });
   };
 
   const onChange = async (e, id) => {
@@ -396,6 +443,32 @@ export default function App({ facilitator, ip, onClick }) {
             },
           };
           setErrors(newErrors);
+        }
+      }
+    }
+
+    if (id === "root_qualification") {
+      if (schema?.properties?.qualification) {
+        let valueIndex = "";
+        schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
+          if (e.match("12")) {
+            valueIndex = schema?.properties?.qualification?.enum[index];
+          }
+        });
+        if (valueIndex !== "" && data.qualification == valueIndex) {
+          setAlert(t("YOU_NOT_ELIGIBLE"));
+        } else {
+          setAlert();
+        }
+      }
+    }
+
+    if (id === "root_device_ownership") {
+      if (schema?.properties?.device_ownership) {
+        if (data?.device_ownership == "no") {
+          setAlert(t("YOU_NOT_ELIGIBLE"));
+        } else {
+          setAlert();
         }
       }
     }
@@ -465,7 +538,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onError = (data) => {
-    console.log("on error", data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -725,6 +797,16 @@ export default function App({ facilitator, ip, onClick }) {
             progress={page - 1}
           />
         </Box>
+        {alert ? (
+          <Alert status="warning" alignItems={"start"} mb="3">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <BodyMedium>{alert}</BodyMedium>
+            </HStack>
+          </Alert>
+        ) : (
+          <React.Fragment />
+        )}
         {page && page !== "" ? (
           <Form
             ref={formRef}
@@ -743,6 +825,7 @@ export default function App({ facilitator, ip, onClick }) {
               onChange,
               onError,
               onSubmit,
+              transformErrors,
             }}
           >
             <Button

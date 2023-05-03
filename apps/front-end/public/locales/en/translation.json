@@ -107,5 +107,9 @@
   "TAKE_PHOTO": "Take a Photo",
   "UPLOAD_PHOTO": "Upload a Photo",
   "FILE_SIZE": "file size must be less then 2MB",
-  "TAKE_ANOTHER_PHOTO": "Take another Photo"
+  "TAKE_ANOTHER_PHOTO": "Take another Photo",
+  "REQUIRED_MESSAGE": "Please enter a valid data",
+  "SELECT_MESSAGE": "Please select a valid option",
+  "YOU_NOT_ELIGIBLE": "You may not be eligible for the position",
+  "DASHBOARD": "Dashboard"
 }
