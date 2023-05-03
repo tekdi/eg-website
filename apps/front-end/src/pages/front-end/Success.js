@@ -9,7 +9,7 @@ export default function Success() {
     <Layout isDisabledAppBar isCenter _page={{ _scollView: { bg: "white" } }}>
       <VStack space="60" pt="60" p="5">
         <H3 textAlign={"center"}>
-          your Application is submitted Successfully!
+          {t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY")}
         </H3>
         {/* <Box>
           <Text fontWeight="700" fontSize="30px" textAlign={"center"}>
@@ -45,7 +45,7 @@ export default function Success() {
               navigate("/dashboard");
             }}
           >
-            Login
+            {t("LOGIN")}
           </Button>
         </VStack>
       </VStack>

@@ -7,6 +7,7 @@ import {
   H2,
   IconByName,
   facilitatorRegistryService,
+  t,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 
@@ -83,7 +84,7 @@ export default function StatusButton({ data, setData }) {
         }}
         isDisabled={disabledBtn.includes("Approve")}
       >
-        Approve Application
+        {t("APPROVE_APPLICATION")}
       </Button>
       <Modal
         size={"xl"}
@@ -100,10 +101,12 @@ export default function StatusButton({ data, setData }) {
                   name="CheckboxCircleFillIcon"
                   _icon={{ size: "30px" }}
                 />
-                <H1>Application Approved</H1>
+                <H1>{t("APPLICATION_APPROVED")}</H1>
               </HStack>
               <H3>
-                You can now Schedule an Interview with the approved candidate!
+                {t(
+                  "YOU_CAN_NOW_SCHEDULE_AN_INTERVIEW_WITH_THE_APPROVED_CANDIDATE"
+                )}
               </H3>
             </VStack>
           </Modal.Header>
@@ -111,7 +114,7 @@ export default function StatusButton({ data, setData }) {
             <VStack space={5}>
               <HStack alignItems="center" space={2}>
                 <IconByName isDisabled name="MessageLineIcon" />
-                <H1>Schedule an Interview</H1>
+                <H1>{t("SCHEDULE_AN_INTERVIEW")}</H1>
               </HStack>
 
               <HStack alignItems="center" space={2}>
@@ -124,7 +127,7 @@ export default function StatusButton({ data, setData }) {
                 >
                   <HStack alignItems="center">
                     <IconByName isDisabled name="UserLineIcon" />
-                    <H2>Candidate -</H2>
+                    <H2>{t("CANDIDATE")} -</H2>
                     <Chip bg="#e9e9e9">
                       <HStack alignItems="center" space={"2"} p="1">
                         <IconByName isDisabled name="MessageLineIcon" />
@@ -152,7 +155,7 @@ export default function StatusButton({ data, setData }) {
                   <HStack alignItems="center" space={5}>
                     <HStack alignItems="center" space={2}>
                       <IconByName isDisabled name="MapPinLineIcon" />
-                      <H2>Location</H2>
+                      <H2>{t("LOCATION")}</H2>
                     </HStack>
                     <HStack alignItems="center" space={1}>
                       <CRadio
@@ -167,11 +170,11 @@ export default function StatusButton({ data, setData }) {
                   <HStack alignItems="center" space={4}>
                     <HStack alignItems="center" space={2}>
                       <IconByName isDisabled name="Notification2LineIcon" />
-                      <H2>Add remainder</H2>
+                      <H2>{t("ADD_REMINDER")}</H2>
                     </HStack>
                     <Chip bg="#e9e9e9">
                       <HStack alignItems="center" space={"2"} p="1">
-                        <H2>10 minutes before</H2>
+                        <H2>{t("10_MINUTES_BEFORE")}</H2>
                       </HStack>
                     </Chip>
                   </HStack>
@@ -180,10 +183,10 @@ export default function StatusButton({ data, setData }) {
               </HStack>
               <HStack alignItems="center" space={2} justifyContent="end">
                 <Button variant="outlinePrimary" onPress={() => setShowModal()}>
-                  Cancel
+                  {t("Cancel")}
                 </Button>
                 <Button variant="primary" onPress={() => update("screened")}>
-                  Schedule
+                  {t("SCHEDULE")}
                 </Button>
               </HStack>
             </VStack>
@@ -196,7 +199,7 @@ export default function StatusButton({ data, setData }) {
         onPress={(e) => setShowModal("Review_Later")}
         isDisabled={disabledBtn.includes("Review_Later")}
       >
-        Review Later
+        {t("REVIEW_LATER")}
       </Button>
       <Modal
         size={"xl"}
@@ -207,7 +210,7 @@ export default function StatusButton({ data, setData }) {
           <Modal.CloseButton />
           <Modal.Header borderBottomWidth={0}>
             <HStack alignItems="center" space={2} justifyContent="center">
-              <H1>Review Later</H1>
+              <H1>{t("REVIEW_LATER")}</H1>
             </HStack>
           </Modal.Header>
           <Modal.Body pb="5" px="5" pt="0">
@@ -218,7 +221,9 @@ export default function StatusButton({ data, setData }) {
               borderWidth="1"
               borderColor="gray.300"
             >
-              <H2>Please mention your reason for reviewing the candidate*:</H2>
+              <H2>
+                {t("PLEASE_MENTION_YOUR_REASON_FOR_REVIEWING_THE_CANDIDATE")}
+              </H2>
               <CRadio
                 onChange={(e) => setReason(e)}
                 items={[
@@ -255,14 +260,14 @@ export default function StatusButton({ data, setData }) {
                   colorScheme="blueGray"
                   onPress={() => setShowModal()}
                 >
-                  Cancel
+                  {t("CANCEL")}
                 </Button>
                 <Button
                   flex="1"
                   variant="primary"
                   onPress={() => update("marked_review")}
                 >
-                  Review Later
+                  {t("REVIEW_LATER")}
                 </Button>
               </HStack>
             </VStack>
@@ -275,7 +280,7 @@ export default function StatusButton({ data, setData }) {
         onPress={() => setShowModal("Reject")}
         isDisabled={disabledBtn.includes("Reject")}
       >
-        Reject Application
+        {t("REJECT_APPLICATION")}
       </Button>
       <Modal
         size={"xl"}
@@ -291,7 +296,7 @@ export default function StatusButton({ data, setData }) {
                 name="EmotionSadLineIcon"
                 _icon={{ size: "30px" }}
               />
-              <H1>Reject Application</H1>
+              <H1>{t("REJECT_APPLICATION")}</H1>
             </HStack>
           </Modal.Header>
           <Modal.Body pb="5" px="5" pt="0">
@@ -302,7 +307,9 @@ export default function StatusButton({ data, setData }) {
               borderWidth="1"
               borderColor="gray.300"
             >
-              <H2>Please mention your reason for rejecting the candidate*:</H2>
+              <H2>
+                {t("PLEASE_MENTION_YOUR_REASON_FOR_REJECTING_THE_CANDIDATE")}
+              </H2>
               <CRadio
                 onChange={(e) => setReason(e)}
                 items={[
@@ -339,14 +346,14 @@ export default function StatusButton({ data, setData }) {
                   colorScheme="blueGray"
                   onPress={() => setShowModal()}
                 >
-                  Cancel
+                  {t("CANCEL")}
                 </Button>
                 <Button
                   flex="1"
                   variant="primary"
                   onPress={() => update("rejected")}
                 >
-                  Reject
+                  {t("REJECT")}
                 </Button>
               </HStack>
             </VStack>
@@ -359,7 +366,7 @@ export default function StatusButton({ data, setData }) {
         onPress={(e) => setShowModal("Schedule")}
         isDisabled
       >
-        Schedule Interview
+        {t("SCHEDULE_INTERVIEW")}
       </Button>
       <Modal
         size={"xl"}
@@ -371,7 +378,7 @@ export default function StatusButton({ data, setData }) {
           <Modal.Header px="5" borderBottomWidth={0}>
             <HStack alignItems="center" space={3}>
               <IconByName isDisabled name="MessageLineIcon" />
-              <H1>Schedule an Interview</H1>
+              <H1>{t("SCHEDULE_AN_INTERVIEW")}</H1>
             </HStack>
           </Modal.Header>
           <Modal.Body>
@@ -386,7 +393,7 @@ export default function StatusButton({ data, setData }) {
                 >
                   <HStack alignItems="center">
                     <IconByName isDisabled name="UserLineIcon" />
-                    <H2>Candidate -</H2>
+                    <H2> {t("CANDIDATE")} -</H2>
                     <Chip bg="#e9e9e9">
                       <HStack alignItems="center" space={"2"} p="1">
                         <IconByName isDisabled name="MessageLineIcon" />
@@ -414,7 +421,7 @@ export default function StatusButton({ data, setData }) {
                   <HStack alignItems="center" space={5}>
                     <HStack alignItems="center" space={2}>
                       <IconByName isDisabled name="MapPinLineIcon" />
-                      <H2>Location</H2>
+                      <H2> {t("LOCATION")}</H2>
                     </HStack>
                     <HStack alignItems="center" space={1}>
                       <Radio.Group
@@ -443,10 +450,10 @@ export default function StatusButton({ data, setData }) {
                   colorScheme="blueGray"
                   onPress={() => setShowModal()}
                 >
-                  Cancel
+                  {t("CANCEL")}
                 </Button>
                 <Button variant="primary" onPress={() => update("Schedule")}>
-                  Schedule
+                  {t("SCHEDULE")}
                 </Button>
               </HStack>
             </VStack>

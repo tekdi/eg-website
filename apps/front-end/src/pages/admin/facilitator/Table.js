@@ -5,6 +5,7 @@ import {
   post,
   H1,
   H3,
+  t,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -25,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
-    name: " First Name",
+    name: t("FIRST_NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         {row?.profile_url ? (
@@ -52,19 +53,19 @@ const columns = [
     attr: "name",
   },
   {
-    name: "Email-ID",
+    name: t("EMAIL_ID"),
     selector: (row) => row?.email_id,
     sortable: true,
     attr: "email",
   },
   {
-    name: "Status",
+    name: t("STATUS"),
     selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
     sortable: true,
     attr: "email",
   },
   {
-    name: "Gender",
+    name: t("GENDER"),
     selector: (row) => row?.gender,
     sortable: true,
     attr: "city",
@@ -122,7 +123,7 @@ function Table({ facilitator }) {
   return (
     <VStack>
       <HStack justifyContent={"space-between"} flexWrap="Wrap">
-        <H1>All Prerak</H1>
+        <H1>{t("ALL_PRERAK")}</H1>
         <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
@@ -135,11 +136,11 @@ function Table({ facilitator }) {
             variant={"primary"}
             onPress={(e) => navigate("/admin/facilitator-onbording")}
           >
-            Register prerak
+            {t("REGISTER_PRERAK")}
           </Button>
 
           <Button variant={"primary"} onPress={() => setModal(true)}>
-            Send an invite
+            {t("SEND_AN_INVITE")}
           </Button>
           <Modal
             isOpen={modal}
@@ -150,7 +151,7 @@ function Table({ facilitator }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <H1 textAlign="center">Send an invite</H1>
+                <H1 textAlign="center"> {t("SEND_AN_INVITE")}</H1>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -160,7 +161,7 @@ function Table({ facilitator }) {
                     borderBottomColor="gray.300"
                     pb="5"
                   >
-                    <H3>INVITATION LINK</H3>
+                    <H3> {t("INVITATION_LINK")}</H3>
                     <Clipboard
                       text={`${getBaseUrl()}facilitator-self-onboarding/${
                         facilitator?.program_users[0]?.organisation_id
@@ -173,7 +174,10 @@ function Table({ facilitator }) {
                           rounded="full"
                           color="blue.300"
                         />
-                        <H3 color="blue.300">Click here to copy the link</H3>
+                        <H3 color="blue.300">
+                          {" "}
+                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                        </H3>
                       </HStack>
                     </Clipboard>
                   </HStack>
@@ -184,7 +188,7 @@ function Table({ facilitator }) {
                       variant="underlined"
                     />
                     <Button flex={0.3} variant="primary">
-                      Send
+                      {t("SEND")}
                     </Button>
                   </HStack>
                 </VStack>

@@ -10,6 +10,7 @@ import {
   BodyLarge,
   BodySmall,
   Loading,
+  t,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -57,7 +58,7 @@ export default function FacilitatorView({ footerLinks }) {
               name="ArrowLeftSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <H3>Prerak Bio</H3>
+            <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
@@ -112,11 +113,11 @@ export default function FacilitatorView({ footerLinks }) {
                 variant="outlinePrimary"
                 leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
               >
-                Send message
+                {t("SEND_MESSAGE")}
               </Button>
             </VStack>
             <VStack flex={0.7} space="3">
-              <H2> Eligibility Criteria</H2>
+              <H2> {t("ELIGIBILITY_CRITERIA")}</H2>
               <HStack width={"100%"}>
                 <IconByName
                   flex={0.3}
@@ -127,7 +128,7 @@ export default function FacilitatorView({ footerLinks }) {
                 />
                 <VStack flex={0.7} space="2">
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>Qualification</BodySmall>
+                    <BodySmall> {t("SEND_AN_INVITE")}</BodySmall>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -141,7 +142,7 @@ export default function FacilitatorView({ footerLinks }) {
                     />
                   </HStack>
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>Work Experience</BodySmall>
+                    <BodySmall>{t("WORK_EXPERIENCE")}</BodySmall>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -152,7 +153,7 @@ export default function FacilitatorView({ footerLinks }) {
                     />
                   </HStack>
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>Voulinteer Experience</BodySmall>
+                    <BodySmall>{t("VOLUNTEER_EXPERIENCE")}</BodySmall>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -163,7 +164,7 @@ export default function FacilitatorView({ footerLinks }) {
                     />
                   </HStack>
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>Availability</BodySmall>
+                    <BodySmall>{t("AVAILABILITY")}</BodySmall>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -179,50 +180,50 @@ export default function FacilitatorView({ footerLinks }) {
           </HStack>
 
           <VStack space={"5"} borderWidth="1" borderColor="gray.400" p="5">
-            <H3>Application Form</H3>
+            <H3>{t("APPLICATION_FORM")}</H3>
             <HStack justifyContent="space-between">
               <VStack space={"5"}>
-                <Heading fontSize="16px">Basic Details</Heading>
+                <Heading fontSize="16px">{t("BASIC_DETAILS")}</Heading>
                 <VStack>
-                  <Text color="#AFB1B6">First Name</Text>
+                  <Text color="#AFB1B6">{t("FIRST_NAME")}</Text>
                   <Text>{data?.first_name}</Text>
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Last Name</Text>
+                  <Text color="#AFB1B6">{t("LAST_NAME")}</Text>
                   <Text>{data?.last_name}</Text>
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Mobile No</Text>
+                  <Text color="#AFB1B6">{t("MOBILE_NO")}</Text>
                   <Text>{data?.mobile}</Text>
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Date of Birth</Text>
+                  <Text color="#AFB1B6">{t("DATE_OF_BIRTH")}</Text>
                   <Text>{data?.dob}</Text>
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Gender</Text>
+                  <Text color="#AFB1B6">{t("GENDER")}</Text>
                   <Text>{data?.gender}</Text>
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Address</Text>
+                  <Text color="#AFB1B6">{t("ADDRESS")}</Text>
                   <Text>{data?.address}</Text>
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Aadhar No</Text>
+                  <Text color="#AFB1B6">{t("AADHAAR_NO")}</Text>
                   <Text>{data?.aadhar_token}</Text>
                 </VStack>
               </VStack>
               <VStack display="Flex" flexDirection="column" space="20px">
-                <Heading fontSize="16px">Education </Heading>
+                <Heading fontSize="16px">{t("EDUCATION")} </Heading>
 
                 <VStack>
-                  <Text color="#AFB1B6">Qualification</Text>
+                  <Text color="#AFB1B6">{t("QUALIFICATION")}</Text>
                   <Text>
                     {data?.qualifications?.map((qua, key) => {
                       return (
@@ -233,23 +234,29 @@ export default function FacilitatorView({ footerLinks }) {
                 </VStack>
 
                 <VStack>
-                  <Text color="#AFB1B6">Work Experience</Text>
+                  <Text color="#AFB1B6">{t("WORK_EXPERIENCE")}</Text>
                   <VStack space={5}>
                     {data?.experience?.map((obj, key) => {
                       return (
                         <VStack key={key}>
                           {obj?.role_title ? (
-                            <Text>Role : {obj?.role_title}</Text>
+                            <Text>
+                              {t("ROLE")} : {obj?.role_title}
+                            </Text>
                           ) : (
                             <React.Fragment />
                           )}
                           {obj?.experience_in_years ? (
-                            <Text>yeas of ex : {obj?.experience_in_years}</Text>
+                            <Text>
+                              {t("YEARS_OF_EX")} : {obj?.experience_in_years}
+                            </Text>
                           ) : (
                             <React.Fragment />
                           )}
                           {obj?.description ? (
-                            <Text>description : {obj?.description}</Text>
+                            <Text>
+                              {t("DESCRIPTION")} : {obj?.description}
+                            </Text>
                           ) : (
                             <React.Fragment />
                           )}
@@ -260,17 +267,17 @@ export default function FacilitatorView({ footerLinks }) {
                 </VStack>
               </VStack>
               <VStack display="Flex" flexDirection="column" space="20px">
-                <Heading fontSize="16px">Other Details</Heading>
+                <Heading fontSize="16px">{t("OTHER_DETAILS")}</Heading>
                 <VStack>
-                  <Text color="#AFB1B6">Availability</Text>
+                  <Text color="#AFB1B6">{t("AVAILABILITY")}</Text>
                   <Text>{data?.program_faciltators?.availability}</Text>
                 </VStack>
                 <VStack>
-                  <Text color="#AFB1B6">Device Ownership</Text>
+                  <Text color="#AFB1B6">{t("DEVICE_OWNERSHIP")}</Text>
                   <Text>{data?.device_ownership}</Text>
                 </VStack>
                 <VStack>
-                  <Text color="#AFB1B6">Type of Device</Text>
+                  <Text color="#AFB1B6">{t("TYPE_OF_DEVICE")}</Text>
                   <Text>{data?.device_type}</Text>
                 </VStack>
               </VStack>
@@ -281,7 +288,7 @@ export default function FacilitatorView({ footerLinks }) {
         <VStack flex={0.18} bg="gray.300" px="3" py="5" space={"5"}>
           <HStack justifyContent="space-between" alignItems={"center"}>
             <IconByName isDisabled name="EditBoxLineIcon" />
-            <H3>Comment Section</H3>
+            <H3>{t("COMMENT_SECTION")}</H3>
             <IconByName isDisabled name="ArrowRightSLineIcon" />
           </HStack>
           <VStack space={"3"}>

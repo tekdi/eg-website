@@ -13,7 +13,6 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import BaseInputTemplate from "../../component/BaseInput";
 import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
 import {
@@ -28,6 +27,7 @@ import {
   H3,
   IconByName,
   BodySmall,
+  filtersByObject,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -68,7 +68,7 @@ const RadioBtn = ({ options, value, onChange, required }) => {
         maxW="300px"
       >
         {items.map((item) => (
-          <Radio value={item?.value} size="lg">
+          <Radio key={item?.value} value={item?.value} size="lg">
             {item?.label}
           </Radio>
         ))}
@@ -79,15 +79,17 @@ const RadioBtn = ({ options, value, onChange, required }) => {
 
 export default function App({ facilitator, ip, onClick }) {
   const [page, setPage] = React.useState();
-  const [corePage, setCorePage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(true);
+  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
+  const [submitBtn, setSubmitBtn] = React.useState();
+  const [addBtn, setAddBtn] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
+  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
@@ -101,6 +103,15 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const uiSchema = {
+    dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+      },
+    },
+
     qualification: {
       "ui:widget": CustomR,
     },
@@ -113,7 +124,7 @@ export default function App({ facilitator, ip, onClick }) {
     type_mobile: {
       "ui:widget": CustomR,
     },
-    refreere: {
+    sourcing_channel: {
       "ui:widget": CustomR,
     },
     availability: {
@@ -162,7 +173,7 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        setCorePage("camera");
+        setCameraModal(true);
       } else {
         return true;
       }
@@ -180,14 +191,24 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  const getOptions = (schema, key, data) => {
+  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
+    let enumNames = [];
+    let enumArr = [];
+    let arrData = arr;
+    if (!_.isEmpty(filters)) {
+      arrData = filtersByObject(arr, filters);
+    }
+    enumNames = arrData.map((e) => `${e?.[title]}`);
+    enumArr = arrData.map((e) => `${e?.[value]}`);
     return {
       ...schema,
       ["properties"]: {
         ...schema["properties"],
         [key]: {
           ...schema["properties"][key],
-          ["anyOf"]: data,
+          ...(_.isEmpty(arr)
+            ? {}
+            : { ["enumNames"]: enumNames, ["enum"]: enumArr }),
         },
       },
     };
@@ -197,36 +218,41 @@ export default function App({ facilitator, ip, onClick }) {
     if (schema?.properties?.qualification) {
       const qData = await facilitatorRegistryService.getQualificationAll();
       let newSchema = schema;
-      const qualificationData = qData
-        .filter((e) => e.type === "qualification")
-        .map((e) => ({ title: e?.name, const: `${e?.id}` }));
-      if (schema["properties"]["qualification"]["anyOf"]) {
-        newSchema = getOptions(newSchema, "qualification", qualificationData);
+      if (schema["properties"]["qualification"]) {
+        newSchema = getOptions(newSchema, {
+          key: "qualification",
+          arr: qData,
+          title: "name",
+          value: "id",
+          filters: { type: "qualification" },
+        });
       }
-      const degreeData = qData
-        .filter((e) => e.type === "teaching")
-        .map((e) => ({ title: e?.name, const: `${e?.id}` }));
-      if (schema["properties"]["degree"]["anyOf"]) {
-        newSchema = getOptions(newSchema, "degree", degreeData);
+      if (schema["properties"]["degree"]) {
+        newSchema = getOptions(newSchema, {
+          key: "degree",
+          arr: qData,
+          title: "name",
+          value: "id",
+          filters: { type: "teaching" },
+        });
       }
       setSchema(newSchema);
     }
-  }, [page && schema?.properties?.qualification?.anyOf?.length === 0]);
 
-  React.useEffect(async () => {
     if (schema?.properties?.state) {
       const qData = await geolocationRegistryService.getStates();
       let newSchema = schema;
-      const stateData = qData.map((e) => ({
-        title: e?.state_name,
-        const: `${e?.state_name}`,
-      }));
-      if (schema["properties"]["state"]["anyOf"]) {
-        newSchema = getOptions(newSchema, "state", stateData);
+      if (schema["properties"]["state"]) {
+        newSchema = getOptions(newSchema, {
+          key: "state",
+          arr: qData,
+          title: "state_name",
+          value: "state_name",
+        });
       }
       setSchema(newSchema);
     }
-  }, [page && schema?.properties?.state?.anyOf?.length === 0]);
+  }, [page]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -238,7 +264,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (id) {
         newPage = newSteps.filter((e) => !arr.includes(e));
         //  const pageSet = form_step_number ? form_step_number : 3;
-        const pageSet = 3;
+        const pageSet = "3";
         setPage(pageSet);
         setSchema(properties[pageSet]);
       } else {
@@ -247,8 +273,38 @@ export default function App({ facilitator, ip, onClick }) {
         setSchema(properties[newPage[0]]);
       }
       setPages(newPage);
+      let minYear = moment().subtract("years", 50);
+      let maxYear = moment().subtract("years", 18);
+      setYearsRange([minYear.year(), maxYear.year()]);
+      setSubmitBtn(t("NEXT"));
     }
   }, []);
+
+  const updateBtnText = () => {
+    if (schema?.properties?.vo_experience) {
+      if (formData.vo_experience?.length > 0) {
+        setSubmitBtn(t("NEXT"));
+        setAddBtn(t("ADD_MORE"));
+      } else {
+        setSubmitBtn(t("NO"));
+        setAddBtn(t("YES"));
+      }
+    } else if (schema?.properties?.experience) {
+      if (formData.experience?.length > 0) {
+        setSubmitBtn(t("NEXT"));
+        setAddBtn(t("ADD_MORE"));
+      } else {
+        setSubmitBtn(t("NO"));
+        setAddBtn(t("YES"));
+      }
+    } else {
+      setSubmitBtn(t("NEXT"));
+    }
+  };
+
+  React.useEffect(() => {
+    updateBtnText();
+  }, [formData, page]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
@@ -347,18 +403,19 @@ export default function App({ facilitator, ip, onClick }) {
           name: data?.state,
         });
         let newSchema = schema;
-        const districtData = qData.map((e) => ({
-          title: e?.district_name,
-          const: `${e?.district_name}`,
-        }));
-        if (schema["properties"]["district"]["anyOf"]) {
-          newSchema = getOptions(newSchema, "district", districtData);
+        if (schema["properties"]["district"]) {
+          newSchema = getOptions(newSchema, {
+            key: "district",
+            arr: qData,
+            title: "district_name",
+            value: "district_name",
+          });
         }
-        if (schema["properties"]["block"]["anyOf"]) {
-          newSchema = getOptions(newSchema, "block", []);
+        if (schema["properties"]["block"]) {
+          newSchema = getOptions(newSchema, { key: "block", arr: [] });
         }
-        if (schema["properties"]["village"]["anyOf"]) {
-          newSchema = getOptions(newSchema, "village", []);
+        if (schema["properties"]["village"]) {
+          newSchema = getOptions(newSchema, { key: "village", arr: [] });
         }
         setSchema(newSchema);
       }
@@ -370,15 +427,16 @@ export default function App({ facilitator, ip, onClick }) {
           name: data?.district,
         });
         let newSchema = schema;
-        const blockData = qData.map((e) => ({
-          title: e?.block_name,
-          const: `${e?.block_name}`,
-        }));
-        if (schema["properties"]["block"]["anyOf"]) {
-          newSchema = getOptions(newSchema, "block", blockData);
+        if (schema["properties"]["block"]) {
+          newSchema = getOptions(newSchema, {
+            key: "block",
+            arr: qData,
+            title: "block_name",
+            value: "block_name",
+          });
         }
-        if (schema["properties"]["village"]["anyOf"]) {
-          newSchema = getOptions(newSchema, "village", []);
+        if (schema["properties"]["village"]) {
+          newSchema = getOptions(newSchema, { key: "village", arr: [] });
         }
         setSchema(newSchema);
       }
@@ -390,12 +448,13 @@ export default function App({ facilitator, ip, onClick }) {
           name: data?.block,
         });
         let newSchema = schema;
-        const villageData = qData.map((e) => ({
-          title: e?.village_ward_name,
-          const: `${e?.village_ward_name}`,
-        }));
-        if (schema["properties"]["village"]["anyOf"]) {
-          newSchema = getOptions(newSchema, "village", villageData);
+        if (schema["properties"]["village"]) {
+          newSchema = getOptions(newSchema, {
+            key: "village",
+            arr: qData,
+            title: "village_ward_name",
+            value: "village_ward_name",
+          });
         }
         setSchema(newSchema);
       }
@@ -403,6 +462,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onError = (data) => {
+    console.log("on error", data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -453,7 +513,7 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  if (corePage === "camera" && cameraUrl) {
+  if (cameraUrl) {
     return (
       <Layout
         // _appBar={{ onPressBackButton }}
@@ -494,7 +554,7 @@ export default function App({ facilitator, ip, onClick }) {
       </Layout>
     );
   }
-  if (corePage === "camera") {
+  if (cameraModal) {
     return (
       <Camera
         {...{
@@ -509,6 +569,61 @@ export default function App({ facilitator, ip, onClick }) {
       />
     );
   }
+
+  const AddButton = ({ icon, iconType, ...btnProps }) => {
+    return (
+      <Button
+        variant={"outlinePrimary"}
+        colorScheme="green"
+        {...btnProps}
+        onPress={(e) => {
+          if (schema?.properties?.vo_experience) {
+            if (formData.vo_experience?.length === 0) {
+              setAddBtn(t("ADD_MORE"));
+            }
+          }
+          if (schema?.properties?.experience) {
+            if (formData.experience?.length === 0) {
+              setAddBtn(t("ADD_MORE"));
+            }
+          }
+          btnProps?.onClick();
+        }}
+      >
+        <HStack>
+          {icon} {addBtn}
+        </HStack>
+      </Button>
+    );
+  };
+
+  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
+    return (
+      <Button
+        variant={"outlinePrimary"}
+        colorScheme="red"
+        mb="2"
+        {...btnProps}
+        onPress={(e) => {
+          if (schema?.properties?.vo_experience) {
+            if (formData.vo_experience?.length === 0) {
+              setAddBtn(t("YES"));
+            }
+          }
+          if (schema?.properties?.experience) {
+            if (formData.experience?.length === 0) {
+              setAddBtn(t("YES"));
+            }
+          }
+          btnProps?.onClick();
+        }}
+      >
+        <HStack>
+          {icon} {t("REMOVE")}
+        </HStack>
+      </Button>
+    );
+  };
 
   return (
     <Layout
@@ -532,7 +647,9 @@ export default function App({ facilitator, ip, onClick }) {
         {page && page !== "" ? (
           <Form
             ref={formRef}
-            // templates={{ BaseInputTemplate }}
+            templates={{
+              ButtonTemplates: { AddButton: AddButton, RemoveButton },
+            }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -552,7 +669,7 @@ export default function App({ facilitator, ip, onClick }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : "Next"}
+              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
             </Button>
           </Form>
         ) : (

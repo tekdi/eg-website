@@ -142,12 +142,12 @@ select.form-control {
   font-size: 16px;
   font-weight: 600;
 }
-.glyphicon-remove:before {
+/* .glyphicon-remove:before {
   content: "NO";
-}
-.glyphicon-plus:before {
+} */
+/* .glyphicon-plus:before {
   content: "YES";
-}
+} */
 .array-item-move-up,
 .array-item-move-down {
   display: none;
@@ -169,6 +169,11 @@ ul {
 .list-group {
   padding-left: 0;
   margin-bottom: 20px;
+}
+.list-inline > li {
+  display: inline-block;
+  padding-right: 5px;
+  padding-left: 5px;
 }
 .panel {
   margin-bottom: 20px;
