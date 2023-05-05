@@ -44,7 +44,7 @@ export default function App({ footerLinks, userTokenInfo }) {
             <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
           <Stack direction="row" justifyContent="spacearound">
-            <HStack width="70%" direction="column" justifyContent="spacearound">
+            <HStack width="70%" direction="column" justifyContent="spacearound" alignItems={Center}>
               <HStack direction="row" justifyContent="flexStart" mb="6">
               <H1>
                   {data?.first_name} {data?.last_name}
@@ -61,7 +61,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                         isDisabled
                         _icon={{ size: "20px" }}
                         name="CellphoneLineIcon"
-                        color="gray.300"
+                        color="textGreyColor.300"
                         pt="1"
                       />
                   <Text fontSize="12px">  
@@ -72,7 +72,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                       isDisabled
                       _icon={{ size: "20px" }}
                       name="MapPinLineIcon"
-                      color="gray.300"
+                      color="textGreyColor.300"
                     />
                   <Text fontSize="12px"> 
                   {data?.address}</Text>
@@ -98,7 +98,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                           value: 135,
                           color: "progressBarColor.200",
                         },
-                        { value: 80, color: "gray.300" },
+                        { value: 80, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -109,7 +109,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                       isLabelCountHide
                       data={[
                         { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "gray.300" },
+                        { value: 75, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -120,7 +120,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                       isLabelCountHide
                       data={[
                         { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "gray.300" },
+                        { value: 75, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -131,7 +131,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                       isLabelCountHide
                       data={[
                         { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "gray.300" },
+                        { value: 75, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
