@@ -42,7 +42,7 @@ const columns = [
           <IconByName
             isDisabled
             name="AccountCircleLineIcon"
-            color="#888"
+            color="gray.300"
             _icon={{ size: "35" }}
           />
         )}
