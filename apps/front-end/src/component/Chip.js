@@ -21,7 +21,8 @@ export default function Chip({ label, children, isActive, ...props }) {
 
 export function ChipStatus({ status, ...props }) {
   const [color, setColor] = React.useState("gray");
-  const newStatus = status ? status : "lead";
+  const newStatus =
+    status && status === "lead" ? "Applied" : status ? status : "Applied";
 
   React.useEffect(() => {
     switch (newStatus.toLowerCase()) {
@@ -50,7 +51,7 @@ export function ChipStatus({ status, ...props }) {
         setColor("gray.300");
     }
   }, [newStatus]);
-
+  console.log(newStatus);
   return (
     <Chip
       px="4"

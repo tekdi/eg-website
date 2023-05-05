@@ -240,7 +240,7 @@ ul {
 }
 .has-error .checkbox,
 .has-error .checkbox-inline,
-.has-error .control-label,
+.has-error label div div,
 .has-error .help-block,
 .has-error .radio,
 .has-error .radio-inline,

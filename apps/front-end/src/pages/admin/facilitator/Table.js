@@ -131,13 +131,13 @@ function Table({ facilitator }) {
           placeholder="search"
           variant="outline"
         /> */}
-        <HStack space={2}>
-          <Button
+        <HStack>
+          {/* <Button
             variant={"primary"}
             onPress={(e) => navigate("/admin/facilitator-onbording")}
           >
             {t("REGISTER_PRERAK")}
-          </Button>
+          </Button> */}
 
           <Button variant={"primary"} onPress={() => setModal(true)}>
             {t("SEND_AN_INVITE")}

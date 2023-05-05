@@ -36,6 +36,14 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
+import {
+  TitleFieldTemplate,
+  DescriptionFieldTemplate,
+  FieldTemplate,
+  ObjectFieldTemplate,
+  ArrayFieldTitleTemplate,
+} from "../../component/BaseInput";
+import { useScreenshot } from "use-screenshot-hook";
 
 const CustomR = ({ options, value, onChange, required }) => {
   return (
@@ -108,6 +116,17 @@ export default function App({ facilitator, ip, onClick }) {
       onClick("SplashScreen");
     }
   };
+  const ref = React.createRef(null);
+  const { image, takeScreenshot } = useScreenshot();
+  const getImage = () => takeScreenshot({ ref });
+  const downloadImage = () => {
+    var FileSaver = require("file-saver");
+    FileSaver.saveAs(`${image}`, "image.png");
+  };
+
+  React.useEffect(() => {
+    getImage();
+  }, [page, credentials]);
 
   const uiSchema = {
     dob: {
@@ -614,15 +633,17 @@ export default function App({ facilitator, ip, onClick }) {
           <Box p="10">
             <Steper
               steps={[
-                { value: "6", label: "Basic Details" },
-                { value: "3", label: "Work Details" },
-                { value: "4", label: "Other Details" },
+                { value: "6", label: t("BASIC_DETAILS") },
+                { value: "3", label: t("WORK_DETAILS") },
+                { value: "4", label: t("OTHER_DETAILS") },
               ]}
               progress={page === "upload" ? 13 : page}
             />
           </Box>
           <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
-          <h5 color="red.1000" fontSize="3">{t("CLEAR_PROFILE_MESSAGE")}</h5>
+          <h5 color="red.1000" fontSize="3">
+            {t("CLEAR_PROFILE_MESSAGE")}
+          </h5>
           <Center>
             <Image
               source={{
@@ -681,9 +702,9 @@ export default function App({ facilitator, ip, onClick }) {
           <Box p="10">
             <Steper
               steps={[
-                { value: "6", label: "Basic Details" },
-                { value: "3", label: "Work Details" },
-                { value: "4", label: "Other Details" },
+                { value: "6", label: t("BASIC_DETAILS") },
+                { value: "3", label: t("WORK_DETAILS") },
+                { value: "4", label: t("OTHER_DETAILS") },
               ]}
               progress={page === "upload" ? 13 : page}
             />
@@ -692,7 +713,14 @@ export default function App({ facilitator, ip, onClick }) {
           <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
           <Button
             variant={"primary"}
-            leftIcon={<IconByName name="CameraLineIcon" color="white" size={2} isDisabled />}
+            leftIcon={
+              <IconByName
+                name="CameraLineIcon"
+                color="white"
+                size={2}
+                isDisabled
+              />
+            }
             onPress={(e) => {
               setCameraUrl();
               setCameraModal(true);
@@ -700,8 +728,7 @@ export default function App({ facilitator, ip, onClick }) {
           >
             {t("TAKE_PHOTO")}
           </Button>
-          {errors?.fileSize ? <H2 color="red.400">{errors?.fileSize}</H2> : ""}
-          <VStack>
+          <VStack space={2}>
             <input
               accept="image/*"
               type="file"
@@ -718,7 +745,21 @@ export default function App({ facilitator, ip, onClick }) {
             >
               {t("UPLOAD_PHOTO")}
             </Button>
+            {errors?.fileSize ? (
+              <H2 color="red.400">{errors?.fileSize}</H2>
+            ) : (
+              <React.Fragment />
+            )}
           </VStack>
+          <Button
+            variant={"primary"}
+            onPress={async (e) => {
+              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              if (onClick) onClick("success");
+            }}
+          >
+            {t("SKIP_SUBMIT")}
+          </Button>
         </VStack>
       </Layout>
     );
@@ -790,9 +831,9 @@ export default function App({ facilitator, ip, onClick }) {
         <Box px="2" py="10">
           <Steper
             steps={[
-              { value: "6", label: "Basic Details" },
-              { value: "3", label: "Work Details" },
-              { value: "4", label: "Other Details" },
+              { value: "6", label: t("BASIC_DETAILS") },
+              { value: "3", label: t("WORK_DETAILS") },
+              { value: "4", label: t("OTHER_DETAILS") },
             ]}
             progress={page - 1}
           />
@@ -811,7 +852,12 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             ref={formRef}
             templates={{
-              ButtonTemplates: { AddButton: AddButton, RemoveButton },
+              ButtonTemplates: { AddButton, RemoveButton },
+              FieldTemplate,
+              ArrayFieldTitleTemplate,
+              ObjectFieldTemplate,
+              TitleFieldTemplate,
+              DescriptionFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -874,9 +920,10 @@ export default function App({ facilitator, ip, onClick }) {
               <VStack alignItems="center">
                 <Clipboard
                   text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) =>
-                    setCredentials({ ...credentials, copy: true })
-                  }
+                  onPress={(e) => {
+                    setCredentials({ ...credentials, copy: true });
+                    downloadImage();
+                  }}
                 >
                   <HStack space="3">
                     <IconByName
