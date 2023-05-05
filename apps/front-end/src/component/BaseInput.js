@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, HStack, Input } from "native-base";
+import { Box, Button, HStack, Input, VStack } from "native-base";
 import { getInputProps } from "@rjsf/utils";
-import { t } from "@shiksha/common-lib";
+import { BodySmall, H2, t } from "@shiksha/common-lib";
 
 export function BaseInputTemplate(props) {
   const {
@@ -75,3 +75,68 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
     </Button>
   );
 }
+
+export const TitleFieldTemplate = ({ id, required, title }) => {
+  return (
+    <VStack>
+      <H2 id={id}>
+        {t(title)}
+        {required && <mark>*</mark>}
+      </H2>
+    </VStack>
+  );
+};
+
+export const DescriptionFieldTemplate = ({ description, id }) => {
+  return (
+    <VStack pb="3">
+      <BodySmall id={id}>{t(description)}</BodySmall>
+    </VStack>
+  );
+};
+
+export const FieldTemplate = ({
+  id,
+  classNames,
+  style,
+  label,
+  help,
+  required,
+  description,
+  errors,
+  children,
+}) => {
+  return (
+    <div className={classNames} style={style}>
+      <React.Fragment>
+        <label htmlFor={id}>
+          <HStack space="1" alignItems="center">
+            <H2>{t(label)}</H2>
+            <H2>{required ? "*" : null}</H2>
+          </HStack>
+        </label>
+        {description?.props?.description !== "" ? (
+          description
+        ) : (
+          <React.Fragment />
+        )}
+      </React.Fragment>
+      {children}
+      {errors}
+      {help}
+    </div>
+  );
+};
+export const ObjectFieldTemplate = (props) => {
+  return (
+    <div>
+      {props.properties.map((element) => (
+        <div className="property-wrapper">{element.content}</div>
+      ))}
+    </div>
+  );
+};
+
+export const ArrayFieldTitleTemplate = (props) => {
+  return <React.Fragment />;
+};

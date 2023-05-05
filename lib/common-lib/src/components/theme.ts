@@ -21,7 +21,7 @@ let red = {
   850: '#492525',
   900: '#311919',
   950: '#180c0c',
-  1000: '790000',
+  1000: '#790000'
 }
 
 let green = {
@@ -46,6 +46,7 @@ let green = {
   950: '#010f03'
 }
 
+// DEFAULT_THEME
 const DEFAULT_THEME = {
   fonts: {
     heading: fontFamily,
@@ -137,7 +138,7 @@ const DEFAULT_THEME = {
             color: `${colorScheme}.500`
           },
           rounded: 'full'
-        }),
+        })
       }
     }
   },
@@ -317,14 +318,14 @@ const DEFAULT_THEME = {
       900: '#BDB3E7'
     },
     badgeColor: {
-      400: '#FDE68A',
+      400: '#FDE68A'
     },
     progressBarColor: {
-      200 : '#10B981',
+      200: '#10B981'
     },
-    gray:{
+    gray: {
       100: '#616161',
-      300: '#888888',
+      300: '#888888'
     }
   }
 }

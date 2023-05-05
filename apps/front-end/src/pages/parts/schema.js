@@ -3,58 +3,58 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "Tell us your Name",
-      description: "(As Per Aadhaar Card)",
+      title: "TELL_US_YOUR_NAME",
+      description: "AS_PER_AADHAAR",
       type: "object",
       required: ["first_name"],
       properties: {
         first_name: {
           type: "string",
-          title: "First Name ",
+          title: "FIRST_NAME",
         },
         last_name: {
           type: "string",
-          title: "Last name",
+          title: "LAST_NAME",
         },
       },
     },
     2: {
-      title: "How can we Contact You?",
-      description: "(Please Enter Your Whatsapp Number)",
+      title: "HOW_CAN_CONTACT_YOU",
+      description: "PLEASE_WHATSAPP_NUMBER",
       type: "object",
       required: ["mobile"],
       properties: {
         mobile: {
           type: "number",
-          title: "Mobile Number",
+          title: "MOBILE_NUMBER",
         },
         email_id: {
           type: "string",
           format: "email",
-          title: "Email-id",
+          title: "EMAIL_ID",
         },
       },
     },
     3: {
-      title: "What is Your Date of Birth ?",
-      description: "(As per Aadhaar)",
+      title: "WHAT_IS_YOUR_DATE_OF_BIRTH",
+      description: "AS_PER_AADHAAR",
       type: "object",
       required: ["dob"],
       properties: {
         dob: {
-          title: "Date of Birth",
+          title: "DATE_OF_BIRTH",
           type: "string",
           format: "date",
         },
       },
     },
     4: {
-      title: "What do you Identify as?",
+      title: "WHAT_DO_YOU_IDENTIFY",
       type: "object",
       required: ["gender"],
       properties: {
         gender: {
-          title: "Gender",
+          title: "GENDER",
           type: "string",
           enumNames: ["Female", "Male", "Other"],
           enum: ["female", "male", "other"],
@@ -62,73 +62,72 @@ export default {
       },
     },
     5: {
-      title: "Where do you currently Live?",
+      title: "WHERE_DO_YOU_CURRENTLY_LIVE",
       type: "object",
       required: ["state", "district", "block", "village"],
       properties: {
         state: {
-          title: "State",
+          title: "STATE",
           type: "string",
           format: "select",
         },
         district: {
-          title: "District",
+          title: "DISTRICT",
           type: "string",
           format: "select",
         },
         block: {
-          title: "Block",
+          title: "BLOCK",
           type: "string",
           format: "select",
         },
         village: {
-          title: "Village/Ward",
+          title: "VILLAGE_WARD",
           type: "string",
           format: "select",
         },
         grampanchayat: {
-          title: "Grampanchayat",
+          title: "GRAMPANCHAYAT",
           type: "string",
         },
       },
     },
     6: {
-      title: "ID Verification",
-      description: "Enter the 12 digit number on your Aadhaar Card",
+      title: "ID_VERIFICATION",
+      description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
       type: "object",
       required: ["aadhar_token"],
       properties: {
         aadhar_token: {
-          title: "Aadhar Number",
+          title: "AADHAAR_NUMBER",
           type: "string",
         },
       },
     },
     7: {
-      title: "Your Highest Qualification:",
       type: "object",
       required: ["qualification"],
       properties: {
         qualification: {
+          title: "YOUR_HIGHEST_QUALIFICATION",
           type: "string",
           format: "select",
         },
         degree: {
-          title: "Do you have any teaching degree?",
+          title: "DO_YOU_HAVE_ANY_TEACHING_DEGREE",
           type: "string",
           format: "select",
         },
       },
     },
-    
     8: {
       type: "object",
       properties: {
         vo_experience: {
-          title: "Do you have any Volunteer Experience ?",
+          title: "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE",
           type: "array",
           items: {
-            title: "Volunteer Experience",
+            title: "VOLUNTEER_EXPERIENCE",
             required: [
               "role_title",
               "organization",
@@ -137,26 +136,26 @@ export default {
             ],
             properties: {
               role_title: {
-                title: "Job Title",
+                title: "JOB_TITLE",
                 type: "string",
               },
               organization: {
-                title: "Company Name",
+                title: "COMPANY_NAME",
                 type: "string",
               },
               description: {
-                title: "Description",
+                title: "DESCRIPTION",
                 type: "string",
                 format: "textarea",
               },
               experience_in_years: {
-                title: "Experience in years",
+                title: "EXPERIENCE_IN_YEARS",
                 type: "string",
                 enumNames: ["1", "2", "3", "4", "+5"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {
-                title: "Is the job related to teaching?",
+                title: "IS_THE_JOB_RELATED_TO_TEACHING",
                 type: "string",
                 enumNames: ["Yes", "No"],
                 enum: ["yes", "no"],
@@ -170,10 +169,10 @@ export default {
       type: "object",
       properties: {
         experience: {
-          title: "Do you have any Work Experience ?",
+          title: "DO_YOU_HAVE_ANY_WORK_EXPERIENCE",
           type: "array",
           items: {
-            title: "Experience",
+            title: "EXPERIENCE",
             required: [
               "role_title",
               "organization",
@@ -182,29 +181,29 @@ export default {
             ],
             properties: {
               role_title: {
-                title: "Job Title",
+                title: "JOB_TITLE",
                 type: "string",
               },
               organization: {
-                title: "Company Name",
+                title: "COMPANY_NAME",
                 type: "string",
               },
+              description: {
+                title: "DESCRIPTION",
+                type: "string",
+                format: "textarea",
+              },
               experience_in_years: {
-                title: "Experience in years",
+                title: "EXPERIENCE_IN_YEARS",
                 type: "string",
                 enumNames: ["1", "2", "3", "4", "+5"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {
-                title: "Is the job related to teaching?",
+                title: "IS_THE_JOB_RELATED_TO_TEACHING",
                 type: "string",
                 enumNames: ["Yes", "No"],
                 enum: ["yes", "no"],
-              },
-              description: {
-                title: "Description",
-                type: "string",
-                format: "textarea",
               },
             },
           },
@@ -212,11 +211,11 @@ export default {
       },
     },
     10: {
-      title: "Your work availability will be?",
       type: "object",
       required: ["availability"],
       properties: {
         availability: {
+          title: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
           enum: ["part_time", "full_time"],
           enumNames: ["Part time", "Full time"],
@@ -224,12 +223,11 @@ export default {
       },
     },
     11: {
-      title: "Do you own a mobile phone?",
       type: "object",
       required: ["device_ownership"],
       properties: {
         device_ownership: {
-          title: " ",
+          title: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
           enumNames: ["Yes", "No, I use a Family member's"],
           enum: ["yes", "no"],
@@ -237,12 +235,11 @@ export default {
       },
     },
     12: {
-      title: "Type of mobile phone?",
       type: "object",
       required: ["device_type"],
       properties: {
         device_type: {
-          title: "Please select",
+          title: "TYPE_OF_MOBILE_PHONE",
           type: "string",
           enumNames: ["Android", "IPhone"],
           enum: ["android", "iphone"],
@@ -252,11 +249,11 @@ export default {
     13: {
       type: "object",
       required: ["sourcing_channel"],
-      title: "How did you find out about Project Pragati?",
+      title: "HOW_DID_YOU_FIND_OUT_ABOUT_PROJECT_PRAGATI",
       properties: {
         sourcing_channel: {
+          title: "PLEASE_SELECT",
           type: "string",
-          title: "Please select",
           enumNames: [
             "Prerak Referral",
             "NGO Referral",
