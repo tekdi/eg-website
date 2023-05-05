@@ -90,7 +90,7 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
 export const DescriptionFieldTemplate = ({ description, id }) => {
   return (
     <VStack pb="3">
-      <BodySmall id={id}>{t(description)}</BodySmall>
+      <BodySmall id={id} color="textMaroonColor.400">{t(description)}</BodySmall>
     </VStack>
   );
 };
@@ -111,7 +111,7 @@ export const FieldTemplate = ({
       <React.Fragment>
         <label htmlFor={id}>
           <HStack space="1" alignItems="center">
-            <H2>{t(label)}</H2>
+            <H2 color="textMaroonColor.400">{t(label)}</H2>
             <H2>{required ? "*" : null}</H2>
           </HStack>
         </label>

@@ -70,7 +70,7 @@ export default function FacilitatorView({ footerLinks }) {
                     isDisabled
                     _icon={{ size: "20px" }}
                     name="CellphoneLineIcon"
-                    color="gray.300"
+                    color="textGreyColor.300"
                   />
                   <Text fontSize="14" pb="2">
                     {data?.mobile}
@@ -81,7 +81,7 @@ export default function FacilitatorView({ footerLinks }) {
                     isDisabled
                     _icon={{ size: "20px" }}
                     name="MapPinLineIcon"
-                    color="gray.300"
+                    color="textGreyColor.300"
                   />
                   <Text fontSize="12px">{data?.address}</Text>
                 </HStack>
@@ -109,7 +109,7 @@ export default function FacilitatorView({ footerLinks }) {
                           value: 135,
                           color: "progressBarColor.200",
                         },
-                        { value: 80, color: "gray.300" },
+                        { value: 80, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -120,7 +120,7 @@ export default function FacilitatorView({ footerLinks }) {
                       isLabelCountHide
                       data={[
                         { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "gray.300" },
+                        { value: 75, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -131,7 +131,7 @@ export default function FacilitatorView({ footerLinks }) {
                       isLabelCountHide
                       data={[
                         { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "gray.300" },
+                        { value: 75, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -142,7 +142,7 @@ export default function FacilitatorView({ footerLinks }) {
                       isLabelCountHide
                       data={[
                         { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "gray.300" },
+                        { value: 75, color: "textGreyColor.300" },
                       ]}
                     />
                   </HStack>
@@ -163,7 +163,7 @@ export default function FacilitatorView({ footerLinks }) {
                 <IconByName
                   isDisabled
                   name="AccountCircleLineIcon"
-                  color="gray.300"
+                  color="textGreyColor.300"
                   _icon={{ size: "190px" }}
                 />
               )}

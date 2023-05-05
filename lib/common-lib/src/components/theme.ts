@@ -21,7 +21,6 @@ let red = {
   850: '#492525',
   900: '#311919',
   950: '#180c0c',
-  1000: '#790000'
 }
 
 let green = {
@@ -109,7 +108,7 @@ const DEFAULT_THEME = {
           _redtext: {
             color: '#790000'
           },
-          rounded: 'full'
+          rounded: '2'
         }),
         secondary: () => ({
           bg: `#f2f2f2`,
@@ -138,7 +137,23 @@ const DEFAULT_THEME = {
             color: `${colorScheme}.500`
           },
           rounded: 'full'
-        })
+        }),
+        redOutlineBtn: () => ({
+          bg: `#FFFFFF`,
+          borderWidth: '1',
+          borderColor: `#790000`,
+          _hover: {
+            bg: `#FFFFFF`
+          },
+          _pressed: {
+            bg: `#f9f5f5`
+          },
+          _text: {
+            fontWeight: '600',
+            color: '#790000'
+          },
+          rounded: 'full'
+        }),
       }
     }
   },
@@ -323,9 +338,12 @@ const DEFAULT_THEME = {
     progressBarColor: {
       200: '#10B981'
     },
-    gray: {
+    textGreyColor: {
       100: '#616161',
       300: '#888888'
+    },
+    textMaroonColor:{
+      400: '#790000'
     }
   }
 }
