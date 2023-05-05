@@ -20,7 +20,8 @@ let red = {
   800: '#623131',
   850: '#492525',
   900: '#311919',
-  950: '#180c0c'
+  950: '#180c0c',
+  1000: '790000',
 }
 
 let green = {
@@ -93,7 +94,7 @@ const DEFAULT_THEME = {
       },
       variants: {
         primary: () => ({
-          bg: `#666666`,
+          bg: `#2D142C`,
           _hover: {
             bg: `#555555`
           },
@@ -101,7 +102,11 @@ const DEFAULT_THEME = {
             bg: `#444444`
           },
           _text: {
-            fontWeight: '600'
+            fontWeight: '600',
+            color: '#ffffff'
+          },
+          _redtext: {
+            color: '#790000'
           },
           rounded: 'full'
         }),
@@ -132,7 +137,7 @@ const DEFAULT_THEME = {
             color: `${colorScheme}.500`
           },
           rounded: 'full'
-        })
+        }),
       }
     }
   },
@@ -310,6 +315,9 @@ const DEFAULT_THEME = {
       700: '#BDB3E7',
       800: '#BDB3E7',
       900: '#BDB3E7'
+    },
+    gray:{
+      100: '#616161',
     }
   }
 }
