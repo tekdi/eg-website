@@ -316,8 +316,15 @@ const DEFAULT_THEME = {
       800: '#BDB3E7',
       900: '#BDB3E7'
     },
+    badgeColor: {
+      400: '#FDE68A',
+    },
+    progressBarColor: {
+      200 : '#10B981',
+    },
     gray:{
       100: '#616161',
+      300: '#888888',
     }
   }
 }
