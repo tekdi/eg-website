@@ -3,7 +3,8 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "Tell us your Name As Per Aadhaar Card",
+      title: "Tell us your Name",
+      description: "(As Per Aadhaar Card)",
       type: "object",
       required: ["first_name"],
       properties: {
@@ -19,6 +20,7 @@ export default {
     },
     2: {
       title: "How can we Contact You?",
+      description: "(Please Enter Your Whatsapp Number)",
       type: "object",
       required: ["mobile"],
       properties: {
@@ -34,7 +36,8 @@ export default {
       },
     },
     3: {
-      title: "What is Your Date of Birth ? (As per Aadhaar)",
+      title: "What is Your Date of Birth ?",
+      description: "(As per Aadhaar)",
       type: "object",
       required: ["dob"],
       properties: {
@@ -59,7 +62,7 @@ export default {
       },
     },
     5: {
-      title: "What do you Identify as?",
+      title: "Where do you currently Live?",
       type: "object",
       required: ["state", "district", "block", "village"],
       properties: {
@@ -90,7 +93,8 @@ export default {
       },
     },
     6: {
-      title: "Aadhar Number",
+      title: "ID Verification",
+      description: "Enter the 12 digit number on your Aadhaar Card",
       type: "object",
       required: ["aadhar_token"],
       properties: {
@@ -106,7 +110,6 @@ export default {
       required: ["qualification"],
       properties: {
         qualification: {
-          title: "Your Highest Qualification:",
           type: "string",
           format: "select",
         },
@@ -117,6 +120,7 @@ export default {
         },
       },
     },
+    
     8: {
       type: "object",
       properties: {
@@ -208,11 +212,11 @@ export default {
       },
     },
     10: {
+      title: "Your work availability will be?",
       type: "object",
       required: ["availability"],
       properties: {
         availability: {
-          title: "Your work availability will be?",
           type: "string",
           enum: ["part_time", "full_time"],
           enumNames: ["Part time", "Full time"],
@@ -220,11 +224,12 @@ export default {
       },
     },
     11: {
+      title: "Do you own a mobile phone?",
       type: "object",
       required: ["device_ownership"],
       properties: {
         device_ownership: {
-          title: "Do you own a mobile phone?",
+          title: " ",
           type: "string",
           enumNames: ["Yes", "No, I use a Family member's"],
           enum: ["yes", "no"],
@@ -232,11 +237,12 @@ export default {
       },
     },
     12: {
+      title: "Type of mobile phone?",
       type: "object",
       required: ["device_type"],
       properties: {
         device_type: {
-          title: "Type of mobile phone?",
+          title: "Please select",
           type: "string",
           enumNames: ["Android", "IPhone"],
           enum: ["android", "iphone"],
@@ -246,10 +252,11 @@ export default {
     13: {
       type: "object",
       required: ["sourcing_channel"],
+      title: "How did you find out about Project Pragati?",
       properties: {
         sourcing_channel: {
-          title: "How did you find out about Project Pragati?",
           type: "string",
+          title: "Please select",
           enumNames: [
             "Prerak Referral",
             "NGO Referral",

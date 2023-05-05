@@ -621,7 +621,8 @@ export default function App({ facilitator, ip, onClick }) {
               progress={page === "upload" ? 13 : page}
             />
           </Box>
-          <H1>{t("ADD_PROFILE_PHOTO")}</H1>
+          <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
+          <h5 color="red.1000" fontSize="3">{t("CLEAR_PROFILE_MESSAGE")}</h5>
           <Center>
             <Image
               source={{
@@ -631,7 +632,6 @@ export default function App({ facilitator, ip, onClick }) {
               size="324px"
             />
           </Center>
-          <Caption>{t("CLEAR_PROFILE_MESSAGE")}</Caption>
           <Button
             variant={"primary"}
             onPress={async (e) => {
@@ -688,11 +688,11 @@ export default function App({ facilitator, ip, onClick }) {
               progress={page === "upload" ? 13 : page}
             />
           </Box>
-          <H1>{t("JUST_ONE_STEP")}</H1>
-          <H2>{t("ADD_PROFILE_PHOTO")} -</H2>
+          <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
+          <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
           <Button
             variant={"primary"}
-            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            leftIcon={<IconByName name="CameraLineIcon" color="white" size={2} isDisabled />}
             onPress={(e) => {
               setCameraUrl();
               setCameraModal(true);
@@ -849,23 +849,23 @@ export default function App({ facilitator, ip, onClick }) {
         <Modal.Content>
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">Store your user credentials</H1>
+            <H3 textAlign="center">Store your user credentials</H3>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
               <VStack alignItems="center">
                 <Box
                   bg="gray.100"
-                  p="3"
+                  p="1"
                   rounded="lg"
                   borderWidth={1}
                   borderColor="gray.300"
                 >
-                  <HStack alignItems="center" space="5">
+                  <HStack alignItems="center" space="3">
                     <H3>Username</H3>
                     <BodySmall>{credentials?.username}</BodySmall>
                   </HStack>
-                  <HStack alignItems="center" space="5">
+                  <HStack alignItems="center" space="3">
                     <H3>Password</H3>
                     <BodySmall>{credentials?.password}</BodySmall>
                   </HStack>
