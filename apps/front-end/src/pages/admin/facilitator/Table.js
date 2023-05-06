@@ -184,7 +184,7 @@ function Table({ facilitator }) {
                   <HStack space="5" pt="5">
                     <Input
                       flex={0.7}
-                      placeholder="Email ID or Phone Numbers"
+                      placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
                       variant="underlined"
                     />
                     <Button flex={0.3} variant="primary">
@@ -210,7 +210,7 @@ function Table({ facilitator }) {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-                View
+                {t("VIEW")}
               </Button>
             ),
           },

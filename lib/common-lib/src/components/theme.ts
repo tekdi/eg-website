@@ -20,7 +20,7 @@ let red = {
   800: '#623131',
   850: '#492525',
   900: '#311919',
-  950: '#180c0c',
+  950: '#180c0c'
 }
 
 let green = {
@@ -153,7 +153,7 @@ const DEFAULT_THEME = {
             color: '#790000'
           },
           rounded: 'full'
-        }),
+        })
       }
     }
   },
@@ -342,7 +342,7 @@ const DEFAULT_THEME = {
       100: '#616161',
       300: '#888888'
     },
-    textMaroonColor:{
+    textMaroonColor: {
       400: '#790000'
     }
   }

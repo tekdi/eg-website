@@ -22,7 +22,6 @@ import {
   VStack,
   Box,
   Avatar,
-  Stack,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -47,7 +46,7 @@ export default function FacilitatorView({ footerLinks }) {
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
-        <VStack flex={0.82} space={"5"} p="3" mb="5">
+        <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="3" pt="3">
             <IconByName
               size="sm"
@@ -56,27 +55,28 @@ export default function FacilitatorView({ footerLinks }) {
             />
             <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
-          <Stack direction="row" justifyContent="spacearound">
-            <HStack width="70%" direction="column" justifyContent="spacearound">
-              <HStack justifyContent="flexStart" mb="6">
+          <HStack alignItems="center">
+            <VStack width="70%" direction="column">
+              <HStack alignItems="center" mb="6" space="4">
                 <H1>
                   {data?.first_name} {data?.last_name}
                 </H1>
-                <Box direction="Row" ml="2">
-                  <ChipStatus status={data?.status} />
-                </Box>
-                <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
+                <ChipStatus status={data?.status} />
+                <HStack
+                  bg="badgeColor.400"
+                  rounded={"md"}
+                  alignItems="center"
+                  p="2"
+                >
                   <IconByName
                     isDisabled
                     _icon={{ size: "20px" }}
                     name="CellphoneLineIcon"
                     color="textGreyColor.300"
                   />
-                  <Text fontSize="14" pb="2">
-                    {data?.mobile}
-                  </Text>
+                  <BodyLarge>{data?.mobile}</BodyLarge>
                 </HStack>
-                <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
+                <HStack bg="badgeColor.400" rounded={"md"} p="2">
                   <IconByName
                     isDisabled
                     _icon={{ size: "20px" }}
@@ -87,7 +87,6 @@ export default function FacilitatorView({ footerLinks }) {
                 </HStack>
               </HStack>
               <H2 fontSize="18" pb="2">
-                {" "}
                 {t("ELIGIBILITY_CRITERIA")}
               </H2>
               <HStack width={"100%"}>
@@ -100,7 +99,7 @@ export default function FacilitatorView({ footerLinks }) {
                 />
                 <VStack flex={0.7} space="2">
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall> {t("SEND_AN_INVITE")}</BodySmall>
+                    <BodySmall> {t("QUALIFICATION")}</BodySmall>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -148,7 +147,7 @@ export default function FacilitatorView({ footerLinks }) {
                   </HStack>
                 </VStack>
               </HStack>
-            </HStack>
+            </VStack>
             <HStack width="30%" pl="5">
               {data?.profile_url ? (
                 <Avatar
@@ -168,7 +167,7 @@ export default function FacilitatorView({ footerLinks }) {
                 />
               )}
             </HStack>
-          </Stack>
+          </HStack>
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <Button
@@ -253,7 +252,7 @@ export default function FacilitatorView({ footerLinks }) {
                   </Heading>
                   <VStack>
                     <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
-                    <Text>
+                    <VStack>
                       {data?.qualifications?.map((qua, key) => {
                         return (
                           <Text key={key}>
@@ -261,7 +260,7 @@ export default function FacilitatorView({ footerLinks }) {
                           </Text>
                         );
                       })}
-                    </Text>
+                    </VStack>
                   </VStack>
 
                   <VStack>
@@ -325,7 +324,7 @@ export default function FacilitatorView({ footerLinks }) {
           <StatusButton {...{ data, setData }} />
         </VStack>
 
-        <VStack
+        {/* <VStack
           flex={0.18}
           bg="white.300"
           px="3"
@@ -342,10 +341,10 @@ export default function FacilitatorView({ footerLinks }) {
           </HStack>
           <VStack space={"3"}>
             {[
-              { name: "you", message: "Profile needs to be completed" },
+              { name: t("YOU"), message: t("PROFILE_NEEDS_TO_BE_COMPLETED") },
               {
                 name: "Manoj",
-                message: "Profile needs to be completed before onboarding",
+                message: t("PROFILE_NEEDS_TO_BE_COMPLETED"),
               },
             ].map((item, key) => (
               <VStack key={key} space={"1"}>
@@ -364,7 +363,7 @@ export default function FacilitatorView({ footerLinks }) {
               </VStack>
             ))}
           </VStack>
-        </VStack>
+        </VStack> */}
       </HStack>
     </Layout>
   );
