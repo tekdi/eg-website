@@ -70,7 +70,7 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
   return (
     <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
       <HStack>
-        {icon} {t("REMOVE")}
+        {icon} {t("REMOVE_EXPERIENCE")}
       </HStack>
     </Button>
   );

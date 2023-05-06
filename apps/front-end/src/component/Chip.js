@@ -1,5 +1,6 @@
 import { Box } from "native-base";
 import React from "react";
+import { t } from "@shiksha/common-lib";
 
 export default function Chip({ label, children, isActive, ...props }) {
   return (
@@ -19,39 +20,55 @@ export default function Chip({ label, children, isActive, ...props }) {
   );
 }
 
+// ChipStatus
 export function ChipStatus({ status, ...props }) {
-  const [color, setColor] = React.useState("gray");
-  const newStatus =
-    status && status === "lead" ? "Applied" : status ? status : "Applied";
+  const [color, setColor] = React.useState("gray.300");
+  const [newStatus, setNewStatus] = React.useState(status);
 
   React.useEffect(() => {
-    switch (newStatus.toLowerCase()) {
-      case "lead":
-      case "applied":
-        setColor("info.300");
-        break;
-      case "selected":
+    switch (status?.toLowerCase()) {
       case "screened":
-      case "approve":
         setColor("green.300");
+        setNewStatus(t("SCREENED"));
         break;
-      case "shortlisted":
-        setColor("amber.300");
-        break;
-      case "reject":
       case "rejected":
+        setNewStatus(t("REJECTED"));
         setColor("danger.300");
         break;
-      case "review later":
-      case "review_later":
-      case "marked_review":
+      case "shortlisted_for_orientation":
+        setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
         setColor("warning.300");
         break;
+      case "potential_prerak":
+        setNewStatus(t("POTENTIAL_PRERAK"));
+        setColor("warning.300");
+        break;
+      case "selected_for_training":
+        setNewStatus(t("SELECTED_FOR_TRAINING"));
+        setColor("warning.300");
+        break;
+      case "selected_for_onboarding":
+        setNewStatus(t("SELECTED_FOR_ONBOARDING"));
+        setColor("green.300");
+        break;
+      case "selected_prerak":
+        setNewStatus(t("SELECTED_PRERAK"));
+        setColor("green.300");
+        break;
+      case "quit":
+        setNewStatus(t("QUIT"));
+        setColor("danger.300");
+        break;
+      case "rusticate":
+        setNewStatus(t("RUSTICATE"));
+        setColor("danger.300");
+        break;
       default:
-        setColor("gray.300");
+        setNewStatus("Applied");
+        setColor("info.300");
     }
-  }, [newStatus]);
-  console.log(newStatus);
+  }, [status]);
+
   return (
     <Chip
       px="4"

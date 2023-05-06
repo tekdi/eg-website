@@ -63,7 +63,7 @@ export default function Login() {
     if (validate()) {
       const { error } = await login(credentials);
       if (error) {
-        setErrors({ alert: error });
+        setErrors({ alert: t(error) });
       } else {
         navigate("/");
         navigate(0);

@@ -110,6 +110,11 @@ export default function App({ facilitator, ip, onClick }) {
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
+
+  window.onbeforeunload = function () {
+    return false;
+  };
+
   const onPressBackButton = () => {
     const data = nextPreviewStep("p");
     if (data && onClick) {
@@ -394,28 +399,30 @@ export default function App({ facilitator, ip, onClick }) {
   const customValidate = (data, errors, c) => {
     if (data?.mobile) {
       if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError("minimum lenght is 10");
+        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
       if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError("please enter valid number");
+        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
     if (data?.aadhar_token) {
       if (data?.aadhar_token?.toString()?.length !== 12) {
         errors.aadhar_token.addError(
-          "Aadhaar numbers should be 12 digit in length"
+          t("AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH")
         );
       }
     }
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
       if (years < 18) {
-        errors?.dob?.addError("Minimum age 18 year old");
+        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z]*$/g)) {
-        errors?.[key]?.addError(t("REQUIRED_MESSAGE"));
+      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
       }
     });
 
@@ -425,7 +432,13 @@ export default function App({ facilitator, ip, onClick }) {
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
       if (error.name === "required") {
-        error.message = `${t("REQUIRED_MESSAGE")}`;
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t("REQUIRED_MESSAGE")} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t("REQUIRED_MESSAGE")}`;
+        }
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
       }
@@ -565,7 +578,22 @@ export default function App({ facilitator, ip, onClick }) {
 
   const onSubmit = async (data) => {
     if (addBtn !== t("YES")) setAddBtn(t("YES"));
-    const newFormData = data.formData;
+    let newFormData = data.formData;
+    if (schema?.properties?.first_name) {
+      newFormData = {
+        ...newFormData,
+        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+      };
+    }
+
+    if (schema?.properties?.last_name && newFormData?.last_name) {
+      newFormData = {
+        ...newFormData,
+        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+      };
+    }
+    console.log(newFormData);
+
     const newData = {
       ...formData,
       ...newFormData,
@@ -585,7 +613,7 @@ export default function App({ facilitator, ip, onClick }) {
         if (data?.error) {
           const newErrors = {
             mobile: {
-              __errors: ["mobile number already exists"],
+              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -613,6 +641,7 @@ export default function App({ facilitator, ip, onClick }) {
     if (file.size <= 1048576 * 2) {
       const data = await getBase64(file);
       setCameraUrl(data);
+      setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
@@ -823,6 +852,7 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
+        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
         name: `${ip?.name}`.trim(),
       }}
       _page={{ _scollView: { bg: "white" } }}
@@ -875,6 +905,7 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             <Button
+              mt="3"
               variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
@@ -895,7 +926,7 @@ export default function App({ facilitator, ip, onClick }) {
         <Modal.Content>
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0">
-            <H3 textAlign="center">Store your user credentials</H3>
+            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
@@ -907,12 +938,12 @@ export default function App({ facilitator, ip, onClick }) {
                   borderWidth={1}
                   borderColor="gray.300"
                 >
-                  <HStack alignItems="center" space="3">
-                    <H3>Username</H3>
+                  <HStack alignItems="center" space="5">
+                    <H3>{t("USERNAME")}</H3>
                     <BodySmall>{credentials?.username}</BodySmall>
                   </HStack>
-                  <HStack alignItems="center" space="3">
-                    <H3>Password</H3>
+                  <HStack alignItems="center" space="5">
+                    <H3>{t("PASSWORD")}</H3>
                     <BodySmall>{credentials?.password}</BodySmall>
                   </HStack>
                 </Box>
@@ -932,7 +963,9 @@ export default function App({ facilitator, ip, onClick }) {
                       rounded="full"
                       color="blue.300"
                     />
-                    <H3 color="blue.300">Click here to copy and login</H3>
+                    <H3 color="blue.300">
+                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
+                    </H3>
                   </HStack>
                 </Clipboard>
               </VStack>
@@ -948,7 +981,7 @@ export default function App({ facilitator, ip, onClick }) {
                     navigate(0);
                   }}
                 >
-                  Login
+                  {t("LOGIN")}
                 </Button>
               </HStack>
             </VStack>

@@ -3,7 +3,7 @@ import "./App.css";
 import { AppShell, initializeI18n } from "@shiksha/common-lib";
 import Login from "./pages/Login";
 
-const Dashboard = () => <h1>LOGIN SUCCESS</h1>;
+const Dashboard = () => <h1>{t("LOGIN_SUCCESS")}</h1>;
 initializeI18n(["translation"]);
 
 function App() {

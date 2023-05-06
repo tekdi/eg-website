@@ -67,7 +67,7 @@ function PrerakDuties(props) {
   let { imgUrl, title, processedButton, onPress } = props;
   return (
     <Stack style={stylesheet.bgimage}>
-      <Text style={stylesheet.mainText}>Prerak Duties</Text>
+      <Text style={stylesheet.mainText}>{t("PRERAK_DUTIES")}</Text>
       <VStack
         space={2}
         justifyContent="center"
@@ -87,7 +87,7 @@ function PrerakDuties(props) {
         <Box bgColor={"#FFFFFF"} style={stylesheet.boxContent}>
           <Text style={stylesheet.text1}>{title}</Text>
           <Text style={stylesheet.text2}>
-            To pursue 10th school from open school.
+            {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
           </Text>
         </Box>
         <Button
@@ -96,7 +96,7 @@ function PrerakDuties(props) {
         >
           {processedButton}
         </Button>
-        <Text style={stylesheet.skipText}>Skip to Apply</Text>
+        <Text style={stylesheet.skipText}>{t("SKIP_TO_APPLY")}</Text>
       </VStack>
     </Stack>
   );

@@ -11,7 +11,18 @@ import {
   Loading,
   t,
 } from "@shiksha/common-lib";
-import { Heading, HStack, Text, VStack, Box, Avatar, Stack, Column, Row, Center } from "native-base";
+import {
+  Heading,
+  HStack,
+  Text,
+  VStack,
+  Box,
+  Avatar,
+  Stack,
+  Column,
+  Row,
+  Center,
+} from "native-base";
 import Chip from "component/Chip";
 import { useNavigate } from "react-router-dom";
 import { Primary } from "stories/Button.stories";
@@ -34,8 +45,8 @@ export default function App({ footerLinks, userTokenInfo }) {
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
-        <VStack flex={0.82} space={"5"} p="3" mb="5">
-        <HStack alignItems={"center"} space="3" pt="3">
+        <VStack flex={1} space={"5"} p="3" mb="5">
+          <HStack alignItems={"center"} space="3" pt="3">
             <IconByName
               size="sm"
               name="ArrowLeftSLineIcon"
@@ -44,42 +55,48 @@ export default function App({ footerLinks, userTokenInfo }) {
             <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
           <Stack direction="row" justifyContent="spacearound">
-            <HStack width="70%" direction="column" justifyContent="spacearound" alignItems={Center}>
+            <HStack
+              width="70%"
+              direction="column"
+              justifyContent="spacearound"
+              alignItems={"center"}
+            >
               <HStack direction="row" justifyContent="flexStart" mb="6">
-              <H1>
+                <H1>
                   {data?.first_name} {data?.last_name}
-              </H1>
-              <Box>
-              {data?.status ? (
+                </H1>
+                <Box>
+                  {data?.status ? (
                     <Chip>{data?.status}</Chip>
                   ) : (
                     <React.Fragment />
                   )}
-              </Box>
-              <HStack bg='badgeColor.400' rounded={"md"} ml="4"  py="1" px="1">
-                <IconByName
-                        isDisabled
-                        _icon={{ size: "20px" }}
-                        name="CellphoneLineIcon"
-                        color="textGreyColor.300"
-                        pt="1"
-                      />
-                  <Text fontSize="12px">  
-                  {data?.mobile}</Text>
+                </Box>
+                <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
+                  <IconByName
+                    isDisabled
+                    _icon={{ size: "20px" }}
+                    name="CellphoneLineIcon"
+                    color="textGreyColor.300"
+                    pt="1"
+                  />
+                  <Text fontSize="12px">{data?.mobile}</Text>
+                </HStack>
+                <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
+                  <IconByName
+                    isDisabled
+                    _icon={{ size: "20px" }}
+                    name="MapPinLineIcon"
+                    color="textGreyColor.300"
+                  />
+                  <Text fontSize="12px">{data?.address}</Text>
+                </HStack>
               </HStack>
-              <HStack bg='badgeColor.400' rounded={"md"} ml="4"  py="1" px="1">
-                    <IconByName
-                      isDisabled
-                      _icon={{ size: "20px" }}
-                      name="MapPinLineIcon"
-                      color="textGreyColor.300"
-                    />
-                  <Text fontSize="12px"> 
-                  {data?.address}</Text>
-                  </HStack>
-                  </HStack>
-              <H2 fontSize="18" pb="2"> {t("ELIGIBILITY_CRITERIA")}</H2>
-              <HStack >
+              <H2 fontSize="18" pb="2">
+                {" "}
+                {t("ELIGIBILITY_CRITERIA")}
+              </H2>
+              <HStack>
                 <IconByName
                   flex={0.3}
                   name="DonutChartLineIcon"
@@ -139,32 +156,38 @@ export default function App({ footerLinks, userTokenInfo }) {
               </HStack>
             </HStack>
             <HStack width="30%" pl="5">
-            {data?.profile_url ? (
-                    <Avatar
-                      source={{
-                        uri: data?.profile_url,
-                      }}
-                      // alt="Alternate Text"
-                      width={"190px"}
-                      height={"190px"}
-                    />
-                  ) : (
-                    <IconByName
-                      isDisabled
-                      name="AccountCircleLineIcon"
-                      color="gray.300"
-                      _icon={{ size: "190px" }}
-                    />
-                  )}
-                
+              {data?.profile_url ? (
+                <Avatar
+                  source={{
+                    uri: data?.profile_url,
+                  }}
+                  // alt="Alternate Text"
+                  width={"190px"}
+                  height={"190px"}
+                />
+              ) : (
+                <IconByName
+                  isDisabled
+                  name="AccountCircleLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "190px" }}
+                />
+              )}
             </HStack>
           </Stack>
- 
+
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>
             <HStack justifyContent="space-evenly">
-              <VStack space={"5"} w="50%"  bg="light.100" p="6" rounded="xl">
-                <Heading fontSize="16px" borderColor="light.400" pb="1" borderBottomWidth="1">{t("BASIC_DETAILS")}</Heading>
+              <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
+                <Heading
+                  fontSize="16px"
+                  borderColor="light.400"
+                  pb="1"
+                  borderBottomWidth="1"
+                >
+                  {t("BASIC_DETAILS")}
+                </Heading>
                 <HStack>
                   <Text color="warmGray.500">{t("FIRST_NAME")} </Text>
                   <Text>{data?.first_name}</Text>
@@ -200,53 +223,83 @@ export default function App({ footerLinks, userTokenInfo }) {
                   <Text>{data?.aadhar_token}</Text>
                 </HStack>
               </VStack>
-              <VStack display="Flex" flexDirection="row" space="20px" w="50%"  bg="light.100" p="6" ml="2" rounded="xl">
-              <VStack display="Flex" flexDirection="column" space="20px" w="100%">
-                <Heading fontSize="16px" borderColor="light.400" pb="1" borderBottomWidth="1">{t("EDUCATION")} </Heading>
-                    <VStack>
-                      <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
-                      <Text>
-                        {data?.qualifications?.map((qua, key) => {
-                          return (
-                            <Text key={key}>{qua?.qualification_master.name}</Text>
-                          );
-                        })}
-                      </Text>
+              <VStack
+                display="Flex"
+                flexDirection="row"
+                space="20px"
+                w="50%"
+                bg="light.100"
+                p="6"
+                ml="2"
+                rounded="xl"
+              >
+                <VStack
+                  display="Flex"
+                  flexDirection="column"
+                  space="20px"
+                  w="100%"
+                >
+                  <Heading
+                    fontSize="16px"
+                    borderColor="light.400"
+                    pb="1"
+                    borderBottomWidth="1"
+                  >
+                    {t("EDUCATION")}{" "}
+                  </Heading>
+                  <VStack>
+                    <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
+                    <Text>
+                      {data?.qualifications?.map((qua, key) => {
+                        return (
+                          <Text key={key}>
+                            {qua?.qualification_master.name}
+                          </Text>
+                        );
+                      })}
+                    </Text>
+                  </VStack>
+                  <VStack>
+                    <Text color="warmGray.500">{t("WORK_EXPERIENCE")} </Text>
+                    <VStack space={5}>
+                      {data?.experience?.map((obj, key) => {
+                        return (
+                          <VStack key={key}>
+                            {obj?.role_title ? (
+                              <Text>
+                                {t("ROLE")} : {obj?.role_title}
+                              </Text>
+                            ) : (
+                              <React.Fragment />
+                            )}
+                            {obj?.experience_in_years ? (
+                              <Text>
+                                {t("YEARS_OF_EX")}: {obj?.experience_in_years}
+                              </Text>
+                            ) : (
+                              <React.Fragment />
+                            )}
+                            {obj?.description ? (
+                              <Text>
+                                {t("DESCRIPTION")} : {obj?.description}
+                              </Text>
+                            ) : (
+                              <React.Fragment />
+                            )}
+                          </VStack>
+                        );
+                      })}
                     </VStack>
-                    <VStack>
-                      <Text color="warmGray.500">{t("WORK_EXPERIENCE")} </Text>
-                      <VStack space={5}>
-                        {data?.experience?.map((obj, key) => {
-                          return (
-                            <VStack key={key}>
-                              {obj?.role_title ? (
-                                <Text>
-                                  {t("ROLE")} : {obj?.role_title}
-                                </Text>
-                              ) : (
-                                <React.Fragment />
-                              )}
-                              {obj?.experience_in_years ? (
-                                <Text>
-                                  {t("YEARS_OF_EX")}: {obj?.experience_in_years}
-                                </Text>
-                              ) : (
-                                <React.Fragment />
-                              )}
-                              {obj?.description ? (
-                                <Text>
-                                  {t("DESCRIPTION")} : {obj?.description}
-                                </Text>
-                              ) : (
-                                <React.Fragment />
-                              )}
-                            </VStack>
-                          );
-                        })}
-                      </VStack>
-                    </VStack>
+                  </VStack>
                   <VStack display="Flex" flexDirection="column" space="20px">
-                    <Heading fontSize="16px"  borderColor="light.400" pb="1" borderBottomWidth="1">{t("OTHER_DETAILS")}</Heading>
+                    <Heading
+                      fontSize="16px"
+                      borderColor="light.400"
+                      pb="1"
+                      borderBottomWidth="1"
+                    >
+                      {t("OTHER_DETAILS")}
+                    </Heading>
                     <VStack>
                       <Text color="warmGray.500">{t("AVAILABILITY")} </Text>
                       <Text>{data?.program_faciltators?.availability}</Text>
@@ -260,12 +313,12 @@ export default function App({ footerLinks, userTokenInfo }) {
                       <Text>{data?.device_type}</Text>
                     </VStack>
                   </VStack>
-                  </VStack>
+                </VStack>
               </VStack>
             </HStack>
           </VStack>
         </VStack>
-        <VStack flex={0.18} bg="white.300" px="3" py="5" space={"5"} borderColor="light.400" pb="1" borderLeftWidth="1">
+        {/* <VStack flex={0.18} bg="white.300" px="3" py="5" space={"5"} borderColor="light.400" pb="1" borderLeftWidth="1">
           <HStack justifyContent="space-between" alignItems={"center"}>
             <IconByName isDisabled name="EditBoxLineIcon" />
             <H3>{t("COMMENT_SECTION")}</H3>
@@ -306,7 +359,7 @@ export default function App({ footerLinks, userTokenInfo }) {
               </VStack>
             ))}
           </VStack>
-        </VStack>
+        </VStack> */}
       </HStack>
     </Layout>
   );
