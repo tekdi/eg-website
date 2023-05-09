@@ -105,10 +105,7 @@ const DEFAULT_THEME = {
             fontWeight: '600',
             color: '#ffffff'
           },
-          _redtext: {
-            color: '#790000'
-          },
-          rounded: '2'
+          rounded: 'full'
         }),
         secondary: () => ({
           bg: `#f2f2f2`,
@@ -136,11 +133,11 @@ const DEFAULT_THEME = {
           _text: {
             color: `${colorScheme}.500`
           },
-          rounded: 'full'
+          rounded: '4'
         }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
-          borderWidth: '1',
+          borderWidth: '2',
           borderColor: `#790000`,
           _hover: {
             bg: `#FFFFFF`
@@ -152,7 +149,7 @@ const DEFAULT_THEME = {
             fontWeight: '600',
             color: '#790000'
           },
-          rounded: 'full'
+          rounded: '4'
         })
       }
     }
@@ -340,7 +337,8 @@ const DEFAULT_THEME = {
     },
     textGreyColor: {
       100: '#616161',
-      300: '#888888'
+      300: '#888888',
+      400: '#F5F5F5'
     },
     textMaroonColor: {
       400: '#790000'

@@ -167,7 +167,7 @@
   "DO_YOU_HAVE_ANY_WORK_EXPERIENCE": "Do you have any Work Experience ?",
   "EXPERIENCE": "Experience",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "DO_YOU_OWN_A_MOBILE_PHONE": "Do you own a mobile phone ?",
+  "DO_YOU_OWN_A_MOBILE_PHONE": "Do you have a personal smartphone ?",
   "MOBILE_PHONE": "Mobile phone",
   "TYPE_OF_MOBILE_PHONE": "Type of mobile phone ?",
   "TYPE": "Type",
@@ -181,5 +181,11 @@
   "PLEASE_ENTER_VALID_NUMBER": "please enter valid number",
   "AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH": "Aadhaar numbers should be 12 digit in length",
   "MINIMUM_AGE_18_YEAR_OLD": "Minimum age 18 year old",
-  "MOBILE_NUMBER_ALREADY_EXISTS": "mobile number already exists"
+  "MOBILE_NUMBER_ALREADY_EXISTS": "mobile number already exists",
+  "HELP": "Help ?",
+  "NEED_HELP": "Need Help ?",
+  "CALL_MY_IP": "Call My IP",
+  "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
+  "CALL_SUPPORT": "Call Support",
+  "LOGOUT": "Logout"
 }
