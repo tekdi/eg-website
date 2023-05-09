@@ -161,7 +161,7 @@
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपकी काम की उपलब्धता क्या होगी?",
   "PART_TIME": "अंशकालिक",
   "FULL_TIME": "पूर्णकालिक",
-  "DO_YOU_OWN_A_MOBILE_PHONE": "क्या आपके पास मोबाइल फोन है?",
+  "DO_YOU_OWN_A_MOBILE_PHONE": "क्या आपके पास एक निजी स्मार्टफोन है?",
   "NO_I_USE_A_FAMILY_MEMBERS": "नहीं, मैं एक परिवार के सदस्य का उपयोग करता हूं",
   "TYPE_OF_MOBILE_PHONE": "मोबाइल फोन का प्रकार?",
   "ANDROID": "एंड्रॉयड",
@@ -190,5 +190,10 @@
   "PLEASE_ENTER_VALID_NUMBER": "कृपया वैध संख्या दर्ज करें",
   "AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH": "आधार संख्या 12 अंक होनी चाहिए",
   "MINIMUM_AGE_18_YEAR_OLD": "न्यूनतम आयु 18 वर्ष",
-  "MOBILE_NUMBER_ALREADY_EXISTS": "मोबाइल नंबर पहले से ही मौजूद है"
+  "MOBILE_NUMBER_ALREADY_EXISTS": "मोबाइल नंबर पहले से ही मौजूद है",
+  "NEED_HELP":"मदद की ज़रूरत है",
+  "CALL_MY_IP":"मेरे आईपी को कॉल करें",
+  "FREQUENTLY_ASKED_QUESTION": "अक्सर पूछा गया सवाल",
+  "CALL_SUPPORT" :"कॉल समर्थन",
+  "LOGOUT":"लॉग आउट"
 }
