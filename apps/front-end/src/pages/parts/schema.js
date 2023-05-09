@@ -106,7 +106,7 @@ export default {
     },
     7: {
       type: "object",
-      required: ["qualification"],
+      required: ["qualification", "degree"],
       properties: {
         qualification: {
           title: "YOUR_HIGHEST_QUALIFICATION",

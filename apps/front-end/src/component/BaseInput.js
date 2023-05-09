@@ -90,7 +90,9 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
 export const DescriptionFieldTemplate = ({ description, id }) => {
   return (
     <VStack pb="3">
-      <BodySmall id={id} color="textMaroonColor.400">{t(description)}</BodySmall>
+      <BodySmall id={id} color="textMaroonColor.400">
+        {t(description)}
+      </BodySmall>
     </VStack>
   );
 };

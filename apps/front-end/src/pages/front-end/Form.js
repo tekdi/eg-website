@@ -22,7 +22,6 @@ import {
   Camera,
   Layout,
   H1,
-  Caption,
   t,
   login,
   H3,
@@ -32,6 +31,7 @@ import {
   H2,
   getBase64,
   BodyMedium,
+  changeLanguage,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -105,6 +105,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
@@ -241,7 +242,7 @@ export default function App({ facilitator, ip, onClick }) {
         [key]: {
           ...schema["properties"][key],
           ...(_.isEmpty(arr)
-            ? {}
+            ? { ["enumNames"]: [], ["enum"]: [] }
             : { ["enumNames"]: enumNames, ["enum"]: enumArr }),
         },
       },
@@ -299,6 +300,12 @@ export default function App({ facilitator, ip, onClick }) {
           value: "state_name",
         });
       }
+      newSchema = await setDistric({
+        schemaData: newSchema,
+        state: formData?.state,
+        district: formData?.district,
+        block: formData?.block,
+      });
       setSchema(newSchema);
     }
 
@@ -361,7 +368,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   React.useEffect(() => {
     updateBtnText();
-  }, [formData, page]);
+  }, [formData, page, lang]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
@@ -446,6 +453,88 @@ export default function App({ facilitator, ip, onClick }) {
     });
   };
 
+  const setDistric = async ({ state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.district && state) {
+      const qData = await geolocationRegistryService.getDistricts({
+        name: state,
+      });
+      if (schema["properties"]["district"]) {
+        newSchema = getOptions(newSchema, {
+          key: "district",
+          arr: qData,
+          title: "district_name",
+          value: "district_name",
+        });
+      }
+      if (schema["properties"]["block"]) {
+        newSchema = await setBlock({ district, block, schemaData: newSchema });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "district", arr: [] });
+      if (schema["properties"]["block"]) {
+        newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      }
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      console.log(newSchema);
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setBlock = async ({ district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.block && district) {
+      const qData = await geolocationRegistryService.getBlocks({
+        name: district,
+      });
+      if (schema["properties"]["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+      if (schema["properties"]["village"]) {
+        newSchema = await setVilage({ block, schemaData: newSchema });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setVilage = async ({ block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: block,
+      });
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, {
+          key: "village",
+          arr: qData,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        });
+      }
+      setSchema(newSchema);
+    } else {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -456,7 +545,7 @@ export default function App({ facilitator, ip, onClick }) {
         if (result.isUserExist) {
           const newErrors = {
             mobile: {
-              __errors: ["mobile number already exists"],
+              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -471,7 +560,7 @@ export default function App({ facilitator, ip, onClick }) {
         if (result.isUserExist) {
           const newErrors = {
             aadhar_token: {
-              __errors: ["aadhar number already exists"],
+              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -506,66 +595,24 @@ export default function App({ facilitator, ip, onClick }) {
     }
 
     if (id === "root_state") {
-      if (schema?.properties?.district) {
-        const qData = await geolocationRegistryService.getDistricts({
-          name: data?.state,
-        });
-        let newSchema = schema;
-        if (schema["properties"]["district"]) {
-          newSchema = getOptions(newSchema, {
-            key: "district",
-            arr: qData,
-            title: "district_name",
-            value: "district_name",
-          });
-        }
-        if (schema["properties"]["block"]) {
-          newSchema = getOptions(newSchema, { key: "block", arr: [] });
-        }
-        if (schema["properties"]["village"]) {
-          newSchema = getOptions(newSchema, { key: "village", arr: [] });
-        }
-        setSchema(newSchema);
-      }
+      await setDistric({
+        schemaData: schema,
+        state: data?.state,
+        district: data?.district,
+        block: data?.block,
+      });
     }
 
     if (id === "root_district") {
-      if (schema?.properties?.block) {
-        const qData = await geolocationRegistryService.getBlocks({
-          name: data?.district,
-        });
-        let newSchema = schema;
-        if (schema["properties"]["block"]) {
-          newSchema = getOptions(newSchema, {
-            key: "block",
-            arr: qData,
-            title: "block_name",
-            value: "block_name",
-          });
-        }
-        if (schema["properties"]["village"]) {
-          newSchema = getOptions(newSchema, { key: "village", arr: [] });
-        }
-        setSchema(newSchema);
-      }
+      await setBlock({
+        district: data?.district,
+        block: data?.block,
+        schemaData: schema,
+      });
     }
 
     if (id === "root_block") {
-      if (schema?.properties?.village) {
-        const qData = await geolocationRegistryService.getVillages({
-          name: data?.block,
-        });
-        let newSchema = schema;
-        if (schema["properties"]["village"]) {
-          newSchema = getOptions(newSchema, {
-            key: "village",
-            arr: qData,
-            title: "village_ward_name",
-            value: "village_ward_name",
-          });
-        }
-        setSchema(newSchema);
-      }
+      await setVilage({ block: data?.block, schemaData: schema });
     }
   };
 
@@ -592,7 +639,6 @@ export default function App({ facilitator, ip, onClick }) {
         ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
       };
     }
-    console.log(newFormData);
 
     const newData = {
       ...formData,
@@ -651,6 +697,8 @@ export default function App({ facilitator, ip, onClick }) {
     return (
       <Layout
         _appBar={{
+          lang,
+          setLang,
           onPressBackButton: (e) => {
             setCameraUrl();
             setCameraModal(false);
@@ -724,7 +772,7 @@ export default function App({ facilitator, ip, onClick }) {
   if (page === "upload") {
     return (
       <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13") }}
+        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
@@ -842,7 +890,7 @@ export default function App({ facilitator, ip, onClick }) {
         }}
       >
         <HStack>
-          {icon} {t("REMOVE")}
+          {icon} {t("REMOVE_EXPERIENCE")}
         </HStack>
       </Button>
     );
@@ -854,6 +902,8 @@ export default function App({ facilitator, ip, onClick }) {
         onPressBackButton,
         exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
         name: `${ip?.name}`.trim(),
+        lang,
+        setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
@@ -880,6 +930,7 @@ export default function App({ facilitator, ip, onClick }) {
         )}
         {page && page !== "" ? (
           <Form
+            key={lang}
             ref={formRef}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },

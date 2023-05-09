@@ -38,7 +38,7 @@ const statusList = [
   },
   {
     status: "shortlisted_for_orientation",
-    name: "SHORTLISTED_FOR_ORIENTATION",
+    name: "SHORTLIST_FOR_ORIENTATION",
   },
   {
     status: "potential_prerak",

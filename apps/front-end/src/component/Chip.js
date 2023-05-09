@@ -64,7 +64,7 @@ export function ChipStatus({ status, ...props }) {
         setColor("danger.300");
         break;
       default:
-        setNewStatus("Applied");
+        setNewStatus(t("APPLIED"));
         setColor("info.300");
     }
   }, [status]);
