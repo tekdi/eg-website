@@ -17,7 +17,7 @@ import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
-import { t } from 'i18next'
+import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 
 export {
@@ -42,6 +42,7 @@ export {
   authRegistryService,
   geolocationRegistryService,
   t,
+  changeLanguage,
   Camera
 }
 
