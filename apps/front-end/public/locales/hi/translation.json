@@ -192,5 +192,6 @@
   "NEED_HELP":"मदद की ज़रूरत है",
   "CALL_MY_IP":"मेरे आईपी को कॉल करें",
   "FREQUENTLY_ASKED_QUESTION": "अक्सर पूछा गया सवाल",
-  "CALL_SUPPORT" :"कॉल समर्थन"
+  "CALL_SUPPORT" :"कॉल समर्थन",
+  "LOGOUT":"लॉग आउट"
 }

@@ -184,6 +184,6 @@
   "NEED_HELP":"Need Help ?",
   "CALL_MY_IP":"Call My IP",
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
-  "CALL_SUPPORT" :"Call Support"
-
+  "CALL_SUPPORT" :"Call Support",
+  "LOGOUT":"Logout"
 }
