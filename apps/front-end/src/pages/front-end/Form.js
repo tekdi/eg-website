@@ -983,7 +983,7 @@ export default function App({ facilitator, ip, onClick }) {
         size="xl"
       >
         <Modal.Content>
-          <Modal.CloseButton />
+          {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
             <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
           </Modal.Header>

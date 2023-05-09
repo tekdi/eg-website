@@ -28,11 +28,11 @@ export default {
           type: "number",
           title: "MOBILE_NUMBER",
         },
-        email_id: {
-          type: "string",
-          format: "email",
-          title: "EMAIL_ID",
-        },
+        // email_id: {
+        //   type: "string",
+        //   format: "email",
+        //   title: "EMAIL_ID",
+        // },
       },
     },
     3: {
