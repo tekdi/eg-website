@@ -1,8 +1,6 @@
 import {
   IconByName,
   facilitatorRegistryService,
-  get,
-  post,
   H1,
   H3,
   t,
@@ -10,10 +8,8 @@ import {
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
 import {
-  Box,
   Button,
   HStack,
-  Heading,
   Input,
   Text,
   VStack,
@@ -24,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 
-const columns = [
+const columns = (e) => [
   {
     name: t("FIRST_NAME"),
     selector: (row) => (
@@ -200,9 +196,9 @@ function Table({ facilitator }) {
 
       <DataTable
         columns={[
-          ...columns,
+          ...columns(),
           {
-            name: "Action",
+            name: t("ACTION"),
             selector: (row) => (
               <Button
                 size={"xs"}

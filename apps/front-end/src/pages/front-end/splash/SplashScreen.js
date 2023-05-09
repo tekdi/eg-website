@@ -7,9 +7,12 @@ export default function SplashScreen({ onClick, onClickPrerakDuties }) {
   const [refAppBar, RefAppBar] = React.useState();
 
   React.useEffect(() => {
-    setTimeout(() => {
+    const setTime = setTimeout(() => {
       setPage("screen2");
     }, 1000);
+    return (e) => {
+      clearTimeout(setTime);
+    };
   }, []);
 
   return (
