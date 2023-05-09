@@ -191,9 +191,10 @@
   "AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH": "आधार संख्या 12 अंक होनी चाहिए",
   "MINIMUM_AGE_18_YEAR_OLD": "न्यूनतम आयु 18 वर्ष",
   "MOBILE_NUMBER_ALREADY_EXISTS": "मोबाइल नंबर पहले से ही मौजूद है",
-  "NEED_HELP":"मदद की ज़रूरत है",
-  "CALL_MY_IP":"मेरे आईपी को कॉल करें",
+  "NEED_HELP": "मदद की ज़रूरत है",
+  "HELP": "मदद ?",
+  "CALL_MY_IP": "मेरे आईपी को कॉल करें",
   "FREQUENTLY_ASKED_QUESTION": "अक्सर पूछा गया सवाल",
-  "CALL_SUPPORT" :"कॉल समर्थन",
-  "LOGOUT":"लॉग आउट"
+  "CALL_SUPPORT": "कॉल समर्थन",
+  "LOGOUT": "लॉग आउट"
 }
