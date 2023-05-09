@@ -227,23 +227,30 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumNames = [];
-    let enumArr = [];
+    let enumObj = {};
     let arrData = arr;
     if (!_.isEmpty(filters)) {
       arrData = filtersByObject(arr, filters);
     }
-    enumNames = arrData.map((e) => `${e?.[title]}`);
-    enumArr = arrData.map((e) => `${e?.[value]}`);
+    enumObj = {
+      ...enumObj,
+      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
+    };
+    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
+    const newProperties = schema["properties"][key];
+    let properties = {};
+    if (newProperties) {
+      if (newProperties.enum) delete newProperties.enum;
+      let { enumNames, ...remainData } = newProperties;
+      properties = remainData;
+    }
     return {
       ...schema,
       ["properties"]: {
         ...schema["properties"],
         [key]: {
-          ...schema["properties"][key],
-          ...(_.isEmpty(arr)
-            ? { ["enumNames"]: [], ["enum"]: [] }
-            : { ["enumNames"]: enumNames, ["enum"]: enumArr }),
+          ...properties,
+          ...(_.isEmpty(arr) ? {} : enumObj),
         },
       },
     };

@@ -132,8 +132,10 @@ export const FieldTemplate = ({
 export const ObjectFieldTemplate = (props) => {
   return (
     <div>
-      {props.properties.map((element) => (
-        <div className="property-wrapper">{element.content}</div>
+      {props.properties.map((element, index) => (
+        <div className="property-wrapper" key={`element${index}`}>
+          {element.content}
+        </div>
       ))}
     </div>
   );
