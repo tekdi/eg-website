@@ -195,5 +195,6 @@
   "CALL_MY_IP":"मेरे आईपी को कॉल करें",
   "FREQUENTLY_ASKED_QUESTION": "अक्सर पूछा गया सवाल",
   "CALL_SUPPORT" :"कॉल समर्थन",
-  "LOGOUT":"लॉग आउट"
+  "LOGOUT":"लॉग आउट",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें"
 }

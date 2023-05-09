@@ -186,5 +186,6 @@
   "CALL_MY_IP":"Call My IP",
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
   "CALL_SUPPORT" :"Call Support",
-  "LOGOUT":"Logout"
+  "LOGOUT":"Logout",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number "
 }
