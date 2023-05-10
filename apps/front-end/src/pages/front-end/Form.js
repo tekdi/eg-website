@@ -344,7 +344,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (id) {
         newPage = newSteps.filter((e) => !arr.includes(e));
         //  const pageSet = form_step_number ? form_step_number : 3;
-        const pageSet = "8";
+        const pageSet = "3";
         setPage(pageSet);
         setSchema(properties[pageSet]);
       } else {
