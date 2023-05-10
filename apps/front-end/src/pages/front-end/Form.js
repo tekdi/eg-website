@@ -116,8 +116,8 @@ export default function App({ facilitator, ip, onClick }) {
     return false;
   };
 
-  const onPressBackButton = () => {
-    const data = nextPreviewStep("p");
+  const onPressBackButton = async () => {
+    const data = await nextPreviewStep("p");
     if (data && onClick) {
       onClick("SplashScreen");
     }
@@ -344,7 +344,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (id) {
         newPage = newSteps.filter((e) => !arr.includes(e));
         //  const pageSet = form_step_number ? form_step_number : 3;
-        const pageSet = "3";
+        const pageSet = "8";
         setPage(pageSet);
         setSchema(properties[pageSet]);
       } else {
@@ -870,17 +870,10 @@ export default function App({ facilitator, ip, onClick }) {
         colorScheme="green"
         {...btnProps}
         onPress={(e) => {
-          if (schema?.properties?.vo_experience) {
-            if (formData.vo_experience?.length === 0) {
-              setAddBtn(t("ADD_EXPERIENCE"));
-            }
+          updateBtnText();
+          if (formRef?.current.validateForm()) {
+            btnProps?.onClick();
           }
-          if (schema?.properties?.experience) {
-            if (formData.experience?.length === 0) {
-              setAddBtn(t("ADD_EXPERIENCE"));
-            }
-          }
-          btnProps?.onClick();
         }}
       >
         <HStack>
@@ -898,16 +891,7 @@ export default function App({ facilitator, ip, onClick }) {
         mb="2"
         {...btnProps}
         onPress={(e) => {
-          if (schema?.properties?.vo_experience) {
-            if (formData.vo_experience?.length === 0) {
-              setAddBtn(t("YES"));
-            }
-          }
-          if (schema?.properties?.experience) {
-            if (formData.experience?.length === 0) {
-              setAddBtn(t("YES"));
-            }
-          }
+          updateBtnText();
           btnProps?.onClick();
         }}
       >
@@ -952,7 +936,7 @@ export default function App({ facilitator, ip, onClick }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang}
+            key={lang + addBtn}
             ref={formRef}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
