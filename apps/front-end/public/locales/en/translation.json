@@ -118,6 +118,7 @@
   "WELCOME": "Welcome",
   "REMOVE_EXPERIENCE": "Remove Experience",
   "ADD_MORE": "Add more",
+  "ADD_EXPERIENCE": "Add experience",
   "NEXT": "Next",
   "YES": "Yes",
   "NO": "No",
@@ -187,5 +188,6 @@
   "CALL_MY_IP": "Call My IP",
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
   "CALL_SUPPORT": "Call Support",
-  "LOGOUT": "Logout"
+  "LOGOUT": "Logout",
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
 }

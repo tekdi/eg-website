@@ -134,6 +134,14 @@ export default function App({ facilitator, ip, onClick }) {
     getImage();
   }, [page, credentials]);
 
+  const updateData = (data, deleteData = false) => {
+    if (deleteData) {
+      localStorage.removeItem(`id_data_${facilitator?.id}`);
+    } else {
+      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
+    }
+  };
+
   const uiSchema = {
     dob: {
       "ui:widget": "alt-date",
@@ -350,13 +358,16 @@ export default function App({ facilitator, ip, onClick }) {
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
+    const data = localStorage.getItem(`id_data_${facilitator?.id}`);
+    const newData = JSON.parse(data);
+    setFormData({ ...newData, ...facilitator });
   }, []);
 
   const updateBtnText = () => {
     if (schema?.properties?.vo_experience) {
       if (formData.vo_experience?.length > 0) {
         setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_MORE"));
+        setAddBtn(t("ADD_EXPERIENCE"));
       } else {
         setSubmitBtn(t("NO"));
         setAddBtn(t("YES"));
@@ -364,7 +375,7 @@ export default function App({ facilitator, ip, onClick }) {
     } else if (schema?.properties?.experience) {
       if (formData.experience?.length > 0) {
         setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_MORE"));
+        setAddBtn(t("ADD_EXPERIENCE"));
       } else {
         setSubmitBtn(t("NO"));
         setAddBtn(t("YES"));
@@ -385,6 +396,7 @@ export default function App({ facilitator, ip, onClick }) {
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
     if (id) {
+      updateData({}, true);
       return await facilitatorRegistryService.stepUpdate({
         ...formData,
         parent_ip: ip?.id,
@@ -487,7 +499,6 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      console.log(newSchema);
       setSchema(newSchema);
     }
     return newSchema;
@@ -546,7 +557,9 @@ export default function App({ facilitator, ip, onClick }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
-    setFormData({ ...formData, ...data });
+    const newData = { ...formData, ...data };
+    setFormData(newData);
+    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
@@ -654,6 +667,7 @@ export default function App({ facilitator, ip, onClick }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
+    updateData(newData);
     if (_.isEmpty(errors)) {
       const { id } = facilitator;
       let success = false;
@@ -858,12 +872,12 @@ export default function App({ facilitator, ip, onClick }) {
         onPress={(e) => {
           if (schema?.properties?.vo_experience) {
             if (formData.vo_experience?.length === 0) {
-              setAddBtn(t("ADD_MORE"));
+              setAddBtn(t("ADD_EXPERIENCE"));
             }
           }
           if (schema?.properties?.experience) {
             if (formData.experience?.length === 0) {
-              setAddBtn(t("ADD_MORE"));
+              setAddBtn(t("ADD_EXPERIENCE"));
             }
           }
           btnProps?.onClick();

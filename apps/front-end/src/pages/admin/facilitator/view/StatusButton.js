@@ -90,7 +90,7 @@ export default function StatusButton({ data, setData }) {
   };
 
   React.useEffect(() => {
-    switch (data?.status.toLowerCase()) {
+    switch (data?.status?.toLowerCase()) {
       case "screened":
         setDisabledBtn([
           "rejected",
@@ -265,6 +265,7 @@ export default function StatusButton({ data, setData }) {
       </Modal>
       {statusList.map(({ name, ...item }) => (
         <Button
+          key={name}
           variant={"outlinePrimary"}
           colorScheme="warning"
           {...item}

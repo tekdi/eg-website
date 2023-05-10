@@ -118,6 +118,7 @@
   "WELCOME": "स्वागत",
   "REMOVE_EXPERIENCE": "अनुभव मिटाएँ",
   "ADD_MORE": "अधिक जोड़ें",
+  "ADD_EXPERIENCE": "अनुभव जोड़ें",
   "NEXT": "अगला",
   "YES": "हां",
   "NO": "नहीं",
@@ -196,5 +197,6 @@
   "CALL_MY_IP": "मेरे आईपी को कॉल करें",
   "FREQUENTLY_ASKED_QUESTION": "अक्सर पूछा गया सवाल",
   "CALL_SUPPORT": "कॉल समर्थन",
-  "LOGOUT": "लॉग आउट"
+  "LOGOUT": "लॉग आउट",
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है"
 }
