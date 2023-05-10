@@ -358,9 +358,11 @@ export default function App({ facilitator, ip, onClick }) {
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
-    const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-    const newData = JSON.parse(data);
-    setFormData({ ...newData, ...facilitator });
+    if (facilitator?.id) {
+      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
+      const newData = JSON.parse(data);
+      setFormData({ ...newData, ...facilitator });
+    }
   }, []);
 
   const updateBtnText = () => {
@@ -433,9 +435,12 @@ export default function App({ facilitator, ip, onClick }) {
       }
     }
     if (data?.aadhar_token) {
-      if (data?.aadhar_token?.toString()?.length !== 12) {
-        errors.aadhar_token.addError(
-          t("AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH")
+      if (
+        data?.aadhar_token &&
+        !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+      ) {
+        errors?.aadhar_token?.addError(
+          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
         );
       }
     }
@@ -451,6 +456,17 @@ export default function App({ facilitator, ip, onClick }) {
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
+    });
+    ["vo_experience", "experience"].forEach((keyex) => {
+      data?.[keyex]?.map((item, index) => {
+        ["role_title", "organization", "description"].forEach((key) => {
+          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+            errors[keyex][index]?.[key]?.addError(
+              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+            );
+          }
+        });
+      });
     });
 
     return errors;
