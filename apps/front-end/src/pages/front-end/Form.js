@@ -116,8 +116,8 @@ export default function App({ facilitator, ip, onClick }) {
     return false;
   };
 
-  const onPressBackButton = () => {
-    const data = nextPreviewStep("p");
+  const onPressBackButton = async () => {
+    const data = await nextPreviewStep("p");
     if (data && onClick) {
       onClick("SplashScreen");
     }
@@ -133,6 +133,14 @@ export default function App({ facilitator, ip, onClick }) {
   React.useEffect(() => {
     getImage();
   }, [page, credentials]);
+
+  const updateData = (data, deleteData = false) => {
+    if (deleteData) {
+      localStorage.removeItem(`id_data_${facilitator?.id}`);
+    } else {
+      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
+    }
+  };
 
   const uiSchema = {
     dob: {
@@ -336,7 +344,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (id) {
         newPage = newSteps.filter((e) => !arr.includes(e));
         //  const pageSet = form_step_number ? form_step_number : 3;
-        const pageSet = "3";
+        const pageSet = "8";
         setPage(pageSet);
         setSchema(properties[pageSet]);
       } else {
@@ -350,13 +358,16 @@ export default function App({ facilitator, ip, onClick }) {
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
+    const data = localStorage.getItem(`id_data_${facilitator?.id}`);
+    const newData = JSON.parse(data);
+    setFormData({ ...newData, ...facilitator });
   }, []);
 
   const updateBtnText = () => {
     if (schema?.properties?.vo_experience) {
       if (formData.vo_experience?.length > 0) {
         setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_MORE"));
+        setAddBtn(t("ADD_EXPERIENCE"));
       } else {
         setSubmitBtn(t("NO"));
         setAddBtn(t("YES"));
@@ -364,7 +375,7 @@ export default function App({ facilitator, ip, onClick }) {
     } else if (schema?.properties?.experience) {
       if (formData.experience?.length > 0) {
         setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_MORE"));
+        setAddBtn(t("ADD_EXPERIENCE"));
       } else {
         setSubmitBtn(t("NO"));
         setAddBtn(t("YES"));
@@ -385,6 +396,7 @@ export default function App({ facilitator, ip, onClick }) {
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
     if (id) {
+      updateData({}, true);
       return await facilitatorRegistryService.stepUpdate({
         ...formData,
         parent_ip: ip?.id,
@@ -487,7 +499,6 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      console.log(newSchema);
       setSchema(newSchema);
     }
     return newSchema;
@@ -546,7 +557,9 @@ export default function App({ facilitator, ip, onClick }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
-    setFormData({ ...formData, ...data });
+    const newData = { ...formData, ...data };
+    setFormData(newData);
+    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
@@ -654,6 +667,7 @@ export default function App({ facilitator, ip, onClick }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
+    updateData(newData);
     if (_.isEmpty(errors)) {
       const { id } = facilitator;
       let success = false;
@@ -856,17 +870,10 @@ export default function App({ facilitator, ip, onClick }) {
         colorScheme="green"
         {...btnProps}
         onPress={(e) => {
-          if (schema?.properties?.vo_experience) {
-            if (formData.vo_experience?.length === 0) {
-              setAddBtn(t("ADD_MORE"));
-            }
+          updateBtnText();
+          if (formRef?.current.validateForm()) {
+            btnProps?.onClick();
           }
-          if (schema?.properties?.experience) {
-            if (formData.experience?.length === 0) {
-              setAddBtn(t("ADD_MORE"));
-            }
-          }
-          btnProps?.onClick();
         }}
       >
         <HStack>
@@ -884,16 +891,7 @@ export default function App({ facilitator, ip, onClick }) {
         mb="2"
         {...btnProps}
         onPress={(e) => {
-          if (schema?.properties?.vo_experience) {
-            if (formData.vo_experience?.length === 0) {
-              setAddBtn(t("YES"));
-            }
-          }
-          if (schema?.properties?.experience) {
-            if (formData.experience?.length === 0) {
-              setAddBtn(t("YES"));
-            }
-          }
+          updateBtnText();
           btnProps?.onClick();
         }}
       >
@@ -938,7 +936,7 @@ export default function App({ facilitator, ip, onClick }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang}
+            key={lang + addBtn}
             ref={formRef}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
@@ -983,7 +981,7 @@ export default function App({ facilitator, ip, onClick }) {
         size="xl"
       >
         <Modal.Content>
-          <Modal.CloseButton />
+          {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
             <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
           </Modal.Header>

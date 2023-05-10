@@ -27,6 +27,34 @@ import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 
+const Experience = (obj) => {
+  return (
+    <VStack>
+      {obj?.role_title ? (
+        <Text>
+          {t("ROLE")} : {obj?.role_title}
+        </Text>
+      ) : (
+        <React.Fragment />
+      )}
+      {obj?.experience_in_years ? (
+        <Text>
+          {t("YEARS_OF_EX")} : {obj?.experience_in_years}
+        </Text>
+      ) : (
+        <React.Fragment />
+      )}
+      {obj?.description ? (
+        <Text>
+          {t("DESCRIPTION")} : {obj?.description}
+        </Text>
+      ) : (
+        <React.Fragment />
+      )}
+    </VStack>
+  );
+};
+
 export default function FacilitatorView({ footerLinks }) {
   const { id } = useParams();
   const [data, setData] = React.useState();
@@ -39,7 +67,7 @@ export default function FacilitatorView({ footerLinks }) {
 
   if (!data) {
     return <Loading />;
-  } else if (_.isEmpty(data)) {
+  } else if (_.isEmpty(data) || data.error) {
     return <NotFound goBack={(e) => navigate(-1)} />;
   }
 
@@ -55,9 +83,9 @@ export default function FacilitatorView({ footerLinks }) {
             />
             <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
-          <HStack alignItems="center">
-            <VStack width="70%" direction="column">
-              <HStack alignItems="center" mb="6" space="4">
+          <HStack alignItems="center" flexWrap="wrap">
+            <VStack flex="0.7" direction="column">
+              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
                 <H1>
                   {data?.first_name} {data?.last_name}
                 </H1>
@@ -76,14 +104,30 @@ export default function FacilitatorView({ footerLinks }) {
                   />
                   <BodyLarge>{data?.mobile}</BodyLarge>
                 </HStack>
-                <HStack bg="badgeColor.400" rounded={"md"} p="2">
+                <HStack
+                  bg="badgeColor.400"
+                  rounded={"md"}
+                  p="2"
+                  alignItems="center"
+                  space="2"
+                >
                   <IconByName
                     isDisabled
                     _icon={{ size: "20px" }}
                     name="MapPinLineIcon"
                     color="textGreyColor.300"
                   />
-                  <Text fontSize="12px">{data?.address}</Text>
+                  <BodySmall>
+                    {[
+                      data?.state,
+                      data?.district,
+                      data?.block,
+                      data?.village,
+                      data?.grampanchayat,
+                    ]
+                      .filter((e) => e)
+                      .join(",")}
+                  </BodySmall>
                 </HStack>
               </HStack>
               <H2 fontSize="18" pb="2">
@@ -148,7 +192,7 @@ export default function FacilitatorView({ footerLinks }) {
                 </VStack>
               </HStack>
             </VStack>
-            <HStack width="30%" pl="5">
+            <HStack flex="0.3" pl="5" justifyContent="center">
               {data?.profile_url ? (
                 <Avatar
                   source={{
@@ -218,7 +262,17 @@ export default function FacilitatorView({ footerLinks }) {
 
                 <VStack>
                   <Text color="warmGray.500">{t("ADDRESS")} </Text>
-                  <Text>{data?.address}</Text>
+                  <Text>
+                    {[
+                      data?.state,
+                      data?.district,
+                      data?.block,
+                      data?.village,
+                      data?.grampanchayat,
+                    ]
+                      .filter((e) => e)
+                      .join(", ")}
+                  </Text>
                 </VStack>
 
                 <VStack>
@@ -253,46 +307,47 @@ export default function FacilitatorView({ footerLinks }) {
                   <VStack>
                     <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
                     <VStack>
-                      {data?.qualifications?.map((qua, key) => {
-                        return (
-                          <Text key={key}>
-                            {qua?.qualification_master?.name}
-                          </Text>
-                        );
-                      })}
+                      {data?.qualifications
+                        ?.filter((e) => e.type === "qualification")
+                        ?.map((qua, key) => {
+                          return (
+                            <Text key={key}>
+                              {qua?.qualification_master?.name}
+                            </Text>
+                          );
+                        })}
+                    </VStack>
+                    <VStack>
+                      {data?.qualifications
+                        ?.filter((e) => e.type === "traching")
+                        ?.map((qua, key) => {
+                          return (
+                            <Text key={key}>
+                              {qua?.qualification_master?.name}
+                            </Text>
+                          );
+                        })}
                     </VStack>
                   </VStack>
 
-                  <VStack>
-                    <Text color="warmGray.500">{t("WORK_EXPERIENCE")} </Text>
-                    <VStack space={5}>
-                      {data?.experience?.map((obj, key) => {
-                        return (
-                          <VStack key={key}>
-                            {obj?.role_title ? (
-                              <Text>
-                                {t("ROLE")} : {obj?.role_title}
-                              </Text>
-                            ) : (
-                              <React.Fragment />
-                            )}
-                            {obj?.experience_in_years ? (
-                              <Text>
-                                {t("YEARS_OF_EX")} : {obj?.experience_in_years}
-                              </Text>
-                            ) : (
-                              <React.Fragment />
-                            )}
-                            {obj?.description ? (
-                              <Text>
-                                {t("DESCRIPTION")} : {obj?.description}
-                              </Text>
-                            ) : (
-                              <React.Fragment />
-                            )}
-                          </VStack>
-                        );
-                      })}
+                  <VStack space="4">
+                    <VStack space="2">
+                      <Text color="warmGray.500">{t("WORK_EXPERIENCE")} </Text>
+                      <VStack space={5}>
+                        {data?.experience?.map((e, key) => (
+                          <Experience key={key} {...e} />
+                        ))}
+                      </VStack>
+                    </VStack>
+                    <VStack space="2">
+                      <Text color="warmGray.500">
+                        {t("VOLUNTEER_EXPERIENCE")}
+                      </Text>
+                      <VStack space={5}>
+                        {data?.vo_experience?.map((e, key) => (
+                          <Experience key={key} {...e} />
+                        ))}
+                      </VStack>
                     </VStack>
                   </VStack>
                   <VStack display="Flex" flexDirection="column" space="20px">
@@ -306,7 +361,12 @@ export default function FacilitatorView({ footerLinks }) {
                     </Heading>
                     <VStack>
                       <Text color="warmGray.500">{t("AVAILABILITY")} </Text>
-                      <Text>{data?.program_faciltators?.availability}</Text>
+                      <Text>
+                        {data?.program_faciltators?.availability?.replaceAll(
+                          "_",
+                          " "
+                        )}
+                      </Text>
                     </VStack>
                     <VStack>
                       <Text color="warmGray.500">{t("DEVICE_OWNERSHIP")} </Text>
