@@ -191,7 +191,7 @@ export default function App({ facilitator, ip, onClick }) {
     },
   };
 
-  const nextPreviewStep = (pageStape = "n") => {
+  const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
@@ -206,6 +206,7 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
+        await formSubmitUpdate({ ...formData, form_step_number: "13" });
         setPage("upload");
       } else {
         return true;

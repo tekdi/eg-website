@@ -182,10 +182,11 @@
   "AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH": "Aadhaar numbers should be 12 digit in length",
   "MINIMUM_AGE_18_YEAR_OLD": "Minimum age 18 year old",
   "MOBILE_NUMBER_ALREADY_EXISTS": "mobile number already exists",
-  "NEED_HELP":"Need Help ?",
-  "CALL_MY_IP":"Call My IP",
+  "HELP": "Help ?",
+  "NEED_HELP": "Need Help ?",
+  "CALL_MY_IP": "Call My IP",
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
-  "CALL_SUPPORT" :"Call Support",
-  "LOGOUT":"Logout",
-  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number "
+  "CALL_SUPPORT": "Call Support",
+  "LOGOUT": "Logout",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number"
 }
