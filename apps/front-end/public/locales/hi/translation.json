@@ -194,7 +194,7 @@
   "Offline": "ऑफलाइन",
   "MINIMUM_LENGTH_IS_10": "10 अंकों की संख्या दर्ज करें",
   "PLEASE_ENTER_VALID_NUMBER": "कृपया वैध संख्या दर्ज करें",
-  "AADHAAR_NUMBERS_SHOULD_BE_12_DIGIT_IN_LENGTH": "आधार संख्या 12 अंक होनी चाहिए",
+  "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER": "आधार 12 अंकों का मान्य नंबर होना चाहिए।",
   "MINIMUM_AGE_18_YEAR_OLD": "न्यूनतम आयु 18 वर्ष",
   "MOBILE_NUMBER_ALREADY_EXISTS": "मोबाइल नंबर पहले से ही मौजूद है",
   "NEED_HELP": "मदद की ज़रूरत है",
