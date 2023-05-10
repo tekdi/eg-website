@@ -1,0 +1,43 @@
+name: CICD
+on: 
+  push: 
+    branches:
+      - master
+jobs:
+  build:
+    name: build-deploy-to-dev
+    environment: DEV
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          yarn install
+          yarn workspace @shiksha/common-lib build
+          yarn install
+          yarn build
+      - name: Create Lerna Bundles
+        run: |
+          sh ./scripts/pack-prod-build.sh
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_HOST }}
+      - name: Adding known hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts          
+      - name: RSYNC Build
+        run: |
+          rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/html2
+            rm -rf *
+            cp ../eg-website.tar ./
+            tar -xvf eg-website.tar .

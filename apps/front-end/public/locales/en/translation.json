@@ -118,6 +118,7 @@
   "WELCOME": "Welcome",
   "REMOVE_EXPERIENCE": "Remove Experience",
   "ADD_MORE": "Add more",
+  "ADD_EXPERIENCE": "Add experience",
   "NEXT": "Next",
   "YES": "Yes",
   "NO": "No",
@@ -188,5 +189,6 @@
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
-  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number"
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number",
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
 }

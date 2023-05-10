@@ -28,11 +28,11 @@ export default {
           type: "number",
           title: "MOBILE_NUMBER",
         },
-        email_id: {
-          type: "string",
-          format: "email",
-          title: "EMAIL_ID",
-        },
+        // email_id: {
+        //   type: "string",
+        //   format: "email",
+        //   title: "EMAIL_ID",
+        // },
       },
     },
     3: {
@@ -128,12 +128,7 @@ export default {
           type: "array",
           items: {
             title: "VOLUNTEER_EXPERIENCE",
-            required: [
-              "role_title",
-              "organization",
-              "experience_in_years",
-              "related_to_teaching",
-            ],
+            required: ["role_title", "organization", "experience_in_years"],
             properties: {
               role_title: {
                 title: "JOB_TITLE",
@@ -173,12 +168,7 @@ export default {
           type: "array",
           items: {
             title: "EXPERIENCE",
-            required: [
-              "role_title",
-              "organization",
-              "experience_in_years",
-              "related_to_teaching",
-            ],
+            required: ["role_title", "organization", "experience_in_years"],
             properties: {
               role_title: {
                 title: "JOB_TITLE",
