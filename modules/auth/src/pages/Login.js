@@ -74,7 +74,7 @@ export default function Login() {
     }
   };
   return (
-    <Layout _appBar={{onlyIconsShow:['helpBtn','loginBtn']}}>
+    <Layout _appBar={{onlyIconsShow:['helpBtn']}}>
     <Stack bg="gray.200">
       <Center mt={5}><H1 color="textMaroonColor.400">{t("LOGIN")}</H1></Center>
       <Center p="5" ref={ref} minH={Height / 2}>
