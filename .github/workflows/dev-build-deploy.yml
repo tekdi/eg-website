@@ -29,7 +29,7 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts          
       - name: RSYNC Build
         run: |
-          rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/
+          rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
