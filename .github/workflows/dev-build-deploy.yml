@@ -17,6 +17,9 @@ jobs:
           yarn workspace @shiksha/common-lib build
           yarn install
           yarn build
+      - name: Create Lerna Bundles
+        run: |
+          sh ./scripts/pack-prod-build.sh
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -24,10 +27,9 @@ jobs:
           known_hosts: ${{ secrets.SSH_HOST }}
       - name: Adding known hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts          
-      - name: Copy Package
+      - name: RSYNC Build
         run: |
-          sh ./scripts/pack-prod-build.sh
-          rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
+          rsync eg-website.tar -i  ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
