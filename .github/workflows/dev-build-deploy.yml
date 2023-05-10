@@ -5,8 +5,8 @@ on:
       - master
 jobs:
   build:
-    name: build-deploy-to-sandbox
-    environment: sandbox
+    name: build-deploy-to-dev
+    environment: DEV
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,7 +27,7 @@ jobs:
       - name: Copy Package
         run: |
           sh ./scripts/pack-prod-build.sh
-          rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/eg-website.tar
+          rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html2/eg-website.tar
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/html
+            cd /var/www/html2
             rm -rf *
             cp ../eg-website.tar ./
             tar -xvf eg-website.tar .
