@@ -1,6 +1,6 @@
 import React from "react";
 import { VStack, Text, Image, Box, Button, Stack } from "native-base";
-
+import { t } from "@shiksha/common-lib";
 const stylesheet = {
   mainBox: {
     justifyContent: "center",
@@ -42,12 +42,14 @@ const stylesheet = {
   bgimage: {
     height: "100vh",
     left: "0px",
+    backgroundColor: "#F4F4F7",
     backgroundImage: `url(/bgImage.png)`,
   },
   boxContent: {
     borderRadius: " 10px 10px",
     width: "260px",
     height: "100px",
+    padding: "8px",
     justifyContent: "center",
     textAlign: "flex",
   },
@@ -64,7 +66,7 @@ const stylesheet = {
 };
 
 function PrerakDuties(props) {
-  let { imgUrl, title, processedButton, onPress } = props;
+  let { imgUrl, title, processedButton, onPress, onSkipPress } = props;
   return (
     <Stack style={stylesheet.bgimage}>
       <Text style={stylesheet.mainText}>{t("PRERAK_DUTIES")}</Text>
@@ -96,7 +98,14 @@ function PrerakDuties(props) {
         >
           {processedButton}
         </Button>
-        <Text style={stylesheet.skipText}>{t("SKIP_TO_APPLY")}</Text>
+        {onSkipPress && (
+          <Text
+            style={stylesheet.skipText}
+            onPress={onSkipPress ? onSkipPress : (e) => {}}
+          >
+            {t("SKIP_TO_APPLY")}
+          </Text>
+        )}
       </VStack>
     </Stack>
   );
@@ -112,6 +121,7 @@ export default function SwiperFile({ onClick }) {
           imgUrl={`/img1.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("2")}
+          onSkipPress={onClick}
         />
       ) : page === "2" ? (
         <PrerakDuties
@@ -119,6 +129,7 @@ export default function SwiperFile({ onClick }) {
           imgUrl={`/img2.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("3")}
+          onSkipPress={onClick}
         />
       ) : page === "3" ? (
         <PrerakDuties
@@ -126,6 +137,7 @@ export default function SwiperFile({ onClick }) {
           imgUrl={`/img3.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("4")}
+          onSkipPress={onClick}
         />
       ) : page === "4" ? (
         <PrerakDuties
@@ -133,6 +145,7 @@ export default function SwiperFile({ onClick }) {
           imgUrl={`/img4.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("5")}
+          onSkipPress={onClick}
         />
       ) : page === "5" ? (
         <PrerakDuties
@@ -140,6 +153,7 @@ export default function SwiperFile({ onClick }) {
           imgUrl={`/img5.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("6")}
+          onSkipPress={onClick}
         />
       ) : page === "6" ? (
         <PrerakDuties

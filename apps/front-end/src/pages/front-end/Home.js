@@ -3,7 +3,7 @@ import Form from "./Form";
 import SplashScreen from "./splash/SplashScreen";
 import PrerakDuties from "./splash/PrerakDuties";
 import Success from "./Success";
-import { facilitatorRegistryService } from "@shiksha/common-lib";
+import { facilitatorRegistryService, initializeI18n } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 
 function Home({ userTokenInfo }) {
@@ -40,6 +40,7 @@ function Home({ userTokenInfo }) {
       page={page}
       onClick={() => setPage("Form")}
       onClickPrerakDuties={() => setPage("Prerak_Duties")}
+      onPreferedLanguage={()=>setPage("Prerak_Duties")}
     />
   ) : page === "Prerak_Duties" ? (
     <PrerakDuties page={page} onClick={() => setPage("Form")} />
