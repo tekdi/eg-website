@@ -31,7 +31,7 @@ jobs:
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
       - name: Deploy with rsync
-        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/
+        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
           
 #       - name: Install SSH key
 #         uses: shimataro/ssh-key-action@v2
@@ -53,7 +53,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu
-            tar -xvf eg-website.tar /var/www/html2
+            cp eg-website.tar /var/www/html2
+            #tar -xvf eg-website.tar /var/www/html2
             #rm -rf *
             #cp ../eg-website.tar ./
             #tar -xvf eg-website.tar .
