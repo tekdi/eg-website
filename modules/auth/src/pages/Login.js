@@ -162,7 +162,7 @@ export default function Login() {
                   onChange={(e) =>
                     setCredentials({
                       ...credentials,
-                      username: e.target.value,
+                      username: e?.target?.value?.trim(),
                     })
                   }
                 />
@@ -197,7 +197,7 @@ export default function Login() {
                   onChange={(e) =>
                     setCredentials({
                       ...credentials,
-                      password: e.target.value,
+                      password: e?.target?.value,
                     })
                   }
                 />
@@ -216,14 +216,14 @@ export default function Login() {
                 )}
               </FormControl>
             </VStack>
-            <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption>
-            <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge>
+            {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
+            {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
             <Button flex={1} variant={"primary"} onPress={handleLogin}>
               {t("SUBMIT")}
             </Button>
-            <BodyMedium color="primary.500" textAlign="center">
+            {/* <BodyMedium color="primary.500" textAlign="center">
               {t("CHANGE_MY_PASSWORD")}
-            </BodyMedium>
+            </BodyMedium> */}
           </VStack>
         </VStack>
       </Box>
