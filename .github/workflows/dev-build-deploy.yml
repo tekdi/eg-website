@@ -53,7 +53,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu
-            cp eg-website.tar /var/www/html2
+            #cp eg-website.tar /var/www/html2
             tar -xvf eg-website.tar -C /var/www/html2/
             #rm -rf *
             #cp ../eg-website.tar ./
