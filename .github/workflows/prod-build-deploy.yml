@@ -5,8 +5,8 @@ on:
       - master
 jobs:
   build:
-    name: build-deploy-to-dev
-    environment: DEV
+    name: Build Deploy to Prod
+    environment: PROD
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
