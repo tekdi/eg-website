@@ -451,6 +451,15 @@ export default function App({ facilitator, ip, onClick }) {
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+      if (
+        key === "first_name" &&
+        data?.first_name?.replaceAll(" ", "") === ""
+      ) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -697,7 +706,9 @@ export default function App({ facilitator, ip, onClick }) {
         if (data?.error) {
           const newErrors = {
             mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              __errors: data?.error
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
