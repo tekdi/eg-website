@@ -1024,11 +1024,11 @@ export default function App({ facilitator, ip, onClick }) {
                 >
                   <HStack alignItems="center" space="5">
                     <H3>{t("USERNAME")}</H3>
-                    <BodySmall>{credentials?.username}</BodySmall>
+                    <BodySmall  wordWrap= "break-word" width="130px" whiteSpace= "nowrap" overflow="hidden" textOverflow= "ellipsis">{credentials?.username}</BodySmall>
                   </HStack>
                   <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall>{credentials?.password}</BodySmall>
+                    <H3 >{t("PASSWORD")}</H3>
+                    <BodySmall  wordWrap= "break-word" width="130px" whiteSpace= "nowrap" overflow="hidden" textOverflow= "ellipsis">{credentials?.password}</BodySmall>
                   </HStack>
                 </Box>
               </VStack>
