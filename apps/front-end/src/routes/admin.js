@@ -4,6 +4,7 @@ import FacilitatorView from "pages/admin/facilitator/View";
 import AdminHome from "pages/admin/AdminHome";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import NotFound from "pages/NotFound";
+import Orientation from "pages/front-end/Orientation";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -12,4 +13,5 @@ export default [
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
   { path: "*", component: NotFound },
+  { path: "/orientation", component: Orientation },
 ];
