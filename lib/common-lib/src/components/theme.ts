@@ -137,7 +137,7 @@ const DEFAULT_THEME = {
         }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
-          borderWidth: '2',
+          borderWidth: '1',
           borderColor: `#790000`,
           _hover: {
             bg: `#FFFFFF`
@@ -146,10 +146,9 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
-            fontWeight: '600',
             color: '#790000'
           },
-          rounded: '4'
+          rounded: '4px'
         })
       }
     }
@@ -334,6 +333,9 @@ const DEFAULT_THEME = {
     },
     progressBarColor: {
       200: '#10B981'
+    },
+    bgGreyColor: {
+      200: '#F4F4F7'
     },
     textGreyColor: {
       100: '#616161',
