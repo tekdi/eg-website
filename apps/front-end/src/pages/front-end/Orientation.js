@@ -4,6 +4,8 @@ import {
   IconByName,
   AdminLayout as Layout,
   ProgressBar,
+  H1,
+  t,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -36,11 +38,13 @@ import {
   CheckIcon,
   CheckCircleIcon,
   TextArea,
+  Pressable,
 } from "native-base";
 import Chip from "component/Chip";
 import moment from "moment";
 
-export default function Orientation({ footerLinks }) {
+export default function Orientation({ footerLinks, onShowScreen }) {
+  console.log(onShowScreen);
   // const { t } = useTranslation();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
@@ -82,7 +86,7 @@ export default function Orientation({ footerLinks }) {
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          <Box
+          <Pressable
             width="279px"
             height="169px"
             borderStyle="1px"
@@ -90,6 +94,7 @@ export default function Orientation({ footerLinks }) {
             borderWidth="1px"
             backgroundColor="#CAE9FF"
             borderRadius="10px"
+            onPress={onShowScreen}
           >
             <VStack alignItems="Center">
               <Box
@@ -101,7 +106,7 @@ export default function Orientation({ footerLinks }) {
               ></Box>
               <Text>Prerak Orientation</Text>
             </VStack>
-          </Box>
+          </Pressable>
           <Box
             width="279px"
             height="169px"
@@ -180,9 +185,15 @@ export default function Orientation({ footerLinks }) {
         onClose={() => setModalVisible(false)}
         avoidKeyboard
         size="xl"
+        // height={"450px"}
+        overflowY={"scroll"}
       >
         <Modal.Content>
           <Modal.CloseButton />
+          <Modal.Header p="5" borderBottomWidth="0" bg="white">
+            <H1 textAlign="center"> Schedule an Interview</H1>
+          </Modal.Header>
+
           {/* <Modal.Header textAlign={"Center"}>
             Schedule an Interview
           </Modal.Header>
@@ -291,25 +302,26 @@ export default function Orientation({ footerLinks }) {
               </Button>
             </Button.Group>
           </Modal.Footer> */}
+          <Modal.Body p="3" pb="10" bg="white">
+            <Form
+              ref={formRef}
+              templates={{
+                FieldTemplate,
+                ObjectFieldTemplate,
+                TitleFieldTemplate,
+                DescriptionFieldTemplate,
+              }}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                validator,
+                schema: orientationPopupSchema,
+                formData,
+                uiSchema,
+              }}
+            />
 
-          <Form
-            ref={formRef}
-            templates={{
-              FieldTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-            }}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              validator,
-              schema: orientationPopupSchema,
-              formData,
-              uiSchema,
-            }}
-          >
-            <Modal.Footer>
+            <HStack>
               <Button.Group space={2}>
                 <Button
                   variant="ghost"
@@ -328,8 +340,8 @@ export default function Orientation({ footerLinks }) {
                   Send Invites
                 </Button>
               </Button.Group>
-            </Modal.Footer>
-          </Form>
+            </HStack>
+          </Modal.Body>
         </Modal.Content>
       </Modal>
 
@@ -370,10 +382,15 @@ export default function Orientation({ footerLinks }) {
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
             events={[
-              { title: 'event 1', date: moment().format("YYYY-MM-DD HH:mm:ss") },
-              
+              {
+                title: "Orientation",
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
+              {
+                title: "Orientation",
+                date: moment().format("2023-05-14 02:00:00"),
+              },
             ]}
-          
             headerToolbar={{
               start: "prev,thisweek,next",
               center: "timeGridWeek,dayGridMonth,dayGridYear",
@@ -381,7 +398,6 @@ export default function Orientation({ footerLinks }) {
               height: "50hv",
             }}
           />
-          
         </Box>
       </HStack>
     </Layout>

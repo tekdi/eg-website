@@ -121,19 +121,34 @@ const DEFAULT_THEME = {
           rounded: 'full'
         }),
         outlinePrimary: ({ colorScheme }: any) => ({
-          bg: `${colorScheme}.50`,
-          borderWidth: '1',
-          borderColor: `${colorScheme}.500`,
+          bg: `#2D142C`,
           _hover: {
-            bg: `${colorScheme}.100`
+            bg: `#555555`
           },
           _pressed: {
-            bg: `${colorScheme}.200`
+            bg: `#444444`
           },
           _text: {
-            color: `${colorScheme}.500`
+            fontWeight: '600',
+            color: '#ffffff'
           },
-          rounded: '4'
+          rounded: 'full'
+        }),
+        outlineSecondary: ({ colorScheme }: any) => ({
+          bg: 'red',
+          borderWidth: '1',
+          boxShadow: '2px 3px 0px #8B7171',
+          borderColor: `${colorScheme}`,
+          _hover: {
+            bg: `${colorScheme}`
+          },
+          _pressed: {
+            bg: `${colorScheme}`
+          },
+          _text: {
+            color: '#084B82'
+          },
+          rounded: 'full'
         }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
