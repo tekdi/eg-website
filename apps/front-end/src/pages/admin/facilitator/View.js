@@ -26,6 +26,7 @@ import {
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import Interviewschedule from "./view/Interviewschedule";
 
 const Experience = (obj) => {
   return (
@@ -222,7 +223,11 @@ export default function FacilitatorView({ footerLinks }) {
               </Button>
             </VStack>
           </HStack>
-
+          {data?.status === "screened" ? (
+            <Interviewschedule />
+          ) : (
+            <React.Fragment />
+          )}
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>
             <HStack justifyContent="space-evenly">
