@@ -20,9 +20,9 @@ export default function Dashboard({ userTokenInfo }) {
 
   const styles = {
     inforBox: { style: {background: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)'}},
-    redFillButtonShadow: { style: { boxShadow: '1px 3px 0px #C92A42'} },
+    redFillBtnShadow: { style: { boxShadow: '1px 3px 0px #C92A42'} },
     redOutlineBtnShadow: { style: { boxShadow: '2px 3px 0px #8B7171' } },
-    addAnAgShadowBox: { style: { boxShadow: '2px 3px 0px #790000' ,  border:'1px solid #790000', borderRadius:'10px', padding:'50px'}}
+    AddAnAgShadowBox: { style: { boxShadow: '2px 3px 0px #790000' ,  border:'1px solid #790000', borderRadius:'10px', padding:'50px'}}
   }
 
   React.useEffect(async () => {
@@ -85,7 +85,7 @@ export default function Dashboard({ userTokenInfo }) {
           <Button {...styles.redOutlineBtnShadow}  variant='redOutlineBtn' rounded="full" width="50%">
               <Text fontSize="lg" bold color="textMaroonColor.400">{t("REJECT")} </Text>
             </Button>
-            <ButtonStyle {...styles.redFillButtonShadow} width="50%"><Text fontSize="lg" bold color="white">
+            <ButtonStyle {...styles.redFillBtnShadow} width="50%"><Text fontSize="lg" bold color="white">
               {t("ACCEPT")}</Text>
             </ButtonStyle>
           </HStack>
@@ -120,7 +120,7 @@ export default function Dashboard({ userTokenInfo }) {
           <Button {...styles.redOutlineBtnShadow} variant='redOutlineBtn' rounded="full" width="50%">
               <Text fontSize="lg" bold color="textMaroonColor.400">{t("REJECT")} </Text>
             </Button>
-            <ButtonStyle {...styles.redFillButtonShadow} width="50%"><Text fontSize="lg" bold color="white">{t("ACCEPT")}</Text>
+            <ButtonStyle {...styles.redFillBtnShadow} width="50%"><Text fontSize="lg" bold color="white">{t("ACCEPT")}</Text>
             </ButtonStyle>
           </HStack>
           <HStack>
@@ -212,7 +212,7 @@ export default function Dashboard({ userTokenInfo }) {
             </HStack>
             <HStack>
               
-          <ButtonStyle {...styles.redFillButtonShadow} width="100%" fontSize="lg" endIcon={<IconByName
+          <ButtonStyle {...styles.redFillBtnShadow} width="100%" fontSize="lg" endIcon={<IconByName
                   isDisabled
                   name="Upload2FillIcon"
                   _icon={{ size: "25px" }}
@@ -223,7 +223,7 @@ export default function Dashboard({ userTokenInfo }) {
         </Stack>
         <Stack bg="white" space="5" p="5">
           <Text fontSize="lg" bold>{t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}</Text>
-              <ButtonStyle rounded={"full"} width="100%" {...styles.redFillButtonShadow}>
+              <ButtonStyle rounded={"full"} width="100%" {...styles.redFillBtnShadow}>
               <Text fontSize="lg" bold color="white">{t("AADHAR_NUMBER_KYC")}</Text>
               </ButtonStyle> 
               <Button rounded={"full"} width="100%"  variant='redOutlineBtn' {...styles.redOutlineBtnShadow}>
@@ -242,7 +242,7 @@ export default function Dashboard({ userTokenInfo }) {
             </svg>
           <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">{t("WELCOME")} Rachana</Text>
         </HStack>
-        <Button background="#FCEEE2" mx="5" width="40%" {... styles.addAnAgShadowBox}>
+        <Button background="#FCEEE2" mx="5" width="40%" {... styles.AddAnAgShadowBox}>
            <Text color="textMaroonColor.400" fontSize="lg" bold>Add an AG</Text> 
             </Button>
         <Stack px="3">
