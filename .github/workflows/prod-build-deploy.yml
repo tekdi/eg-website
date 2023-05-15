@@ -1,8 +1,9 @@
-name: CICD
+name: Deploy to Prod
 on: 
   push: 
-    branches:
-      - master
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - v1.*
 jobs:
   build:
     name: Build Deploy to Prod
@@ -25,26 +26,14 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: unnecessary
+          known_hosts: ${{ secrets.SSH_HOST }}
           
       - name: Adding Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
       - name: Deploy with rsync
         run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-          
-#       - name: Install SSH key
-#         uses: shimataro/ssh-key-action@v2
-#         with:
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           known_hosts: ${{ secrets.SSH_HOST }}
-          
-#       - name: Adding known hosts
-#         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts          
-#       - name: RSYNC Build
-#         run: |
-#           rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-        
+
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:

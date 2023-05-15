@@ -195,5 +195,22 @@
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
+  "INTERVIEW_DETAILS":"Interview Details",
+  "CONDUCTED_BY":"Conducted by",
+  "ORIENTATION_DETAILS":"Orientation Details",
+  "ONLINE":"Online",
+  "ACCEPT":"Accept",
+  "DOCUMENTS_YOU_NEED_TO_CARRY":"Documents you need to carry",
+  "UPLOAD_YOUR_DOCUMENTS":"Upload Your Documents",
+  "UPLOAD_NOW":"Upload Now",
+  "QUALIFICATION_PROOF":"Qualification Proof",
+  "WORK_EXPERIENCE_PROOF":"Work Experience Proof",
+  "VOLUNTEER_EXPERIENCE_PROOF":"Volunteer Experience Proof",
+  "AADHAR_NUMBER_KYC":"Aadhar Number KYC",
+  "ADD_AN_AG":"Add an AG",
+  "COMPLETE_YOUR_AADHAR_VERIFICATION_NOW":"Complete Your Aadhaar Verification Now",
+  "ADD_AN_AG_LEARNER":"Add an AG Learner",
+  "MY_CAMP":"Mycamp",
+  "LEARNERS":"learners"
 }

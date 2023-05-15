@@ -139,6 +139,7 @@ const DEFAULT_THEME = {
           bg: `#FFFFFF`,
           borderWidth: '2',
           borderColor: `#790000`,
+        
           _hover: {
             bg: `#FFFFFF`
           },
@@ -146,10 +147,27 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
-            fontWeight: '600',
+            fontWeight: '700',
             color: '#790000'
           },
-          rounded: '4'
+          rounded: '4',
+          shadow:'2px 3px 0px #8B7171'
+        }),
+        redfillBtnAdmin: () => ({
+          bg: `#2D142C`,
+          borderWidth: '1',
+          borderColor: `#2D142C`,
+          color:'#FFFFFF',      
+          _hover: {
+            bg: `#FFFFFF`
+          },
+          _pressed: {
+            bg: `#f9f5f5`
+          },
+          _text: {
+            fontWeight: '700',
+          },
+          rounded: 'full'
         })
       }
     }
@@ -342,6 +360,9 @@ const DEFAULT_THEME = {
     },
     textMaroonColor: {
       400: '#790000'
+    },
+    bgPinkColor:{
+      300:'#F9E9DB'
     }
   }
 }
