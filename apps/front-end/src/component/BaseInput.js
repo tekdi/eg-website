@@ -114,7 +114,7 @@ export const FieldTemplate = ({
         <label htmlFor={id}>
           <HStack space="1" alignItems="center">
             <H2 color="textMaroonColor.400">{t(label)}</H2>
-            <H2>{required ? "*" : null}</H2>
+            <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
           </HStack>
         </label>
         {description?.props?.description !== "" ? (
