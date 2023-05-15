@@ -6,9 +6,10 @@ import {
   Layout,
   t,
   ButtonStyle,
+  SelectStyle
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, Pressable, VStack, Box, Stack, Button,Text,View, Center ,NativeBaseProvider,selected,Alert,Badge} from "native-base";
+import { HStack, Pressable, VStack, Box, Stack, Button,Text,View, Center ,NativeBaseProvider,selected,Alert,Badge,Select} from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonStories, { Primary } from "stories/Button.stories";
@@ -22,7 +23,8 @@ export default function Dashboard({ userTokenInfo }) {
     inforBox: { style: {background: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)'}},
     redFillBtnShadow: { style: { boxShadow: '1px 3px 0px #C92A42'} },
     redOutlineBtnShadow: { style: { boxShadow: '2px 3px 0px #8B7171' } },
-    AddAnAgShadowBox: { style: { boxShadow: '2px 3px 0px #790000' ,  border:'1px solid #790000', borderRadius:'10px', padding:'50px'}}
+    AddAnAgShadowBox: { style: { boxShadow: '2px 3px 0px #790000' ,  border:'1px solid #790000', borderRadius:'10px', padding:'50px'}},
+    FooterShadow: { style: { boxShadow: '0px -4px 8px rgba(224, 224, 224, 0.4)' } },
   }
 
   React.useEffect(async () => {
@@ -35,6 +37,7 @@ export default function Dashboard({ userTokenInfo }) {
   return (
     <Layout>
       <VStack space="5" bg="gray.200">
+        {/* /* Under review */ }
         <HStack
           p="5"
           space="5"
@@ -54,7 +57,57 @@ export default function Dashboard({ userTokenInfo }) {
               <BodySmall>{t("MEANWHILE_PROFILE")}</BodySmall>
             </Box>
           </VStack>
+          <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">{t("WELCOME")} Rachana</Text>
+
         </HStack>
+        <Stack  bg="bgPinkColor.300" space="6" p={4}>  
+        <Text fontSize="lg" bold color="textMaroonColor.400">{t("UPLOAD_YOUR_DOCUMENTS")}</Text>
+            <Text fontSize="sm">You need to upload these documents before attending your Pragati orientation</Text>
+            <HStack space="2">
+              <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack>
+                <Text fontSize="sm" bold>{t("QUALIFICATION_PROOF")}</Text>
+                <Text fontSize="xs">(This can be your highest grade or graduation certificate)</Text>
+                </VStack>
+            </HStack>
+            <HStack space="2">
+              <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack>
+                    <Text fontSize="sm" bold>{t("WORK_EXPERIENCE_PROOF")}</Text>
+                    <Text fontSize="xs">(This can be letter of recommendation from your company/workplace)</Text>
+                </VStack>
+            </HStack>
+            <HStack space="2">
+              <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack>
+                  <Text fontSize="sm" bold>{t("VOLUNTEER_EXPERIENCE_PROOF")}</Text>
+                  <Text fontSize="xs">(This can be references or letter of recommendation from the organization)</Text>
+                </VStack>
+            </HStack>
+            <HStack>
+              
+          <ButtonStyle {...styles.redFillBtnShadow} width="100%" fontSize="lg" endIcon={<IconByName
+                  isDisabled
+                  name="Upload2FillIcon"
+                  _icon={{ size: "25px" }}
+                />} bold>
+           <Text fontSize="lg" bold color="white"> {t("UPLOAD_NOW")}</Text>
+                </ButtonStyle>  
+            </HStack>
+        </Stack>
+        {/* Application status Interview */}
         <Stack space="5" p="5">
           <Text fontSize="sm" bold>{t("INTERVIEW_DETAILS")}</Text>
           <HStack space="5">
@@ -90,6 +143,7 @@ export default function Dashboard({ userTokenInfo }) {
             </ButtonStyle>
           </HStack>
         </Stack>
+        {/* Application Shortlist */}
         <Stack bg="bgPinkColor.300" space="6" p={4}>
           <Text fontSize="sm" bold>{t("ORIENTATION_DETAILS")}</Text>
           <HStack space="5">
@@ -149,7 +203,6 @@ export default function Dashboard({ userTokenInfo }) {
             </radialGradient>
             </defs>
             </svg>
-          <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">{t("WELCOME")} Rachana</Text>
         </HStack>
           {/* <HStack space="2" alignItems="Center" width="100%" justifyContent="space-evenly" px="5">
               <VStack  space={2} width="50%">
@@ -174,53 +227,7 @@ export default function Dashboard({ userTokenInfo }) {
                 </Button>
               </VStack>
           </HStack> */}
-        <Stack  bg="bgPinkColor.300" space="6" p={4}>  
-        <Text fontSize="lg" bold color="textMaroonColor.400">{t("UPLOAD_YOUR_DOCUMENTS")}</Text>
-            <Text fontSize="sm">You need to upload these documents before attending your Pragati orientation</Text>
-            <HStack space="2">
-              <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack>
-                <Text fontSize="sm" bold>{t("QUALIFICATION_PROOF")}</Text>
-                <Text fontSize="xs">(This can be your highest grade or graduation certificate)</Text>
-                </VStack>
-            </HStack>
-            <HStack space="2">
-              <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack>
-                    <Text fontSize="sm" bold>{t("WORK_EXPERIENCE_PROOF")}</Text>
-                    <Text fontSize="xs">(This can be letter of recommendation from your company/workplace)</Text>
-                </VStack>
-            </HStack>
-            <HStack space="2">
-              <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack>
-                  <Text fontSize="sm" bold>{t("VOLUNTEER_EXPERIENCE_PROOF")}</Text>
-                  <Text fontSize="xs">(This can be references or letter of recommendation from the organization)</Text>
-                </VStack>
-            </HStack>
-            <HStack>
-              
-          <ButtonStyle {...styles.redFillBtnShadow} width="100%" fontSize="lg" endIcon={<IconByName
-                  isDisabled
-                  name="Upload2FillIcon"
-                  _icon={{ size: "25px" }}
-                />} bold>
-           <Text fontSize="lg" bold color="white"> {t("UPLOAD_NOW")}</Text>
-                </ButtonStyle>  
-            </HStack>
-        </Stack>
+       
         <Stack bg="white" space="5" p="5">
           <Text fontSize="lg" bold>{t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}</Text>
               <ButtonStyle rounded={"full"} width="100%" {...styles.redFillBtnShadow}>
@@ -242,6 +249,7 @@ export default function Dashboard({ userTokenInfo }) {
             </svg>
           <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">{t("WELCOME")} Rachana</Text>
         </HStack>
+        {/* potential prerak  */}
         <Button background="#FCEEE2" mx="5" width="40%" {... styles.AddAnAgShadowBox}>
            <Text color="textMaroonColor.400" fontSize="lg" bold>Add an AG</Text> 
             </Button>
@@ -287,18 +295,36 @@ export default function Dashboard({ userTokenInfo }) {
           />
         </VStack>
       </VStack>
-      <HStack justifyContent="space-around">
-        <IconByName name="UserLineIcon" width="40px"></IconByName>
+      <HStack pb="2" justifyContent='space-around'>
+      <SelectStyle placeholder="Status : All" mt={1} width="150px">
+          <Select.Item label="UX Research" value="ux" />
+          <Select.Item label="Web Development" value="web" />
+        </SelectStyle>
+        <SelectStyle  placeholder="Sort By" mt={1} width="150px">
+          <Select.Item label="UX Research" value="ux" />
+          <Select.Item label="Web Development" value="web" />
+        </SelectStyle>
+      </HStack>
+      <HStack justifyContent="space-around" py="2" alignItems="center">
+        <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
          <VStack>
           <Text bold>Khushboo Verma</Text>
           <BodySmall>+91-809876157</BodySmall>
          </VStack>
-         <Badge fontSize="sm" colorScheme="info" rounded="8" _text={{fontSize: 12}}>Screened</Badge>
+         <Badge colorScheme="info" rounded="8" _text={{fontSize: 12}}>Identified</Badge>
+      </HStack>
+      <HStack justifyContent="space-around" py="2" alignItems="center">
+        <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
+         <VStack>
+          <Text bold>Khushboo Verma</Text>
+          <BodySmall>+91-809876157</BodySmall>
+         </VStack>
+         <Badge colorScheme="success" rounded="8" _text={{fontSize: 12}}>Enrolled</Badge>
       </HStack>
       <NativeBaseProvider>
-      <Box flex={1} bg="white" color="textGreyColor.100" safeAreaTop width="100%"  alignSelf="center">
+      <Box flex={1} bg="white" color="textGreyColor.100" safeAreaTop width="100%"  alignSelf="center" {...styles.FooterShadow}>
         
-        <HStack bg="white" alignItems="center" safeAreaBottom shadow={6} width="100%" boxShadow="0px -4px 8px rgba(224, 224, 224, 0.4)">
+        <HStack bg="white" alignItems="center" safeAreaBottom shadow={6} width="100%">
           <Pressable cursor="pointer" opacity={selected === 0 ? 1 : 0.5} py="3" flex={1}>
             <Center>
             <IconByName
@@ -323,14 +349,14 @@ export default function Dashboard({ userTokenInfo }) {
               </Text>
             </Center>
           </Pressable>
-          <Pressable cursor="pointer" opacity={selected === 2 ? 1 : 0.6} py="2" flex={1}>
+          <Pressable cursor="pointer" color="#C92A42" borderTopColor="#C92A42" borderTopWidth="4" borderRadius="5px" py="2" flex={1}>
             <Center>
             <IconByName
                         isDisabled
                         name="CameraLineIcon"
                         _icon={{ size: "20px" }}
                       />
-              <Text fontSize="12">
+              <Text fontSize="12" color="#C92A42">
               {t("MY_CAMP")}
               </Text>
             </Center>
