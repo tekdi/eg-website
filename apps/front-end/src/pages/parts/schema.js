@@ -100,7 +100,7 @@ export default {
       properties: {
         aadhar_token: {
           title: "AADHAAR_NUMBER",
-          type: "string",
+          type: "number",
         },
       },
     },
