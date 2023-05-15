@@ -185,13 +185,13 @@ function AGslist() {
   return (
     <Stack>
       <HStack>
-        <H1>All AG Learners</H1>
+        <H1>{t("ALL_AG_LEARNERS")}</H1>
         <Input
           marginLeft={"650px"}
           width={"500px"}
           borderColor={"black"}
           type="text"
-          placeholder="Search By AG Learner Name"
+          placeholder={t("SEARCH_BY_AG_LEARNER_NAME")}
           onChange={handleFilter}
         />
       </HStack>

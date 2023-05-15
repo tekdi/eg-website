@@ -194,6 +194,16 @@
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
-  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"Enter the Username and Password sent on your Mobile Number",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
+  "All_AG_LEARNERS": "All AG Learners",
+  "EDIT_DETAILS": "Edit_details",
+  "TO": "to",
+  "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "Did the interview take place Successfully",
+  "INTERVIEW_CONDUCTED": "Interview Conducted",
+  "NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW": "Name of the person who took the Interview",
+  "REMARKS": "Remarks",
+  "SHORTLISTED": "Shortlisted",
+  "MARK_FOR_REVIEW": "Marks for Review",
+  "SEARCH_BY_AG_LEARNER_NAME": "Search By AG Learner Name"
 }

@@ -203,6 +203,16 @@
   "FREQUENTLY_ASKED_QUESTION": "अधिकतर पूछे गए प्रश्न",
   "CALL_SUPPORT": "मदद के लिए कॉल करें",
   "LOGOUT": "लॉग आउट",
-  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE":"आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है"
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है",
+  "EDIT_DETAILS": "विवरण संपादित करें",
+  "TO": "से ",
+  "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "क्या साक्षात्कार सफलतापूर्वक संपन्न हुआ",
+  "INTERVIEW_CONDUCTED": "साक्षात्कार का आयोजन",
+  "NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW": "साक्षात्कार लेने वाले व्यक्ति का नाम",
+  "REMARKS": "टिप्पणियां",
+  "SHORTLISTED": "छांटा गया",
+  "MARK_FOR_REVIEW": "समीक्षा के लिए चिह्नित करें",
+  "All_AG_LEARNERS": "सभी एजी लर्नर्स",
+  "SEARCH_BY_AG_LEARNER_NAME": "एजी लर्नर नाम द्वारा खोजें"
 }
