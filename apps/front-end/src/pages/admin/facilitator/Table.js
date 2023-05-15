@@ -140,7 +140,7 @@ function Table({ facilitator }) {
 
   return (
     <VStack>
-      <HStack justifyContent={"space-between"} >
+      <HStack justifyContent={"space-between"} my="1">
         <H1>{t("ALL_PRERAK")}</H1>
         {/* <Input
           InputLeftElement={

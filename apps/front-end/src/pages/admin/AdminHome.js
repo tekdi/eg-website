@@ -26,7 +26,7 @@ const FilterSidebar = ({ items, element, _scrollView, _flex }) => {
     <VStack space={"2"} key={key}>
       <HStack alignItems="center" space={"2"}>
         <IconByName isDisabled name="MapPinLineIcon" />
-        <H3>{item.name}</H3>ddd
+        <H3>{item.name}</H3>
       </HStack>
       <ScrollView {..._scrollView}>
         <Flex px="2" space={"2"} direction="column" flexWrap="wrap" {..._flex}>
