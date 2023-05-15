@@ -153,22 +153,21 @@ const DEFAULT_THEME = {
           rounded: '4',
           shadow:'2px 3px 0px #8B7171'
         }),
-        redfillBtnAdmin: () => ({
-          bg: `#2D142C`,
+        statusBtnAdmin: ({ colorScheme }: any) => ({
+          bg: `${colorScheme}.50`,
           borderWidth: '1',
-          borderColor: `#2D142C`,
-          color:'#FFFFFF',      
+          borderColor: `${colorScheme}.500`,
           _hover: {
-            bg: `#FFFFFF`
+            bg: `${colorScheme}.100`
           },
           _pressed: {
-            bg: `#f9f5f5`
+            bg: `${colorScheme}.200`
           },
           _text: {
-            fontWeight: '700',
+            color: `${colorScheme}.500`
           },
-          rounded: 'full'
-        })
+          rounded: '100'
+        }),
       }
     }
   },
@@ -363,6 +362,12 @@ const DEFAULT_THEME = {
     },
     bgPinkColor:{
       300:'#F9E9DB'
+    },
+    editIcon:{
+      300:'#3F8BF1'
+    },
+    sendMessageBtn:{
+      200:'#14242D'
     }
   }
 }
