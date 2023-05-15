@@ -1,12 +1,13 @@
-name: Deploy to DEV
+name: Deploy to Prod
 on: 
   push: 
-    branches:
-      - master
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - v1.*
 jobs:
   build:
-    name: build-deploy-to-dev
-    environment: DEV
+    name: Build Deploy to Prod
+    environment: PROD
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,9 +37,9 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
-      - name: Copy build to server using rsync
+      - name: Deploy with rsync
         run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-   
+
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:

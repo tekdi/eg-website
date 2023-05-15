@@ -451,6 +451,15 @@ export default function App({ facilitator, ip, onClick }) {
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+      if (
+        key === "first_name" &&
+        data?.first_name?.replaceAll(" ", "") === ""
+      ) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -697,7 +706,9 @@ export default function App({ facilitator, ip, onClick }) {
         if (data?.error) {
           const newErrors = {
             mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              __errors: data?.error
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -1013,11 +1024,11 @@ export default function App({ facilitator, ip, onClick }) {
                 >
                   <HStack alignItems="center" space="5">
                     <H3>{t("USERNAME")}</H3>
-                    <BodySmall>{credentials?.username}</BodySmall>
+                    <BodySmall  wordWrap= "break-word" width="130px" whiteSpace= "nowrap" overflow="hidden" textOverflow= "ellipsis">{credentials?.username}</BodySmall>
                   </HStack>
                   <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall>{credentials?.password}</BodySmall>
+                    <H3 >{t("PASSWORD")}</H3>
+                    <BodySmall  wordWrap= "break-word" width="130px" whiteSpace= "nowrap" overflow="hidden" textOverflow= "ellipsis">{credentials?.password}</BodySmall>
                   </HStack>
                 </Box>
               </VStack>

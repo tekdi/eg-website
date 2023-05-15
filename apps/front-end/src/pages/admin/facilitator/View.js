@@ -26,6 +26,7 @@ import {
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import Interviewschedule from "./view/Interviewschedule";
 
 const Experience = (obj) => {
   return (
@@ -222,7 +223,11 @@ export default function FacilitatorView({ footerLinks }) {
               </Button>
             </VStack>
           </HStack>
-
+          {data?.status === "screened" ? (
+            <Interviewschedule />
+          ) : (
+            <React.Fragment />
+          )}
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>
             <HStack justifyContent="space-evenly">
@@ -308,7 +313,10 @@ export default function FacilitatorView({ footerLinks }) {
                     <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
                     <VStack>
                       {data?.qualifications
-                        ?.filter((e) => e.type === "qualification")
+                        ?.filter(
+                          (e) =>
+                            e?.qualification_master?.type === "qualification"
+                        )
                         ?.map((qua, key) => {
                           return (
                             <Text key={key}>
@@ -319,7 +327,9 @@ export default function FacilitatorView({ footerLinks }) {
                     </VStack>
                     <VStack>
                       {data?.qualifications
-                        ?.filter((e) => e.type === "traching")
+                        ?.filter(
+                          (e) => e?.qualification_master?.type === "traching"
+                        )
                         ?.map((qua, key) => {
                           return (
                             <Text key={key}>
