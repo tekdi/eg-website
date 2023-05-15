@@ -26,7 +26,7 @@ const FilterSidebar = ({ items, element, _scrollView, _flex }) => {
     <VStack space={"2"} key={key}>
       <HStack alignItems="center" space={"2"}>
         <IconByName isDisabled name="MapPinLineIcon" />
-        <H3>{item.name}</H3>
+        <H3>{item.name}</H3>ddd
       </HStack>
       <ScrollView {..._scrollView}>
         <Flex px="2" space={"2"} direction="column" flexWrap="wrap" {..._flex}>
@@ -144,8 +144,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           maxH={Height - refAppBar?.clientHeight}
           minH={Height - refAppBar?.clientHeight}
         >
-          <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table facilitator={userTokenInfo?.authUser} />
+          <Box flex={1}  roundedBottom={"2xl"} py={6} px={4} mb={5}>
+            <Table  facilitator={userTokenInfo?.authUser} />
           </Box>
         </ScrollView>
       </HStack>

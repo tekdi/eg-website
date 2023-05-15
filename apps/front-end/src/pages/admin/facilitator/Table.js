@@ -15,11 +15,29 @@ import {
   VStack,
   Modal,
   Avatar,
+  color
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
-
+const customStyles = {
+  rows: {
+      style: {
+          minHeight: '72px', // override the row height
+      },
+  },
+  headCells: {
+      style: {
+          background:'#E0E0E0'
+      },
+  },
+  cells: {
+      style: {
+          color:'#616161',
+          size:'14px'
+      },
+  },
+};
 const columns = (e) => [
   {
     name: t("FIRST_NAME"),
@@ -42,7 +60,7 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text>{row?.first_name + " " + row.last_name}</Text>
+        <Text fontSize="16px" bold>{row?.first_name + " " + row.last_name}</Text>
       </HStack>
     ),
     sortable: true,
@@ -115,10 +133,14 @@ function Table({ facilitator }) {
   useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
+  const styles={
+    sendInviteBtn: { style: { boxShadow: '1px solid #084B82', color:'#084B82',borderWidth:'1px',borderColor:'#084B82', background:'#fff', borderRadius:'30px'} },
+    registerPrerakBtn: { style: { boxShadow: '1px 3px 0px #7BB0FF ', color:'#ffffff',borderWidth:'1px',borderColor:'#14242D', background:'#14242D', borderRadius:'30px'} },
+  }
 
   return (
     <VStack>
-      <HStack justifyContent={"space-between"} flexWrap="Wrap">
+      <HStack justifyContent={"space-between"} >
         <H1>{t("ALL_PRERAK")}</H1>
         {/* <Input
           InputLeftElement={
@@ -134,9 +156,11 @@ function Table({ facilitator }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-
-          <Button variant={"primary"} onPress={() => setModal(true)}>
-            {t("SEND_AN_INVITE")}
+        <Button  {...styles.sendInviteBtn} onPress={() => setModal(true)} rightIcon={<IconByName _icon={color='#084B82'} size="15px" name="ShareLineIcon"></IconByName>}>
+            <Text>{t("SEND_AN_INVITE")}</Text>
+          </Button> 
+          <Button mx="3" {...styles.registerPrerakBtn} rightIcon={<IconByName _icon={color='#ffffff'} size="20px" name="PencilLineIcon"></IconByName>}>
+            {t("REGISTER_PRERAK")}
           </Button>
           <Modal
             isOpen={modal}
@@ -194,19 +218,20 @@ function Table({ facilitator }) {
         </HStack>
       </HStack>
 
-      <DataTable
+      <DataTable customStyles={customStyles}
         columns={[
           ...columns(),
           {
             name: t("ACTION"),
             selector: (row) => (
               <Button
-                size={"xs"}
+                size={"sm"}
+                px="5"
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-                {t("VIEW")}
+               <Text fontSize="12px" color={"white"}> {t("VIEW")}</Text>
               </Button>
             ),
           },

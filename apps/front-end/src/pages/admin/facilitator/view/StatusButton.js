@@ -139,10 +139,11 @@ export default function StatusButton({ data, setData }) {
   }, [data?.status]);
 
   return (
-    <Box display="inline-flex" flexWrap="wrap" flexDirection="row" gap="4">
+    <Box display="inline-flex" flexWrap="wrap" flexDirection="row" gap="4" my="2">
       <Button
-        variant={"outlinePrimary"}
+        variant={"statusBtnAdmin"}
         colorScheme="success"
+        leftIcon={<IconByName name="CheckboxCircleLineIcon" _icon={{color:"#00D790"}} size="20px"></IconByName>}
         onPress={() => {
           setShowModal("screened");
           setReason();
@@ -252,7 +253,7 @@ export default function StatusButton({ data, setData }) {
                 <HStack flex={0.3}></HStack>
               </HStack>
               <HStack alignItems="center" space={2} justifyContent="end">
-                <Button variant="outlinePrimary" onPress={() => setShowModal()}>
+                <Button variant="statusBtnAdmin" onPress={() => setShowModal()}>
                   {t("CANCEL")}
                 </Button>
                 <Button variant="primary" onPress={() => update("screened")}>
@@ -266,7 +267,7 @@ export default function StatusButton({ data, setData }) {
       {statusList.map(({ name, ...item }) => (
         <Button
           key={name}
-          variant={"outlinePrimary"}
+          variant={"statusBtnAdmin"}
           colorScheme="warning"
           {...item}
           isDisabled={!disabledBtn.includes(item?.status)}
@@ -339,7 +340,7 @@ export default function StatusButton({ data, setData }) {
               <HStack alignItems="center" space={5}>
                 <Button
                   flex="1"
-                  variant="outlinePrimary"
+                  variant="statusBtnAdmin"
                   colorScheme="blueGray"
                   onPress={() => setShowModal()}
                 >
