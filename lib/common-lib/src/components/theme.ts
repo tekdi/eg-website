@@ -121,23 +121,22 @@ const DEFAULT_THEME = {
           rounded: 'full'
         }),
         outlinePrimary: ({ colorScheme }: any) => ({
-          bg: `${colorScheme}.50`,
-          borderWidth: '1',
-          borderColor: `${colorScheme}.500`,
+          bg: `#2D142C`,
           _hover: {
-            bg: `${colorScheme}.100`
+            bg: `#555555`
           },
           _pressed: {
-            bg: `${colorScheme}.200`
+            bg: `#444444`
           },
           _text: {
-            color: `${colorScheme}.500`
+            fontWeight: '600',
+            color: '#ffffff'
           },
-          rounded: '4'
+          rounded: 'full'
         }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
-          borderWidth: '2',
+          borderWidth: '1',
           borderColor: `#790000`,
           _hover: {
             bg: `#FFFFFF`
@@ -146,10 +145,9 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
-            fontWeight: '600',
             color: '#790000'
           },
-          rounded: '4'
+          rounded: '4px'
         })
       }
     }
@@ -334,6 +332,9 @@ const DEFAULT_THEME = {
     },
     progressBarColor: {
       200: '#10B981'
+    },
+    bgGreyColor: {
+      200: '#F4F4F7'
     },
     textGreyColor: {
       100: '#616161',

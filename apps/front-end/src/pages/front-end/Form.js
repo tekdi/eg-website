@@ -437,7 +437,7 @@ export default function App({ facilitator, ip, onClick }) {
     if (data?.aadhar_token) {
       if (
         data?.aadhar_token &&
-        !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
         errors?.aadhar_token?.addError(
           `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
@@ -1006,6 +1006,7 @@ export default function App({ facilitator, ip, onClick }) {
         onClose={() => setCredentials(false)}
         safeAreaTop={true}
         size="xl"
+        _backdrop={{ opacity: "0.7" }}
       >
         <Modal.Content>
           {/* <Modal.CloseButton /> */}
@@ -1014,27 +1015,51 @@ export default function App({ facilitator, ip, onClick }) {
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall  wordWrap= "break-word" width="130px" whiteSpace= "nowrap" overflow="hidden" textOverflow= "ellipsis">{credentials?.username}</BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3 >{t("PASSWORD")}</H3>
-                    <BodySmall  wordWrap= "break-word" width="130px" whiteSpace= "nowrap" overflow="hidden" textOverflow= "ellipsis">{credentials?.password}</BodySmall>
-                  </HStack>
-                </Box>
+              <VStack
+                space="2"
+                bg="gray.100"
+                p="1"
+                rounded="lg"
+                borderWidth={1}
+                borderColor="gray.300"
+                w="100%"
+              >
+                <HStack alignItems="center" space="1" flex="1">
+                  <H3 flex="0.3">{t("USERNAME")}</H3>
+                  <BodySmall
+                    py="1"
+                    px="2"
+                    flex="0.7"
+                    wordWrap="break-word"
+                    whiteSpace="break-spaces"
+                    overflow="hidden"
+                    bg="success.100"
+                    borderWidth="1"
+                    borderColor="success.500"
+                  >
+                    {credentials?.username}
+                  </BodySmall>
+                </HStack>
+                <HStack alignItems="center" space="1" flex="1">
+                  <H3 flex="0.3">{t("PASSWORD")}</H3>
+                  <BodySmall
+                    py="1"
+                    px="2"
+                    flex="0.7"
+                    wordWrap="break-word"
+                    whiteSpace="break-spaces"
+                    overflow="hidden"
+                    bg="success.100"
+                    borderWidth="1"
+                    borderColor="success.500"
+                  >
+                    {credentials?.password}
+                  </BodySmall>
+                </HStack>
               </VStack>
               <VStack alignItems="center">
                 <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
+                  text={`username: ${credentials?.username}, password: ${credentials?.password}`}
                   onPress={(e) => {
                     setCredentials({ ...credentials, copy: true });
                     downloadImage();
