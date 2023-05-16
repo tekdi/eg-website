@@ -9,21 +9,16 @@ import {
   Alert,
   IconButton,
   CloseIcon,
-  Center,
-  Stack,
+  Image,
 } from "native-base";
 import {
   useWindowSize,
-  BodyMedium,
   Subtitle,
-  H3,
   t,
-  Caption,
-  BodyLarge,
   login,
   logout,
   H1,
-  Layout
+  Layout,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 const styles = {
@@ -34,7 +29,7 @@ const styles = {
 };
 
 export default function Login() {
-  const ref = React.useRef(null);
+  const [ref, setRef] = React.useState(null);
   const [width, Height] = useWindowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
@@ -73,57 +68,48 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
+
   return (
-    <Layout _appBar={{onlyIconsShow:['helpBtn']}}>
-    <Stack bg="gray.200">
-      <Center mt={5}><H1 color="textMaroonColor.400">{t("LOGIN")}</H1></Center>
-      <Center p="5" ref={ref} minH={Height / 2}>
-                <svg width="240" height="145" viewBox="0 0 240 145" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clip-path="url(#clip0_70_152867)">
-                <path d="M183.328 141.539C180.263 138.949 178.401 134.856 178.889 130.873C179.377 126.889 182.402 123.227 186.325 122.381C190.249 121.535 194.721 123.877 195.912 127.709C196.568 120.32 197.324 112.622 201.252 106.329C204.809 100.632 210.97 96.5549 217.647 95.8256C224.325 95.0963 231.355 97.8509 235.519 103.121C239.683 108.391 240.703 116.053 237.786 122.103C235.638 126.561 231.679 129.878 227.532 132.576C214.131 141.223 198.057 144.74 182.27 142.478L183.328 141.539Z" fill="#F2F2F2"/>
-                <path d="M228.916 98.0036C223.407 102.491 218.352 107.51 213.826 112.988C206.743 121.531 201.011 131.11 196.83 141.39C196.524 142.14 197.742 142.466 198.045 141.725C204.885 125.017 215.805 110.291 229.806 98.8941C230.435 98.3822 229.539 97.4959 228.916 98.0036Z" fill="white"/>
-                <path d="M77.0827 140.835C81.2933 137.277 83.8509 131.657 83.1801 126.185C82.5094 120.714 78.3552 115.683 72.9665 114.522C67.5778 113.36 61.4351 116.576 59.7983 121.84C58.8976 111.691 57.8596 101.117 52.4639 92.4748C47.5783 84.6492 39.1162 79.0496 29.9453 78.0479C20.7743 77.0461 11.1185 80.8296 5.39892 88.0682C-0.320669 95.3067 -1.72108 105.83 2.28476 114.14C5.23573 120.262 10.6725 124.819 16.3688 128.525C34.5421 140.351 57.086 145.282 78.5369 142.126" fill="#F2F2F2"/>
-                <path d="M14.4679 81.0393C22.035 87.2029 28.9771 94.0964 35.1937 101.62C41.4113 109.136 46.8852 117.237 51.5385 125.81C54.1395 130.619 56.476 135.567 58.5377 140.63C58.958 141.66 57.2854 142.109 56.8697 141.09C53.218 132.163 48.7002 123.615 43.381 115.569C38.0876 107.552 32.0291 100.068 25.2905 93.2207C21.4791 89.3499 17.4578 85.6917 13.2447 82.2625C12.3812 81.5593 13.6114 80.3419 14.4679 81.0393Z" fill="white"/>
-                <path d="M171.881 142.844H71.4219V39.7708C71.4219 17.841 89.2629 0 111.192 0H132.11C154.04 0 171.881 17.841 171.881 39.7708V142.844Z" fill="#F2F2F2"/>
-                <path d="M150.963 142.844H71.422V39.7708C71.4001 31.3678 74.0609 23.1772 79.0172 16.3915C79.1999 16.1425 79.3821 15.8967 79.57 15.6536C81.9673 12.5094 84.8202 9.74033 88.0345 7.43783C88.216 7.30572 88.3983 7.1759 88.5833 7.04608C91.2729 5.18481 94.1824 3.66327 97.2454 2.51607C97.4273 2.44713 97.6125 2.37805 97.7977 2.31179C100.568 1.32319 103.44 0.645996 106.36 0.292725C106.541 0.267995 106.726 0.248644 106.912 0.229293C109.758 -0.074966 112.628 -0.074966 115.473 0.229293C115.659 0.248644 115.845 0.267993 116.028 0.292989C118.947 0.646283 121.818 1.32339 124.588 2.3118C124.773 2.37806 124.958 2.44713 125.14 2.51621C128.166 3.64894 131.041 5.14778 133.702 6.97929C133.887 7.10629 134.072 7.23611 134.254 7.36593C136.056 8.65201 137.748 10.0848 139.314 11.6496C140.569 12.9048 141.739 14.2427 142.816 15.6544C143.003 15.8967 143.185 16.1425 143.368 16.3912C148.324 23.1769 150.985 31.3677 150.963 39.7708V142.844Z" fill="#CCCCCC"/>
-                <path d="M144.495 96.7434C146.928 96.7434 148.899 94.7718 148.899 92.3397C148.899 89.9076 146.928 87.936 144.495 87.936C142.063 87.936 140.092 89.9076 140.092 92.3397C140.092 94.7718 142.063 96.7434 144.495 96.7434Z" fill="#F66464"/>
-                <path d="M163.651 139.757H160.277L158.671 126.742L163.652 126.742L163.651 139.757Z" fill="#FFB8B8"/>
-                <path d="M157.866 138.793H164.374V142.89H153.769C153.769 142.352 153.875 141.819 154.081 141.322C154.287 140.825 154.589 140.374 154.969 139.993C155.35 139.613 155.801 139.311 156.298 139.105C156.795 138.899 157.328 138.793 157.866 138.793Z" fill="#2F2E41"/>
-                <path d="M180.44 139.757H177.066L175.46 126.742L180.441 126.742L180.44 139.757Z" fill="#FFB8B8"/>
-                <path d="M174.655 138.793H181.163V142.89H170.558C170.558 142.352 170.664 141.819 170.87 141.322C171.076 140.825 171.378 140.374 171.758 139.993C172.139 139.613 172.59 139.311 173.087 139.105C173.585 138.899 174.117 138.793 174.655 138.793Z" fill="#2F2E41"/>
-                <path d="M146.724 93.2121C146.481 92.8544 146.32 92.4479 146.251 92.0211C146.183 91.5944 146.209 91.1577 146.327 90.742C146.445 90.3263 146.653 89.9415 146.936 89.6149C147.22 89.2883 147.571 89.0277 147.966 88.8516L159.436 57.2368L165.08 60.317L151.983 90.5292C152.235 91.212 152.228 91.9634 151.963 92.6412C151.698 93.319 151.194 93.876 150.545 94.2067C149.897 94.5374 149.15 94.6188 148.446 94.4355C147.742 94.2521 147.129 93.8169 146.724 93.2121Z" fill="#FFB8B8"/>
-                <path d="M178.716 99.1527C178.341 98.9377 178.018 98.6431 177.769 98.2896C177.52 97.9362 177.352 97.5325 177.276 97.1069C177.2 96.6814 177.219 96.2444 177.33 95.8267C177.441 95.409 177.643 95.0208 177.92 94.6894L174.367 61.2463L180.79 61.5398L182.267 94.4354C182.793 94.9385 183.116 95.6171 183.175 96.3424C183.234 97.0678 183.024 97.7896 182.587 98.371C182.149 98.9525 181.513 99.3532 180.8 99.4973C180.087 99.6413 179.345 99.5187 178.716 99.1527Z" fill="#FFB8B8"/>
-                <path d="M168.469 51.381C172.203 51.381 175.229 48.3544 175.229 44.621C175.229 40.8876 172.203 37.8611 168.469 37.8611C164.736 37.8611 161.709 40.8876 161.709 44.621C161.709 48.3544 164.736 51.381 168.469 51.381Z" fill="#FFB8B8"/>
-                <path d="M178.673 91.5467H158.293L158.318 91.3881C158.355 91.151 161.95 67.5975 159.298 59.8919C159.032 59.1346 159.056 58.3057 159.364 57.5647C159.672 56.8237 160.244 56.2229 160.969 55.8781C164.759 54.0931 172.035 51.8951 178.176 57.2292C179.08 58.0271 179.786 59.0242 180.237 60.1418C180.689 61.2594 180.875 62.4668 180.78 63.6685L178.673 91.5467Z" fill="#F66464"/>
-                <path d="M162.207 71.0783L153.032 69.2169L157.333 59.0251C157.59 58.038 158.229 57.1933 159.108 56.6762C159.988 56.1591 161.036 56.012 162.024 56.267C163.012 56.522 163.858 57.1583 164.377 58.0364C164.896 58.9145 165.046 59.9627 164.793 60.9511L162.207 71.0783Z" fill="#F66464"/>
-                <path d="M173.959 74.5346L173.407 61.8901C172.989 59.5132 174.35 57.2662 176.442 56.8989C178.535 56.5329 180.579 58.1815 181 60.5759L183.073 72.3909L173.959 74.5346Z" fill="#F66464"/>
-                <path d="M177.995 90.0328C181.274 102.522 181.632 118.401 180.747 135.721L176.344 135.171L168.362 102.143L163.958 135.721L159.004 135.446C157.524 117.272 156.083 101.671 158.454 91.409L177.995 90.0328Z" fill="#2F2E41"/>
-                <path d="M172.924 49.8452C171.663 51.1886 169.32 50.4674 169.156 48.6322C169.143 48.4898 169.144 48.3464 169.159 48.2041C169.244 47.3912 169.713 46.6531 169.601 45.7948C169.575 45.5812 169.496 45.3776 169.37 45.2034C168.365 43.8577 166.006 45.8053 165.057 44.587C164.476 43.8401 165.159 42.664 164.713 41.8291C164.124 40.7272 162.38 41.2708 161.285 40.6673C160.068 39.9959 160.141 38.1282 160.942 36.9923C161.92 35.6069 163.633 34.8676 165.325 34.7611C167.017 34.6545 168.697 35.1119 170.277 35.7275C172.072 36.427 173.851 37.3936 174.956 38.9718C176.299 40.891 176.428 43.4712 175.757 45.7154C175.348 47.0806 173.953 48.7482 172.924 49.8452Z" fill="#2F2E41"/>
-                <path d="M231.188 143.021H27.9874C27.9007 143.021 27.8175 142.987 27.7563 142.925C27.695 142.864 27.6606 142.781 27.6606 142.694C27.6606 142.607 27.695 142.524 27.7563 142.462C27.8175 142.401 27.9007 142.366 27.9874 142.366H231.188C231.274 142.366 231.357 142.401 231.419 142.462C231.48 142.524 231.514 142.607 231.514 142.694C231.514 142.781 231.48 142.864 231.419 142.925C231.357 142.987 231.274 143.021 231.188 143.021Z" fill="#3F3D56"/>
-                <path d="M129.082 112.982H93.3027C92.8315 112.984 92.3785 112.8 92.0431 112.469C91.7077 112.138 91.5173 111.687 91.5137 111.216V31.3529C91.5173 30.8817 91.7077 30.4311 92.0431 30.1001C92.3785 29.7691 92.8315 29.5846 93.3027 29.5872H129.082C129.554 29.5846 130.007 29.7691 130.342 30.1001C130.677 30.4311 130.868 30.8817 130.871 31.3529V111.216C130.868 111.687 130.677 112.138 130.342 112.469C130.007 112.8 129.554 112.984 129.082 112.982Z" fill="white"/>
-                <path d="M130.871 55.4285H91.5137V55.9789H130.871V55.4285Z" fill="#CCCCCC"/>
-                <path d="M131.009 86.8351H91.6514V87.3855H131.009V86.8351Z" fill="#CCCCCC"/>
-                <path d="M104.449 29.5873H103.899V113.257H104.449V29.5873Z" fill="#CCCCCC"/>
-                <path d="M118.211 29.5873H117.661V113.257H118.211V29.5873Z" fill="#CCCCCC"/>
-                </g>
-                <defs>
-                <clipPath id="clip0_70_152867">
-                <rect width="240" height="144.22" fill="white"/>
-                </clipPath>
-                </defs>
-                </svg>
-      </Center>
-     <Alert mx={3} status="info" colorScheme="info" textAlign={Center}>
-        <VStack space={2} flexShrink={1} >
-          <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
-            <HStack flexShrink={1} space={2} alignItems="center">
-              <Alert.Icon />{t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")} 
-            </HStack> 
-          </HStack>
-        </VStack>
-      </Alert>
-      <Box p="5" roundedTopRight={60}  minH={Height - Height / 2}>
-        <VStack space={5}>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["helpBtn"],
+        _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
+      }}
+      getRefAppBar={(e) => setRef(e)}
+    >
+      <VStack
+        bg="bgGreyColor.200"
+        minH={Height - ref?.clientHeight}
+        space="50px"
+      >
+        <H1 color="textMaroonColor.400" textAlign="center" pt="6">
+          {t("LOGIN")}
+        </H1>
+        <Image
+          alignSelf="center"
+          source={{
+            uri: "/login.png",
+          }}
+          alt=""
+          width="240"
+          height="144"
+        />
+        <VStack space={5} p="5">
+          <Alert status="info" colorScheme="info" textAlign="center">
+            <VStack space={2} flexShrink={1}>
+              <HStack
+                flexShrink={1}
+                space={2}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <HStack flexShrink={1} space={2} alignItems="center">
+                  <Alert.Icon />
+                  {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+                </HStack>
+              </HStack>
+            </VStack>
+          </Alert>
           {"alert" in errors ? (
             <Alert w="100%" status={"error"}>
               <VStack space={2} flexShrink={1} w="100%">
@@ -143,91 +129,88 @@ export default function Login() {
           ) : (
             <></>
           )}
-          <VStack space="4">
-            <VStack space="2">
-              <FormControl isRequired isInvalid={"username" in errors}>
-                {/* <FormControl.Label
+          <VStack space="2">
+            <FormControl isRequired isInvalid={"username" in errors}>
+              {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
                 mb="10px"
               >
                 {t("USERNAME")}
               </FormControl.Label> */}
-                <Input
-                  rounded="lg"
-                  height="48px"
-                  bg="white"
-                  variant="unstyled"
-                  p={"10px"}
-                  placeholder={t("ENTER") + " " + t("USERNAME")}
-                  onChange={(e) =>
-                    setCredentials({
-                      ...credentials,
-                      username: e?.target?.value?.trim(),
-                    })
-                  }
-                />
-                {"username" in errors ? (
-                  <FormControl.ErrorMessage
-                    _text={{
-                      fontSize: "xs",
-                      color: "error.500",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {errors.username}
-                  </FormControl.ErrorMessage>
-                ) : (
-                  <></>
-                )}
-              </FormControl>
-              <FormControl isRequired isInvalid={"password" in errors}>
-                {/* <FormControl.Label
+              <Input
+                rounded="lg"
+                height="48px"
+                bg="white"
+                variant="unstyled"
+                p={"10px"}
+                placeholder={t("ENTER") + " " + t("USERNAME")}
+                onChange={(e) =>
+                  setCredentials({
+                    ...credentials,
+                    username: e?.target?.value?.trim(),
+                  })
+                }
+              />
+              {"username" in errors ? (
+                <FormControl.ErrorMessage
+                  _text={{
+                    fontSize: "xs",
+                    color: "error.500",
+                    fontWeight: 500,
+                  }}
+                >
+                  {errors.username}
+                </FormControl.ErrorMessage>
+              ) : (
+                <></>
+              )}
+            </FormControl>
+            <FormControl isRequired isInvalid={"password" in errors}>
+              {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
-                <Input
-                  rounded="lg"
-                  height="48px"
-                  bg="white"
-                  variant="unstyled"
-                  p={"10px"}
-                  placeholder={t("ENTER") + " " + t("PASSWORD")}
-                  type="password"
-                  onChange={(e) =>
-                    setCredentials({
-                      ...credentials,
-                      password: e?.target?.value,
-                    })
-                  }
-                />
-                {"password" in errors ? (
-                  <FormControl.ErrorMessage
-                    _text={{
-                      fontSize: "xs",
-                      color: "error.500",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {errors.password}
-                  </FormControl.ErrorMessage>
-                ) : (
-                  <></>
-                )}
-              </FormControl>
-            </VStack>
-            {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
-            {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-            <Button flex={1} variant={"primary"} onPress={handleLogin}>
-              {t("SUBMIT")}
-            </Button>
-            {/* <BodyMedium color="primary.500" textAlign="center">
+              <Input
+                rounded="lg"
+                height="48px"
+                bg="white"
+                variant="unstyled"
+                p={"10px"}
+                placeholder={t("ENTER") + " " + t("PASSWORD")}
+                type="password"
+                onChange={(e) =>
+                  setCredentials({
+                    ...credentials,
+                    password: e?.target?.value,
+                  })
+                }
+              />
+              {"password" in errors ? (
+                <FormControl.ErrorMessage
+                  _text={{
+                    fontSize: "xs",
+                    color: "error.500",
+                    fontWeight: 500,
+                  }}
+                >
+                  {errors.password}
+                </FormControl.ErrorMessage>
+              ) : (
+                <></>
+              )}
+            </FormControl>
+          </VStack>
+          {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
+          {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
+          <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
+            {t("LOGIN")}
+          </Button>
+          {/* <BodyMedium color="primary.500" textAlign="center">
               {t("CHANGE_MY_PASSWORD")}
             </BodyMedium> */}
-          </VStack>
         </VStack>
-      </Box>
-    </Stack>
+      </VStack>
     </Layout>
   );
 }
