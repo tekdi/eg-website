@@ -66,6 +66,8 @@ export default function FacilitatorView({ footerLinks }) {
     setData(result);
   }, []);
 
+  const showData = (item) => (item ? item : "-");
+
   if (!data) {
     return <Loading />;
   } else if (_.isEmpty(data) || data.error) {
@@ -87,7 +89,11 @@ export default function FacilitatorView({ footerLinks }) {
           <HStack alignItems="center" flexWrap="wrap">
             <VStack flex="0.7" direction="column">
               <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <H1>
+                <H1
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
                   {data?.first_name} {data?.last_name}
                 </H1>
                 <ChipStatus status={data?.status} />
@@ -237,27 +243,27 @@ export default function FacilitatorView({ footerLinks }) {
                 
                 <VStack>
                   <Text color="warmGray.500">{t("FIRST_NAME")} </Text>
-                  <Text>{data?.first_name}</Text>
+                  <Text>{showData(data?.first_name)}</Text>
                 </VStack>
 
                 <VStack>
                   <Text color="warmGray.500">{t("LAST_NAME")} </Text>
-                  <Text>{data?.last_name}</Text>
+                  <Text>{showData(data?.last_name)}</Text>
                 </VStack>
 
                 <VStack>
                   <Text color="warmGray.500">{t("MOBILE_NO")} </Text>
-                  <Text>{data?.mobile}</Text>
+                  <Text>{showData(data?.mobile)}</Text>
                 </VStack>
 
                 <VStack>
                   <Text color="warmGray.500">{t("DATE_OF_BIRTH")} </Text>
-                  <Text>{data?.dob}</Text>
+                  <Text>{showData(data?.dob)}</Text>
                 </VStack>
 
                 <VStack>
                   <Text color="warmGray.500">{t("GENDER")} </Text>
-                  <Text>{data?.gender}</Text>
+                  <Text>{showData(data?.gender)}</Text>
                 </VStack>
 
                 <VStack>
@@ -269,22 +275,28 @@ export default function FacilitatorView({ footerLinks }) {
                       data?.block,
                       data?.village,
                       data?.grampanchayat,
-                    ]
-                      .filter((e) => e)
-                      .join(", ")}
+                    ].filter((e) => e).length > 0
+                      ? [
+                          data?.state,
+                          data?.district,
+                          data?.block,
+                          data?.village,
+                          data?.grampanchayat,
+                        ]
+                          .filter((e) => e)
+                          .join(", ")
+                      : "-"}
                   </Text>
                 </VStack>
 
                 <VStack>
                   <Text color="warmGray.500">{t("AADHAAR_NO")} </Text>
-                  <Text>{data?.aadhar_token}</Text>
+                  <Text>{showData(data?.aadhar_token)}</Text>
                 </VStack>
               </VStack>
-              <VStack
-                display="Flex"
-                flexDirection="row"
-                space="20px"
-                w="50%"
+              <HStack
+                space="5"
+                flex={1 / 2}
                 bg="light.100"
                 p="6"
                 ml="2"
@@ -318,18 +330,25 @@ export default function FacilitatorView({ footerLinks }) {
                           );
                         })}
                     </VStack>
-                    <VStack>
-                      {data?.qualifications
-                        ?.filter(
-                          (e) => e?.qualification_master?.type === "traching"
-                        )
-                        ?.map((qua, key) => {
-                          return (
-                            <Text key={key}>
-                              {qua?.qualification_master?.name}
-                            </Text>
-                          );
-                        })}
+                    <VStack space="2">
+                      <Text color="warmGray.500">
+                        {t("TEACHING_QUALIFICATION")}{" "}
+                      </Text>
+                      {data?.qualifications ? (
+                        data?.qualifications
+                          ?.filter(
+                            (e) => e?.qualification_master?.type === "teaching"
+                          )
+                          ?.map((qua, key) => {
+                            return (
+                              <Text key={key}>
+                                {qua?.qualification_master?.name}
+                              </Text>
+                            );
+                          })
+                      ) : (
+                        <Text>{"-"}</Text>
+                      )}
                     </VStack>
                   </VStack>
 
@@ -337,9 +356,13 @@ export default function FacilitatorView({ footerLinks }) {
                     <VStack space="2">
                       <Text color="warmGray.500">{t("WORK_EXPERIENCE")} </Text>
                       <VStack space={5}>
-                        {data?.experience?.map((e, key) => (
-                          <Experience key={key} {...e} />
-                        ))}
+                        {data?.experience ? (
+                          data?.experience?.map((e, key) => (
+                            <Experience key={key} {...e} />
+                          ))
+                        ) : (
+                          <Text>{"-"}</Text>
+                        )}
                       </VStack>
                     </VStack>
                     <VStack space="2">
@@ -347,9 +370,13 @@ export default function FacilitatorView({ footerLinks }) {
                         {t("VOLUNTEER_EXPERIENCE")}
                       </Text>
                       <VStack space={5}>
-                        {data?.vo_experience?.map((e, key) => (
-                          <Experience key={key} {...e} />
-                        ))}
+                        {data?.vo_experience ? (
+                          data?.vo_experience?.map((e, key) => (
+                            <Experience key={key} {...e} />
+                          ))
+                        ) : (
+                          <Text>{"-"}</Text>
+                        )}
                       </VStack>
                     </VStack>
                   </VStack>
@@ -363,23 +390,25 @@ export default function FacilitatorView({ footerLinks }) {
                     <VStack>
                       <Text color="warmGray.500">{t("AVAILABILITY")} </Text>
                       <Text>
-                        {data?.program_faciltators?.availability?.replaceAll(
-                          "_",
-                          " "
+                        {showData(
+                          data?.program_faciltators?.availability?.replaceAll(
+                            "_",
+                            " "
+                          )
                         )}
                       </Text>
                     </VStack>
                     <VStack>
                       <Text color="warmGray.500">{t("DEVICE_OWNERSHIP")} </Text>
-                      <Text>{data?.device_ownership}</Text>
+                      <Text>{showData(data?.device_ownership)}</Text>
                     </VStack>
                     <VStack>
                       <Text color="warmGray.500">{t("TYPE_OF_DEVICE")} </Text>
-                      <Text>{data?.device_type}</Text>
+                      <Text>{showData(data?.device_type)}</Text>
                     </VStack>
                   </VStack>
                 </VStack>
-              </VStack>
+              </HStack>
             </HStack>
           </VStack>
           <StatusButton {...{ data, setData }} />
