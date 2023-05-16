@@ -232,7 +232,7 @@ export default function FacilitatorView({ footerLinks }) {
 
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>
-            <HStack justifyContent="space-evenly">
+            <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                   <HStack justifyContent="space-between" alignItems="center" borderColor="light.400" pb="1" borderBottomWidth="1">
                     <Heading fontSize="16px">
@@ -241,32 +241,32 @@ export default function FacilitatorView({ footerLinks }) {
                     <IconByName color='editIcon.300'  size="15px" name="EditBoxLineIcon"></IconByName>
                   </HStack>
                 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("FIRST_NAME")} </Text>
                   <Text>{showData(data?.first_name)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("LAST_NAME")} </Text>
                   <Text>{showData(data?.last_name)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("MOBILE_NO")} </Text>
                   <Text>{showData(data?.mobile)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("DATE_OF_BIRTH")} </Text>
                   <Text>{showData(data?.dob)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("GENDER")} </Text>
                   <Text>{showData(data?.gender)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("ADDRESS")} </Text>
                   <Text>
                     {[
@@ -287,16 +287,18 @@ export default function FacilitatorView({ footerLinks }) {
                           .join(", ")
                       : "-"}
                   </Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("AADHAAR_NO")} </Text>
                   <Text>{showData(data?.aadhar_token)}</Text>
-                </VStack>
+                </HStack>
               </VStack>
-              <HStack
-                space="5"
-                flex={1 / 2}
+              <VStack
+                display="Flex"
+                flexDirection="row"
+                space="20px"
+                w="50%"
                 bg="light.100"
                 p="6"
                 ml="2"
@@ -387,7 +389,7 @@ export default function FacilitatorView({ footerLinks }) {
                       </Heading>
                       <IconByName color='editIcon.300'  size="15px" name="EditBoxLineIcon"></IconByName>
                     </HStack>
-                    <VStack>
+                    <HStack>
                       <Text color="warmGray.500">{t("AVAILABILITY")} </Text>
                       <Text>
                         {showData(
@@ -397,18 +399,18 @@ export default function FacilitatorView({ footerLinks }) {
                           )
                         )}
                       </Text>
-                    </VStack>
-                    <VStack>
+                    </HStack>
+                    <HStack>
                       <Text color="warmGray.500">{t("DEVICE_OWNERSHIP")} </Text>
                       <Text>{showData(data?.device_ownership)}</Text>
-                    </VStack>
-                    <VStack>
+                    </HStack>
+                    <HStack>
                       <Text color="warmGray.500">{t("TYPE_OF_DEVICE")} </Text>
                       <Text>{showData(data?.device_type)}</Text>
-                    </VStack>
+                    </HStack>
                   </VStack>
                 </VStack>
-              </HStack>
+              </VStack>
             </HStack>
           </VStack>
           <StatusButton {...{ data, setData }} />
