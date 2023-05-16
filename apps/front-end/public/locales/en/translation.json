@@ -44,6 +44,7 @@
   "FILTERS": "Filters",
   "DISTRICT": "District",
   "QUALIFICATION": "Qualification",
+  "TEACHING_QUALIFICATION": "Teaching qualification",
   "WORK_EXPERIENCE": "Work Experience",
   "MY_PRERAKS": "My Preraks",
   "FIRST_NAME": "First Name",
@@ -194,7 +195,6 @@
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
   "SELECT_CANDIDATE": "Select Candidate",
   "PRERAK_ORIENTATION": "Prerak Orientation",
   "SCHEDULE_EVENT": "Schedule an Event",
@@ -214,5 +214,7 @@
   "DOCUMENT_VERIFICATION": "Documents Verification",
   "MARK_ATTENDANCE_ORIENTATION": "Mark Attendance For Orientation",
   "ATTENDANCE_CAMERA_SUBTITLE": "Make sure this image has a clear profile view of your Face. Improper Image might result in disqualification of the Application.",
-  "MARK_ABSENT": "Mark Absent"
+  "MARK_ABSENT": "Mark Absent",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
 }

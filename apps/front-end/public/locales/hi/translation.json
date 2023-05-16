@@ -44,6 +44,7 @@
   "FILTERS": "फिल्टर",
   "DISTRICT": "ज़िला",
   "QUALIFICATION": "योग्यता",
+  "TEACHING_QUALIFICATION": "शिक्षण योग्यता",
   "WORK_EXPERIENCE": "कार्य अनुभव",
   "MY_PRERAKS": "मेरे प्रेरक",
   "FIRST_NAME": "पहला नाम",
@@ -203,5 +204,6 @@
   "FREQUENTLY_ASKED_QUESTION": "अधिकतर पूछे गए प्रश्न",
   "CALL_SUPPORT": "मदद के लिए कॉल करें",
   "LOGOUT": "लॉग आउट",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है"
 }
