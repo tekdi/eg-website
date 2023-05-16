@@ -3,7 +3,9 @@ import {
   capture,
   IconByName,
   AdminLayout as Layout,
-  ProgressBar,t
+  ProgressBar,
+  H1,
+  t,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -36,12 +38,14 @@ import {
   CheckIcon,
   CheckCircleIcon,
   TextArea,
-  Image
+  Image,
+  Pressable,
 } from "native-base";
 import Chip from "component/Chip";
 import moment from "moment";
 
-export default function Orientation({ footerLinks }) {
+export default function Orientation({ footerLinks, onShowScreen }) {
+  console.log(onShowScreen);
   // const { t } = useTranslation();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
@@ -89,7 +93,7 @@ export default function Orientation({ footerLinks }) {
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
           <Box {...styles.blueShadowBox} justifyContent="center">
-            <VStack  alignItems={"Center"}>
+            <VStack  alignItems={"Center"} onPress={onShowScreen}>
             <Image
               source={{
                 uri: "/orientation.svg",
@@ -205,9 +209,15 @@ export default function Orientation({ footerLinks }) {
         onClose={() => setModalVisible(false)}
         avoidKeyboard
         size="xl"
+        // height={"450px"}
+        overflowY={"scroll"}
       >
         <Modal.Content maxH="412">
           <Modal.CloseButton />
+          <Modal.Header p="5" borderBottomWidth="0" bg="white">
+            <H1 textAlign="center"> Schedule an Interview</H1>
+          </Modal.Header>
+
           {/* <Modal.Header textAlign={"Center"}>
             Schedule an Interview
           </Modal.Header>
@@ -316,30 +326,27 @@ export default function Orientation({ footerLinks }) {
               </Button>
             </Button.Group>
           </Modal.Footer> */}
-        <Modal.Header textAlign="center" fontSize="xl" bold>{t("SCHEDULE_AN_INTERVIEW")}</Modal.Header>
-          <Modal.Body width="100%">
-          <Form
-            ref={formRef}
-            templates={{
-              FieldTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-            }}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              validator,
-              schema: orientationPopupSchema,
-              formData,
-              uiSchema,
-            }}
-          >
-          </Form>
-          
-          </Modal.Body>
-          <Modal.Footer>
-              <Button.Group space={2} justifyContent="space-between" alignContent="space-between" width="100%">
+          <Modal.Body p="3" pb="10" bg="white">
+            <Form
+              ref={formRef}
+              templates={{
+                FieldTemplate,
+                ObjectFieldTemplate,
+                TitleFieldTemplate,
+                DescriptionFieldTemplate,
+              }}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                validator,
+                schema: orientationPopupSchema,
+                formData,
+                uiSchema,
+              }}
+            />
+
+            <HStack>
+              <Button.Group space={2}>
                 <Button
                   variant="blueOutlineBtn"
                   colorScheme="blueGray"
@@ -360,9 +367,66 @@ export default function Orientation({ footerLinks }) {
                   Send Invites
                 </Button>
               </Button.Group>
-            </Modal.Footer>
+            </HStack>
+          </Modal.Body>
         </Modal.Content>
       </Modal>
+
+      <HStack space="2xl" justifyContent="space-between" px="3">
+        <Box>
+          <VStack space="xl">
+            <Button
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              +Schedule an event
+            </Button>
+
+            <Cal />
+            <VStack space="xsm">
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="blue.500" />
+                <Text>Interview</Text>
+              </HStack>
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="green.500" />
+                <Text>Orientation Days</Text>
+              </HStack>
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="yellow.500" />
+                <Text>Training Days</Text>
+              </HStack>
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="purple.500" />
+                <Text>Camp visits</Text>
+              </HStack>
+            </VStack>
+          </VStack>
+        </Box>
+        <Box width="50%" justifyContent={"Center"} flex={"1"}>
+          <Fullcalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView={"timeGridWeek"}
+            events={[
+              {
+                title: "Orientation",
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
+              {
+                title: "Orientation",
+                date: moment().format("2023-05-14 02:00:00"),
+              },
+            ]}
+            headerToolbar={{
+              start: "prev,thisweek,next",
+              center: "timeGridWeek,dayGridMonth,dayGridYear",
+              end: "today",
+              height: "50hv",
+            }}
+          />
+        </Box>
+      </HStack>
     </Layout>
   );
 }

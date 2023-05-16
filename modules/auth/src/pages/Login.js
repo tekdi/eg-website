@@ -21,6 +21,7 @@ import {
   Layout,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
+
 const styles = {
   box: {
     background:
@@ -60,9 +61,13 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const loginData = await login(credentials);
-      navigate("/");
-      navigate(0);
+      const { error } = await login(credentials);
+      if (error) {
+        setErrors({ alert: t(error) });
+      } else {
+        navigate("/");
+        navigate(0);
+      }
     } else {
       logout();
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
