@@ -258,7 +258,7 @@ const Page2 = ({ onClick }) => {
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-
+  const [selectedRowData, setSelectedRowData] = React.useState();
   React.useEffect(async () => {
     setLoading(true);
     const result = await facilitatorRegistryService.getAll(filterObj);
@@ -274,7 +274,7 @@ const Page2 = ({ onClick }) => {
   }, [page, limit]);
 
   const handleSelectRow = (state) => {
-    setSelectedData = state.selectedRows;
+    setSelectedRowData(state.selectedRows);
   };
 
   return (
@@ -307,7 +307,9 @@ const Page2 = ({ onClick }) => {
 
           <Modal.Footer>
             <HStack space={"10"} justifyContent={"space-between"}>
-              <Button variant="outlineSecondary">{t("CANCEL")}</Button>
+              <Button variant="outlineSecondary" colorScheme="blueGray">
+                {t("CANCEL")}
+              </Button>
 
               <Button
                 onPress={onClick}
@@ -463,7 +465,7 @@ const Page3 = () => {
               <HStack>
                 <Button
                   variant="outlineSecondary"
-                  // bgColor={"#FFFFFF"}
+                  colorScheme="blueGray"
                   onPress={(e) => {
                     setCameraUrl();
                     setCameraModal(true);

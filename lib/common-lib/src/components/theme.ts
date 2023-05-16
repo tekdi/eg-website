@@ -134,22 +134,6 @@ const DEFAULT_THEME = {
           },
           rounded: 'full'
         }),
-        outlineSecondary: ({ colorScheme }: any) => ({
-          bg: 'red',
-          borderWidth: '1',
-          boxShadow: '2px 3px 0px #8B7171',
-          borderColor: `${colorScheme}`,
-          _hover: {
-            bg: `${colorScheme}`
-          },
-          _pressed: {
-            bg: `${colorScheme}`
-          },
-          _text: {
-            color: '#084B82'
-          },
-          rounded: 'full'
-        }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '2',
