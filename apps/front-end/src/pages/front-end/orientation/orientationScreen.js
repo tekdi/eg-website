@@ -307,7 +307,7 @@ const Page2 = ({ onClick }) => {
 
           <Modal.Footer>
             <HStack space={"10"} justifyContent={"space-between"}>
-              <Button variant="outlineSecondary" colorScheme="blueGray">
+              <Button variant="outline" colorScheme="blueGray">
                 {t("CANCEL")}
               </Button>
 
@@ -464,7 +464,7 @@ const Page3 = () => {
               </HStack>
               <HStack>
                 <Button
-                  variant="outlineSecondary"
+                  variant="outline"
                   colorScheme="blueGray"
                   onPress={(e) => {
                     setCameraUrl();
@@ -667,7 +667,7 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"end"}
                 >
-                  <Button variant="outlineSecondary" colorScheme="blueGray">
+                  <Button variant="outline" colorScheme="blueGray">
                     {t("CANCEL")}
                   </Button>
                   <Button variant="primary">{t("SAVE")}</Button>
@@ -722,7 +722,7 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"center"}
                 >
-                  <Button variant="outlineSecondary" colorScheme="blueGray">
+                  <Button variant="outline" colorScheme="blueGray">
                     {t("MARK_ABSENT")}
                   </Button>
                   <Button variant="primary">{t("NEXT")}</Button>
