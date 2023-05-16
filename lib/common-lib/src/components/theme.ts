@@ -135,6 +135,33 @@ const DEFAULT_THEME = {
           },
           rounded: '4'
         }),
+        blueOutlineBtn: () => ({
+          bg: `#ffffff`,
+          borderWidth: '1',
+          borderColor: `#084B82`,
+          _text:`#084B82`,
+          _hover: {
+            bg: `#cce2f3`
+          },
+          _pressed: {
+            bg: ``
+          },
+          rounded: '30px'
+        }),
+        blueFillButton: () => ({
+          bg: `#14242D`,
+          borderWidth: '1',
+          borderColor: `#14242D`,
+          _hover: {
+            bg: `#133142`,
+            _text: `#14242D`,
+          },
+          _pressed: {
+            bg: `#133142`,
+            _text: `#14242D`,
+          },
+          rounded: '30px'
+        }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
@@ -344,6 +371,9 @@ const DEFAULT_THEME = {
     },
     textMaroonColor: {
       400: '#790000'
+    },
+    blueText:{
+      400:'#084B82'
     }
   }
 }
