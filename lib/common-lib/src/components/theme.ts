@@ -366,7 +366,8 @@ const DEFAULT_THEME = {
     textGreyColor: {
       100: '#616161',
       300: '#888888',
-      400: '#F5F5F5'
+      400: '#F5F5F5',
+      500:'#424242',
     },
     textMaroonColor: {
       400: '#790000'

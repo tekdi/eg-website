@@ -93,7 +93,8 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
           <Box {...styles.blueShadowBox} justifyContent="center">
-            <VStack  alignItems={"Center"} onPress={onShowScreen}>
+            <VStack  alignItems={"Center"} >
+              <Pressable onPress={onShowScreen}>
             <Image
               source={{
                 uri: "/orientation.svg",
@@ -102,6 +103,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               size={"sm"}
             />
               <Text fontSize="sm" bold pt="4">Prerak Orientation</Text>
+              </Pressable>
             </VStack>
           </Box>
           <Box {...styles.blueShadowBox} justifyContent="center">
