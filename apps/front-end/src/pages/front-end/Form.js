@@ -19,6 +19,7 @@ import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
   Camera,
   Layout,
   H1,
@@ -31,7 +32,6 @@ import {
   H2,
   getBase64,
   BodyMedium,
-  changeLanguage,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -97,6 +97,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
+  const [cameraFile, setCameraFile] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
@@ -111,10 +112,6 @@ export default function App({ facilitator, ip, onClick }) {
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
-
-  window.onbeforeunload = function () {
-    return false;
-  };
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -131,6 +128,9 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   React.useEffect(() => {
+    window.onbeforeunload = function () {
+      return false;
+    };
     getImage();
   }, [page, credentials]);
 
@@ -407,6 +407,22 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
+  const uploadProfile = async () => {
+    const { id } = facilitator;
+    if (id) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: id,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+      return await uploadRegistryService.uploadFile(form_data);
+    }
+  };
+
   const formSubmitCreate = async (formData) => {
     return await facilitatorRegistryService.create({
       ...formData,
@@ -437,7 +453,7 @@ export default function App({ facilitator, ip, onClick }) {
     if (data?.aadhar_token) {
       if (
         data?.aadhar_token &&
-        !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
         errors?.aadhar_token?.addError(
           `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
@@ -706,9 +722,12 @@ export default function App({ facilitator, ip, onClick }) {
         if (data?.error) {
           const newErrors = {
             mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              __errors:
+                data?.error?.constructor?.name === "String"
+                  ? [data?.error]
+                  : data?.error?.constructor?.name === "Array"
+                  ? data?.error
+                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -733,10 +752,10 @@ export default function App({ facilitator, ip, onClick }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 25) {
       const data = await getBase64(file);
       setCameraUrl(data);
-      setFormData({ ...formData, ["profile_url"]: data });
+      setCameraFile(file);
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
@@ -782,7 +801,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              await uploadProfile();
               if (onClick) onClick("success");
             }}
           >
@@ -809,9 +828,9 @@ export default function App({ facilitator, ip, onClick }) {
           cameraModal,
           setCameraModal,
           cameraUrl,
-          setCameraUrl: async (url) => {
+          setCameraUrl: async (url, blob) => {
             setCameraUrl(url);
-            setFormData({ ...formData, ["profile_url"]: url });
+            setCameraFile(blob);
           },
         }}
       />
@@ -855,22 +874,24 @@ export default function App({ facilitator, ip, onClick }) {
             {t("TAKE_PHOTO")}
           </Button>
           <VStack space={2}>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-            >
-              {t("UPLOAD_PHOTO")}
-            </Button>
+            <Box>
+              <input
+                accept="image/*"
+                type="file"
+                style={{ display: "none" }}
+                ref={uplodInputRef}
+                onChange={handleFileInputChange}
+              />
+              <Button
+                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+                variant={"secondary"}
+                onPress={(e) => {
+                  uplodInputRef?.current?.click();
+                }}
+              >
+                {t("UPLOAD_PHOTO")}
+              </Button>
+            </Box>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
@@ -1003,38 +1024,61 @@ export default function App({ facilitator, ip, onClick }) {
       </Box>
       <Modal
         isOpen={credentials}
-        onClose={() => setCredentials(false)}
         safeAreaTop={true}
         size="xl"
+        _backdrop={{ opacity: "0.7" }}
       >
         <Modal.Content>
-          {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
             <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall>{credentials?.username}</BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall>{credentials?.password}</BodySmall>
-                  </HStack>
-                </Box>
+              <VStack
+                space="2"
+                bg="gray.100"
+                p="1"
+                rounded="lg"
+                borderWidth={1}
+                borderColor="gray.300"
+                w="100%"
+              >
+                <HStack alignItems="center" space="1" flex="1">
+                  <H3 flex="0.3">{t("USERNAME")}</H3>
+                  <BodySmall
+                    py="1"
+                    px="2"
+                    flex="0.7"
+                    wordWrap="break-word"
+                    whiteSpace="break-spaces"
+                    overflow="hidden"
+                    bg="success.100"
+                    borderWidth="1"
+                    borderColor="success.500"
+                  >
+                    {credentials?.username}
+                  </BodySmall>
+                </HStack>
+                <HStack alignItems="center" space="1" flex="1">
+                  <H3 flex="0.3">{t("PASSWORD")}</H3>
+                  <BodySmall
+                    py="1"
+                    px="2"
+                    flex="0.7"
+                    wordWrap="break-word"
+                    whiteSpace="break-spaces"
+                    overflow="hidden"
+                    bg="success.100"
+                    borderWidth="1"
+                    borderColor="success.500"
+                  >
+                    {credentials?.password}
+                  </BodySmall>
+                </HStack>
               </VStack>
               <VStack alignItems="center">
                 <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
+                  text={`username: ${credentials?.username}, password: ${credentials?.password}`}
                   onPress={(e) => {
                     setCredentials({ ...credentials, copy: true });
                     downloadImage();

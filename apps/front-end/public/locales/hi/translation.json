@@ -44,6 +44,7 @@
   "FILTERS": "फिल्टर",
   "DISTRICT": "ज़िला",
   "QUALIFICATION": "योग्यता",
+  "TEACHING_QUALIFICATION": "शिक्षण योग्यता",
   "WORK_EXPERIENCE": "कार्य अनुभव",
   "MY_PRERAKS": "मेरे प्रेरक",
   "FIRST_NAME": "पहला नाम",
@@ -132,7 +133,7 @@
   "JUST_ONE_STEP": "बस एक कदम और आगे बढ़ना है!",
   "TAKE_PHOTO": "फोटो लें",
   "UPLOAD_PHOTO": "फोटो अपलोड करें",
-  "FILE_SIZE": "फाइल का आकार 2 एमबी से कम होना चाहिए",
+  "FILE_SIZE": "फाइल का आकार 25 एमबी से कम होना चाहिए",
   "TAKE_ANOTHER_PHOTO": "एक और फोटो लें",
   "REQUIRED_MESSAGE": "कृपया वैध दर्ज करें",
   "SELECT_MESSAGE": "कृपया वैध विकल्प चुनें",
@@ -203,5 +204,6 @@
   "FREQUENTLY_ASKED_QUESTION": "अधिकतर पूछे गए प्रश्न",
   "CALL_SUPPORT": "मदद के लिए कॉल करें",
   "LOGOUT": "लॉग आउट",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है"
 }

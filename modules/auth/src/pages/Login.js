@@ -9,19 +9,18 @@ import {
   Alert,
   IconButton,
   CloseIcon,
-  Center,
-  Stack,
+  Image,
 } from "native-base";
 import {
   useWindowSize,
   Subtitle,
-  H3,
   t,
   login,
   logout,
+  H1,
+  Layout,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
-
 const styles = {
   box: {
     background:
@@ -30,7 +29,7 @@ const styles = {
 };
 
 export default function Login() {
-  const ref = React.useRef(null);
+  const [ref, setRef] = React.useState(null);
   const [width, Height] = useWindowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
@@ -61,35 +60,56 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const { error } = await login(credentials);
-      if (error) {
-        setErrors({ alert: t(error) });
-      } else {
-        navigate("/");
-        navigate(0);
-      }
+      const loginData = await login(credentials);
+      navigate("/");
+      navigate(0);
     } else {
       logout();
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
+
   return (
-    <Stack>
-      <Center p="5" ref={ref} minH={Height / 2}>
-        <Box width={"300px"} height={"150px"} bg="gray.300" rounded={"lg"}>
-          {/* <Image
-            source={{
-              uri: "/splash.png",
-            }}
-            // alt="Alternate Text"
-            width={"300px"}
-            height={"118px"}
-          /> */}
-        </Box>
-      </Center>
-      <Box p="5" roundedTopRight={60} bg="gray.200" minH={Height - Height / 2}>
-        <VStack space={5}>
-          <H3 pt="4">{t("LOGIN")}</H3>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["helpBtn"],
+        _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
+      }}
+      getRefAppBar={(e) => setRef(e)}
+    >
+      <VStack
+        bg="bgGreyColor.200"
+        minH={Height - ref?.clientHeight}
+        space="50px"
+      >
+        <H1 color="textMaroonColor.400" textAlign="center" pt="6">
+          {t("LOGIN")}
+        </H1>
+        <Image
+          alignSelf="center"
+          source={{
+            uri: "/login.png",
+          }}
+          alt=""
+          width="240"
+          height="144"
+        />
+        <VStack space={5} p="5">
+          <Alert status="info" colorScheme="info" textAlign="center">
+            <VStack space={2} flexShrink={1}>
+              <HStack
+                flexShrink={1}
+                space={2}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <HStack flexShrink={1} space={2} alignItems="center">
+                  <Alert.Icon />
+                  {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+                </HStack>
+              </HStack>
+            </VStack>
+          </Alert>
           {"alert" in errors ? (
             <Alert w="100%" status={"error"}>
               <VStack space={2} flexShrink={1} w="100%">
@@ -109,90 +129,88 @@ export default function Login() {
           ) : (
             <></>
           )}
-          <VStack space="4">
-            <VStack space="2">
-              <FormControl isRequired isInvalid={"username" in errors}>
-                {/* <FormControl.Label
+          <VStack space="2">
+            <FormControl isRequired isInvalid={"username" in errors}>
+              {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
                 mb="10px"
               >
                 {t("USERNAME")}
               </FormControl.Label> */}
-                <Input
-                  rounded="lg"
-                  height="48px"
-                  bg="white"
-                  variant="unstyled"
-                  p={"10px"}
-                  placeholder={t("ENTER") + " " + t("USERNAME")}
-                  onChange={(e) =>
-                    setCredentials({
-                      ...credentials,
-                      username: e?.target?.value?.trim(),
-                    })
-                  }
-                />
-                {"username" in errors ? (
-                  <FormControl.ErrorMessage
-                    _text={{
-                      fontSize: "xs",
-                      color: "error.500",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {errors.username}
-                  </FormControl.ErrorMessage>
-                ) : (
-                  <></>
-                )}
-              </FormControl>
-              <FormControl isRequired isInvalid={"password" in errors}>
-                {/* <FormControl.Label
+              <Input
+                rounded="lg"
+                height="48px"
+                bg="white"
+                variant="unstyled"
+                p={"10px"}
+                placeholder={t("ENTER") + " " + t("USERNAME")}
+                onChange={(e) =>
+                  setCredentials({
+                    ...credentials,
+                    username: e?.target?.value?.trim(),
+                  })
+                }
+              />
+              {"username" in errors ? (
+                <FormControl.ErrorMessage
+                  _text={{
+                    fontSize: "xs",
+                    color: "error.500",
+                    fontWeight: 500,
+                  }}
+                >
+                  {errors.username}
+                </FormControl.ErrorMessage>
+              ) : (
+                <></>
+              )}
+            </FormControl>
+            <FormControl isRequired isInvalid={"password" in errors}>
+              {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
-                <Input
-                  rounded="lg"
-                  height="48px"
-                  bg="white"
-                  variant="unstyled"
-                  p={"10px"}
-                  placeholder={t("ENTER") + " " + t("PASSWORD")}
-                  type="password"
-                  onChange={(e) =>
-                    setCredentials({
-                      ...credentials,
-                      password: e?.target?.value,
-                    })
-                  }
-                />
-                {"password" in errors ? (
-                  <FormControl.ErrorMessage
-                    _text={{
-                      fontSize: "xs",
-                      color: "error.500",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {errors.password}
-                  </FormControl.ErrorMessage>
-                ) : (
-                  <></>
-                )}
-              </FormControl>
-            </VStack>
-            {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
-            {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-            <Button flex={1} variant={"primary"} onPress={handleLogin}>
-              {t("SUBMIT")}
-            </Button>
-            {/* <BodyMedium color="primary.500" textAlign="center">
+              <Input
+                rounded="lg"
+                height="48px"
+                bg="white"
+                variant="unstyled"
+                p={"10px"}
+                placeholder={t("ENTER") + " " + t("PASSWORD")}
+                type="password"
+                onChange={(e) =>
+                  setCredentials({
+                    ...credentials,
+                    password: e?.target?.value,
+                  })
+                }
+              />
+              {"password" in errors ? (
+                <FormControl.ErrorMessage
+                  _text={{
+                    fontSize: "xs",
+                    color: "error.500",
+                    fontWeight: 500,
+                  }}
+                >
+                  {errors.password}
+                </FormControl.ErrorMessage>
+              ) : (
+                <></>
+              )}
+            </FormControl>
+          </VStack>
+          {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
+          {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
+          <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
+            {t("LOGIN")}
+          </Button>
+          {/* <BodyMedium color="primary.500" textAlign="center">
               {t("CHANGE_MY_PASSWORD")}
             </BodyMedium> */}
-          </VStack>
         </VStack>
-      </Box>
-    </Stack>
+      </VStack>
+    </Layout>
   );
 }

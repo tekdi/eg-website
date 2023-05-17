@@ -44,6 +44,7 @@
   "FILTERS": "Filters",
   "DISTRICT": "District",
   "QUALIFICATION": "Qualification",
+  "TEACHING_QUALIFICATION": "Teaching qualification",
   "WORK_EXPERIENCE": "Work Experience",
   "MY_PRERAKS": "My Preraks",
   "FIRST_NAME": "First Name",
@@ -132,7 +133,7 @@
   "JUST_ONE_STEP": "Just one more Step to go!",
   "TAKE_PHOTO": "Take a Photo",
   "UPLOAD_PHOTO": "Upload a Photo",
-  "FILE_SIZE": "file size must be less then 2MB",
+  "FILE_SIZE": "file size must be less then 25MB",
   "TAKE_ANOTHER_PHOTO": "Take another Photo",
   "REQUIRED_MESSAGE": "Please enter a valid data",
   "SELECT_MESSAGE": "Please select a valid option",
@@ -194,5 +195,6 @@
   "FREQUENTLY_ASKED_QUESTION": "Frequently asked Question",
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
+  "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
 }
