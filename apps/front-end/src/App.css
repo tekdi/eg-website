@@ -53,7 +53,6 @@ legend {
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: #790000;
   margin-bottom: 10px;
 }
 p {
@@ -287,11 +286,6 @@ img {
   font-size: 12px;
   line-height: 15px;
   color: #790000;
-}
-button {
-  background: #2d142c;
-  box-shadow: 1px 3px 0px #c92a42;
-  border-radius: 100px;
 }
 .error-detail,
 ul {
