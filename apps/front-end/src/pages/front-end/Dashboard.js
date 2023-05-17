@@ -34,9 +34,8 @@ export default function Dashboard({ userTokenInfo }) {
     }
   }, []);
   return (
-    <Layout>
+    <Layout _appBar={{ profile_url: facilitator?.documents?.[0]?.name }}>
       <VStack space="5" bg="gray.200">
-        {/* /* Under review */ }
         <HStack
           p="5"
           space="5"
