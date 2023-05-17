@@ -17,6 +17,10 @@ jobs:
           yarn workspace @shiksha/common-lib build
           yarn install
           yarn build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+          
       - name: Create Lerna Bundles
         run: |
           sh ./scripts/pack-prod-build.sh
@@ -48,7 +52,7 @@ jobs:
           script: |
             cd /home/ubuntu
             #cp eg-website.tar /var/www/html2
-            tar -xvf eg-website.tar -C /var/www/html/
+            tar -xvf eg-website.tar -C /var/www/html2/
             #rm -rf *
             #cp ../eg-website.tar ./
             #tar -xvf eg-website.tar .
