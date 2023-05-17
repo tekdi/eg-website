@@ -205,5 +205,13 @@
   "CALL_SUPPORT": "मदद के लिए कॉल करें",
   "LOGOUT": "लॉग आउट",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है"
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है",
+  "OWNERSHIP":"स्वामित्व",
+  "IDENTIFY_THE_AG_LEARNER":"एजी लर्नर की पहचान करें",
+  "MARITAL_STATUS":"वैवाहिक स्थिति",
+  "SOCIAL_CATEGORY":"सामाजिक श्रेणी",
+  "TYPE_OF_STUDENT":"छात्र का प्रकार",
+  "LAST_YEAR_OF_EDUCATION" :"शिक्षा का अंतिम वर्ष",
+  "LAST_STANDARD_OF_EDUCATION":"शिक्षा का अंतिम मानक",
+  "REASON_FOR_LEAVING_EDUCATION" :"शिक्षा छोड़ने का कारण"
 }

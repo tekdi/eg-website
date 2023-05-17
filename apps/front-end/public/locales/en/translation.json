@@ -196,5 +196,14 @@
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
+  "OWNERSHIP":"Ownership",
+  "IDENTIFY_THE_AG_LEARNER":"Identify the AG Learner",
+  "MARITAL_STATUS":"Marital status",
+  "SOCIAL_CATEGORY":"Social Category",
+  "TYPE_OF_STUDENT":"Type of Student",
+  "LAST_YEAR_OF_EDUCATION" :"Last Year of Education",
+  "LAST_STANDARD_OF_EDUCATION":"Last Standard of Education",
+  "REASON_FOR_LEAVING_EDUCATION" :"Reason for Leaving Education"
+
 }

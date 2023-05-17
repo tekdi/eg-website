@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "../parts/schema.js";
+import schema1 from "../ag-form/parts/Schema.js";
 import {
   Alert,
   Box,
@@ -14,8 +14,8 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../component/CustomRadio";
-import Steper from "../../component/Steper";
+import CustomRadio from "../../../component/CustomRadio";
+import Steper from "../../../component/Steper";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -42,7 +42,7 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-} from "../../component/BaseInput";
+} from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 
 const CustomR = ({ options, value, onChange, required }) => {
@@ -90,9 +90,8 @@ const RadioBtn = ({ options, value, onChange, required }) => {
 };
 
 // App
-export default function App({ facilitator, ip, onClick }) {
-  console.log("facilit",facilitator);
-  onsole.log("ip",ip);
+export default function Agform({ userTokenInfo }) {
+    const {authUser} = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -103,16 +102,12 @@ export default function App({ facilitator, ip, onClick }) {
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
-  const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 13) {
-    navigate("/dashboard");
-  }
 
   window.onbeforeunload = function () {
     return false;
@@ -136,12 +131,10 @@ export default function App({ facilitator, ip, onClick }) {
     getImage();
   }, [page, credentials]);
 
+  
+
   const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
-    }
+   
   };
 
   const uiSchema = {
@@ -169,7 +162,13 @@ export default function App({ facilitator, ip, onClick }) {
     sourcing_channel: {
       "ui:widget": CustomR,
     },
-    availability: {
+    marital_status: {
+        "ui:widget": CustomR,
+      },
+    social_category: {
+        "ui:widget": CustomR,
+      },
+    ownership: {
       "ui:widget": RadioBtn,
     },
     device_ownership: {
@@ -183,6 +182,7 @@ export default function App({ facilitator, ip, onClick }) {
         "ui:widget": RadioBtn,
       },
     },
+    
     vo_experience: {
       items: {
         experience_in_years: { "ui:widget": CustomR },
@@ -202,6 +202,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
+        
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
@@ -340,30 +341,13 @@ export default function App({ facilitator, ip, onClick }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      const arr = ["1", "2"];
-      const { id, form_step_number } = facilitator;
-      let newPage = [];
-      if (id) {
-        newPage = newSteps.filter((e) => !arr.includes(e));
-        //  const pageSet = form_step_number ? form_step_number : 3;
-        const pageSet = "3";
-        setPage(pageSet);
-        setSchema(properties[pageSet]);
-      } else {
-        newPage = newSteps.filter((e) => arr.includes(e));
-        setPage(newPage[0]);
-        setSchema(properties[newPage[0]]);
-      }
-      setPages(newPage);
+    setPage(newSteps[0]);
+    setSchema(properties[newSteps[0]]);
+      setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
-    }
-    if (facilitator?.id) {
-      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-      const newData = JSON.parse(data);
-      setFormData({ ...newData, ...facilitator });
     }
   }, []);
 
@@ -381,7 +365,7 @@ export default function App({ facilitator, ip, onClick }) {
         setSubmitBtn(t("NEXT"));
         setAddBtn(t("ADD_EXPERIENCE"));
       } else {
-        setSubmitBtn(t("NO"));
+        setSubmitBtn(t("NO"));``
         setAddBtn(t("YES"));
       }
     } else {
@@ -398,22 +382,15 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const formSubmitUpdate = async (formData) => {
-    const { id } = facilitator;
+    const { id } = authUser;
     if (id) {
       updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
-        ...formData,
-        parent_ip: ip?.id,
-        id: id,
-      });
+      
     }
   };
 
   const formSubmitCreate = async (formData) => {
-    return await facilitatorRegistryService.create({
-      ...formData,
-      parent_ip: ip?.id,
-    });
+    
   };
 
   const goErrorPage = (key) => {
@@ -527,7 +504,7 @@ export default function App({ facilitator, ip, onClick }) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
       setSchema(newSchema);
-    }
+    }formData
     return newSchema;
   };
 
@@ -696,7 +673,7 @@ export default function App({ facilitator, ip, onClick }) {
     setFormData(newData);
     updateData(newData);
     if (_.isEmpty(errors)) {
-      const { id } = facilitator;
+      const { id } = authUser;
       let success = false;
       if (id) {
         // const data = await formSubmitUpdate(newData);
@@ -758,7 +735,7 @@ export default function App({ facilitator, ip, onClick }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <Box p="10">
+          {/* <Box p="10">
             <Steper
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
@@ -767,7 +744,7 @@ export default function App({ facilitator, ip, onClick }) {
               ]}
               progress={page === "upload" ? 13 : page}
             />
-          </Box>
+          </Box> */}
           <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
           <h5 color="red.1000" fontSize="3">
             {t("CLEAR_PROFILE_MESSAGE")}
@@ -827,7 +804,7 @@ export default function App({ facilitator, ip, onClick }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <Box p="10">
+          {/* <Box p="10">
             <Steper
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
@@ -836,7 +813,7 @@ export default function App({ facilitator, ip, onClick }) {
               ]}
               progress={page === "upload" ? 13 : page}
             />
-          </Box>
+          </Box> */}
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
           <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
           <Button
@@ -935,24 +912,17 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
-        name: `${ip?.name}`.trim(),
+        onlyIconsShow:["backBtn","userInfo"],
+        // name: "Add an AG",
         lang,
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        <Box px="2" py="10">
-          <Steper
-            steps={[
-              { value: "6", label: t("BASIC_DETAILS") },
-              { value: "3", label: t("WORK_DETAILS") },
-              { value: "4", label: t("OTHER_DETAILS") },
-            ]}
-            progress={page - 1}
-          />
-        </Box>
+        {/* <Box px="2" py="10">
+          
+        </Box> */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
