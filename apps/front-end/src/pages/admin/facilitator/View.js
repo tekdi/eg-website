@@ -11,18 +11,10 @@ import {
   BodySmall,
   Loading,
   t,
+  ImageView,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Button,
-  Center,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-  Box,
-  Avatar,
-} from "native-base";
+import { Button, Center, Heading, HStack, Text, VStack } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
@@ -199,10 +191,10 @@ export default function FacilitatorView({ footerLinks }) {
               </HStack>
             </VStack>
             <HStack flex="0.3" pl="5" justifyContent="center">
-              {data?.profile_url ? (
-                <Avatar
+              {data?.documents?.[0]?.name ? (
+                <ImageView
                   source={{
-                    uri: data?.profile_url,
+                    uri: data?.documents?.[0]?.name,
                   }}
                   // alt="Alternate Text"
                   width={"190px"}

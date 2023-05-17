@@ -6,26 +6,14 @@ import {
   H3,
   H1,
   H2,
-  BodyLarge,
+  ImageView,
   BodySmall,
   Loading,
   t,
 } from "@shiksha/common-lib";
-import {
-  Heading,
-  HStack,
-  Text,
-  VStack,
-  Box,
-  Avatar,
-  Stack,
-  Column,
-  Row,
-  Center,
-} from "native-base";
+import { Heading, HStack, Text, VStack, Box, Stack } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate } from "react-router-dom";
-import { Primary } from "stories/Button.stories";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
@@ -156,10 +144,10 @@ export default function App({ footerLinks, userTokenInfo }) {
               </HStack>
             </HStack>
             <HStack width="30%" pl="5">
-              {data?.profile_url ? (
-                <Avatar
+              {data?.documents?.[0]?.name ? (
+                <ImageView
                   source={{
-                    uri: data?.profile_url,
+                    uri: data?.documents?.[0]?.name,
                   }}
                   // alt="Alternate Text"
                   width={"190px"}

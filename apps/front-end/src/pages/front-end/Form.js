@@ -19,6 +19,7 @@ import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
   Camera,
   Layout,
   H1,
@@ -31,7 +32,6 @@ import {
   H2,
   getBase64,
   BodyMedium,
-  changeLanguage,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -97,6 +97,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
+  const [cameraFile, setCameraFile] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
@@ -111,10 +112,6 @@ export default function App({ facilitator, ip, onClick }) {
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
-
-  window.onbeforeunload = function () {
-    return false;
-  };
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -131,6 +128,9 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   React.useEffect(() => {
+    window.onbeforeunload = function () {
+      return false;
+    };
     getImage();
   }, [page, credentials]);
 
@@ -404,6 +404,22 @@ export default function App({ facilitator, ip, onClick }) {
         parent_ip: ip?.id,
         id: id,
       });
+    }
+  };
+
+  const uploadProfile = async () => {
+    const { id } = facilitator;
+    if (id) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: id,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+      return await uploadRegistryService.uploadFile(form_data);
     }
   };
 
@@ -706,9 +722,12 @@ export default function App({ facilitator, ip, onClick }) {
         if (data?.error) {
           const newErrors = {
             mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              __errors:
+                data?.error?.constructor?.name === "String"
+                  ? [data?.error]
+                  : data?.error?.constructor?.name === "Array"
+                  ? data?.error
+                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -733,10 +752,10 @@ export default function App({ facilitator, ip, onClick }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 25) {
       const data = await getBase64(file);
       setCameraUrl(data);
-      setFormData({ ...formData, ["profile_url"]: data });
+      setCameraFile(file);
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
@@ -782,7 +801,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              await uploadProfile();
               if (onClick) onClick("success");
             }}
           >
@@ -809,9 +828,9 @@ export default function App({ facilitator, ip, onClick }) {
           cameraModal,
           setCameraModal,
           cameraUrl,
-          setCameraUrl: async (url) => {
+          setCameraUrl: async (url, blob) => {
             setCameraUrl(url);
-            setFormData({ ...formData, ["profile_url"]: url });
+            setCameraFile(blob);
           },
         }}
       />
@@ -855,22 +874,24 @@ export default function App({ facilitator, ip, onClick }) {
             {t("TAKE_PHOTO")}
           </Button>
           <VStack space={2}>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-            >
-              {t("UPLOAD_PHOTO")}
-            </Button>
+            <Box>
+              <input
+                accept="image/*"
+                type="file"
+                style={{ display: "none" }}
+                ref={uplodInputRef}
+                onChange={handleFileInputChange}
+              />
+              <Button
+                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+                variant={"secondary"}
+                onPress={(e) => {
+                  uplodInputRef?.current?.click();
+                }}
+              >
+                {t("UPLOAD_PHOTO")}
+              </Button>
+            </Box>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
@@ -1003,13 +1024,11 @@ export default function App({ facilitator, ip, onClick }) {
       </Box>
       <Modal
         isOpen={credentials}
-        onClose={() => setCredentials(false)}
         safeAreaTop={true}
         size="xl"
         _backdrop={{ opacity: "0.7" }}
       >
         <Modal.Content>
-          {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
             <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
           </Modal.Header>

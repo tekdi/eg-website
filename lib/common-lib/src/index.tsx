@@ -16,9 +16,11 @@ import Loading from './components/Loading'
 import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import * as authRegistryService from './services/authRegistryService'
+import * as uploadRegistryService from './services/uploadRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
+import ImageView from './components/ImageView'
 
 export {
   AppBar,
@@ -41,6 +43,8 @@ export {
   facilitatorRegistryService,
   authRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
+  ImageView,
   t,
   changeLanguage,
   Camera
