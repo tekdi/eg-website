@@ -61,6 +61,11 @@ export default function Orientation({ footerLinks, onShowScreen }) {
     },
   };
   const styles={
+    modalxxl:{
+      maxWidth:"950px",
+      width:"100%",
+      height:"100%"
+    },
     blueOutlineBtnShadow: { style: { boxShadow: '2px 3px 0px #8B7171'} },
     blueFillBtnShadow: { style: { boxShadow: '1px 3px 0px #7BB0FF '} },
     blueShadowBox:{ style:{width:'279px',height:'169px',boxShadow:'2px 3px 0px #CAE9FF',border:'2px solid #084B82', borderRadius:'8px'}}
@@ -80,7 +85,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       <VStack paddingLeft="5" paddingTop="5" space="xl">
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
-            <IconByName name="Home4LineIcon" />
+            <IconByName name="Home4LineIcon" fontSize="24px" />
             <Text
               fontSize="24px"
               fontWeight="600"
@@ -99,8 +104,9 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               source={{
                 uri: "/orientation.svg",
               }}
-              alt="Alternate Text"
+              alt="Prerak Orientation"
               size={"sm"}
+              resizeMode="contain"
             />
               <Text fontSize="sm" bold pt="4">Prerak Orientation</Text>
               </Pressable>
@@ -112,7 +118,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 source={{
                   uri: "/training.svg",
                 }}
-                alt="Alternate Text"
+                alt="Prerak Training"
                 size={"sm"}
                 resizeMode="contain"
               />
@@ -125,7 +131,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 source={{
                   uri: "/masterTrainer.svg",
                 }}
-                alt="Alternate Text"
+                alt="My MT"
                 size={"sm"}
                 resizeMode="contain"
               />
@@ -138,7 +144,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 source={{
                   uri: "/addPrerak.svg",
                 }}
-                alt="Alternate Text"
+                alt="Add a Prerak"
                 size={"sm"}
                 resizeMode="contain"
               />
@@ -214,10 +220,10 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         // height={"450px"}
         overflowY={"scroll"}
       >
-        <Modal.Content maxH="412">
+        <Modal.Content  {...styles.modalxxl}>
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0" bg="white">
-            <H1 textAlign="center"> Schedule an Interview</H1>
+            <H1 textAlign="center" bold> Schedule an Event</H1>
           </Modal.Header>
 
           {/* <Modal.Header textAlign={"Center"}>
@@ -346,35 +352,34 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 uiSchema,
               }}
             />
-
-            <HStack>
+            <Modal.Footer justifyContent={"space-between"}>
               <Button.Group space={2}>
-                <Button
-                  variant="blueOutlineBtn"
-                  colorScheme="blueGray"
-                  onPress={() => {
-                    setShowModal(false);
-                  }}
-                  {...styles.blueOutlineBtnShadow}
-                >
-                  <Text>Cancel</Text>
-                </Button>
-                <Button
-                variant="blueFillButton"
-                  onPress={() => {
-                    setShowModal(false);
-                  }}
-                  {...styles.blueFillBtnShadow}
-                >
-                  Send Invites
-                </Button>
-              </Button.Group>
-            </HStack>
+                  <Button
+                    variant="blueOutlineBtn"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setShowModal(false);
+                    }}
+                    {...styles.blueOutlineBtnShadow}
+                  >
+                    <Text>Cancel</Text>
+                  </Button>
+                  <Button
+                  variant="blueFillButton"
+                    onPress={() => {
+                      setShowModal(false);
+                    }}
+                    {...styles.blueFillBtnShadow}
+                  >
+                   <Text color="white">Send Invites</Text> 
+                  </Button>
+                </Button.Group>
+            </Modal.Footer>
           </Modal.Body>
         </Modal.Content>
       </Modal>
 
-      <HStack space="2xl" justifyContent="space-between" px="3">
+      <HStack space="2xl" justifyContent={"space-between"} px="3">
         <Box>
           <VStack space="xl">
             <Button
