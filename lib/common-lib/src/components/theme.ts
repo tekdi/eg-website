@@ -139,7 +139,6 @@ const DEFAULT_THEME = {
           bg: `#FFFFFF`,
           borderWidth: '1',
           borderColor: `#790000`,
-        
           _hover: {
             bg: `#FFFFFF`
           },
@@ -151,7 +150,7 @@ const DEFAULT_THEME = {
             color: '#790000'
           },
           rounded: '4',
-          shadow:'2px 3px 0px #8B7171'
+          shadow: '2px 3px 0px #8B7171'
         }),
         statusBtnAdmin: ({ colorScheme }: any) => ({
           bg: `${colorScheme}.50`,
@@ -167,7 +166,7 @@ const DEFAULT_THEME = {
             color: `${colorScheme}.500`
           },
           rounded: '100'
-        }),
+        })
       }
     }
   },
@@ -214,6 +213,9 @@ const DEFAULT_THEME = {
     }
   },
   colors: {
+    footer: {
+      boxBorder: '#C92A42'
+    },
     widgetColor: {
       400: '#7F9DAC',
       500: '#DDD8F3',
@@ -405,14 +407,14 @@ const DEFAULT_THEME = {
     textMaroonColor: {
       400: '#790000'
     },
-    bgPinkColor:{
-      300:'#F9E9DB'
+    bgPinkColor: {
+      300: '#F9E9DB'
     },
-    editIcon:{
-      300:'#3F8BF1'
+    editIcon: {
+      300: '#3F8BF1'
     },
-    sendMessageBtn:{
-      200:'#14242D'
+    sendMessageBtn: {
+      200: '#14242D'
     }
   }
 }
