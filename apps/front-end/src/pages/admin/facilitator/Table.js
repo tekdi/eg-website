@@ -125,11 +125,7 @@ function Table({ facilitator }) {
   React.useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
-  const styles={
-    sendInviteBtn: { style: { boxShadow: '1px solid #084B82', color:'#084B82',borderWidth:'1px',borderColor:'#084B82', background:'#fff', borderRadius:'30px'} },
-    registerPrerakBtn: { style: { boxShadow: '1px 3px 0px #7BB0FF ', color:'#ffffff',borderWidth:'1px',borderColor:'#14242D', background:'#14242D', borderRadius:'30px'} },
-  }
-
+ 
   return (
     <VStack>
       <HStack justifyContent={"space-between"} my="1">
@@ -148,12 +144,12 @@ function Table({ facilitator }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-        <Button  {...styles.sendInviteBtn} onPress={() => setModal(true)} rightIcon={<IconByName _icon={color='#084B82'} size="15px" name="ShareLineIcon"></IconByName>}>
+        <BlueFillButton  shadow="BlueOutlineShadow" onPress={() => setModal(true)} rightIcon={<IconByName _icon={color='#084B82'} size="15px" name="ShareLineIcon"></IconByName>}>
             <Text>{t("SEND_AN_INVITE")}</Text>
-          </Button> 
-          <Button mx="3" {...styles.registerPrerakBtn} rightIcon={<IconByName _icon={color='#ffffff'} size="20px" name="PencilLineIcon"></IconByName>}>
+          </BlueFillButton> 
+          <BlueFillButton mx="3" shadow="BlueFillShadow"  rightIcon={<IconByName _icon={color='#ffffff'} size="20px" name="PencilLineIcon"></IconByName>}>
             {t("REGISTER_PRERAK")}
-          </Button>
+          </BlueFillButton>
           <Modal
             isOpen={modal}
             onClose={() => setModal(false)}

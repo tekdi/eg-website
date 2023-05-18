@@ -285,9 +285,7 @@ export default function FacilitatorView({ footerLinks }) {
                   <Text>{showData(data?.aadhar_token)}</Text>
                 </HStack>
               </VStack>
-              <VStack
-                display="Flex"
-                flexDirection="row"
+              <HStack
                 space="20px"
                 w="50%"
                 bg="light.100"
@@ -373,7 +371,7 @@ export default function FacilitatorView({ footerLinks }) {
                       </VStack>
                     </VStack>
                   </VStack>
-                  <VStack display="Flex" flexDirection="column" space="20px">
+                  <HStack space="20px">
                   <HStack justifyContent="space-between" alignItems="center" borderColor="light.400" pb="1" borderBottomWidth="1">
                       <Heading fontSize="16px">
                         {t("OTHER_DETAILS")}
@@ -399,9 +397,9 @@ export default function FacilitatorView({ footerLinks }) {
                       <Text color="warmGray.500">{t("TYPE_OF_DEVICE")} </Text>
                       <Text>{showData(data?.device_type)}</Text>
                     </HStack>
-                  </VStack>
+                  </HStack>
                 </VStack>
-              </VStack>
+              </HStack>
             </HStack>
           </VStack>
           <StatusButton {...{ data, setData }} />

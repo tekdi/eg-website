@@ -43,7 +43,7 @@ export default function App({ footerLinks, userTokenInfo }) {
             <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
           <HStack alignItems="center" flexWrap="wrap">
-            <VStack flex="0.7" direction="column">
+            <HStack flex="0.7" direction="column">
               <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
                 <H1>
                   {data?.first_name} {data?.last_name}
