@@ -3,6 +3,7 @@ import Profile from "pages/admin/facilitator/Profile";
 import FacilitatorView from "pages/admin/facilitator/View";
 import AdminHome from "pages/admin/AdminHome";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
+import OrientationScreen from "pages/front-end/orientation/orientationScreen";
 import NotFound from "pages/NotFound";
 
 export default [
@@ -12,4 +13,5 @@ export default [
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
   { path: "*", component: NotFound },
+  { path: "/orientation", component: OrientationScreen },
 ];

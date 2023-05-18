@@ -1,4 +1,4 @@
-name: Deploy to DEV
+name: CICD
 on: 
   push: 
     branches:
@@ -25,12 +25,6 @@ jobs:
         run: |
           sh ./scripts/pack-prod-build.sh
           
-#       - name: Install SSH key
-#         uses: shimataro/ssh-key-action@v2
-#         with:
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           known_hosts: ${{ secrets.SSH_HOST }}
-
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -40,9 +34,21 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
-      - name: Copy build to server using rsync
+      - name: Deploy with rsync
         run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-   
+          
+#       - name: Install SSH key
+#         uses: shimataro/ssh-key-action@v2
+#         with:
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           known_hosts: ${{ secrets.SSH_HOST }}
+          
+#       - name: Adding known hosts
+#         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts          
+#       - name: RSYNC Build
+#         run: |
+#           rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
+        
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -52,7 +58,7 @@ jobs:
           script: |
             cd /home/ubuntu
             #cp eg-website.tar /var/www/html2
-            tar -xvf eg-website.tar -C /var/www/html2/
+            tar -xvf eg-website.tar -C /var/www/html/
             #rm -rf *
             #cp ../eg-website.tar ./
             #tar -xvf eg-website.tar .
