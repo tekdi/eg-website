@@ -4,19 +4,12 @@ import {
   H1,
   H3,
   t,
+  ImageView,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import {
-  Button,
-  HStack,
-  Input,
-  Text,
-  VStack,
-  Modal,
-  Avatar,
-} from "native-base";
-import React, { useState, useEffect } from "react";
+import { Button, HStack, Input, Text, VStack, Modal } from "native-base";
+import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 
@@ -25,10 +18,10 @@ const columns = (e) => [
     name: t("FIRST_NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
-        {row?.profile_url ? (
-          <Avatar
+        {row?.documents?.[0]?.name ? (
+          <ImageView
             source={{
-              uri: row?.profile_url,
+              uri: row?.documents?.[0]?.name,
             }}
             // alt="Alternate Text"
             width={"35px"}
@@ -104,7 +97,7 @@ function Table({ facilitator }) {
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
 
-  useEffect(async () => {
+  React.useEffect(async () => {
     setLoading(true);
     const result = await facilitatorRegistryService.getAll(filterObj);
     setData(result.data);
@@ -112,7 +105,7 @@ function Table({ facilitator }) {
     setLoading(false);
   }, [filterObj]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
 
