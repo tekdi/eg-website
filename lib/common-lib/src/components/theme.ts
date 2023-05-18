@@ -179,6 +179,38 @@ const DEFAULT_THEME = {
       }
     }
   },
+  shadows: {
+    BlueOutlineShadow: {
+      shadowColor: '#8B7171',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    BlueFillShadow: {
+      shadowColor: '#7BB0FF',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    BlueBoxShadow: {
+      shadowColor: '#CAE9FF',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    }
+  },
   colors: {
     widgetColor: {
       400: '#7F9DAC',

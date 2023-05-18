@@ -33,21 +33,11 @@ import React from "react";
 let switchAttendance = false;
 
 const stylesheet = {
-  ProceedButton: {
-    marginTop: "20px",
-    alignItems: "center",
-    width: "260px",
-    background: " #2D142C",
-    boxShadow: "1px 3px 0px #C92A42",
-    borderRadius: " 100px",
-  },
   modalxxl:{
     maxWidth:"950px",
     width:"100%",
     height:"100%"
   },
-  blueOutlineBtnShadow: { style: { boxShadow: '2px 3px 0px #8B7171'} },
-  blueFillBtnShadow: { style: { boxShadow: '1px 3px 0px #7BB0FF '} },
 };
 const customStyles = {
   headCells: {
@@ -241,7 +231,7 @@ export default function orientationScreen() {
 const Page1 = ({ onShowScreen }) => {
   return (
     <Box>
-      <Button {...stylesheet.ProceedButton} onPress={onShowScreen}>
+      <Button  onPress={onShowScreen}>
         {t("APPLY_NOW")}
       </Button>
     </Box>
@@ -303,13 +293,13 @@ const Page2 = ({ onClick }) => {
           </Modal.Body>
 
           <Modal.Footer justifyContent={"space-between"}>
-              <Button variant="blueOutlineBtn" px="5" py="1" {...stylesheet.blueOutlineBtnShadow}>
+              <Button variant="blueOutlineBtn" px="5" py="1" shadow="BlueOutlineShadow">
                 {t("CANCEL")}
               </Button>
 
               <Button
                 onPress={onClick}
-                {...stylesheet.blueFillBtnShadow}
+                shadow="BlueFillShadow"
                 variant={"blueFillButton"}
                 endIcon={
                   <IconByName
@@ -394,7 +384,7 @@ const Page3 = () => {
               <H1>{t("PRERAK_ORIENTATION")}</H1>
             </HStack>
             <HStack>
-              <Button variant={"blueOutlineBtn"} {...stylesheet.blueOutlineBtnShadow} onPress={() => setModal(true)}>
+              <Button variant={"blueOutlineBtn"} shadow="BlueOutlineShadow" onPress={() => setModal(true)}>
               <Text color="blueText.400" bold fontSize="lg"> {t("SCHEDULE_EVENT")} +</Text>
               </Button>
             </HStack>
@@ -409,7 +399,7 @@ const Page3 = () => {
             <VStack m={"15px"}>
               <HStack justifyContent={"space-between"}>
                 <Text  color="textGreyColor.800" bold fontSize="sm">{t("ORIENTATION_SHEDULE")}</Text>
-                <Button variant={"blueOutlineBtn"} onPress={() => setShowEditModal(true)} {...stylesheet.blueOutlineBtnShadow}>{t("EDIT_DETAILS")}</Button>
+                <Button variant={"blueOutlineBtn"} onPress={() => setShowEditModal(true)} shadow="BlueOutlineShadow">{t("EDIT_DETAILS")}</Button>
               </HStack>
 
               <HStack  space={"3"} fontSize={"14px"}>
@@ -460,7 +450,7 @@ const Page3 = () => {
               <HStack>
                 <Button
                   variant={"blueOutlineBtn"}
-                  {...stylesheet.blueOutlineBtnShadow}
+                  shadow="BlueOutlineShadow"
                   colorScheme="blueGray"
                   onPress={(e) => {
                     setCameraUrl();
@@ -663,10 +653,10 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"end"}
                 >
-                  <Button variant="blueOutlineBtn" {...stylesheet.blueOutlineBtnShadow} color="blueText.400">
+                  <Button variant="blueOutlineBtn" shadow="BlueOutlineShadow" color="blueText.400">
                     {t("CANCEL")}
                   </Button>
-                  <Button variant="blueFillButton" px="8" {...stylesheet.blueFillBtnShadow}><Text color="white">{t("SAVE")}</Text></Button>
+                  <Button variant="blueFillButton" px="8" shadow="BlueFillShadow"><Text color="white">{t("SAVE")}</Text></Button>
                 </HStack>
               </Modal.Body>
             </Modal.Content>
@@ -714,7 +704,7 @@ const Page3 = () => {
                 {/* )} */}
               </Modal.Body>
               <Modal.Footer  justifyContent={"center"}>
-              <Button color="blueText.400" variant="blueOutlineBtn" {...stylesheet.blueOutlineBtnShadow}>
+              <Button color="blueText.400" variant="blueOutlineBtn" shadow="BlueOutlineShadow">
                     {t("MARK_ABSENT")}
                   </Button>
                   <Button variant="secondary" ml="4" px="5">{t("NEXT")}</Button>

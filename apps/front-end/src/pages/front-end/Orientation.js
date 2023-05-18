@@ -66,9 +66,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       width:"100%",
       height:"100%"
     },
-    blueOutlineBtnShadow: { style: { boxShadow: '2px 3px 0px #8B7171'} },
-    blueFillBtnShadow: { style: { boxShadow: '1px 3px 0px #7BB0FF '} },
-    blueShadowBox:{ style:{width:'279px',height:'169px',boxShadow:'2px 3px 0px #CAE9FF',border:'2px solid #084B82', borderRadius:'8px'}}
   }
   return (
     <Layout
@@ -97,7 +94,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          <Box {...styles.blueShadowBox} justifyContent="center">
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack  alignItems={"Center"} >
               <Pressable onPress={onShowScreen}>
             <Image
@@ -111,8 +108,8 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               <Text fontSize="sm" bold pt="4">Prerak Orientation</Text>
               </Pressable>
             </VStack>
-          </Box>
-          <Box {...styles.blueShadowBox} justifyContent="center">
+          </BoxBlue>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -124,8 +121,8 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               />
               <Text fontSize="sm" bold pt="4">Prerak Training</Text>
             </VStack>
-          </Box>
-          <Box {...styles.blueShadowBox} justifyContent="center">
+          </BoxBlue>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -137,8 +134,8 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               />
               <Text fontSize="sm" bold pt="4">My MT</Text>
             </VStack>
-          </Box>
-          <Box {...styles.blueShadowBox} justifyContent="center">
+          </BoxBlue>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -150,7 +147,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               />
               <Text fontSize="sm" bold pt="4">Add a Prerak</Text>
             </VStack>
-          </Box>
+          </BoxBlue>
         </HStack>
         <Text fontSize="xl" bold py="3">
           Your Calender
@@ -163,7 +160,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           <VStack space="xl">
             <Button
             variant={"blueOutlineBtn"}
-            {...styles.blueOutlineBtnShadow}
+            shadow="BlueOutlineShadow"
               onPress={() => {
                 setModalVisible(!modalVisible);
               }}
@@ -360,7 +357,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                     onPress={() => {
                       setShowModal(false);
                     }}
-                    {...styles.blueOutlineBtnShadow}
+                    shadow="BlueOutlineShadow"
                   >
                     <Text>Cancel</Text>
                   </Button>
@@ -369,7 +366,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                     onPress={() => {
                       setShowModal(false);
                     }}
-                    {...styles.blueFillBtnShadow}
+                    shadow="BlueFillShadow"
                   >
                    <Text color="white">Send Invites</Text> 
                   </Button>
