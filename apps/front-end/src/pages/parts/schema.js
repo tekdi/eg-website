@@ -164,7 +164,7 @@ export default {
       type: "object",
       properties: {
         experience: {
-          title: "DO_YOU_HAVE_ANY_WORK_EXPERIENCE",
+          title: "DO_YOU_HAVE_ANY_JOB_EXPERIENCE",
           type: "array",
           items: {
             title: "EXPERIENCE",
