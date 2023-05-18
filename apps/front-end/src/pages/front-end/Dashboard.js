@@ -9,7 +9,7 @@ import {
   SelectStyle
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, Pressable, VStack, Box, Stack, Button,Text,View, Center ,NativeBaseProvider,selected,Alert,Badge,Select} from "native-base";
+import { HStack, Pressable, VStack, Box, Stack, Button,Text,View, Center ,NativeBaseProvider,selected,Alert,Badge,Select,Image} from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -248,7 +248,15 @@ export default function Dashboard({ userTokenInfo }) {
           <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">{t("WELCOME")} Rachana</Text>
         </HStack>
         {/* potential prerak  */}
-        <Button background="#FCEEE2" mx="5" width="40%" {... styles.AddAnAgShadowBox}>
+        <Button background="#FCEEE2" mx="5" width="20%" {... styles.AddAnAgShadowBox}>
+        <Image
+                source={{
+                  uri: "/addAg.svg",
+                }}
+                alt="Add AG"
+                size={"sm"}
+                resizeMode="contain"
+              />
            <Text color="textMaroonColor.400" fontSize="lg" bold>Add an AG</Text> 
             </Button>
         <Stack px="3">
