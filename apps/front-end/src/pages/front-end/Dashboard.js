@@ -20,10 +20,7 @@ export default function Dashboard({ userTokenInfo }) {
 
   const styles = {
     inforBox: { style: {background: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)'}},
-    redFillBtnShadow: { style: { boxShadow: '1px 3px 0px #C92A42'} },
-    redOutlineBtnShadow: { style: { boxShadow: '2px 3px 0px #8B7171' } },
     AddAnAgShadowBox: { style: { boxShadow: '2px 3px 0px #790000' ,  border:'1px solid #790000', borderRadius:'10px', padding:'50px'}},
-    FooterShadow: { style: { boxShadow: '0px -4px 8px rgba(224, 224, 224, 0.4)' } },
   }
 
   React.useEffect(async () => {
@@ -96,7 +93,7 @@ export default function Dashboard({ userTokenInfo }) {
             </HStack>
             <HStack>
               
-          <ButtonStyle {...styles.redFillBtnShadow} width="100%" fontSize="lg" endIcon={<IconByName
+          <ButtonStyle shadow="RedFillShadow"  width="100%" fontSize="lg" endIcon={<IconByName
                   isDisabled
                   name="Upload2FillIcon"
                   _icon={{ size: "25px" }}
@@ -133,10 +130,10 @@ export default function Dashboard({ userTokenInfo }) {
                 <Text fontSize="sm">{t("ONLINE")}: Google Meet</Text>
           </HStack>
           <HStack space="2">
-          <Button {...styles.redOutlineBtnShadow}  variant='redOutlineBtn' rounded="full" width="50%">
+          <Button shadow="RedOutlineShadow"  variant='redOutlineBtn' rounded="full" width="50%">
               <Text fontSize="lg" bold color="textMaroonColor.400">{t("REJECT")} </Text>
             </Button>
-            <ButtonStyle {...styles.redFillBtnShadow} width="50%"><Text fontSize="lg" bold color="white">
+            <ButtonStyle shadow="RedFillShadow" width="50%"><Text fontSize="lg" bold color="white">
               {t("ACCEPT")}</Text>
             </ButtonStyle>
           </HStack>
@@ -169,10 +166,10 @@ export default function Dashboard({ userTokenInfo }) {
                 <Text fontSize="sm">{t("ONLINE")}: Google Meet</Text>
           </HStack>
           <HStack space="2">
-          <Button {...styles.redOutlineBtnShadow} variant='redOutlineBtn' rounded="full" width="50%">
+          <Button  shadow="RedOutlineShadow" variant='redOutlineBtn' rounded="full" width="50%">
               <Text fontSize="lg" bold color="textMaroonColor.400">{t("REJECT")} </Text>
             </Button>
-            <ButtonStyle {...styles.redFillBtnShadow} width="50%"><Text fontSize="lg" bold color="white">{t("ACCEPT")}</Text>
+            <ButtonStyle shadow="RedFillShadow" width="50%"><Text fontSize="lg" bold color="white">{t("ACCEPT")}</Text>
             </ButtonStyle>
           </HStack>
           <HStack>
@@ -228,10 +225,10 @@ export default function Dashboard({ userTokenInfo }) {
        
         <Stack bg="white" space="5" p="5">
           <Text fontSize="lg" bold>{t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}</Text>
-              <ButtonStyle rounded={"full"} width="100%" {...styles.redFillBtnShadow}>
+              <ButtonStyle rounded={"full"} width="100%" shadow="RedFillShadow">
               <Text fontSize="lg" bold color="white">{t("AADHAR_NUMBER_KYC")}</Text>
               </ButtonStyle> 
-              <Button rounded={"full"} width="100%"  variant='redOutlineBtn' {...styles.redOutlineBtnShadow}>
+              <Button rounded={"full"} width="100%"  variant='redOutlineBtn' shadow="RedOutlineShadow">
               <Text color="textMaroonColor.400" fontSize="lg" bold>{t("SCAN_QR_CODE")}</Text>
             </Button>
         </Stack>
@@ -248,7 +245,7 @@ export default function Dashboard({ userTokenInfo }) {
           <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">{t("WELCOME")} Rachana</Text>
         </HStack>
         {/* potential prerak  */}
-        <Button background="#FCEEE2" mx="5" width="20%" {... styles.AddAnAgShadowBox}>
+        <RedOutlineButton background="#FCEEE2" mx="5" width="20%" shadow="RedBoxShadow">
         <Image
                 source={{
                   uri: "/addAg.svg",
@@ -258,7 +255,7 @@ export default function Dashboard({ userTokenInfo }) {
                 resizeMode="contain"
               />
            <Text color="textMaroonColor.400" fontSize="lg" bold>Add an AG</Text> 
-            </Button>
+            </RedOutlineButton>
         <Stack px="3">
         <Text fontSize="lg" bold mx="5">It’s Time to Start Mobilizing!</Text>
             <Alert mx={3} status="info" colorScheme="info" textAlign={Center} my="4">
@@ -271,7 +268,7 @@ export default function Dashboard({ userTokenInfo }) {
             </VStack>
           </Alert>
           
-            <Button variant='redOutlineBtn' rounded="full" width="100%"  {...styles.redOutlineBtnShadow}>
+            <Button variant='redOutlineBtn' rounded="full" width="100%" shadow="RedOutlineShadow">
               <Text fontSize="lg" bold color="textMaroonColor.400">{t("ADD_AN_AG_LEARNER")} </Text>
             </Button>
           </Stack>
@@ -328,7 +325,7 @@ export default function Dashboard({ userTokenInfo }) {
          <Badge colorScheme="success" rounded="8" _text={{fontSize: 12}}>Enrolled</Badge>
       </HStack>
       <NativeBaseProvider>
-      <Box flex={1} bg="white" color="textGreyColor.100" safeAreaTop width="100%"  alignSelf="center" {...styles.FooterShadow}>
+      <Box flex={1} bg="white" color="textGreyColor.100" safeAreaTop width="100%" shadow="FooterShadow"  alignSelf="center">
         
         <HStack bg="white" alignItems="center" safeAreaBottom shadow={6} width="100%">
           <Pressable cursor="pointer" opacity={selected === 0 ? 1 : 0.5} py="3" flex={1}>

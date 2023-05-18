@@ -171,6 +171,48 @@ const DEFAULT_THEME = {
       }
     }
   },
+  shadows: {
+    FooterShadow: {
+      shadowColor: '#e0e0e066',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    RedFillShadow: {
+      shadowColor: '#C92A42',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    RedOutlineShadow: {
+      shadowColor: '#8B7171',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    RedBoxShadow: {
+      shadowColor: '#790000',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    }
+  },
   colors: {
     widgetColor: {
       400: '#7F9DAC',
