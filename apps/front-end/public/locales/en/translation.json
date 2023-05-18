@@ -196,5 +196,6 @@
   "CALL_SUPPORT": "Call Support",
   "LOGOUT": "Logout",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
+  "PROFILE": "Profile"
 }

@@ -60,9 +60,13 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const loginData = await login(credentials);
-      navigate("/");
-      navigate(0);
+      const { user, token, error } = await login(credentials);
+      if (!error) {
+        navigate("/");
+        navigate(0);
+      } else {
+        setErrors({ alert: t(error) });
+      }
     } else {
       logout();
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
