@@ -20,6 +20,8 @@ jobs:
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+          REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
+          REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
           
       - name: Create Lerna Bundles
         run: |
@@ -52,7 +54,7 @@ jobs:
           script: |
             cd /home/ubuntu
             #cp eg-website.tar /var/www/html2
-            tar -xvf eg-website.tar -C /var/www/html2/
+            tar -xvf eg-website.tar -C /var/www/html/
             #rm -rf *
             #cp ../eg-website.tar ./
             #tar -xvf eg-website.tar .
