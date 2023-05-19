@@ -54,7 +54,7 @@ jobs:
           script: |
             cd /home/ubuntu
             #cp eg-website.tar /var/www/html2
-            tar -xvf eg-website.tar -C /var/www/html2/
+            tar -xvf eg-website.tar -C /var/www/html/
             #rm -rf *
             #cp ../eg-website.tar ./
             #tar -xvf eg-website.tar .
