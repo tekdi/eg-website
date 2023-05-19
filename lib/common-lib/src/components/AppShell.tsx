@@ -6,8 +6,8 @@ import { getAppshellData } from './helper'
 
 
 Sentry.init({
-  environment: `${process.env.SENTRY_ENV}`,
-  dsn: `${process.env.SENTRY_DSN_URL}`,
+  environment: `${process.env.REACT_APP_SENTRY_ENV}`,
+  dsn: `${process.env.REACT_APP_SENTRY_DSN_URL}`,
     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
     // Performance Monitoring
     tracesSampleRate: 0.1, // Capture 100% of the transactions, reduce in production!
