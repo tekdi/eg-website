@@ -22,6 +22,9 @@ import {
   VStack,
   Box,
   Avatar,
+  Modal,
+  FormControl,
+  Input,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -58,6 +61,9 @@ const Experience = (obj) => {
 export default function FacilitatorView({ footerLinks }) {
   const { id } = useParams();
   const [data, setData] = React.useState();
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [credentials, setCredentials] = React.useState();
+
   const navigate = useNavigate();
 
   React.useEffect(async () => {
@@ -218,6 +224,7 @@ export default function FacilitatorView({ footerLinks }) {
               )}
             </HStack>
           </HStack>
+
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <Button
@@ -227,7 +234,143 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("SEND_MESSAGE")}
               </Button>
             </VStack>
+            {/* <VStack flex={0.2} space="1" direction="row">
+              <Button
+                variant="outlinePrimary"
+                leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+              >
+                {t("RESET_PASSWORD")}
+              </Button>
+            </VStack> */}
           </HStack>
+
+          <Modal
+            isOpen={modalVisible}
+            onClose={() => setModalVisible(false)}
+            avoidKeyboard
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header textAlign={"Center"}>
+                {t("RESET_PASSWORD")}
+              </Modal.Header>
+              <Modal.Body p="5" pb="10" mx={5} overflowX="hidden">
+                <HStack space={3}>
+                  <IconByName isDisabled name="UserLineIcon" />
+                  <H3
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {data?.first_name} {data?.last_name}
+                  </H3>
+                </HStack>
+                <br />
+                <FormControl isRequired>
+                  <Input
+                    rounded="lg"
+                    height="48px"
+                    bg="white"
+                    variant="unstyled"
+                    p={"10px"}
+                    type="password"
+                    placeholder={
+                      t("ENTER") + " " + t("NEW") + " " + t("PASSWORD")
+                    }
+                    onChange={(e) =>
+                      setCredentials({
+                        ...credentials,
+                        password: e?.target?.value?.trim(),
+                      })
+                    }
+                  />
+                  <Text fontSize="xs">
+                    8 Character, 1 Capital, 1 Small, 1 Number
+                  </Text>
+                  {/* {"username" in errors ? (
+                    <FormControl.ErrorMessage
+                      _text={{
+                        fontSize: "xs",
+                        color: "error.500",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {errors.username}
+                    </FormControl.ErrorMessage>
+                  ) : (
+                    <></>
+                  )} */}
+                  <br />
+                  <br />
+                  <br />
+                  <Input
+                    rounded="lg"
+                    height="48px"
+                    bg="white"
+                    variant="unstyled"
+                    p={"10px"}
+                    type="password"
+                    placeholder={
+                      t("CONFIRM") + " " + t("NEW") + " " + t("PASSWORD")
+                    }
+                    onChange={(e) =>
+                      setCredentials({
+                        ...credentials,
+                        confirmPassword: e?.target?.value?.trim(),
+                      })
+                    }
+                  />
+                  <Text fontSize="xs">
+                    8 Character, 1 Capital, 1 Small, 1 Number
+                  </Text>
+                  {/* {"username" in errors ? (
+                    <FormControl.ErrorMessage
+                      _text={{
+                        fontSize: "xs",
+                        color: "error.500",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {errors.username}
+                    </FormControl.ErrorMessage>
+                  ) : (
+                    <></>
+                  )} */}
+                </FormControl>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button.Group space={30}>
+                  <Button
+                    borderRadius="full"
+                    // variant="ghost"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setModalVisible(false);
+                    }}
+                  >
+                    {t("CANCEL")}
+                  </Button>
+                  <Button
+                    borderRadius="full"
+                    colorScheme="trueGray"
+                    onPress={() => {
+                      credentials?.password === credentials?.confirmPassword
+                        ? setModalVisible(false)
+                        : alert(
+                            "Confirm password is not matched with Password"
+                          );
+                    }}
+                  >
+                    {t("SETNEWPASSWORD")}
+                  </Button>
+                </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
 
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>

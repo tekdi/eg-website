@@ -216,5 +216,12 @@
   "ATTENDANCE_CAMERA_SUBTITLE": "Make sure this image has a clear profile view of your Face. Improper Image might result in disqualification of the Application.",
   "MARK_ABSENT": "Mark Absent",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
-  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists"
+  "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
+  "ENTER_FOUR_DIGIT_OTP": "Enter 4 Digit OTP sent on Above Mobile Number",
+  "OTP": "OTP",
+  "ENTER_VALID_OTP": "Incorrect OTP Entered",
+  "RESET_PASSWORD": "Reset Password",
+  "NEW": "New",
+  "CONFIRM": "Confirm",
+  "SETNEWPASSWORD": "Set New Password"
 }

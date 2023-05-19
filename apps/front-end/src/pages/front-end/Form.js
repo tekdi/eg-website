@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
@@ -16,8 +16,10 @@ import {
 } from "native-base";
 import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
+import "./Form.css";
 import {
   facilitatorRegistryService,
+  authRegistryService,
   geolocationRegistryService,
   Camera,
   Layout,
@@ -29,9 +31,11 @@ import {
   BodySmall,
   filtersByObject,
   H2,
+  H4,
   getBase64,
   BodyMedium,
   changeLanguage,
+  sendAndVerifyOtp,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +57,73 @@ const CustomR = ({ options, value, onChange, required }) => {
       required={required}
       onChange={(value) => onChange(value)}
     />
+  );
+};
+
+const CustomOTPBox = ({ value, onChange, required }) => {
+  const [otp, setOtp] = React.useState(new Array(4).fill(""));
+
+  const [timer, setTimer] = React.useState(30);
+  const timeOutCallback = React.useCallback(
+    () => setTimer((currTimer) => currTimer - 1),
+    []
+  );
+
+  useEffect(() => {
+    timer > 0 && setTimeout(timeOutCallback, 1000);
+  }, [timer, timeOutCallback]);
+
+  const resetTimer = () => {
+    if (!timer) {
+      setTimer(30);
+    }
+  };
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return false;
+    const val = [...otp.map((d, idx) => (idx === index ? element.value : d))];
+    setOtp(val);
+    onChange(val.join(""));
+    if (element.nextSibling) {
+      element.nextSibling.focus();
+    }
+  };
+
+  return (
+    <div className=".otp-container">
+      {otp.map((data, index) => {
+        return (
+          <React.Fragment key={index}>
+            <input
+              type="data"
+              name="otp"
+              maxLength="1"
+              key={index}
+              value={data}
+              onChange={(e) => handleChange(e.target, index)}
+              onFocus={(e) => e.target.select()}
+            />
+          </React.Fragment>
+        );
+      })}
+      <br />
+      <pre>
+        <>
+          <H4 className=".h4">{`${"00:" + timer}`} </H4>
+        </>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <>
+          <H4
+            className=".h42"
+            onPress={() => {
+              resetTimer();
+            }}
+          >
+            Resend OTP
+          </H4>
+        </>
+      </pre>
+    </div>
   );
 };
 
@@ -106,6 +177,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [verifyOtpData, setverifyOtpData] = useState();
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
@@ -152,6 +224,9 @@ export default function App({ facilitator, ip, onClick }) {
       },
     },
 
+    otp: {
+      "ui:widget": CustomOTPBox,
+    },
     qualification: {
       "ui:widget": CustomR,
     },
@@ -702,20 +777,36 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
+        const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+          ...newFormData,
+          hash: verifyOtpData?.hash,
+        });
+        if (status === true) {
+          const data = await formSubmitCreate(newFormData);
+          if (data?.error) {
+            const newErrors = {
+              mobile: {
+                __errors: data?.error
+                  ? data?.error
+                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          } else {
+            if (data?.username && data?.password) {
+              setCredentials(data);
+            }
+          }
+        } else if (status === false) {
           const newErrors = {
-            mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            otp: {
+              __errors: [t("ENTER_VALID_OTP")],
             },
           };
           setErrors(newErrors);
         } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
+          setSchema(newSchema);
+          setverifyOtpData(otpData);
         }
       } else if (page <= 1) {
         success = true;
