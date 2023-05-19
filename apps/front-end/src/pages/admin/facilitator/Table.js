@@ -14,20 +14,20 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
-      style: {
-          minHeight: '72px', // override the row height
-      },
+    style: {
+      minHeight: "72px", // override the row height
+    },
   },
   headCells: {
-      style: {
-          background:'#E0E0E0'
-      },
+    style: {
+      background: "#E0E0E0",
+    },
   },
   cells: {
-      style: {
-          color:'#616161',
-          size:'14px'
-      },
+    style: {
+      color: "#616161",
+      size: "14px",
+    },
   },
 };
 const columns = (e) => [
@@ -52,7 +52,9 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>{row?.first_name + " " + row.last_name}</Text>
+        <Text fontSize="16px" bold>
+          {row?.first_name + " " + row.last_name}
+        </Text>
       </HStack>
     ),
     sortable: true,
@@ -125,7 +127,7 @@ function Table({ facilitator }) {
   React.useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
- 
+
   return (
     <VStack>
       <HStack justifyContent={"space-between"} my="1">
@@ -144,10 +146,30 @@ function Table({ facilitator }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-        <BlueFillButton  shadow="BlueOutlineShadow" onPress={() => setModal(true)} rightIcon={<IconByName _icon={color='#084B82'} size="15px" name="ShareLineIcon"></IconByName>}>
+          <BlueFillButton
+            shadow="BlueOutlineShadow"
+            onPress={() => setModal(true)}
+            rightIcon={
+              <IconByName
+                _icon={(color = "#084B82")}
+                size="15px"
+                name="ShareLineIcon"
+              ></IconByName>
+            }
+          >
             <Text>{t("SEND_AN_INVITE")}</Text>
-          </BlueFillButton> 
-          <BlueFillButton mx="3" shadow="BlueFillShadow"  rightIcon={<IconByName _icon={color='#ffffff'} size="20px" name="PencilLineIcon"></IconByName>}>
+          </BlueFillButton>
+          <BlueFillButton
+            mx="3"
+            shadow="BlueFillShadow"
+            rightIcon={
+              <IconByName
+                _icon={(color = "#ffffff")}
+                size="20px"
+                name="PencilLineIcon"
+              ></IconByName>
+            }
+          >
             {t("REGISTER_PRERAK")}
           </BlueFillButton>
           <Modal
@@ -206,7 +228,8 @@ function Table({ facilitator }) {
         </HStack>
       </HStack>
 
-      <DataTable customStyles={customStyles}
+      <DataTable
+        customStyles={customStyles}
         columns={[
           ...columns(),
           {
@@ -219,7 +242,10 @@ function Table({ facilitator }) {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-               <Text fontSize="12px" color={"white"}> {t("VIEW")}</Text>
+                <Text fontSize="12px" color={"white"}>
+                  {" "}
+                  {t("VIEW")}
+                </Text>
               </Button>
             ),
           },

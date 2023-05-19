@@ -213,7 +213,7 @@ export default function FacilitatorView({ footerLinks }) {
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <Button
-                 bg='sendMessageBtn.200'
+                bg="sendMessageBtn.200"
                 leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
               >
                 {t("SEND_MESSAGE")}
@@ -225,13 +225,21 @@ export default function FacilitatorView({ footerLinks }) {
             <H3>{t("APPLICATION_FORM")}</H3>
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
-                  <HStack justifyContent="space-between" alignItems="center" borderColor="light.400" pb="1" borderBottomWidth="1">
-                    <Heading fontSize="16px">
-                      {t("BASIC_DETAILS")}
-                    </Heading>
-                    <IconByName color='editIcon.300'  size="15px" name="EditBoxLineIcon"></IconByName>
-                  </HStack>
-                
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderColor="light.400"
+                  pb="1"
+                  borderBottomWidth="1"
+                >
+                  <Heading fontSize="16px">{t("BASIC_DETAILS")}</Heading>
+                  <IconByName
+                    color="editIcon.300"
+                    size="15px"
+                    name="EditBoxLineIcon"
+                  ></IconByName>
+                </HStack>
+
                 <HStack>
                   <Text color="warmGray.500">{t("FIRST_NAME")} </Text>
                   <Text>{showData(data?.first_name)}</Text>
@@ -299,11 +307,19 @@ export default function FacilitatorView({ footerLinks }) {
                   space="20px"
                   w="100%"
                 >
-                <HStack justifyContent="space-between" alignItems="center" borderColor="light.400" pb="1" borderBottomWidth="1">
-                  <Heading fontSize="16px">
-                    {t("EDUCATION")}{" "}
-                  </Heading>
-                  <IconByName color='editIcon.300'  size="15px" name="EditBoxLineIcon"></IconByName>
+                  <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderColor="light.400"
+                    pb="1"
+                    borderBottomWidth="1"
+                  >
+                    <Heading fontSize="16px">{t("EDUCATION")} </Heading>
+                    <IconByName
+                      color="editIcon.300"
+                      size="15px"
+                      name="EditBoxLineIcon"
+                    ></IconByName>
                   </HStack>
                   <VStack>
                     <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
@@ -372,11 +388,19 @@ export default function FacilitatorView({ footerLinks }) {
                     </VStack>
                   </VStack>
                   <HStack space="20px">
-                  <HStack justifyContent="space-between" alignItems="center" borderColor="light.400" pb="1" borderBottomWidth="1">
-                      <Heading fontSize="16px">
-                        {t("OTHER_DETAILS")}
-                      </Heading>
-                      <IconByName color='editIcon.300'  size="15px" name="EditBoxLineIcon"></IconByName>
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      borderColor="light.400"
+                      pb="1"
+                      borderBottomWidth="1"
+                    >
+                      <Heading fontSize="16px">{t("OTHER_DETAILS")}</Heading>
+                      <IconByName
+                        color="editIcon.300"
+                        size="15px"
+                        name="EditBoxLineIcon"
+                      ></IconByName>
                     </HStack>
                     <HStack>
                       <Text color="warmGray.500">{t("AVAILABILITY")} </Text>

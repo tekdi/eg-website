@@ -20,8 +20,6 @@ import {
   Text,
   View,
   Center,
-  NativeBaseProvider,
-  selected,
   Alert,
   Badge,
   Select,
@@ -85,11 +83,28 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <BodySmall>{t("MEANWHILE_PROFILE")}</BodySmall>
               </Box>
             </VStack>
-            <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">
-              {t("WELCOME")} Rachana
-            </Text>
+            <VStack>
+              <Text
+                fontSize="lg"
+                bold
+                color="textMaroonColor.400"
+                pl="1"
+                textAlign="center"
+              >
+                {t("WELCOME")}
+              </Text>
+              <Text
+                fontSize="lg"
+                bold
+                color="textMaroonColor.400"
+                pl="1"
+                textAlign="center"
+              >
+                {facilitator?.first_name} {facilitator?.last_name}
+              </Text>
+            </VStack>
           </HStack>
-          <Stack bg="bgPinkColor.300" space="6" p={4}>
+          {/* <Stack bg="bgPinkColor.300" space="6" p={4}>
             <Text fontSize="lg" bold color="textMaroonColor.400">
               {t("UPLOAD_YOUR_DOCUMENTS")}
             </Text>
@@ -164,9 +179,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Text>
               </ButtonStyle>
             </HStack>
-          </Stack>
+          </Stack> */}
           {/* Application status Interview */}
-          <Stack space="5" p="5">
+          {/* <Stack space="5" p="5">
             <Text fontSize="sm" bold>
               {t("INTERVIEW_DETAILS")}
             </Text>
@@ -211,9 +226,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Text>
               </ButtonStyle>
             </HStack>
-          </Stack>
+          </Stack> */}
           {/* Application Shortlist */}
-          <Stack bg="bgPinkColor.300" space="6" p={4}>
+          {/* <Stack bg="bgPinkColor.300" space="6" p={4}>
             <Text fontSize="sm" bold>
               {t("ORIENTATION_DETAILS")}
             </Text>
@@ -286,8 +301,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 style={{ fontSize: 14 }}
               >{`\u2022 Volunteer Experience Proof`}</Text>
             </View>
-          </Stack>
-          <HStack px="2">
+          </Stack> */}
+          {/* <HStack px="2">
             <svg
               width="32"
               height="22"
@@ -313,7 +328,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </radialGradient>
               </defs>
             </svg>
-          </HStack>
+          </HStack> */}
           {/* <HStack space="2" alignItems="Center" width="100%" justifyContent="space-evenly" px="5">
               <VStack  space={2} width="50%">
                 <Button alignItems="Center" variant='outline'  py="5">
@@ -338,7 +353,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack>
           </HStack> */}
 
-          <Stack bg="white" space="5" p="5">
+          {/* <Stack bg="white" space="5" p="5">
             <Text fontSize="lg" bold>
               {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
             </Text>
@@ -357,8 +372,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("SCAN_QR_CODE")}
               </Text>
             </Button>
-          </Stack>
-          <HStack px="2">
+          </Stack> */}
+          {/* <HStack px="2">
             <svg
               width="32"
               height="22"
@@ -387,9 +402,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             <Text fontSize="lg" bold color="textMaroonColor.400" pl="1">
               {t("WELCOME")} Rachana
             </Text>
-          </HStack>
+          </HStack> */}
           {/* potential prerak  */}
-          <RedOutlineButton
+          {/* <RedOutlineButton
             background="#FCEEE2"
             mx="5"
             width="20%"
@@ -406,8 +421,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             <Text color="textMaroonColor.400" fontSize="lg" bold>
               Add an AG
             </Text>
-          </RedOutlineButton>
-          <Stack px="3">
+          </RedOutlineButton> */}
+          {/* <Stack px="3">
             <Text fontSize="lg" bold mx="5">
               It’s Time to Start Mobilizing!
             </Text>
@@ -444,7 +459,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("ADD_AN_AG_LEARNER")}{" "}
               </Text>
             </Button>
-          </Stack>
+          </Stack> */}
           <VStack p="5" space="5">
             {!form_step_number ||
             (form_step_number && parseInt(form_step_number) < 13) ? (
@@ -471,7 +486,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             />
           </VStack>
         </VStack>
-        <Box bg="white" py="5">
+        {/* <Box bg="white" py="5">
           <HStack pb="2" justifyContent="space-around">
             <SelectStyle placeholder="Status : All" mt={1} width="150px">
               <Select.Item label="UX Research" value="ux" />
@@ -502,7 +517,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               Enrolled
             </Badge>
           </HStack>
-        </Box>
+        </Box> */}
       </VStack>
     </Layout>
   );
