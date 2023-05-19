@@ -4,7 +4,6 @@ export default {
     properties: {
       1: {
         title: "IDENTIFY_THE_AG_LEARNER",
-        // description: "AS_PER_AADHAAR",
         type: "object",
         required: ["first_name"],
         properties: {
@@ -43,7 +42,7 @@ export default {
       3: {
         title: "Complete Address",
         type: "object",
-        required: ["state", "district", "block", "village"],
+        // required: ["state", "district", "block", "village"],
         properties: {
           state: {
             title: "STATE",
@@ -75,7 +74,7 @@ export default {
       4: {
         title: "Personal Details",
         type: "object",
-        required: ["marital_status", "social_category"],
+        //required: ["marital_status", "social_category"],
         properties: {
             marital_status: {
                 title: "MARITAL_STATUS",
@@ -103,6 +102,9 @@ export default {
             title: "TYPE_OF_STUDENT",
             type: "string",
             format: "select",
+            enumNames: ["General", "S.C.","S.T.","O.B.C.","Other"],
+            enum: ["general", "sc","st","obc","other"],
+
           },
           last_year_of_education: {
             title: "LAST_YEAR_OF_EDUCATION",
@@ -122,33 +124,7 @@ export default {
         },
       },
 
-    //   13: {
-    //     type: "object",
-    //     required: ["sourcing_channel"],
-    //     title: "HOW_DID_YOU_FIND_OUT_ABOUT_PROJECT_PRAGATI",
-    //     properties: {
-    //       sourcing_channel: {
-    //         title: "PLEASE_SELECT",
-    //         type: "string",
-    //         enumNames: [
-    //           "Prerak Referral",
-    //           "NGO Referral",
-    //           "Advertisements",
-    //           "Dropouts",
-    //           "Old Prerak",
-    //           "Other",
-    //         ],
-    //         enum: [
-    //           "prerak_referral",
-    //           "ngo_referral",
-    //           "advertisements",
-    //           "dropouts",
-    //           "old_prerak",
-    //           "other",
-    //         ],
-    //       },
-    //     },
-    //   },
+
     },
   };
   

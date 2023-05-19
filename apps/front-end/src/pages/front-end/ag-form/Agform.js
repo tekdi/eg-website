@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/Schema.js";
@@ -19,6 +19,7 @@ import Steper from "../../../component/Steper";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
   Camera,
   Layout,
   H1,
@@ -109,27 +110,14 @@ export default function Agform({ userTokenInfo }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
 
-  window.onbeforeunload = function () {
-    return false;
-  };
+
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    
   };
   const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
-  };
 
-  React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
 
   
 
@@ -138,30 +126,10 @@ export default function Agform({ userTokenInfo }) {
   };
 
   const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
+ 
+      type_mobile: {
+        "ui:widget": CustomR,
       },
-    },
-
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
     marital_status: {
         "ui:widget": CustomR,
       },
@@ -171,34 +139,8 @@ export default function Agform({ userTokenInfo }) {
     ownership: {
       "ui:widget": RadioBtn,
     },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-    
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
+
+
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -269,44 +211,7 @@ export default function Agform({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
-    if (schema?.properties?.qualification) {
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      let newSchema = schema;
-      if (schema["properties"]["qualification"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex = newSchema?.properties?.qualification?.enum[index];
-              }
-            }
-          );
-          if (valueIndex !== "" && formData.qualification == valueIndex) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
-        }
-      }
-      if (schema["properties"]["degree"]) {
-        newSchema = getOptions(newSchema, {
-          key: "degree",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
-      setSchema(newSchema);
-    }
+
 
     if (schema?.properties?.state) {
       const qData = await geolocationRegistryService.getStates();
@@ -328,13 +233,7 @@ export default function Agform({ userTokenInfo }) {
       setSchema(newSchema);
     }
 
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
-    }
+
   }, [page]);
 
   React.useEffect(() => {
@@ -349,40 +248,18 @@ export default function Agform({ userTokenInfo }) {
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
+
   }, []);
 
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.experience) {
-      if (formData.experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));``
-        setAddBtn(t("YES"));
-      }
-    } else {
-      setSubmitBtn(t("NEXT"));
-    }
-  };
-
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
   };
 
   const formSubmitUpdate = async (formData) => {
+
     const { id } = authUser;
+
     if (id) {
       updateData({}, true);
       
@@ -577,47 +454,7 @@ export default function Agform({ userTokenInfo }) {
         }
       }
     }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({
-          aadhar_token: data?.aadhar_token,
-        });
-        if (result.isUserExist) {
-          const newErrors = {
-            aadhar_token: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
-
-    if (id === "root_qualification") {
-      if (schema?.properties?.qualification) {
-        let valueIndex = "";
-        schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
-          if (e.match("12")) {
-            valueIndex = schema?.properties?.qualification?.enum[index];
-          }
-        });
-        if (valueIndex !== "" && data.qualification == valueIndex) {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
-
-    if (id === "root_device_ownership") {
-      if (schema?.properties?.device_ownership) {
-        if (data?.device_ownership == "no") {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
+ 
 
     if (id === "root_state") {
       await setDistric({
@@ -710,16 +547,38 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
+  const [cameraFile, setcameraFile] = useState();
+
+
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
     if (file.size <= 1048576 * 2) {
       const data = await getBase64(file);
       setCameraUrl(data);
+      setcameraFile(file)
       setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
+
+  const uploadProfile = async () => {
+    
+    const { id } = authUser;
+    if (id) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: 1,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+      return await uploadRegistryService.uploadFile(form_data);
+    }
+  };
+
 
   if (cameraUrl) {
     return (
@@ -731,24 +590,14 @@ export default function Agform({ userTokenInfo }) {
             setCameraUrl();
             setCameraModal(false);
           },
+          onlyIconsShow:["backBtn","userInfo"],
+
         }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          {/* <Box p="10">
-            <Steper
-              steps={[
-                { value: "6", label: t("BASIC_DETAILS") },
-                { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
-              ]}
-              progress={page === "upload" ? 13 : page}
-            />
-          </Box> */}
-          <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
-          <h5 color="red.1000" fontSize="3">
-            {t("CLEAR_PROFILE_MESSAGE")}
-          </h5>
+ 
+          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
           <Center>
             <Image
               source={{
@@ -760,10 +609,11 @@ export default function Agform({ userTokenInfo }) {
           </Center>
           <Button
             variant={"primary"}
-            onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
-            }}
+            // onPress={async (e) => {
+            //   await formSubmitUpdate({ ...formData, form_step_number: "13" });
+            //   if (onClick) onClick("success");
+            // }}
+            onPress={uploadProfile}
           >
             {t("SUBMIT")}
           </Button>
@@ -800,22 +650,22 @@ export default function Agform({ userTokenInfo }) {
   if (page === "upload") {
     return (
       <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
+        _appBar={{ onPressBackButton: (e) => setPage("5"), lang, setLang, onlyIconsShow:["backBtn","userInfo"]}}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          {/* <Box p="10">
-            <Steper
-              steps={[
-                { value: "6", label: t("BASIC_DETAILS") },
-                { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
-              ]}
-              progress={page === "upload" ? 13 : page}
-            />
-          </Box> */}
-          <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
-          <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
+       
+          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
+          <H1 color="red.1000">DO's</H1>
+          <div style={{display:"flex",alignItems:"center"}}>
+          <div style={{border:"1px solid red",width:150,height:150,marginRight:10}}></div>
+          <div style={{border:"1px solid red",width:150,height:150}}></div>
+          </div>
+          <H1 color="red.1000">Don’ts</H1>
+          <div style={{display:"flex",alignItems:"center"}}>
+          <div style={{border:"1px solid red",width:150,height:150,marginRight:10}}></div>
+          <div style={{border:"1px solid red",width:150,height:150}}></div>
+          </div>
           <Button
             variant={"primary"}
             leftIcon={
@@ -856,73 +706,24 @@ export default function Agform({ userTokenInfo }) {
               <React.Fragment />
             )}
           </VStack>
-          <Button
-            variant={"primary"}
-            onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
-            }}
-          >
-            {t("SKIP_SUBMIT")}
-          </Button>
+     
         </VStack>
       </Layout>
     );
   }
-  const AddButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="green"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          if (formRef?.current.validateForm()) {
-            btnProps?.onClick();
-          }
-        }}
-      >
-        <HStack>
-          {icon} {addBtn}
-        </HStack>
-      </Button>
-    );
-  };
-
-  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="red"
-        mb="2"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          btnProps?.onClick();
-        }}
-      >
-        <HStack>
-          {icon} {t("REMOVE_EXPERIENCE")}
-        </HStack>
-      </Button>
-    );
-  };
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
         onlyIconsShow:["backBtn","userInfo"],
-        // name: "Add an AG",
         lang,
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* <Box px="2" py="10">
-          
-        </Box> */}
+   
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -938,7 +739,6 @@ export default function Agform({ userTokenInfo }) {
             key={lang + addBtn}
             ref={formRef}
             templates={{
-              ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
               ArrayFieldTitleTemplate,
               ObjectFieldTemplate,
@@ -966,109 +766,14 @@ export default function Agform({ userTokenInfo }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
             </Button>
           </Form>
         ) : (
           <React.Fragment />
         )}
       </Box>
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
-                w="100%"
-              >
-                <HStack alignItems="center" space="1" flex="1">
-                  <H3 flex="0.3">{t("USERNAME")}</H3>
-                  <BodySmall
-                    py="1"
-                    px="2"
-                    flex="0.7"
-                    wordWrap="break-word"
-                    whiteSpace="break-spaces"
-                    overflow="hidden"
-                    bg="success.100"
-                    borderWidth="1"
-                    borderColor="success.500"
-                  >
-                    {credentials?.username}
-                  </BodySmall>
-                </HStack>
-                <HStack alignItems="center" space="1" flex="1">
-                  <H3 flex="0.3">{t("PASSWORD")}</H3>
-                  <BodySmall
-                    py="1"
-                    px="2"
-                    flex="0.7"
-                    wordWrap="break-word"
-                    whiteSpace="break-spaces"
-                    overflow="hidden"
-                    bg="success.100"
-                    borderWidth="1"
-                    borderColor="success.500"
-                  >
-                    {credentials?.password}
-                  </BodySmall>
-                </HStack>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username: ${credentials?.username}, password: ${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+
     </Layout>
   );
 }

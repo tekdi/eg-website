@@ -213,5 +213,16 @@
   "TYPE_OF_STUDENT":"छात्र का प्रकार",
   "LAST_YEAR_OF_EDUCATION" :"शिक्षा का अंतिम वर्ष",
   "LAST_STANDARD_OF_EDUCATION":"शिक्षा का अंतिम मानक",
-  "REASON_FOR_LEAVING_EDUCATION" :"शिक्षा छोड़ने का कारण"
+  "REASON_FOR_LEAVING_EDUCATION" :"शिक्षा छोड़ने का कारण",
+  "AADHAAR_VERIFICATION_SUCCESSFUL":"आधार सत्यापन सफल रहा",
+  "AG_LEARNER_ALREADY_IDENTIFIED":"एजी लर्नर की पहले ही पहचान की जा चुकी है!",
+  "AG_LEARNER_ALREADY_IDENTIFIED_DES":"आप एजी लर्नर को जोड़ना जारी रख सकते हैं, लेकिन वे आपको आवंटित नहीं किए जा सकते हैं",
+  "FULL_NAME":"पूरा नाम",
+  "VERIFICATION_ID_NUMBER":"सत्यापन आईडी संख्या",
+  "CONTINUE_ADDING":"जोड़ना जारी रखें",
+  "CANCEL_AND_GO_BACK":"रद्द करें और वापस जाएं",
+  "AG_ADDED_SUCCESSFULLY":"एजी सफलतापूर्वक जोड़ा गया!",
+  "ADD_DETAILS":"विवरण जोड़ें",
+  "DOCUMENTS_CHECKLIST":"दस्तावेजों की जांच सूची"
+
 }

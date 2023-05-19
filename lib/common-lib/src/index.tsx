@@ -15,6 +15,8 @@ import Tab from './components/Tab'
 import Loading from './components/Loading'
 import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
+import * as uploadRegistryService from './services/uploadRegistryService'
+
 import * as authRegistryService from './services/authRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import { t, changeLanguage } from 'i18next'
@@ -41,6 +43,7 @@ export {
   facilitatorRegistryService,
   authRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
   t,
   changeLanguage,
   Camera

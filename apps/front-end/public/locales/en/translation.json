@@ -224,6 +224,16 @@
   "TYPE_OF_STUDENT":"Type of Student",
   "LAST_YEAR_OF_EDUCATION" :"Last Year of Education",
   "LAST_STANDARD_OF_EDUCATION":"Last Standard of Education",
-  "REASON_FOR_LEAVING_EDUCATION" :"Reason for Leaving Education"
+  "REASON_FOR_LEAVING_EDUCATION" :"Reason for Leaving Education",
+  "AADHAAR_VERIFICATION_SUCCESSFUL":"Aadhaar Verification Successful",
+  "AG_LEARNER_ALREADY_IDENTIFIED":"AG Learner Already Identified!",
+  "AG_LEARNER_ALREADY_IDENTIFIED_DES":"You can continue to Add the AG Learner but they might not be assigned to you ",
+  "FULL_NAME":"Full Name",
+  "VERIFICATION_ID_NUMBER" :"Verification ID number",
+  "CONTINUE_ADDING":"Continue Adding",
+  "CANCEL_AND_GO_BACK":"Cancel and Go Back",
+  "AG_ADDED_SUCCESSFULLY":"AG Added Successfully!",
+  "ADD_DETAILS":"Add Details",
+  "DOCUMENTS_CHECKLIST" :"Documents Checklist"
 
 }
