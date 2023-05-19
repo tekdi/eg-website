@@ -38,6 +38,7 @@ import {
   CheckIcon,
   CheckCircleIcon,
   TextArea,
+  Image,
   Pressable,
 } from "native-base";
 import Chip from "component/Chip";
@@ -59,6 +60,13 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       },
     },
   };
+  const styles={
+    modalxxl:{
+      maxWidth:"950px",
+      width:"100%",
+      height:"100%"
+    },
+  }
   return (
     <Layout
       _appBar={{
@@ -74,7 +82,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       <VStack paddingLeft="5" paddingTop="5" space="xl">
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
-            <IconByName name="Home4LineIcon" />
+            <IconByName name="Home4LineIcon" fontSize="24px" />
             <Text
               fontSize="24px"
               fontWeight="600"
@@ -86,99 +94,120 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          <Pressable
-            width="279px"
-            height="169px"
-            borderStyle="1px"
-            borderColor="#666666"
-            borderWidth="1px"
-            backgroundColor="#CAE9FF"
-            borderRadius="10px"
-            onPress={onShowScreen}
-          >
-            <VStack alignItems="Center">
-              <Box
-                rounded="full"
-                size="20"
-                backgroundColor="gray.300"
-                paddingTop="0.5"
-                my="5"
-              ></Box>
-              <Text>Prerak Orientation</Text>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+            <VStack  alignItems={"Center"} >
+              <Pressable onPress={onShowScreen}>
+            <Image
+              source={{
+                uri: "/orientation.svg",
+              }}
+              alt="Prerak Orientation"
+              size={"sm"}
+              resizeMode="contain"
+            />
+              <Text fontSize="sm" bold pt="4">Prerak Orientation</Text>
+              </Pressable>
             </VStack>
-          </Pressable>
-          <Box
-            width="279px"
-            height="169px"
-            borderStyle="1px"
-            borderColor="#666666"
-            borderWidth="1px"
-            backgroundColor="#CAE9FF"
-            borderRadius="10px"
-          >
+          </BoxBlue>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
-              <Box
-                rounded="full"
-                size="20"
-                backgroundColor="gray.300"
-                paddingTop="0.5"
-                my="5"
-              ></Box>
-              <Text>Prerak Training</Text>
+              <Image
+                source={{
+                  uri: "/training.svg",
+                }}
+                alt="Prerak Training"
+                size={"sm"}
+                resizeMode="contain"
+              />
+              <Text fontSize="sm" bold pt="4">Prerak Training</Text>
             </VStack>
-          </Box>
-          <Box
-            width="279px"
-            height="169px"
-            borderStyle="1px"
-            borderColor="#666666"
-            borderWidth="1px"
-            backgroundColor="#CAE9FF"
-            borderRadius="10px"
-          >
+          </BoxBlue>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
-              <Box
-                rounded="full"
-                size="20"
-                backgroundColor="gray.300"
-                paddingTop="0.5"
-                my="5"
-              ></Box>
-              <Text>My MT</Text>
+              <Image
+                source={{
+                  uri: "/masterTrainer.svg",
+                }}
+                alt="My MT"
+                size={"sm"}
+                resizeMode="contain"
+              />
+              <Text fontSize="sm" bold pt="4">My MT</Text>
             </VStack>
-          </Box>
-          <Box
-            width="279px"
-            height="169px"
-            borderStyle="1px"
-            borderColor="#666666"
-            borderWidth="1px"
-            backgroundColor="#CAE9FF"
-            borderRadius="10px"
-          >
+          </BoxBlue>
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
-              <Box
-                rounded="full"
-                size="20"
-                backgroundColor="gray.300"
-                paddingTop="0.5"
-                my="5"
-              ></Box>
-              <Text>Add a Prerak</Text>
+              <Image
+                source={{
+                  uri: "/addPrerak.svg",
+                }}
+                alt="Add a Prerak"
+                size={"sm"}
+                resizeMode="contain"
+              />
+              <Text fontSize="sm" bold pt="4">Add a Prerak</Text>
             </VStack>
-          </Box>
+          </BoxBlue>
         </HStack>
-        <Text
-          fontSize="32px"
-          fontWeight="600"
-          color="#212121"
-          minWidth="2xl"
-          display="flex"
-          flexDirection="row"
-        >
+        <Text fontSize="xl" bold py="3">
           Your Calender
         </Text>
       </VStack>
+
+     
+      <HStack space="2xl" justifyContent="space-between" px="3">
+        <Box>
+          <VStack space="xl">
+            <Button
+            variant={"blueOutlineBtn"}
+            shadow="BlueOutlineShadow"
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Text color="blueText.400" bold fontSize="lg">Schedule an event +</Text>
+            </Button>
+
+            <Cal />
+            <VStack space="4">
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="blue.500" />
+                <Text fontSize="sm" bold>Interview</Text>
+              </HStack>
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="green.500" />
+                <Text fontSize="sm" bold>Orientation Days</Text>
+              </HStack>
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="yellow.500" />
+                <Text fontSize="sm" bold>Training Days</Text>
+              </HStack>
+              <HStack alignItems="Center" space="md">
+                <CheckCircleIcon size="4" color="purple.500" />
+                <Text fontSize="sm" bold>Camp visits</Text>
+              </HStack>
+            </VStack>
+          </VStack>
+        </Box>
+        <Box width="50%" justifyContent={"Center"} flex={"1"}>
+          <Fullcalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView={"timeGridWeek"}
+            events={[
+              { title: 'event 1', date: moment().format("YYYY-MM-DD HH:mm:ss") },
+              
+            ]}
+          
+            headerToolbar={{
+              start: "prev,thisweek,next",
+              center: "timeGridWeek,dayGridMonth,dayGridYear",
+              end: "today",
+              height: "50hv",
+            }}
+          />
+          
+        </Box>
+      </HStack>
 
       <Modal
         isOpen={modalVisible}
@@ -188,10 +217,10 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         // height={"450px"}
         overflowY={"scroll"}
       >
-        <Modal.Content>
+        <Modal.Content  {...styles.modalxxl}>
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0" bg="white">
-            <H1 textAlign="center"> Schedule an Interview</H1>
+            <H1 textAlign="center" bold> Schedule an Event</H1>
           </Modal.Header>
 
           {/* <Modal.Header textAlign={"Center"}>
@@ -320,32 +349,34 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 uiSchema,
               }}
             />
-
-            <HStack>
+            <Modal.Footer justifyContent={"space-between"}>
               <Button.Group space={2}>
-                <Button
-                  variant="ghost"
-                  colorScheme="blueGray"
-                  onPress={() => {
-                    setShowModal(false);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onPress={() => {
-                    setShowModal(false);
-                  }}
-                >
-                  Send Invites
-                </Button>
-              </Button.Group>
-            </HStack>
+                  <Button
+                    variant="blueOutlineBtn"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setShowModal(false);
+                    }}
+                    shadow="BlueOutlineShadow"
+                  >
+                    <Text>Cancel</Text>
+                  </Button>
+                  <Button
+                  variant="blueFillButton"
+                    onPress={() => {
+                      setShowModal(false);
+                    }}
+                    shadow="BlueFillShadow"
+                  >
+                   <Text color="white">Send Invites</Text> 
+                  </Button>
+                </Button.Group>
+            </Modal.Footer>
           </Modal.Body>
         </Modal.Content>
       </Modal>
 
-      <HStack space="2xl" justifyContent="space-between" px="3">
+      <HStack space="2xl" justifyContent={"space-between"} px="3">
         <Box>
           <VStack space="xl">
             <Button

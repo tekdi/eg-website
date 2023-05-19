@@ -1,5 +1,4 @@
 export default {
-  title: "Schedule an Interview",
   type: "object",
 
   properties: {
