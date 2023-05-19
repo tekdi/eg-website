@@ -20,8 +20,8 @@ jobs:
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
-          SENTRY_DSN_URL: ${{ secrets.SENTRY_DSN_URL }}
-          SENTRY_ENV: ${{ secrets.SENTRY_ENV }}
+          REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
+          REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
           
       - name: Create Lerna Bundles
         run: |
