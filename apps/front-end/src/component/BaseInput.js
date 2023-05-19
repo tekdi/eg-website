@@ -36,7 +36,9 @@ export function BaseInputTemplate(props) {
 
   const inputProps = { ...rest, ...getInputProps(schema, type, options) };
   const hasError = rawErrors?.length > 0 && !hideError;
-
+  const styles = {
+    inforBox: { style: {background: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)'}},
+  }
   return (
     <Input
       id={id}
@@ -52,6 +54,8 @@ export function BaseInputTemplate(props) {
       onBlur={onTextBlur}
       onFocus={onTextFocus}
       {...inputProps}
+      {...styles.inforBox}
+      className="customInput"
     />
   );
 }

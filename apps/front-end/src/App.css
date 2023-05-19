@@ -288,11 +288,7 @@ img {
   line-height: 15px;
   color: #790000;
 }
-button {
-  background: #2d142c;
-  box-shadow: 1px 3px 0px #c92a42;
-  border-radius: 100px;
-}
+
 .error-detail,
 ul {
   padding: 10px 0;
