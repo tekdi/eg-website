@@ -6,7 +6,7 @@ import { getAppshellData } from './helper'
 
 Sentry.init({
   environment: "local / dev / prod",
-  dsn: "https://29f0e33eeed4483d8bd87a7a3dc24be6@o4505206521528320.ingest.sentry.io/4505208612388864",
+  dsn: process.env.SENTRY_DSN_URL,
     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
     // Performance Monitoring
     tracesSampleRate: 0.1, // Capture 100% of the transactions, reduce in production!
