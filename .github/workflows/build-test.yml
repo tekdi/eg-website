@@ -2,7 +2,7 @@ name: CI/CD Env Check
 
 on:
   push:
-    branches: [ master ]
+    branches: [ agmobi ]
 
 jobs:
   build:
