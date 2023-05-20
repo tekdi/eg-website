@@ -33,6 +33,7 @@ import {
   getBase64,
   BodyMedium,
   changeLanguage,
+  StudentEnumService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -92,7 +93,7 @@ const RadioBtn = ({ options, value, onChange, required }) => {
 
 // App
 export default function Agform({ userTokenInfo }) {
-    const {authUser} = userTokenInfo;
+  const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -110,41 +111,29 @@ export default function Agform({ userTokenInfo }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
 
-
-
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
-    
   };
   const ref = React.createRef(null);
 
-
-  
-
-  const updateData = (data, deleteData = false) => {
-   
-  };
+  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
- 
-      type_mobile: {
-        "ui:widget": CustomR,
-      },
+    type_mobile: {
+      "ui:widget": CustomR,
+    },
     marital_status: {
-        "ui:widget": CustomR,
-      },
+      "ui:widget": CustomR,
+    },
     social_category: {
-        "ui:widget": CustomR,
-      },
+      "ui:widget": CustomR,
+    },
     ownership: {
       "ui:widget": RadioBtn,
     },
-
-
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
-        
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
@@ -166,6 +155,32 @@ export default function Agform({ userTokenInfo }) {
       }
     }
   };
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const showPosition = (position) => {
+    console.log(
+      "Latitude: " +
+        position.coords.latitude +
+        "/n Longitude: " +
+        position.coords.longitude
+    );
+  };
+
+  console.log("nextIndex", page);
+
+  if (page == "3") {
+    console.log("FormData");
+    getLocation();
+  } else {
+  }
+
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -211,8 +226,6 @@ export default function Agform({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
-
-
     if (schema?.properties?.state) {
       const qData = await geolocationRegistryService.getStates();
       let newSchema = schema;
@@ -232,43 +245,64 @@ export default function Agform({ userTokenInfo }) {
       });
       setSchema(newSchema);
     }
-
-
   }, [page]);
+
+  // Type Of Student
+
+  React.useEffect(async () => {
+    const studentTypeData = await StudentEnumService.getTypeStudent();
+    const studentLastData = await StudentEnumService.lastYear();
+    const lastStandard = await StudentEnumService.lastStandard();
+    const ReasonOfLeaving = await StudentEnumService.ReasonOfLeaving();
+    let newSchema = schema;
+    if (schema["properties"]["type_of_student"]) {
+      newSchema = getOptions(newSchema, {
+        key: "type_of_student",
+        arr: studentTypeData,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "last_year_of_education",
+        arr: studentLastData,
+        title: "title",
+        value: "value",
+      });
+    }
+
+    setSchema(newSchema);
+  }, [page]);
+
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-    setPage(newSteps[0]);
-    setSchema(properties[newSteps[0]]);
+      setPage(newSteps[0]);
+      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
-
   }, []);
-
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
   };
 
   const formSubmitUpdate = async (formData) => {
-
     const { id } = authUser;
 
     if (id) {
       updateData({}, true);
-      
     }
   };
 
-  const formSubmitCreate = async (formData) => {
-    
-  };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {
@@ -381,7 +415,8 @@ export default function Agform({ userTokenInfo }) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
       setSchema(newSchema);
-    }formData
+    }
+    formData;
     return newSchema;
   };
 
@@ -454,7 +489,6 @@ export default function Agform({ userTokenInfo }) {
         }
       }
     }
- 
 
     if (id === "root_state") {
       await setDistric({
@@ -549,13 +583,12 @@ export default function Agform({ userTokenInfo }) {
 
   const [cameraFile, setcameraFile] = useState();
 
-
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
     if (file.size <= 1048576 * 2) {
       const data = await getBase64(file);
       setCameraUrl(data);
-      setcameraFile(file)
+      setcameraFile(file);
       setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
@@ -563,7 +596,6 @@ export default function Agform({ userTokenInfo }) {
   };
 
   const uploadProfile = async () => {
-    
     const { id } = authUser;
     if (id) {
       const form_data = new FormData();
@@ -579,7 +611,6 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-
   if (cameraUrl) {
     return (
       <Layout
@@ -590,13 +621,11 @@ export default function Agform({ userTokenInfo }) {
             setCameraUrl();
             setCameraModal(false);
           },
-          onlyIconsShow:["backBtn","userInfo"],
-
+          onlyIconsShow: ["backBtn", "userInfo"],
         }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
- 
           <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
           <Center>
             <Image
@@ -650,21 +679,43 @@ export default function Agform({ userTokenInfo }) {
   if (page === "upload") {
     return (
       <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("5"), lang, setLang, onlyIconsShow:["backBtn","userInfo"]}}
+        _appBar={{
+          onPressBackButton: (e) => setPage("5"),
+          lang,
+          setLang,
+          onlyIconsShow: ["backBtn", "userInfo"],
+        }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-       
           <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
           <H1 color="red.1000">DO's</H1>
-          <div style={{display:"flex",alignItems:"center"}}>
-          <div style={{border:"1px solid red",width:150,height:150,marginRight:10}}></div>
-          <div style={{border:"1px solid red",width:150,height:150}}></div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                border: "1px solid red",
+                width: 150,
+                height: 150,
+                marginRight: 10,
+              }}
+            ></div>
+            <div
+              style={{ border: "1px solid red", width: 150, height: 150 }}
+            ></div>
           </div>
           <H1 color="red.1000">Don’ts</H1>
-          <div style={{display:"flex",alignItems:"center"}}>
-          <div style={{border:"1px solid red",width:150,height:150,marginRight:10}}></div>
-          <div style={{border:"1px solid red",width:150,height:150}}></div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                border: "1px solid red",
+                width: 150,
+                height: 150,
+                marginRight: 10,
+              }}
+            ></div>
+            <div
+              style={{ border: "1px solid red", width: 150, height: 150 }}
+            ></div>
           </div>
           <Button
             variant={"primary"}
@@ -706,7 +757,6 @@ export default function Agform({ userTokenInfo }) {
               <React.Fragment />
             )}
           </VStack>
-     
         </VStack>
       </Layout>
     );
@@ -716,14 +766,13 @@ export default function Agform({ userTokenInfo }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow:["backBtn","userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-   
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -773,7 +822,6 @@ export default function Agform({ userTokenInfo }) {
           <React.Fragment />
         )}
       </Box>
-
     </Layout>
   );
 }

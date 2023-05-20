@@ -91,8 +91,6 @@ const RadioBtn = ({ options, value, onChange, required }) => {
 
 // App
 export default function App({ facilitator, ip, onClick }) {
-  console.log("facilit",facilitator);
-  onsole.log("ip",ip);
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
