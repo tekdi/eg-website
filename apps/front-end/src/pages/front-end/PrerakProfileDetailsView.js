@@ -85,7 +85,6 @@ export default function PrerakProfileDetailsView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              {" "}
               {t("BASIC_DETAILS_(1/3)")}
             </Text>
             <Box paddingTop="2">
@@ -158,7 +157,6 @@ export default function PrerakProfileDetailsView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              {" "}
               {t("EDUCATION_AND_WORK_DETAILS")}
             </Text>
             <Box paddingTop="2">
@@ -231,7 +229,6 @@ export default function PrerakProfileDetailsView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              {" "}
               {t("OTHER_DETAILS")}
             </Text>
             <Box paddingTop="2">
@@ -288,7 +285,6 @@ export default function PrerakProfileDetailsView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              {" "}
               {t("DOCUMENTS_UPLOAD")}
             </Text>
             <Box paddingTop="2">

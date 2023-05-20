@@ -68,7 +68,6 @@ export default function AgLearnerProfileView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              {" "}
               {t("PROFILE_DETAILS")}
             </Text>
             <Box paddingTop="2">
@@ -142,7 +141,6 @@ export default function AgLearnerProfileView() {
                 fontFamily="Inter"
                 fontStyle="normal"
               >
-                {" "}
                 {t("DOCUMENT_CHECKLIST")}
               </Text>
               <IconByName
@@ -170,7 +168,6 @@ export default function AgLearnerProfileView() {
                 fontFamily="Inter"
                 fontStyle="normal"
               >
-                {" "}
                 {t("ENROLLMENT_DETAILS")}
               </Text>
               <IconByName
@@ -198,7 +195,6 @@ export default function AgLearnerProfileView() {
                 fontFamily="Inter"
                 fontStyle="normal"
               >
-                {" "}
                 {t("CAMP_DETAILS")}
               </Text>
               <IconByName
@@ -226,7 +222,6 @@ export default function AgLearnerProfileView() {
                 fontFamily="Inter"
                 fontStyle="normal"
               >
-                {" "}
                 {t("JOURNEY_IN_PROJECT_PRAGATI")}
               </Text>
               <IconByName
