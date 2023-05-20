@@ -9,7 +9,7 @@ import {
   Button,
   ChevronLeftIcon,
 } from "native-base";
-import { IconByName } from "@shiksha/common-lib";
+import { IconByName, t } from "@shiksha/common-lib";
 
 export default function AgLearnerProfileView() {
   return (
@@ -30,7 +30,7 @@ export default function AgLearnerProfileView() {
             fontFamily="Inter"
             fontStyle="normal"
           >
-            AG Learner Profile
+            {t("AG_LEARNER_PROFILE")}
           </Text>
         </HStack>
       </Box>
@@ -50,7 +50,7 @@ export default function AgLearnerProfileView() {
           >
             Khushboo Verma
           </Text>
-          <Box>Identified</Box>
+          <Box>{t("IDENTIFIED")}</Box>
         </VStack>
 
         <Box
@@ -69,7 +69,7 @@ export default function AgLearnerProfileView() {
               fontStyle="normal"
             >
               {" "}
-              Profile Details (1/3)
+              {t("PROFILE_DETAILS")}
             </Text>
             <Box paddingTop="2">
               <Progress value={45} size="xs" colorScheme="info" />
@@ -85,7 +85,7 @@ export default function AgLearnerProfileView() {
                     fontFamily="Inter"
                     fontStyle="normal"
                   >
-                    Basic Details
+                    {t("BASIC_DETAILS")}
                   </Text>
                 </Box>
                 <IconByName name="CheckboxCircleLineIcon" />
@@ -101,7 +101,7 @@ export default function AgLearnerProfileView() {
                     fontFamily="Inter"
                     fontStyle="normal"
                   >
-                    Add your address
+                    {t("ADD_YOUR_ADDRESS")}
                   </Text>
                 </Box>
                 <IconByName name="ArrowRightSLineIcon" color="#790000" />
@@ -117,7 +117,7 @@ export default function AgLearnerProfileView() {
                     fontFamily="Inter"
                     fontStyle="normal"
                   >
-                    Aadhaar Details
+                    {t("AADHAAR_DETAILS")}
                   </Text>
                 </Box>
                 <IconByName name="ArrowRightSLineIcon" color="#790000" />
@@ -143,7 +143,7 @@ export default function AgLearnerProfileView() {
                 fontStyle="normal"
               >
                 {" "}
-                Documents Checklist
+                {t("DOCUMENT_CHECKLIST")}
               </Text>
               <IconByName
                 name="ArrowRightSLineIcon"
@@ -171,7 +171,7 @@ export default function AgLearnerProfileView() {
                 fontStyle="normal"
               >
                 {" "}
-                Enrollment Details
+                {t("ENROLLMENT_DETAILS")}
               </Text>
               <IconByName
                 name="ArrowRightSLineIcon"
@@ -199,7 +199,7 @@ export default function AgLearnerProfileView() {
                 fontStyle="normal"
               >
                 {" "}
-                Camp Details
+                {t("CAMP_DETAILS")}
               </Text>
               <IconByName
                 name="ArrowRightSLineIcon"
@@ -227,7 +227,7 @@ export default function AgLearnerProfileView() {
                 fontStyle="normal"
               >
                 {" "}
-                Journey in Project Pragati
+                {t("JOURNEY_IN_PROJECT_PRAGATI")}
               </Text>
               <IconByName
                 name="ArrowRightSLineIcon"
@@ -252,7 +252,7 @@ export default function AgLearnerProfileView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              Mark as Dropout
+              {t("MARK_AS_DROPOUT")}
             </Text>
           </HStack>
         </Button>
