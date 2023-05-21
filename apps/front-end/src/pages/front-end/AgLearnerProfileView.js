@@ -68,7 +68,7 @@ export default function AgLearnerProfileView() {
               fontFamily="Inter"
               fontStyle="normal"
             >
-              {t("PROFILE_DETAILS")}
+              {t("PROFILE_DETAILS_(1/3)")}
             </Text>
             <Box paddingTop="2">
               <Progress value={45} size="xs" colorScheme="info" />
