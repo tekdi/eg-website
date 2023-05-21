@@ -43,7 +43,8 @@ export {
   geolocationRegistryService,
   t,
   changeLanguage,
-  Camera
+  Camera,
+  
 }
 
 export * from './services/RestClient'
@@ -52,3 +53,4 @@ export * from './components/helper'
 export * from './services/Telemetry'
 export * from './components/calender'
 export * from './components/layout/HeaderTags/index'
+export * from './components/layout/CustomAlert/index'

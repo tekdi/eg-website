@@ -179,7 +179,20 @@ const DEFAULT_THEME = {
       }
     }
   },
+  Background:{
+     linearGradient: { colors: ['#CAE9FF', '#fff', '#CAE9FF'], start: [0, 0], end: [1, 0], }, 
+},
   shadows: {
+    AlertShadow:{
+      shadowColor: '#00000040',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
     BlueOutlineShadow: {
       shadowColor: '#8B7171',
       shadowOffset: {
@@ -387,10 +400,12 @@ const DEFAULT_THEME = {
       900: '#BDB3E7'
     },
     badgeColor: {
-      400: '#FDE68A'
+      400: '#FDE68A',
+      450:'#FFEFAF'
     },
     progressBarColor: {
-      200: '#10B981'
+      200: '#10B981',
+      300: '#A7F3D0'
     },
     bgGreyColor: {
       200: '#F4F4F7'
@@ -405,11 +420,14 @@ const DEFAULT_THEME = {
       900:'#1E1E1E'
     },
     textMaroonColor: {
+      100:'#FFACAF',
       400: '#790000'
     },
     blueText:{
+      300:'#d4eaf9',
+      350:'#CAE9FF',
       400:'#084B82',
-      450:'#3F8BF1'
+      450:'#3F8BF1',
     }
   }
 }

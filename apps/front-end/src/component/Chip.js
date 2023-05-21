@@ -2,7 +2,7 @@ import { Box } from "native-base";
 import React from "react";
 import { t } from "@shiksha/common-lib";
 
-export default function Chip({ label, children, isActive, ...props }) {
+export default function PrerakChip({ label, children, isActive, ...props }) {
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
@@ -28,49 +28,49 @@ export function ChipStatus({ status, ...props }) {
   React.useEffect(() => {
     switch (status?.toLowerCase()) {
       case "screened":
-        setColor("green.300");
+        setColor("blueText.300");
         setNewStatus(t("SCREENED"));
         break;
       case "rejected":
         setNewStatus(t("REJECTED"));
-        setColor("danger.300");
+        setColor("textMaroonColor.100");
         break;
-      case "shortlisted_for_orientation":
-        setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
-        setColor("warning.300");
+      case "shortlisted":
+        setNewStatus(t("SHORTLISTED"));
+        setColor("blueText.350");
         break;
       case "potential_prerak":
         setNewStatus(t("POTENTIAL_PRERAK"));
-        setColor("warning.300");
+        setColor("progressBarColor.300");
         break;
       case "selected_for_training":
         setNewStatus(t("SELECTED_FOR_TRAINING"));
-        setColor("warning.300");
+        setColor("progressBarColor.300");
         break;
       case "selected_for_onboarding":
         setNewStatus(t("SELECTED_FOR_ONBOARDING"));
-        setColor("green.300");
+        setColor("progressBarColor.300");
         break;
-      case "selected_prerak":
-        setNewStatus(t("SELECTED_PRERAK"));
-        setColor("green.300");
+      case "prerak":
+        setNewStatus(t("PRERAK"));
+        setColor("progressBarColor.300");
         break;
-      case "quit":
-        setNewStatus(t("QUIT"));
-        setColor("danger.300");
+      case "dropped_out":
+        setNewStatus(t("DROPPED_OUT"));
+        setColor("textMaroonColor.100");
         break;
-      case "rusticate":
-        setNewStatus(t("RUSTICATE"));
-        setColor("danger.300");
+      case "under_review":
+        setNewStatus(t("UNDER_REVIEW"));
+        setColor("badgeColor.450");
         break;
       default:
         setNewStatus(t("APPLIED"));
-        setColor("info.300");
+        setColor("textGreyColor.800");
     }
   }, [status]);
 
   return (
-    <Chip
+    <PrerakChip
       px="4"
       bg={color}
       label={newStatus}
