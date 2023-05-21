@@ -10,11 +10,8 @@ import {
   HStack,
   Image,
   Modal,
-  Radio,
-  Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
@@ -42,52 +39,13 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
+  CustomR,
+  RadioBtn,
+  Aadhaar,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
-
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
-
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -109,7 +67,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 13) {
+  if (form_step_number && parseInt(form_step_number) >= 10) {
     navigate("/dashboard");
   }
 
@@ -128,9 +86,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   React.useEffect(() => {
-    window.onbeforeunload = function () {
-      return false;
-    };
     getImage();
   }, [page, credentials]);
 
@@ -151,52 +106,6 @@ export default function App({ facilitator, ip, onClick }) {
         hideClearButton: true,
       },
     },
-
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -214,7 +123,7 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
+        await formSubmitUpdate({ ...formData, form_step_number: "10" });
         setPage("upload");
       } else {
         return true;
@@ -485,10 +394,21 @@ export default function App({ facilitator, ip, onClick }) {
     ["vo_experience", "experience"].forEach((keyex) => {
       data?.[keyex]?.map((item, index) => {
         ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
+          if (item?.[key]) {
+            if (
+              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
+              item?.[key]?.replaceAll(" ", "") === ""
+            ) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("REQUIRED_MESSAGE")} ${t(
+                  schema?.properties?.[key]?.title
+                )}`
+              );
+            } else if (key === "description" && item?.[key].length > 200) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
+              );
+            }
           }
         });
       });
@@ -777,12 +697,13 @@ export default function App({ facilitator, ip, onClick }) {
         <VStack py={6} px={4} mb={5} space="6">
           <Box p="10">
             <Steper
+              type={"circle"}
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
                 { value: "4", label: t("OTHER_DETAILS") },
               ]}
-              progress={page === "upload" ? 13 : page}
+              progress={page === "upload" ? 10 : page}
             />
           </Box>
           <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
@@ -840,18 +761,19 @@ export default function App({ facilitator, ip, onClick }) {
   if (page === "upload") {
     return (
       <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
+        _appBar={{ onPressBackButton: (e) => setPage("10"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Box p="10">
             <Steper
+              type={"circle"}
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
                 { value: "4", label: t("OTHER_DETAILS") },
               ]}
-              progress={page === "upload" ? 13 : page}
+              progress={page === "upload" ? 10 : page}
             />
           </Box>
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
@@ -901,7 +823,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              await formSubmitUpdate({ ...formData, form_step_number: "10" });
               if (onClick) onClick("success");
             }}
           >
@@ -954,16 +876,19 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
+        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : ["notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "white" } }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        <Box px="2" py="10">
+        <Box px="2" pb="10">
           <Steper
+            type={"circle"}
             steps={[
               { value: "6", label: t("BASIC_DETAILS") },
               { value: "3", label: t("WORK_DETAILS") },
@@ -986,6 +911,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR, Aadhaar }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -993,6 +919,8 @@ export default function App({ facilitator, ip, onClick }) {
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
+              // ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -1010,9 +938,10 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             <Button
-              mt="3"
               variant={"primary"}
               type="submit"
+              p="4"
+              mt="10"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}

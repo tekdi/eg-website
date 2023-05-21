@@ -73,36 +73,44 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             {...styles.inforBox}
           >
             <IconByName
+              flex="0.1"
               isDisabled
               name="UserLineIcon"
               _icon={{ size: "25px" }}
             />
-            <VStack>
-              <Box>
-                <H2>{t("APPLICATION_UNDER_REVIEW")}</H2>
-                <BodySmall>{t("MEANWHILE_PROFILE")}</BodySmall>
-              </Box>
-            </VStack>
-            <VStack>
-              <Text
-                fontSize="lg"
-                bold
-                color="textMaroonColor.400"
-                pl="1"
-                textAlign="center"
+            <VStack flex="0.9">
+              <H2
+                wordWrap="break-word"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
               >
-                {t("WELCOME")}
-              </Text>
-              <Text
-                fontSize="lg"
-                bold
-                color="textMaroonColor.400"
-                pl="1"
-                textAlign="center"
+                {t("APPLICATION_UNDER_REVIEW")}
+              </H2>
+              <BodySmall
+                wordWrap="break-word"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
               >
-                {facilitator?.first_name} {facilitator?.last_name}
-              </Text>
+                {t("MEANWHILE_PROFILE")}
+              </BodySmall>
             </VStack>
+          </HStack>
+          <HStack flex="1" px="4">
+            <Text
+              fontSize="lg"
+              bold
+              color="textMaroonColor.400"
+              pl="1"
+              textAlign="center"
+              wordWrap="break-word"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {t("WELCOME")} {facilitator?.first_name},
+            </Text>
           </HStack>
           {/* <Stack bg="bgPinkColor.300" space="6" p={4}>
             <Text fontSize="lg" bold color="textMaroonColor.400">
@@ -462,7 +470,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </Stack> */}
           <VStack p="5" space="5">
             {!form_step_number ||
-            (form_step_number && parseInt(form_step_number) < 13) ? (
+            (form_step_number && parseInt(form_step_number) < 10) ? (
               <Pressable onPress={(e) => navigate("/form")}>
                 <HStack
                   borderWidth="1"

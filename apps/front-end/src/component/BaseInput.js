@@ -1,68 +1,20 @@
 import React from "react";
-import { Box, Button, HStack, Input, VStack } from "native-base";
-import { getInputProps } from "@rjsf/utils";
-import { BodySmall, H2, t } from "@shiksha/common-lib";
+import {
+  Box,
+  Button,
+  FormControl,
+  HStack,
+  Image,
+  Radio,
+  Stack,
+  Text,
+  VStack,
+} from "native-base";
+import { BodySmall, H2, t, FloatingInput } from "@shiksha/common-lib";
+import CustomRadio from "./CustomRadio";
 
 export function BaseInputTemplate(props) {
-  const {
-    schema,
-    id,
-    options,
-    label,
-    value,
-    type,
-    placeholder,
-    required,
-    disabled,
-    readonly,
-    autofocus,
-    onChange,
-    onChangeOverride,
-    onBlur,
-    onFocus,
-    rawErrors,
-    hideError,
-    uiSchema,
-    registry,
-    formContext,
-    ...rest
-  } = props;
-  const onTextChange = ({ target: { value: val } }) => {
-    // Use the options.emptyValue if it is specified and newVal is also an empty string
-    onChange(val === "" ? options.emptyValue || "" : val);
-  };
-  const onTextBlur = ({ target: { value: val } }) => onBlur(id, val);
-  const onTextFocus = ({ target: { value: val } }) => onFocus(id, val);
-
-  const inputProps = { ...rest, ...getInputProps(schema, type, options) };
-  const hasError = rawErrors?.length > 0 && !hideError;
-  const styles = {
-    inforBox: {
-      style: {
-        background:
-          "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
-      },
-    },
-  };
-  return (
-    <Input
-      id={id}
-      label={label}
-      value={value}
-      placeholder={placeholder}
-      disabled={disabled}
-      readOnly={readonly}
-      autoFocus={autofocus}
-      error={hasError}
-      errors={hasError ? rawErrors : undefined}
-      onChange={onChangeOverride || onTextChange}
-      onBlur={onTextBlur}
-      onFocus={onTextFocus}
-      {...inputProps}
-      {...styles.inforBox}
-      className="customInput"
-    />
-  );
+  return <FloatingInput {...props} />;
 }
 
 export function AddButton({ icon, iconType, ...btnProps }) {
@@ -106,9 +58,54 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   );
 };
 
+export const ArrayFieldTemplate = ({ schema, ...props }) => {
+  const [isShow, setIsShow] = React.useState("no");
+  const { title } = schema;
+  console.log(props, schema);
+  return (
+    <div>
+      <RadioBtn
+        value={isShow}
+        options={{
+          enumOptions: [
+            { label: t("YES"), value: "yes" },
+            { label: t("NO"), value: "no" },
+          ],
+        }}
+        onChange={(e) => {
+          setIsShow(e);
+          if (e === "yes" && props.items.length === 0) {
+            props.onAddClick();
+          }
+        }}
+        schema={{ label: t(title) }}
+      />
+      {isShow === "yes" && (
+        <div>
+          {props.items.map((element) => element.children)}
+          {props.canAdd && (
+            <Button
+              variant={"outlinePrimary"}
+              colorScheme="green"
+              onPress={(e) => {
+                console.log(e);
+                const isValid = e.target.closest("form.rjsf"); //?.validateForm();
+                console.log(isValid, isValid?.validateForm() ? "true" : "das");
+                if (isValid && isValid?.validateForm()) {
+                  props?.onClick();
+                }
+              }}
+            >
+              {t("ADD_EXPERIENCE")}
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 export const FieldTemplate = ({
   id,
-  classNames,
   style,
   label,
   help,
@@ -116,40 +113,126 @@ export const FieldTemplate = ({
   description,
   errors,
   children,
+  schema,
+  ...props
 }) => {
+  const { type } = schema;
   return (
-    <div className={classNames} style={style}>
-      <React.Fragment>
-        <label htmlFor={id}>
-          <HStack space="1" alignItems="center">
-            <H2 color="textMaroonColor.400">{t(label)}</H2>
-            <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
-          </HStack>
-        </label>
-        {description?.props?.description !== "" ? (
-          description
-        ) : (
-          <React.Fragment />
-        )}
-      </React.Fragment>
-      {children}
-      {errors}
-      {help}
-    </div>
+    <VStack style={style} space={id === "root" && label ? "10" : "0"}>
+      {label && typeof type === "string" && type !== "string" && (
+        <Box>
+          {id === "root" && (
+            <label htmlFor={id}>
+              <HStack space="1" alignItems="center">
+                <H2 color="textMaroonColor.400">{t(label)}</H2>
+                <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+              </HStack>
+            </label>
+          )}
+          {description?.props?.description !== "" && description}
+        </Box>
+      )}
+      <Box>
+        {children}
+        {errors}
+        {help}
+      </Box>
+    </VStack>
   );
 };
 export const ObjectFieldTemplate = (props) => {
   return (
-    <div>
+    <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
-        <div className="property-wrapper" key={`element${index}`}>
+        <VStack key={`element${index}`} w="100%">
           {element.content}
-        </div>
+        </VStack>
       ))}
-    </div>
+    </VStack>
   );
 };
 
 export const ArrayFieldTitleTemplate = (props) => {
   return <React.Fragment />;
+};
+
+export const CustomR = ({
+  options,
+  value,
+  onChange,
+  required,
+  schema,
+  ...props
+}) => {
+  return (
+    <CustomRadio
+      schema={schema}
+      options={options}
+      value={value}
+      required={required}
+      onChange={(value) => onChange(value)}
+    />
+  );
+};
+
+export const RadioBtn = ({ options, value, onChange, required, schema }) => {
+  const items = options?.enumOptions;
+  const { label } = schema ? schema : {};
+  return (
+    <FormControl gap="4">
+      {label && (
+        <FormControl.Label>
+          <H2 color="textMaroonColor.400">{t(label)}</H2>
+          {required && <H2 color="textMaroonColor.400">*</H2>}
+        </FormControl.Label>
+      )}
+      <Radio.Group
+        colorScheme="secondaryBlue"
+        key={items}
+        pb="4"
+        value={value}
+        accessibilityLabel="Pick your favorite number"
+        onChange={(value) => onChange(value)}
+      >
+        <Stack
+          direction={{
+            base: "column",
+            md: "row",
+          }}
+          alignItems={{
+            base: "flex-start",
+            md: "center",
+          }}
+          space={4}
+          w="75%"
+          gap="4"
+        >
+          {items?.map((item) => (
+            <Radio
+              key={item?.value}
+              value={item?.value}
+              size="lg"
+              _text={{ fontSize: 12, fontWeight: 500 }}
+            >
+              {item?.label}
+            </Radio>
+          ))}
+        </Stack>
+      </Radio.Group>
+    </FormControl>
+  );
+};
+
+export const Aadhaar = (props) => {
+  return (
+    <VStack space="10">
+      <Image
+        alignSelf="center"
+        source={{ uri: "/Aadhaar2.png" }}
+        w="248"
+        h="140"
+      />
+      <FloatingInput {...props} />
+    </VStack>
+  );
 };
