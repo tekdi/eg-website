@@ -138,7 +138,7 @@ const DEFAULT_THEME = {
           bg: `#ffffff`,
           borderWidth: '1',
           borderColor: `#084B82`,
-          _text:`#084B82`,
+          _text: `#084B82`,
           _hover: {
             bg: `#cce2f3`
           },
@@ -153,11 +153,11 @@ const DEFAULT_THEME = {
           borderColor: `#14242D`,
           _hover: {
             bg: `#133142`,
-            _text: `#14242D`,
+            _text: `#14242D`
           },
           _pressed: {
             bg: `#133142`,
-            _text: `#14242D`,
+            _text: `#14242D`
           },
           rounded: '30px'
         }),
@@ -414,10 +414,10 @@ const DEFAULT_THEME = {
       100: '#616161',
       300: '#888888',
       400: '#F5F5F5',
-      500:'#424242',
-      550:'##757575',
-      800:'#212121',
-      900:'#1E1E1E'
+      500: '#424242',
+      550: '##757575',
+      800: '#212121',
+      900: '#1E1E1E'
     },
     textMaroonColor: {
       100:'#FFACAF',

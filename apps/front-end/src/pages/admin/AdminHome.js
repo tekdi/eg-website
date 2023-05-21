@@ -53,7 +53,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
-        {/* <Box flex={0.2}>
+        <Box flex={0.2}>
           <Box p="10px" bg="primary.500" ref={ref}>
             <H2 color="white">{t("MY_PRERAKS")}</H2>
           </Box>
@@ -139,7 +139,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               </VStack>
             </VStack>
           </ScrollView>
-        </Box> */}
+        </Box>
         <ScrollView
           maxH={Height - refAppBar?.clientHeight}
           minH={Height - refAppBar?.clientHeight}
