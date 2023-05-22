@@ -16,6 +16,5 @@ export default [
   { path: "/agduplicate", component: Agduplicate },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/docschecklist", component: Docschecklist },
-
   { path: "/*", component: Dashboard },
 ];
