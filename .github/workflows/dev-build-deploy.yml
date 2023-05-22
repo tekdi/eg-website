@@ -2,7 +2,7 @@ name: CICD
 on: 
   push: 
     branches:
-      - master
+      - agmobi
 jobs:
   build:
     name: Build Deploy To DEV
