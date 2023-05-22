@@ -17,6 +17,7 @@ import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
+import * as StudentEnumService from './services/StudentEnumService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
@@ -46,6 +47,7 @@ export {
   geolocationRegistryService,
   uploadRegistryService,
   ImageView,
+  StudentEnumService,
   t,
   changeLanguage,
   Camera,

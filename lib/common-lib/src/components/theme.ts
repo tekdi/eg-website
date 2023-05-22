@@ -131,19 +131,45 @@ const DEFAULT_THEME = {
           rounded: 'full'
         }),
         outlinePrimary: ({ colorScheme }: any) => ({
-          bg: `${colorScheme}.50`,
-          borderWidth: '1',
-          borderColor: `${colorScheme}.500`,
+          bg: `#2D142C`,
           _hover: {
-            bg: `${colorScheme}.100`
+            bg: `#555555`
           },
           _pressed: {
-            bg: `${colorScheme}.200`
+            bg: `#444444`
           },
           _text: {
-            color: `${colorScheme}.500`
+            fontWeight: '600',
+            color: '#ffffff'
           },
-          rounded: '4'
+          rounded: 'full'
+        }),
+        blueOutlineBtn: () => ({
+          bg: `#ffffff`,
+          borderWidth: '1',
+          borderColor: `#084B82`,
+          _text: `#084B82`,
+          _hover: {
+            bg: `#cce2f3`
+          },
+          _pressed: {
+            bg: ``
+          },
+          rounded: '30px'
+        }),
+        blueFillButton: () => ({
+          bg: `#14242D`,
+          borderWidth: '1',
+          borderColor: `#14242D`,
+          _hover: {
+            bg: `#133142`,
+            _text: `#14242D`
+          },
+          _pressed: {
+            bg: `#133142`,
+            _text: `#14242D`
+          },
+          rounded: '30px'
         }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
@@ -182,7 +208,7 @@ const DEFAULT_THEME = {
   },
   shadows: {
     BlueOutlineShadow: {
-      shadowColor: '#C92A42',
+      shadowColor: '#8B7171',
       shadowOffset: {
         width: 1,
         height: 3
@@ -233,6 +259,16 @@ const DEFAULT_THEME = {
     },
     RedBoxShadow: {
       shadowColor: '#790000',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    BlueBoxShadow: {
+      shadowColor: '#CAE9FF',
       shadowOffset: {
         width: 1,
         height: 3
@@ -445,7 +481,11 @@ const DEFAULT_THEME = {
     textGreyColor: {
       100: '#616161',
       300: '#888888',
-      400: '#F5F5F5'
+      400: '#F5F5F5',
+      500: '#424242',
+      550: '##757575',
+      800: '#212121',
+      900: '#1E1E1E'
     },
     textMaroonColor: {
       400: '#790000'
@@ -473,6 +513,10 @@ const DEFAULT_THEME = {
     },
     btnGray: {
       100: '#e0e0e0'
+    },
+    blueText: {
+      400: '#084B82',
+      450: '#3F8BF1'
     }
   }
 }
