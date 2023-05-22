@@ -10,17 +10,15 @@ import {
   HStack,
   Image,
   Modal,
-  Radio,
-  Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
 import "./Form.css";
 import {
   facilitatorRegistryService,
   authRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
   Camera,
   Layout,
   H1,
@@ -46,6 +44,11 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
+  CustomR,
+  RadioBtn,
+  Aadhaar,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 
@@ -173,6 +176,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
+  const [cameraFile, setCameraFile] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
@@ -185,13 +189,9 @@ export default function App({ facilitator, ip, onClick }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 13) {
+  if (form_step_number && parseInt(form_step_number) >= 10) {
     navigate("/dashboard");
   }
-
-  window.onbeforeunload = function () {
-    return false;
-  };
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -294,7 +294,7 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
+        await formSubmitUpdate({ ...formData, form_step_number: "10" });
         setPage("upload");
       } else {
         return true;
@@ -487,6 +487,22 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
+  const uploadProfile = async () => {
+    const { id } = facilitator;
+    if (id) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: id,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+      return await uploadRegistryService.uploadFile(form_data);
+    }
+  };
+
   const formSubmitCreate = async (formData) => {
     return await facilitatorRegistryService.create({
       ...formData,
@@ -549,10 +565,21 @@ export default function App({ facilitator, ip, onClick }) {
     ["vo_experience", "experience"].forEach((keyex) => {
       data?.[keyex]?.map((item, index) => {
         ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
+          if (item?.[key]) {
+            if (
+              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
+              item?.[key]?.replaceAll(" ", "") === ""
+            ) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("REQUIRED_MESSAGE")} ${t(
+                  schema?.properties?.[key]?.title
+                )}`
+              );
+            } else if (key === "description" && item?.[key].length > 200) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
+              );
+            }
           }
         });
       });
@@ -792,9 +819,12 @@ export default function App({ facilitator, ip, onClick }) {
           if (data?.error) {
             const newErrors = {
               mobile: {
-                __errors: data?.error
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                __errors:
+                  data?.error?.constructor?.name === "String"
+                    ? [data?.error]
+                    : data?.error?.constructor?.name === "Array"
+                    ? data?.error
+                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
               },
             };
             setErrors(newErrors);
@@ -830,10 +860,10 @@ export default function App({ facilitator, ip, onClick }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 25) {
       const data = await getBase64(file);
       setCameraUrl(data);
-      setFormData({ ...formData, ["profile_url"]: data });
+      setCameraFile(file);
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
@@ -855,12 +885,13 @@ export default function App({ facilitator, ip, onClick }) {
         <VStack py={6} px={4} mb={5} space="6">
           <Box p="10">
             <Steper
+              type={"circle"}
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
+                { value: "1", label: t("OTHER_DETAILS") },
               ]}
-              progress={page === "upload" ? 13 : page}
+              progress={page === "upload" ? 10 : page}
             />
           </Box>
           <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
@@ -879,7 +910,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              await uploadProfile();
               if (onClick) onClick("success");
             }}
           >
@@ -906,9 +937,9 @@ export default function App({ facilitator, ip, onClick }) {
           cameraModal,
           setCameraModal,
           cameraUrl,
-          setCameraUrl: async (url) => {
+          setCameraUrl: async (url, blob) => {
             setCameraUrl(url);
-            setFormData({ ...formData, ["profile_url"]: url });
+            setCameraFile(blob);
           },
         }}
       />
@@ -918,18 +949,19 @@ export default function App({ facilitator, ip, onClick }) {
   if (page === "upload") {
     return (
       <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
+        _appBar={{ onPressBackButton: (e) => setPage("10"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Box p="10">
             <Steper
+              type={"circle"}
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
+                { value: "1", label: t("OTHER_DETAILS") },
               ]}
-              progress={page === "upload" ? 13 : page}
+              progress={page === "upload" ? 10 : page}
             />
           </Box>
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
@@ -952,22 +984,24 @@ export default function App({ facilitator, ip, onClick }) {
             {t("TAKE_PHOTO")}
           </Button>
           <VStack space={2}>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-            >
-              {t("UPLOAD_PHOTO")}
-            </Button>
+            <Box>
+              <input
+                accept="image/*"
+                type="file"
+                style={{ display: "none" }}
+                ref={uplodInputRef}
+                onChange={handleFileInputChange}
+              />
+              <Button
+                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+                variant={"secondary"}
+                onPress={(e) => {
+                  uplodInputRef?.current?.click();
+                }}
+              >
+                {t("UPLOAD_PHOTO")}
+              </Button>
+            </Box>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
@@ -977,7 +1011,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              await formSubmitUpdate({ ...formData, form_step_number: "10" });
               if (onClick) onClick("success");
             }}
           >
@@ -1030,20 +1064,23 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
+        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : ["notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "white" } }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        <Box px="2" py="10">
+        <Box px="2" pb="10">
           <Steper
+            type={"circle"}
             steps={[
               { value: "6", label: t("BASIC_DETAILS") },
               { value: "3", label: t("WORK_DETAILS") },
-              { value: "4", label: t("OTHER_DETAILS") },
+              { value: "1", label: t("OTHER_DETAILS") },
             ]}
             progress={page - 1}
           />
@@ -1062,6 +1099,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR, Aadhaar }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -1069,6 +1107,8 @@ export default function App({ facilitator, ip, onClick }) {
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
+              ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -1086,9 +1126,10 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             <Button
-              mt="3"
               variant={"primary"}
               type="submit"
+              p="4"
+              mt="10"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
@@ -1100,13 +1141,11 @@ export default function App({ facilitator, ip, onClick }) {
       </Box>
       <Modal
         isOpen={credentials}
-        onClose={() => setCredentials(false)}
         safeAreaTop={true}
         size="xl"
         _backdrop={{ opacity: "0.7" }}
       >
         <Modal.Content>
-          {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
             <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
           </Modal.Header>

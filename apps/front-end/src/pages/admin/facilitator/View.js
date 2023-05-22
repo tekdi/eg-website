@@ -12,17 +12,17 @@ import {
   Loading,
   t,
   authRegistryService,
+  ImageView,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  Box,
   Button,
   Center,
   Heading,
   HStack,
   Text,
   VStack,
-  Box,
-  Avatar,
   Modal,
   FormControl,
   Input,
@@ -32,6 +32,7 @@ import {
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import Steper from "component/Steper";
 
 const Experience = (obj) => {
   return (
@@ -217,13 +218,9 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("ELIGIBILITY_CRITERIA")}
               </H2>
               <HStack width={"100%"}>
-                <IconByName
-                  flex={0.3}
-                  name="DonutChartLineIcon"
-                  isDisabled
-                  color="darkBlue.400"
-                  _icon={{ size: "100px" }}
-                />
+                <Box flex={0.3}>
+                  <Steper size={100} type="circle" progress={75} bg="white" />
+                </Box>
                 <VStack flex={0.7} space="2">
                   <HStack alignItems={"center"} space={"2"}>
                     <BodySmall> {t("QUALIFICATION")}</BodySmall>
@@ -276,10 +273,10 @@ export default function FacilitatorView({ footerLinks }) {
               </HStack>
             </VStack>
             <HStack flex="0.3" pl="5" justifyContent="center">
-              {data?.profile_url ? (
-                <Avatar
+              {data?.documents?.[0]?.name ? (
+                <ImageView
                   source={{
-                    uri: data?.profile_url,
+                    uri: data?.documents?.[0]?.name,
                   }}
                   // alt="Alternate Text"
                   width={"190px"}
@@ -299,7 +296,7 @@ export default function FacilitatorView({ footerLinks }) {
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <Button
-                variant="outlinePrimary"
+                bg="sendMessageBtn.200"
                 leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
               >
                 {t("SEND_MESSAGE")}
@@ -463,42 +460,49 @@ export default function FacilitatorView({ footerLinks }) {
 
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>
-            <HStack flex="1">
-              <VStack space="5" flex={1 / 2} bg="light.100" p="6" rounded="xl">
-                <Heading
-                  fontSize="16px"
+            <HStack justifyContent="space-between">
+              <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
                   borderColor="light.400"
                   pb="1"
                   borderBottomWidth="1"
                 >
-                  {t("BASIC_DETAILS")}
-                </Heading>
-                <VStack>
+                  <Heading fontSize="16px">{t("BASIC_DETAILS")}</Heading>
+                  <IconByName
+                    color="editIcon.300"
+                    size="15px"
+                    name="EditBoxLineIcon"
+                  ></IconByName>
+                </HStack>
+
+                <HStack>
                   <Text color="warmGray.500">{t("FIRST_NAME")} </Text>
                   <Text>{showData(data?.first_name)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("LAST_NAME")} </Text>
                   <Text>{showData(data?.last_name)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("MOBILE_NO")} </Text>
                   <Text>{showData(data?.mobile)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("DATE_OF_BIRTH")} </Text>
                   <Text>{showData(data?.dob)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("GENDER")} </Text>
                   <Text>{showData(data?.gender)}</Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("ADDRESS")} </Text>
                   <Text>
                     {[
@@ -519,49 +523,56 @@ export default function FacilitatorView({ footerLinks }) {
                           .join(", ")
                       : "-"}
                   </Text>
-                </VStack>
+                </HStack>
 
-                <VStack>
+                <HStack>
                   <Text color="warmGray.500">{t("AADHAAR_NO")} </Text>
                   <Text>{showData(data?.aadhar_token)}</Text>
-                </VStack>
+                </HStack>
               </VStack>
               <HStack
-                space="5"
-                flex={1 / 2}
+                space="20px"
+                w="50%"
                 bg="light.100"
                 p="6"
                 ml="2"
                 rounded="xl"
               >
-                <VStack space="5" flex="1">
-                  <Heading
-                    fontSize="16px"
+                <VStack
+                  display="Flex"
+                  flexDirection="column"
+                  space="20px"
+                  w="100%"
+                >
+                  <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
                     borderColor="light.400"
                     pb="1"
                     borderBottomWidth="1"
                   >
-                    {t("EDUCATION")}
-                  </Heading>
-                  <VStack space="4">
-                    <VStack space="2">
-                      <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
-                      {data?.qualifications ? (
-                        data?.qualifications
-                          ?.filter(
-                            (e) =>
-                              e?.qualification_master?.type === "qualification"
-                          )
-                          ?.map((qua, key) => {
-                            return (
-                              <Text key={key}>
-                                {qua?.qualification_master?.name}
-                              </Text>
-                            );
-                          })
-                      ) : (
-                        <Text>{"-"}</Text>
-                      )}
+                    <Heading fontSize="16px">{t("EDUCATION")} </Heading>
+                    <IconByName
+                      color="editIcon.300"
+                      size="15px"
+                      name="EditBoxLineIcon"
+                    ></IconByName>
+                  </HStack>
+                  <VStack>
+                    <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
+                    <VStack>
+                      {data?.qualifications
+                        ?.filter(
+                          (e) =>
+                            e?.qualification_master?.type === "qualification"
+                        )
+                        ?.map((qua, key) => {
+                          return (
+                            <Text key={key}>
+                              {qua?.qualification_master?.name}
+                            </Text>
+                          );
+                        })}
                     </VStack>
                     <VStack space="2">
                       <Text color="warmGray.500">
@@ -613,16 +624,22 @@ export default function FacilitatorView({ footerLinks }) {
                       </VStack>
                     </VStack>
                   </VStack>
-                  <VStack display="Flex" flexDirection="column" space="20px">
-                    <Heading
-                      fontSize="16px"
+                  <HStack space="20px">
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
                       borderColor="light.400"
                       pb="1"
                       borderBottomWidth="1"
                     >
-                      {t("OTHER_DETAILS")}
-                    </Heading>
-                    <VStack>
+                      <Heading fontSize="16px">{t("OTHER_DETAILS")}</Heading>
+                      <IconByName
+                        color="editIcon.300"
+                        size="15px"
+                        name="EditBoxLineIcon"
+                      ></IconByName>
+                    </HStack>
+                    <HStack>
                       <Text color="warmGray.500">{t("AVAILABILITY")} </Text>
                       <Text>
                         {showData(
@@ -632,16 +649,16 @@ export default function FacilitatorView({ footerLinks }) {
                           )
                         )}
                       </Text>
-                    </VStack>
-                    <VStack>
+                    </HStack>
+                    <HStack>
                       <Text color="warmGray.500">{t("DEVICE_OWNERSHIP")} </Text>
                       <Text>{showData(data?.device_ownership)}</Text>
-                    </VStack>
-                    <VStack>
+                    </HStack>
+                    <HStack>
                       <Text color="warmGray.500">{t("TYPE_OF_DEVICE")} </Text>
                       <Text>{showData(data?.device_type)}</Text>
-                    </VStack>
-                  </VStack>
+                    </HStack>
+                  </HStack>
                 </VStack>
               </HStack>
             </HStack>
