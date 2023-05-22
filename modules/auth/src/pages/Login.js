@@ -19,6 +19,8 @@ import {
   logout,
   H1,
   Layout,
+  BodyMedium,
+  H2,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -211,9 +213,16 @@ export default function Login() {
           <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
             {t("LOGIN")}
           </Button>
-          {/* <BodyMedium color="primary.500" textAlign="center">
-              {t("CHANGE_MY_PASSWORD")}
-            </BodyMedium> */}
+          <BodyMedium color="primary.500" textAlign="center">
+            <H2
+              onPress={() => {
+                navigate("/reset-password");
+              }}
+            >
+              {" "}
+              {t("FORGET_PASSWORD")}
+            </H2>
+          </BodyMedium>
         </VStack>
       </VStack>
     </Layout>

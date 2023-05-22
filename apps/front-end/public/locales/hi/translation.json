@@ -206,11 +206,15 @@
   "LOGOUT": "लॉग आउट",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है",
-  "ENTER_FOUR_DIGIT_OTP": "उपरोक्त मोबाइल नंबर पर भेजा गया 4 अंकों का ओटीपी दर्ज करें",
+  "ENTER_FOUR_DIGIT_OTP": "उपरोक्त मोबाइल नंबर पर भेजा गया 6 अंकों का ओटीपी दर्ज करें",
   "OTP": "ओटीपी",
   "ENTER_VALID_OTP": "गलत ओटीपी डाला गया",
   "RESET_PASSWORD": "पासवर्ड रीसेट",
   "NEW": "नया",
   "CONFIRM": "पुष्टि करना",
-  "SETNEWPASSWORD": "नया पासवर्ड सेट करें"
+  "SETNEWPASSWORD": "नया पासवर्ड सेट करें",
+  "FORGET_PASSWORD": "पासवर्ड भूल गए",
+  "CONFIRM_PASSWORD": "नए पासवर्ड की पुष्टि करें",
+  "VERIFY": "सत्यापित करना",
+  "CONFIRMPASSWORD_IS_REQUIRED":"पासवर्ड की पुष्टि आवश्यक है"
 }

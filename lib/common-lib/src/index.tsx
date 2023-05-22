@@ -19,6 +19,7 @@ import * as authRegistryService from './services/authRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
+import CustomOTPBox from './components/CustomOTPBox'
 
 export {
   AppBar,
@@ -43,7 +44,8 @@ export {
   geolocationRegistryService,
   t,
   changeLanguage,
-  Camera
+  Camera,
+  CustomOTPBox
 }
 
 export * from './services/RestClient'

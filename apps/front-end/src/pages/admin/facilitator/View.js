@@ -11,6 +11,7 @@ import {
   BodySmall,
   Loading,
   t,
+  authRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -25,6 +26,8 @@ import {
   Modal,
   FormControl,
   Input,
+  ChevronRightIcon,
+  useToast,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -59,10 +62,14 @@ const Experience = (obj) => {
 };
 
 export default function FacilitatorView({ footerLinks }) {
+  const toast = useToast();
+
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
+  const [otpData, setotpData] = React.useState();
+  const [errors, setErrors] = React.useState({});
 
   const navigate = useNavigate();
 
@@ -73,12 +80,76 @@ export default function FacilitatorView({ footerLinks }) {
 
   const showData = (item) => (item ? item : "-");
 
+  const validate = () => {
+    let arr = {};
+    if (
+      typeof credentials?.password === "undefined" ||
+      credentials?.password === ""
+    ) {
+      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
+    }
+
+    if (
+      typeof credentials?.confirmPassword === "undefined" ||
+      credentials?.confirmPassword === ""
+    ) {
+      arr = { ...arr, confirmPassword: t("CONFIRMPASSWORD_IS_REQUIRED") };
+    }
+
+    setErrors(arr);
+    if (arr.password || arr.confirmPassword) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleSendOtp = async () => {
+    const sendotpBody = {
+      mobile: data?.mobile.toString(),
+      reason: "verify_mobile",
+    };
+    const datas = await authRegistryService.sendOtp(sendotpBody);
+    setotpData(datas);
+  };
+
+  const handleResetPassword = async (password, confirm_password) => {
+    if (validate()) {
+      if (password === confirm_password) {
+        const bodyData = {
+          id: id.toString(),
+          password: password,
+        };
+        const resetPassword = await authRegistryService.resetPasswordAdmin(
+          bodyData
+        );
+        if (resetPassword.success === true) {
+          setCredentials();
+          setModalVisible(false);
+          toast.show({
+            title: "Success",
+            variant: "solid",
+            description: resetPassword?.message,
+          });
+
+          navigate("/");
+          return { status: true };
+        } else if (resetPassword.success === false) {
+          setCredentials();
+          setModalVisible(false);
+          return { status: false };
+        }
+      }
+    } else {
+      setCredentials();
+      console.log("Confirm password is not matched with Password");
+    }
+  };
+
   if (!data) {
     return <Loading />;
   } else if (_.isEmpty(data) || data.error) {
     return <NotFound goBack={(e) => navigate(-1)} />;
   }
-
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -234,17 +305,18 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("SEND_MESSAGE")}
               </Button>
             </VStack>
-            {/* <VStack flex={0.2} space="1" direction="row">
+            <VStack flex={0.2} space="1" direction="row">
               <Button
                 variant="outlinePrimary"
                 leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
+                  handleSendOtp();
                 }}
               >
                 {t("RESET_PASSWORD")}
               </Button>
-            </VStack> */}
+            </VStack>
           </HStack>
 
           <Modal
@@ -270,86 +342,94 @@ export default function FacilitatorView({ footerLinks }) {
                   </H3>
                 </HStack>
                 <br />
-                <FormControl isRequired>
-                  <Input
-                    rounded="lg"
-                    height="48px"
-                    bg="white"
-                    variant="unstyled"
-                    p={"10px"}
-                    type="password"
-                    placeholder={
-                      t("ENTER") + " " + t("NEW") + " " + t("PASSWORD")
-                    }
-                    onChange={(e) =>
-                      setCredentials({
-                        ...credentials,
-                        password: e?.target?.value?.trim(),
-                      })
-                    }
-                  />
-                  <Text fontSize="xs">
-                    8 Character, 1 Capital, 1 Small, 1 Number
-                  </Text>
-                  {/* {"username" in errors ? (
-                    <FormControl.ErrorMessage
-                      _text={{
-                        fontSize: "xs",
-                        color: "error.500",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {errors.username}
-                    </FormControl.ErrorMessage>
-                  ) : (
-                    <></>
-                  )} */}
-                  <br />
-                  <br />
-                  <br />
-                  <Input
-                    rounded="lg"
-                    height="48px"
-                    bg="white"
-                    variant="unstyled"
-                    p={"10px"}
-                    type="password"
-                    placeholder={
-                      t("CONFIRM") + " " + t("NEW") + " " + t("PASSWORD")
-                    }
-                    onChange={(e) =>
-                      setCredentials({
-                        ...credentials,
-                        confirmPassword: e?.target?.value?.trim(),
-                      })
-                    }
-                  />
-                  <Text fontSize="xs">
-                    8 Character, 1 Capital, 1 Small, 1 Number
-                  </Text>
-                  {/* {"username" in errors ? (
-                    <FormControl.ErrorMessage
-                      _text={{
-                        fontSize: "xs",
-                        color: "error.500",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {errors.username}
-                    </FormControl.ErrorMessage>
-                  ) : (
-                    <></>
-                  )} */}
+                <FormControl isRequired isInvalid>
+                  <VStack justifyContent="space-between" space={30}>
+                    <Input
+                      id="password"
+                      rounded="lg"
+                      height="48px"
+                      bg="white"
+                      variant="unstyled"
+                      p={"10px"}
+                      type="password"
+                      placeholder={
+                        t("ENTER") + " " + t("NEW") + " " + t("PASSWORD")
+                      }
+                      value={credentials?.password ? credentials?.password : ""}
+                      onChange={(e) =>
+                        setCredentials({
+                          ...credentials,
+                          password: e?.target?.value?.trim(),
+                        })
+                      }
+                    />
+                    {"password" in errors ? (
+                      <FormControl.ErrorMessage
+                        _text={{
+                          fontSize: "xs",
+                          color: "error.500",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {!credentials?.password ? errors.password : <></>}
+                      </FormControl.ErrorMessage>
+                    ) : (
+                      <></>
+                    )}
+
+                    <Input
+                      id="confirmPassword"
+                      rounded="lg"
+                      height="48px"
+                      bg="white"
+                      variant="unstyled"
+                      p={"10px"}
+                      type="password"
+                      placeholder={
+                        t("CONFIRM") + " " + t("NEW") + " " + t("PASSWORD")
+                      }
+                      value={
+                        credentials?.confirmPassword
+                          ? credentials?.confirmPassword
+                          : ""
+                      }
+                      onChange={(e) =>
+                        setCredentials({
+                          ...credentials,
+                          confirmPassword: e?.target?.value?.trim(),
+                        })
+                      }
+                    />
+
+                    {"confirmPassword" in errors ? (
+                      <FormControl.ErrorMessage
+                        _text={{
+                          fontSize: "xs",
+                          color: "error.500",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {!credentials?.confirmPassword ? (
+                          errors.confirmPassword
+                        ) : (
+                          <></>
+                        )}
+                      </FormControl.ErrorMessage>
+                    ) : (
+                      <></>
+                    )}
+                  </VStack>
                 </FormControl>
               </Modal.Body>
               <Modal.Footer>
-                <Button.Group space={30}>
+                <HStack justifyContent="space-between" space={30}>
                   <Button
                     borderRadius="full"
                     // variant="ghost"
                     colorScheme="blueGray"
                     onPress={() => {
                       setModalVisible(false);
+                      setCredentials();
                     }}
                   >
                     {t("CANCEL")}
@@ -359,15 +439,24 @@ export default function FacilitatorView({ footerLinks }) {
                     colorScheme="trueGray"
                     onPress={() => {
                       credentials?.password === credentials?.confirmPassword
-                        ? setModalVisible(false)
-                        : alert(
-                            "Confirm password is not matched with Password"
-                          );
+                        ? handleResetPassword(
+                            credentials?.password,
+                            credentials?.confirmPassword
+                          )
+                        : toast.show({
+                            title: "Error",
+                            variant: "solid",
+                            description:
+                              "Confirm password is not matched with Password",
+                          });
                     }}
                   >
-                    {t("SETNEWPASSWORD")}
+                    <HStack>
+                      {t("SETNEWPASSWORD")}
+                      <ChevronRightIcon size="xs" />
+                    </HStack>
                   </Button>
-                </Button.Group>
+                </HStack>
               </Modal.Footer>
             </Modal.Content>
           </Modal>

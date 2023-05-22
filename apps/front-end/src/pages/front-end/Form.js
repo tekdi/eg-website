@@ -59,9 +59,16 @@ const CustomR = ({ options, value, onChange, required }) => {
     />
   );
 };
+const handleResendOtp = async (mobile) => {
+  const sendotpBody = {
+    mobile: mobile.toString(),
+    reason: "verify-mobile",
+  };
+  const datas = await authRegistryService.sendOtp(sendotpBody);
+};
 
-const CustomOTPBox = ({ value, onChange, required }) => {
-  const [otp, setOtp] = React.useState(new Array(4).fill(""));
+const CustomOTPBox = ({ value, onChange, required, ...props }) => {
+  const [otp, setOtp] = React.useState(new Array(6).fill(""));
 
   const [timer, setTimer] = React.useState(30);
   const timeOutCallback = React.useCallback(
@@ -107,22 +114,20 @@ const CustomOTPBox = ({ value, onChange, required }) => {
         );
       })}
       <br />
-      <pre>
+      <HStack justifyContent="space-between" alignItems="center">
         <>
           <H4 className=".h4">{`${"00:" + timer}`} </H4>
-        </>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <>
           <H4
             className=".h42"
             onPress={() => {
               resetTimer();
+              handleResendOtp(props?.schema?.mobile);
             }}
           >
             Resend OTP
           </H4>
         </>
-      </pre>
+      </HStack>
     </div>
   );
 };
@@ -779,8 +784,9 @@ export default function App({ facilitator, ip, onClick }) {
       } else if (page === "2") {
         const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
           ...newFormData,
-          hash: verifyOtpData?.hash,
+          hash: verifyOtpData?.data?.hash,
         });
+        setverifyOtpData(otpData);
         if (status === true) {
           const data = await formSubmitCreate(newFormData);
           if (data?.error) {
@@ -806,7 +812,7 @@ export default function App({ facilitator, ip, onClick }) {
           setErrors(newErrors);
         } else {
           setSchema(newSchema);
-          setverifyOtpData(otpData);
+          // setverifyOtpData(otpData);
         }
       } else if (page <= 1) {
         success = true;
