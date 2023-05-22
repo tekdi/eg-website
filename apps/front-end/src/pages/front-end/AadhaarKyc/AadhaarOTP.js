@@ -11,10 +11,10 @@ export default function AdharOTP() {
     otpNumber: "",
     securityCode: "",
   });
-  const [loading, setLoading] = React.useState(false);
+  
 
   const handleSubmit = () => {
-    setLoading(true);
+   
 
     const kycReqID = localStorage.getItem("KYCreqID") || "";
     const aadhaarNumber = localStorage.getItem("aadhaarNumber") || "";
@@ -56,9 +56,7 @@ export default function AdharOTP() {
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      
   };
 
   return (

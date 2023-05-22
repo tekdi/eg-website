@@ -1,7 +1,7 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import "./AadhaarKyc.css";
-import { Checkbox, TextField } from "@mui/material";
+import { Checkbox} from "@mui/material";
 import { Button, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
 
@@ -15,8 +15,6 @@ export default function AdharKyc() {
   });
   const [kycReqID, setKycReqID] = React.useState("");
   const [captchaImg, setCaptchaImg] = React.useState("");
-  const [loading, setLoading] = React.useState(true);
-  const [loading2, setLoading2] = React.useState(false);
 
   React.useEffect(() => {
     const headers = {
@@ -41,9 +39,7 @@ export default function AdharKyc() {
           }
         })
         .catch((err) => console.log(err))
-        .finally(() => {
-          setLoading(false);
-        });
+       
     };
 
     const url1 = "https://dg-sandbox.setu.co/api/okyc/";
@@ -66,7 +62,7 @@ export default function AdharKyc() {
   }, []);
 
   const sendData = () => {
-    setLoading2(true);
+    // setLoading2(true);
 
     const url = `https://dg-sandbox.setu.co/api/okyc/${kycReqID}/verify`;
 
@@ -97,7 +93,7 @@ export default function AdharKyc() {
       })
       .catch((error) => console.log(error))
       .finally(() => {
-        setLoading2(false);
+        // setLoading2(false);
       });
   };
 

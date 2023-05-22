@@ -54,9 +54,9 @@ export default function ManualUpload() {
           setCameraModal,
           cameraUrl,
           setCameraUrl: async (url) => {
-            // console.log("image url -> ", url);
+           
             setCameraUrl(url);
-            // setImage(url);
+            
             if (isFront) {
               setImage((prev) => ({ ...prev, front: url }));
             } else {

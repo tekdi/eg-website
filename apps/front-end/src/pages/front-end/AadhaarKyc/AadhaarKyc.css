@@ -235,18 +235,16 @@
 }
 
 .upload__options label {
-  width: 100%;
   background: transparent;
   text-align: center;
   padding: 10px;
   font-size: 12px;
   font-weight: 600;
-}
-
-.upload__options label {
   width: 100% !important;
   margin: 0 !important;
 }
+
+
 
 .upload__options button:not(:last-child),
 .upload__options label:not(:last-child) {
