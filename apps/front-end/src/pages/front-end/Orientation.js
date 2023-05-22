@@ -60,13 +60,13 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       },
     },
   };
-  const styles={
-    modalxxl:{
-      maxWidth:"950px",
-      width:"100%",
-      height:"100%"
+  const styles = {
+    modalxxl: {
+      maxWidth: "950px",
+      width: "100%",
+      height: "100%",
     },
-  }
+  };
   return (
     <Layout
       _appBar={{
@@ -95,17 +95,19 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
           <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
-            <VStack  alignItems={"Center"} >
+            <VStack alignItems={"Center"}>
               <Pressable onPress={onShowScreen}>
-            <Image
-              source={{
-                uri: "/orientation.svg",
-              }}
-              alt="Prerak Orientation"
-              size={"sm"}
-              resizeMode="contain"
-            />
-              <Text fontSize="sm" bold pt="4">Prerak Orientation</Text>
+                <Image
+                  source={{
+                    uri: "/orientation.svg",
+                  }}
+                  alt="Prerak Orientation"
+                  size={"sm"}
+                  resizeMode="contain"
+                />
+                <Text fontSize="sm" bold pt="4">
+                  Prerak Orientation
+                </Text>
               </Pressable>
             </VStack>
           </BoxBlue>
@@ -119,7 +121,9 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 size={"sm"}
                 resizeMode="contain"
               />
-              <Text fontSize="sm" bold pt="4">Prerak Training</Text>
+              <Text fontSize="sm" bold pt="4">
+                Prerak Training
+              </Text>
             </VStack>
           </BoxBlue>
           <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
@@ -132,7 +136,9 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 size={"sm"}
                 resizeMode="contain"
               />
-              <Text fontSize="sm" bold pt="4">My MT</Text>
+              <Text fontSize="sm" bold pt="4">
+                My MT
+              </Text>
             </VStack>
           </BoxBlue>
           <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
@@ -145,7 +151,9 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 size={"sm"}
                 resizeMode="contain"
               />
-              <Text fontSize="sm" bold pt="4">Add a Prerak</Text>
+              <Text fontSize="sm" bold pt="4">
+                Add a Prerak
+              </Text>
             </VStack>
           </BoxBlue>
         </HStack>
@@ -154,37 +162,46 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         </Text>
       </VStack>
 
-     
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
           <VStack space="xl">
             <Button
-            variant={"blueOutlineBtn"}
-            shadow="BlueOutlineShadow"
+              variant={"blueOutlineBtn"}
+              shadow="BlueOutlineShadow"
               onPress={() => {
                 setModalVisible(!modalVisible);
               }}
             >
-              <Text color="blueText.400" bold fontSize="lg">Schedule an event +</Text>
+              <Text color="blueText.400" bold fontSize="lg">
+                Schedule an event +
+              </Text>
             </Button>
 
             <Cal />
             <VStack space="4">
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="blue.500" />
-                <Text fontSize="sm" bold>Interview</Text>
+                <Text fontSize="sm" bold>
+                  Interview
+                </Text>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="green.500" />
-                <Text fontSize="sm" bold>Orientation Days</Text>
+                <Text fontSize="sm" bold>
+                  Orientation Days
+                </Text>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="yellow.500" />
-                <Text fontSize="sm" bold>Training Days</Text>
+                <Text fontSize="sm" bold>
+                  Training Days
+                </Text>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="purple.500" />
-                <Text fontSize="sm" bold>Camp visits</Text>
+                <Text fontSize="sm" bold>
+                  Camp visits
+                </Text>
               </HStack>
             </VStack>
           </VStack>
@@ -194,10 +211,11 @@ export default function Orientation({ footerLinks, onShowScreen }) {
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
             events={[
-              { title: 'event 1', date: moment().format("YYYY-MM-DD HH:mm:ss") },
-              
+              {
+                title: "event 1",
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
             ]}
-          
             headerToolbar={{
               start: "prev,thisweek,next",
               center: "timeGridWeek,dayGridMonth,dayGridYear",
@@ -205,7 +223,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               height: "50hv",
             }}
           />
-          
         </Box>
       </HStack>
 
@@ -217,10 +234,13 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         // height={"450px"}
         overflowY={"scroll"}
       >
-        <Modal.Content  {...styles.modalxxl}>
+        <Modal.Content {...styles.modalxxl}>
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0" bg="white">
-            <H1 textAlign="center" bold> Schedule an Event</H1>
+            <H1 textAlign="center" bold>
+              {" "}
+              Schedule an Event
+            </H1>
           </Modal.Header>
 
           {/* <Modal.Header textAlign={"Center"}>
@@ -351,26 +371,26 @@ export default function Orientation({ footerLinks, onShowScreen }) {
             />
             <Modal.Footer justifyContent={"space-between"}>
               <Button.Group space={2}>
-                  <Button
-                    variant="blueOutlineBtn"
-                    colorScheme="blueGray"
-                    onPress={() => {
-                      setShowModal(false);
-                    }}
-                    shadow="BlueOutlineShadow"
-                  >
-                    <Text>Cancel</Text>
-                  </Button>
-                  <Button
+                <Button
+                  variant="blueOutlineBtn"
+                  colorScheme="blueGray"
+                  onPress={() => {
+                    setShowModal(false);
+                  }}
+                  shadow="BlueOutlineShadow"
+                >
+                  <Text>Cancel</Text>
+                </Button>
+                <Button
                   variant="blueFillButton"
-                    onPress={() => {
-                      setShowModal(false);
-                    }}
-                    shadow="BlueFillShadow"
-                  >
-                   <Text color="white">Send Invites</Text> 
-                  </Button>
-                </Button.Group>
+                  onPress={() => {
+                    setShowModal(false);
+                  }}
+                  shadow="BlueFillShadow"
+                >
+                  <Text color="white">Send Invites</Text>
+                </Button>
+              </Button.Group>
             </Modal.Footer>
           </Modal.Body>
         </Modal.Content>
