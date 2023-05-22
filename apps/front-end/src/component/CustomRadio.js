@@ -1,4 +1,4 @@
-import { Box, FormControl, HStack, Pressable } from "native-base";
+import { Box, FormControl, HStack, Pressable, Image } from "native-base";
 import React from "react";
 
 export default function CustomRadio({
@@ -13,6 +13,7 @@ export default function CustomRadio({
     <FormControl>
       <FormControl.Label>{label}</FormControl.Label>
       <HStack space={"2"} flexWrap="wrap">
+    
         {items?.map((item, key) => (
           <Pressable {...{ key }} onPress={() => onChange(item?.value)} mb="2">
             {itemElement ? (
