@@ -701,7 +701,7 @@ export default function App({ facilitator, ip, onClick }) {
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
+                { value: "1", label: t("OTHER_DETAILS") },
               ]}
               progress={page === "upload" ? 10 : page}
             />
@@ -771,7 +771,7 @@ export default function App({ facilitator, ip, onClick }) {
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
+                { value: "1", label: t("OTHER_DETAILS") },
               ]}
               progress={page === "upload" ? 10 : page}
             />
@@ -892,7 +892,7 @@ export default function App({ facilitator, ip, onClick }) {
             steps={[
               { value: "6", label: t("BASIC_DETAILS") },
               { value: "3", label: t("WORK_DETAILS") },
-              { value: "4", label: t("OTHER_DETAILS") },
+              { value: "1", label: t("OTHER_DETAILS") },
             ]}
             progress={page - 1}
           />
