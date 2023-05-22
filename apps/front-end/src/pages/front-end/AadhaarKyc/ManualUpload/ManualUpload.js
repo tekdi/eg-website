@@ -83,8 +83,8 @@ export default function ManualUpload() {
       <div className="content">
         {!submitted ? (
           <>
-            <h2>Aadhaar Card</h2>
-            <Text>Upload a photo or scan of your card</Text>
+            <h2> {t("AADHAR_CARD")}</h2>
+            <Text>{t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}</Text>
 
             <button
               className="btn-uploadOptions"
@@ -98,7 +98,7 @@ export default function ManualUpload() {
                 ) : (
                   <>
                     <UploadIcon />
-                    <Text>Upload the front side of your Aadhaar card</Text>
+                    <Text>{t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}</Text>
                   </>
                 )
               ) : image.back ? (
@@ -106,7 +106,7 @@ export default function ManualUpload() {
               ) : (
                 <>
                   <UploadIcon />
-                  <Text>Upload the back side of your Aadhaar card</Text>
+                  <Text>{t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}</Text>
                 </>
               )}
             </button>
@@ -136,7 +136,7 @@ export default function ManualUpload() {
                     setModal(true);
                   }}
                 >
-                  <Text color="white">Upload Again</Text>
+                  <Text color="white">{t("UPLOAD_AGAIN")}</Text>
                 </Button>
               ) : null
             ) : image.back ? (
@@ -151,7 +151,7 @@ export default function ManualUpload() {
                   setModal(true);
                 }}
               >
-                <Text color="white">Upload Again</Text>
+                <Text color="white">{t("UPLOAD_AGAIN")}</Text>
               </Button>
             ) : null}
 
@@ -164,24 +164,24 @@ export default function ManualUpload() {
               disabled={!image.front || !image.back}
               onPress={handleSubmit}
             >
-              <Text color="white">Continue</Text>
+              <Text color="white"></Text>
             </Button>
           </>
         ) : (
           <>
             <p className="boxMessage3">
               <CheckIcon fontSize="medium" />
-              <span>Aadhaar Card Uploaded</span>
+              <span>{t("AADHAAR_CARD_UPLOADED")}</span>
             </p>
 
             <div className="front__image">
-              <h4>Front View</h4>
+              <h4>{t("FRONT_VIEW")}</h4>
 
               <img src={image.front} alt="front image" />
             </div>
 
             <div className="back__image">
-              <h4>Back View</h4>
+              <h4>{t("BACK_VIEW")}</h4>
 
               <img src={image.back} alt="back image" />
             </div>
@@ -193,7 +193,7 @@ export default function ManualUpload() {
               px="20px"
               mt="10"
             >
-              <Text color="white">Continue</Text>
+              <Text color="white">{t("CONTINUE")}</Text>
             </Button>
           </>
         )}
@@ -207,10 +207,10 @@ export default function ManualUpload() {
           setCameraUrl();
           setCameraModal(true);
         }}>
-          Take a Photo
+          {t("TAKE_A_PHOTO")}
         </button>
 
-        <label htmlFor="galleryUpload">Upload from gallery</label>
+        <label htmlFor="galleryUpload">{t("UPLOAD_FROM_GALLERY")}</label>
         <input
           type="file"
           id="galleryUpload"
@@ -218,7 +218,7 @@ export default function ManualUpload() {
           onChange={handleFileInputChange}
         />
 
-        <label htmlFor="fileUpload">Upload a file</label>
+        <label htmlFor="fileUpload">{t("Upload a file")}</label>
         <input
           type="file"
           id="fileUpload"
@@ -230,7 +230,7 @@ export default function ManualUpload() {
       <button className="btn-cancel" onClick={() => {
         setModal(false);
       }}>
-        Cancel
+       {t("CANCEL")}
       </button>
     </div>
   </div>

@@ -70,13 +70,13 @@ export default function AdharOTP() {
 
       <div className="content">
         <h2>
-          Offline Aadhaar Verification
+          {t("OFFLINE_AADHAAR_VERIFICATION")}
           <br />
           (OKYC)
         </h2>
 
         <div className="aadhaarNumber__input" style={{ marginTop: "40px" }}>
-          <label htmlFor="otpNumber">Enter 6 digit OTP</label>
+          <label htmlFor="otpNumber">{t("ENTER_6_DIGIT_OTP")}</label>
 
           <Input
             id="otpNumber"
@@ -95,9 +95,9 @@ export default function AdharOTP() {
 
         <div className="securityCode__input" style={{ marginTop: "30px" }}>
           <label htmlFor="securityCode">
-            <span>Enter Security Code</span>
+            <span>{t("ENTER_SECURITY_CODE")}</span>
             <span>
-              Set a 4 digit passcode to securely share your Aadhaar zip filee
+              {t("SET_A_4_DIGIT_PASSCODE_TO_SECURELY_SHARE_YOUR_AADHAAR_ZIP_FILE")}
             </span>
           </label>
 
@@ -124,7 +124,7 @@ export default function AdharOTP() {
           disabled={!data.otpNumber || !data.securityCode}
           onPress={handleSubmit}
         >
-          <Text color="white">Continue</Text>
+          <Text color="white">{t("CONTINUE")}</Text>
         </Button>
       </div>
     </div>

@@ -9,9 +9,9 @@ const AadhaarStartKyc = () => {
   return (
     <div className="adharVerifyStart">
       <div className="content">
-        <p>Your Application is Submitted Successfully!</p>
+        <p>{t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY!")}</p>
 
-        <h1>Complete Aadhaar Card Verification</h1>
+        <h1>{t("COMPLETE_AADHAAR_CARD_VERIFICATION")}</h1>
 
         <Button
           variant="outline"
@@ -30,7 +30,7 @@ const AadhaarStartKyc = () => {
           mt="2"
         >
           <ErrorOutlineIcon fontSize="small" />
-          <span style={{ fontSize: "13px" }}>Mobile Number is not linked to Aadhaar Card</span>
+          <span style={{ fontSize: "13px" }}>{t("MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD")}</span>
         </Text>
 
         <Button
@@ -50,7 +50,7 @@ const AadhaarStartKyc = () => {
           mt="2"
         >
           <ErrorOutlineIcon fontSize="small" />
-          <span style={{ fontSize: "13px" }}>Unable to scan the QR Code</span>
+          <span style={{ fontSize: "13px" }}>{t("UNABLE_TO_SCAN_THE_QR_CODE")}</span>
         </Text>
 
         <Button
@@ -60,19 +60,19 @@ const AadhaarStartKyc = () => {
           mt="8"
           py="3"
         >
-          <Text fontSize="md" fontWeight="medium" color="white">Manual Aadhaar Upload</Text>
+          <Text fontSize="md" fontWeight="medium" color="white">{t("MANUAL_AADHAAR_UPLOAD")}</Text>
         </Button>
       </div>
 
       <div className="bottom">
-        <Text textAlign="center" mb="4">We have sent you a text message with username and password on your mobile number</Text>
+        <Text textAlign="center" mb="4">{t("WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER")}</Text>
         
         <Button
           variant="outline"
           w="100%"
           borderRadius="full"
         >
-          Skip to Login
+         {t("SKIP_TO_LOGIN")}
         </Button>
       </div>
     </div>

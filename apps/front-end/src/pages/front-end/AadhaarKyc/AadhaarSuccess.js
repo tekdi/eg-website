@@ -16,18 +16,18 @@ export default function AdharSuccess() {
 
       <div className="content">
         <h2>
-          Offline Aadhaar Verification
+          {t("OFFLINE_AADHAAR_VERIFICATION")}
           <br />
           (OKYC)
         </h2>
 
         <p className="boxMessage2">
           <CheckIcon fontSize="small" />
-          <span>Your Aadhaar Verification is successful</span>
+          <span>{t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}</span>
         </p>
 
         <Button variant="secondary" bg={"gray.500"} py="12px" px="20px" mt={20}>
-          <Text color="white">Continue Login</Text>
+          <Text color="white">{t("CONTINUE_LOGIN")}</Text>
         </Button>
       </div>
     </div>

@@ -113,13 +113,13 @@ export default function AdharKyc() {
 
       <div className="content">
         <h2>
-          Offline Aadhaar Verification
+          {t("OFFLINE_AADHAAR_VERIFICATION")}
           <br />
           (OKYC)
         </h2>
 
         <div className="aadhaarNumber__input">
-          <label htmlFor="aadhaarNumber">Enter Your Aadhaar Number</label>
+          <label htmlFor="aadhaarNumber">{t("ENTER_YOUR_AADHAAR_NUMBER")}</label>
 
           <Input
             id="aadhaarNumber"
@@ -137,8 +137,8 @@ export default function AdharKyc() {
 
         <div className="securityCode__input">
           <label htmlFor="securityCode">
-            <span>Enter Security Code</span>
-            <span>Type the characters you see in the picture</span>
+            <span>{t("ENTER_SECURITY_CODE")}</span>
+            <span>{t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}</span>
           </label>
           <img
             src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
@@ -159,18 +159,16 @@ export default function AdharKyc() {
         </div>
 
         <p className="boxMessage">
-          We will send you an OTP to the mobile number linked with your Aadhaar
+          {t("WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR")}
         </p>
 
         <ul>
           <li>
-            I agree to download my Aadhaar XML file from the UIDAI Website to
-            complete Aadhaar offline verification with smallcase.{" "}
+            {t("I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE")}
           </li>
 
           <li>
-            I understand that my Aadhaar details shall not be used or stored for
-            any other purpose.
+            {t("I understand that my Aadhaar details shall not be used or stored for any other purpose.")}
           </li>
         </ul>
 
@@ -183,7 +181,7 @@ export default function AdharKyc() {
               setData({ ...data, checkMark: e.target.checked });
             }}
           />{" "}
-          I have read and understood all of the points above
+          {t("I_HAVE_READ_AND_UNDERSTOOD_ALL_OF_THE_POINTS_ABOVE")}
         </label>
 
         <Button
@@ -200,7 +198,7 @@ export default function AdharKyc() {
           }
           onPress={sendData}
         >
-          <Text color="white">Continue</Text>
+          <Text color="white">{t("CONTINUE")}</Text>
         </Button>
       </div>
     </div>
