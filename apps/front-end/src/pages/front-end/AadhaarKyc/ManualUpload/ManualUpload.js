@@ -47,28 +47,30 @@ export default function ManualUpload() {
   };
 
   if (cameraModal) {
+    const handleSetCameraUrl = async (url) => {
+      setCameraUrl(url);
+  
+      if (isFront) {
+        setImage((prev) => ({ ...prev, front: url }));
+      } else {
+        setImage((prev) => ({ ...prev, back: url }));
+      }
+  
+      setCameraModal(false);
+      setModal(false);
+    };
+  
     return (
       <Camera
-        {...{
-          cameraModal,
-          setCameraModal,
-          cameraUrl,
-          setCameraUrl: async (url) => {
-           
-            setCameraUrl(url);
-            
-            if (isFront) {
-              setImage((prev) => ({ ...prev, front: url }));
-            } else {
-              setImage((prev) => ({ ...prev, back: url }));
-            }
-            setCameraModal(false);
-            setModal(false);
-          },
-        }}
+        cameraModal={cameraModal}
+        setCameraModal={setCameraModal}
+        cameraUrl={cameraUrl}
+        setCameraUrl={handleSetCameraUrl}
       />
     );
-  }
+  } 
+  
+  
 
   return (
     <div className="manualUploadPage" style={{ position: "relative" }}>
@@ -197,51 +199,43 @@ export default function ManualUpload() {
         )}
       </div>
 
-      {modal ? (
-        <div className="uploadModal">
-          <div className="modal__container">
-            <div className="upload__options">
-              <button
-                onClick={() => {
-                  setCameraUrl();
-                  setCameraModal(true);
-                }}
-              >
-                Take a Photo
-              </button>
+      {modal && (
+  <div className="uploadModal">
+    <div className="modal__container">
+      <div className="upload__options">
+        <button onClick={() => {
+          setCameraUrl();
+          setCameraModal(true);
+        }}>
+          Take a Photo
+        </button>
 
-              <label htmlFor="galleryUpload">Upload from gallery</label>
-              <input
-                type="file"
-                id="galleryUpload"
-                style={{
-                  display: "none",
-                }}
-                onChange={handleFileInputChange}
-              />
+        <label htmlFor="galleryUpload">Upload from gallery</label>
+        <input
+          type="file"
+          id="galleryUpload"
+          style={{ display: "none" }}
+          onChange={handleFileInputChange}
+        />
 
-              <label htmlFor="fileUpload">Upload a file</label>
-              <input
-                type="file"
-                id="fileUpload"
-                style={{
-                  display: "none",
-                }}
-                onChange={handleFileInputChange}
-              />
-            </div>
+        <label htmlFor="fileUpload">Upload a file</label>
+        <input
+          type="file"
+          id="fileUpload"
+          style={{ display: "none" }}
+          onChange={handleFileInputChange}
+        />
+      </div>
 
-            <button
-              className="btn-cancel"
-              onClick={() => {
-                setModal(false);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : null}
+      <button className="btn-cancel" onClick={() => {
+        setModal(false);
+      }}>
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
