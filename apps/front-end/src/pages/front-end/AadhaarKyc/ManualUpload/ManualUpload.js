@@ -5,7 +5,7 @@ import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
 import { Button, Text } from "native-base";
 import "../AadhaarKyc.css";
-import { Camera, getBase64 } from "@shiksha/common-lib";
+import { Camera, getBase64,t } from "@shiksha/common-lib";
 
 export default function ManualUpload() {
   const navigate = useNavigate();

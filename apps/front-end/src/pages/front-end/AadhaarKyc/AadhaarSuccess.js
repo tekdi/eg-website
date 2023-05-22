@@ -3,6 +3,7 @@ import WestIcon from "@mui/icons-material/West";
 import CheckIcon from "@mui/icons-material/Check";
 import "./AadhaarKyc.css";
 import { Button, Text } from "native-base";
+import { t } from "@shiksha/common-lib";
 
 export default function AdharSuccess() {
   return (

@@ -3,6 +3,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import "./AadhaarKyc.css";
 import { Button, Text } from "native-base";
+import { t } from "@shiksha/common-lib";
 
 const AadhaarStartKyc = () => {
   return (

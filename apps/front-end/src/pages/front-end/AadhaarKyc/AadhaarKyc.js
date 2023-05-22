@@ -4,6 +4,7 @@ import "./AadhaarKyc.css";
 import { Checkbox} from "@mui/material";
 import { Button, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
+import { t } from "@shiksha/common-lib";
 
 export default function AdharKyc() {
   const navigate = useNavigate();

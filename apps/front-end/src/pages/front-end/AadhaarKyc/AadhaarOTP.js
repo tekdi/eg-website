@@ -3,6 +3,7 @@ import WestIcon from "@mui/icons-material/West";
 import { Button, Input, Text } from "native-base";
 import "./AadhaarKyc.css";
 import { useNavigate } from "react-router-dom";
+import { t } from "@shiksha/common-lib";
 
 export default function AdharOTP() {
   const navigate = useNavigate();
@@ -30,9 +31,9 @@ export default function AdharOTP() {
       aadhaarNumber,
     };
 
-    const url = `https://dg-sandbox.setu.co/api/okyc/${kycReqID}/complete/`;
+    // const url = `https://dg-sandbox.setu.co/api/okyc/${kycReqID}/complete/`;
 
-    fetch(url, {
+    fetch(process.env.AADHAR_URL3, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
