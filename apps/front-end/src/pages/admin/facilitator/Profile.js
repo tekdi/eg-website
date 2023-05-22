@@ -6,26 +6,14 @@ import {
   H3,
   H1,
   H2,
-  BodyLarge,
+  ImageView,
   BodySmall,
   Loading,
   t,
 } from "@shiksha/common-lib";
-import {
-  Heading,
-  HStack,
-  Text,
-  VStack,
-  Box,
-  Avatar,
-  Stack,
-  Column,
-  Row,
-  Center,
-} from "native-base";
+import { Heading, HStack, Text, VStack, Box, Stack } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate } from "react-router-dom";
-import { Primary } from "stories/Button.stories";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
@@ -54,14 +42,9 @@ export default function App({ footerLinks, userTokenInfo }) {
             />
             <H3> {t("PRERAK_BIO")}</H3>
           </HStack>
-          <Stack direction="row" justifyContent="spacearound">
-            <HStack
-              width="70%"
-              direction="column"
-              justifyContent="spacearound"
-              alignItems={"center"}
-            >
-              <HStack direction="row" justifyContent="flexStart" mb="6">
+          <HStack alignItems="center" flexWrap="wrap">
+            <HStack flex="0.7" direction="column">
+              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
                 <H1>
                   {data?.first_name} {data?.last_name}
                 </H1>
@@ -80,7 +63,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                     color="textGreyColor.300"
                     pt="1"
                   />
-                  <Text fontSize="12px">{data?.mobile}</Text>
+                  <BodyLarge>{data?.mobile}</BodyLarge>
                 </HStack>
                 <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
                   <IconByName
@@ -89,14 +72,14 @@ export default function App({ footerLinks, userTokenInfo }) {
                     name="MapPinLineIcon"
                     color="textGreyColor.300"
                   />
-                  <Text fontSize="12px">{data?.address}</Text>
+                  <BodyLarge>{data?.address}</BodyLarge>
                 </HStack>
               </HStack>
               <H2 fontSize="18" pb="2">
                 {" "}
                 {t("ELIGIBILITY_CRITERIA")}
               </H2>
-              <HStack>
+              <HStack width={"100%"}>
                 <IconByName
                   flex={0.3}
                   name="DonutChartLineIcon"
@@ -156,10 +139,10 @@ export default function App({ footerLinks, userTokenInfo }) {
               </HStack>
             </HStack>
             <HStack width="30%" pl="5">
-              {data?.profile_url ? (
-                <Avatar
+              {data?.documents?.[0]?.name ? (
+                <ImageView
                   source={{
-                    uri: data?.profile_url,
+                    uri: data?.documents?.[0]?.name,
                   }}
                   // alt="Alternate Text"
                   width={"190px"}
@@ -174,7 +157,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                 />
               )}
             </HStack>
-          </Stack>
+          </HStack>
 
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>

@@ -144,7 +144,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           maxH={Height - refAppBar?.clientHeight}
           minH={Height - refAppBar?.clientHeight}
         >
-          <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
+          <Box flex={1} roundedBottom={"2xl"} py={6} px={4} mb={5}>
             <Table facilitator={userTokenInfo?.authUser} />
           </Box>
         </ScrollView>
