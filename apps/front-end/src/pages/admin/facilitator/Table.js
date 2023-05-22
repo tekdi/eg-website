@@ -5,6 +5,8 @@ import {
   H3,
   t,
   ImageView,
+  BlueFillButton,
+  BlueOutlineButton,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -16,6 +18,12 @@ const customStyles = {
   rows: {
     style: {
       minHeight: "72px", // override the row height
+      borderLeft: "4px solid transparent",
+      "&:hover": {
+        borderLeft: "4px solid #790000",
+        boxShadow: "1px 3px 4px rgba(0, 0, 0, 0.25)",
+        zIndex: "1",
+      },
     },
   },
   headCells: {
@@ -61,8 +69,8 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("EMAIL_ID"),
-    selector: (row) => row?.email_id,
+    name: t("MOBILE_NUMBER"),
+    selector: (row) => row?.mobile,
     sortable: true,
     attr: "email",
   },
@@ -146,32 +154,30 @@ function Table({ facilitator }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-          <BlueFillButton
+          <BlueOutlineButton
+            _text={{ color: "#084B82" }}
             shadow="BlueOutlineShadow"
             onPress={() => setModal(true)}
             rightIcon={
               <IconByName
-                _icon={(color = "#084B82")}
+                color="#084B82"
+                _icon={{}}
                 size="15px"
                 name="ShareLineIcon"
-              ></IconByName>
+              />
             }
           >
-            <Text>{t("SEND_AN_INVITE")}</Text>
-          </BlueFillButton>
-          <BlueFillButton
+            {t("SEND_AN_INVITE")}
+          </BlueOutlineButton>
+          {/* <BlueFillButton
             mx="3"
             shadow="BlueFillShadow"
             rightIcon={
-              <IconByName
-                _icon={(color = "#ffffff")}
-                size="20px"
-                name="PencilLineIcon"
-              ></IconByName>
+              <IconByName color="white" size="20px" name="PencilLineIcon" />
             }
           >
             {t("REGISTER_PRERAK")}
-          </BlueFillButton>
+          </BlueFillButton> */}
           <Modal
             isOpen={modal}
             onClose={() => setModal(false)}
@@ -243,7 +249,6 @@ function Table({ facilitator }) {
                 }}
               >
                 <Text fontSize="12px" color={"white"}>
-                  {" "}
                   {t("VIEW")}
                 </Text>
               </Button>

@@ -1,3 +1,5 @@
+import { BorderColor } from '@mui/icons-material'
+
 const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '20px' : ''
 
@@ -53,6 +55,14 @@ const DEFAULT_THEME = {
     mono: fontFamily
   },
   components: {
+    Input: {
+      baseStyle: {
+        p: '4',
+        minH: '54px',
+        borderColor: 'secondaryBlue.500',
+        rounded: '10px'
+      }
+    },
     Text: {
       baseStyle: {
         fontFamily: fontFamily,
@@ -230,11 +240,24 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 1.0,
       elevation: 1
+    },
+    appBarShadow: {
+      shadowColor: '#d9d9d9',
+      shadowOffset: {
+        width: 0,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 16,
+      elevation: 1
     }
   },
   colors: {
     footer: {
       boxBorder: '#C92A42'
+    },
+    formBg: {
+      500: '#F4F4F7'
     },
     widgetColor: {
       400: '#7F9DAC',
@@ -435,6 +458,21 @@ const DEFAULT_THEME = {
     },
     sendMessageBtn: {
       200: '#14242D'
+    },
+    secondaryBlue: {
+      50: '#e7f3fe',
+      100: '#b7dcfb',
+      200: '#87c5f8',
+      300: '#57aef5',
+      400: '#2796f2',
+      500: '#0d7dd8',
+      600: '#0a61a8',
+      700: '#074578',
+      800: '#042a48',
+      900: '#010e18'
+    },
+    btnGray: {
+      100: '#e0e0e0'
     }
   }
 }

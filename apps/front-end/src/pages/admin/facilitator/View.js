@@ -14,10 +14,19 @@ import {
   ImageView,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Center, Heading, HStack, Text, VStack } from "native-base";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import Steper from "component/Steper";
 
 const Experience = (obj) => {
   return (
@@ -132,13 +141,9 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("ELIGIBILITY_CRITERIA")}
               </H2>
               <HStack width={"100%"}>
-                <IconByName
-                  flex={0.3}
-                  name="DonutChartLineIcon"
-                  isDisabled
-                  color="darkBlue.400"
-                  _icon={{ size: "100px" }}
-                />
+                <Box flex={0.3}>
+                  <Steper size={100} type="circle" progress={75} bg="white" />
+                </Box>
                 <VStack flex={0.7} space="2">
                   <HStack alignItems={"center"} space={"2"}>
                     <BodySmall> {t("QUALIFICATION")}</BodySmall>

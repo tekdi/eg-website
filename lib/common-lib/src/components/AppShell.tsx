@@ -1,21 +1,21 @@
 import React from 'react'
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react'
 import { eventBus } from '../services/EventBus'
 import AppRoutesContainer from './AppRoutesContainer'
 import { getAppshellData } from './helper'
 
-
-Sentry.init({
-  environment: `${process.env.REACT_APP_SENTRY_ENV}`,
-  dsn: `${process.env.REACT_APP_SENTRY_DSN_URL}`,
+if (process.env.REACT_APP_SENTRY_ENV) {
+  Sentry.init({
+    environment: `${process.env.REACT_APP_SENTRY_ENV}`,
+    dsn: `${process.env.REACT_APP_SENTRY_DSN_URL}`,
     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
     // Performance Monitoring
     tracesSampleRate: 0.1, // Capture 100% of the transactions, reduce in production!
     // Session Replay
     replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
-  });
-
+    replaysOnErrorSampleRate: 1.0 // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+  })
+}
 function AppShell({
   colors,
   themeName,

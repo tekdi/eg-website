@@ -21,6 +21,7 @@ import * as geolocationRegistryService from './services/geolocationRegistryServi
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
+import FloatingInput from './components/FloatingInput'
 
 export {
   AppBar,
@@ -47,7 +48,8 @@ export {
   ImageView,
   t,
   changeLanguage,
-  Camera
+  Camera,
+  FloatingInput
 }
 
 export * from './services/RestClient'
