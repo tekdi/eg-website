@@ -94,7 +94,7 @@ export default function FacilitatorView({ footerLinks }) {
       typeof credentials?.confirmPassword === "undefined" ||
       credentials?.confirmPassword === ""
     ) {
-      arr = { ...arr, confirmPassword: t("CONFIRMPASSWORD_IS_REQUIRED") };
+      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
     }
 
     setErrors(arr);
@@ -311,7 +311,7 @@ export default function FacilitatorView({ footerLinks }) {
                   handleSendOtp();
                 }}
               >
-                {t("RESET_PASSWORD")}
+                {t("USER_RESET_PASSWORD")}
               </Button>
             </VStack>
           </HStack>
@@ -325,7 +325,7 @@ export default function FacilitatorView({ footerLinks }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header textAlign={"Center"}>
-                {t("RESET_PASSWORD")}
+                {t("USER_RESET_PASSWORD")}
               </Modal.Header>
               <Modal.Body p="5" pb="10" mx={5} overflowX="hidden">
                 <HStack space={3}>
@@ -368,10 +368,14 @@ export default function FacilitatorView({ footerLinks }) {
                           fontWeight: 500,
                         }}
                       >
-                        {!credentials?.password ? errors.password : <></>}
+                        {!credentials?.password ? (
+                          errors.password
+                        ) : (
+                          <React.Fragment />
+                        )}
                       </FormControl.ErrorMessage>
                     ) : (
-                      <></>
+                      <React.Fragment />
                     )}
 
                     <Input
@@ -409,11 +413,11 @@ export default function FacilitatorView({ footerLinks }) {
                         {!credentials?.confirmPassword ? (
                           errors.confirmPassword
                         ) : (
-                          <></>
+                          <React.Fragment />
                         )}
                       </FormControl.ErrorMessage>
                     ) : (
-                      <></>
+                      <React.Fragment />
                     )}
                   </VStack>
                 </FormControl>
@@ -449,7 +453,7 @@ export default function FacilitatorView({ footerLinks }) {
                     }}
                   >
                     <HStack>
-                      {t("SETNEWPASSWORD")}
+                      {t("USER_SET_NEW_PASSWORD")}
                       <ChevronRightIcon size="xs" />
                     </HStack>
                   </Button>

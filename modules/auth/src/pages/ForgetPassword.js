@@ -72,7 +72,10 @@ export default function ForgetPassword() {
       typeof credentials?.confirm_password === "undefined" ||
       credentials?.confirm_password === ""
     ) {
-      arr = { ...arr, confirm_password: t("CONFIRMPASSWORD_IS_REQUIRED") };
+      arr = {
+        ...arr,
+        confirm_password: t("USER_CONFIRM_PASSWORD_IS_REQUIRED"),
+      };
     }
 
     setErrors(arr);
@@ -155,16 +158,16 @@ export default function ForgetPassword() {
         space="50px"
       >
         <H1 color="textMaroonColor.400" textAlign="center" pt="6">
-          {t("RESET_PASSWORD")}
+          {t("USER_RESET_PASSWORD")}
         </H1>
         <Image
           alignSelf="center"
           source={{
-            uri: "/login.png",
+            uri: "/forget_password.png",
           }}
           alt="reset password"
           width="240"
-          height="144"
+          height="215"
         />
         <VStack space={5} p="5">
           {"alert" in errors ? (
@@ -184,7 +187,7 @@ export default function ForgetPassword() {
               </VStack>
             </Alert>
           ) : (
-            <></>
+            <React.Fragment />
           )}
           <VStack space="4">
             <FormControl isRequired isInvalid={"username" in errors}>
@@ -216,7 +219,7 @@ export default function ForgetPassword() {
                   {errors.username}
                 </FormControl.ErrorMessage>
               ) : (
-                <></>
+                <React.Fragment />
               )}
             </FormControl>
             {visible ? (
@@ -243,11 +246,11 @@ export default function ForgetPassword() {
                     {errors.otp}
                   </FormControl.ErrorMessage>
                 ) : (
-                  <></>
+                  <React.Fragment />
                 )}
               </FormControl>
             ) : (
-              <></>
+              <React.Fragment />
             )}
             {credentials?.otp ? (
               <VStack space={4}>
@@ -275,10 +278,14 @@ export default function ForgetPassword() {
                         fontWeight: 500,
                       }}
                     >
-                      {!credentials?.password ? errors.password : <></>}
+                      {!credentials?.password ? (
+                        errors.password
+                      ) : (
+                        <React.Fragment />
+                      )}
                     </FormControl.ErrorMessage>
                   ) : (
-                    <></>
+                    <React.Fragment />
                   )}
                 </FormControl>
 
@@ -292,7 +299,7 @@ export default function ForgetPassword() {
                     bg="white"
                     variant="unstyled"
                     p={"10px"}
-                    placeholder={t("ENTER") + " " + t("CONFIRM_PASSWORD")}
+                    placeholder={t("ENTER") + " " + t("USER_CONFIRM_PASSWORD")}
                     type="password"
                     onChange={(e) =>
                       setCredentials({
@@ -312,16 +319,16 @@ export default function ForgetPassword() {
                       {!credentials?.confirm_password ? (
                         errors.confirm_password
                       ) : (
-                        <></>
+                        <React.Fragment />
                       )}
                     </FormControl.ErrorMessage>
                   ) : (
-                    <></>
+                    <React.Fragment />
                   )}
                 </FormControl>
               </VStack>
             ) : (
-              <></>
+              <React.Fragment />
             )}
           </VStack>
           {OtpValue ? (

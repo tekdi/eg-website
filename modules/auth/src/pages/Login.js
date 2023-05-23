@@ -134,7 +134,7 @@ export default function Login() {
               </VStack>
             </Alert>
           ) : (
-            <></>
+            <React.Fragment />
           )}
           <VStack space="2">
             <FormControl isRequired isInvalid={"username" in errors}>
@@ -169,7 +169,7 @@ export default function Login() {
                   {errors.username}
                 </FormControl.ErrorMessage>
               ) : (
-                <></>
+                <React.Fragment />
               )}
             </FormControl>
             <FormControl isRequired isInvalid={"password" in errors}>
@@ -204,7 +204,7 @@ export default function Login() {
                   {errors.password}
                 </FormControl.ErrorMessage>
               ) : (
-                <></>
+                <React.Fragment />
               )}
             </FormControl>
           </VStack>
@@ -220,7 +220,7 @@ export default function Login() {
               }}
             >
               {" "}
-              {t("FORGET_PASSWORD")}
+              {t("USER_FORGET_PASSWORD")}
             </H2>
           </BodyMedium>
         </VStack>

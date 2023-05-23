@@ -52,27 +52,27 @@ import {
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
+// const CustomR = ({ options, value, onChange, required }) => {
+//   return (
+//     <CustomRadio
+//       items={options?.enumOptions}
+//       value={value}
+//       required={required}
+//       onChange={(value) => onChange(value)}
+//     />
+//   );
+// };
 const handleResendOtp = async (mobile) => {
   const sendotpBody = {
     mobile: mobile.toString(),
-    reason: "verify-mobile",
+    reason: "verify_mobile",
   };
   const datas = await authRegistryService.sendOtp(sendotpBody);
+  localStorage.setItem("hash", datas?.data?.hash);
 };
 
 const CustomOTPBox = ({ value, onChange, required, ...props }) => {
   const [otp, setOtp] = React.useState(new Array(6).fill(""));
-
   const [timer, setTimer] = React.useState(30);
   const timeOutCallback = React.useCallback(
     () => setTimer((currTimer) => currTimer - 1),
@@ -127,7 +127,7 @@ const CustomOTPBox = ({ value, onChange, required, ...props }) => {
               handleResendOtp(props?.schema?.mobile);
             }}
           >
-            Resend OTP
+            {timer <= 1 ? "Resend OTP" : <React.Fragment />}
           </H4>
         </>
       </HStack>
@@ -135,38 +135,38 @@ const CustomOTPBox = ({ value, onChange, required, ...props }) => {
   );
 };
 
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
+// const RadioBtn = ({ options, value, onChange, required }) => {
+//   const items = options?.enumOptions;
+//   return (
+//     <Radio.Group
+//       name="exampleGroup"
+//       defaultValue="1"
+//       accessibilityLabel="pick a size"
+//       value={value}
+//       onChange={(value) => onChange(value)}
+//     >
+//       <Stack
+//         direction={{
+//           base: "column",
+//           md: "row",
+//         }}
+//         alignItems={{
+//           base: "flex-start",
+//           md: "center",
+//         }}
+//         space={4}
+//         w="75%"
+//         maxW="300px"
+//       >
+//         {items.map((item) => (
+//           <Radio key={item?.value} value={item?.value} size="lg">
+//             {item?.label}
+//           </Radio>
+//         ))}
+//       </Stack>
+//     </Radio.Group>
+//   );
+// };
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -811,7 +811,7 @@ export default function App({ facilitator, ip, onClick }) {
       } else if (page === "2") {
         const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
           ...newFormData,
-          hash: verifyOtpData?.data?.hash,
+          hash: localStorage.getItem("hash"),
         });
         setverifyOtpData(otpData);
         if (status === true) {
@@ -836,13 +836,12 @@ export default function App({ facilitator, ip, onClick }) {
         } else if (status === false) {
           const newErrors = {
             otp: {
-              __errors: [t("ENTER_VALID_OTP")],
+              __errors: [t("USER_ENTER_VALID_OTP")],
             },
           };
           setErrors(newErrors);
         } else {
           setSchema(newSchema);
-          // setverifyOtpData(otpData);
         }
       } else if (page <= 1) {
         success = true;
