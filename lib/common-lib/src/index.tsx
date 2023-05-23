@@ -23,6 +23,7 @@ import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
 import FloatingInput from './components/FloatingInput'
+import CheatSheet from './components/CheatSheet'
 
 export {
   AppBar,
@@ -51,7 +52,8 @@ export {
   t,
   changeLanguage,
   Camera,
-  FloatingInput
+  FloatingInput,
+  CheatSheet
 }
 
 export * from './services/RestClient'
@@ -60,3 +62,5 @@ export * from './components/helper'
 export * from './services/Telemetry'
 export * from './components/calender'
 export * from './components/layout/HeaderTags/index'
+export * from './components/admin_component'
+export * from './components/frontend_component'
