@@ -9,7 +9,7 @@ import orientationScreen from "pages/front-end/orientation/orientationScreen";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AdharOTP from "pages/front-end/AadhaarKyc/AadhaarOTP";
 import AdharSuccess from "pages/front-end/AadhaarKyc/AadhaarSuccess";
-import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadharStartKyc";
+import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -20,19 +20,19 @@ export default [
   { path: "/", component: AdminHome },
 
   {
-    path: '/adharStart',
+    path: '/aadhaarStart',
     component: AadhaarStartKyc,
   },
   {
-    path: '/adharNumber',
+    path: '/adhaarNumber',
     component: AdharKyc,
   },
   {
-    path: '/adharOTP',
+    path: '/aadhaarOTP',
     component: AdharOTP,
   },
   {
-    path: '/adharSuccess',
+    path: '/aadhaarSuccess',
     component: AdharSuccess,
   },
 
