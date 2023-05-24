@@ -21,14 +21,14 @@ export default function AdharKyc() {
     const headers = {
       // "x-client-id": "401c3159-bbfe-438d-a62c-eb4ff8bb8c10",
       // "x-client-secret": "b066a8b1-c3f9-432d-ae74-79489047ec87",
-      "x-client-id": process.env.x-client-id,
-      "x-client-secret": process.env.x-client-secret,
+      "x-client-id": process.env.REACT_APP_AADHAAR_CLIENT_ID,
+      "x-client-secret": process.env.REACT_APP_AADHAAR_CLIENT_SECRET,
 
     };
 
     const getCaptcha = (id) => {
       // const url2 = `https://dg-sandbox.setu.co/api/okyc/${id}/initiate/`;
-      const url2=process.env.AADHAR_URL2
+      const url2 = `${process.env.REACT_APP_AADHAAR_URL}/${id}/initiate/`
       const options = {
         method: "GET",
         headers: headers,
@@ -48,8 +48,9 @@ export default function AdharKyc() {
     };
 
     // const url1 = "https://dg-sandbox.setu.co/api/okyc/";
+    const url1 = `${process.env.REACT_APP_AADHAAR_URL}/`
 
-    fetch(process.env.Aadhar_url1, {
+    fetch(url1, {
       method: "POST",
       headers: headers,
     })
@@ -70,12 +71,12 @@ export default function AdharKyc() {
     // setLoading2(true);
 
     // const url = `https://dg-sandbox.setu.co/api/okyc/${kycReqID}/verify`;
-    const url=process.env.AADHAR_URL;
+    const url = `${process.env.REACT_APP_AADHAAR_URL}/${kycReqID}/verify`;
 
     const headers = {
       "Content-Type": "application/json",
-      "x-client-id": process.env.x-client-id,
-      "x-client-secret": process.env.x-client-secret,
+      "x-client-id": process.env.REACT_APP_AADHAAR_CLIENT_ID,
+      "x-client-secret": process.env.REACT_APP_AADHAAR_CLIENT_SECRET,
     };
 
     fetch(url, {
@@ -102,6 +103,8 @@ export default function AdharKyc() {
         // setLoading2(false);
       });
   };
+
+  console.log('env : ', process.env)
 
   return (
     <div className="adharVerify1">

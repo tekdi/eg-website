@@ -4,8 +4,12 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import "./AadhaarKyc.css";
 import { Button, Text } from "native-base";
 import { t } from "@shiksha/common-lib";
+import { useNavigate } from "react-router-dom";
 
 const AadhaarStartKyc = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="adharVerifyStart">
       <div className="content">
@@ -18,6 +22,9 @@ const AadhaarStartKyc = () => {
           bg="gray.100"
           borderRadius="full"
           mt="10"
+          onPress={() => {
+            navigate('/aadhaarNumber')
+          }}
         >
           <Text fontSize="md" fontWeight="medium" color="gray.600">Aadhaar Number KYC</Text>
         </Button>
@@ -38,6 +45,9 @@ const AadhaarStartKyc = () => {
           bg="gray.100"
           borderRadius="full"
           mt="8"
+          onPress={() => {
+            navigate('/aadhaarQrScanner')
+          }}
         >
           <Text fontSize="md" fontWeight="medium" color="gray.600">Scan QR Code</Text>
         </Button>
@@ -59,6 +69,9 @@ const AadhaarStartKyc = () => {
           borderRadius="full"
           mt="8"
           py="3"
+          onPress={() => {
+            navigate('/aadhaarManualUpload')
+          }}
         >
           <Text fontSize="md" fontWeight="medium" color="white">{t("MANUAL_AADHAAR_UPLOAD")}</Text>
         </Button>

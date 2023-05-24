@@ -10,6 +10,8 @@ import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AdharOTP from "pages/front-end/AadhaarKyc/AadhaarOTP";
 import AdharSuccess from "pages/front-end/AadhaarKyc/AadhaarSuccess";
 import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
+import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
+import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -24,7 +26,7 @@ export default [
     component: AadhaarStartKyc,
   },
   {
-    path: '/adhaarNumber',
+    path: '/aadhaarNumber',
     component: AdharKyc,
   },
   {
@@ -34,6 +36,14 @@ export default [
   {
     path: '/aadhaarSuccess',
     component: AdharSuccess,
+  },
+  {
+    path: '/aadhaarManualUpload',
+    component: ManualUpload,
+  },
+  {
+    path: '/aadhaarQrScanner',
+    component: QrScannerKyc,
   },
 
   // { path: "*", component: NotFound },
