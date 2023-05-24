@@ -61,12 +61,12 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const { error } = await login(credentials);
-      if (error) {
-        setErrors({ alert: t(error) });
-      } else {
+      const { user, token, error } = await login(credentials);
+      if (!error) {
         navigate("/");
         navigate(0);
+      } else {
+        setErrors({ alert: t(error) });
       }
     } else {
       logout();
