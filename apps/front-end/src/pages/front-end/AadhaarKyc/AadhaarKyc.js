@@ -91,8 +91,8 @@ export default function AdharKyc() {
       .then((res) => {
         console.log("submit adhar res -> ", res);
 
-        if (res.code === "otp_sent") {
-          localStorage.setItem("aadhaarNumber", data.aadhaarNumber);
+        if (res.code === "otp_sent" || res.error?.code === 'send_otp_failed') {
+          localStorage.setItem("aadhaarNumber", data.aadhaarNumber || "");
           navigate("/AdharOTP");
         } else {
           alert(res.message);

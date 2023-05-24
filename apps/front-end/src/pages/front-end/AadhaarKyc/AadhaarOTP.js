@@ -1,5 +1,7 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
+import CloseIcon from '@mui/icons-material/Close';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Button, Input, Text } from "native-base";
 import "./AadhaarKyc.css";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +14,8 @@ export default function AdharOTP() {
     otpNumber: "",
     securityCode: "",
   });
+  const [otpFailedPopup, setOtpFailedPopup] = React.useState(localStorage.getItem("aadhaarNumber") ? false : true);
+
   
 
   const handleSubmit = () => {
@@ -128,6 +132,61 @@ export default function AdharOTP() {
           <Text color="white">{t("CONTINUE")}</Text>
         </Button>
       </div>
+
+      {
+        otpFailedPopup ? (
+          <div className="otp_failed_popup">
+            <div className="container">
+              <button className="btn-close"
+                onClick={() => {
+                  setOtpFailedPopup(false);
+                }}
+              >
+                <CloseIcon />
+              </button>
+
+              <p>Aadhaar KYC Verification Failed</p>
+
+              <Button
+                variant={"solid"}
+                py="3.5"
+                rounded={"full"}
+                bg={"#2D142C"}
+                mt="8"
+                mb="5"
+                onPress={() => {
+                  navigate(-1);
+                }}
+              >
+                <Text fontSize={"lg"} color="white" fontWeight={"semibold"}>Go Back</Text>
+              </Button>
+
+              <Button
+                variant={"outline"}
+                py="3"
+                rounded={"full"}
+                borderColor={"#2D142C"}
+                onPress={() => {
+                  navigate('/aadhaarNumber')
+                }}
+              >
+                <Text fontSize={"lg"} color="#2D142C" fontWeight={"bold"}>Retry Aadhaar Number KYC</Text>
+              </Button>
+              
+              <Text
+                color="red.600"
+                display="flex"
+                alignItems="center"
+                gap="1"
+                mt="2"
+              >
+                <ErrorOutlineIcon fontSize="small" />
+                <span style={{ fontSize: "13px" }}>Mobile Number is not linked to Aadhaar Card</span>
+              </Text>
+            </div>
+          </div>
+        ) : null
+      }
     </div>
   );
 }
