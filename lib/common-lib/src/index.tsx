@@ -23,8 +23,13 @@ import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
 import FloatingInput from './components/FloatingInput'
+import * as AdminTypo from "./components/admin_component"
+import * as FrontEndTypo from "./components/frontend_component"
+import CheatSheet from './components/CheatSheet'
 
 export {
+  AdminTypo,
+  FrontEndTypo,
   AppBar,
   Header,
   Footer,
@@ -51,7 +56,8 @@ export {
   t,
   changeLanguage,
   Camera,
-  FloatingInput
+  FloatingInput,
+  CheatSheet
 }
 
 export * from './services/RestClient'

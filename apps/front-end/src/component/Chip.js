@@ -28,7 +28,7 @@ export function ChipStatus({ status, ...props }) {
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "screened":
-        setColor("green.300");
+        setColor("PrerakScreenedColor");
         setNewStatus(t("SCREENED"));
         break;
       case "rejected":
@@ -75,6 +75,7 @@ export function ChipStatus({ status, ...props }) {
       bg={color}
       label={newStatus}
       _text={{ textTransform: "capitalize" }}
+      rounded="sm"
       {...props}
     />
   );
