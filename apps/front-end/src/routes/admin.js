@@ -17,7 +17,7 @@ export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
-  { path: "/orientation", component: orientationScreen }, 
+  { path: "/orientation", component: orientationScreen },
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
 

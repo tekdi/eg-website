@@ -27,29 +27,29 @@ import {
   Radio,
   Checkbox,
   Switch,
-  Badge
+  Badge,
 } from "native-base";
 import React from "react";
 let switchAttendance = false;
 
 const stylesheet = {
-  modalxxl:{
-    maxWidth:"950px",
-    width:"100%",
-    height:"100%"
+  modalxxl: {
+    maxWidth: "950px",
+    width: "100%",
+    height: "100%",
   },
 };
 const customStyles = {
   headCells: {
     style: {
       background: "#E0E0E0",
-      fontSize:"14px",
-      color:"#616161"
+      fontSize: "14px",
+      color: "#616161",
     },
   },
   cells: {
     style: {
-     padding:"15px 0"
+      padding: "15px 0",
     },
   },
 };
@@ -75,7 +75,9 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text textOverflow="ellipsis">{row?.first_name + " " + row.last_name}</Text>
+        <Text textOverflow="ellipsis">
+          {row?.first_name + " " + row.last_name}
+        </Text>
       </HStack>
     ),
     sortable: false,
@@ -148,9 +150,9 @@ const scheduleCandidates = (e) => [
     name: t("INVITE_STATUS"),
     selector: (row) => <Text color={"#00D790"}>Accepted</Text>,
     sortable: false,
-      attr: "email",
-    },
-    {
+    attr: "email",
+  },
+  {
     name: t("MARK_ATTENDANCE"),
     selector: (row) => (
       <>
@@ -231,9 +233,7 @@ export default function orientationScreen() {
 const Page1 = ({ onShowScreen }) => {
   return (
     <Box>
-      <Button  onPress={onShowScreen}>
-        {t("APPLY_NOW")}
-      </Button>
+      <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
     </Box>
   );
 };
@@ -266,55 +266,63 @@ const Page2 = ({ onClick }) => {
   };
 
   return (
-      <Modal isOpen={true} onClose={false} safeAreaTop={true}>
-        <Modal.Content  {...stylesheet.modalxxl}>
-          <Modal.CloseButton />
-          <Modal.Header p="5" borderBottomWidth="0">
-            <HStack justifyContent={"center"}>
-              <H1 color="textGreyColor.500" fontSize="sm"> {t("SELECT_CANDIDATE")}</H1>
-            </HStack>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <DataTable
-              columns={[...columns()]}
-              data={data}
-              customStyles={customStyles}
-              subHeader
-              persistTableHead
-              selectableRows
-              progressPending={loading}
-              pagination
-              paginationServer
-              paginationTotalRows={paginationTotalRows}
-              onSelectedRowsChange={handleSelectRow}
-              // onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
-            />
-          </Modal.Body>
+    <Modal isOpen={true} onClose={false} safeAreaTop={true}>
+      <Modal.Content {...stylesheet.modalxxl}>
+        <Modal.CloseButton />
+        <Modal.Header p="5" borderBottomWidth="0">
+          <HStack justifyContent={"center"}>
+            <H1 color="textGreyColor.500" fontSize="sm">
+              {" "}
+              {t("SELECT_CANDIDATE")}
+            </H1>
+          </HStack>
+        </Modal.Header>
+        <Modal.Body p="5" pb="10">
+          <DataTable
+            columns={[...columns()]}
+            data={data}
+            customStyles={customStyles}
+            subHeader
+            persistTableHead
+            selectableRows
+            progressPending={loading}
+            pagination
+            paginationServer
+            paginationTotalRows={paginationTotalRows}
+            onSelectedRowsChange={handleSelectRow}
+            // onChangeRowsPerPage={(e) => setLimit(e)}
+            // onChangePage={(e) => setPage(e)}
+          />
+        </Modal.Body>
 
-          <Modal.Footer justifyContent={"space-between"}>
-              <Button variant="blueOutlineBtn" px="5" py="1" shadow="BlueOutlineShadow">
-                {t("CANCEL")}
-              </Button>
+        <Modal.Footer justifyContent={"space-between"}>
+          <Button
+            variant="blueOutlineBtn"
+            px="5"
+            py="1"
+            shadow="BlueOutlineShadow"
+          >
+            {t("CANCEL")}
+          </Button>
 
-              <Button
-                onPress={onClick}
-                shadow="BlueFillShadow"
-                variant={"blueFillButton"}
-                endIcon={
-                  <IconByName
-                    isDisabled
-                    name="ArrowRightSLineIcon"
-                    color="gray.300"
-                    _icon={{ size: "15" }}
-                  />
-                }
-              >
-               <Text color="white">{t("SELECT_CANDIDATE")}</Text> 
-              </Button>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
+          <Button
+            onPress={onClick}
+            shadow="BlueFillShadow"
+            variant={"blueFillButton"}
+            endIcon={
+              <IconByName
+                isDisabled
+                name="ArrowRightSLineIcon"
+                color="gray.300"
+                _icon={{ size: "15" }}
+              />
+            }
+          >
+            <Text color="white">{t("SELECT_CANDIDATE")}</Text>
+          </Button>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
   );
 };
 
@@ -384,8 +392,15 @@ const Page3 = () => {
               <H1>{t("PRERAK_ORIENTATION")}</H1>
             </HStack>
             <HStack>
-              <Button variant={"blueOutlineBtn"} shadow="BlueOutlineShadow" onPress={() => setModal(true)}>
-              <Text color="blueText.400" bold fontSize="lg"> {t("SCHEDULE_EVENT")} +</Text>
+              <Button
+                variant={"blueOutlineBtn"}
+                shadow="BlueOutlineShadow"
+                onPress={() => setModal(true)}
+              >
+                <Text color="blueText.400" bold fontSize="lg">
+                  {" "}
+                  {t("SCHEDULE_EVENT")} +
+                </Text>
               </Button>
             </HStack>
           </HStack>
@@ -398,32 +413,46 @@ const Page3 = () => {
           >
             <VStack m={"15px"}>
               <HStack justifyContent={"space-between"}>
-                <Text  color="textGreyColor.800" bold fontSize="sm">{t("ORIENTATION_SHEDULE")}</Text>
-                <Button variant={"blueOutlineBtn"} onPress={() => setShowEditModal(true)} shadow="BlueOutlineShadow">{t("EDIT_DETAILS")}</Button>
+                <Text color="textGreyColor.800" bold fontSize="sm">
+                  {t("ORIENTATION_SHEDULE")}
+                </Text>
+                <Button
+                  variant={"blueOutlineBtn"}
+                  onPress={() => setShowEditModal(true)}
+                  shadow="BlueOutlineShadow"
+                >
+                  {t("EDIT_DETAILS")}
+                </Button>
               </HStack>
 
-              <HStack  space={"3"} fontSize={"14px"}>
+              <HStack space={"3"} fontSize={"14px"}>
                 <IconByName
                   isDisabled
                   name="TimeLineIcon"
                   color="gray"
                   _icon={{ size: "15" }}
                 />
-                <Text color="textGreyColor.800" fontSize="sm">16th April, 11:00 to 12:00</Text>
+                <Text color="textGreyColor.800" fontSize="sm">
+                  16th April, 11:00 to 12:00
+                </Text>
                 <IconByName
                   isDisabled
                   name="MapPinLineIcon"
                   color="gray"
                   _icon={{ size: "15" }}
                 />
-                <Text color="textGreyColor.800" fontSize="sm">Jaipur, 412213</Text>
+                <Text color="textGreyColor.800" fontSize="sm">
+                  Jaipur, 412213
+                </Text>
                 <IconByName
                   isDisabled
                   name="UserLineIcon"
                   color="gray"
                   _icon={{ size: "15" }}
                 />
-                <Text color="textGreyColor.800" fontSize="sm">Master Trainer -</Text>
+                <Text color="textGreyColor.800" fontSize="sm">
+                  Master Trainer -
+                </Text>
                 <Box
                   bgColor={"#FFFFFF"}
                   height={"29px"}
@@ -431,7 +460,7 @@ const Page3 = () => {
                   borderRadius={"10px"}
                   p={"3px"}
                 >
-                   <Badge alignSelf="center"> Prakash Wagh</Badge>
+                  <Badge alignSelf="center"> Prakash Wagh</Badge>
                 </Box>
               </HStack>
             </VStack>
@@ -445,7 +474,9 @@ const Page3 = () => {
                   color="gray"
                   _icon={{ size: "35" }}
                 />
-                <Text fontSize={"24px"} color="textGreyColor.800" bold>Candidates (25)</Text>
+                <Text fontSize={"24px"} color="textGreyColor.800" bold>
+                  Candidates (25)
+                </Text>
               </HStack>
               <HStack>
                 <Button
@@ -464,7 +495,10 @@ const Page3 = () => {
                     />
                   }
                 >
-                 <Text color="blueText.400" fontSize="sm"> {t("MARK_ATTENDANCE_ALL")}</Text>
+                  <Text color="blueText.400" fontSize="sm">
+                    {" "}
+                    {t("MARK_ATTENDANCE_ALL")}
+                  </Text>
                 </Button>
               </HStack>
             </HStack>
@@ -479,7 +513,10 @@ const Page3 = () => {
             <Modal.Content rounded="2xl" bg="translate">
               <Modal.CloseButton />
               <Modal.Header p="1" borderBottomWidth="0" bg="white">
-                <H1 textAlign="center" color="textGreyColor.500"> {t("EDIT_DETAILS")}</H1>
+                <H1 textAlign="center" color="textGreyColor.500">
+                  {" "}
+                  {t("EDIT_DETAILS")}
+                </H1>
               </Modal.Header>
               <Modal.Body p="1" pb="10" bg="white">
                 <VStack space="5">
@@ -507,7 +544,9 @@ const Page3 = () => {
                         _icon={{ size: "35" }}
                       />
                     )}
-                    <H1 fontSize="sm" bold color="textGreyColor.800">{rowData?.first_name + " " + rowData?.last_name}</H1>
+                    <H1 fontSize="sm" bold color="textGreyColor.800">
+                      {rowData?.first_name + " " + rowData?.last_name}
+                    </H1>
                   </HStack>
 
                   <HStack alignItems="center" space={2}>
@@ -561,7 +600,9 @@ const Page3 = () => {
                           _icon={{ size: "25" }}
                         />
 
-                        <H4 color="textGreyColor.100">{t("MARK_ATTENDANCE")}</H4>
+                        <H4 color="textGreyColor.100">
+                          {t("MARK_ATTENDANCE")}
+                        </H4>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Radio.Group
                             flexDirection={"row"}
@@ -574,11 +615,28 @@ const Page3 = () => {
                               setAttendance(nextValue);
                             }}
                           >
-                            <Radio value="present" my={1} color="textGreyColor.800" fontSize="10px">
-                            <Text fontSize="14px" color="textGreyColor.800"> Present</Text>
+                            <Radio
+                              value="present"
+                              my={1}
+                              color="textGreyColor.800"
+                              fontSize="10px"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                {" "}
+                                Present
+                              </Text>
                             </Radio>
-                            <Radio value="absent" my={1} ml="2" color="textGreyColor.800" fontSize="sm">
-                            <Text fontSize="14px" color="textGreyColor.800"> Absent</Text>
+                            <Radio
+                              value="absent"
+                              my={1}
+                              ml="2"
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                {" "}
+                                Absent
+                              </Text>
                             </Radio>
                           </Radio.Group>
                         </HStack>
@@ -591,7 +649,9 @@ const Page3 = () => {
                           color="gray.400"
                           _icon={{ size: "25" }}
                         />
-                        <H4 color="textGreyColor.100">{t("COMPLETE_AADHAR_KYC")}</H4>
+                        <H4 color="textGreyColor.100">
+                          {t("COMPLETE_AADHAR_KYC")}
+                        </H4>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Radio.Group
                             flexDirection={"row"}
@@ -604,14 +664,39 @@ const Page3 = () => {
                               setAadharKYC(nextValue);
                             }}
                           >
-                            <Radio value="QRcodescan" my={1} color="textGreyColor.800" fontSize="sm">
-                            <Text fontSize="14px" color="textGreyColor.800">QR code scan</Text>
+                            <Radio
+                              value="QRcodescan"
+                              my={1}
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                QR code scan
+                              </Text>
                             </Radio>
-                            <Radio value="aadharofflineKYC" my={1} ml="2" color="textGreyColor.800" fontSize="sm">
-                            <Text fontSize="14px" color="textGreyColor.800"> Aadhaar Offline KYC</Text>
+                            <Radio
+                              value="aadharofflineKYC"
+                              my={1}
+                              ml="2"
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                {" "}
+                                Aadhaar Offline KYC
+                              </Text>
                             </Radio>
-                            <Radio value="manualAadharUpload" my={1} ml="2" color="textGreyColor.800" fontSize="sm">
-                            <Text fontSize="14px" color="textGreyColor.800"> Manual Aadhaar Upload</Text>
+                            <Radio
+                              value="manualAadharUpload"
+                              my={1}
+                              ml="2"
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                {" "}
+                                Manual Aadhaar Upload
+                              </Text>
                             </Radio>
                           </Radio.Group>
                         </HStack>
@@ -625,7 +710,9 @@ const Page3 = () => {
                             color="gray.400"
                             _icon={{ size: "25" }}
                           />
-                          <H4 mt={"12px"} color="textGreyColor.100">{t("DOCUMENT_VERIFICATION")}</H4>
+                          <H4 mt={"12px"} color="textGreyColor.100">
+                            {t("DOCUMENT_VERIFICATION")}
+                          </H4>
                           <Stack
                             direction={{
                               base: "column",
@@ -634,13 +721,30 @@ const Page3 = () => {
                             space={3}
                             alignItems="flex-start"
                           >
-                            <Checkbox value="qualification" color="textGreyColor.800" fontSize="sm">
-                            <Text fontSize="14px" color="textGreyColor.800"> Qualification Certificate</Text>
+                            <Checkbox
+                              value="qualification"
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                {" "}
+                                Qualification Certificate
+                              </Text>
                             </Checkbox>
-                            <Checkbox value="volunteer" color="textGreyColor.800" fontSize="sm">
-                            <Text fontSize="14px" color="textGreyColor.800">Volunteer Proof</Text>
+                            <Checkbox
+                              value="volunteer"
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                Volunteer Proof
+                              </Text>
                             </Checkbox>
-                            <Checkbox value="work" color="textGreyColor.800"><Text fontSize="14px" color="textGreyColor.800">Work Proof</Text></Checkbox>
+                            <Checkbox value="work" color="textGreyColor.800">
+                              <Text fontSize="14px" color="textGreyColor.800">
+                                Work Proof
+                              </Text>
+                            </Checkbox>
                           </Stack>
                         </HStack>
                       </HStack>
@@ -653,10 +757,20 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"end"}
                 >
-                  <Button variant="blueOutlineBtn" shadow="BlueOutlineShadow" color="blueText.400">
+                  <Button
+                    variant="blueOutlineBtn"
+                    shadow="BlueOutlineShadow"
+                    color="blueText.400"
+                  >
                     {t("CANCEL")}
                   </Button>
-                  <Button variant="blueFillButton" px="8" shadow="BlueFillShadow"><Text color="white">{t("SAVE")}</Text></Button>
+                  <Button
+                    variant="blueFillButton"
+                    px="8"
+                    shadow="BlueFillShadow"
+                  >
+                    <Text color="white">{t("SAVE")}</Text>
+                  </Button>
                 </HStack>
               </Modal.Body>
             </Modal.Content>
@@ -668,7 +782,11 @@ const Page3 = () => {
             safeAreaTop={true}
             size={"full"}
           >
-            <Modal.Content rounded="2xl" bg="translate" {...stylesheet.modalxxl}>
+            <Modal.Content
+              rounded="2xl"
+              bg="translate"
+              {...stylesheet.modalxxl}
+            >
               <Modal.CloseButton />
               <Modal.Header
                 p="5"
@@ -676,22 +794,35 @@ const Page3 = () => {
                 bg="white"
                 textAlign={"left"}
               >
-                <H1 fontSize="sm" color="textGreyColor.900" bold> {t("MARK_ATTENDANCE_ORIENTATION")}</H1>
+                <H1 fontSize="sm" color="textGreyColor.900" bold>
+                  {" "}
+                  {t("MARK_ATTENDANCE_ORIENTATION")}
+                </H1>
               </Modal.Header>
               <Modal.Body p="3" pb="10" bg="white">
                 <HStack justifyContent={"space-between"}>
                   <HStack space={"10"} ml="15px">
-                    <Text color="textGreyColor.550" fontSize="sm" bold>Present</Text> 0
-                    <Text color="textGreyColor.550" fontSize="sm" bold>Absent</Text> 0
+                    <Text color="textGreyColor.550" fontSize="sm" bold>
+                      Present
+                    </Text>{" "}
+                    0
+                    <Text color="textGreyColor.550" fontSize="sm" bold>
+                      Absent
+                    </Text>{" "}
+                    0
                   </HStack>
-                  <HStack><Text fontSize="sm">Candidates - 1/25 </Text></HStack>
+                  <HStack>
+                    <Text fontSize="sm">Candidates - 1/25 </Text>
+                  </HStack>
                 </HStack>
                 <Stack>
-                  <Text my="15px" color="textGreyColor.100">{t("ATTENDANCE_CAMERA_SUBTITLE")}</Text>
+                  <Text my="15px" color="textGreyColor.100">
+                    {t("ATTENDANCE_CAMERA_SUBTITLE")}
+                  </Text>
                 </Stack>
                 {/* {cameraModal && ( */}
                 <Camera
-                height="600px"
+                  height="600px"
                   {...{
                     cameraModal,
                     setCameraModal,
@@ -703,11 +834,17 @@ const Page3 = () => {
                 />
                 {/* )} */}
               </Modal.Body>
-              <Modal.Footer  justifyContent={"center"}>
-              <Button color="blueText.400" variant="blueOutlineBtn" shadow="BlueOutlineShadow">
-                    {t("MARK_ABSENT")}
-                  </Button>
-                  <Button variant="secondary" ml="4" px="5">{t("NEXT")}</Button>
+              <Modal.Footer justifyContent={"center"}>
+                <Button
+                  color="blueText.400"
+                  variant="blueOutlineBtn"
+                  shadow="BlueOutlineShadow"
+                >
+                  {t("MARK_ABSENT")}
+                </Button>
+                <Button variant="secondary" ml="4" px="5">
+                  {t("NEXT")}
+                </Button>
               </Modal.Footer>
             </Modal.Content>
           </Modal>
