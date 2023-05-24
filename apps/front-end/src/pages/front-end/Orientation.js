@@ -3,7 +3,7 @@ import {
   capture,
   IconByName,
   AdminLayout as Layout,
-  ProgressBar,
+  BoxBlue,
   H1,
   t,
 } from "@shiksha/common-lib";
