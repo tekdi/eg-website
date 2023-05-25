@@ -309,5 +309,8 @@
   "QUALIFICATION_PROOF":"Qualification Proof",
   "WORK_EXPERIENCE_PROOF":"Work Experience Proof",
   "VOLUNTEER_EXPERIENCE_PROOF":"Volunteer Experience Proof",
-  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password"
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password",
+  "ORIENTATION": "Orientation",
+  "TRAINING": "Training",
+  "CAMP":"Camp"
 }
