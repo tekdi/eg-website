@@ -27,6 +27,7 @@ import {
   Input,
   ChevronRightIcon,
   useToast,
+  Image
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
