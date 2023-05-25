@@ -6,10 +6,6 @@ const LoginComponent = React.lazy(() => import("auth/Login"));
 import PrerakProfileDetailsView from "pages/front-end/PrerakProfileDetailsView";
 import Orientation from "pages/front-end/Orientation";
 import AgLearnerProfileView from "pages/front-end/AgLearnerProfileView";
-import AgProfileMissingDataWarning from "pages/front-end/AgProfileMissingDataWarning";
-import EnrollmentDetailsWarning from "pages/front-end/EnrollmentDetailsWarning";
-import AgEducationWarning from "pages/front-end/AgEducationWarning";
-
 export default [
   {
     path: "/facilitator-self-onboarding/:id",
@@ -27,7 +23,4 @@ export default [
   { path: "/prerakprofiledetails", component: PrerakProfileDetailsView },
   { path: "/orientation", component: Orientation },
   { path: "/agprofile", component: AgLearnerProfileView },
-  { path: "/agprofilemissing", component: AgProfileMissingDataWarning },
-  { path: "/enr", component: EnrollmentDetailsWarning },
-  { path: "/edu", component: AgEducationWarning },
 ];
