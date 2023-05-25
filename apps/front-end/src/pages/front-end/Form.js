@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
@@ -9,12 +9,14 @@ import {
   Center,
   HStack,
   Image,
+  Input,
   Modal,
   VStack,
 } from "native-base";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
+  authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
   Camera,
@@ -27,8 +29,11 @@ import {
   BodySmall,
   filtersByObject,
   H2,
+  H4,
   getBase64,
   BodyMedium,
+  changeLanguage,
+  sendAndVerifyOtp,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +51,75 @@ import {
   ArrayFieldTemplate,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
+
+const handleResendOtp = async (mobile) => {
+  const sendotpBody = {
+    mobile: mobile.toString(),
+    reason: "verify_mobile",
+  };
+  const datas = await authRegistryService.sendOtp(sendotpBody);
+  localStorage.setItem("hash", datas?.data?.hash);
+};
+
+const CustomOTPBox = ({ value, onChange, required, ...props }) => {
+  const [otp, setOtp] = React.useState(new Array(6).fill(""));
+  const [timer, setTimer] = React.useState(30);
+  const timeOutCallback = React.useCallback(
+    () => setTimer((currTimer) => currTimer - 1),
+    []
+  );
+
+  useEffect(() => {
+    timer > 0 && setTimeout(timeOutCallback, 1000);
+  }, [timer, timeOutCallback]);
+
+  const resetTimer = () => {
+    if (!timer) {
+      setTimer(30);
+    }
+  };
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return false;
+    const val = [...otp.map((d, idx) => (idx === index ? element.value : d))];
+    setOtp(val);
+    onChange(val.join(""));
+    if (element.nextSibling) {
+      element.nextSibling.nextSibling.focus();
+    }
+  };
+
+  return (
+    <VStack>
+      <HStack space={2}>
+        {otp.map((data, index) => {
+          return (
+            <Input
+              type="data"
+              name="otp"
+              maxLength="1"
+              key={index}
+              value={data}
+              onChange={(e) => handleChange(e.target, index)}
+              onFocus={(e) => e.target.select()}
+            />
+          );
+        })}
+      </HStack>
+      <HStack justifyContent="space-between" alignItems="center">
+        <H4>{`${"00:" + timer}`} </H4>
+        <H4
+          onPress={() => {
+            resetTimer();
+            handleResendOtp(props?.schema?.mobile);
+          }}
+        >
+          {timer <= 1 ? "Resend OTP" : <React.Fragment />}
+        </H4>
+      </HStack>
+    </VStack>
+  );
+};
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -65,6 +139,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [verifyOtpData, setverifyOtpData] = useState();
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 10) {
@@ -104,6 +179,55 @@ export default function App({ facilitator, ip, onClick }) {
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
+      },
+    },
+
+    otp: {
+      "ui:widget": CustomOTPBox,
+    },
+    qualification: {
+      "ui:widget": CustomR,
+    },
+    degree: {
+      "ui:widget": CustomR,
+    },
+    gender: {
+      "ui:widget": CustomR,
+    },
+    type_mobile: {
+      "ui:widget": CustomR,
+    },
+    sourcing_channel: {
+      "ui:widget": CustomR,
+    },
+    availability: {
+      "ui:widget": RadioBtn,
+    },
+    device_ownership: {
+      "ui:widget": RadioBtn,
+    },
+    device_type: {
+      "ui:widget": RadioBtn,
+    },
+    experience: {
+      related_to_teaching: {
+        "ui:widget": RadioBtn,
+      },
+    },
+    vo_experience: {
+      items: {
+        experience_in_years: { "ui:widget": CustomR },
+        related_to_teaching: {
+          "ui:widget": RadioBtn,
+        },
+      },
+    },
+    experience: {
+      items: {
+        experience_in_years: { "ui:widget": CustomR },
+        related_to_teaching: {
+          "ui:widget": RadioBtn,
+        },
       },
     },
   };
@@ -638,23 +762,39 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
+        const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+          ...newFormData,
+          hash: localStorage.getItem("hash"),
+        });
+        setverifyOtpData(otpData);
+        if (status === true) {
+          const data = await formSubmitCreate(newFormData);
+          if (data?.error) {
+            const newErrors = {
+              mobile: {
+                __errors:
+                  data?.error?.constructor?.name === "String"
+                    ? [data?.error]
+                    : data?.error?.constructor?.name === "Array"
+                    ? data?.error
+                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          } else {
+            if (data?.username && data?.password) {
+              setCredentials(data);
+            }
+          }
+        } else if (status === false) {
           const newErrors = {
-            mobile: {
-              __errors:
-                data?.error?.constructor?.name === "String"
-                  ? [data?.error]
-                  : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            otp: {
+              __errors: [t("USER_ENTER_VALID_OTP")],
             },
           };
           setErrors(newErrors);
         } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
+          setSchema(newSchema);
         }
       } else if (page <= 1) {
         success = true;
