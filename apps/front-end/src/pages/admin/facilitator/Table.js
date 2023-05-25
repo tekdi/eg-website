@@ -62,6 +62,10 @@ const columns = (e) => [
     attr: "name",
   },
   {
+    name: t("User_Id"),
+    selector: (row) => row.id,
+  },
+  {
     name: t("MOBILE_NUMBER"),
     selector: (row) => row?.mobile,
     sortable: true,
@@ -107,7 +111,7 @@ function getBaseUrl() {
 }
 
 // Table component
-function Table({ facilitator }) {
+function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
@@ -119,11 +123,11 @@ function Table({ facilitator }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await facilitatorRegistryService.getAll(filterObj);
-    setData(result.data);
+    const result = await facilitatorRegistryService.filter(filterObj);
+    setData(admindata ? admindata : result.data?.data);
     setPaginationTotalRows(result?.totalCount);
     setLoading(false);
-  }, [filterObj]);
+  }, [admindata]);
 
   React.useEffect(() => {
     setFilterObj({ page, limit });
@@ -156,8 +160,14 @@ function Table({ facilitator }) {
         pagination
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        onChangeRowsPerPage={(e) => setLimit(e)}
-        onChangePage={(e) => setPage(e)}
+        onChangeRowsPerPage={(e) => {
+          setLimit(e);
+          setadminLimit(e);
+        }}
+        onChangePage={(e) => {
+          setPage(e);
+          setadminPage(e);
+        }}
       />
     </VStack>
   );
