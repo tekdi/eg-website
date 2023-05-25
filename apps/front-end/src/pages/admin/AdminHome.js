@@ -9,23 +9,28 @@ import {
   VStack,
   ScrollView,
   Flex,
+  Image,
+  Modal,
+  Input,
+  Button
 } from "native-base";
 import {
   IconByName,
   AdminLayout as Layout,
-  H2,
+  H1,
   useWindowSize,
   H3,
   t,
+  BlueFillButton,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import Chip from "component/Chip";
+import { useNavigate } from "react-router-dom";
 
 const FilterSidebar = ({ items, element, _scrollView, _flex }) => {
   return items.map((item, key) => (
     <VStack space={"2"} key={key}>
       <HStack alignItems="center" space={"2"}>
-        <IconByName isDisabled name="MapPinLineIcon" />
         <H3>{item.name}</H3>
       </HStack>
       <ScrollView {..._scrollView}>
@@ -44,19 +49,104 @@ const FilterSidebar = ({ items, element, _scrollView, _flex }) => {
     </VStack>
   ));
 };
-
+function getBaseUrl() {
+  var re = new RegExp(/^.*\//);
+  return re.exec(window.location.href);
+}
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-
+  const [modal, setModal] = React.useState(false);
+ 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+      <HStack justifyContent={"space-between"} my="8" mx="3">
       <HStack>
-        <Box flex={0.2}>
-          <Box p="10px" bg="primary.500" ref={ref}>
-            <H2 color="white">{t("MY_PRERAKS")}</H2>
-          </Box>
+        <Image
+          source={{
+            uri: "/profile.svg",
+          }}
+          alt="Prerak Orientation"
+          size={"xs"}
+          resizeMode="contain"
+        />
+        <H1 pl="3" pr="8">{t("ALL_PRERAKS")}</H1>
+        <Image
+          source={{
+            uri: "/box.svg",
+          }}
+          alt="Prerak Orientation"
+          size="30px"
+          resizeMode="contain"
+          mt="1"
+        />
+        </HStack>
+        <HStack>
+        <BlueFillButton  shadow="BlueOutlineShadow" onPress={() => setModal(true)} rightIcon={<IconByName color="#084B82" size="15px" name="ShareLineIcon"></IconByName>}>
+            <Text>{t("SEND_AN_INVITE")}</Text>
+          </BlueFillButton> 
+          <BlueFillButton mx="3" shadow="BlueFillShadow"  rightIcon={<IconByName  size="20px" name="PencilLineIcon"></IconByName>}>
+            {t("REGISTER_PRERAK")}
+          </BlueFillButton>
+          <Modal
+            isOpen={modal}
+            onClose={() => setModal(false)}
+            safeAreaTop={true}
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header p="5" borderBottomWidth="0">
+                <H1 textAlign="center"> {t("SEND_AN_INVITE")}</H1>
+              </Modal.Header>
+              <Modal.Body p="5" pb="10">
+                <VStack space="5">
+                  <HStack
+                    space="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="gray.300"
+                    pb="5"
+                  >
+                    <H3> {t("INVITATION_LINK")}</H3>
+                    {/* <Clipboard
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${
+                        facilitator?.program_users[0]?.organisation_id
+                      }`}
+                    > */}
+                      <HStack space="3">
+                        <IconByName
+                          name="FileCopyLineIcon"
+                          isDisabled
+                          rounded="full"
+                          color="blue.300"
+                        />
+                        <H3 color="blue.300">
+                          {" "}
+                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                        </H3>
+                      </HStack>
+                    {/* </Clipboard> */}
+                  </HStack>
+                  <HStack space="5" pt="5">
+                    <Input
+                      flex={0.7}
+                      placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
+                      variant="underlined"
+                    />
+                    <Button flex={0.3} variant="primary">
+                      {t("SEND")}
+                    </Button>
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        </HStack>
+        </HStack>
+      <HStack>
+      
+        <Box flex="0.2">
           <ScrollView
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
@@ -82,8 +172,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
               <VStack space={5}>
                 <HStack alignItems="center">
-                  <IconByName isDisabled name="FilterLineIcon" />
-                  <Text>{t("FILTER")}</Text>
+                  <Text fontSize="md" color="textGreyColor.550" bold>{t("FILTERS")}</Text>
                 </HStack>
                 <FilterSidebar
                   items={[
@@ -140,14 +229,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             </VStack>
           </ScrollView>
         </Box>
-        <ScrollView
+        {/* <ScrollView
           maxH={Height - refAppBar?.clientHeight}
           minH={Height - refAppBar?.clientHeight}
-        >
-          <Box flex={1} roundedBottom={"2xl"} py={6} px={4} mb={5}>
+        > */}
+          <Box roundedBottom={"2xl"} flex="0.8" py={4} px={4} mb={5}>
             <Table facilitator={userTokenInfo?.authUser} />
           </Box>
-        </ScrollView>
+        {/* </ScrollView> */}
       </HStack>
     </Layout>
   );
