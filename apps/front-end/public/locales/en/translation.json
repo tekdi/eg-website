@@ -217,6 +217,7 @@
   "MARK_ABSENT": "Mark Absent",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
+
   "AADHAAR_CARD":"Aadhaar Card",
   "UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD":"Upload a photo or scan of your card",
   "UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD":"Upload the front side of your Aadhaar card",
@@ -249,6 +250,19 @@
 
 
   
+
+  "USER_ENTER_FOUR_DIGIT_OTP": "Enter 6 Digit OTP sent on Above Mobile Number",
+  "OTP": "OTP",
+  "USER_ENTER_VALID_OTP": "Incorrect OTP Entered",
+  "USER_RESET_PASSWORD": "Reset Password",
+  "NEW": "New",
+  "CONFIRM": "Confirm",
+  "USER_SET_NEW_PASSWORD": "Set New Password",
+  "USER_FORGET_PASSWORD": "Forgot Password",
+  "USER_CONFIRM_PASSWORD": "Confirm Password",
+  "VERIFY": "Verify",
+  "USER_CONFIRM_PASSWORD_IS_REQUIRED":"Confirm Password Is Required",
+
   "PROFILE": "Profile",
   "INTERVIEW_DETAILS": "Interview Details",
   "CONDUCTED_BY": "Conducted by",
@@ -258,9 +272,6 @@
   "DOCUMENTS_YOU_NEED_TO_CARRY": "Documents you need to carry",
   "UPLOAD_YOUR_DOCUMENTS": "Upload Your Documents",
   "UPLOAD_NOW": "Upload Now",
-  "QUALIFICATION_PROOF": "Qualification Proof",
-  "WORK_EXPERIENCE_PROOF": "Work Experience Proof",
-  "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "AADHAR_NUMBER_KYC": "Aadhar Number KYC",
   "ADD_AN_AG": "Add an AG",
   "COMPLETE_YOUR_AADHAR_VERIFICATION_NOW": "Complete Your Aadhaar Verification Now",
@@ -302,7 +313,35 @@
   "AFFIDAVIT": "Affidavit for non schooling Certification, notary",
   "CBOSIGN": "Marksheet With CBO Sign",
   "CBOSIGNTRANSFER": "Transfer certificate with CBO Sign",
+
   "MARK_AS_DROPOUT": "Mark as Dropout",
   "PROFILE_DETAILS": "Profile Details"
 
 }
+
+  "PROFILE_DETAILS": "Profile Details",
+  "AG_LEARNER_PROFILE":"AG Learner Profile",
+  "IDENTIFIED": "Identified",
+  "ADD_YOUR_ADDRESS":"Add your address",
+  "AADHAAR_DETAILS":" Aadhaar Details",
+  "DOCUMENT_CHECKLIST":"Documents Checklist",
+  "ENROLLMENT_DETAILS":" Enrollment Details",
+  "CAMP_DETAILS":"Camp Details",
+  "JOURNEY_IN_PROJECT_PRAGATI":"Journey in Project Pragati",
+  "MARK_AS_DROPOUT":"Mark as Dropout",
+  "YOUR_PROFILE":"Your Profile",
+  "COMPLETE_YOUR_PROFILE":"Complete Your Profile",
+  "INCREASE_YOUR_CHANCES_OF_GETTING_SELECTED":"Increase your chances of getting selected",
+  "ADD_YOUR_PERSONAL_DETAILS":"Add your personal Details",
+  "ADD_IN_SOME_ADDITIONAL_DETAILS":"Add in some additional details",
+  "EDUCATION_AND_WORK_DETAILS":"Education and Work Details",
+  "QUALIFICATION_DETAILS":"Qualification Details",
+  "REFERENCE_CONTACT_DETAILS":"Reference Contact Details",
+  "DOCUMENTS_UPLOAD":"Documents Upload",
+  "AADHAAR_VERIFICATION":"Aadhaar Verification",
+  "QUALIFICATION_PROOF":"Qualification Proof",
+  "WORK_EXPERIENCE_PROOF":"Work Experience Proof",
+  "VOLUNTEER_EXPERIENCE_PROOF":"Volunteer Experience Proof",
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password"
+}
+
