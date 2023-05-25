@@ -248,7 +248,6 @@
  "MANUAL_AADHAAR_UPLOAD":"Manual Aadhaar Upload",
  "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"We have sent you a text message with username and password on your mobile number"
 }
-
   "USER_ENTER_FOUR_DIGIT_OTP": "Enter 6 Digit OTP sent on Above Mobile Number",
   "OTP": "OTP",
   "USER_ENTER_VALID_OTP": "Incorrect OTP Entered",
