@@ -426,7 +426,6 @@ export default function FacilitatorView({ footerLinks }) {
                 <HStack justifyContent="space-between" space={30}>
                   <Button
                     borderRadius="full"
-                    // variant="ghost"
                     colorScheme="blueGray"
                     onPress={() => {
                       setModalVisible(false);
@@ -447,8 +446,9 @@ export default function FacilitatorView({ footerLinks }) {
                         : toast.show({
                             title: "Error",
                             variant: "solid",
-                            description:
-                              "Confirm password is not matched with Password",
+                            description: t(
+                              "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+                            ),
                           });
                     }}
                   >

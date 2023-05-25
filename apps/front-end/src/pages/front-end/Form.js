@@ -9,11 +9,11 @@ import {
   Center,
   HStack,
   Image,
+  Input,
   Modal,
   VStack,
 } from "native-base";
 import Steper from "../../component/Steper";
-import "./Form.css";
 import {
   facilitatorRegistryService,
   authRegistryService,
@@ -52,16 +52,6 @@ import {
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 
-// const CustomR = ({ options, value, onChange, required }) => {
-//   return (
-//     <CustomRadio
-//       items={options?.enumOptions}
-//       value={value}
-//       required={required}
-//       onChange={(value) => onChange(value)}
-//     />
-//   );
-// };
 const handleResendOtp = async (mobile) => {
   const sendotpBody = {
     mobile: mobile.toString(),
@@ -95,16 +85,16 @@ const CustomOTPBox = ({ value, onChange, required, ...props }) => {
     setOtp(val);
     onChange(val.join(""));
     if (element.nextSibling) {
-      element.nextSibling.focus();
+      element.nextSibling.nextSibling.focus();
     }
   };
 
   return (
-    <div className=".otp-container">
-      {otp.map((data, index) => {
-        return (
-          <React.Fragment key={index}>
-            <input
+    <VStack>
+      <HStack space={2}>
+        {otp.map((data, index) => {
+          return (
+            <Input
               type="data"
               name="otp"
               maxLength="1"
@@ -113,60 +103,23 @@ const CustomOTPBox = ({ value, onChange, required, ...props }) => {
               onChange={(e) => handleChange(e.target, index)}
               onFocus={(e) => e.target.select()}
             />
-          </React.Fragment>
-        );
-      })}
-      <br />
-      <HStack justifyContent="space-between" alignItems="center">
-        <>
-          <H4 className=".h4">{`${"00:" + timer}`} </H4>
-          <H4
-            className=".h42"
-            onPress={() => {
-              resetTimer();
-              handleResendOtp(props?.schema?.mobile);
-            }}
-          >
-            {timer <= 1 ? "Resend OTP" : <React.Fragment />}
-          </H4>
-        </>
+          );
+        })}
       </HStack>
-    </div>
+      <HStack justifyContent="space-between" alignItems="center">
+        <H4>{`${"00:" + timer}`} </H4>
+        <H4
+          onPress={() => {
+            resetTimer();
+            handleResendOtp(props?.schema?.mobile);
+          }}
+        >
+          {timer <= 1 ? "Resend OTP" : <React.Fragment />}
+        </H4>
+      </HStack>
+    </VStack>
   );
 };
-
-// const RadioBtn = ({ options, value, onChange, required }) => {
-//   const items = options?.enumOptions;
-//   return (
-//     <Radio.Group
-//       name="exampleGroup"
-//       defaultValue="1"
-//       accessibilityLabel="pick a size"
-//       value={value}
-//       onChange={(value) => onChange(value)}
-//     >
-//       <Stack
-//         direction={{
-//           base: "column",
-//           md: "row",
-//         }}
-//         alignItems={{
-//           base: "flex-start",
-//           md: "center",
-//         }}
-//         space={4}
-//         w="75%"
-//         maxW="300px"
-//       >
-//         {items.map((item) => (
-//           <Radio key={item?.value} value={item?.value} size="lg">
-//             {item?.label}
-//           </Radio>
-//         ))}
-//       </Stack>
-//     </Radio.Group>
-//   );
-// };
 
 // App
 export default function App({ facilitator, ip, onClick }) {
