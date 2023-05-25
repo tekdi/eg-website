@@ -503,6 +503,44 @@ const DEFAULT_THEME = {
     sendMessageBtn: {
       200: '#14242D'
     },
+    Darkmaroonprimarybutton: {
+      400: '#2D142C'
+    },
+    Darkmaroonsecondarybutton: {
+      400: '#BDBDBD'
+    },
+    Disablecolor: {
+      400: '#BDBDBD'
+    },
+    Defaultcolor: {
+      400: '#616161'
+    },
+    Focusedcolor: {
+      400: '#3F8BF1'
+    },
+    Activatedcolor: {
+      400: '#757575'
+    },
+    PrimaryIpcolor: {
+      400: '#14242D'
+    },
+    AppliedColor: '#E0E0E0',
+    ScreenedColor: '#e5f4ff',
+    ShortlistedColor: '#CAE9FF',
+    PotentialColor: '#A7F3D0',
+    SelectedColor: '#A7F3D0',
+    SuccessColor: '#00D790',
+    UnderreviewColor: '#FFEFAF',
+    RejectedColor: '#FFACAF',
+    IdentifiedColor: '#E0E0E0',
+    DocumentedColor: '#FFEFAF',
+    EntrolledColor: '#C7DFFF',
+    ApprovedColor: '#A7F3D0',
+    DroppedoutColor: '#FFACAF',
+    DuplicatedColor: '#E95055',
+    WarningColor: '#FFCF52',
+    DangerColor: '#DC2626',
+    InfoColor: '#3F8BF1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',
