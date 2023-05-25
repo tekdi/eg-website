@@ -175,7 +175,7 @@ const DEFAULT_THEME = {
           bg: `#FFFFFF`,
           borderWidth: '1',
           borderColor: `#790000`,
-        
+          color: '#790000',
           _hover: {
             bg: `#FFFFFF`
           },
@@ -184,7 +184,6 @@ const DEFAULT_THEME = {
           },
           _text: {
             fontWeight: '700',
-            color: '#790000'
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'

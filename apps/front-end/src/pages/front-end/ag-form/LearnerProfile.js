@@ -1,4 +1,4 @@
-import { Collapsible, H1, H3, H4, Layout, t } from "@shiksha/common-lib";
+import { Collapsible, H1, H3, H4, Layout, t, IconByName,FrontEndTypo } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
   Image,
@@ -49,19 +49,13 @@ const LearnerProfile = () => {
       {alreadyreg && (
         <VStack bg={"#FDC5C766"} alignItems={"center"} py={5}>
           <HStack width={"90%"} mx={"auto"} alignItems={"center"}>
-            <Image
-              source={{
-                uri: "/error.png",
-              }}
-              alt=""
-              width="15px"
-              height="15px"
-            />
-            <VStack>
-              <Text ml={3}>{t("AG_LEARNER_ALREADY_IDENTIFIED")}</Text>
-              <Text ml={3} fontSize={10} width={"80%"}>
+          <IconByName name="ErrorWarningLineIcon" color="textRed.300" size="20px" />
+
+          <VStack pl="3">
+              <FrontEndTypo.H2 color="textGreyColor.600">{t("AG_LEARNER_ALREADY_IDENTIFIED")}</FrontEndTypo.H2>
+              <FrontEndTypo.H5  color="textGreyColor.600">
                 {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-              </Text>
+              </FrontEndTypo.H5>
             </VStack>
           </HStack>
         </VStack>
@@ -84,33 +78,26 @@ const LearnerProfile = () => {
       )}
 
       <VStack alignItems={"center"} mt={5}>
-        <VStack rounded={5} bg={"#AFB1B6"} width={150} height={150}>
-          <Image
-            source={{
-              uri: "",
-            }}
-            alt=""
-            width="15px"
-            height="15px"
-          />
+        <VStack>
+        <IconByName name="AccountCircleLineIcon" color='gray.300' _icon={{ size: "120px" }} />
         </VStack>
 
-        <VStack width={"100%"} mt={3}>
-          <Text ml={3} fontSize={"12px"}>
+        <VStack width="100%" pl="4">
+          <Text fontSize="sm" color="textGreyColor.600">
             Added On 12th May 2023
           </Text>
         </VStack>
 
         <VStack width={"100%"}>
-          <Collapsible header={t("PROFILE_DETAILS")}>
-            <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Basic</Text>
+          <Collapsible fontSize="sm" color="textGreyColor.600" bold header={t("PROFILE_DETAILS")}>
+            <VStack mt={4} borderBottomWidth={"1px"} borderColor="textGreyColor.600">
+              <Text fontSize="sm" color="textGreyColor.600">Basic</Text>
             </VStack>
-            <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Educational</Text>
+            <VStack mt={4} borderBottomWidth={"1px"} borderColor="textGreyColor.600">
+              <Text fontSize="sm" color="textGreyColor.600">Educational</Text>
             </VStack>
-            <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Aadhaar</Text>
+            <VStack mt={4} borderBottomWidth={"1px"} borderColor="textGreyColor.600">
+              <Text fontSize="sm" color="textGreyColor.600">Aadhaar</Text>
             </VStack>
           </Collapsible>
         </VStack>
@@ -118,30 +105,31 @@ const LearnerProfile = () => {
         <VStack width={"100%"}>
           <Collapsible
             defaultCollapse={false}
+            fontSize="sm" color="textGreyColor.600" bold
             header={t("Documents Checklist")}
           >
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Basic</Text>
+              <Text fontSize="sm" color="textGreyColor.600">Basic</Text>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Educational</Text>
+              <Text fontSize="sm" color="textGreyColor.600">Educational</Text>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Aadhaar</Text>
+              <Text fontSize="sm" color="textGreyColor.600">Aadhaar</Text>
             </VStack>
           </Collapsible>
         </VStack>
 
         <VStack width={"100%"}>
-          <Collapsible defaultCollapse={false} header={t("Enrollment Details")}>
+          <Collapsible defaultCollapse={false} fontSize="sm" color="textGreyColor.600" bold header={t("Enrollment Details")}>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Basic</Text>
+              <Text fontSize="sm" color="textGreyColor.600">Basic</Text>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Educational</Text>
+              <Text fontSize="sm" color="textGreyColor.600">Educational</Text>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Aadhaar</Text>
+              <Text fontSize="sm" color="textGreyColor.600">Aadhaar</Text>
             </VStack>
           </Collapsible>
         </VStack>
@@ -160,14 +148,12 @@ const LearnerProfile = () => {
           </Collapsible>
         </VStack>
 
-        <Button
-          variant={"primary"}
-          bg={"#DFDFDF"}
+        <FrontEndTypo.Secondarybutton
           width={250}
           marginTop={"5em"}
           onPress={() => navToScreen()}
         >
-          <Text color={"black"}>
+         
             <Image
               source={{
                 uri: "/dropout.svg",
@@ -179,8 +165,8 @@ const LearnerProfile = () => {
               marginRight="10px"
             />
             {t("MARK_AS_DROPOUT")}
-          </Text>
-        </Button>
+         
+        </FrontEndTypo.Secondarybutton>
       </VStack>
     </Layout>
   );
