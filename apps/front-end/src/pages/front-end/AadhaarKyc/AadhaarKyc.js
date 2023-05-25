@@ -1,8 +1,7 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
-import "./AadhaarKyc.css";
 import { Checkbox } from "@mui/material";
-import { Button, Input, Text } from "native-base";
+import { Box, Button, FormControl, Image, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
 import { t } from "@shiksha/common-lib";
 
@@ -84,7 +83,7 @@ export default function AdharKyc() {
 
         if (res.code === "otp_sent" || res.error?.code === "send_otp_failed") {
           localStorage.setItem("aadhaarNumber", data.aadhaarNumber || "");
-          navigate("/AdharOTP");
+          navigate("/admin/aadhaarOTP");
         } else {
           alert(res.message);
         }
@@ -94,45 +93,48 @@ export default function AdharKyc() {
   };
 
   return (
-    <div className="adharVerify1">
-      <div className="topbar">
-        <button className="btn-back" onClick={() => navigate(-1)}>
+    <Box>
+      <Box borderBottomWidth="2" borderColor="gray.400">
+        <Button variant="ghost" display="flex" justifyContent="flex-start" onPress={() => navigate(-1)}>
           <WestIcon />
-        </button>
-      </div>
+        </Button>
+      </Box>
 
-      <div className="content">
-        <h2>
+      <Box px="4">
+        <Text fontSize="2xl" fontWeight="600" mt="4">
           {t("OFFLINE_AADHAAR_VERIFICATION")}
           <br />
           (OKYC)
-        </h2>
+        </Text>
 
-        <div className="aadhaarNumber__input">
-          <label htmlFor="aadhaarNumber">
-            {t("ENTER_YOUR_AADHAAR_NUMBER")}
-          </label>
+        <Box mt="2">
+          <FormControl.Label htmlFor="aadhaarNumber" mb="2">
+            <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_YOUR_AADHAAR_NUMBER")}</Text>
+          </FormControl.Label>
 
           <Input
             id="aadhaarNumber"
             name="aadhaarNumber"
             placeholder="0000 0000 0000"
             p="4"
+            fontSize={18}
             maxWidth={480}
             borderRadius={8}
-            borderColor={"rgba(0, 0, 0, 0.5)"}
+            borderColor="gray.500"
             onChange={(e) => {
               setData({ ...data, aadhaarNumber: e.target?.value });
             }}
           />
-        </div>
+        </Box>
 
-        <div className="securityCode__input">
-          <label htmlFor="securityCode">
-            <span>{t("ENTER_SECURITY_CODE")}</span>
-            <span>{t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}</span>
-          </label>
-          <img
+        <Box mt="2">
+          <FormControl.Label htmlFor="securityCode" mb="2" display="flex" flexDirection="column">
+            <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_SECURITY_CODE")}</Text>
+            <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">{t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}</Text>
+          </FormControl.Label>
+          <Image
+            width={150}
+            marginLeft={'-15px'}
             src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
             alt="captcha image"
           />
@@ -141,36 +143,41 @@ export default function AdharKyc() {
             name="securityCode"
             placeholder="6YE3ZH"
             p="4"
+            fontSize={18}
             maxWidth={120}
             borderRadius={8}
-            borderColor={"rgba(0, 0, 0, 0.5)"}
+            borderColor="gray.500"
             onChange={(e) => {
               setData({ ...data, securityCode: e.target?.value });
             }}
           />
-        </div>
+        </Box>
 
-        <p className="boxMessage">
+        <Text display="inline-block" mt="6" color="gray.600" fontWeight="500" p="2" borderWidth="2" borderColor="gray.400" rounded="md">
           {t(
             "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
           )}
-        </p>
+        </Text>
 
-        <ul>
-          <li>
-            {t(
-              "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE"
-            )}
+        <ul style={{ padding: '0px 20px', marginTop: '10px' }}>
+          <li style={{ listStyleType: 'disc' }}>
+            <Text fontSize="sm" fontWeight="500" color="gray.600">
+              {t(
+                "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE"
+              )}
+            </Text>
           </li>
 
-          <li>
-            {t(
-              "I understand that my Aadhaar details shall not be used or stored for any other purpose."
-            )}
+          <li style={{ listStyleType: 'disc' }}>
+            <Text fontSize="sm" fontWeight="500" color="gray.600">
+              {t(
+                "I understand that my Aadhaar details shall not be used or stored for any other purpose."
+              )}
+            </Text>
           </li>
         </ul>
 
-        <label htmlFor="checkMark">
+        <FormControl.Label htmlFor="checkMark">
           <Checkbox
             id="checkMark"
             name="checkMark"
@@ -179,8 +186,8 @@ export default function AdharKyc() {
               setData({ ...data, checkMark: e.target.checked });
             }}
           />{" "}
-          {t("I_HAVE_READ_AND_UNDERSTOOD_ALL_OF_THE_POINTS_ABOVE")}
-        </label>
+          <Text fontSize="sm">{t("I_HAVE_READ_AND_UNDERSTOOD_ALL_OF_THE_POINTS_ABOVE")}</Text>
+        </FormControl.Label>
 
         <Button
           variant="secondary"
@@ -191,6 +198,7 @@ export default function AdharKyc() {
           }
           py="12px"
           px="20px"
+          mb="6"
           disabled={
             !data.aadhaarNumber || !data.securityCode || !data.checkMark
           }
@@ -198,7 +206,7 @@ export default function AdharKyc() {
         >
           <Text color="white">{t("CONTINUE")}</Text>
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

@@ -61,7 +61,7 @@ p {
 label {
   display: inline-block;
   max-width: 100%;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
   font-weight: 700;
 }
 
@@ -292,6 +292,6 @@ ul {
   padding: 10px 0;
   list-style-type: none;
 }
-label {
+/* label {
   margin-top: 8px !important;
-}
+} */

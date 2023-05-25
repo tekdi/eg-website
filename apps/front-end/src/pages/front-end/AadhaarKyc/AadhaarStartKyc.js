@@ -1,8 +1,6 @@
 import React from "react";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
-import "./AadhaarKyc.css";
-import { Button, Text } from "native-base";
+import { Box, Button, Text } from "native-base";
 import { t } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -11,11 +9,11 @@ const AadhaarStartKyc = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="adharVerifyStart">
-      <div className="content">
-        <p>{t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY!")}</p>
+    <Box className="adharVerifyStart" w="full" minH="100vh">
+      <Box className="content" p="4" flexGrow="1" w="full">
+        <Text textAlign="center" fontSize="lg" px="20px">{t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY!")}</Text>
 
-        <h1>{t("COMPLETE_AADHAAR_CARD_VERIFICATION")}</h1>
+        <Text textAlign="center" color="black:alpha.70">{t("COMPLETE_AADHAAR_CARD_VERIFICATION")}</Text>
 
         <Button
           variant="outline"
@@ -23,7 +21,7 @@ const AadhaarStartKyc = () => {
           borderRadius="full"
           mt="10"
           onPress={() => {
-            navigate('/aadhaarNumber')
+            navigate('/admin/aadhaarNumber')
           }}
         >
           <Text fontSize="md" fontWeight="medium" color="gray.600">Aadhaar Number KYC</Text>
@@ -46,7 +44,7 @@ const AadhaarStartKyc = () => {
           borderRadius="full"
           mt="8"
           onPress={() => {
-            navigate('/aadhaarQrScanner')
+            navigate('/admin/aadhaarQrScanner')
           }}
         >
           <Text fontSize="md" fontWeight="medium" color="gray.600">Scan QR Code</Text>
@@ -70,14 +68,14 @@ const AadhaarStartKyc = () => {
           mt="8"
           py="3"
           onPress={() => {
-            navigate('/aadhaarManualUpload')
+            navigate('/admin/aadhaarManualUpload')
           }}
         >
           <Text fontSize="md" fontWeight="medium" color="white">{t("MANUAL_AADHAAR_UPLOAD")}</Text>
         </Button>
-      </div>
+      </Box>
 
-      <div className="bottom">
+      <Box className="bottom" w="full" display="flex" flexDirection="column" alignItems="center" justifyContent="center" p="20px">
         <Text textAlign="center" mb="4">{t("WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER")}</Text>
         
         <Button
@@ -87,8 +85,8 @@ const AadhaarStartKyc = () => {
         >
          {t("SKIP_TO_LOGIN")}
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

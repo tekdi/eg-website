@@ -1,35 +1,38 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import CheckIcon from "@mui/icons-material/Check";
-import "./AadhaarKyc.css";
-import { Button, Text } from "native-base";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, Text } from "native-base";
 import { t } from "@shiksha/common-lib";
 
 export default function AdharSuccess() {
-  return (
-    <div className="adharVerify2">
-      <div className="topbar">
-        <button className="btn-back" onClick={() => navigate(-1)}>
-          <WestIcon />
-        </button>
-      </div>
 
-      <div className="content">
-        <h2>
+  const navigate = useNavigate();
+
+  return (
+    <Box>
+      <Box borderBottomWidth="2" borderColor="gray.400">
+        <Button variant="ghost" display="flex" justifyContent="flex-start" onPress={() => navigate(-1)}>
+          <WestIcon />
+        </Button>
+      </Box>
+
+      <Box px="4">
+        <Text fontSize="2xl" fontWeight="600" mt="4">
           {t("OFFLINE_AADHAAR_VERIFICATION")}
           <br />
           (OKYC)
-        </h2>
+        </Text>
 
-        <p className="boxMessage2">
+        <Box display="flex" flexDirection="row" alignItems="center" gap="2" mt="6" color="gray.500" p="2" borderWidth="2" borderColor="gray.500" rounded="md">
           <CheckIcon fontSize="small" />
-          <span>{t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}</span>
-        </p>
+          <Text fontSize="sm" fontWeight="semibold">{t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}</Text>
+        </Box>
 
         <Button variant="secondary" bg={"gray.500"} py="12px" px="20px" mt={20}>
           <Text color="white">{t("CONTINUE_LOGIN")}</Text>
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

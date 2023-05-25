@@ -3,8 +3,7 @@ import WestIcon from "@mui/icons-material/West";
 import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
-import { Button, Text } from "native-base";
-import "../AadhaarKyc.css";
+import { Box, Button, FormControl, Text } from "native-base";
 import { Camera, getBase64,t } from "@shiksha/common-lib";
 
 export default function ManualUpload() {
@@ -69,49 +68,58 @@ export default function ManualUpload() {
       />
     );
   } 
-  
-  
-
   return (
-    <div className="manualUploadPage" style={{ position: "relative" }}>
-      <div className="topbar">
-        <button className="btn-back" onClick={() => navigate(-1)}>
+    <Box position="relative">
+      <Box borderBottomWidth="2" borderColor="gray.400">
+        <Button variant="ghost" display="flex" justifyContent="flex-start" onPress={() => navigate(-1)}>
           <WestIcon />
-        </button>
-      </div>
+        </Button>
+      </Box>
 
-      <div className="content">
+      <Box px="4">
         {!submitted ? (
           <>
-            <h2> {t("AADHAR_CARD")}</h2>
+            <Text fontSize="2xl" fontWeight="600" mt="4"> {t("AADHAR_CARD")}</Text>
             <Text>{t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}</Text>
 
-            <button
-              className="btn-uploadOptions"
-              onClick={() => {
+            <Button
+              variant="outline"
+              w="full"
+              maxW={480}
+              h={200}
+              background="transparent"
+              borderWidth="2"
+              borderColor="gray.500"
+              rounded="md"
+              display="flex"
+              flexDirection="column"
+              alignItems={"center"}
+              justifyContent={"center"}
+              mt="16"
+              onPress={() => {
                 setModal(true);
               }}
             >
               {isFront ? (
                 image.front ? (
-                  <img src={image.front} alt="front image" />
+                  <img src={image.front} alt="front image" style={{ widt: 'auto', maxWidth: '480px', height: '196px' }} />
                 ) : (
                   <>
-                    <UploadIcon />
+                    <Text textAlign={"center"}><UploadIcon /></Text>
                     <Text>{t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}</Text>
                   </>
                 )
               ) : image.back ? (
-                <img src={image.back} alt="back image" />
+                <img src={image.back} alt="back image" style={{ widt: 'auto', maxWidth: '480px', height: '196px' }} />
               ) : (
                 <>
-                  <UploadIcon />
+                  <Text textAlign={"center"}><UploadIcon /></Text>
                   <Text>{t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}</Text>
                 </>
               )}
-            </button>
+            </Button>
 
-            <div className="indicators">
+            <Box display="flex" flexDirection="row" gap="3" alignItems="center" justifyContent="center" mt="6">
               <button
                 onClick={() => setIsFront(!isFront)}
                 className={`btn-indicator ${isFront ? "active" : ""}`}
@@ -121,7 +129,7 @@ export default function ManualUpload() {
                 onClick={() => setIsFront(!isFront)}
                 className={`btn-indicator ${!isFront ? "active" : ""}`}
               ></button>
-            </div>
+            </Box>
 
             {isFront ? (
               image.front ? (
@@ -164,26 +172,26 @@ export default function ManualUpload() {
               disabled={!image.front || !image.back}
               onPress={handleSubmit}
             >
-              <Text color="white"></Text>
+              <Text color="white">Continue</Text>
             </Button>
           </>
         ) : (
           <>
-            <p className="boxMessage3">
+            <Box display="flex" flexDirection="column" alignItems="center" gap="1.5" mt="6" p="2" >
               <CheckIcon fontSize="medium" />
-              <span>{t("AADHAAR_CARD_UPLOADED")}</span>
-            </p>
+              <Text color="gray.500" fontSize={16} fontWeight="semibold">{t("AADHAAR_CARD_UPLOADED")}</Text>
+            </Box>
 
             <div className="front__image">
               <h4>{t("FRONT_VIEW")}</h4>
 
-              <img src={image.front} alt="front image" />
+              <img src={image.front} alt="front image" style={{ width: 'auto', maxWidth: '480px', height: '180px' }} />
             </div>
 
             <div className="back__image">
               <h4>{t("BACK_VIEW")}</h4>
 
-              <img src={image.back} alt="back image" />
+              <img src={image.back} alt="back image" style={{ width: 'auto', maxWidth: '480px', height: '180px' }} />
             </div>
 
             <Button
@@ -197,20 +205,31 @@ export default function ManualUpload() {
             </Button>
           </>
         )}
-      </div>
+      </Box>
 
       {modal && (
-  <div className="uploadModal">
-    <div className="modal__container">
-      <div className="upload__options">
-        <button onClick={() => {
-          setCameraUrl();
-          setCameraModal(true);
-        }}>
-          {t("TAKE_A_PHOTO")}
-        </button>
+  <Box position="absolute" width="full" height="100vh" bg="black:alpha.20" display="flex" flexDirection="column" justifyContent="flex-end">
+    <Box bg="gray.100" display="flex" flexDirection="column" gap="5" p="6">
+      <Box bg="white:alpha.80" display="flex" flexDirection="column" alignItems="center" rounded="md" borderWidth="1" borderColor="gray.400" overflow="hidden">
+        <Button
+          width="full"
+          variant="ghost"
+          px="15px"
+          py="10px"
+          borderBottomWidth="1"
+          borderColor="gray.600"
+          rounded="none"
+          onPress={() => {
+            setCameraUrl();
+            setCameraModal(true);
+          }}
+        >
+          <Text fontSize={14} fontWeight="500" textAlign="center">{t("TAKE_A_PHOTO")}</Text>
+        </Button>
 
-        <label htmlFor="galleryUpload">{t("UPLOAD_FROM_GALLERY")}</label>
+        <FormControl.Label htmlFor="galleryUpload" p="0" m="0" w="full" borderBottomWidth="1" borderColor="gray.600" rounded="none">
+          <Text w="full" px="15px" py="10px" m="0" fontSize={14} fontWeight="500" textAlign="center">{t("UPLOAD_FROM_GALLERY")}</Text>
+        </FormControl.Label>
         <input
           type="file"
           id="galleryUpload"
@@ -218,24 +237,34 @@ export default function ManualUpload() {
           onChange={handleFileInputChange}
         />
 
-        <label htmlFor="fileUpload">{t("Upload a file")}</label>
+        <FormControl.Label htmlFor="fileUpload" p="0" m="0" w="full" rounded="none">
+          <Text w="full" px="15px" py="10px" m="0" fontSize={14} fontWeight="500" textAlign="center">{t("Upload a file")}</Text>
+        </FormControl.Label>
         <input
           type="file"
           id="fileUpload"
           style={{ display: "none" }}
           onChange={handleFileInputChange}
         />
-      </div>
+      </Box>
 
-      <button className="btn-cancel" onClick={() => {
-        setModal(false);
-      }}>
+      <Button
+        bg="white:alpha.80"
+        variant="outline"
+        px="15px"
+        py="10px"
+        rounded="md"
+        className="btn-cancel" 
+        onPress={() => {
+          setModal(false);
+        }}
+      >
        {t("CANCEL")}
-      </button>
-    </div>
-  </div>
+      </Button>
+    </Box>
+  </Box>
 )}
 
-    </div>
+    </Box>
   );
 }
