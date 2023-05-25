@@ -7,7 +7,7 @@ import {
   Image,
   Radio,
   Stack,
-  Text,
+  Select as NativeSelect,
   VStack,
 } from "native-base";
 import { BodySmall, H2, t, FloatingInput } from "@shiksha/common-lib";
@@ -234,5 +234,39 @@ export const Aadhaar = (props) => {
       />
       <FloatingInput {...props} />
     </VStack>
+  );
+};
+
+export const Select = ({ options, value, onChange, required, schema }) => {
+  const items = options?.enumOptions;
+  const { label } = schema ? schema : {};
+  return (
+    <FormControl gap="4">
+      {label && (
+        <FormControl.Label>
+          <H2 color="textMaroonColor.400">{t(label)}</H2>
+          {required && <H2 color="textMaroonColor.400">*</H2>}
+        </FormControl.Label>
+      )}
+      <NativeSelect
+        value={value}
+        onChange={(value) => onChange(value)}
+        height="34px"
+        color="#555"
+        bg="#fff"
+        border="1px solid #3f8bf1"
+        rounded="10px"
+      >
+        {items?.map((item) => (
+          <NativeSelect.Item
+            key={item?.value}
+            value={item?.value}
+            size="lg"
+            _text={{ fontSize: 12, fontWeight: 500 }}
+            label={item?.label}
+          />
+        ))}
+      </NativeSelect>
+    </FormControl>
   );
 };

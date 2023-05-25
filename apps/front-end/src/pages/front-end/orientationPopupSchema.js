@@ -1,26 +1,50 @@
 export default {
   type: "object",
-
+  required: [
+    "user_id",
+    "start_date",
+    "start_time",
+    "location",
+    "location_type",
+  ],
   properties: {
-    event_type: {
-      title: "Event type",
+    // created_by: {
+    //   title: "Created by",
+    //   type: "string",
+    //   format: "hidden",
+    // },
+    // context_id: {
+    //   title: "Context by",
+    //   type: "string",
+    //   format: "hidden",
+    // },
+    // updated_by: {
+    //   title: "Updated by",
+    //   type: "string",
+    //   format: "hidden",
+    // },
+
+    type: {
       type: "string",
-      format: "select",
-      enum: ["Prerak Orientationb", "Prerak Training", "My MT", "Add a Prerak"],
+      title: "Event type",
+      format: "Select",
+      enum: ["Orientation", "Training", "Master Training", "Add a Prerak"],
     },
     mastertrainer: {
       title: "Master Trainer",
       type: "string",
-      format: "select",
-      enum: [""],
     },
-    candidates: {
-      title: "Candidates",
+    user_id: {
+      title: "Select Candidates",
       type: "string",
-      format: "select",
-      enum: [""],
+      enum: ["Select Candidates"],
     },
-    date: {
+    start_date: {
+      title: "Date",
+      type: "string",
+      format: "date",
+    },
+    end_date: {
       title: "Date",
       type: "string",
       format: "date",
@@ -44,6 +68,13 @@ export default {
     location: {
       title: "Location",
       type: "string",
+    },
+    location_type: {
+      title: "Location Type",
+      type: "string",
+      format: "RadioBtn",
+      enumNames: ["online", "offline"],
+      enum: ["online", "offline"],
     },
   },
 };

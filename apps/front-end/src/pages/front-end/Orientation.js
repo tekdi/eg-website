@@ -6,6 +6,8 @@ import {
   BoxBlue,
   H1,
   t,
+  filtersByObject,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -24,6 +26,10 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
+  Select,
+  RadioBtn,
+  CustomR,
+  AddButton,
 } from "../../component/BaseInput";
 import {
   Button,
@@ -34,7 +40,6 @@ import {
   Modal,
   Input,
   FormControl,
-  Select,
   CheckIcon,
   CheckCircleIcon,
   TextArea,
@@ -44,14 +49,36 @@ import {
 import Chip from "component/Chip";
 import moment from "moment";
 
-export default function Orientation({ footerLinks, onShowScreen }) {
-  console.log(onShowScreen);
-  // const { t } = useTranslation();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
+export default function Orientation({
+  footerLinks,
+  getFormData,
+  userIds,
+  onShowScreen,
+}) {
   const formRef = React.useRef();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({});
+
+  const SelectButton = () => (
+    <VStack>
+      <Button onPress={(e) => onShowScreen(true)}>
+        <Text>select preraks</Text>
+      </Button>
+      <Text>{userIds?.map((e) => e.first_name)?.join(", ")}</Text>
+    </VStack>
+  );
+
+  React.useEffect(() => {
+    setFormData({ ...formData, user_id: userIds.map((e) => e?.id) });
+  }, [userIds]);
+
   const uiSchema = {
+    // user_id: {
+    //   "ui:widget": onShowScreen,
+    // },
+    user_id: {
+      "ui:widget": SelectButton,
+    },
     date: {
       "ui:widget": "alt-date",
       "ui:options": {
@@ -67,6 +94,59 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       height: "100%",
     },
   };
+
+  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
+    let enumObj = {};
+    let arrData = arr;
+    if (!_.isEmpty(filters)) {
+      arrData = filtersByObject(arr, filters);
+    }
+    enumObj = {
+      ...enumObj,
+      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
+    };
+    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
+    const newProperties = schema["properties"][key];
+    let properties = {};
+    if (newProperties) {
+      if (newProperties.enum) delete newProperties.enum;
+      let { enumNames, ...remainData } = newProperties;
+      properties = remainData;
+    }
+    return {
+      ...schema,
+      ["properties"]: {
+        ...schema["properties"],
+        [key]: {
+          ...properties,
+          ...(_.isEmpty(arr) ? {} : enumObj),
+        },
+      },
+    };
+  };
+
+  const onSubmit = async (data) => {
+    let newFormData = data.formData;
+    if (orientationPopupSchema?.properties?.context) {
+      newFormData = {
+        ...newFormData,
+        ["context"]: newFormData?.context.replaceAll(" ", ""),
+      };
+    }
+
+    if (
+      orientationPopupSchema?.properties?.start_date &&
+      newFormData?.start_date
+    ) {
+      newFormData = {
+        ...newFormData,
+        ["start_date"]: newFormData?.start_date.replaceAll(" ", ""),
+      };
+    }
+    getFormData(newFormData);
+    setFormData(newFormData);
+  };
+
   return (
     <Layout
       _appBar={{
@@ -96,17 +176,17 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         <HStack display="flex" flexDirection="row" space="xl">
           <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
-              <Pressable onPress={onShowScreen}>
+              <Pressable onPress={(e) => onShowScreen(true)}>
                 <Image
                   source={{
                     uri: "/orientation.svg",
                   }}
-                  alt="Prerak Orientation"
+                  alt=" Orientation"
                   size={"sm"}
                   resizeMode="contain"
                 />
                 <Text fontSize="sm" bold pt="4">
-                  Prerak Orientation
+                  Orientation
                 </Text>
               </Pressable>
             </VStack>
@@ -117,12 +197,12 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 source={{
                   uri: "/training.svg",
                 }}
-                alt="Prerak Training"
+                alt=" Training"
                 size={"sm"}
                 resizeMode="contain"
               />
               <Text fontSize="sm" bold pt="4">
-                Prerak Training
+                Training
               </Text>
             </VStack>
           </BoxBlue>
@@ -132,12 +212,12 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 source={{
                   uri: "/masterTrainer.svg",
                 }}
-                alt="My MT"
+                alt="Master Training"
                 size={"sm"}
                 resizeMode="contain"
               />
               <Text fontSize="sm" bold pt="4">
-                My MT
+                Master Training
               </Text>
             </VStack>
           </BoxBlue>
@@ -354,7 +434,9 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           <Modal.Body p="3" pb="10" bg="white">
             <Form
               ref={formRef}
+              widgets={{ RadioBtn, CustomR, Select }}
               templates={{
+                ButtonTemplates: { AddButton },
                 FieldTemplate,
                 ObjectFieldTemplate,
                 TitleFieldTemplate,
@@ -364,13 +446,13 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               noHtml5Validate={true}
               {...{
                 validator,
-                schema: orientationPopupSchema,
+                schema: orientationPopupSchema ? orientationPopupSchema : {},
                 formData,
                 uiSchema,
+                onSubmit,
               }}
-            />
-            <Modal.Footer justifyContent={"space-between"}>
-              <Button.Group space={2}>
+            >
+              <HStack justifyContent="space-between" space={2} py="5">
                 <Button
                   variant="blueOutlineBtn"
                   colorScheme="blueGray"
@@ -384,14 +466,15 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 <Button
                   variant="blueFillButton"
                   onPress={() => {
-                    setShowModal(false);
+                    // setShowModal(false);
+                    formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
                 >
                   <Text color="white">Send Invites</Text>
                 </Button>
-              </Button.Group>
-            </Modal.Footer>
+              </HStack>
+            </Form>
           </Modal.Body>
         </Modal.Content>
       </Modal>
