@@ -6,6 +6,7 @@ import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import NotFound from "pages/NotFound";
 import orientationScreen from "pages/front-end/orientation/orientationScreen";
 
+// import { CheatSheet } from "@shiksha/common-lib";
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
@@ -13,5 +14,7 @@ export default [
   { path: "/orientation", component: orientationScreen },
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
+  { path: "/orientation", component: OrientationScreen },
+  // { path: "/cheatsheet", component: CheatSheet },
   { path: "*", component: NotFound },
 ];

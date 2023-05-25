@@ -206,6 +206,17 @@
   "LOGOUT": "लॉग आउट",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है",
+  "USER_ENTER_FOUR_DIGIT_OTP": "उपरोक्त मोबाइल नंबर पर भेजा गया 6 अंकों का ओटीपी दर्ज करें",
+  "OTP": "ओटीपी",
+  "USER_ENTER_VALID_OTP": "गलत ओटीपी डाला गया",
+  "USER_RESET_PASSWORD": "पासवर्ड रीसेट",
+  "NEW": "नया",
+  "CONFIRM": "पुष्टि करना",
+  "USER_SET_NEW_PASSWORD": "नया पासवर्ड सेट करें",
+  "USER_FORGET_PASSWORD": "पासवर्ड भूल गए",
+  "USER_CONFIRM_PASSWORD": "नए पासवर्ड की पुष्टि करें",
+  "VERIFY": "सत्यापित करना",
+  "USER_CONFIRM_PASSWORD_IS_REQUIRED":"पासवर्ड की पुष्टि आवश्यक है",
   "AG_LEARNER_PROFILE":"एजी लर्नर प्रोफाइल",
   "IDENTIFIED": "पहचान की गई",
   "ADD_YOUR_ADDRESS":"अपना पता जोड़ें",
@@ -278,5 +289,7 @@
   "CBOSIGN": "सीबीओ हस्ताक्षर के साथ मार्कशीट",
   "CBOSIGNTRANSFER": "सीबीओ हस्ताक्षर के साथ हस्तांतरण प्रमाण पत्र",
   "PROFILE_DETAILS": "प्रोफ़ाइल विवरण",
-  "MARK_AS_DROPOUT": "मार्क एज ड्रूपॉट"
+  "MARK_AS_DROPOUT": "मार्क एज ड्रूपॉट",
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है"
+
 }
