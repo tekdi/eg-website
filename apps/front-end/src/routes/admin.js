@@ -22,27 +22,27 @@ export default [
   { path: "/", component: AdminHome },
 
   {
-    path: '/aadhaarStart',
+    path: '/admin/aadhaarStart',
     component: AadhaarStartKyc,
   },
   {
-    path: '/aadhaarNumber',
+    path: '/admin/aadhaarNumber',
     component: AdharKyc,
   },
   {
-    path: '/aadhaarOTP',
+    path: '/admin/aadhaarOTP',
     component: AdharOTP,
   },
   {
-    path: '/aadhaarSuccess',
+    path: '/admin/aadhaarSuccess',
     component: AdharSuccess,
   },
   {
-    path: '/aadhaarManualUpload',
+    path: '/admin/aadhaarManualUpload',
     component: ManualUpload,
   },
   {
-    path: '/aadhaarQrScanner',
+    path: '/admin/aadhaarQrScanner',
     component: QrScannerKyc,
   },
 
