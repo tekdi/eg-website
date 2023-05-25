@@ -142,7 +142,6 @@ export default function FacilitatorView({ footerLinks }) {
       }
     } else {
       setCredentials();
-      console.log("Confirm password is not matched with Password");
     }
   };
 
