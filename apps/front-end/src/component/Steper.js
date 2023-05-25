@@ -138,7 +138,6 @@ const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
 const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
   const nSize = parseInt(size ? size : "40px");
   const fontSize = Math.floor(nSize / 5);
-  console.log(stage);
   return (
     <HStack space={4}>
       <Stack
