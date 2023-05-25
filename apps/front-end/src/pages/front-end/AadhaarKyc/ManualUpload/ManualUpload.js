@@ -31,7 +31,7 @@ export default function ManualUpload() {
     if (file.size <= 1048576 * 2) {
       const data = await getBase64(file);
       setCameraUrl(data);
-      // setImage(data);
+      
       if (isFront) {
         setImage((prev) => ({ ...prev, front: data }));
       } else {
