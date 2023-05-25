@@ -26,6 +26,7 @@ import FloatingInput from './components/FloatingInput'
 import * as AdminTypo from "./components/admin_component"
 import * as FrontEndTypo from "./components/frontend_component"
 import CheatSheet from './components/CheatSheet'
+import CustomOTPBox from './components/CustomOTPBox'
 
 export {
   AdminTypo,
@@ -57,7 +58,8 @@ export {
   changeLanguage,
   Camera,
   FloatingInput,
-  CheatSheet
+  CheatSheet,
+  CustomOTPBox
 }
 
 export * from './services/RestClient'
