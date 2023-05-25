@@ -23,6 +23,7 @@ import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
 import FloatingInput from './components/FloatingInput'
+import CustomOTPBox from './components/CustomOTPBox'
 
 export {
   AppBar,
@@ -51,7 +52,8 @@ export {
   t,
   changeLanguage,
   Camera,
-  FloatingInput
+  FloatingInput,
+  CustomOTPBox
 }
 
 export * from './services/RestClient'
