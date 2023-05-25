@@ -4,6 +4,7 @@ module.exports = {
   name: "auth",
   exposes: {
     "./Login": "./src/pages/Login",
+    "./ForgetPassword": "./src/pages/ForgetPassword",
   },
   remotes: {},
   filename: "moduleEntry.js",

@@ -11,6 +11,7 @@ import {
   BodySmall,
   Loading,
   t,
+  authRegistryService,
   ImageView,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,6 +23,11 @@ import {
   HStack,
   Text,
   VStack,
+  Modal,
+  FormControl,
+  Input,
+  ChevronRightIcon,
+  useToast,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -57,8 +63,15 @@ const Experience = (obj) => {
 };
 
 export default function FacilitatorView({ footerLinks }) {
+  const toast = useToast();
+
   const { id } = useParams();
   const [data, setData] = React.useState();
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [credentials, setCredentials] = React.useState();
+  const [otpData, setotpData] = React.useState();
+  const [errors, setErrors] = React.useState({});
+
   const navigate = useNavigate();
 
   React.useEffect(async () => {
@@ -68,12 +81,75 @@ export default function FacilitatorView({ footerLinks }) {
 
   const showData = (item) => (item ? item : "-");
 
+  const validate = () => {
+    let arr = {};
+    if (
+      typeof credentials?.password === "undefined" ||
+      credentials?.password === ""
+    ) {
+      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
+    }
+
+    if (
+      typeof credentials?.confirmPassword === "undefined" ||
+      credentials?.confirmPassword === ""
+    ) {
+      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
+    }
+
+    setErrors(arr);
+    if (arr.password || arr.confirmPassword) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleSendOtp = async () => {
+    const sendotpBody = {
+      mobile: data?.mobile.toString(),
+      reason: "verify_mobile",
+    };
+    const datas = await authRegistryService.sendOtp(sendotpBody);
+    setotpData(datas);
+  };
+
+  const handleResetPassword = async (password, confirm_password) => {
+    if (validate()) {
+      if (password === confirm_password) {
+        const bodyData = {
+          id: id.toString(),
+          password: password,
+        };
+        const resetPassword = await authRegistryService.resetPasswordAdmin(
+          bodyData
+        );
+        if (resetPassword.success === true) {
+          setCredentials();
+          setModalVisible(false);
+          toast.show({
+            title: "Success",
+            variant: "solid",
+            description: resetPassword?.message,
+          });
+
+          navigate("/");
+          return { status: true };
+        } else if (resetPassword.success === false) {
+          setCredentials();
+          setModalVisible(false);
+          return { status: false };
+        }
+      }
+    } else {
+      setCredentials();
+    }
+  };
+
   if (!data) {
     return <Loading />;
   } else if (_.isEmpty(data) || data.error) {
     return <NotFound goBack={(e) => navigate(-1)} />;
   }
-
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -215,6 +291,7 @@ export default function FacilitatorView({ footerLinks }) {
               )}
             </HStack>
           </HStack>
+
           <HStack alignItems={Center} space="9" pt="5">
             <VStack flex={0.3} space="5">
               <Button
@@ -224,7 +301,165 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("SEND_MESSAGE")}
               </Button>
             </VStack>
+            <VStack flex={0.2} space="1" direction="row">
+              <Button
+                variant="outlinePrimary"
+                leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
+                onPress={() => {
+                  setModalVisible(true);
+                  handleSendOtp();
+                }}
+              >
+                {t("USER_RESET_PASSWORD")}
+              </Button>
+            </VStack>
           </HStack>
+
+          <Modal
+            isOpen={modalVisible}
+            onClose={() => setModalVisible(false)}
+            avoidKeyboard
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header textAlign={"Center"}>
+                {t("USER_RESET_PASSWORD")}
+              </Modal.Header>
+              <Modal.Body p="5" pb="10" mx={5} overflowX="hidden">
+                <HStack space={3}>
+                  <IconByName isDisabled name="UserLineIcon" />
+                  <H3
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {data?.first_name} {data?.last_name}
+                  </H3>
+                </HStack>
+                <br />
+                <FormControl isRequired isInvalid>
+                  <VStack justifyContent="space-between" space={30}>
+                    <Input
+                      id="password"
+                      rounded="lg"
+                      height="48px"
+                      bg="white"
+                      variant="unstyled"
+                      p={"10px"}
+                      type="password"
+                      placeholder={
+                        t("ENTER") + " " + t("NEW") + " " + t("PASSWORD")
+                      }
+                      value={credentials?.password ? credentials?.password : ""}
+                      onChange={(e) =>
+                        setCredentials({
+                          ...credentials,
+                          password: e?.target?.value?.trim(),
+                        })
+                      }
+                    />
+                    {"password" in errors ? (
+                      <FormControl.ErrorMessage
+                        _text={{
+                          fontSize: "xs",
+                          color: "error.500",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {!credentials?.password ? (
+                          errors.password
+                        ) : (
+                          <React.Fragment />
+                        )}
+                      </FormControl.ErrorMessage>
+                    ) : (
+                      <React.Fragment />
+                    )}
+
+                    <Input
+                      id="confirmPassword"
+                      rounded="lg"
+                      height="48px"
+                      bg="white"
+                      variant="unstyled"
+                      p={"10px"}
+                      type="password"
+                      placeholder={
+                        t("CONFIRM") + " " + t("NEW") + " " + t("PASSWORD")
+                      }
+                      value={
+                        credentials?.confirmPassword
+                          ? credentials?.confirmPassword
+                          : ""
+                      }
+                      onChange={(e) =>
+                        setCredentials({
+                          ...credentials,
+                          confirmPassword: e?.target?.value?.trim(),
+                        })
+                      }
+                    />
+
+                    {"confirmPassword" in errors ? (
+                      <FormControl.ErrorMessage
+                        _text={{
+                          fontSize: "xs",
+                          color: "error.500",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {!credentials?.confirmPassword ? (
+                          errors.confirmPassword
+                        ) : (
+                          <React.Fragment />
+                        )}
+                      </FormControl.ErrorMessage>
+                    ) : (
+                      <React.Fragment />
+                    )}
+                  </VStack>
+                </FormControl>
+              </Modal.Body>
+              <Modal.Footer>
+                <HStack justifyContent="space-between" space={30}>
+                  <Button
+                    borderRadius="full"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setModalVisible(false);
+                      setCredentials();
+                    }}
+                  >
+                    {t("CANCEL")}
+                  </Button>
+                  <Button
+                    borderRadius="full"
+                    colorScheme="trueGray"
+                    onPress={() => {
+                      credentials?.password === credentials?.confirmPassword
+                        ? handleResetPassword(
+                            credentials?.password,
+                            credentials?.confirmPassword
+                          )
+                        : toast.show({
+                            title: "Error",
+                            variant: "solid",
+                            description: t(
+                              "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+                            ),
+                          });
+                    }}
+                  >
+                    <HStack>
+                      {t("USER_SET_NEW_PASSWORD")}
+                      <ChevronRightIcon size="xs" />
+                    </HStack>
+                  </Button>
+                </HStack>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
 
           <VStack space={"5"} p="5" mt="6">
             <H3>{t("APPLICATION_FORM")}</H3>
