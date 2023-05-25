@@ -6,15 +6,13 @@ import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import NotFound from "pages/NotFound";
 import orientationScreen from "pages/front-end/orientation/orientationScreen";
 
-
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AdharOTP from "pages/front-end/AadhaarKyc/AadhaarOTP";
 import AdharSuccess from "pages/front-end/AadhaarKyc/AadhaarSuccess";
 import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
 import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
 import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
-
-// import { CheatSheet } from "@shiksha/common-lib" ;
+import { CheatSheet } from "@shiksha/common-lib" ;
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -50,9 +48,7 @@ export default [
     component: QrScannerKyc,
   },
 
-  // { path: "*", component: NotFound },
-=======
-  // { path: "/cheatsheet", component: CheatSheet },
-  { path: "*", component: NotFound },
+ { path: "*", component: NotFound },
 
+  { path: "/cheatsheet", component: CheatSheet },
 ];
