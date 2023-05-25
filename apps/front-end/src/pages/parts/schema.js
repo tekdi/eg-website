@@ -13,7 +13,7 @@ export default {
           title: "FIRST_NAME",
         },
         last_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "LAST_NAME",
         },
       },
@@ -29,7 +29,7 @@ export default {
           title: "MOBILE_NUMBER",
         },
         // email_id: {
-        //   type: "string",
+        //   type: ['string', 'null'],
         //   format: "email",
         //   title: "EMAIL_ID",
         // },
@@ -56,6 +56,22 @@ export default {
         gender: {
           title: "GENDER",
           type: "string",
+          format: "CustomR",
+          grid: 3,
+          icons: [
+            {
+              name: "UserFollowLineIcon",
+              _icon: { size: "30" },
+            },
+            {
+              name: "UserLineIcon",
+              _icon: { size: "30" },
+            },
+            {
+              name: "UserStarLineIcon",
+              _icon: { size: "30" },
+            },
+          ],
           enumNames: ["Female", "Male", "Other"],
           enum: ["female", "male", "other"],
         },
@@ -88,7 +104,7 @@ export default {
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
-          type: "string",
+          type: ["string", "null"],
         },
       },
     },
@@ -101,30 +117,32 @@ export default {
         aadhar_token: {
           title: "AADHAAR_NUMBER",
           type: "number",
+          format: "Aadhaar",
         },
       },
     },
     7: {
+      title: "YOUR_HIGHEST_QUALIFICATION",
       type: "object",
       required: ["qualification", "degree"],
       properties: {
         qualification: {
-          title: "YOUR_HIGHEST_QUALIFICATION",
-          type: "string",
-          format: "select",
+          type: ["string", "number"],
+          format: "CustomR",
+          grid: 2,
         },
         degree: {
-          title: "DO_YOU_HAVE_ANY_TEACHING_DEGREE",
-          type: "string",
-          format: "select",
+          label: "DO_YOU_HAVE_ANY_TEACHING_DEGREE",
+          type: ["string", "number"],
+          format: "RadioBtn",
         },
       },
     },
     8: {
       type: "object",
+      title: "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE",
       properties: {
         vo_experience: {
-          title: "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE",
           type: "array",
           items: {
             title: "VOLUNTEER_EXPERIENCE",
@@ -140,18 +158,22 @@ export default {
               },
               description: {
                 title: "DESCRIPTION",
-                type: "string",
+                type: ["string", "null"],
                 format: "textarea",
+                rows: 5,
               },
               experience_in_years: {
-                title: "EXPERIENCE_IN_YEARS",
+                label: "EXPERIENCE_IN_YEARS",
                 type: "string",
+                format: "CustomR",
+                grid: 3,
                 enumNames: ["1", "2", "3", "4", "+5"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {
-                title: "IS_THE_JOB_RELATED_TO_TEACHING",
-                type: "string",
+                label: "IS_THE_JOB_RELATED_TO_TEACHING",
+                type: ["string", "null"],
+                format: "RadioBtn",
                 enumNames: ["Yes", "No"],
                 enum: ["yes", "no"],
               },
@@ -161,10 +183,10 @@ export default {
       },
     },
     9: {
+      title: "DO_YOU_HAVE_ANY_JOB_EXPERIENCE",
       type: "object",
       properties: {
         experience: {
-          title: "DO_YOU_HAVE_ANY_WORK_EXPERIENCE",
           type: "array",
           items: {
             title: "EXPERIENCE",
@@ -180,18 +202,22 @@ export default {
               },
               description: {
                 title: "DESCRIPTION",
-                type: "string",
+                type: ["string", "null"],
                 format: "textarea",
+                rows: 5,
               },
               experience_in_years: {
-                title: "EXPERIENCE_IN_YEARS",
+                label: "EXPERIENCE_IN_YEARS",
                 type: "string",
+                format: "CustomR",
+                grid: 3,
                 enumNames: ["1", "2", "3", "4", "+5"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {
-                title: "IS_THE_JOB_RELATED_TO_TEACHING",
-                type: "string",
+                label: "IS_THE_JOB_RELATED_TO_TEACHING",
+                type: ["string", "null"],
+                format: "RadioBtn",
                 enumNames: ["Yes", "No"],
                 enum: ["yes", "no"],
               },
@@ -202,48 +228,43 @@ export default {
     },
     10: {
       type: "object",
-      required: ["availability"],
+      required: [
+        "availability",
+        "device_ownership",
+        "device_type",
+        "sourcing_channel",
+      ],
       properties: {
         availability: {
-          title: "YOUR_WORK_AVAILABILITY_WILL_BE",
+          label: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
+          format: "CustomR",
+          grid: 2,
           enum: ["part_time", "full_time"],
           enumNames: ["Part time", "Full time"],
         },
-      },
-    },
-    11: {
-      type: "object",
-      required: ["device_ownership"],
-      properties: {
         device_ownership: {
-          title: "DO_YOU_OWN_A_MOBILE_PHONE",
+          label: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
+          format: "RadioBtn",
           enumNames: ["Yes", "No, I use a Family member's"],
           enum: ["yes", "no"],
         },
-      },
-    },
-    12: {
-      type: "object",
-      required: ["device_type"],
-      properties: {
         device_type: {
-          title: "TYPE_OF_MOBILE_PHONE",
+          label: "TYPE_OF_MOBILE_PHONE",
           type: "string",
+          format: "CustomR",
+          grid: 2,
+          icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
           enumNames: ["Android", "IPhone"],
           enum: ["android", "iphone"],
         },
-      },
-    },
-    13: {
-      type: "object",
-      required: ["sourcing_channel"],
-      title: "HOW_DID_YOU_FIND_OUT_ABOUT_PROJECT_PRAGATI",
-      properties: {
         sourcing_channel: {
-          title: "PLEASE_SELECT",
+          label: "HOW_DID_YOU_FIND_OUT_ABOUT_PROJECT_PRAGATI",
           type: "string",
+          format: "CustomR",
+          grid: 2,
+
           enumNames: [
             "Prerak Referral",
             "NGO Referral",

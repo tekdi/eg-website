@@ -19,6 +19,8 @@ import {
   logout,
   H1,
   Layout,
+  BodyMedium,
+  H2,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -61,12 +63,12 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const { error } = await login(credentials);
-      if (error) {
-        setErrors({ alert: t(error) });
-      } else {
+      const { user, token, error } = await login(credentials);
+      if (!error) {
         navigate("/");
         navigate(0);
+      } else {
+        setErrors({ alert: t(error) });
       }
     } else {
       logout();
@@ -132,7 +134,7 @@ export default function Login() {
               </VStack>
             </Alert>
           ) : (
-            <></>
+            <React.Fragment />
           )}
           <VStack space="2">
             <FormControl isRequired isInvalid={"username" in errors}>
@@ -167,7 +169,7 @@ export default function Login() {
                   {errors.username}
                 </FormControl.ErrorMessage>
               ) : (
-                <></>
+                <React.Fragment />
               )}
             </FormControl>
             <FormControl isRequired isInvalid={"password" in errors}>
@@ -202,7 +204,7 @@ export default function Login() {
                   {errors.password}
                 </FormControl.ErrorMessage>
               ) : (
-                <></>
+                <React.Fragment />
               )}
             </FormControl>
           </VStack>
@@ -211,9 +213,16 @@ export default function Login() {
           <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
             {t("LOGIN")}
           </Button>
-          {/* <BodyMedium color="primary.500" textAlign="center">
-              {t("CHANGE_MY_PASSWORD")}
-            </BodyMedium> */}
+          <BodyMedium color="primary.500" textAlign="center">
+            <H2
+              onPress={() => {
+                navigate("/reset-password");
+              }}
+            >
+              {" "}
+              {t("USER_FORGET_PASSWORD")}
+            </H2>
+          </BodyMedium>
         </VStack>
       </VStack>
     </Layout>

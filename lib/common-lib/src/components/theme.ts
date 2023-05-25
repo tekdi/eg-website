@@ -1,3 +1,5 @@
+import { BorderColor } from '@mui/icons-material'
+
 const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '20px' : ''
 
@@ -53,6 +55,14 @@ const DEFAULT_THEME = {
     mono: fontFamily
   },
   components: {
+    Input: {
+      baseStyle: {
+        p: '4',
+        minH: '54px',
+        borderColor: 'secondaryBlue.500',
+        rounded: '10px'
+      }
+    },
     Text: {
       baseStyle: {
         fontFamily: fontFamily,
@@ -172,9 +182,26 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
+            fontWeight: '700',
             color: '#790000'
           },
-          rounded: '4px'
+          rounded: '4',
+          shadow: '2px 3px 0px #8B7171'
+        }),
+        statusBtnAdmin: ({ colorScheme }: any) => ({
+          bg: `${colorScheme}.50`,
+          borderWidth: '1',
+          borderColor: `${colorScheme}.500`,
+          _hover: {
+            bg: `${colorScheme}.100`
+          },
+          _pressed: {
+            bg: `${colorScheme}.200`
+          },
+          _text: {
+            color: `${colorScheme}.500`
+          },
+          rounded: '100'
         })
       }
     }
@@ -213,6 +240,46 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+    FooterShadow: {
+      shadowColor: '#e0e0e066',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    RedFillShadow: {
+      shadowColor: '#C92A42',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    RedOutlineShadow: {
+      shadowColor: '#8B7171',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
+    RedBoxShadow: {
+      shadowColor: '#790000',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
     BlueBoxShadow: {
       shadowColor: '#CAE9FF',
       shadowOffset: {
@@ -222,9 +289,25 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 1.0,
       elevation: 1
+    },
+    appBarShadow: {
+      shadowColor: '#d9d9d9',
+      shadowOffset: {
+        width: 0,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 16,
+      elevation: 1
     }
   },
   colors: {
+    footer: {
+      boxBorder: '#C92A42'
+    },
+    formBg: {
+      500: '#F4F4F7'
+    },
     widgetColor: {
       400: '#7F9DAC',
       500: '#DDD8F3',
@@ -428,6 +511,68 @@ const DEFAULT_THEME = {
       350:'#CAE9FF',
       400:'#084B82',
       450:'#3F8BF1',
+    },
+    bgPinkColor: {
+      300: '#F9E9DB'
+    },
+    editIcon: {
+      300: '#3F8BF1'
+    },
+    sendMessageBtn: {
+      200: '#14242D'
+    },
+    Darkmaroonprimarybutton: {
+      400: '#2D142C'
+    },
+    Darkmaroonsecondarybutton: {
+      400: '#BDBDBD'
+    },
+    Disablecolor: {
+      400: '#BDBDBD'
+    },
+    Defaultcolor: {
+      400: '#616161'
+    },
+    Focusedcolor: {
+      400: '#3F8BF1'
+    },
+    Activatedcolor: {
+      400: '#757575'
+    },
+    PrimaryIpcolor: {
+      400: '#14242D'
+    },
+    AppliedColor: '#E0E0E0',
+    ScreenedColor: '#e5f4ff',
+    ShortlistedColor: '#CAE9FF',
+    PotentialColor: '#A7F3D0',
+    SelectedColor: '#A7F3D0',
+    SuccessColor: '#00D790',
+    UnderreviewColor: '#FFEFAF',
+    RejectedColor: '#FFACAF',
+    IdentifiedColor: '#E0E0E0',
+    DocumentedColor: '#FFEFAF',
+    EntrolledColor: '#C7DFFF',
+    ApprovedColor: '#A7F3D0',
+    DroppedoutColor: '#FFACAF',
+    DuplicatedColor: '#E95055',
+    WarningColor: '#FFCF52',
+    DangerColor: '#DC2626',
+    InfoColor: '#3F8BF1',
+    secondaryBlue: {
+      50: '#e7f3fe',
+      100: '#b7dcfb',
+      200: '#87c5f8',
+      300: '#57aef5',
+      400: '#2796f2',
+      500: '#0d7dd8',
+      600: '#0a61a8',
+      700: '#074578',
+      800: '#042a48',
+      900: '#010e18'
+    },
+    btnGray: {
+      100: '#e0e0e0'
     }
   }
 }
