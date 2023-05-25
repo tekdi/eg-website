@@ -1,7 +1,7 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import "./AadhaarKyc.css";
-import { Checkbox} from "@mui/material";
+import { Checkbox } from "@mui/material";
 import { Button, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
 import { t } from "@shiksha/common-lib";
@@ -19,16 +19,12 @@ export default function AdharKyc() {
 
   React.useEffect(() => {
     const headers = {
-      // "x-client-id": "401c3159-bbfe-438d-a62c-eb4ff8bb8c10",
-      // "x-client-secret": "b066a8b1-c3f9-432d-ae74-79489047ec87",
       "x-client-id": process.env.REACT_APP_AADHAAR_CLIENT_ID,
       "x-client-secret": process.env.REACT_APP_AADHAAR_CLIENT_SECRET,
-
     };
 
     const getCaptcha = (id) => {
-      // const url2 = `https://dg-sandbox.setu.co/api/okyc/${id}/initiate/`;
-      const url2 = `${process.env.REACT_APP_AADHAAR_URL}/${id}/initiate/`
+      const url2 = `${process.env.REACT_APP_AADHAAR_URL}/${id}/initiate/`;
       const options = {
         method: "GET",
         headers: headers,
@@ -43,12 +39,10 @@ export default function AdharKyc() {
             setCaptchaImg(res.captchaImage);
           }
         })
-        .catch((err) => console.log(err))
-       
+        .catch((err) => console.log(err));
     };
 
-    // const url1 = "https://dg-sandbox.setu.co/api/okyc/";
-    const url1 = `${process.env.REACT_APP_AADHAAR_URL}/`
+    const url1 = `${process.env.REACT_APP_AADHAAR_URL}/`;
 
     fetch(url1, {
       method: "POST",
@@ -68,9 +62,6 @@ export default function AdharKyc() {
   }, []);
 
   const sendData = () => {
-    // setLoading2(true);
-
-    // const url = `https://dg-sandbox.setu.co/api/okyc/${kycReqID}/verify`;
     const url = `${process.env.REACT_APP_AADHAAR_URL}/${kycReqID}/verify`;
 
     const headers = {
@@ -91,7 +82,7 @@ export default function AdharKyc() {
       .then((res) => {
         console.log("submit adhar res -> ", res);
 
-        if (res.code === "otp_sent" || res.error?.code === 'send_otp_failed') {
+        if (res.code === "otp_sent" || res.error?.code === "send_otp_failed") {
           localStorage.setItem("aadhaarNumber", data.aadhaarNumber || "");
           navigate("/AdharOTP");
         } else {
@@ -99,12 +90,8 @@ export default function AdharKyc() {
         }
       })
       .catch((error) => console.log(error))
-      .finally(() => {
-        // setLoading2(false);
-      });
+      .finally(() => {});
   };
-
-  console.log('env : ', process.env)
 
   return (
     <div className="adharVerify1">
@@ -122,7 +109,9 @@ export default function AdharKyc() {
         </h2>
 
         <div className="aadhaarNumber__input">
-          <label htmlFor="aadhaarNumber">{t("ENTER_YOUR_AADHAAR_NUMBER")}</label>
+          <label htmlFor="aadhaarNumber">
+            {t("ENTER_YOUR_AADHAAR_NUMBER")}
+          </label>
 
           <Input
             id="aadhaarNumber"
@@ -162,16 +151,22 @@ export default function AdharKyc() {
         </div>
 
         <p className="boxMessage">
-          {t("WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR")}
+          {t(
+            "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
+          )}
         </p>
 
         <ul>
           <li>
-            {t("I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE")}
+            {t(
+              "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE"
+            )}
           </li>
 
           <li>
-            {t("I understand that my Aadhaar details shall not be used or stored for any other purpose.")}
+            {t(
+              "I understand that my Aadhaar details shall not be used or stored for any other purpose."
+            )}
           </li>
         </ul>
 
