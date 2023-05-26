@@ -24,26 +24,17 @@ import {
   Layout,
 } from "@shiksha/common-lib";
 
-export default function PrerakProfileDetailsView() {
-  let p = 0;
-  const { id } = useParams();
-  const [prerak, SetPrerak] = useState("");
-  const [Pro, SetPro] = useState("");
-
-  // console.log(result);
-  const keys = Object.keys(prerak);
-  // console.log(keys);
-
-  useEffect(async () => {
-    const progressP = async () => {
-      const data = await facilitatorRegistryService.getOne({ id });
-      SetPrerak(data);
-    };
-    await progressP();
-  }, []);
+export default function PrerakProfileDetailsView({
+  userTokenInfo,
+  footerLinks,
+}) {
+  const [prerak, SetPrerak] = useState(userTokenInfo?.authUser);
 
   return (
-    <Layout _appBar={{ name: t("YOUR_PROFILE") }}>
+    <Layout
+      _appBar={{ name: t("YOUR_PROFILE") }}
+      _footer={{ menues: footerLinks }}
+    >
       <VStack bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <Text
@@ -54,7 +45,7 @@ export default function PrerakProfileDetailsView() {
             color="#790000"
             fontWeight="700px"
           >
-            Welcome {prerak.first_name}
+            Welcome {prerak?.first_name}
           </Text>
 
           <Box paddingBottom="20px">

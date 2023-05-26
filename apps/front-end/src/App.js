@@ -43,10 +43,12 @@ function App() {
       footerLinks={[
         {
           title: "HOME",
+          route: "/",
           icon: "Home4LineIcon",
         },
         {
           title: "LEARNERS",
+          route: "/ag",
           icon: "PencilRulerLineIcon",
         },
         {

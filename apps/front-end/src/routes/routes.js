@@ -4,8 +4,8 @@ import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
 import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
-import AgLearnerProfileView from "pages/front-end/AgLearnerProfileView";
-import PrerakProfileDetailsView from "pages/front-end/PrerakProfileDetailsView";
+import Profile from "pages/front-end/PrerakProfileDetailsView";
+import PrerakListView from "pages/front-end/PrerakListView";
 
 export default [
   { path: "/form", component: Home },
@@ -18,9 +18,10 @@ export default [
   { path: "/agduplicate", component: Agduplicate },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/docschecklist", component: Docschecklist },
-  { path: "/ag", component: AgLearnerProfileView },
-
-  { path: "/*", component: Dashboard },
-
-  { path: "/prp/:id", component: PrerakProfileDetailsView },
+  { path: "/profile", component: Profile },
+  {
+    path: "/ag",
+    component: PrerakListView,
+  },
+  { path: "*", component: Dashboard },
 ];
