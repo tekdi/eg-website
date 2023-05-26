@@ -8,6 +8,7 @@ import {
   t,
   filtersByObject,
   facilitatorRegistryService,
+  eventService,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -57,6 +58,7 @@ export default function Orientation({
 }) {
   const formRef = React.useRef();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
 
   const SelectButton = () => (
@@ -64,18 +66,22 @@ export default function Orientation({
       <Button onPress={(e) => onShowScreen(true)}>
         <Text>select preraks</Text>
       </Button>
-      <Text>{userIds?.map((e) => e.first_name)?.join(", ")}</Text>
+      <Text>
+        {Object.values(userIds)
+          ?.map((e) => e.first_name)
+          ?.join(", ")}
+      </Text>
     </VStack>
   );
 
   React.useEffect(() => {
-    setFormData({ ...formData, user_id: userIds.map((e) => e?.id) });
+    setFormData({
+      ...formData,
+      user_id: Object.values(userIds).map((e) => e?.id),
+    });
   }, [userIds]);
 
   const uiSchema = {
-    // user_id: {
-    //   "ui:widget": onShowScreen,
-    // },
     user_id: {
       "ui:widget": SelectButton,
     },
@@ -95,34 +101,9 @@ export default function Orientation({
     },
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
+  const onChange = async (data) => {
+    const newData = data.formData;
+    setFormData({ ...formData, ...newData });
   };
 
   const onSubmit = async (data) => {
@@ -145,6 +126,7 @@ export default function Orientation({
     }
     getFormData(newFormData);
     setFormData(newFormData);
+    const apiResponse = await eventService.createNewEvent(newFormData);
   };
 
   return (
@@ -449,6 +431,7 @@ export default function Orientation({
                 schema: orientationPopupSchema ? orientationPopupSchema : {},
                 formData,
                 uiSchema,
+                onChange,
                 onSubmit,
               }}
             >

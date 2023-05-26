@@ -1,6 +1,7 @@
 export default {
   type: "object",
   required: [
+    "type",
     "user_id",
     "start_date",
     "start_time",
@@ -27,7 +28,7 @@ export default {
     type: {
       type: "string",
       title: "Event type",
-      format: "Select",
+      format: "select",
       enum: ["Orientation", "Training", "Master Training", "Add a Prerak"],
     },
     mastertrainer: {
@@ -36,8 +37,7 @@ export default {
     },
     user_id: {
       title: "Select Candidates",
-      type: "string",
-      enum: ["Select Candidates"],
+      type: ["string", "array"],
     },
     start_date: {
       title: "Date",

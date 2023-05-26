@@ -14,7 +14,7 @@ export default [
   { path: "/orientation", component: orientationScreen },
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
-  { path: "/orientation", component: OrientationScreen },
+  // { path: "/orientation", component: OrientationScreen },
   // { path: "/cheatsheet", component: CheatSheet },
   { path: "*", component: NotFound },
 ];

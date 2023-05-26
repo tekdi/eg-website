@@ -190,7 +190,7 @@ const scheduleCandidates = (e) => [
 export default function App() {
   changeLanguage(localStorage.getItem("lang"));
   const [data, setData] = React.useState([]);
-  const [userIds, setUserIds] = React.useState([]);
+  const [userIds, setUserIds] = React.useState({});
   const [filterObj, setFilterObj] = React.useState();
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
@@ -213,7 +213,12 @@ export default function App() {
 
   const handleSelectRow = (state) => {
     const arr = state?.selectedRows;
-    setUserIds(arr);
+    let newObj = {};
+    arr.forEach((e) => {
+      newObj = { ...newObj, [e.id]: e };
+    });
+    setUserIds({ ...userIds, ...newObj });
+
     // if (arr?.length > 0) {
     //   let filterdData = arr;
     //   if (userIds.length > 0) {
@@ -225,7 +230,6 @@ export default function App() {
     //   setUserIds([...userIds, ...filterdData]);
     // }
   };
-  // console.log(userIds);
   return (
     <Box>
       <Orientation
