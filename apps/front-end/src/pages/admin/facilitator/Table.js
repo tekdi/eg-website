@@ -5,6 +5,8 @@ import {
   H3,
   t,
   ImageView,
+  BlueFillButton,
+  BlueOutlineButton,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -14,20 +16,26 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
-      style: {
-          minHeight: '72px', // override the row height
+    style: {
+      minHeight: "72px", // override the row height
+      borderLeft: "4px solid transparent",
+      "&:hover": {
+        borderLeft: "4px solid #790000",
+        boxShadow: "1px 3px 4px rgba(0, 0, 0, 0.25)",
+        zIndex: "1",
       },
+    },
   },
   headCells: {
-      style: {
-          background:'#E0E0E0'
-      },
+    style: {
+      background: "#E0E0E0",
+    },
   },
   cells: {
-      style: {
-          color:'#616161',
-          size:'14px'
-      },
+    style: {
+      color: "#616161",
+      size: "14px",
+    },
   },
 };
 const columns = (e) => [
@@ -52,15 +60,21 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>{row?.first_name + " " + row.last_name}</Text>
+        <Text fontSize="16px" bold>
+          {row?.first_name + " " + row.last_name}
+        </Text>
       </HStack>
     ),
     sortable: true,
     attr: "name",
   },
   {
-    name: t("EMAIL_ID"),
-    selector: (row) => row?.email_id,
+    name: t("User_Id"),
+    selector: (row) => row.id,
+  },
+  {
+    name: t("MOBILE_NUMBER"),
+    selector: (row) => row?.mobile,
     sortable: true,
     attr: "email",
   },
@@ -84,10 +98,9 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${
-            item[key] && typeof item[key] === "string"
-              ? item[key].trim()
-              : item[key]
+          `${item[key] && typeof item[key] === "string"
+            ? item[key].trim()
+            : item[key]
           }`
         )
       ) {
@@ -104,7 +117,7 @@ function getBaseUrl() {
 }
 
 // Table component
-function Table({ facilitator }) {
+function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
@@ -116,16 +129,16 @@ function Table({ facilitator }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await facilitatorRegistryService.getAll(filterObj);
-    setData(result.data);
+    const result = await facilitatorRegistryService.filter(filterObj);
+    setData(admindata ? admindata : result.data?.data);
     setPaginationTotalRows(result?.totalCount);
     setLoading(false);
-  }, [filterObj]);
+  }, [admindata]);
 
   React.useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
- 
+
   return (
     <VStack>
       <HStack justifyContent={"space-between"} my="1">
@@ -144,12 +157,30 @@ function Table({ facilitator }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-        <BlueFillButton  shadow="BlueOutlineShadow" onPress={() => setModal(true)} rightIcon={<IconByName _icon={color='#084B82'} size="15px" name="ShareLineIcon"></IconByName>}>
-            <Text>{t("SEND_AN_INVITE")}</Text>
-          </BlueFillButton> 
-          <BlueFillButton mx="3" shadow="BlueFillShadow"  rightIcon={<IconByName _icon={color='#ffffff'} size="20px" name="PencilLineIcon"></IconByName>}>
+          <BlueOutlineButton
+            _text={{ color: "#084B82" }}
+            shadow="BlueOutlineShadow"
+            onPress={() => setModal(true)}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("SEND_AN_INVITE")}
+          </BlueOutlineButton>
+          {/* <BlueFillButton
+            mx="3"
+            shadow="BlueFillShadow"
+            rightIcon={
+              <IconByName color="white" size="20px" name="PencilLineIcon" />
+            }
+          >
             {t("REGISTER_PRERAK")}
-          </BlueFillButton>
+          </BlueFillButton> */}
           <Modal
             isOpen={modal}
             onClose={() => setModal(false)}
@@ -171,9 +202,8 @@ function Table({ facilitator }) {
                   >
                     <H3> {t("INVITATION_LINK")}</H3>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onboarding/${
-                        facilitator?.program_users[0]?.organisation_id
-                      }`}
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id
+                        }`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -206,7 +236,8 @@ function Table({ facilitator }) {
         </HStack>
       </HStack>
 
-      <DataTable customStyles={customStyles}
+      <DataTable
+        customStyles={customStyles}
         columns={[
           ...columns(),
           {
@@ -219,7 +250,9 @@ function Table({ facilitator }) {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-               <Text fontSize="12px" color={"white"}> {t("VIEW")}</Text>
+                <Text fontSize="12px" color={"white"}>
+                  {t("VIEW")}
+                </Text>
               </Button>
             ),
           },
@@ -231,8 +264,14 @@ function Table({ facilitator }) {
         pagination
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        onChangeRowsPerPage={(e) => setLimit(e)}
-        onChangePage={(e) => setPage(e)}
+        onChangeRowsPerPage={(e) => {
+          setLimit(e);
+          setadminLimit(e);
+        }}
+        onChangePage={(e) => {
+          setPage(e);
+          setadminPage(e);
+        }}
       />
     </VStack>
   );

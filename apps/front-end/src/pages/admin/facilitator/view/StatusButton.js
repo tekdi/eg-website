@@ -139,11 +139,23 @@ export default function StatusButton({ data, setData }) {
   }, [data?.status]);
 
   return (
-    <Box display="inline-flex" flexWrap="wrap" flexDirection="row" gap="4" my="2">
+    <Box
+      display="inline-flex"
+      flexWrap="wrap"
+      flexDirection="row"
+      gap="4"
+      my="2"
+    >
       <Button
         variant={"statusBtnAdmin"}
         colorScheme="success"
-        leftIcon={<IconByName name="CheckboxCircleLineIcon" _icon={{color:"#00D790"}} size="20px"></IconByName>}
+        leftIcon={
+          <IconByName
+            name="CheckboxCircleLineIcon"
+            _icon={{ color: "#00D790" }}
+            size="20px"
+          ></IconByName>
+        }
         onPress={() => {
           setShowModal("screened");
           setReason();
@@ -318,11 +330,11 @@ export default function StatusButton({ data, setData }) {
                     ]}
                   />
                   {reason &&
-                  ![
-                    "Incomplete Form",
-                    "Not Qualified",
-                    "Less experienced",
-                  ].includes(reason) ? (
+                    ![
+                      "Incomplete Form",
+                      "Not Qualified",
+                      "Less experienced",
+                    ].includes(reason) ? (
                     <Input
                       onChange={(e) => setReason(e?.target?.value)}
                       variant={"underlined"}

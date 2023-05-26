@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
@@ -9,15 +9,14 @@ import {
   Center,
   HStack,
   Image,
+  Input,
   Modal,
-  Radio,
-  Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../component/CustomRadio";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
+  authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
   Camera,
@@ -30,8 +29,11 @@ import {
   BodySmall,
   filtersByObject,
   H2,
+  H4,
   getBase64,
   BodyMedium,
+  changeLanguage,
+  sendAndVerifyOtp,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -42,50 +44,80 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
+  CustomR,
+  RadioBtn,
+  Aadhaar,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
+const handleResendOtp = async (mobile) => {
+  const sendotpBody = {
+    mobile: mobile.toString(),
+    reason: "verify_mobile",
+  };
+  const datas = await authRegistryService.sendOtp(sendotpBody);
+  localStorage.setItem("hash", datas?.data?.hash);
 };
 
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
+const CustomOTPBox = ({ value, onChange, required, ...props }) => {
+  const [otp, setOtp] = React.useState(new Array(6).fill(""));
+  const [timer, setTimer] = React.useState(30);
+  const timeOutCallback = React.useCallback(
+    () => setTimer((currTimer) => currTimer - 1),
+    []
+  );
+
+  useEffect(() => {
+    timer > 0 && setTimeout(timeOutCallback, 1000);
+  }, [timer, timeOutCallback]);
+
+  const resetTimer = () => {
+    if (!timer) {
+      setTimer(30);
+    }
+  };
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return false;
+    const val = [...otp.map((d, idx) => (idx === index ? element.value : d))];
+    setOtp(val);
+    onChange(val.join(""));
+    if (element.nextSibling) {
+      element.nextSibling.nextSibling.focus();
+    }
+  };
+
   return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
+    <VStack>
+      <HStack space={2}>
+        {otp.map((data, index) => {
+          return (
+            <Input
+              type="data"
+              name="otp"
+              maxLength="1"
+              key={index}
+              value={data}
+              onChange={(e) => handleChange(e.target, index)}
+              onFocus={(e) => e.target.select()}
+            />
+          );
+        })}
+      </HStack>
+      <HStack justifyContent="space-between" alignItems="center">
+        <H4>{`${"00:" + timer}`} </H4>
+        <H4
+          onPress={() => {
+            resetTimer();
+            handleResendOtp(props?.schema?.mobile);
+          }}
+        >
+          {timer <= 1 ? "Resend OTP" : <React.Fragment />}
+        </H4>
+      </HStack>
+    </VStack>
   );
 };
 
@@ -107,9 +139,10 @@ export default function App({ facilitator, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [verifyOtpData, setverifyOtpData] = useState();
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 13) {
+  if (form_step_number && parseInt(form_step_number) >= 10) {
     navigate("/dashboard");
   }
 
@@ -152,6 +185,9 @@ export default function App({ facilitator, ip, onClick }) {
       },
     },
 
+    otp: {
+      "ui:widget": CustomOTPBox,
+    },
     qualification: {
       "ui:widget": CustomR,
     },
@@ -214,7 +250,7 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
+        await formSubmitUpdate({ ...formData, form_step_number: "10" });
         setPage("upload");
       } else {
         return true;
@@ -485,10 +521,21 @@ export default function App({ facilitator, ip, onClick }) {
     ["vo_experience", "experience"].forEach((keyex) => {
       data?.[keyex]?.map((item, index) => {
         ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
+          if (item?.[key]) {
+            if (
+              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
+              item?.[key]?.replaceAll(" ", "") === ""
+            ) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("REQUIRED_MESSAGE")} ${t(
+                  schema?.properties?.[key]?.title
+                )}`
+              );
+            } else if (key === "description" && item?.[key].length > 200) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
+              );
+            }
           }
         });
       });
@@ -718,23 +765,39 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
+        const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+          ...newFormData,
+          hash: localStorage.getItem("hash"),
+        });
+        setverifyOtpData(otpData);
+        if (status === true) {
+          const data = await formSubmitCreate(newFormData);
+          if (data?.error) {
+            const newErrors = {
+              mobile: {
+                __errors:
+                  data?.error?.constructor?.name === "String"
+                    ? [data?.error]
+                    : data?.error?.constructor?.name === "Array"
+                      ? data?.error
+                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          } else {
+            if (data?.username && data?.password) {
+              setCredentials(data);
+            }
+          }
+        } else if (status === false) {
           const newErrors = {
-            mobile: {
-              __errors:
-                data?.error?.constructor?.name === "String"
-                  ? [data?.error]
-                  : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            otp: {
+              __errors: [t("USER_ENTER_VALID_OTP")],
             },
           };
           setErrors(newErrors);
         } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
+          setSchema(newSchema);
         }
       } else if (page <= 1) {
         success = true;
@@ -777,12 +840,13 @@ export default function App({ facilitator, ip, onClick }) {
         <VStack py={6} px={4} mb={5} space="6">
           <Box p="10">
             <Steper
+              type={"circle"}
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
+                { value: "1", label: t("OTHER_DETAILS") },
               ]}
-              progress={page === "upload" ? 13 : page}
+              progress={page === "upload" ? 10 : page}
             />
           </Box>
           <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
@@ -840,18 +904,19 @@ export default function App({ facilitator, ip, onClick }) {
   if (page === "upload") {
     return (
       <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
+        _appBar={{ onPressBackButton: (e) => setPage("10"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Box p="10">
             <Steper
+              type={"circle"}
               steps={[
                 { value: "6", label: t("BASIC_DETAILS") },
                 { value: "3", label: t("WORK_DETAILS") },
-                { value: "4", label: t("OTHER_DETAILS") },
+                { value: "1", label: t("OTHER_DETAILS") },
               ]}
-              progress={page === "upload" ? 13 : page}
+              progress={page === "upload" ? 10 : page}
             />
           </Box>
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
@@ -901,7 +966,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              await formSubmitUpdate({ ...formData, form_step_number: "10" });
               if (onClick) onClick("success");
             }}
           >
@@ -954,20 +1019,23 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
+        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : ["notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "white" } }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        <Box px="2" py="10">
+        <Box px="2" pb="10">
           <Steper
+            type={"circle"}
             steps={[
               { value: "6", label: t("BASIC_DETAILS") },
               { value: "3", label: t("WORK_DETAILS") },
-              { value: "4", label: t("OTHER_DETAILS") },
+              { value: "1", label: t("OTHER_DETAILS") },
             ]}
             progress={page - 1}
           />
@@ -986,6 +1054,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR, Aadhaar }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -993,6 +1062,8 @@ export default function App({ facilitator, ip, onClick }) {
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
+              ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -1010,9 +1081,10 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             <Button
-              mt="3"
               variant={"primary"}
               type="submit"
+              p="4"
+              mt="10"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}

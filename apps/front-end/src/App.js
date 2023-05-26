@@ -6,6 +6,7 @@ import {
   getTokernUserInfo,
   facilitatorRegistryService,
   setLocalUser,
+  t,
 } from "@shiksha/common-lib";
 import guestRoutes from "./routes/guestRoutes";
 import routes from "./routes/routes";
@@ -40,7 +41,24 @@ function App() {
       basename={process.env.PUBLIC_URL}
       routes={accessRoutes}
       guestRoutes={guestRoutes}
-      isShowFooterLink={false}
+      footerLinks={[
+        {
+          title: "HOME",
+          icon: "Home4LineIcon",
+        },
+        {
+          title: "LEARNERS",
+          icon: "PencilRulerLineIcon",
+        },
+        {
+          title: "MY_CAMP",
+          icon: "CommunityLineIcon",
+        },
+        {
+          title: "DASHBOARD",
+          icon: "DashboardLineIcon",
+        },
+      ]}
       appName="Teacher App"
       userTokenInfo={userTokenInfo}
     />

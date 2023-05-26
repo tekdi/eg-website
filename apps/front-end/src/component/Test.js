@@ -1,4 +1,4 @@
-import { Box, VStack } from "native-base";
+import { VStack } from "native-base";
 import React from "react";
 import Clipboard from "./Clipboard";
 
