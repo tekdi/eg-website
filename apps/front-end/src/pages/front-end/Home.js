@@ -3,7 +3,10 @@ import Form from "./Form";
 import SplashScreen from "./splash/SplashScreen";
 import PrerakDuties from "./splash/PrerakDuties";
 import Success from "./Success";
-import { facilitatorRegistryService, initializeI18n } from "@shiksha/common-lib";
+import {
+  facilitatorRegistryService,
+  initializeI18n,
+} from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 
 function Home({ userTokenInfo }) {
@@ -16,7 +19,7 @@ function Home({ userTokenInfo }) {
     if (userTokenInfo) {
       const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
-      localStorage.setItem("profile_url", fa_data?.profile_url);
+      localStorage.setItem("profile_url", fa_data?.documents?.[0]?.name);
       setFacilitator(fa_data);
       if (fa_data?.program_faciltators?.parent_ip) {
         const ip_id = fa_data?.program_faciltators?.parent_ip;
@@ -28,7 +31,7 @@ function Home({ userTokenInfo }) {
       setPage("Form");
     } else {
       const data = await facilitatorRegistryService.getOrganization({ id });
-      localStorage.setItem("profile_url", data?.profile_url);
+      localStorage.setItem("profile_url", data?.documents?.[0]?.name);
       setIp(data);
     }
   }, []);
@@ -40,7 +43,7 @@ function Home({ userTokenInfo }) {
       page={page}
       onClick={() => setPage("Form")}
       onClickPrerakDuties={() => setPage("Prerak_Duties")}
-      onPreferedLanguage={()=>setPage("Prerak_Duties")}
+      onPreferedLanguage={() => setPage("Prerak_Duties")}
     />
   ) : page === "Prerak_Duties" ? (
     <PrerakDuties page={page} onClick={() => setPage("Form")} />
