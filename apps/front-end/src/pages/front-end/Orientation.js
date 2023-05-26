@@ -60,26 +60,35 @@ export default function Orientation({
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
+  const [eventList, setEventList] = React.useState();
 
   const SelectButton = () => (
     <VStack>
       <Button onPress={(e) => onShowScreen(true)}>
         <Text>select preraks</Text>
       </Button>
-      <Text>
+      {/* <Text>
         {Object.values(userIds)
           ?.map((e) => e.first_name)
           ?.join(", ")}
-      </Text>
+      </Text> */}
     </VStack>
   );
-
   React.useEffect(() => {
-    setFormData({
-      ...formData,
-      user_id: Object.values(userIds).map((e) => e?.id),
-    });
-  }, [userIds]);
+    getEventList();
+  }, []);
+
+  // React.useEffect(() => {
+  //   setFormData({
+  //     ...formData,
+  //     user_id: Object.values(userIds).map((e) => e?.id),
+  //   });
+  // }, [userIds]);
+
+  const getEventList = async () => {
+    const eventResult = await eventService.getEventList();
+    setEventList(eventResult);
+  };
 
   const uiSchema = {
     user_id: {
@@ -272,12 +281,30 @@ export default function Orientation({
           <Fullcalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
-            events={[
-              {
-                title: "event 1",
-                date: moment().format("YYYY-MM-DD HH:mm:ss"),
-              },
-            ]}
+            // events={[
+            //   {
+            //     title: eventList?.map((e) => {
+            //       return e?.context ? e?.context : "hi";
+            //     }),
+            //     date:
+            //        eventList?.map((e) => {
+            //         return e?.start_date !== "Invalid date"
+            //           ? moment(e?.start_date).format("YYYY-MM-DD HH:mm:ss")
+            //           :
+            //       moment().format("YYYY-MM-DD HH:mm:ss"),
+            //     }),
+            //   },
+            // ]}
+            events={eventList?.map((item) => {
+              return {
+                title: item?.context ? item?.context : "hi",
+                date:
+                  item?.start_date !== "Invalid date"
+                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
+                    : moment().format("YYYY-MM-DD HH:mm:ss"),
+              };
+            })}
+            eventClick={console.log("hi")}
             headerToolbar={{
               start: "prev,thisweek,next",
               center: "timeGridWeek,dayGridMonth,dayGridYear",
@@ -285,6 +312,7 @@ export default function Orientation({
               height: "50hv",
             }}
           />
+          ;
         </Box>
       </HStack>
 
@@ -463,7 +491,7 @@ export default function Orientation({
       </Modal>
 
       <HStack space="2xl" justifyContent={"space-between"} px="3">
-        <Box>
+        {/* <Box>
           <VStack space="xl">
             <Button
               onPress={() => {
@@ -493,8 +521,8 @@ export default function Orientation({
               </HStack>
             </VStack>
           </VStack>
-        </Box>
-        <Box width="50%" justifyContent={"Center"} flex={"1"}>
+        </Box> */}
+        {/* <Box width="50%" justifyContent={"Center"} flex={"1"}>
           <Fullcalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
@@ -515,7 +543,7 @@ export default function Orientation({
               height: "50hv",
             }}
           />
-        </Box>
+        </Box> */}
       </HStack>
     </Layout>
   );
