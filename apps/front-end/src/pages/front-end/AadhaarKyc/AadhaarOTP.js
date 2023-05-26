@@ -13,8 +13,15 @@ export default function AdharOTP() {
     otpNumber: "",
     securityCode: "",
   });
-  const [otpFailedPopup, setOtpFailedPopup] = React.useState(localStorage.getItem("aadhaarNumber") ? false : true);
-    const handleSubmit = () => {
+  const [otpFailedPopup, setOtpFailedPopup] = React.useState(localStorage.getItem("kycOtpFailed") ? true : false);
+
+  React.useEffect(() => {
+    return () => {
+      localStorage.removeItem("kycOtpFailed");
+    }
+  }, []);
+
+  const handleSubmit = () => {
     const kycReqID = localStorage.getItem("KYCreqID") || "";
     const aadhaarNumber = localStorage.getItem("aadhaarNumber") || "";
 

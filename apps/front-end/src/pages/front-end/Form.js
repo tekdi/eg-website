@@ -782,8 +782,9 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
+              // await formSubmitUpdate({ ...formData, form_step_number: "13" });
+
+              // if (onClick) onClick("success");
             }}
           >
             {t("SUBMIT")}
@@ -880,8 +881,9 @@ export default function App({ facilitator, ip, onClick }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
+              // await formSubmitUpdate({ ...formData, form_step_number: "13" });
+              // if (onClick) onClick("success");
+              navigate('/admin/aadhaarStart')
             }}
           >
             {t("SKIP_SUBMIT")}

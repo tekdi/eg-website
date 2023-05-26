@@ -17,6 +17,8 @@ export default function AdharKyc() {
   const [captchaImg, setCaptchaImg] = React.useState("");
 
   React.useEffect(() => {
+    localStorage.removeItem("kycOtpFailed");
+
     const headers = {
       "x-client-id": process.env.REACT_APP_AADHAAR_CLIENT_ID,
       "x-client-secret": process.env.REACT_APP_AADHAAR_CLIENT_SECRET,
@@ -81,8 +83,11 @@ export default function AdharKyc() {
       .then((res) => {
         console.log("submit adhar res -> ", res);
 
-        if (res.code === "otp_sent" || res.error?.code === "send_otp_failed") {
-          localStorage.setItem("aadhaarNumber", data.aadhaarNumber || "");
+        if (res.code === "otp_sent") {
+          localStorage.setItem("aadhaarNumber", data.aadhaarNumber);
+          navigate("/admin/aadhaarOTP");
+        } else if (res.error && res.error?.code === "send_otp_failed") {
+          localStorage.setItem("kycOtpFailed", true);
           navigate("/admin/aadhaarOTP");
         } else {
           alert(res.message);
@@ -132,8 +137,9 @@ export default function AdharKyc() {
             <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_SECURITY_CODE")}</Text>
             <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">{t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}</Text>
           </FormControl.Label>
-          <Image
-            width={150}
+          <img
+            // width={150}
+            style={{ width: '150px', marginLeft: '-15px' }}
             marginLeft={'-15px'}
             src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
             alt="captcha image"
@@ -177,7 +183,7 @@ export default function AdharKyc() {
           </li>
         </ul>
 
-        <FormControl.Label htmlFor="checkMark">
+        <FormControl.Label htmlFor="checkMark" display="flex" alignItems="center" flexDirection="row">
           <Checkbox
             id="checkMark"
             name="checkMark"

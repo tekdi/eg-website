@@ -165,12 +165,28 @@ export default function ManualUpload() {
 
             <Button
               variant="secondary"
-              bg={!image.front || !image.back ? "gray.300" : "gray.500"}
+              // bg={!image.front || !image.back ? "gray.300" : "gray.500"}
+              bg={
+                isFront ?
+                  !image.front ? "gray.300" : "gray.500"
+                  : !image.back ? "gray.300" : "gray.500"
+              }
               py="12px"
               px="20px"
               mt="10"
-              disabled={!image.front || !image.back}
-              onPress={handleSubmit}
+              disabled={
+                isFront ? 
+                  !image.front ? true : false
+                  : !image.back ? true : false
+              }
+              onPress={() => {
+                if (isFront && image.front) {
+                  setIsFront(false);
+                }
+                if (!isFront && image.front && image.back) {
+                  handleSubmit()
+                }
+              }}
             >
               <Text color="white">Continue</Text>
             </Button>
