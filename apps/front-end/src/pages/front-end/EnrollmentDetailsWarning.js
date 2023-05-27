@@ -1,12 +1,12 @@
 import React from "react";
 import { HStack, VStack, Text, Box, Button, ArrowBackIcon } from "native-base";
-import { IconByName } from "@shiksha/common-lib";
+import { IconByName, FrontEndTypo } from "@shiksha/common-lib";
 
 export default function EnrollmentDetailsWarning() {
   const Warning = () => {
     return (
       <Box
-        bgColor="#FDC5C7"
+        bgColor="boxBackgroundColour.50"
         borderColor="#FFC5C0"
         borderWidth="1px"
         alignItems="Center"
@@ -15,17 +15,11 @@ export default function EnrollmentDetailsWarning() {
           <IconByName
             name="ErrorWarningLineIcon"
             _icon={{ size: "10" }}
-            color="#FF2815"
+            color="iconColor.400"
           />
-          <Text
-            color="#696767"
-            fontWeight="500"
-            fontSize="12px"
-            fontFamily="Inter"
-            fontStyle="normal"
-          >
+          <FrontEndTypo.H5 color="textGreyColor.450" fontWeight="500">
             Please Complete this Information
-          </Text>
+          </FrontEndTypo.H5>
         </HStack>
       </Box>
     );
@@ -46,17 +40,11 @@ export default function EnrollmentDetailsWarning() {
           space="xl"
         >
           <Button size="xs" variant="outline" colorScheme="gray">
-            <ArrowBackIcon size="5" color="#696767" />
+            <ArrowBackIcon size="5" color="iconColor.150" />
           </Button>
-          <Text
-            color="#666666"
-            fontWeight="500"
-            fontSize="14px"
-            fontFamily="Inter"
-            fontStyle="normal"
-          >
+          <FrontEndTypo.H3 color="textGreyColor.200" fontWeight="500">
             Enrollment Details
-          </Text>
+          </FrontEndTypo.H3>
         </HStack>
       </Box>
       <VStack
@@ -65,182 +53,108 @@ export default function EnrollmentDetailsWarning() {
         space="24px"
         paddingTop="40px"
       >
-        <Box borderColor="#E0E0E0" borderWidth="1px" paddingBottom="24px">
+        <Box borderColor="AppliedColor" borderWidth="1px" paddingBottom="24px">
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <HStack flex="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="#696767"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Enrollment Status
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
                 <VStack>
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Type of Enrollment
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     New
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Enrollment Status
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     Completed
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Enrollment Board
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     RIOS
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Enrollment Number
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     090092111872
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
               </VStack>
             </HStack>
           </VStack>
         </Box>
-        <Box borderColor="#E0E0E0" borderWidth="1px" paddingBottom="24px">
+        <Box borderColor="AppliedColor" borderWidth="1px" paddingBottom="24px">
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <HStack flex="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="#666666"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Selected Subjects
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
                 <VStack space="12px">
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     Science
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     English
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     Home Science
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     Maths
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     Drawing
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
               </VStack>
             </HStack>
@@ -250,20 +164,22 @@ export default function EnrollmentDetailsWarning() {
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <Warning />
             <HStack justifyContent="space-between" alignItems="Center">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <Box width="80%">
-                <Text
-                  fontSize="12px"
-                  color="#696767"
+                <FrontEndTypo.H4
+                  color="textGreyColor.250"
+                  bold
                   fontWeight="700"
-                  fontFamily="Inter"
-                  fontStyle="normal"
                 >
                   Upload Receipt
-                </Text>
+                </FrontEndTypo.H4>
               </Box>
               <IconByName
-                color="#0D99FF"
+                color="iconColor.50"
                 name="AddLineIcon"
                 _icon={{ size: "20" }}
               />
@@ -272,7 +188,7 @@ export default function EnrollmentDetailsWarning() {
               width="full"
               height="172px"
               borderWidth="1px"
-              borderColor="#333333"
+              borderColor="worksheetBoxText.100"
               alignSelf="Center"
             />
           </VStack>

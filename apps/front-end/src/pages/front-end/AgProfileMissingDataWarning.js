@@ -11,32 +11,25 @@ import {
   Center,
   ArrowBackIcon,
 } from "native-base";
-import { IconByName } from "@shiksha/common-lib";
+import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
 
 export default function AgProfileMissingDataWarning() {
   const Warning = () => {
     return (
       <Box
-        bgColor="#FDC5C7"
-        borderColor="#FFC5C0"
-        borderWidth="1px"
+        bgColor="boxBackgroundColour.50"
+        borderColor="  boxBorderColour.50"
         alignItems="Center"
       >
         <HStack alignItems="Center">
           <IconByName
             name="ErrorWarningLineIcon"
             _icon={{ size: "10" }}
-            color="#FF2815"
+            color="iconColor.400"
           />
-          <Text
-            color="#696767"
-            fontWeight="500"
-            fontSize="12px"
-            fontFamily="Inter"
-            fontStyle="normal"
-          >
+          <FrontEndTypo.H5 color="textGreyColor.450" fontWeight="500">
             Please Complete this Information
-          </Text>
+          </FrontEndTypo.H5>
         </HStack>
       </Box>
     );
@@ -58,53 +51,43 @@ export default function AgProfileMissingDataWarning() {
           space="xl"
         >
           <Button size="xs" variant="outline" colorScheme="gray">
-            <ArrowBackIcon size="5" color="#696767" />
+            <ArrowBackIcon size="5" color="iconColor.150" />
           </Button>
-          <Text
-            color="#666666"
-            fontWeight="500"
-            fontSize="14px"
-            fontFamily="Inter"
-            fontStyle="normal"
-          >
+          <FrontEndTypo.H3 color="textGreyColor.200" fontWeight="500">
             Basic Details
-          </Text>
+          </FrontEndTypo.H3>
         </HStack>
       </Box>
       <VStack paddingLeft="16px" paddingRight="16px" space="24px">
         <Center>
           <IconByName
             name="AccountCircleLineIcon"
-            color="#666666"
+            color="iconColor.350"
             _icon={{ size: "60" }}
             justifySelf="Center"
           />
         </Center>
         <VStack>
           <HStack justifyContent="space-between" alignItems="Center">
-            <Text
-              fontFamily="Inter"
-              fontSize="20px"
-              color="#666666"
-              fontWeight="700px"
-              justifySelf="left"
-            >
+            <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
               Khushboo M. Verma
-            </Text>
+            </FrontEndTypo.H1>
             <IconByName
               name="PencilLineIcon"
-              color="#757575"
+              color="iconColor.200"
               _icon={{ size: "20" }}
             />
           </HStack>
           <HStack alignItems="Center">
-            <IconByName name="Cake2LineIcon" color="#B3B3B3" />
-            <Text color="#464646"> 18/07/1998</Text>
+            <IconByName name="Cake2LineIcon" color="iconColor.300" />
+            <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
+              18/07/1998
+            </FrontEndTypo.H3>
           </HStack>
         </VStack>
 
         <Box
-          bg="#FAFAFA"
+          bg="boxBackgroundColour.100"
           borderColor="#E0E0E0"
           borderRadius="10px"
           borderWidth="1px"
@@ -112,85 +95,138 @@ export default function AgProfileMissingDataWarning() {
         >
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <HStack justifyContent="space-between" alignItems="Center">
-              <Text fontSize="14px" fontWeight="700">
-                Contact Details (1/3)
-              </Text>
-              <IconByName name="EditBoxLineIcon" />
+              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
+                Contact Details
+              </FrontEndTypo.H3>
+              <IconByName name="EditBoxLineIcon" color="iconColor.100" />
             </HStack>
             <Box paddingTop="2">
               <Progress value={45} size="xs" colorScheme="info" />
             </Box>
             <VStack space="2" paddingTop="5">
-              <HStack alignItems="Center" justifyContent="space-between">
-                <Text
-                  fontSize="14px"
-                  color="#9E9E9E"
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                alignContent="left"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
                   fontWeight="400"
-                  fontFamily="Inter"
-                  fontStyle="normal"
+                  flex="0.3"
                 >
                   Self
-                </Text>
-                <Box width="70%">
-                  <Text
-                    fontSize="14px"
-                    color="#212121"
-                    fontWeight="400"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    999987878
-                  </Text>
-                </Box>
-                <IconByName name="CellphoneLineIcon" color="#616161" />
-              </HStack>
-              <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
-              <HStack alignItems="Center" justifyContent="space-between">
-                <Text
-                  fontSize="14px"
-                  color="#9E9E9E"
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
                   fontWeight="400"
-                  fontFamily="Inter"
-                  fontStyle="normal"
+                  flex="0.4"
+                >
+                  999987878
+                </FrontEndTypo.H3>
+
+                <IconByName name="CellphoneLineIcon" color="iconColor.100" />
+              </HStack>
+              <Divider
+                orientation="horizontal"
+                bg="AppliedColor"
+                thickness="1"
+              />
+              <HStack alignItems="Center" justifyContent="space-between">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
                 >
                   Family
-                </Text>
-                <Box width="70%">
-                  <Text
-                    fontSize="14px"
-                    color="#212121"
-                    fontWeight="400"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    999987878
-                  </Text>
-                </Box>
-                <IconByName name="SmartphoneLineIcon" color="#616161" />
-              </HStack>
-              <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
-              <HStack alignItems="Center" justifyContent="space-between">
-                <Text
-                  fontSize="14px"
-                  color="#9E9E9E"
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
                   fontWeight="400"
-                  fontFamily="Inter"
-                  fontStyle="normal"
+                  flex="0.4"
+                >
+                  999987878
+                </FrontEndTypo.H3>
+
+                <IconByName name="SmartphoneLineIcon" color="iconColor.100" />
+              </HStack>
+              <Divider
+                orientation="horizontal"
+                bg="AppliedColor"
+                thickness="1"
+              />
+              <HStack alignItems="Center" justifyContent="space-between">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                >
+                  Family
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  999987878
+                </FrontEndTypo.H3>
+
+                <IconByName name="SmartphoneLineIcon" color="iconColor.100" />
+              </HStack>
+              <Divider
+                orientation="horizontal"
+                bg="AppliedColor"
+                thickness="1"
+              />
+              <HStack alignItems="Center" justifyContent="space-between">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                >
+                  Family
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  999987878
+                </FrontEndTypo.H3>
+
+                <IconByName name="SmartphoneLineIcon" color="iconColor.100" />
+              </HStack>
+              <Divider
+                orientation="horizontal"
+                bg="AppliedColor"
+                thickness="1"
+              />
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                alignContent="left"
+                position="left"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
                 >
                   Email
-                </Text>
-                <Box width="70%">
-                  <Text
-                    fontSize="14px"
-                    color="#212121"
-                    fontWeight="400"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    None
-                  </Text>
-                </Box>
-                <IconByName name="MailLineIcon" color="#616161" />
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  None
+                </FrontEndTypo.H3>
+
+                <IconByName name="MailLineIcon" color="iconColor.100" />
               </HStack>
             </VStack>
           </VStack>
@@ -205,47 +241,35 @@ export default function AgProfileMissingDataWarning() {
         >
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <HStack justifyContent="space-between" alignItems="Center">
-              <Text
-                fontSize="14px"
-                color="#212121"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
-                {" "}
-                Address Details (1/3)
-              </Text>
-              <IconByName name="EditBoxLineIcon" />
+              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
+                Address Details
+              </FrontEndTypo.H3>
+              <IconByName name="EditBoxLineIcon" color="iconColor.100" />
             </HStack>
             <VStack space="2" paddingTop="5">
-              <HStack alignItems="Center" space="sm">
-                <Text
-                  fontSize="14px"
-                  color="#9E9E9E"
+              <HStack alignItems="Center" space="xl">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
                   fontWeight="400"
-                  fontFamily="Inter"
-                  fontStyle="normal"
+                  flex="0.3"
                 >
                   Home
-                </Text>
-                <Box width="70%">
-                  <Text
-                    fontSize="14px"
-                    color="#212121"
-                    fontWeight="400"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    Alwar,Rajasthan
-                  </Text>
-                </Box>
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  Alwar,Rajasthan
+                </FrontEndTypo.H3>
               </HStack>
             </VStack>
           </VStack>
         </Box>
         <Box
           bg="bgGreyColor.200"
-          borderColor="#E0E0E0"
+          borderColor="AppliedColor"
           borderWidth="1px"
           paddingBottom="24px"
         >
@@ -253,66 +277,43 @@ export default function AgProfileMissingDataWarning() {
             <Warning />
 
             <HStack space="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="
-                  #696767"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Family Details
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
                 <VStack>
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    Fathers Name
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
+                    Father's Name
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Mothers Name
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
               </VStack>
             </HStack>
@@ -320,7 +321,7 @@ export default function AgProfileMissingDataWarning() {
         </Box>
         <Box
           bg="bgGreyColor.200"
-          borderColor="#E0E0E0"
+          borderColor="AppliedColor"
           borderWidth="1px"
           paddingBottom="24px"
         >
@@ -328,66 +329,43 @@ export default function AgProfileMissingDataWarning() {
             <Warning />
 
             <HStack space="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="
-                  #696767"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Personal Details
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
                 <VStack>
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Social Category
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Marital Details
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
               </VStack>
             </HStack>
@@ -395,94 +373,35 @@ export default function AgProfileMissingDataWarning() {
         </Box>
         <Box
           bg="bgGreyColor.200"
-          borderColor="#E0E0E0"
+          borderColor="AppliedColor"
           borderWidth="1px"
           paddingBottom="24px"
         >
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <Warning />
             <HStack space="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="
-                  #696767"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Reference Details
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
-                <VStack>
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    Name of the Reference
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    None
-                  </Text>
-                </VStack>
-                <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    AG Learner's Relationship with the Reference
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    None
-                  </Text>
-                </VStack>
-                <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    Contact Number
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
-                    None
-                  </Text>
-                </VStack>
               </VStack>
             </HStack>
           </VStack>

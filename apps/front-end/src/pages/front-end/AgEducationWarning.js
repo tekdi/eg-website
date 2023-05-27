@@ -11,14 +11,14 @@ import {
   Center,
   ArrowBackIcon,
 } from "native-base";
-import { IconByName } from "@shiksha/common-lib";
+import { IconByName, FrontEndTypo } from "@shiksha/common-lib";
 
 export default function AgEducationWarning() {
   const Warning = () => {
     return (
       <Box
-        bgColor="#FDC5C7"
-        borderColor="#FFC5C0"
+        bgColor="boxBackgroundColour.50"
+        borderColor="boxBorderColour.50"
         borderWidth="1px"
         alignItems="Center"
       >
@@ -26,17 +26,11 @@ export default function AgEducationWarning() {
           <IconByName
             name="ErrorWarningLineIcon"
             _icon={{ size: "10" }}
-            color="#FF2815"
+            color="iconColor.400"
           />
-          <Text
-            color="#696767"
-            fontWeight="500"
-            fontSize="12px"
-            fontFamily="Inter"
-            fontStyle="normal"
-          >
+          <FrontEndTypo.H5 color="textGreyColor.450" fontWeight="500">
             Please Complete this Information
-          </Text>
+          </FrontEndTypo.H5>
         </HStack>
       </Box>
     );
@@ -57,17 +51,11 @@ export default function AgEducationWarning() {
           space="xl"
         >
           <Button size="xs" variant="outline" colorScheme="gray">
-            <ArrowBackIcon size="5" color="#696767" />
+            <ArrowBackIcon size="5" color="iconColor.150" />
           </Button>
-          <Text
-            color="#666666"
-            fontWeight="500"
-            fontSize="14px"
-            fontFamily="Inter"
-            fontStyle="normal"
-          >
+          <FrontEndTypo.H3 color="textGreyColor.200" fontWeight="500">
             Education Details
-          </Text>
+          </FrontEndTypo.H3>
         </HStack>
       </Box>
       <VStack
@@ -76,178 +64,110 @@ export default function AgEducationWarning() {
         space="24px"
         paddingTop="40px"
       >
-        <Box borderColor="#E0E0E0" borderWidth="1px" paddingBottom="24px">
+        <Box borderColor="AppliedColor" borderWidth="1px" paddingBottom="24px">
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <Warning />
 
             <HStack flex="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="#696767"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Education Details
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
                 <VStack>
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Last Standard of Education
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     9th
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Last Standard of Education Year
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     2017
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Previous School Type
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Reason For Leaving
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
               </VStack>
             </HStack>
           </VStack>
         </Box>
-        <Box borderColor="#E0E0E0" borderWidth="1px" paddingBottom="24px">
+        <Box borderColor="AppliedColor" borderWidth="1px" paddingBottom="24px">
           <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
             <Warning />
             <HStack flex="1">
-              <IconByName name="UserLineIcon" _icon={{ size: "15" }} />
+              <IconByName
+                name="UserLineIcon"
+                _icon={{ size: "15" }}
+                color="iconColor.150"
+              />
               <VStack flex="1">
                 <HStack alignItems="center" justifyContent="space-between">
                   <Box width="80%">
-                    <Text
-                      fontSize="12px"
-                      color="#666666"
+                    <FrontEndTypo.H4
+                      color="textGreyColor.250"
+                      bold
                       fontWeight="700"
-                      fontFamily="Inter"
-                      fontStyle="normal"
                     >
                       Furthur Studies
-                    </Text>
+                    </FrontEndTypo.H4>
                   </Box>
                   <IconByName
-                    color="#0D99FF"
+                    color="iconColor.50"
                     name="AddLineIcon"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
                 <VStack>
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Career Aspirations
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
                 <VStack paddingTop="16px">
-                  <Text
-                    fontSize="10px"
-                    color="#727271"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  <FrontEndTypo.H5 color="textGreyColor.600" fontWeight="500">
                     Remarks
-                  </Text>
-                  <Text
-                    fontSize="14px"
-                    color="#464646"
-                    fontWeight="500"
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                  >
+                  </FrontEndTypo.H5>
+                  <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                     None
-                  </Text>
+                  </FrontEndTypo.H3>
                 </VStack>
               </VStack>
             </HStack>
