@@ -470,7 +470,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </Stack> */}
           <VStack p="5" space="5">
             {!form_step_number ||
-            (form_step_number && parseInt(form_step_number) < 10) ? (
+              (form_step_number && parseInt(form_step_number) < 10) ? (
               <Pressable onPress={(e) => navigate("/form")}>
                 <HStack
                   borderWidth="1"
@@ -527,6 +527,87 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </HStack>
         </Box> */}
       </VStack>
+      <HStack pb="2" justifyContent='space-around'>
+        <SelectStyle placeholder="Status : All" mt={1} width="150px">
+          <Select.Item label="UX Research" value="ux" />
+          <Select.Item label="Web Development" value="web" />
+        </SelectStyle>
+        <SelectStyle placeholder="Sort By" mt={1} width="150px">
+          <Select.Item label="UX Research" value="ux" />
+          <Select.Item label="Web Development" value="web" />
+        </SelectStyle>
+      </HStack>
+      <HStack justifyContent="space-around" py="2" alignItems="center">
+        <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
+        <VStack>
+          <Text bold>Khushboo Verma</Text>
+          <BodySmall>+91-809876157</BodySmall>
+        </VStack>
+        <Badge colorScheme="info" rounded="8" _text={{ fontSize: 12 }}>Identified</Badge>
+      </HStack>
+      <HStack justifyContent="space-around" py="2" alignItems="center">
+        <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
+        <VStack>
+          <Text bold>Khushboo Verma</Text>
+          <BodySmall>+91-809876157</BodySmall>
+        </VStack>
+        <Badge colorScheme="success" rounded="8" _text={{ fontSize: 12 }}>Enrolled</Badge>
+      </HStack>
+      <NativeBaseProvider>
+        <Box flex={1} bg="white" color="textGreyColor.100" safeAreaTop width="100%" shadow="FooterShadow" alignSelf="center">
+
+          <HStack bg="white" alignItems="center" safeAreaBottom shadow={6} width="100%">
+            <Pressable cursor="pointer" opacity={selected === 0 ? 1 : 0.5} py="3" flex={1}>
+              <Center>
+                <IconByName
+                  isDisabled
+                  name="Home4LineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <Text fontSize="12">
+                  {t("HOME")}
+                </Text>
+              </Center>
+            </Pressable>
+            <Pressable cursor="pointer" py="2" flex={1}>
+              <Center>
+                <IconByName
+                  isDisabled
+                  name="UserLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <Text fontSize="12">
+                  {t("LEARNERS")}
+                </Text>
+              </Center>
+            </Pressable>
+            <Pressable cursor="pointer" color="#C92A42" borderTopColor="#C92A42" borderTopWidth="4" borderRadius="5px" py="2" flex={1}>
+              <Center>
+                <IconByName
+                  isDisabled
+                  name="CameraLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <Text fontSize="12" color="#C92A42">
+                  {t("MY_CAMP")}
+                </Text>
+              </Center>
+            </Pressable>
+            <Pressable cursor="pointer" opacity={selected === 3 ? 1 : 0.5} py="2" flex={1}>
+              <Center>
+                <IconByName
+                  isDisabled
+                  name="DashboardLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <Text fontSize="12">
+                  {t("DASHBOARD")}
+                </Text>
+              </Center>
+            </Pressable>
+          </HStack>
+        </Box>
+      </NativeBaseProvider>
     </Layout>
   );
 }

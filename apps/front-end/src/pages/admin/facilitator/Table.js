@@ -92,10 +92,9 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${
-            item[key] && typeof item[key] === "string"
-              ? item[key].trim()
-              : item[key]
+          `${item[key] && typeof item[key] === "string"
+            ? item[key].trim()
+            : item[key]
           }`
         )
       ) {
@@ -136,7 +135,103 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
  
   return (
     <VStack>
-      <DataTable customStyles={customStyles} className="customDataTable"
+      <HStack justifyContent={"space-between"} my="1">
+        <H1>{t("ALL_PRERAK")}</H1>
+        {/* <Input
+          InputLeftElement={
+            <IconByName color="coolGray.500" name="SearchLineIcon" />
+          }
+          placeholder="search"
+          variant="outline"
+        /> */}
+        <HStack>
+          {/* <Button
+            variant={"primary"}
+            onPress={(e) => navigate("/admin/facilitator-onbording")}
+          >
+            {t("REGISTER_PRERAK")}
+          </Button> */}
+          <BlueOutlineButton
+            _text={{ color: "#084B82" }}
+            shadow="BlueOutlineShadow"
+            onPress={() => setModal(true)}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("SEND_AN_INVITE")}
+          </BlueOutlineButton>
+          {/* <BlueFillButton
+            mx="3"
+            shadow="BlueFillShadow"
+            rightIcon={
+              <IconByName color="white" size="20px" name="PencilLineIcon" />
+            }
+          >
+            {t("REGISTER_PRERAK")}
+          </BlueFillButton> */}
+          <Modal
+            isOpen={modal}
+            onClose={() => setModal(false)}
+            safeAreaTop={true}
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header p="5" borderBottomWidth="0">
+                <H1 textAlign="center"> {t("SEND_AN_INVITE")}</H1>
+              </Modal.Header>
+              <Modal.Body p="5" pb="10">
+                <VStack space="5">
+                  <HStack
+                    space="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="gray.300"
+                    pb="5"
+                  >
+                    <H3> {t("INVITATION_LINK")}</H3>
+                    <Clipboard
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id
+                        }`}
+                    >
+                      <HStack space="3">
+                        <IconByName
+                          name="FileCopyLineIcon"
+                          isDisabled
+                          rounded="full"
+                          color="blue.300"
+                        />
+                        <H3 color="blue.300">
+                          {" "}
+                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                        </H3>
+                      </HStack>
+                    </Clipboard>
+                  </HStack>
+                  <HStack space="5" pt="5">
+                    <Input
+                      flex={0.7}
+                      placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
+                      variant="underlined"
+                    />
+                    <Button flex={0.3} variant="primary">
+                      {t("SEND")}
+                    </Button>
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        </HStack>
+      </HStack>
+
+      <DataTable
+        customStyles={customStyles}
         columns={[
           ...columns(),
           {

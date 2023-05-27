@@ -174,8 +174,7 @@ const DEFAULT_THEME = {
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
-          borderColor: `#790000`,
-          color: '#790000',
+          borderColor: `#790000`,      
           _hover: {
             bg: `#FFFFFF`
           },
