@@ -217,8 +217,6 @@
   "MARK_ABSENT": "Mark Absent",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
-
-  "AADHAAR_CARD":"Aadhaar Card",
   "UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD":"Upload a photo or scan of your card",
   "UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD":"Upload the front side of your Aadhaar card",
   "UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD":"Upload the back side of your Aadhaar card",
@@ -246,8 +244,7 @@
  "MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD" :"Mobile Number is not linked to Aadhaar Card",
  "UNABLE_TO_SCAN_THE_QR_CODE":"Unable to scan the QR Code",
  "MANUAL_AADHAAR_UPLOAD":"Manual Aadhaar Upload",
- "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"We have sent you a text message with username and password on your mobile number"
-}
+ "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"We have sent you a text message with username and password on your mobile number",
   "USER_ENTER_FOUR_DIGIT_OTP": "Enter 6 Digit OTP sent on Above Mobile Number",
   "OTP": "OTP",
   "USER_ENTER_VALID_OTP": "Incorrect OTP Entered",
@@ -332,6 +329,9 @@
   "QUALIFICATION_PROOF":"Qualification Proof",
   "WORK_EXPERIENCE_PROOF":"Work Experience Proof",
   "VOLUNTEER_EXPERIENCE_PROOF":"Volunteer Experience Proof",
-  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password"
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password",
+  "BASIC": "Basic",
+  "EDUCATIONAL": "Educational",
+  "AADHAAR":"Aadhaar"
 }
 

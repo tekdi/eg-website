@@ -206,7 +206,6 @@
   "LOGOUT": "लॉग आउट",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "आधार नंबर पहले से मौजूद है",
-  "AADHAAR_CARD":"आधार कार्ड",
   "UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD":"अपने कार्ड का फोटो या स्कैन अपलोड करें",
   "UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD":"अपने आधार कार्ड के सामने वाले हिस्से को ऊपर उठाएं",
   "UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD":"अपने आधार कार्ड के पिछले हिस्से को अपलोड करें",
@@ -234,8 +233,7 @@
  "MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD":"आधार कार्ड से लिंक नहीं है मोबाइल नंबर",
  "UNABLE_TO_SCAN_THE_QR_CODE":"क्यूआर कोड स्कैन करने में असमर्थ",
  "MANUAL_AADHAAR_UPLOAD":"मैनुअल आधार अपलोड",
- "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"हमने आपके मोबाइल नंबर पर यूजर नेम और पासवर्ड के साथ एक टेक्स्ट मैसेज भेजा है"
-}
+ "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"हमने आपके मोबाइल नंबर पर यूजर नेम और पासवर्ड के साथ एक टेक्स्ट मैसेज भेजा है",
   "USER_ENTER_FOUR_DIGIT_OTP": "उपरोक्त मोबाइल नंबर पर भेजा गया 6 अंकों का ओटीपी दर्ज करें",
   "OTP": "ओटीपी",
   "USER_ENTER_VALID_OTP": "गलत ओटीपी डाला गया",
@@ -320,6 +318,9 @@
   "CBOSIGNTRANSFER": "सीबीओ हस्ताक्षर के साथ हस्तांतरण प्रमाण पत्र",
   "PROFILE_DETAILS": "प्रोफ़ाइल विवरण",
   "MARK_AS_DROPOUT": "मार्क एज ड्रूपॉट",
-  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है"
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है",
+  "BASIC": "बुनियादी ",
+  "EDUCATIONAL": "शिक्षात्मक",
+  "AADHAAR":"आधार"
 }
 

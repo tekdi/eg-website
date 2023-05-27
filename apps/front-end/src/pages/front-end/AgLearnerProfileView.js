@@ -217,12 +217,9 @@ export default function AgLearnerProfileView() {
               </HStack>
             </VStack>
           </Box>
-          <FrontEndTypo.Secondarybutton
-            borderRadius="100px"
-            borderWidth="2px"
-          >
+          <FrontEndTypo.Secondarybutton>
             <HStack alignItems="Center">
-              <IconByName name="UserUnfollowLineIcon" color="#790000" />
+              <IconByName name="UserUnfollowLineIcon" color="textMaroonColor.400" />
                 {t("MARK_AS_DROPOUT")}
             </HStack>
           </FrontEndTypo.Secondarybutton>

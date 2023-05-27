@@ -52,9 +52,9 @@ const Agduplicate = () => {
             <IconByName name="ErrorWarningLineIcon" color="textRed.300" size="20px" />
             <VStack pl="3">
               <FrontEndTypo.H2  color="textGreyColor.600">{t("AG_LEARNER_ALREADY_IDENTIFIED")}</FrontEndTypo.H2>
-              <Text fontSize="xs" color="textGreyColor.600">
+              <FrontEndTypo.H3  color="textGreyColor.600">
                 {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-              </Text>
+              </FrontEndTypo.H3>
             </VStack>
           </HStack>
         </VStack>
@@ -179,9 +179,9 @@ const Agduplicate = () => {
             <Modal.Body >
               <VStack alignItems={"center"}>
                   <IconByName name="CheckboxCircleLineIcon" color="textGreyColor.150" _icon={{ size: "50px" }}></IconByName>
-                    <Text fontSize="xl" pb="2" color="worksheetBoxText.400" bold>
+                    <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
                       {t("AG_ADDED_SUCCESSFULLY")}
-                    </Text>
+                    </FrontEndTypo.H1>
                     <TextArea placeholder="Explain your claim of the AG Learner*" w="100%"></TextArea>
                         <FrontEndTypo.Primarybutton
                         width={250}

@@ -83,21 +83,21 @@ const LearnerProfile = () => {
         </VStack>
 
         <VStack width="100%" pl="4">
-          <Text fontSize="sm" color="textGreyColor.600">
+          <FrontEndTypo.H3 color="textGreyColor.600">
             Added On 12th May 2023
-          </Text>
+          </FrontEndTypo.H3>
         </VStack>
 
         <VStack width={"100%"}>
           <Collapsible fontSize="sm" color="textGreyColor.600" bold header={t("PROFILE_DETAILS")}>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor="textGreyColor.600">
-              <Text fontSize="sm" color="textGreyColor.600">Basic</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("BASIC")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor="textGreyColor.600">
-              <Text fontSize="sm" color="textGreyColor.600">Educational</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("EDUCATIONAL")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor="textGreyColor.600">
-              <Text fontSize="sm" color="textGreyColor.600">Aadhaar</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("AADHAAR")}</FrontEndTypo.H3>
             </VStack>
           </Collapsible>
         </VStack>
@@ -109,13 +109,13 @@ const LearnerProfile = () => {
             header={t("Documents Checklist")}
           >
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text fontSize="sm" color="textGreyColor.600">Basic</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("BASIC")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text fontSize="sm" color="textGreyColor.600">Educational</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("EDUCATIONAL")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text fontSize="sm" color="textGreyColor.600">Aadhaar</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("AADHAAR")}</FrontEndTypo.H3>
             </VStack>
           </Collapsible>
         </VStack>
@@ -123,13 +123,13 @@ const LearnerProfile = () => {
         <VStack width={"100%"}>
           <Collapsible defaultCollapse={false} fontSize="sm" color="textGreyColor.600" bold header={t("Enrollment Details")}>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text fontSize="sm" color="textGreyColor.600">Basic</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("BASIC")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text fontSize="sm" color="textGreyColor.600">Educational</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("EDUCATIONAL")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text fontSize="sm" color="textGreyColor.600">Aadhaar</Text>
+              <FrontEndTypo.H3 color="textGreyColor.600">{t("AADHAAR")}</FrontEndTypo.H3>
             </VStack>
           </Collapsible>
         </VStack>
@@ -137,13 +137,13 @@ const LearnerProfile = () => {
         <VStack width={"100%"}>
           <Collapsible defaultCollapse={false} header={t("Camp Details")}>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Basic</Text>
+              <FrontEndTypo.H3>{t("BASIC")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Educational</Text>
+              <FrontEndTypo.H3>{t("EDUCATIONAL")}</FrontEndTypo.H3>
             </VStack>
             <VStack mt={4} borderBottomWidth={"1px"} borderColor={"#666666"}>
-              <Text>Aadhaar</Text>
+              <FrontEndTypo.H3>{t("AADHAAR")}</FrontEndTypo.H3>
             </VStack>
           </Collapsible>
         </VStack>

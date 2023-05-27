@@ -5,7 +5,8 @@ import {
   H3,
   t,
   ImageView,
-  BlueFillButton
+  BlueFillButton,
+  AdminTypo
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -141,15 +142,13 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           {
             name: t("ACTION"),
             selector: (row) => (
-              <Button
-                size={"sm"}
-                px="5"
+              <AdminTypo.Secondarybutton
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-               <Text fontSize="12px" color={"white"}> {t("VIEW")}</Text>
-              </Button>
+               {t("VIEW")}
+              </AdminTypo.Secondarybutton>
             ),
           },
         ]}
