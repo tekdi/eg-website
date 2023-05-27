@@ -95,7 +95,12 @@ export default function AdharKyc() {
   return (
     <Box>
       <Box borderBottomWidth="2" borderColor="gray.400">
-        <Button variant="ghost" display="flex" justifyContent="flex-start" onPress={() => navigate(-1)}>
+        <Button
+          variant="ghost"
+          display="flex"
+          justifyContent="flex-start"
+          onPress={() => navigate(-1)}
+        >
           <WestIcon />
         </Button>
       </Box>
@@ -109,7 +114,9 @@ export default function AdharKyc() {
 
         <Box mt="2">
           <FormControl.Label htmlFor="aadhaarNumber" mb="2">
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_YOUR_AADHAAR_NUMBER")}</Text>
+            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
+              {t("ENTER_YOUR_AADHAAR_NUMBER")}
+            </Text>
           </FormControl.Label>
 
           <Input
@@ -128,13 +135,22 @@ export default function AdharKyc() {
         </Box>
 
         <Box mt="2">
-          <FormControl.Label htmlFor="securityCode" mb="2" display="flex" flexDirection="column">
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_SECURITY_CODE")}</Text>
-            <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">{t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}</Text>
+          <FormControl.Label
+            htmlFor="securityCode"
+            mb="2"
+            display="flex"
+            flexDirection="column"
+          >
+            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
+              {t("ENTER_SECURITY_CODE")}
+            </Text>
+            <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">
+              {t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}
+            </Text>
           </FormControl.Label>
           <Image
             width={150}
-            marginLeft={'-15px'}
+            marginLeft={"-15px"}
             src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
             alt="captcha image"
           />
@@ -153,14 +169,23 @@ export default function AdharKyc() {
           />
         </Box>
 
-        <Text display="inline-block" mt="6" color="gray.600" fontWeight="500" p="2" borderWidth="2" borderColor="gray.400" rounded="md">
+        <Text
+          display="inline-block"
+          mt="6"
+          color="gray.600"
+          fontWeight="500"
+          p="2"
+          borderWidth="2"
+          borderColor="gray.400"
+          rounded="md"
+        >
           {t(
             "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
           )}
         </Text>
 
-        <ul style={{ padding: '0px 20px', marginTop: '10px' }}>
-          <li style={{ listStyleType: 'disc' }}>
+        <ul style={{ padding: "0px 20px", marginTop: "10px" }}>
+          <li style={{ listStyleType: "disc" }}>
             <Text fontSize="sm" fontWeight="500" color="gray.600">
               {t(
                 "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE"
@@ -168,7 +193,7 @@ export default function AdharKyc() {
             </Text>
           </li>
 
-          <li style={{ listStyleType: 'disc' }}>
+          <li style={{ listStyleType: "disc" }}>
             <Text fontSize="sm" fontWeight="500" color="gray.600">
               {t(
                 "I understand that my Aadhaar details shall not be used or stored for any other purpose."
@@ -186,7 +211,9 @@ export default function AdharKyc() {
               setData({ ...data, checkMark: e.target.checked });
             }}
           />{" "}
-          <Text fontSize="sm">{t("I_HAVE_READ_AND_UNDERSTOOD_ALL_OF_THE_POINTS_ABOVE")}</Text>
+          <Text fontSize="sm">
+            {t("I_HAVE_READ_AND_UNDERSTOOD_ALL_OF_THE_POINTS_ABOVE")}
+          </Text>
         </FormControl.Label>
 
         <Button

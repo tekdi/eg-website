@@ -31,11 +31,17 @@ export default function Interviewschedule() {
                 {t("SCHEDULE_AN_INTERVIEW")}
               </AdminTypo.H2>
               <HStack paddingTop="15px" ml="-2%">
-                <IconByName color="#616161" name="TimeLineIcon"></IconByName>
+                <IconByName
+                  color="interviewIconColor"
+                  name="TimeLineIcon"
+                ></IconByName>
                 <AdminTypo.H5 bold marginTop="2%">
                   16th May , 11:00 {t("TO")} 12:00
                 </AdminTypo.H5>
-                <IconByName color="#616161" name="MapPinLineIcon"></IconByName>
+                <IconByName
+                  color="interviewIconColor"
+                  name="MapPinLineIcon"
+                ></IconByName>
                 <AdminTypo.H5 bold marginTop="2%">
                   {t("ON_PHONE")}
                 </AdminTypo.H5>

@@ -1,7 +1,7 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
-import CloseIcon from '@mui/icons-material/Close';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CloseIcon from "@mui/icons-material/Close";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Button, FormControl, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
 import { t } from "@shiksha/common-lib";
@@ -13,8 +13,10 @@ export default function AdharOTP() {
     otpNumber: "",
     securityCode: "",
   });
-  const [otpFailedPopup, setOtpFailedPopup] = React.useState(localStorage.getItem("aadhaarNumber") ? false : true);
-    const handleSubmit = () => {
+  const [otpFailedPopup, setOtpFailedPopup] = React.useState(
+    localStorage.getItem("aadhaarNumber") ? false : true
+  );
+  const handleSubmit = () => {
     const kycReqID = localStorage.getItem("KYCreqID") || "";
     const aadhaarNumber = localStorage.getItem("aadhaarNumber") || "";
 
@@ -53,14 +55,18 @@ export default function AdharOTP() {
       })
       .catch((err) => {
         console.log(err);
-      })
-      
+      });
   };
 
   return (
     <Box>
       <Box borderBottomWidth="2" borderColor="gray.400">
-        <Button variant="ghost" display="flex" justifyContent="flex-start" onPress={() => navigate(-1)}>
+        <Button
+          variant="ghost"
+          display="flex"
+          justifyContent="flex-start"
+          onPress={() => navigate(-1)}
+        >
           <WestIcon />
         </Button>
       </Box>
@@ -74,7 +80,9 @@ export default function AdharOTP() {
 
         <Box mt="6">
           <FormControl.Label htmlFor="aadhaarNumber" mb="2">
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_6_DIGIT_OTP")}</Text>
+            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
+              {t("ENTER_6_DIGIT_OTP")}
+            </Text>
           </FormControl.Label>
 
           <Input
@@ -94,10 +102,19 @@ export default function AdharOTP() {
         </Box>
 
         <Box mt="6">
-          <FormControl.Label mb="2" display="flex" flexDirection="column" htmlFor="securityCode">
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">{t("ENTER_SECURITY_CODE")}</Text>
+          <FormControl.Label
+            mb="2"
+            display="flex"
+            flexDirection="column"
+            htmlFor="securityCode"
+          >
+            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
+              {t("ENTER_SECURITY_CODE")}
+            </Text>
             <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">
-              {t("SET_A_4_DIGIT_PASSCODE_TO_SECURELY_SHARE_YOUR_AADHAAR_ZIP_FILE")}
+              {t(
+                "SET_A_4_DIGIT_PASSCODE_TO_SECURELY_SHARE_YOUR_AADHAAR_ZIP_FILE"
+              )}
             </Text>
           </FormControl.Label>
 
@@ -129,64 +146,86 @@ export default function AdharOTP() {
         </Button>
       </Box>
 
-      {
-        otpFailedPopup ? (
-          <Box position="absolute" w="full" h="100vh" bg="black:alpha.30" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-end">
-            <Box position="relative" w="full" p="5" pb="12" bg="white" roundedTop="xl">
-              <Button
-                variant="ghost"
-                position="absolute"
-                top="3"
-                right="2"
-                onPress={() => {
-                  setOtpFailedPopup(false);
-                }}
-              >
-                <CloseIcon />
-              </Button>
+      {otpFailedPopup ? (
+        <Box
+          position="absolute"
+          w="full"
+          h="100vh"
+          bg="black:alpha.30"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          <Box
+            position="relative"
+            w="full"
+            p="5"
+            pb="12"
+            bg="white"
+            roundedTop="xl"
+          >
+            <Button
+              variant="ghost"
+              position="absolute"
+              top="3"
+              right="2"
+              onPress={() => {
+                setOtpFailedPopup(false);
+              }}
+            >
+              <CloseIcon />
+            </Button>
 
-              <Text fontSize="lg" fontWeight="medium">Aadhaar KYC Verification Failed</Text>
+            <Text fontSize="lg" fontWeight="medium">
+              Aadhaar KYC Verification Failed
+            </Text>
 
-              <Button
-                variant={"solid"}
-                py="3.5"
-                rounded={"full"}
-                bg={"#2D142C"}
-                mt="8"
-                mb="5"
-                onPress={() => {
-                  navigate(-1);
-                }}
-              >
-                <Text fontSize={"lg"} color="white" fontWeight={"semibold"}>Go Back</Text>
-              </Button>
-
-              <Button
-                variant={"outline"}
-                py="3"
-                rounded={"full"}
-                borderColor={"#2D142C"}
-                onPress={() => {
-                  navigate('/admin/aadhaarNumber')
-                }}
-              >
-                <Text fontSize={"lg"} color="#2D142C" fontWeight={"bold"}>Retry Aadhaar Number KYC</Text>
-              </Button>
-              
-              <Text
-                color="red.600"
-                display="flex"
-                alignItems="center"
-                gap="1"
-                mt="2"
-              >
-                <ErrorOutlineIcon fontSize="small" />
-                <Text fontSize="13px">Mobile Number is not linked to Aadhaar Card</Text>
+            <Button
+              variant={"solid"}
+              py="3.5"
+              rounded={"full"}
+              bg={"#2D142C"}
+              mt="8"
+              mb="5"
+              onPress={() => {
+                navigate(-1);
+              }}
+            >
+              <Text fontSize={"lg"} color="white" fontWeight={"semibold"}>
+                Go Back
               </Text>
-            </Box>
+            </Button>
+
+            <Button
+              variant={"outline"}
+              py="3"
+              rounded={"full"}
+              borderColor={"#2D142C"}
+              onPress={() => {
+                navigate("/admin/aadhaarNumber");
+              }}
+            >
+              <Text fontSize={"lg"} color="#2D142C" fontWeight={"bold"}>
+                Retry Aadhaar Number KYC
+              </Text>
+            </Button>
+
+            <Text
+              color="red.600"
+              display="flex"
+              alignItems="center"
+              gap="1"
+              mt="2"
+            >
+              <ErrorOutlineIcon fontSize="small" />
+              <Text fontSize="13px">
+                Mobile Number is not linked to Aadhaar Card
+              </Text>
+            </Text>
           </Box>
-        ) : null
-      }
+        </Box>
+      ) : null}
     </Box>
   );
 }

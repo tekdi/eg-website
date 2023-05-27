@@ -8,7 +8,6 @@ function Shortlisted({ status, setStatus, update, data }) {
     <Stack
       flexDirection="row"
       alignItems="center"
-      width="Fill(1072px)"
       background="#CAE9FF"
       rounded="lg"
     >
@@ -17,12 +16,18 @@ function Shortlisted({ status, setStatus, update, data }) {
           {t("INTERVIEW_CONDUCTED")}
         </AdminTypo.H2>
         <HStack>
-          <IconByName color="#616161" name="TimeLineIcon"></IconByName>
-          <AdminTypo.H5 bold color="#616161" marginTop="3%">
+          <IconByName
+            color="interviewIconColor"
+            name="TimeLineIcon"
+          ></IconByName>
+          <AdminTypo.H5 bold color="interviewIconColor" marginTop="3%">
             16th May , 11:00 {t("TO")} 12:00
           </AdminTypo.H5>
-          <IconByName color="#616161" name="MapPinLineIcon"></IconByName>
-          <AdminTypo.H5 bold color="#616161" marginTop="3%">
+          <IconByName
+            color="interviewIconColor"
+            name="MapPinLineIcon"
+          ></IconByName>
+          <AdminTypo.H5 bold color="interviewIconColor" marginTop="3%">
             {t("ON_PHONE")}
           </AdminTypo.H5>
         </HStack>
@@ -31,19 +36,14 @@ function Shortlisted({ status, setStatus, update, data }) {
             1.{t("DID_THE_INTERVIEW_TAKE_SUCCESSFULLY")}?*
           </AdminTypo.H5>
           <Radio.Group>
-            <Stack
-              direction={{
-                md: "row",
-              }}
-              space={"128px"}
-            >
+            <HStack space={"128px"}>
               <Radio value="1" size="sm">
                 {t("YES")}
               </Radio>
               <Radio value="2" size="sm">
                 {t("NO")}
               </Radio>
-            </Stack>
+            </HStack>
           </Radio.Group>
           <Box width={"450px"} paddingTop="20px" gap={"5"}>
             <FloatingInput
@@ -62,7 +62,7 @@ function Shortlisted({ status, setStatus, update, data }) {
           <AdminTypo.StatusButton
             status={"success"}
             onPress={(e) => setStatus(false)}
-            borderRadius="100px"
+            rounded="full"
             bg={"success.500"}
           >
             {t("SHORTLISTED")}
