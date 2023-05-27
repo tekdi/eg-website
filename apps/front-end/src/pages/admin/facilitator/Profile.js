@@ -10,6 +10,7 @@ import {
   BodySmall,
   Loading,
   t,
+  BodyLarge
 } from "@shiksha/common-lib";
 import { Heading, HStack, Text, VStack, Box, Stack } from "native-base";
 import Chip from "component/Chip";

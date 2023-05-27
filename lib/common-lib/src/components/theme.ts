@@ -553,7 +553,7 @@ const DEFAULT_THEME = {
     RejectedColor: '#FFACAF',
     IdentifiedColor: '#E0E0E0',
     DocumentedColor: '#FFEFAF',
-    EntrolledColor: '#C7DFFF',
+    EnrolledColor: '#C7DFFF',
     ApprovedColor: '#A7F3D0',
     DroppedoutColor: '#FFACAF',
     DuplicatedColor: '#E95055',
