@@ -6,11 +6,20 @@ import {
   t,
   ImageView,
   BlueOutlineButton,
-  AdminTypo
+  AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { Button, HStack, Input, Text, VStack, Modal,Image, Box } from "native-base";
+import {
+  Button,
+  HStack,
+  Input,
+  Text,
+  VStack,
+  Modal,
+  Image,
+  Box,
+} from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -29,8 +38,8 @@ const customStyles = {
   headCells: {
     style: {
       background: "#E0E0E0",
-      color:"#616161",
-      fontSize:"15px"
+      color: "#616161",
+      fontSize: "15px",
     },
   },
   cells: {
@@ -100,9 +109,10 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${item[key] && typeof item[key] === "string"
-            ? item[key].trim()
-            : item[key]
+          `${
+            item[key] && typeof item[key] === "string"
+              ? item[key].trim()
+              : item[key]
           }`
         )
       ) {
@@ -146,23 +156,23 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
       <HStack my="1" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
           <Image
-              source={{
-                uri: "/profile.svg",
-              }}
-              alt=""
-              size={"xs"}
-              resizeMode="contain"
-            />
-            <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
-            <Image
-              source={{
-                uri: "/box.svg",
-              }}
-              alt=""
-              size={"28px"}
-              resizeMode="contain"
-            />
-            </HStack>
+            source={{
+              uri: "/profile.svg",
+            }}
+            alt=""
+            size={"xs"}
+            resizeMode="contain"
+          />
+          <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
         {/* <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
@@ -207,7 +217,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center"> {t("SEND_AN_INVITE")}</AdminTypo.H1>
+                <AdminTypo.H1 textAlign="center">
+                  {" "}
+                  {t("SEND_AN_INVITE")}
+                </AdminTypo.H1>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -219,8 +232,9 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id
-                        }`}
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${
+                        facilitator?.program_users[0]?.organisation_id
+                      }`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -240,7 +254,6 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     <Input
                       flex={0.7}
                       placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
-                      
                     />
                     <AdminTypo.PrimaryButton flex={0.3}>
                       {t("SEND")}

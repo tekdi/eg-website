@@ -22,7 +22,7 @@ import {
   H3,
   t,
   facilitatorRegistryService,
-  AdminTypo
+  AdminTypo,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import Chip from "component/Chip";
@@ -105,8 +105,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const uiSchema = {
     DISTRICT: {
       "ui:widget": "checkboxes",
-      "ui:options": {
-      },
+      "ui:options": {},
     },
     QUALIFICATION: {
       "ui:widget": "checkboxes",
@@ -175,7 +174,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               <VStack space={5}>
                 <HStack alignItems="center" width="100%">
                   <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold  borderBottomWidth="1">{t("FILTERS")}</AdminTypo.H5>
+                  <AdminTypo.H5 bold borderBottomWidth="1">
+                    {t("FILTERS")}
+                  </AdminTypo.H5>
                 </HStack>
                 <Form
                   schema={schema}
@@ -183,7 +184,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={formData}
-                
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>

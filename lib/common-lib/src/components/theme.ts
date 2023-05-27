@@ -175,7 +175,7 @@ const DEFAULT_THEME = {
           bg: `#FFFFFF`,
           borderWidth: '1',
           borderColor: `#790000`,
-        
+
           _hover: {
             bg: `#FFFFFF`
           },

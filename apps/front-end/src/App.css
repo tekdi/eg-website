@@ -328,6 +328,6 @@ label {
   content: counter(percentage) "%";
   animation: html-progress 2s 1 forwards;
 }
-.fw-500{
+.fw-500 {
   font-weight: 500;
 }

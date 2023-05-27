@@ -32,7 +32,7 @@ const CRadio = ({ items, onChange }) => {
 const styles = {
   modalxxl: {
     maxWidth: "950px",
-    maxHeight:"440px",
+    maxHeight: "440px",
     width: "100%",
     height: "100%",
   },
@@ -154,7 +154,8 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      <AdminTypo.StatusButton status='success'
+      <AdminTypo.StatusButton
+        status="success"
         variant={"statusBtnAdmin"}
         colorScheme="success"
         leftIcon={
@@ -177,7 +178,7 @@ export default function StatusButton({ data, setData }) {
         isOpen={showModal === "screened"}
         onClose={() => setShowModal()}
       >
-        <Modal.Content {...styles.modalxxl  }>
+        <Modal.Content {...styles.modalxxl}>
           <Modal.CloseButton />
           <Modal.Header bg="white">
             <VStack>
@@ -188,7 +189,9 @@ export default function StatusButton({ data, setData }) {
                   color="SuccessColor"
                   _icon={{ size: "30px" }}
                 />
-                <AdminTypo.H2 bold color="textGreyColor.500">{t("APPLICATION_APPROVED")}</AdminTypo.H2>
+                <AdminTypo.H2 bold color="textGreyColor.500">
+                  {t("APPLICATION_APPROVED")}
+                </AdminTypo.H2>
               </HStack>
               <AdminTypo.H6 color="textGreyColor.500" textAlign="center">
                 {t(
@@ -201,25 +204,36 @@ export default function StatusButton({ data, setData }) {
             <HStack space={5}>
               <HStack alignItems="center" space={2}>
                 <IconByName isDisabled name="TimeLineIcon" />
-                <AdminTypo.H1 color="textGreyColor.800">{t("SCHEDULE_AN_INTERVIEW")}</AdminTypo.H1>
+                <AdminTypo.H1 color="textGreyColor.800">
+                  {t("SCHEDULE_AN_INTERVIEW")}
+                </AdminTypo.H1>
               </HStack>
 
               <HStack alignItems="center" space={2}>
                 <VStack>
                   <HStack justifyContent="flex-end">
-                      <HStack alignItems="center" space={"2"} p="1">
-                        <AdminTypo.H4 color="textGreyColor.500" bold>
-                          for {data?.first_name} {data?.last_name}
-                        </AdminTypo.H4>
-                      </HStack>
-                      <IconByName isDisabled name="UserLineIcon" />
-
+                    <HStack alignItems="center" space={"2"} p="1">
+                      <AdminTypo.H4 color="textGreyColor.500" bold>
+                        for {data?.first_name} {data?.last_name}
+                      </AdminTypo.H4>
+                    </HStack>
+                    <IconByName isDisabled name="UserLineIcon" />
                   </HStack>
                   <HStack alignItems="center" space={5}>
                     <HStack alignItems="center" space={6}>
-                      <IconByName isDisabled name="TimeLineIcon" _icon={{size:'20px'}} color="textGreyColor.100" />
-                      <AdminTypo.H6 color="textGreyColor.100">Time</AdminTypo.H6>
-                      <AdminTypo.H5 borderBottomWidth="1" borderBottomStyle="dotted">
+                      <IconByName
+                        isDisabled
+                        name="TimeLineIcon"
+                        _icon={{ size: "20px" }}
+                        color="textGreyColor.100"
+                      />
+                      <AdminTypo.H6 color="textGreyColor.100">
+                        Time
+                      </AdminTypo.H6>
+                      <AdminTypo.H5
+                        borderBottomWidth="1"
+                        borderBottomStyle="dotted"
+                      >
                         {moment().format("dddd, Do MMM")}
                       </AdminTypo.H5>
                     </HStack>
@@ -235,8 +249,15 @@ export default function StatusButton({ data, setData }) {
                   </HStack>
                   <HStack alignItems="center" space={4} py="2">
                     <HStack alignItems="center" space={2}>
-                      <IconByName isDisabled name="Notification2LineIcon" _icon={{size:'20px'}} color="textGreyColor.100" />
-                      <AdminTypo.H6 color="textGreyColor.100">{t("REMINDER")}</AdminTypo.H6>
+                      <IconByName
+                        isDisabled
+                        name="Notification2LineIcon"
+                        _icon={{ size: "20px" }}
+                        color="textGreyColor.100"
+                      />
+                      <AdminTypo.H6 color="textGreyColor.100">
+                        {t("REMINDER")}
+                      </AdminTypo.H6>
                     </HStack>
                     <Chip bg="textGreyColor">
                       <HStack alignItems="center" space={"2"} p="1">
@@ -246,8 +267,15 @@ export default function StatusButton({ data, setData }) {
                   </HStack>
                   <HStack alignItems="center" space={5} py="2">
                     <HStack alignItems="center" space={2}>
-                      <IconByName isDisabled name="MapPinLineIcon" _icon={{size:'20px'}} color="textGreyColor.100" />
-                      <AdminTypo.H6 color="textGreyColor.100">{t("LOCATION")}</AdminTypo.H6>
+                      <IconByName
+                        isDisabled
+                        name="MapPinLineIcon"
+                        _icon={{ size: "20px" }}
+                        color="textGreyColor.100"
+                      />
+                      <AdminTypo.H6 color="textGreyColor.100">
+                        {t("LOCATION")}
+                      </AdminTypo.H6>
                     </HStack>
                     <HStack alignItems="center" space={1}>
                       <CRadio
@@ -258,25 +286,21 @@ export default function StatusButton({ data, setData }) {
                       />
                     </HStack>
                   </HStack>
-                  <Input
-                    placeholder={t("ADD_ADDRESS")}
-                  />
-                 
+                  <Input placeholder={t("ADD_ADDRESS")} />
                 </VStack>
                 <HStack flex={0.3}></HStack>
               </HStack>
-              
             </HStack>
           </Modal.Body>
           <Modal.Footer>
-          <HStack width="100%" justifyContent="space-between">
-                <AdminTypo.Secondarybutton onPress={() => setShowModal()}>
-                  {t("CANCEL")}
-                </AdminTypo.Secondarybutton>
-                <AdminTypo.PrimaryButton  onPress={() => update("screened")}>
-                  {t("SCHEDULE")}
-                </AdminTypo.PrimaryButton>
-              </HStack>
+            <HStack width="100%" justifyContent="space-between">
+              <AdminTypo.Secondarybutton onPress={() => setShowModal()}>
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton onPress={() => update("screened")}>
+                {t("SCHEDULE")}
+              </AdminTypo.PrimaryButton>
+            </HStack>
           </Modal.Footer>
         </Modal.Content>
       </Modal>
@@ -304,7 +328,9 @@ export default function StatusButton({ data, setData }) {
           <Modal.CloseButton />
           <Modal.Header borderBottomWidth={0}>
             <HStack alignItems="center" space={2} justifyContent="center">
-              <AdminTypo.H1 color="textGreyColor.500" bold>{t(showModal?.name)}</AdminTypo.H1>
+              <AdminTypo.H1 color="textGreyColor.500" bold>
+                {t(showModal?.name)}
+              </AdminTypo.H1>
             </HStack>
           </Modal.Header>
           <Modal.Body pb="5" px="5" pt="0">
@@ -317,7 +343,9 @@ export default function StatusButton({ data, setData }) {
                   borderWidth="1"
                   borderColor="gray.300"
                 >
-                  <AdminTypo.H6 color="textGreyColor.500" bold>{t("PLEASE_MENTION_YOUR_REASON")}</AdminTypo.H6    >
+                  <AdminTypo.H6 color="textGreyColor.500" bold>
+                    {t("PLEASE_MENTION_YOUR_REASON")}
+                  </AdminTypo.H6>
                   <CRadio
                     onChange={(e) => setReason(e)}
                     items={[
@@ -354,9 +382,7 @@ export default function StatusButton({ data, setData }) {
                 </H1>
               )}
               <HStack width="100%" justifyContent="space-between" space={5}>
-                <AdminTypo.Secondarybutton
-                  onPress={() => setShowModal()}
-                >
+                <AdminTypo.Secondarybutton onPress={() => setShowModal()}>
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
