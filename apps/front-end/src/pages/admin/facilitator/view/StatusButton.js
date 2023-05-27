@@ -238,7 +238,7 @@ export default function StatusButton({ data, setData }) {
                       <IconByName isDisabled name="Notification2LineIcon" _icon={{size:'20px'}} color="textGreyColor.100" />
                       <AdminTypo.H6 color="textGreyColor.100">{t("REMINDER")}</AdminTypo.H6>
                     </HStack>
-                    <Chip bg="#e9e9e9">
+                    <Chip bg="textGreyColor">
                       <HStack alignItems="center" space={"2"} p="1">
                         <H2>{t("10_MINUTES_BEFORE")}</H2>
                       </HStack>
@@ -334,11 +334,11 @@ export default function StatusButton({ data, setData }) {
                     ]}
                   />
                   {reason &&
-                    ![
-                      "Incomplete Form",
-                      "Not Qualified",
-                      "Less experienced",
-                    ].includes(reason) ? (
+                  ![
+                    "Incomplete Form",
+                    "Not Qualified",
+                    "Less experienced",
+                  ].includes(reason) ? (
                     <Input
                       onChange={(e) => setReason(e?.target?.value)}
                       variant={"underlined"}
