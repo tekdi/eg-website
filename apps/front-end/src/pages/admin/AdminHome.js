@@ -22,6 +22,7 @@ import {
   H3,
   t,
   facilitatorRegistryService,
+  AdminTypo
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import Chip from "component/Chip";
@@ -104,7 +105,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const uiSchema = {
     DISTRICT: {
       "ui:widget": "checkboxes",
-      "ui:options": {},
+      "ui:options": {
+      },
     },
     QUALIFICATION: {
       "ui:widget": "checkboxes",
@@ -140,13 +142,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             justifyContent={"space-between"}
             alignItems={"center"}
             p="10px"
-            bg="primary.500"
             ref={ref}
           >
-            <H2 color="white">{t("MY_PRERAKS")}</H2>
-            <Button onPress={clearFilter} variant={"secondary"} size={"sm"}>
+            {/* <H2 color="white">{t("MY_PRERAKS")}</H2> */}
+            <AdminTypo.Secondarybutton onPress={clearFilter}>
               Clear filter
-            </Button>
+            </AdminTypo.Secondarybutton>
           </HStack>
           <ScrollView
             maxH={
@@ -172,9 +173,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               </Select>*/}
 
               <VStack space={5}>
-                <HStack alignItems="center">
+                <HStack alignItems="center" width="100%">
                   <IconByName isDisabled name="FilterLineIcon" />
-                  <Text>{t("FILTER")}</Text>
+                  <AdminTypo.H5 bold  borderBottomWidth="1">{t("FILTERS")}</AdminTypo.H5>
                 </HStack>
                 <Form
                   schema={schema}
@@ -182,6 +183,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={formData}
+                
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
