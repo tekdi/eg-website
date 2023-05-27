@@ -61,29 +61,31 @@ export default function Orientation({
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
-
   const SelectButton = () => (
     <VStack>
       <Button onPress={(e) => onShowScreen(true)}>
         <Text>select preraks</Text>
       </Button>
-      {/* <Text>
-        {Object.values(userIds)
-          ?.map((e) => e.first_name)
-          ?.join(", ")}
-      </Text> */}
+      <Text>
+        {userIds !== undefined
+          ? Object.values(userIds)
+              ?.map((e) => e.first_name)
+              ?.join(", ")
+          : ""}
+      </Text>
     </VStack>
   );
   React.useEffect(() => {
     getEventList();
   }, []);
 
-  // React.useEffect(() => {
-  //   setFormData({
-  //     ...formData,
-  //     user_id: Object.values(userIds).map((e) => e?.id),
-  //   });
-  // }, [userIds]);
+  React.useEffect(() => {
+    setFormData({
+      ...formData,
+      user_id:
+        userIds !== undefined ? Object.values(userIds).map((e) => e?.id) : "",
+    });
+  }, [userIds]);
 
   const getEventList = async () => {
     const eventResult = await eventService.getEventList();
@@ -150,6 +152,7 @@ export default function Orientation({
       }}
       _sidebar={footerLinks}
     >
+      hello
       <VStack paddingLeft="5" paddingTop="5" space="xl">
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
@@ -232,7 +235,6 @@ export default function Orientation({
           Your Calender
         </Text>
       </VStack>
-
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
           <VStack space="xl">
@@ -304,7 +306,7 @@ export default function Orientation({
                     : moment().format("YYYY-MM-DD HH:mm:ss"),
               };
             })}
-            eventClick={console.log("hi")}
+            // eventClick={console.log("hi")}
             headerToolbar={{
               start: "prev,thisweek,next",
               center: "timeGridWeek,dayGridMonth,dayGridYear",
@@ -312,10 +314,8 @@ export default function Orientation({
               height: "50hv",
             }}
           />
-          ;
         </Box>
       </HStack>
-
       <Modal
         isOpen={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -489,7 +489,6 @@ export default function Orientation({
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
       <HStack space="2xl" justifyContent={"space-between"} px="3">
         {/* <Box>
           <VStack space="xl">

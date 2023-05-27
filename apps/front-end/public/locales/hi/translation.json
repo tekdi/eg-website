@@ -235,7 +235,7 @@
  "UNABLE_TO_SCAN_THE_QR_CODE":"क्यूआर कोड स्कैन करने में असमर्थ",
  "MANUAL_AADHAAR_UPLOAD":"मैनुअल आधार अपलोड",
  "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"हमने आपके मोबाइल नंबर पर यूजर नेम और पासवर्ड के साथ एक टेक्स्ट मैसेज भेजा है"
-}
+,
   "USER_ENTER_FOUR_DIGIT_OTP": "उपरोक्त मोबाइल नंबर पर भेजा गया 6 अंकों का ओटीपी दर्ज करें",
   "OTP": "ओटीपी",
   "USER_ENTER_VALID_OTP": "गलत ओटीपी डाला गया",

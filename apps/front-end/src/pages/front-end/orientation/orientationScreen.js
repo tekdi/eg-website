@@ -187,7 +187,7 @@ const scheduleCandidates = (e) => [
   // },
 ];
 
-export default function App() {
+export default function OrientationScreen() {
   changeLanguage(localStorage.getItem("lang"));
   const [data, setData] = React.useState([]);
   const [userIds, setUserIds] = React.useState({});
@@ -200,8 +200,7 @@ export default function App() {
   React.useEffect(async () => {
     setLoading(true);
     const result = await facilitatorRegistryService.getAll(filterObj);
-
-    setData(result.data);
+    setData(result?.data);
 
     setPaginationTotalRows(result?.totalCount);
     setLoading(false);
@@ -237,7 +236,6 @@ export default function App() {
         onShowScreen={setIsOpen}
         getFormData={(e) => console.log(e)}
       />
-
       <Modal
         isOpen={isOpen}
         onClose={(e) => setIsOpen(false)}
@@ -343,7 +341,6 @@ const Page3 = () => {
   const handleCandidateSelectRow = (state) => {
     setRowData(state);
     setShowEditModal(true);
-    console.log(state);
   };
   return (
     <Layout

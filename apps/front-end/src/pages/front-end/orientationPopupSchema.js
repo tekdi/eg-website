@@ -42,12 +42,12 @@ export default {
     start_date: {
       title: "Date",
       type: "string",
-      format: "date",
+      format: "alt-date",
     },
     end_date: {
       title: "Date",
       type: "string",
-      format: "date",
+      format: "alt-date",
     },
     start_time: {
       title: "Start time",
