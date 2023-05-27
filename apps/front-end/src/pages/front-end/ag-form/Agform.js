@@ -13,7 +13,7 @@ import {
   Radio,
   Stack,
   VStack,
-  Text
+  Text,
 } from "native-base";
 import CustomRadio from "../../../component/CustomRadio";
 import Steper from "../../../component/Steper";
@@ -35,7 +35,7 @@ import {
   BodyMedium,
   changeLanguage,
   StudentEnumService,
-  FrontEndTypo
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -50,10 +50,10 @@ import {
   BaseInputTemplate,
   ArrayFieldTemplate,
   CustomR,
-  RadioBtn
+  RadioBtn,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
-  
+
 // App
 export default function Agform({ userTokenInfo }) {
   const { authUser } = userTokenInfo;
@@ -590,8 +590,10 @@ export default function Agform({ userTokenInfo }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Box>
-          <H1 color="textMaroonColor.400" alignItems="center">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
-            </Box>
+            <H1 color="textMaroonColor.400" alignItems="center">
+              {t("IDENTIFY_THE_AG_LEARNER")}
+            </H1>
+          </Box>
           <Center>
             <Image
               source={{
@@ -651,27 +653,34 @@ export default function Agform({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <Text color="textMaroonColor.400" fontSize="md" bold textAlign="center">{t("IDENTIFY_THE_AG_LEARNER")}</Text>
-          <Text color="textMaroonColor.400" fontSize="md" bold>Add AG’s Profile Photo</Text>
-          <Text color="textMaroonColor.400" fontSize="md" bold>DO's</Text>
+          <Text
+            color="textMaroonColor.400"
+            fontSize="md"
+            bold
+            textAlign="center"
+          >
+            {t("IDENTIFY_THE_AG_LEARNER")}
+          </Text>
+          <Text color="textMaroonColor.400" fontSize="md" bold>
+            Add AG’s Profile Photo
+          </Text>
+          <Text color="textMaroonColor.400" fontSize="md" bold>
+            DO's
+          </Text>
           <HStack space="2">
             <Box background="primary.100" width="150" height="150"></Box>
             <Box background="primary.100" width="150" height="150"></Box>
           </HStack>
-         
-          <Text color="textMaroonColor.400" fontSize="md" bold>Don’ts</Text>
+
+          <Text color="textMaroonColor.400" fontSize="md" bold>
+            Don’ts
+          </Text>
           <HStack space="2">
             <Box background="primary.100" width="150" height="150"></Box>
             <Box background="primary.100" width="150" height="150"></Box>
           </HStack>
           <FrontEndTypo.Secondarybutton
-            leftIcon={
-              <IconByName
-                name="CameraLineIcon"
-                size={2}
-                isDisabled
-              />
-            }
+            leftIcon={<IconByName name="CameraLineIcon" size={2} isDisabled />}
             onPress={(e) => {
               setCameraUrl();
               setCameraModal(true);
@@ -693,7 +702,7 @@ export default function Agform({ userTokenInfo }) {
                 uplodInputRef?.current?.click();
               }}
             >
-             {t("UPLOAD_PHOTO")}
+              {t("UPLOAD_PHOTO")}
             </FrontEndTypo.Secondarybutton>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
@@ -761,7 +770,6 @@ export default function Agform({ userTokenInfo }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              
               {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>

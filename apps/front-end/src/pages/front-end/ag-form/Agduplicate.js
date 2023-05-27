@@ -1,4 +1,13 @@
-import { H1, H3, H4, IconByName, Layout, t ,FrontEndTypo, H2} from "@shiksha/common-lib";
+import {
+  H1,
+  H3,
+  H4,
+  IconByName,
+  Layout,
+  t,
+  FrontEndTypo,
+  H2,
+} from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
   Image,
@@ -49,10 +58,16 @@ const Agduplicate = () => {
       {alreadyreg && (
         <VStack bg={"#FDC5C766"} alignItems={"center"} py={5}>
           <HStack width={"90%"} mx={"auto"} alignItems={"center"}>
-            <IconByName name="ErrorWarningLineIcon" color="textRed.300" size="20px" />
+            <IconByName
+              name="ErrorWarningLineIcon"
+              color="textRed.300"
+              size="20px"
+            />
             <VStack pl="3">
-              <FrontEndTypo.H2  color="textGreyColor.600">{t("AG_LEARNER_ALREADY_IDENTIFIED")}</FrontEndTypo.H2>
-              <FrontEndTypo.H3  color="textGreyColor.600">
+              <FrontEndTypo.H2 color="textGreyColor.600">
+                {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3 color="textGreyColor.600">
                 {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
               </FrontEndTypo.H3>
             </VStack>
@@ -80,54 +95,54 @@ const Agduplicate = () => {
           borderColor="textGreyColor.300"
           borderWidth="1px"
         >
-          <IconByName name="AccountCircleLineIcon" color='gray.300' _icon={{ size: "50px" }} />
+          <IconByName
+            name="AccountCircleLineIcon"
+            color="gray.300"
+            _icon={{ size: "50px" }}
+          />
         </VStack>
 
         <VStack mt={10} space="3">
-          <HStack
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3 fontSize="sm" bold color="textMaroonColor.400">{t("FULL_NAME")}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <H3 fontSize="sm" bold color="textMaroonColor.400">
+              {t("FULL_NAME")}
+            </H3>
             <H3>{firstname}</H3>
           </HStack>
-          <HStack
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3 fontSize="sm" bold color="textMaroonColor.400">{t("GENDER")}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <H3 fontSize="sm" bold color="textMaroonColor.400">
+              {t("GENDER")}
+            </H3>
             <H3>{gender}</H3>
           </HStack>
-          <HStack
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3 fontSize="sm" bold color="textMaroonColor.400">{t("DATE_OF_BIRTH")}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <H3 fontSize="sm" bold color="textMaroonColor.400">
+              {t("DATE_OF_BIRTH")}
+            </H3>
             <H3>{DOB}</H3>
           </HStack>
-          <HStack
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3 fontSize="sm" bold color="textMaroonColor.400" width="55%">{t("VERIFICATION_ID_NUMBER")}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <H3 fontSize="sm" bold color="textMaroonColor.400" width="55%">
+              {t("VERIFICATION_ID_NUMBER")}
+            </H3>
             <H3 ellipsis>{verify_id}</H3>
           </HStack>
-            <HStack justifyContent="flex-end">
-                <FrontEndTypo.Primarybutton
-                  my="3"
-                  onPress={() => navigate("/learnerProfile")}
-                >
-               {t("ADD_DETAILS")}
-              </FrontEndTypo.Primarybutton>
-            </HStack>
-            <FrontEndTypo.Secondarybutton
+          <HStack justifyContent="flex-end">
+            <FrontEndTypo.Primarybutton
+              my="3"
               onPress={() => navigate("/learnerProfile")}
             >
-              {t("DOCUMENTS_CHECKLIST")}
-            </FrontEndTypo.Secondarybutton>
-            <FrontEndTypo.Secondarybutton>
-              {t("ADD_RSOS_NIOS_NO")}
-            </FrontEndTypo.Secondarybutton>
+              {t("ADD_DETAILS")}
+            </FrontEndTypo.Primarybutton>
+          </HStack>
+          <FrontEndTypo.Secondarybutton
+            onPress={() => navigate("/learnerProfile")}
+          >
+            {t("DOCUMENTS_CHECKLIST")}
+          </FrontEndTypo.Secondarybutton>
+          <FrontEndTypo.Secondarybutton>
+            {t("ADD_RSOS_NIOS_NO")}
+          </FrontEndTypo.Secondarybutton>
         </VStack>
 
         <FrontEndTypo.Primarybutton
@@ -138,20 +153,28 @@ const Agduplicate = () => {
           {t("NEXT")}
         </FrontEndTypo.Primarybutton>
 
-        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} size="md">
+        <Modal
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          size="md"
+        >
           <Modal.Content>
             <Modal.Body py={10}>
-                <HStack mx={"auto"} alignItems={"top"}>
-                  <IconByName name="ErrorWarningLineIcon" color="textRed.300" size="20px"></IconByName>
-                    <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
-                      {t("AG_LEARNER_ALREADY_IDENTIFIED")}
-                    </FrontEndTypo.H2>
-                </HStack>
-                <VStack pt="3">
-                    <FrontEndTypo.H5 color="textGreyColor.600">
+              <HStack mx={"auto"} alignItems={"top"}>
+                <IconByName
+                  name="ErrorWarningLineIcon"
+                  color="textRed.300"
+                  size="20px"
+                ></IconByName>
+                <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                  {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+                </FrontEndTypo.H2>
+              </HStack>
+              <VStack pt="3">
+                <FrontEndTypo.H5 color="textGreyColor.600">
                   {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
                 </FrontEndTypo.H5>
-                </VStack>
+              </VStack>
               <FrontEndTypo.Primarybutton
                 py="2"
                 width="100%"
@@ -168,7 +191,7 @@ const Agduplicate = () => {
                 marginTop={"1em"}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-               {t("CANCEL_AND_GO_BACK")}
+                {t("CANCEL_AND_GO_BACK")}
               </FrontEndTypo.Secondarybutton>
             </Modal.Body>
           </Modal.Content>
@@ -176,21 +199,28 @@ const Agduplicate = () => {
 
         <Modal isOpen={addmodal} onClose={() => setaddmodal(false)} size="md">
           <Modal.Content py="0">
-            <Modal.Body >
+            <Modal.Body>
               <VStack alignItems={"center"}>
-                  <IconByName name="CheckboxCircleLineIcon" color="textGreyColor.150" _icon={{ size: "50px" }}></IconByName>
-                    <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
-                      {t("AG_ADDED_SUCCESSFULLY")}
-                    </FrontEndTypo.H1>
-                    <TextArea placeholder="Explain your claim of the AG Learner*" w="100%"></TextArea>
-                        <FrontEndTypo.Primarybutton
-                        width={250}
-                        marginTop={"1em"}
-                        onPress={() => setaddmodal(!addmodal)}
-                      >
-                    {t("SEND")}
-                  </FrontEndTypo.Primarybutton>
-                </VStack>             
+                <IconByName
+                  name="CheckboxCircleLineIcon"
+                  color="textGreyColor.150"
+                  _icon={{ size: "50px" }}
+                ></IconByName>
+                <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
+                  {t("AG_ADDED_SUCCESSFULLY")}
+                </FrontEndTypo.H1>
+                <TextArea
+                  placeholder="Explain your claim of the AG Learner*"
+                  w="100%"
+                ></TextArea>
+                <FrontEndTypo.Primarybutton
+                  width={250}
+                  marginTop={"1em"}
+                  onPress={() => setaddmodal(!addmodal)}
+                >
+                  {t("SEND")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
             </Modal.Body>
           </Modal.Content>
         </Modal>

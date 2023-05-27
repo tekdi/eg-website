@@ -174,7 +174,7 @@ const DEFAULT_THEME = {
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
-          borderColor: `#790000`,      
+          borderColor: `#790000`,
           _hover: {
             bg: `#FFFFFF`
           },
@@ -182,7 +182,7 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
-            fontWeight: '700',
+            fontWeight: '700'
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
@@ -558,9 +558,10 @@ const DEFAULT_THEME = {
       400: '#084B82',
       450: '#3F8BF1'
     },
-    textRed:{
-      300:'#FF2815'
-    }
+    textRed: {
+      300: '#FF2815'
+    },
+    dividerColor: '#EEEEEE'
   }
 }
 
