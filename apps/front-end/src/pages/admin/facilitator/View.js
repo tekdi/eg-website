@@ -33,7 +33,7 @@ import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import Steper from "component/Steper";
-
+import Interviewschedule from "./view/Interviewschedule";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -314,7 +314,13 @@ export default function FacilitatorView({ footerLinks }) {
               </Button>
             </VStack>
           </HStack>
-
+          <Box paddingTop="32px">
+            {data?.status === "screened" ? (
+              <Interviewschedule />
+            ) : (
+              <React.Fragment />
+            )}
+          </Box>
           <Modal
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
