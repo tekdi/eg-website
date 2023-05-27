@@ -175,7 +175,7 @@ const DEFAULT_THEME = {
           bg: `#FFFFFF`,
           borderWidth: '1',
           borderColor: `#790000`,
-        
+
           _hover: {
             bg: `#FFFFFF`
           },
@@ -207,11 +207,15 @@ const DEFAULT_THEME = {
       }
     }
   },
-  Background:{
-     linearGradient: { colors: ['#CAE9FF', '#fff', '#CAE9FF'], start: [0, 0], end: [1, 0], }, 
-},
+  Background: {
+    linearGradient: {
+      colors: ['#CAE9FF', '#fff', '#CAE9FF'],
+      start: [0, 0],
+      end: [1, 0]
+    }
+  },
   shadows: {
-    AlertShadow:{
+    AlertShadow: {
       shadowColor: '#00000040',
       shadowOffset: {
         width: 1,
@@ -485,7 +489,7 @@ const DEFAULT_THEME = {
     },
     badgeColor: {
       400: '#FDE68A',
-      450:'#FFEFAF'
+      450: '#FFEFAF'
     },
     progressBarColor: {
       200: '#10B981',
@@ -504,14 +508,14 @@ const DEFAULT_THEME = {
       900: '#1E1E1E'
     },
     textMaroonColor: {
-      100:'#FFACAF',
+      100: '#FFACAF',
       400: '#790000'
     },
-    blueText:{
-      300:'#d4eaf9',
-      350:'#CAE9FF',
-      400:'#084B82',
-      450:'#3F8BF1',
+    blueText: {
+      300: '#d4eaf9',
+      350: '#CAE9FF',
+      400: '#084B82',
+      450: '#3F8BF1'
     },
     bgPinkColor: {
       300: '#F9E9DB'

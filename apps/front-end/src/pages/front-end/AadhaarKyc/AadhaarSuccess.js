@@ -6,13 +6,17 @@ import { Box, Button, Text } from "native-base";
 import { t } from "@shiksha/common-lib";
 
 export default function AdharSuccess() {
-
   const navigate = useNavigate();
 
   return (
     <Box>
       <Box borderBottomWidth="2" borderColor="gray.400">
-        <Button variant="ghost" display="flex" justifyContent="flex-start" onPress={() => navigate(-1)}>
+        <Button
+          variant="ghost"
+          display="flex"
+          justifyContent="flex-start"
+          onPress={() => navigate(-1)}
+        >
           <WestIcon />
         </Button>
       </Box>
@@ -24,9 +28,22 @@ export default function AdharSuccess() {
           (OKYC)
         </Text>
 
-        <Box display="flex" flexDirection="row" alignItems="center" gap="2" mt="6" color="gray.500" p="2" borderWidth="2" borderColor="gray.500" rounded="md">
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          gap="2"
+          mt="6"
+          color="gray.500"
+          p="2"
+          borderWidth="2"
+          borderColor="gray.500"
+          rounded="md"
+        >
           <CheckIcon fontSize="small" />
-          <Text fontSize="sm" fontWeight="semibold">{t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}</Text>
+          <Text fontSize="sm" fontWeight="semibold">
+            {t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}
+          </Text>
         </Box>
 
         <Button variant="secondary" bg={"gray.500"} py="12px" px="20px" mt={20}>

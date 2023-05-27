@@ -98,9 +98,10 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${item[key] && typeof item[key] === "string"
-            ? item[key].trim()
-            : item[key]
+          `${
+            item[key] && typeof item[key] === "string"
+              ? item[key].trim()
+              : item[key]
           }`
         )
       ) {
@@ -202,8 +203,9 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   >
                     <H3> {t("INVITATION_LINK")}</H3>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id
-                        }`}
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${
+                        facilitator?.program_users[0]?.organisation_id
+                      }`}
                     >
                       <HStack space="3">
                         <IconByName

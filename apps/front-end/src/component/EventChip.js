@@ -27,7 +27,6 @@ export function EventChip({ status, ...props }) {
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
-     
       case "orientation":
         setNewStatus(t("ORIENTATION"));
         setColor("progressBarColor.300");
