@@ -15,10 +15,12 @@ import Tab from './components/Tab'
 import Loading from './components/Loading'
 import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
+import * as enumRegistryService from './services/enumRegistoryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
 import * as StudentEnumService from './services/StudentEnumService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
+import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
@@ -53,10 +55,12 @@ export {
   geolocationRegistryService,
   uploadRegistryService,
   ImageView,
-  StudentEnumService,
   t,
   changeLanguage,
   Camera,
+  enumRegistryService,
+  benificiaryRegistoryService,
+  StudentEnumService,
   FloatingInput,
   CheatSheet,
   CustomOTPBox
