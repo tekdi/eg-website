@@ -347,7 +347,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
-          arr: qData,
+          arr: qData?.states,
           title: "state_name",
           value: "state_name",
         });
@@ -570,7 +570,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["district"]) {
         newSchema = getOptions(newSchema, {
           key: "district",
-          arr: qData,
+          arr: qData?.districts,
           title: "district_name",
           value: "district_name",
         });
@@ -601,7 +601,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
-          arr: qData,
+          arr: qData?.blocks,
           title: "block_name",
           value: "block_name",
         });
@@ -629,7 +629,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
-          arr: qData,
+          arr: qData?.villages,
           title: "village_ward_name",
           value: "village_ward_name",
         });
