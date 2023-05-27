@@ -246,8 +246,7 @@
  "MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD" :"Mobile Number is not linked to Aadhaar Card",
  "UNABLE_TO_SCAN_THE_QR_CODE":"Unable to scan the QR Code",
  "MANUAL_AADHAAR_UPLOAD":"Manual Aadhaar Upload",
- "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"We have sent you a text message with username and password on your mobile number"
-}
+ "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER":"We have sent you a text message with username and password on your mobile number",
   "USER_ENTER_FOUR_DIGIT_OTP": "Enter 6 Digit OTP sent on Above Mobile Number",
   "OTP": "OTP",
   "USER_ENTER_VALID_OTP": "Incorrect OTP Entered",
@@ -298,7 +297,6 @@
   "AVAILABLE": "Available",
   "COMPLETE": "Complete",
   "UPDATE_REQUIRED": "Update Required",
-  "AADHAAR_CARD": "Aadhaar Card",
   "JAN_AADHAAR_CARD": "Jan Aadhaar Card",
   "PHOTO": "Photo",
   "MARKSHEET": "Marksheet",
