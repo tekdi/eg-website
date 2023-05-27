@@ -28,44 +28,44 @@ export function ChipStatus({ status, ...props }) {
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "screened":
-        setColor("PrerakScreenedColor");
+        setColor("ScreenedColor");
         setNewStatus(t("SCREENED"));
         break;
       case "rejected":
         setNewStatus(t("REJECTED"));
-        setColor("danger.300");
+        setColor("RejectedColor");
         break;
       case "shortlisted_for_orientation":
         setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
-        setColor("warning.300");
+        setColor("ShortlistedColor");
         break;
       case "potential_prerak":
         setNewStatus(t("POTENTIAL_PRERAK"));
-        setColor("warning.300");
+        setColor("PotentialColor");
         break;
       case "selected_for_training":
         setNewStatus(t("SELECTED_FOR_TRAINING"));
-        setColor("warning.300");
+        setColor("SelectedColor");
         break;
       case "selected_for_onboarding":
         setNewStatus(t("SELECTED_FOR_ONBOARDING"));
-        setColor("green.300");
+        setColor("SelectedColor");
         break;
       case "selected_prerak":
         setNewStatus(t("SELECTED_PRERAK"));
-        setColor("green.300");
+        setColor("SelectedColor");
         break;
       case "quit":
         setNewStatus(t("QUIT"));
-        setColor("danger.300");
+        setColor("RejectedColor");
         break;
       case "rusticate":
         setNewStatus(t("RUSTICATE"));
-        setColor("danger.300");
+        setColor("RejectedColor");
         break;
       default:
         setNewStatus(t("APPLIED"));
-        setColor("info.300");
+        setColor("AppliedColor");
     }
   }, [status]);
 

@@ -12,7 +12,7 @@ import AdharSuccess from "pages/front-end/AadhaarKyc/AadhaarSuccess";
 import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
 import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
 import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
-import { CheatSheet } from "@shiksha/common-lib" ;
+import { CheatSheet } from "@shiksha/common-lib";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -22,33 +22,32 @@ export default [
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
 
-
   {
-    path: '/admin/aadhaarStart',
+    path: "/admin/aadhaarStart",
     component: AadhaarStartKyc,
   },
   {
-    path: '/admin/aadhaarNumber',
+    path: "/admin/aadhaarNumber",
     component: AdharKyc,
   },
   {
-    path: '/admin/aadhaarOTP',
+    path: "/admin/aadhaarOTP",
     component: AdharOTP,
   },
   {
-    path: '/admin/aadhaarSuccess',
+    path: "/admin/aadhaarSuccess",
     component: AdharSuccess,
   },
   {
-    path: '/admin/aadhaarManualUpload',
+    path: "/admin/aadhaarManualUpload",
     component: ManualUpload,
   },
   {
-    path: '/admin/aadhaarQrScanner',
+    path: "/admin/aadhaarQrScanner",
     component: QrScannerKyc,
   },
 
- { path: "*", component: NotFound },
+  { path: "*", component: NotFound },
 
   { path: "/cheatsheet", component: CheatSheet },
 ];
