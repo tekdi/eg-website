@@ -318,7 +318,12 @@
   "CBOSIGNTRANSFER": "सीबीओ हस्ताक्षर के साथ हस्तांतरण प्रमाण पत्र",
   "PROFILE_DETAILS": "प्रोफ़ाइल विवरण",
   "MARK_AS_DROPOUT": "मार्क एज ड्रूपॉट",
-  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है"
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है",
+  "PREVIOUS_SCHOOL_TYPE_PRIVATE_SCHOOL":"प्राइवेट स्कूल",
+  "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL":"सरकारी स्कूल",
+  "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED":"कभी पढ़ाई नहीं की",
+  "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL":"ओपन स्कूल",
+  "PREVIOUS_SCHOOL_TYPE_OTHER":"अन्य"
 }
 
 

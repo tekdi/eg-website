@@ -5,11 +5,34 @@ export default {
     1: {
       title: "IDENTIFY_THE_AG_LEARNER",
       type: "object",
-      required: ["first_name"],
+      required: ["first_name", "last_name"],
       properties: {
         first_name: {
           type: "string",
           title: "FIRST_NAME",
+        },
+        last_name: {
+          type: "string",
+          title: "LAST_NAME",
+        },
+        role: {
+          format: "hidden",
+          type: "string",
+          default: "beneficiaries",
+        },
+        email_id: {
+          format: "hidden",
+          type: "string",
+          default: "joey@gmail.com",
+        },
+        role_fields: {
+          properties: {
+            facilitator_id: {
+              format: "hidden",
+              type: "string",
+              default: localStorage.getItem("id"),
+            },
+          },
         },
       },
     },
@@ -20,21 +43,24 @@ export default {
       required: ["mobile"],
       properties: {
         mobile: {
-          type: "number",
+          type: "string",
           title: "MOBILE_NUMBER",
         },
-        ownership: {
-          type: "string",
-          title: "OWNERSHIP",
-          enumNames: ["Self", "Family Member", "Neighbour", "Other", "any"],
-          enum: ["self", "familymember", "neighbour", "other", "any"],
-        },
-        type_mobile: {
-          type: "string",
-          title: "TYPE_OF_MOBILE_PHONE",
-          enumNames: ["Android", "IPhone"],
-          enum: ["android", "iphone"],
-        },
+
+        // device_ownership: {
+        //   type: "string",
+        //   label: "OWNERSHIP",
+        //   format: "RadioBtn",
+        //   enumNames: ["Self", "Family Member", "Neighbour", "Other", "any"],
+        //   enum: ["self", "family_member", "neighbour", "other", "any"],
+        // },
+        // device_type: {
+        //   type: "string",
+        //   label: "TYPE_OF_MOBILE_PHONE",
+        //   format: "CustomR",
+        //   enumNames: ["Smartphone", "Basic"],
+        //   enum: ["smartphone", "basic"],
+        // },
       },
     },
 

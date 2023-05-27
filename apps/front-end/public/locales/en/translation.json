@@ -359,6 +359,11 @@
   "REFERENCE_CONTACT_DETAILS":"Reference Contact Details",
   "DOCUMENTS_UPLOAD":"Documents Upload",
   "AADHAAR_VERIFICATION":"Aadhaar Verification",
-  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password"
+  "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password",
+  "PREVIOUS_SCHOOL_TYPE_PRIVATE_SCHOOL":"Private School",
+  "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL":"Government School",
+  "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED":"Never Studied",
+  "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL":"Open School",
+  "PREVIOUS_SCHOOL_TYPE_OTHER":"Other"
 }
 
