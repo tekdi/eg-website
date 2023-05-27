@@ -436,16 +436,16 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       credentials?.password === credentials?.confirmPassword
                         ? handleResetPassword(
-                            credentials?.password,
-                            credentials?.confirmPassword
-                          )
+                          credentials?.password,
+                          credentials?.confirmPassword
+                        )
                         : toast.show({
-                            title: "Error",
-                            variant: "solid",
-                            description: t(
-                              "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-                            ),
-                          });
+                          title: "Error",
+                          variant: "solid",
+                          description: t(
+                            "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+                          ),
+                        });
                     }}
                   >
                       {t("USER_SET_NEW_PASSWORD")}
@@ -510,14 +510,14 @@ export default function FacilitatorView({ footerLinks }) {
                       data?.grampanchayat,
                     ].filter((e) => e).length > 0
                       ? [
-                          data?.state,
-                          data?.district,
-                          data?.block,
-                          data?.village,
-                          data?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")
+                        data?.state,
+                        data?.district,
+                        data?.block,
+                        data?.village,
+                        data?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(", ")
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>

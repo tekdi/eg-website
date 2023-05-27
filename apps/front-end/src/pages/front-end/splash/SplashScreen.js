@@ -20,6 +20,7 @@ import {
   Pressable,
 } from "native-base";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const stylesheet = {
   mainBox: {
@@ -145,6 +146,7 @@ const Page1 = () => {
 
 const Page2 = ({ onClick, onClickPrerakDuties }) => {
   changeLanguage(localStorage.getItem("lang"));
+  const navigate = useNavigate();
 
   return (
     <Stack style={stylesheet.bgimage}>
@@ -179,10 +181,16 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
           </Button>
         </Box>
         <Center>
-          <Text style={stylesheet.text1}>
-            {" "}
-            {t("ALREADY_APPLIED_CHECK_STATUS")}
-          </Text>
+          <Pressable
+            onPress={() => {
+              navigate("/");
+            }}
+          >
+            <Text style={stylesheet.text1}>
+              {" "}
+              {t("ALREADY_APPLIED_CHECK_STATUS")}
+            </Text>
+          </Pressable>
         </Center>
       </VStack>
     </Stack>
