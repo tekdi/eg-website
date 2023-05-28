@@ -6,36 +6,32 @@ import {
   t,
   ImageView,
   BlueFillButton,
-  BlueOutlineButton,
+  AdminTypo
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { Button, HStack, Input, Text, VStack, Modal } from "native-base";
+import { Button, HStack, Input, Text, VStack, Modal,Image, Box } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
-    style: {
-      minHeight: "72px", // override the row height
-      borderLeft: "4px solid transparent",
-      "&:hover": {
-        borderLeft: "4px solid #790000",
-        boxShadow: "1px 3px 4px rgba(0, 0, 0, 0.25)",
-        zIndex: "1",
+      style: {
+          minHeight: '72px', // override the row height
       },
-    },
   },
   headCells: {
-    style: {
-      background: "#E0E0E0",
-    },
+      style: {
+          background:'#E0E0E0',
+          color:'#616161',
+          size:'16px'
+      },
   },
   cells: {
-    style: {
-      color: "#616161",
-      size: "14px",
-    },
+      style: {
+          color:'#616161',
+          size:'19px'
+      },
   },
 };
 const columns = (e) => [
@@ -60,9 +56,7 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>
-          {row?.first_name + " " + row.last_name}
-        </Text>
+        <Text fontSize="16px" bold>{row?.first_name + " " + row.last_name}</Text>
       </HStack>
     ),
     sortable: true,
@@ -139,7 +133,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
   React.useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
-
+ 
   return (
     <VStack>
       <HStack justifyContent={"space-between"} my="1">
@@ -245,17 +239,13 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           {
             name: t("ACTION"),
             selector: (row) => (
-              <Button
-                size={"sm"}
-                px="5"
+              <AdminTypo.Secondarybutton
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-                <Text fontSize="12px" color={"white"}>
-                  {t("VIEW")}
-                </Text>
-              </Button>
+               {t("VIEW")}
+              </AdminTypo.Secondarybutton>
             ),
           },
         ]}

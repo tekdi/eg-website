@@ -7,7 +7,6 @@ import {
   H3,
   H1,
   H2,
-  BodyLarge,
   BodySmall,
   Loading,
   t,
@@ -28,6 +27,7 @@ import {
   Input,
   ChevronRightIcon,
   useToast,
+  Image
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -154,16 +154,24 @@ export default function FacilitatorView({ footerLinks }) {
     <Layout _sidebar={footerLinks}>
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
-          <HStack alignItems={"center"} space="3" pt="3">
+          <HStack alignItems={"center"} space="1" pt="3">
+              <Image
+              source={{
+                uri: "/profile.svg",
+              }}
+              alt="Prerak Orientation"
+              size="30px"
+              resizeMode="contain"
+            />
             <IconByName
               size="sm"
-              name="ArrowLeftSLineIcon"
+              name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <H3> {t("PRERAK_BIO")}</H3>
+            <H1 color="textGreyColor.550"> {t("ALL_PRERAK")}</H1>
           </HStack>
           <HStack alignItems="center" flexWrap="wrap">
-            <VStack flex="0.7" direction="column">
+            <VStack flex="0.6" direction="column">
               <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
                 <H1
                   whiteSpace="nowrap"
@@ -185,7 +193,7 @@ export default function FacilitatorView({ footerLinks }) {
                     name="CellphoneLineIcon"
                     color="textGreyColor.300"
                   />
-                  <BodyLarge>{data?.mobile}</BodyLarge>
+                  <Text>{data?.mobile}</Text>
                 </HStack>
                 <HStack
                   bg="badgeColor.400"
@@ -213,8 +221,8 @@ export default function FacilitatorView({ footerLinks }) {
                   </BodySmall>
                 </HStack>
               </HStack>
-              <H2 fontSize="18" pb="2">
-                {t("ELIGIBILITY_CRITERIA")}
+              <H2  bold pb="2">
+                {t("ELIGIBILITY_CRITERIA") .toUpperCase()}
               </H2>
               <HStack width={"100%"}>
                 <Box flex={0.3}>
@@ -271,7 +279,7 @@ export default function FacilitatorView({ footerLinks }) {
                 </VStack>
               </HStack>
             </VStack>
-            <HStack flex="0.3" pl="5" justifyContent="center">
+            <HStack flex="0.4" pl="5" justifyContent="center">
               {data?.documents?.[0]?.name ? (
                 <ImageView
                   source={{
@@ -462,7 +470,7 @@ export default function FacilitatorView({ footerLinks }) {
           </Modal>
 
           <VStack space={"5"} p="5" mt="6">
-            <H3>{t("APPLICATION_FORM")}</H3>
+            <H2 bold>{t("PROFILE_DETAILS").toUpperCase()}</H2>
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -475,7 +483,7 @@ export default function FacilitatorView({ footerLinks }) {
                   <Heading fontSize="16px">{t("BASIC_DETAILS")}</Heading>
                   <IconByName
                     color="editIcon.300"
-                    size="15px"
+                    size="30px"
                     name="EditBoxLineIcon"
                   ></IconByName>
                 </HStack>
@@ -557,7 +565,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <Heading fontSize="16px">{t("EDUCATION")} </Heading>
                     <IconByName
                       color="editIcon.300"
-                      size="15px"
+                      size="30px"
                       name="EditBoxLineIcon"
                     ></IconByName>
                   </HStack>
@@ -638,7 +646,7 @@ export default function FacilitatorView({ footerLinks }) {
                       <Heading fontSize="16px">{t("OTHER_DETAILS")}</Heading>
                       <IconByName
                         color="editIcon.300"
-                        size="15px"
+                        size="30px"
                         name="EditBoxLineIcon"
                       ></IconByName>
                     </HStack>

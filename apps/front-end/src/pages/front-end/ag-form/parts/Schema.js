@@ -21,17 +21,18 @@ export default {
       properties: {
         mobile: {
           type: "number",
-          title: "MOBILE_NUMBER",
+          label: "MOBILE_NUMBER",
         },
         ownership: {
           type: "string",
-          title: "OWNERSHIP",
+          label: "OWNERSHIP",
           enumNames: ["Self", "Family Member", "Neighbour", "Other", "any"],
           enum: ["self", "familymember", "neighbour", "other", "any"],
         },
         type_mobile: {
           type: "string",
-          title: "TYPE_OF_MOBILE_PHONE",
+          label: "TYPE_OF_MOBILE_PHONE",
+          icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
           enumNames: ["Android", "IPhone"],
           enum: ["android", "iphone"],
         },
@@ -76,7 +77,7 @@ export default {
       //required: ["marital_status", "social_category"],
       properties: {
         marital_status: {
-          title: "MARITAL_STATUS",
+          label: "MARITAL_STATUS",
           type: "string",
           enumNames: [
             "Married",
@@ -86,7 +87,7 @@ export default {
           enum: ["married", "unmarried", "single"],
         },
         social_category: {
-          title: "SOCIAL_CATEGORY",
+          label: "SOCIAL_CATEGORY",
           type: "string",
           enumNames: ["General", "S.C.", "S.T.", "O.B.C.", "Other"],
           enum: ["general", "sc", "st", "obc", "other"],

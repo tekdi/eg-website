@@ -8,7 +8,7 @@ import {
   Divider,
   Button,
 } from "native-base";
-import { IconByName, Layout, t } from "@shiksha/common-lib";
+import { IconByName, Layout, t ,FrontEndTypo} from "@shiksha/common-lib";
 
 export default function AgLearnerProfileView() {
   return (
@@ -217,25 +217,12 @@ export default function AgLearnerProfileView() {
               </HStack>
             </VStack>
           </Box>
-          <Button
-            bgColor="white"
-            borderColor="#790000"
-            borderRadius="100px"
-            borderWidth="2px"
-          >
+          <FrontEndTypo.Secondarybutton>
             <HStack alignItems="Center">
-              <IconByName name="UserUnfollowLineIcon" color="#790000" />
-              <Text
-                color="#790000"
-                fontSize="14px"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
+              <IconByName name="UserUnfollowLineIcon" color="textMaroonColor.400" />
                 {t("MARK_AS_DROPOUT")}
-              </Text>
             </HStack>
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </VStack>
     </Layout>
