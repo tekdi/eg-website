@@ -6,32 +6,41 @@ import {
   t,
   ImageView,
   BlueFillButton,
-  AdminTypo
+  AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { Button, HStack, Input, Text, VStack, Modal,Image, Box } from "native-base";
+import {
+  Button,
+  HStack,
+  Input,
+  Text,
+  VStack,
+  Modal,
+  Image,
+  Box,
+} from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
-      style: {
-          minHeight: '72px', // override the row height
-      },
+    style: {
+      minHeight: "72px", // override the row height
+    },
   },
   headCells: {
-      style: {
-          background:'#E0E0E0',
-          color:'#616161',
-          size:'16px'
-      },
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+    },
   },
   cells: {
-      style: {
-          color:'#616161',
-          size:'19px'
-      },
+    style: {
+      color: "#616161",
+      size: "19px",
+    },
   },
 };
 const columns = (e) => [
@@ -56,7 +65,9 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>{row?.first_name + " " + row.last_name}</Text>
+        <Text fontSize="16px" bold>
+          {row?.first_name + " " + row.last_name}
+        </Text>
       </HStack>
     ),
     sortable: true,
@@ -133,7 +144,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
   React.useEffect(() => {
     setFilterObj({ page, limit });
   }, [page, limit]);
- 
+
   return (
     <VStack>
       <HStack justifyContent={"space-between"} my="1">
@@ -244,7 +255,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   navigate(`/admin/view/${row?.id}`);
                 }}
               >
-               {t("VIEW")}
+                {t("VIEW")}
               </AdminTypo.Secondarybutton>
             ),
           },

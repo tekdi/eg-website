@@ -27,7 +27,7 @@ import {
   Input,
   ChevronRightIcon,
   useToast,
-  Image
+  Image,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -155,7 +155,7 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-              <Image
+            <Image
               source={{
                 uri: "/profile.svg",
               }}
@@ -221,8 +221,8 @@ export default function FacilitatorView({ footerLinks }) {
                   </BodySmall>
                 </HStack>
               </HStack>
-              <H2  bold pb="2">
-                {t("ELIGIBILITY_CRITERIA") .toUpperCase()}
+              <H2 bold pb="2">
+                {t("ELIGIBILITY_CRITERIA").toUpperCase()}
               </H2>
               <HStack width={"100%"}>
                 <Box flex={0.3}>
