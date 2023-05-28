@@ -174,8 +174,7 @@ const DEFAULT_THEME = {
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
-          borderColor: `#790000`,
-
+          borderColor: `#790000`,      
           _hover: {
             bg: `#FFFFFF`
           },
@@ -184,7 +183,6 @@ const DEFAULT_THEME = {
           },
           _text: {
             fontWeight: '700',
-            color: '#790000'
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
@@ -481,11 +479,13 @@ const DEFAULT_THEME = {
     },
     textGreyColor: {
       100: '#616161',
-      150: '#e9e9e9',
+      150: '#61646B',
+      200: '#EAEAEB',
       300: '#888888',
       400: '#F5F5F5',
       500: '#424242',
-      550: '##757575',
+      550: '#757575',
+      600: '#666666',
       800: '#212121',
       900: '#1E1E1E'
     },
@@ -557,6 +557,9 @@ const DEFAULT_THEME = {
     blueText: {
       400: '#084B82',
       450: '#3F8BF1'
+    },
+    textRed:{
+      300:'#FF2815'
     }
   }
 }
