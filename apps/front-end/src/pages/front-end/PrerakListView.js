@@ -2,6 +2,7 @@ import {
   BodySmall,
   facilitatorRegistryService,
   H2,
+  t,
   IconByName,
   Layout,
 } from "@shiksha/common-lib";
@@ -13,9 +14,9 @@ import { useNavigate } from "react-router-dom";
 const List = ({ data }) => {
   console.log("data", data);
   return (
-    <VStack space="10" paddingLeft="4" paddingTop="10" paddingRight="4">
+    <VStack space="10" paddingLeft="4%" paddingTop="10%" paddingRight="4%">
       {data && data.length <= 0 ? (
-        <H2>data not found</H2>
+        <H2>{t("DATA_NOT_FOUND")}</H2>
       ) : (
         data &&
         data?.map((item) => (
@@ -68,20 +69,30 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const { form_step_number } = facilitator;
   const [service, setService] = React.useState("");
   const [sort, setSort] = React.useState("sort");
+  const [sortValue, setSortValue] = React.useState("desc")
+  const [statusValue, setStatusValue] = React.useState("applied")
+  const [limit, setLimit] = React.useState(10);
+  const [page, setPage] = React.useState(1);
+  const [reqBodyData, setReqBodyData] = React.useState();
   const [status, setStatus] = React.useState("status");
   const [data, setData] = React.useState();
 
-  React.useEffect(() => {
-    aglist();
-  }, []);
 
-  const aglist = async () => {
+  React.useEffect(() => {
+    setReqBodyData({ page, limit, statusValue, sortValue });
+  }, [page, limit, statusValue, sortValue]);
+  React.useEffect(() => {
+    aglist(reqBodyData);
+  }, [reqBodyData]);
+
+  const aglist = async (reqBodyData) => {
     let reqBody = {
-      page: "1",
-      limit: "10",
-      status: "applied",
-      sortType: "desc",
+      page: reqBodyData.page,
+      limit: reqBodyData.limit,
+      status: reqBodyData.statusValue,
+      sortType: reqBodyData.sortValue,
     };
+
     const result = await facilitatorRegistryService.getBeneficiariesDetails(
       reqBody
     );
@@ -100,14 +111,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
       },
     },
-    AddAnAgShadowBox: {
-      style: {
-        boxShadow: "2px 3px 0px #790000",
-        border: "1px solid #790000",
-        borderRadius: "10px",
-        padding: "50px",
-      },
-    },
+
   };
 
   const [record, setRecord] = React.useState(data);
@@ -141,15 +145,16 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             space="5"
             borderBottomWidth="1"
             borderBottomColor={"gray.300"}
-            bg="info.200"
-            {...styles.inforBox}
+            bg={{
+              backgroundImage: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)',
+            }}
             alignItems="Center"
           >
             <IconByName
               flex="0.1"
               isDisabled
               name="UserAddLineIcon"
-              _icon={{ size: "25px" }}
+              _icon={{ size: "50%" }}
             />
             <VStack flex="0.9">
               <H2
@@ -158,15 +163,15 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-                Add more AGs
+
+                {t("ADD_MORE_AG")}
               </H2>
               <BodySmall
                 wordWrap="break-word"
                 whiteSpace="nowrap"
                 overflow="hidden"
               >
-                You need to Enroll 15 or more AG Learners to set up a viable
-                camp
+                {t("ENROLL_15_OR_MORE")}
               </BodySmall>
             </VStack>
           </HStack>
@@ -174,19 +179,23 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       </VStack>
       <HStack
         justifyContent="space-between"
-        paddingTop="20"
-        paddingLeft="4"
-        paddingRight="4"
+        paddingTop="15%"
+        paddingLeft="1%"
+        paddingRight="1%"
         alignItems="Center"
       >
         <Box>
           <Select
             variant="rounded"
             overflowX="hidden"
-            width="204px"
-            height="42px"
+            width="50%"
+            height="50%"
             selectedValue={status}
-            onValueChange={(nextValue) => setStatus(nextValue)}
+            onValueChange={(nextValue) => {
+              setStatusValue(nextValue)
+              console.log(statusValue)
+              setStatus(nextValue)
+            }}
             _selectedItem={{
               bg: "cyan.600",
             }}
@@ -201,14 +210,22 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             ))}
           </Select>
         </Box>
-        <Box>
+        <Box
+        >
           <Select
             overflowX="hidden"
             variant="rounded"
-            width="108px"
-            height="42"
+
+
+            width="50%"
+            height="50%"
             selectedValue={sort}
-            onValueChange={(nextValue) => setSort(nextValue)}
+            onValueChange={(nextValue) => {
+              setSortValue(nextValue)
+              console.log(sortValue)
+
+              setSort(nextValue)
+            }}
             _selectedItem={{
               bg: "cyan.600",
             }}

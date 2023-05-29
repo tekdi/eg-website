@@ -8,7 +8,7 @@ import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
 import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
 import Profile from "pages/front-end/PrerakProfileDetailsView";
-import PrerakListView from "pages/front-end/PrerakListView";
+import FacilitatorListView from "pages/front-end/PrerakListView";
 
 export default [
   { path: "/form", component: Home },
@@ -27,8 +27,8 @@ export default [
   { path: "/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
   {
-    path: "/ag",
-    component: PrerakListView,
+    path: "/beneficiary",
+    component: FacilitatorListView,
   },
   { path: "*", component: Dashboard },
 ];

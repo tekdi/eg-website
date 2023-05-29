@@ -24,11 +24,11 @@ import {
   Layout,
 } from "@shiksha/common-lib";
 
-export default function PrerakProfileDetailsView({
+export default function facilitatorProfileDetailsView({
   userTokenInfo,
   footerLinks,
 }) {
-  const [prerak, SetPrerak] = useState(userTokenInfo?.authUser);
+  const [facilitator, Setfacilitator] = useState(userTokenInfo?.authUser);
 
   return (
     <Layout
@@ -45,7 +45,7 @@ export default function PrerakProfileDetailsView({
             color="#790000"
             fontWeight="700px"
           >
-            Welcome {prerak?.first_name}
+            Welcome {facilitator?.first_name}
           </Text>
 
           <Box paddingBottom="20px">
@@ -87,7 +87,7 @@ export default function PrerakProfileDetailsView({
               </Text>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(prerak, [
+                  value={arrList(facilitator, [
                     "first_name",
                     "email_id",
                     "last_name",
