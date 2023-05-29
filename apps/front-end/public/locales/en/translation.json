@@ -360,6 +360,12 @@
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"Confirm password is not matched with Password",
   "BASIC": "Basic",
   "EDUCATIONAL": "Educational",
-  "AADHAAR":"Aadhaar"
+  "AADHAAR":"Aadhaar",
+  "AG_PROFILE_DROPOUT_MESSAGE":"Once You Make an AG as Dropout,you won't be able to add them into your Camp",
+  "AG_PROFILE_REASON_MEASSGAE":"Reason for Dropping Out?",
+  "AG_PROFILE_ARE_YOU_SURE":"Are You Sure?",
+  "AG_PROFILE_REACTIVATE_AG_LEARNER":"Reactivate AG Learner",
+  "AG_PROFILE_REACTIVAYE_MESSAGE":"You can allow AG Learner to rejoin the Program",
+  "AG_PROFILE_REACTIVATE_REASON_MEASSGAE":"Reason for Rejoining Program Pragati?"
 }
 

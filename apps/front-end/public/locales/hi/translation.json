@@ -321,7 +321,13 @@
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है",
   "BASIC": "बुनियादी ",
   "EDUCATIONAL": "शिक्षात्मक",
-  "AADHAAR":"आधार"
+  "AADHAAR":"आधार",
+  "AG_PROFILE_DROPOUT_MESSAGE":"एक बार जब आप एजी को ड्रॉपआउट बना देते हैं, तो आप उन्हें अपने कैंप में शामिल नहीं कर पाएंगे",
+  "AG_PROFILE_REASON_MEASSGAE":"ड्रॉप आउट का कारण?",
+  "AG_PROFILE_ARE_YOU_SURE":"क्या आप को करना है?",
+  "AG_PROFILE_REACTIVATE_AG_LEARNER":"एजी लर्नर को पुन: सक्रिय करें",
+  "AG_PROFILE_REACTIVAYE_MESSAGE":"आप एजी लर्नर को कार्यक्रम में फिर से शामिल होने की अनुमति दे सकते हैं",
+  "AG_PROFILE_REACTIVATE_REASON_MEASSGAE":"कार्यक्रम प्रगति में शामिल होने का कारण?"
 }
 
 
