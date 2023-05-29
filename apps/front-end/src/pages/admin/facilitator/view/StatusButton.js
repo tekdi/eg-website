@@ -330,11 +330,11 @@ export default function StatusButton({ data, setData }) {
                     ]}
                   />
                   {reason &&
-                    ![
-                      "Incomplete Form",
-                      "Not Qualified",
-                      "Less experienced",
-                    ].includes(reason) ? (
+                  ![
+                    "Incomplete Form",
+                    "Not Qualified",
+                    "Less experienced",
+                  ].includes(reason) ? (
                     <Input
                       onChange={(e) => setReason(e?.target?.value)}
                       variant={"underlined"}

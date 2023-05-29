@@ -471,9 +471,9 @@ export default function Agform({ userTokenInfo }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Box>
-            <H1 color="textMaroonColor.400" alignItems="center">
+            <FrontEndTypo.H1 color="textMaroonColor.400" alignItems="center">
               {t("IDENTIFY_THE_AG_LEARNER")}
-            </H1>
+            </FrontEndTypo.H1>
           </Box>
           <Center>
             <Image
@@ -534,28 +534,23 @@ export default function Agform({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <Text
-            color="textMaroonColor.400"
-            fontSize="md"
-            bold
-            textAlign="center"
-          >
+          <FrontEndTypo.H1 color="textMaroonColor.400" bold textAlign="center">
             {t("IDENTIFY_THE_AG_LEARNER")}
-          </Text>
-          <Text color="textMaroonColor.400" fontSize="md" bold>
-            Add AG’s Profile Photo
-          </Text>
-          <Text color="textMaroonColor.400" fontSize="md" bold>
-            DO's
-          </Text>
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
+            {t("ADD_AG_PROFILE_PHOTO")}
+          </FrontEndTypo.H3>
+          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
+            {t("DO")}
+          </FrontEndTypo.H3>
           <HStack space="2">
             <Box background="primary.100" width="150" height="150"></Box>
             <Box background="primary.100" width="150" height="150"></Box>
           </HStack>
 
-          <Text color="textMaroonColor.400" fontSize="md" bold>
-            Don’ts
-          </Text>
+          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
+            {t("DONTS")}
+          </FrontEndTypo.H3>
           <HStack space="2">
             <Box background="primary.100" width="150" height="150"></Box>
             <Box background="primary.100" width="150" height="150"></Box>
@@ -586,7 +581,9 @@ export default function Agform({ userTokenInfo }) {
               {t("UPLOAD_PHOTO")}
             </FrontEndTypo.Secondarybutton>
             {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
+              <FrontEndTypo.H2 color="red.400">
+                {errors?.fileSize}
+              </FrontEndTypo.H2>
             ) : (
               <React.Fragment />
             )}
@@ -633,7 +630,6 @@ export default function Agform({ userTokenInfo }) {
               BaseInputTemplate,
               DescriptionFieldTemplate,
               BaseInputTemplate,
-              ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -651,23 +647,23 @@ export default function Agform({ userTokenInfo }) {
             }}
           >
             {page === "2" ? (
-              <Button
+              <FrontEndTypo.Primarybutton
                 mt="3"
                 variant={"primary"}
                 type="submit"
                 onPress={otpfunction}
               >
                 {otpbtn ? "VERIFY_OTP" : "SEND_OTP"}
-              </Button>
+              </FrontEndTypo.Primarybutton>
             ) : (
-              <Button
+              <FrontEndTypo.Primarybutton
                 mt="-10"
                 variant={"primary"}
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
               >
                 {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-              </Button>
+              </FrontEndTypo.Primarybutton>
             )}
           </Form>
         ) : (

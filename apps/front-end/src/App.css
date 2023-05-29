@@ -333,4 +333,3 @@ label {
   content: counter(percentage) "%";
   animation: html-progress 2s 1 forwards;
 }
-

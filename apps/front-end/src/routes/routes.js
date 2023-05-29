@@ -10,6 +10,8 @@ import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
 import AgLearnerProfileView from "pages/front-end/AgLearnerProfileView";
 import PrerakProfileDetailsView from "pages/front-end/PrerakProfileDetailsView";
 import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
+import Agadhaar from "pages/front-end/ag-form/Agadhaar";
+
 import Success from "pages/front-end/Success";
 
 export default [
@@ -25,8 +27,9 @@ export default [
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
   { path: "/beneficiary/2", component: AgformUpdate },
+  { path: "/beneficiary/3", component: Agadhaar },
+  { path: "/beneficiary/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
-  { path: "/agduplicate", component: Agduplicate },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/docschecklist", component: Docschecklist },
   { path: "/ag", component: AgLearnerProfileView },

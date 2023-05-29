@@ -608,7 +608,7 @@ export default function AgformUpdate({ userTokenInfo }) {
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       console.log("uploadDoc", uploadDoc);
       if (uploadDoc) {
-        navigate("/AgSuccess");
+        navigate("/beneficiary/3", { state: { id: userId } });
       }
     }
   };
@@ -761,7 +761,9 @@ export default function AgformUpdate({ userTokenInfo }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton,
+        onPressBackButton: (e) => {
+          navigate("/beneficiary", { state: { id: userId } });
+        },
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
