@@ -217,8 +217,6 @@
   "MARK_ABSENT": "Mark Absent",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
-
-  "AADHAAR_CARD":"Aadhaar Card",
   "UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD":"Upload a photo or scan of your card",
   "UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD":"Upload the front side of your Aadhaar card",
   "UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD":"Upload the back side of your Aadhaar card",
@@ -267,9 +265,6 @@
   "DOCUMENTS_YOU_NEED_TO_CARRY": "Documents you need to carry",
   "UPLOAD_YOUR_DOCUMENTS": "Upload Your Documents",
   "UPLOAD_NOW": "Upload Now",
-  "QUALIFICATION_PROOF": "Qualification Proof",
-  "WORK_EXPERIENCE_PROOF": "Work Experience Proof",
-  "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "AADHAR_NUMBER_KYC": "Aadhar Number KYC",
   "ADD_AN_AG": "Add an AG",
   "COMPLETE_YOUR_AADHAR_VERIFICATION_NOW": "Complete Your Aadhaar Verification Now",
@@ -364,6 +359,14 @@
   "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL":"Government School",
   "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED":"Never Studied",
   "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL":"Open School",
-  "PREVIOUS_SCHOOL_TYPE_OTHER":"Other"
+  "PREVIOUS_SCHOOL_TYPE_OTHER":"Other",
+  "QUALIFICATION_PROOF":"Qualification Proof",
+  "WORK_EXPERIENCE_PROOF":"Work Experience Proof",
+  "VOLUNTEER_EXPERIENCE_PROOF":"Volunteer Experience Proof",
+  "BASIC": "Basic",
+  "EDUCATIONAL": "Educational",
+  "AADHAAR":"Aadhaar",
+  "VERIFY_OTP":"VERIFY OTP",
+  "SEND_OTP":"SEND OTP"
 }
 

@@ -23,8 +23,8 @@ export default [
   { path: "/ag/education/:id", component: educationDetails },
   { path: "/ag/subjects/:id", component: chooseSubjects },
   //add a new route /ag/:ID(param), component:basic details
-  { path: "/agform", component: Agform },
-  { path: "/agform/2", component: AgformUpdate },
+  { path: "/beneficiary", component: Agform },
+  { path: "/beneficiary/2", component: AgformUpdate },
   { path: "/AgSuccess", component: Success },
   { path: "/agduplicate", component: Agduplicate },
   { path: "/learnerProfile", component: LearnerProfile },

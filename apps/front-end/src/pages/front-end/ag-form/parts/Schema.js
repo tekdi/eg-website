@@ -46,28 +46,12 @@ export default {
           type: "string",
           title: "MOBILE_NUMBER",
         },
-
-        // device_ownership: {
-        //   type: "string",
-        //   label: "OWNERSHIP",
-        //   format: "RadioBtn",
-        //   enumNames: ["Self", "Family Member", "Neighbour", "Other", "any"],
-        //   enum: ["self", "family_member", "neighbour", "other", "any"],
-        // },
-        // device_type: {
-        //   type: "string",
-        //   label: "TYPE_OF_MOBILE_PHONE",
-        //   format: "CustomR",
-        //   enumNames: ["Smartphone", "Basic"],
-        //   enum: ["smartphone", "basic"],
-        // },
       },
     },
 
     3: {
       title: "Complete Address",
       type: "object",
-      // required: ["state", "district", "block", "village"],
       properties: {
         state: {
           title: "STATE",
@@ -102,7 +86,7 @@ export default {
       //required: ["marital_status", "social_category"],
       properties: {
         marital_status: {
-          title: "MARITAL_STATUS",
+          label: "MARITAL_STATUS",
           type: "string",
           enumNames: [
             "Married",
@@ -112,7 +96,7 @@ export default {
           enum: ["married", "unmarried", "single"],
         },
         social_category: {
-          title: "SOCIAL_CATEGORY",
+          label: "SOCIAL_CATEGORY",
           type: "string",
           enumNames: ["General", "S.C.", "S.T.", "O.B.C.", "Other"],
           enum: ["general", "sc", "st", "obc", "other"],
@@ -129,8 +113,6 @@ export default {
           title: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
-          // enumNames: ["General", "S.C.","S.T.","O.B.C.","Other"],
-          // enum: ["general", "sc","st","obc","other"],
         },
         last_year_of_education: {
           title: "LAST_YEAR_OF_EDUCATION",

@@ -323,7 +323,12 @@
   "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL":"सरकारी स्कूल",
   "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED":"कभी पढ़ाई नहीं की",
   "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL":"ओपन स्कूल",
-  "PREVIOUS_SCHOOL_TYPE_OTHER":"अन्य"
+  "PREVIOUS_SCHOOL_TYPE_OTHER":"अन्य",
+  "BASIC": "बुनियादी ",
+  "EDUCATIONAL": "शिक्षात्मक",
+  "AADHAAR":"आधार",
+  "SEND_OTP":"ओटीपी भेजें",
+  "VERIFY_OTP":"वर्फी ओटीपी"
 }
 
 

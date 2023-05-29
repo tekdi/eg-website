@@ -13,6 +13,7 @@ import {
   Radio,
   Stack,
   VStack,
+  Text,
 } from "native-base";
 import CustomRadio from "../../../component/CustomRadio";
 import Steper from "../../../component/Steper";
@@ -37,7 +38,9 @@ import {
   StudentEnumService,
   sendAndVerifyOtp,
   CustomOTPBox,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
+
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
@@ -135,9 +138,9 @@ export default function Agform({ userTokenInfo }) {
 
   const createAg = async () => {
     let url = await AgRegistryService.createAg(formData);
-    //console.log("url...", url?.data?.user?.id);
+
     if (url?.data) {
-      navigate("/agform/2", { state: { id: url?.data?.user?.id } });
+      navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
     }
   };
 
@@ -146,11 +149,11 @@ export default function Agform({ userTokenInfo }) {
       ...formData,
       hash: localStorage.getItem("hash"),
     });
-    //console.log(status, otpData, newSchema);
+
     setverifyOtpData(otpData);
     if (status === true) {
       const data = await formSubmitCreate(formData);
-      console.log("data", data);
+
       if (data?.error) {
         const newErrors = {
           mobile: {
@@ -178,17 +181,6 @@ export default function Agform({ userTokenInfo }) {
       setotpbtn(true);
     }
   };
-
-  //console.log("otpbtn", otpbtn);
-
-  // React.useEffect(async () => {
-  //   if (page === "2") {
-  //   }
-  //   // else if (page === "3") {
-  //   //   createAg();
-  //   //   getLocation();
-  //   // }
-  // }, [page]);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -233,57 +225,6 @@ export default function Agform({ userTokenInfo }) {
       },
     };
   };
-
-  // React.useEffect(async () => {
-  //   if (schema?.properties?.state) {
-  //     const qData = await geolocationRegistryService.getStates();
-  //     let newSchema = schema;
-  //     if (schema["properties"]["state"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "state",
-  //         arr: qData,
-  //         title: "state_name",
-  //         value: "state_name",
-  //       });
-  //     }
-  //     newSchema = await setDistric({
-  //       schemaData: newSchema,
-  //       state: formData?.state,
-  //       district: formData?.district,
-  //       block: formData?.block,
-  //     });
-  //     setSchema(newSchema);
-  //   }
-  // }, [page]);
-
-  // Type Of Student
-
-  // React.useEffect(async () => {
-  //   const studentTypeData = await StudentEnumService.getTypeStudent();
-  //   const studentLastData = await StudentEnumService.lastYear();
-  //   const lastStandard = await StudentEnumService.lastStandard();
-  //   const ReasonOfLeaving = await StudentEnumService.ReasonOfLeaving();
-  //   let newSchema = schema;
-  //   if (schema["properties"]["type_of_student"]) {
-  //     newSchema = getOptions(newSchema, {
-  //       key: "type_of_student",
-  //       arr: studentTypeData,
-  //       title: "title",
-  //       value: "value",
-  //     });
-
-  //     newSchema = getOptions(newSchema, {
-  //       key: "last_year_of_education",
-  //       arr: studentLastData,
-  //       title: "title",
-  //       value: "value",
-  //     });
-  //   }
-
-  //   setSchema(newSchema);
-  // }, [page]);
-
-  // React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -397,88 +338,6 @@ export default function Agform({ userTokenInfo }) {
     });
   };
 
-  // const setDistric = async ({ state, district, block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   if (schema?.properties?.district && state) {
-  //     const qData = await geolocationRegistryService.getDistricts({
-  //       name: state,
-  //     });
-  //     if (schema["properties"]["district"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "district",
-  //         arr: qData,
-  //         title: "district_name",
-  //         value: "district_name",
-  //       });
-  //     }
-  //     if (schema["properties"]["block"]) {
-  //       newSchema = await setBlock({ district, block, schemaData: newSchema });
-  //       setSchema(newSchema);
-  //     }
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "district", arr: [] });
-  //     if (schema["properties"]["block"]) {
-  //       newSchema = getOptions(newSchema, { key: "block", arr: [] });
-  //     }
-  //     if (schema["properties"]["village"]) {
-  //       newSchema = getOptions(newSchema, { key: "village", arr: [] });
-  //     }
-  //     setSchema(newSchema);
-  //   }
-  //   formData;
-  //   return newSchema;
-  // };
-
-  // const setBlock = async ({ district, block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   if (schema?.properties?.block && district) {
-  //     const qData = await geolocationRegistryService.getBlocks({
-  //       name: district,
-  //     });
-  //     if (schema["properties"]["block"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "block",
-  //         arr: qData,
-  //         title: "block_name",
-  //         value: "block_name",
-  //       });
-  //     }
-  //     if (schema["properties"]["village"]) {
-  //       newSchema = await setVilage({ block, schemaData: newSchema });
-  //       setSchema(newSchema);
-  //     }
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "block", arr: [] });
-  //     if (schema["properties"]["village"]) {
-  //       newSchema = getOptions(newSchema, { key: "village", arr: [] });
-  //     }
-  //     setSchema(newSchema);
-  //   }
-  //   return newSchema;
-  // };
-
-  // const setVilage = async ({ block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   if (schema?.properties?.village && block) {
-  //     const qData = await geolocationRegistryService.getVillages({
-  //       name: block,
-  //     });
-  //     if (schema["properties"]["village"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "village",
-  //         arr: qData,
-  //         title: "village_ward_name",
-  //         value: "village_ward_name",
-  //       });
-  //     }
-  //     setSchema(newSchema);
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "village", arr: [] });
-  //     setSchema(newSchema);
-  //   }
-  //   return newSchema;
-  // };
-
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -498,27 +357,6 @@ export default function Agform({ userTokenInfo }) {
         }
       }
     }
-
-    //   if (id === "root_state") {
-    //     await setDistric({
-    //       schemaData: schema,
-    //       state: data?.state,
-    //       district: data?.district,
-    //       block: data?.block,
-    //     });
-    //   }
-
-    //   if (id === "root_district") {
-    //     await setBlock({
-    //       district: data?.district,
-    //       block: data?.block,
-    //       schemaData: schema,
-    //     });
-    //   }
-
-    //   if (id === "root_block") {
-    //     await setVilage({ block: data?.block, schemaData: schema });
-    //   }
   };
 
   const onError = (data) => {
@@ -556,10 +394,7 @@ export default function Agform({ userTokenInfo }) {
       const { id } = authUser;
       let success = false;
       if (id) {
-        // const data = await formSubmitUpdate(newData);
-        // if (!_.isEmpty(data)) {
         success = true;
-        // }
       } else if (page === "2") {
         const data = await formSubmitCreate(newFormData);
         if (data?.error) {
@@ -635,7 +470,11 @@ export default function Agform({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
+          <Box>
+            <H1 color="textMaroonColor.400" alignItems="center">
+              {t("IDENTIFY_THE_AG_LEARNER")}
+            </H1>
+          </Box>
           <Center>
             <Image
               source={{
@@ -645,8 +484,7 @@ export default function Agform({ userTokenInfo }) {
               size="324px"
             />
           </Center>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
             // onPress={async (e) => {
             //   await formSubmitUpdate({ ...formData, form_step_number: "13" });
             //   if (onClick) onClick("success");
@@ -654,9 +492,8 @@ export default function Agform({ userTokenInfo }) {
             onPress={uploadProfile}
           >
             {t("SUBMIT")}
-          </Button>
-          <Button
-            variant={"secondary"}
+          </FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Secondarybutton
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -664,7 +501,7 @@ export default function Agform({ userTokenInfo }) {
             }}
           >
             {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </Layout>
     );
@@ -697,52 +534,41 @@ export default function Agform({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
-          <H1 color="red.1000">DO's</H1>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                border: "1px solid red",
-                width: 150,
-                height: 150,
-                marginRight: 10,
-              }}
-            ></div>
-            <div
-              style={{ border: "1px solid red", width: 150, height: 150 }}
-            ></div>
-          </div>
-          <H1 color="red.1000">Don’ts</H1>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                border: "1px solid red",
-                width: 150,
-                height: 150,
-                marginRight: 10,
-              }}
-            ></div>
-            <div
-              style={{ border: "1px solid red", width: 150, height: 150 }}
-            ></div>
-          </div>
-          <Button
-            variant={"primary"}
-            leftIcon={
-              <IconByName
-                name="CameraLineIcon"
-                color="white"
-                size={2}
-                isDisabled
-              />
-            }
+          <Text
+            color="textMaroonColor.400"
+            fontSize="md"
+            bold
+            textAlign="center"
+          >
+            {t("IDENTIFY_THE_AG_LEARNER")}
+          </Text>
+          <Text color="textMaroonColor.400" fontSize="md" bold>
+            Add AG’s Profile Photo
+          </Text>
+          <Text color="textMaroonColor.400" fontSize="md" bold>
+            DO's
+          </Text>
+          <HStack space="2">
+            <Box background="primary.100" width="150" height="150"></Box>
+            <Box background="primary.100" width="150" height="150"></Box>
+          </HStack>
+
+          <Text color="textMaroonColor.400" fontSize="md" bold>
+            Don’ts
+          </Text>
+          <HStack space="2">
+            <Box background="primary.100" width="150" height="150"></Box>
+            <Box background="primary.100" width="150" height="150"></Box>
+          </HStack>
+          <FrontEndTypo.Secondarybutton
+            leftIcon={<IconByName name="CameraLineIcon" size={2} isDisabled />}
             onPress={(e) => {
               setCameraUrl();
               setCameraModal(true);
             }}
           >
             {t("TAKE_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
           <VStack space={2}>
             <input
               accept="image/*"
@@ -751,15 +577,14 @@ export default function Agform({ userTokenInfo }) {
               ref={uplodInputRef}
               onChange={handleFileInputChange}
             />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
+            <FrontEndTypo.Secondarybutton
+              leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
               onPress={(e) => {
                 uplodInputRef?.current?.click();
               }}
             >
               {t("UPLOAD_PHOTO")}
-            </Button>
+            </FrontEndTypo.Secondarybutton>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
@@ -770,9 +595,6 @@ export default function Agform({ userTokenInfo }) {
       </Layout>
     );
   }
-  // if (username) {
-  //   return <Success />;
-  // }
 
   return (
     <Layout
@@ -797,12 +619,7 @@ export default function Agform({ userTokenInfo }) {
         ) : (
           <React.Fragment />
         )}
-        {/* 
-        <Steper
-          type={"circle"}
-          steps={[{ value: "1", label: t("BASIC_DETAILS") }]}
-          progress={page - 1}
-        /> */}
+
         {page && page !== "" ? (
           <Form
             key={lang + addBtn}
@@ -815,6 +632,8 @@ export default function Agform({ userTokenInfo }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
+              ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -838,7 +657,7 @@ export default function Agform({ userTokenInfo }) {
                 type="submit"
                 onPress={otpfunction}
               >
-                {otpbtn ? "VERIFY OTP" : "SEND OTP"}
+                {otpbtn ? "VERIFY_OTP" : "SEND_OTP"}
               </Button>
             ) : (
               <Button

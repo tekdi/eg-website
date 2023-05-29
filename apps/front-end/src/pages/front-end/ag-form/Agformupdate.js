@@ -75,7 +75,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
-  // const [verifyOtpData, setverifyOtpData] = useState();
 
   const location = useLocation();
 
@@ -84,8 +83,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   React.useEffect(() => {
     setuserId(location?.state?.id);
   }, []);
-
-  //console.log("userId", userId);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -139,12 +136,6 @@ export default function AgformUpdate({ userTokenInfo }) {
         position.coords.longitude
     );
   };
-
-  //   const createAg = async () => {
-  //     let url = await AgRegistryService.createAg(formData);
-  //     setkeycloakId(url?.data?.keycloak_id);
-  //     setusername(url?.data?.username);
-  //   };
 
   React.useEffect(async () => {
     getLocation();
@@ -646,14 +637,7 @@ export default function AgformUpdate({ userTokenInfo }) {
               size="324px"
             />
           </Center>
-          <Button
-            variant={"primary"}
-            // onPress={async (e) => {
-            //   await formSubmitUpdate({ ...formData, form_step_number: "13" });
-            //   if (onClick) onClick("success");
-            // }}
-            onPress={uploadProfile}
-          >
+          <Button variant={"primary"} onPress={uploadProfile}>
             {t("SUBMIT")}
           </Button>
           <Button
@@ -797,12 +781,7 @@ export default function AgformUpdate({ userTokenInfo }) {
         ) : (
           <React.Fragment />
         )}
-        {/* 
-        <Steper
-          type={"circle"}
-          steps={[{ value: "1", label: t("BASIC_DETAILS") }]}
-          progress={page - 1}
-        /> */}
+
         {page && page !== "" ? (
           <Form
             key={lang + addBtn}
