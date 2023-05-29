@@ -35,8 +35,8 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("REJECTED"));
         setColor("textMaroonColor.100");
         break;
-      case "shortlisted":
-        setNewStatus(t("SHORTLISTED"));
+      case "shortlisted_for_orientation":
+        setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
         setColor("blueText.350");
         break;
       case "potential_prerak":
@@ -51,17 +51,13 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("SELECTED_FOR_ONBOARDING"));
         setColor("progressBarColor.300");
         break;
-      case "prerak":
-        setNewStatus(t("PRERAK"));
+      case "selected_prerak":
+        setNewStatus(t("SELECTED_PRERAK"));
         setColor("progressBarColor.300");
         break;
-      case "dropped_out":
-        setNewStatus(t("DROPPED_OUT"));
+      case "quit":
+        setNewStatus(t("QUIT"));
         setColor("textMaroonColor.100");
-        break;
-      case "under_review":
-        setNewStatus(t("UNDER_REVIEW"));
-        setColor("badgeColor.450");
         break;
       default:
         setNewStatus(t("APPLIED"));

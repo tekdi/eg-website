@@ -360,5 +360,8 @@
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION": "Confirm password is not matched with Password",
   "BASIC": "Basic",
   "EDUCATIONAL": "Educational",
-  "AADHAAR": "Aadhaar"
+  "AADHAAR": "Aadhaar",
+  "ADD_AG_PROFILE_PHOTO":"Add AG’s Profile Photo",
+  "DO":"DO's",
+  "DONTS":"Don’ts"
 }

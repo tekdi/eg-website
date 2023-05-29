@@ -7,6 +7,7 @@ import {
   ImageView,
   BlueFillButton,
   AdminTypo,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -65,9 +66,9 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>
+        <FrontEndTypo.H1  bold>
           {row?.first_name + " " + row.last_name}
-        </Text>
+        </FrontEndTypo.H1>
       </HStack>
     ),
     sortable: true,
@@ -148,7 +149,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
   return (
     <VStack>
       <HStack justifyContent={"space-between"} my="1">
-        <H1>{t("ALL_PRERAK")}</H1>
+        <FrontEndTypo.H1>{t("ALL_PRERAK")}</FrontEndTypo.H1>
         {/* <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
@@ -196,7 +197,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <H1 textAlign="center"> {t("SEND_AN_INVITE")}</H1>
+                <FrontEndTypo.H1 textAlign="center"> {t("SEND_AN_INVITE")}</FrontEndTypo.H1>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -206,7 +207,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     borderBottomColor="gray.300"
                     pb="5"
                   >
-                    <H3> {t("INVITATION_LINK")}</H3>
+                    <FrontEndTypo.H3> {t("INVITATION_LINK")}</FrontEndTypo.H3>
                     <Clipboard
                       text={`${getBaseUrl()}facilitator-self-onboarding/${
                         facilitator?.program_users[0]?.organisation_id
@@ -219,10 +220,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                           rounded="full"
                           color="blue.300"
                         />
-                        <H3 color="blue.300">
+                        <FrontEndTypo.H3 color="blue.300">
                           {" "}
                           {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                        </H3>
+                        </FrontEndTypo.H3>
                       </HStack>
                     </Clipboard>
                   </HStack>
@@ -232,9 +233,9 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                       placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
                       variant="underlined"
                     />
-                    <Button flex={0.3} variant="primary">
+                    <FrontEndTypo.Primarybutton flex={0.3}>
                       {t("SEND")}
-                    </Button>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 </VStack>
               </Modal.Body>

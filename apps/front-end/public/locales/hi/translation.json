@@ -321,5 +321,8 @@
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION": "पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है",
   "BASIC": "बुनियादी ",
   "EDUCATIONAL": "शिक्षात्मक",
-  "AADHAAR": "आधार"
+  "AADHAAR": "आधार",
+  "ADD_AG_PROFILE_PHOTO":"एजी की प्रोफाइल फोटो जोड़ें",
+  "DO":"करने योग्य",
+  "DONTS":"नहीं"
 }
