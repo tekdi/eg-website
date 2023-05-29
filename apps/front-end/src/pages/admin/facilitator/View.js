@@ -572,7 +572,7 @@ export default function FacilitatorView({ footerLinks }) {
                   <VStack>
                     <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
                     <VStack>
-                      {data?.qualifications
+                      {data?.qualifications && data?.qualifications
                         ?.filter(
                           (e) =>
                             e?.qualification_master?.type === "qualification"
