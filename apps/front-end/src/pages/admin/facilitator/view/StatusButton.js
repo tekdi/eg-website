@@ -40,40 +40,47 @@ const styles = {
 const statusList = [
   {
     status: "rejected",
-    colorScheme: "danger",
+    btnStatus: "error",
     name: "REJECT_APPLICATION",
     reason: true,
   },
   {
     status: "shortlisted_for_orientation",
+    btnStatus: "info",
     name: "SHORTLIST_FOR_ORIENTATION",
   },
   {
     status: "potential_prerak",
+    btnStatus: "success",
     name: "POTENTIAL_PRERAK",
   },
   {
     status: "selected_for_training",
+    btnStatus: "info",
     name: "SELECT_FOR_TRAINING",
   },
   {
     status: "selected_for_onboarding",
+    btnStatus: "info",
     colorScheme: "success",
     name: "SELECT_FOR_ONBOARDING",
   },
   {
     status: "selected_prerak",
+    btnStatus: "success",
     colorScheme: "success",
     name: "SELECT_PRERAK",
   },
   {
     status: "quit",
+    btnStatus: "error",
     colorScheme: "danger",
     name: "QUIT",
     reason: true,
   },
   {
     status: "rusticate",
+    btnStatus: "error",
     colorScheme: "danger",
     name: "RUSTICATE",
     reason: true,
@@ -84,6 +91,7 @@ export default function StatusButton({ data, setData }) {
   const [showModal, setShowModal] = React.useState();
   const [reason, setReason] = React.useState();
   const [disabledBtn, setDisabledBtn] = React.useState([]);
+  const [color, setColor] = React.useState();
 
   const update = async (status) => {
     if (data?.program_faciltator_id && status) {
@@ -99,7 +107,7 @@ export default function StatusButton({ data, setData }) {
 
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
-      case "screened":
+      case "screened": 
         setDisabledBtn([
           "rejected",
           "shortlisted_for_orientation",
@@ -136,7 +144,7 @@ export default function StatusButton({ data, setData }) {
         setDisabledBtn(["rejected", "quit", "rusticate"]);
         break;
       case "quit":
-        setDisabledBtn(["rejected", "rusticate"]);
+      (["rejected", "rusticate"]);
         break;
       case "rusticate":
         setDisabledBtn([]);
@@ -305,11 +313,10 @@ export default function StatusButton({ data, setData }) {
         </Modal.Content>
       </Modal>
       {statusList.map(({ name, ...item }) => (
-        <Button
+        <AdminTypo.StatusButton
           key={name}
-          variant={"statusBtnAdmin"}
-          colorScheme="warning"
           {...item}
+          status={item?.btnStatus}
           isDisabled={!disabledBtn.includes(item?.status)}
           onPress={(e) => {
             setShowModal({ name, ...item });
@@ -317,7 +324,7 @@ export default function StatusButton({ data, setData }) {
           }}
         >
           {t(name)}
-        </Button>
+        </AdminTypo.StatusButton>
       ))}
       <Modal
         size={"xl"}

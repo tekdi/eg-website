@@ -3,13 +3,8 @@ import {
   IconByName,
   AdminLayout as Layout,
   ProgressBar,
-  H3,
-  H1,
-  H2,
   ImageView,
-  BodySmall,
   Loading,
-  BodyLarge,
   t,
   AdminTypo,
 } from "@shiksha/common-lib";

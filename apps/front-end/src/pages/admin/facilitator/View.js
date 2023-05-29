@@ -155,7 +155,7 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-              <Image
+            <Image
               source={{
                 uri: "/profile.svg",
               }}
@@ -222,8 +222,8 @@ export default function FacilitatorView({ footerLinks }) {
                   </AdminTypo.H6>
                 </HStack>
               </HStack>
-              <AdminTypo.H4 color="textGreyColor.800" pb="2" bold>
-                {t("ELIGIBILITY_CRITERIA") .toUpperCase()}
+              <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
+                {t("ELIGIBILITY_CRITERIA").toUpperCase()}
               </AdminTypo.H4>
               <HStack width={"100%"}>
                 <Box flex={0.3}>
@@ -487,7 +487,7 @@ export default function FacilitatorView({ footerLinks }) {
           </Modal>
 
           <VStack space={"5"} p="5" mt="6">
-            <H2 bold>{t("PROFILE_DETAILS").toUpperCase()}</H2>
+            <AdminTypo.H4 color="textGreyColor.800" bold>{t("PROFILE_DETAILS").toUpperCase()}</AdminTypo.H4>
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -596,89 +596,7 @@ export default function FacilitatorView({ footerLinks }) {
               >
                <HStack bg="light.100" p="1" mx="1" rounded="xl">
                   <VStack space="20px" w="100%">
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.400"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                    <Heading fontSize="16px">{t("EDUCATION")} </Heading>
-                    <IconByName
-                      color="editIcon.300"
-                      size="30px"
-                      name="EditBoxLineIcon"
-                    ></IconByName>
-                  </HStack>
-                  <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">{t("QUALIFICATION")} </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
-                      {data?.qualifications
-                        ?.filter(
-                          (e) =>
-                            e?.qualification_master?.type === "qualification"
-                        )
-                        ?.map((qua, key) => {
-                          return (
-                            <Text key={key}>
-                              {qua?.qualification_master?.name}
-                            </Text>
-                          );
-                        })}
-                    </AdminTypo.H5>
-                    <HStack space="2">
-                      <AdminTypo.H5 color="textGreyColor.550">
-                        {t("TEACHING_QUALIFICATION")}{" "}
-                      </AdminTypo.H5>
-                      {data?.qualifications ? (
-                        data?.qualifications
-                          ?.filter(
-                            (e) => e?.qualification_master?.type === "teaching"
-                          )
-                          ?.map((qua, key) => {
-                            return (
-                              <Text key={key}>
-                                {qua?.qualification_master?.name}
-                              </Text>
-                            );
-                          })
-                      ) : (
-                        <Text>{"-"}</Text>
-                      )}
-                    </HStack>
-                  </HStack>
-
-                  <VStack space="4">
-                    <HStack space="2">
-                    <AdminTypo.H5 color="textGreyColor.550">{t("WORK_EXPERIENCE")} </AdminTypo.H5>
-                      <HStack space={5}>
-                        {data?.experience ? (
-                          data?.experience?.map((e, key) => (
-                            <Experience key={key} {...e} />
-                          ))
-                        ) : (
-                          <AdminTypo.H5 color="textGreyColor.800" bold>{"-"}</AdminTypo.H5>
-                        )}
-                      </HStack>
-                    </HStack>
-                    <HStack space="2">
-                      <AdminTypo.H5 color="textGreyColor.550">
-                        {t("VOLUNTEER_EXPERIENCE")}
-                      </AdminTypo.H5>
-                      <VStack space={5}>
-                        {data?.vo_experience ? (
-                          data?.vo_experience?.map((e, key) => (
-                            <Experience key={key} {...e} />
-                          ))
-                        ) : (
-                          <AdminTypo.H5 color="textGreyColor.800" bold>{"-"}</AdminTypo.H5>
-                        )}
-                      </VStack>
-                      </HStack>
-                    </VStack>
-                  </VStack>
-                </HStack>
-                <VStack space="20px" w="100%" p="6" mt="3" rounded="xl">
+                <VStack space="20px" w="100%" rounded="xl">
                     <HStack
                       justifyContent="space-between"
                       alignItems="center"
@@ -700,7 +618,7 @@ export default function FacilitatorView({ footerLinks }) {
                         {t("QUALIFICATION")}{" "}
                       </AdminTypo.H5>
                       <AdminTypo.H5 color="textGreyColor.800" bold>
-                        {data?.qualifications
+                        {data?.qualifications && data?.qualifications
                           ?.filter(
                             (e) =>
                               e?.qualification_master?.type === "qualification"
@@ -779,7 +697,9 @@ export default function FacilitatorView({ footerLinks }) {
                       </HStack>
                     </VStack>
                   </VStack>
-                <VStack space="20px" w="100%" p="6" mt="3" rounded="xl">
+                  </VStack>
+                  </HStack>
+                <VStack space="20px" w="100%" mt="3" rounded="xl">
                   <HStack
                     justifyContent="space-between"
                     alignItems="center"
@@ -829,9 +749,8 @@ export default function FacilitatorView({ footerLinks }) {
               </VStack>
             </HStack>
           </VStack>
-        </VStack>
           <StatusButton {...{ data, setData }} />
-
+        </VStack>
         {/* <VStack
           flex={0.18}
           bg="white.300"
