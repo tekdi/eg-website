@@ -5,9 +5,7 @@ import {
   H3,
   t,
   ImageView,
-  BlueFillButton,
   AdminTypo,
-  BlueOutlineButton
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -18,7 +16,8 @@ import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
       style: {
-          minHeight: '72px', // override the row height
+          minHeight: '72px',
+          overflow:'none' // override the row height
       },
   },
   headCells: {
@@ -152,8 +151,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-          <BlueOutlineButton
-            _text={{ color: "#084B82" }}
+          <AdminTypo.Secondarybutton
             shadow="BlueOutlineShadow"
             onPress={() => setModal(true)}
             rightIcon={
@@ -166,7 +164,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             }
           >
             {t("SEND_AN_INVITE")}
-          </BlueOutlineButton>
+          </AdminTypo.Secondarybutton>
           {/* <BlueFillButton
             mx="3"
             shadow="BlueFillShadow"
@@ -239,6 +237,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             name: t("ACTION"),
             selector: (row) => (
               <AdminTypo.Secondarybutton
+              my="3"
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}
