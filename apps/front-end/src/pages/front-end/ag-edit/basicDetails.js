@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "./parts/agForm";
+import Form from "./parts/agFormEdit";
 import { useParams } from "react-router-dom";
 import { IconByName } from "@shiksha/common-lib";
 import { VStack } from "native-base";

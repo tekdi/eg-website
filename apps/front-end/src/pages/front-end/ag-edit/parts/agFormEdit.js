@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -13,11 +13,9 @@ import {
   Radio,
   Stack,
   VStack,
-  Checkbox,
-  Pressable,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper";
+import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -35,10 +33,9 @@ import {
   BodyMedium,
   changeLanguage,
   enumRegistryService,
-  updateSchemaEnum,
+  benificiaryRegistoryService,
+  AgRegistryService,
 } from "@shiksha/common-lib";
-
-//updateSchemaEnum
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
@@ -48,116 +45,63 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-} from "../../../../component/BaseInput";
+  BaseInputTemplate,
+  RadioBtn,
+  CustomR,
+} from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
+// const CustomR = ({ options, value, onChange, required }) => {
+//   return (
+//     <CustomRadio
+//       items={options?.enumOptions}
+//       value={value}
+//       required={required}
+//       onChange={(value) => onChange(value)}
+//     />
+//   );
+// };
 
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items?.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
-
-const CheckBoxes = ({ options, value, onChange, required }) => {
-  const [mainValue, setMainValue] = React.useState([]);
-  const items = options?.enumOptions;
-  const handleCheckboxChange = (isChecked, values) => {
-    const count = mainValue.find((e) => e != values);
-    console.log(count);
-    if (!count) {
-      const newData = [...mainValue, values];
-      console.log(...mainValue, values, isChecked, "sa");
-
-      setMainValue(newData);
-      onChange(newData);
-    } else {
-      const newData = mainValue.filter((e) => e != values);
-      setMainValue(newData);
-      onChange(newData);
-    }
-  };
-  return (
-    <Box
-      colorScheme="black"
-      defaultValue={value}
-      accessibilityLabel="choose multiple items"
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items?.map((item) => (
-          <Pressable
-            key={item?.value}
-            value={item?.value}
-            bg={mainValue.includes(item?.value) ? "red.100" : "white"}
-            onPress={
-              (e) => {
-                handleCheckboxChange(e, item?.value);
-              }
-
-              //    onChange(e || []);
-            }
-          >
-            {item?.label}
-          </Pressable>
-        ))}
-      </Stack>
-    </Box>
-  );
-};
+// const RadioBtn = ({ options, value, onChange, required }) => {
+//   const items = options?.enumOptions;
+//   return (
+//     <Radio.Group
+//       name="exampleGroup"
+//       defaultValue="1"
+//       accessibilityLabel="pick a size"
+//       value={value}
+//       onChange={(value) => onChange(value)}
+//     >
+//       <Stack
+//         direction={{
+//           base: "column",
+//           md: "row",
+//         }}
+//         alignItems={{
+//           base: "flex-start",
+//           md: "center",
+//         }}
+//         space={4}
+//         w="75%"
+//         maxW="300px"
+//       >
+//         {items.map((item) => (
+//           <Radio key={item?.value} value={item?.value} size="lg">
+//             {item?.label}
+//           </Radio>
+//         ))}
+//       </Stack>
+//     </Radio.Group>
+//   );
+// };
 
 // App
-export default function App({ facilitator, ip, onClick }) {
+export default function App({ ip, id }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
+  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
+  const [cameraSelection, setCameraSelection] = React.useState(0);
   const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -165,16 +109,17 @@ export default function App({ facilitator, ip, onClick }) {
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [userId, setuserId] = React.useState(id);
   const navigate = useNavigate();
-  const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 13) {
+  /*  const { form_step_number } = facilitator;
+  if (form_step_number && parseInt(form_step_number) >= 7) {
     navigate("/dashboard");
-  }
+  } */
 
   window.onbeforeunload = function () {
     return false;
@@ -198,13 +143,46 @@ export default function App({ facilitator, ip, onClick }) {
     getImage();
   }, [page, credentials]);
 
-  const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
+  //getting data
+  React.useEffect(async () => {
+    const qData = await benificiaryRegistoryService.getOne(id);
+    setFormData(qData.result);
+  }, []);
+
+  console.log("FormData===>", formData);
+
+  React.useEffect(async () => {
+    //console.log("pagecalled");
+    if (page === "2") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page2", updateDetails);
+      setFormData({ ...formData, edit_page_type: "edit_contact" });
+    } else if (page === "3") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page3.....", updateDetails);
+      setFormData({ ...formData, edit_page_type: "personal" });
+    } else if (page === "4") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page4.....", updateDetails);
+      setFormData({ ...formData, edit_page_type: "education" });
+    } else if (page === "upload") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page5.....", updateDetails);
     }
-  };
+  }, [page]);
+
+  React.useEffect(() => {
+    if (page == "5") {
+      console.log(cameraData);
+      if (cameraData.length <= 3) {
+        setCameraModal(true);
+      } else {
+        setCameraModal(false);
+        setPage(page - 1);
+        console.log(page);
+      }
+    }
+  }, [page, credentials]);
 
   const uiSchema = {
     dob: {
@@ -215,15 +193,6 @@ export default function App({ facilitator, ip, onClick }) {
         hideClearButton: true,
       },
     },
-    DOB: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-
     qualification: {
       "ui:widget": CustomR,
     },
@@ -233,47 +202,25 @@ export default function App({ facilitator, ip, onClick }) {
     gender: {
       "ui:widget": CustomR,
     },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
     sourcing_channel: {
       "ui:widget": CustomR,
     },
     availability: {
       "ui:widget": RadioBtn,
     },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
+
     experience: {
       related_to_teaching: {
         "ui:widget": RadioBtn,
       },
     },
-    makeWhatsapp: {
-      "ui:widget": RadioBtn,
-    },
+
     maritalstatus: {
       "ui:widget": CustomR,
     },
     socialstatus: {
       "ui:widget": CustomR,
     },
-
-    ownership: {
-      "ui:widget": RadioBtn,
-    },
-
-    enrollmentboard: {
-      "ui:widget": RadioBtn,
-    },
-    selectsubjects: {
-      "ui:widget": CheckBoxes,
-    },
-
     // custom radio button with property name
     vo_experience: {
       items: {
@@ -292,62 +239,7 @@ export default function App({ facilitator, ip, onClick }) {
       },
     },
   };
-  React.useEffect(async () => {
-    console.log("sandy");
-    let data = await enumRegistryService.getAll();
-    console.log("sandy");
 
-    let dataSchema = updateSchemaEnum(schema, {
-      key: "selectsubjects",
-      arr: data,
-      title: "title",
-      value: "value",
-      // filters: { type: "selectsubjects" },
-    });
-    let newSchema = schema;
-    // console.log(newSchema, dataSchema, "first");
-
-    setSchema(dataSchema);
-    /*   if (schema["properties"]["selectsubjects"]) {
-      newSchema = updateSchemaEnum(newSchema, {
-        key: "selectsubjects",
-        arr: data,
-        title: "title",
-        value: "value",
-        filters: { type: "selectsubjects" },
-      });
-      console.log(newSchema, "second");
-
-      if (newSchema?.properties?.selectsubjects) {
-        let valueIndex = "";
-        newSchema?.properties?.selectsubjects?.enumNames?.forEach(
-          (e, index) => {
-            if (e.match("1")) {
-              valueIndex = newSchema?.properties?.selectsubjects?.enum[index];
-            }
-          }
-        );
-        if (valueIndex !== "" && formData.selectsubjects == valueIndex) {
-          setAlert(t("NO_DATA"));
-        } else {
-          setAlert();
-        }
-      }
-    }
-    if (schema["properties"]["degree"]) {
-      newSchema = updateSchemaEnum(newSchema, {
-        key: "selectsubjects",
-        arr: data,
-        title: "title",
-        value: "value",
-        filters: { type: "selectsubjects" },
-      });
-      console.log(newSchema, "last");
-    } */
-    //setSchema(newSchema);
-  }, [page]);
-  // console.log(schema);
-  console.log(formData);
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
@@ -363,8 +255,8 @@ export default function App({ facilitator, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
-        setPage("upload");
+        await formSubmitUpdate({ ...formData, form_step_number: "6" });
+        setPage("SAVE");
       } else {
         return true;
       }
@@ -414,93 +306,17 @@ export default function App({ facilitator, ip, onClick }) {
     };
   };
 
-  React.useEffect(async () => {
-    if (schema?.properties?.qualification) {
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      let newSchema = schema;
-      if (schema["properties"]["qualification"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex = newSchema?.properties?.qualification?.enum[index];
-              }
-            }
-          );
-          if (valueIndex !== "" && formData.qualification == valueIndex) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
-        }
-      }
-      if (schema["properties"]["degree"]) {
-        newSchema = getOptions(newSchema, {
-          key: "degree",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
-      setSchema(newSchema);
-    }
-
-    if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
-      let newSchema = schema;
-      if (schema["properties"]["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
-      newSchema = await setDistric({
-        schemaData: newSchema,
-        state: formData?.state,
-        district: formData?.district,
-        block: formData?.block,
-      });
-      setSchema(newSchema);
-    }
-
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
-    }
-  }, [page]);
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      // console.log(schema1.properties, "sandesh");
-
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
+      let minYear = moment().subtract("years", 30);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
-    }
-    if (facilitator?.id) {
-      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-      const newData = JSON.parse(data);
-      setFormData({ ...newData, ...facilitator });
     }
   }, []);
 
@@ -517,6 +333,7 @@ export default function App({ facilitator, ip, onClick }) {
       setSubmitBtn(t("SAVE"));
       setAddBtn(t("ADD_EXPERIENCE"));
     } else {
+      console.log({ ...formData });
       setSubmitBtn(t("SAVE"));
     }
   };
@@ -530,28 +347,21 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const formSubmitUpdate = async (formData) => {
-    const { id } = facilitator;
+    console.log("sent data");
     if (id) {
-      updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
+      const data = await enumRegistryService.editProfileById({
         ...formData,
-        parent_ip: ip?.id,
         id: id,
       });
+      console.log(data, "sent data");
     }
-  };
-  const formSubmitCreate = async (formData) => {
-    console.log(formData);
-    /* await facilitatorRegistryService.create({
-            ...formData,
-            parent_ip: ip?.id,
-        }); */
   };
 
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        const data = schema1["properties"][e]["properties"][key];
+        console.log(e);
+        const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
         }
@@ -566,16 +376,6 @@ export default function App({ facilitator, ip, onClick }) {
       }
       if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
       }
     }
     if (data?.dob) {
@@ -718,7 +518,6 @@ export default function App({ facilitator, ip, onClick }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
@@ -797,6 +596,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onError = (data) => {
+    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -826,7 +626,6 @@ export default function App({ facilitator, ip, onClick }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
-    updateData(newData);
     if (_.isEmpty(errors)) {
       setStep();
     } else {
@@ -847,7 +646,6 @@ export default function App({ facilitator, ip, onClick }) {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
-
   if (cameraUrl) {
     return (
       <Layout
@@ -863,27 +661,43 @@ export default function App({ facilitator, ip, onClick }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           {/* add the profile image */}
-          <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
+          <H1 color="red.1000">{t("ADD_ID_PHOTOS")}</H1>
           <h5 color="red.1000" fontSize="3">
             {t("CLEAR_PROFILE_MESSAGE")}
           </h5>
+
           <Center>
             <Image
               source={{
                 uri: cameraUrl,
+                //show the image
               }}
               alt=""
               size="324px"
             />
           </Center>
+          <h5 color="red.1000" fontSize="2">
+            {t("FRONT_VIEW")}
+          </h5>
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
+              if (cameraSelection >= 3) {
+                nextPreviewStep();
+                setCameraUrl();
+                setCameraModal(false);
+                pages[pages?.length - 1] === page;
+              } else {
+                setCameraUrl();
+                setCameraModal(true);
+                setCameraSelection(cameraSelection + 1);
+              }
+              /*  await formSubmitUpdate({ ...formData, form_step_number: "5" });
+              console.log(...formData);
+              if (onClick) onClick(cameraUrl); */
             }}
           >
-            {t("SUBMIT")}
+            {cameraSelection > 3 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
           </Button>
           <Button
             variant={"secondary"}
@@ -908,76 +722,14 @@ export default function App({ facilitator, ip, onClick }) {
           cameraUrl,
           setCameraUrl: async (url) => {
             setCameraUrl(url);
-            setFormData({ ...formData, ["profile_url"]: url });
+            setCameraData([...cameraData, url]);
+            setFormData({ ...formData, ["profile_url"]: cameraData });
           },
         }}
       />
     );
   }
 
-  if (page === "upload") {
-    return (
-      <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          {/* Box removal */}
-          <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
-          <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
-          <Button
-            variant={"primary"}
-            leftIcon={
-              <IconByName
-                name="CameraLineIcon"
-                color="white"
-                size={2}
-                isDisabled
-              />
-            }
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_PHOTO")}
-          </Button>
-          <VStack space={2}>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-            >
-              {t("UPLOAD_PHOTO")}
-            </Button>
-            {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
-            ) : (
-              <React.Fragment />
-            )}
-          </VStack>
-          <Button
-            variant={"primary"}
-            onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
-            }}
-          >
-            {t("SKIP_SUBMIT")}
-          </Button>
-        </VStack>
-      </Layout>
-    );
-  }
   const AddButton = ({ icon, iconType, ...btnProps }) => {
     return (
       <Button
@@ -1044,6 +796,7 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -1051,6 +804,7 @@ export default function App({ facilitator, ip, onClick }) {
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}

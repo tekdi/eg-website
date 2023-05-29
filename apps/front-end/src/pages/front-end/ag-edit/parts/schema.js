@@ -5,7 +5,7 @@ export default {
     1: {
       title: "FULL_NAME",
       type: "object",
-      required: ["first_name", "dob"],
+      required: ["first_name", "last_name", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -24,6 +24,11 @@ export default {
           format: "date",
           title: "DOB",
         },
+        edit_page_type: {
+          type: "string",
+          default: "edit_basic",
+          format: "hidden",
+        },
       },
     },
     2: {
@@ -36,45 +41,51 @@ export default {
           type: "number",
           title: "MOBILE_NUMBER",
         },
-        makeWhatsapp: {
+        mark_as_whatsapp_number: {
           type: "string",
-          title: "MARK_AS_WHATSAPP_NO",
+          label: "MARK_AS_WHATSAPP_NO",
+          format: "RadioBtn",
+
           enumNames: ["Yes", "No"],
           enum: ["yes", "no"],
         },
-        ownership: {
+        device_ownership: {
           type: "string",
-          title: "MARK_OWNERSHIP",
+          label: "MARK_OWNERSHIP",
+          format: "RadioBtn",
           enumNames: ["Self", "Family member", "Neighbour", "Other"],
           enum: ["self", "family member", "neighbour", "other"],
         },
         device_type: {
-          title: "TYPE_OF_MOBILE_PHONE",
           type: "string",
-          enumNames: ["Android", "IPhone"],
-          enum: ["android", "iphone"],
+          label: "TYPE_OF_MOBILE_PHONE",
+          format: "CustomR",
+          enumNames: ["Smartphone", "Basic"],
+          enum: ["smartphone", "basic"],
         },
-        Altmobile: {
+        alternative_mobile_number: {
           type: "number",
           title: "ALTERNATIVE_NUMBER",
         },
-        ownership: {
+        alternative_device_ownership: {
           type: "string",
-          title: "MARK_OWNERSHIP",
+          label: "MARK_OWNERSHIP",
+          format: "RadioBtn",
           enumNames: ["Self", "Family member", "Neighbour", "Other"],
           enum: ["self", "family member", "neighbour", "other"],
         },
-        device_type: {
-          title: "TYPE_OF_MOBILE_PHONE",
+        alternative_device_type: {
+          label: "TYPE_OF_MOBILE_PHONE",
+          format: "CustomR",
           type: "string",
-          enumNames: ["Android", "IPhone"],
-          enum: ["android", "iphone"],
+          enumNames: ["Smartphone", "Basic"],
+          enum: ["smartphone", "basic"],
         },
 
         email_id: {
           type: "string",
           format: "email",
-          title: "EMAIL_ID",
+          label: "EMAIL_ID",
         },
       },
     },

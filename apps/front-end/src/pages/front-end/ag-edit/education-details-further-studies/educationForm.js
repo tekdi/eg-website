@@ -15,7 +15,7 @@ import {
   VStack,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper";
+import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -42,7 +42,7 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-} from "../../../../component/BaseInput";
+} from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 
 const CustomR = ({ options, value, onChange, required }) => {
