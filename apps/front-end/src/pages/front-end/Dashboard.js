@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   SelectStyle,
   RedOutlineButton,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import {
@@ -24,6 +25,8 @@ import {
   Badge,
   Select,
   Image,
+  selected,
+  Container
 } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -478,7 +481,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   rounded="full"
                   justifyContent="center"
                 >
-                  <H2>{t("COMPLETE_FORM")}</H2>
+                  <FrontEndTypo.H2>{t("COMPLETE_FORM")}</FrontEndTypo.H2>
                 </HStack>
               </Pressable>
             ) : (
@@ -494,65 +497,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             />
           </VStack>
         </VStack>
-        {/* <Box bg="white" py="5">
-          <HStack pb="2" justifyContent="space-around">
-            <SelectStyle placeholder="Status : All" mt={1} width="150px">
-              <Select.Item label="UX Research" value="ux" />
-              <Select.Item label="Web Development" value="web" />
-            </SelectStyle>
-            <SelectStyle placeholder="Sort By" mt={1} width="150px">
-              <Select.Item label="UX Research" value="ux" />
-              <Select.Item label="Web Development" value="web" />
-            </SelectStyle>
-          </HStack>
-          <HStack justifyContent="space-around" py="2" alignItems="center">
-            <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
-            <VStack>
-              <Text bold>Khushboo Verma</Text>
-              <BodySmall>+91-809876157</BodySmall>
-            </VStack>
-            <Badge colorScheme="info" rounded="8" _text={{ fontSize: 12 }}>
-              Identified
-            </Badge>
-          </HStack>
-          <HStack justifyContent="space-around" py="2" alignItems="center">
-            <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
-            <VStack>
-              <Text bold>Khushboo Verma</Text>
-              <BodySmall>+91-809876157</BodySmall>
-            </VStack>
-            <Badge colorScheme="success" rounded="8" _text={{ fontSize: 12 }}>
-              Enrolled
-            </Badge>
-          </HStack>
-        </Box> */}
       </VStack>
-      <HStack pb="2" justifyContent='space-around'>
-        <SelectStyle placeholder="Status : All" mt={1} width="150px">
-          <Select.Item label="UX Research" value="ux" />
-          <Select.Item label="Web Development" value="web" />
-        </SelectStyle>
-        <SelectStyle placeholder="Sort By" mt={1} width="150px">
-          <Select.Item label="UX Research" value="ux" />
-          <Select.Item label="Web Development" value="web" />
-        </SelectStyle>
-      </HStack>
-      <HStack justifyContent="space-around" py="2" alignItems="center">
-        <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
-        <VStack>
-          <Text bold>Khushboo Verma</Text>
-          <BodySmall>+91-809876157</BodySmall>
-        </VStack>
-        <Badge colorScheme="info" rounded="8" _text={{ fontSize: 12 }}>Identified</Badge>
-      </HStack>
-      <HStack justifyContent="space-around" py="2" alignItems="center">
-        <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
-        <VStack>
-          <Text bold>Khushboo Verma</Text>
-          <BodySmall>+91-809876157</BodySmall>
-        </VStack>
-        <Badge colorScheme="success" rounded="8" _text={{ fontSize: 12 }}>Enrolled</Badge>
-      </HStack>
     </Layout>
   );
 }
