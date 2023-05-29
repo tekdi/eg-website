@@ -158,9 +158,9 @@ export default function ForgetPassword() {
         minH={Height - ref?.clientHeight}
         space="50px"
       >
-        <H1 color="textMaroonColor.400" textAlign="center" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.400" textAlign="center" pt="6">
           {t("USER_RESET_PASSWORD")}
-        </H1>
+        </FrontEndTypo.H1>
         <Image
           alignSelf="center"
           source={{
@@ -344,7 +344,7 @@ export default function ForgetPassword() {
               {t("SEND")}
             </FrontEndTypo.Primarybutton>
           ) : (
-            <Button
+            <FrontEndTypo.Primarybutton
               flex={1}
               variant={"primary"}
               p="4"
@@ -364,7 +364,7 @@ export default function ForgetPassword() {
               }}
             >
               {t("SUBMIT")}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           )}
         </VStack>
       </VStack>

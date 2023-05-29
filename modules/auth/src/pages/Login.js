@@ -90,9 +90,9 @@ export default function Login() {
         minH={Height - ref?.clientHeight}
         space="50px"
       >
-        <H1 color="textMaroonColor.400" textAlign="center" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.400" textAlign="center" pt="6">
           {t("LOGIN")}
-        </H1>
+        </FrontEndTypo.H1>
         <Image
           alignSelf="center"
           source={{
@@ -215,14 +215,14 @@ export default function Login() {
             {t("LOGIN")}
           </FrontEndTypo.Primarybutton>
           <BodyMedium color="primary.500" textAlign="center">
-            <H2
+            <FrontEndTypo.H2
               onPress={() => {
                 navigate("/reset-password");
               }}
             >
               {" "}
               {t("USER_FORGET_PASSWORD")}
-            </H2>
+            </FrontEndTypo.H2>
           </BodyMedium>
         </VStack>
       </VStack>
