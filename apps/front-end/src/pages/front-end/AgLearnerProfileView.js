@@ -9,6 +9,7 @@ import {
   Button,
   Modal,
 } from "native-base";
+import { IconByName, Layout, t, FrontEndTypo } from "@shiksha/common-lib";
 import {
   BodySmall,
   H1,
