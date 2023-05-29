@@ -24,6 +24,9 @@ import {
   Badge,
   Select,
   Image,
+  NativeBaseProvider,
+  selected,
+  Container
 } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -527,16 +530,21 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </HStack>
         </Box> */}
       </VStack>
+
       <HStack pb="2" justifyContent='space-around'>
-        <SelectStyle placeholder="Status : All" mt={1} width="150px">
+        
+        <SelectStyle placeholder="Status : All" mt={1}>
           <Select.Item label="UX Research" value="ux" />
           <Select.Item label="Web Development" value="web" />
         </SelectStyle>
-        <SelectStyle placeholder="Sort By" mt={1} width="150px">
+       
+        <SelectStyle placeholder="Sort By" mt={1}>
           <Select.Item label="UX Research" value="ux" />
           <Select.Item label="Web Development" value="web" />
         </SelectStyle>
+       
       </HStack>
+
       <HStack justifyContent="space-around" py="2" alignItems="center">
         <IconByName name="AccountCircleLineIcon" width="60px"></IconByName>
         <VStack>

@@ -21,6 +21,7 @@ import {
   Layout,
   BodyMedium,
   H2,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -210,9 +211,9 @@ export default function Login() {
           </VStack>
           {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
           {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-          <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
+          <FrontEndTypo.Primarybutton flex={1}  p="4" onPress={handleLogin}>
             {t("LOGIN")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
           <BodyMedium color="primary.500" textAlign="center">
             <H2
               onPress={() => {

@@ -6,7 +6,8 @@ import {
   t,
   ImageView,
   BlueFillButton,
-  AdminTypo
+  AdminTypo,
+  BlueOutlineButton
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";

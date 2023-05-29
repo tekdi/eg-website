@@ -24,6 +24,7 @@ import {
   H4,
   authRegistryService,
   CustomOTPBox,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -332,7 +333,7 @@ export default function ForgetPassword() {
             )}
           </VStack>
           {OtpValue ? (
-            <Button
+            <FrontEndTypo.Primarybutton
               flex={1}
               variant={"primary"}
               p="4"
@@ -341,7 +342,7 @@ export default function ForgetPassword() {
               }}
             >
               {t("SEND")}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           ) : (
             <Button
               flex={1}

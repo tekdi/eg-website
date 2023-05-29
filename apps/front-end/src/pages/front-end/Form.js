@@ -34,6 +34,7 @@ import {
   BodyMedium,
   changeLanguage,
   sendAndVerifyOtp,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -107,15 +108,15 @@ const CustomOTPBox = ({ value, onChange, required, ...props }) => {
         })}
       </HStack>
       <HStack justifyContent="space-between" alignItems="center">
-        <H4>{`${"00:" + timer}`} </H4>
-        <H4
+        <FrontEndTypo.H4>{`${"00:" + timer}`} </FrontEndTypo.H4>
+        <FrontEndTypo.H4 mt="1"
           onPress={() => {
             resetTimer();
             handleResendOtp(props?.schema?.mobile);
           }}
         >
           {timer <= 1 ? "Resend OTP" : <React.Fragment />}
-        </H4>
+        </FrontEndTypo.H4>
       </HStack>
     </VStack>
   );
@@ -862,17 +863,15 @@ export default function App({ facilitator, ip, onClick }) {
               size="324px"
             />
           </Center>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
             onPress={async (e) => {
               await uploadProfile();
               if (onClick) onClick("success");
             }}
           >
             {t("SUBMIT")}
-          </Button>
-          <Button
-            variant={"secondary"}
+          </FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Secondarybutton
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -880,7 +879,7 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </Layout>
     );
@@ -921,7 +920,7 @@ export default function App({ facilitator, ip, onClick }) {
           </Box>
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
           <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
-          <Button
+          <FrontEndTypo.Primarybutton
             variant={"primary"}
             leftIcon={
               <IconByName
@@ -937,7 +936,7 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             {t("TAKE_PHOTO")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
           <VStack space={2}>
             <Box>
               <input
@@ -947,15 +946,14 @@ export default function App({ facilitator, ip, onClick }) {
                 ref={uplodInputRef}
                 onChange={handleFileInputChange}
               />
-              <Button
+              <FrontEndTypo.Secondarybutton
                 leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-                variant={"secondary"}
                 onPress={(e) => {
                   uplodInputRef?.current?.click();
                 }}
               >
                 {t("UPLOAD_PHOTO")}
-              </Button>
+              </FrontEndTypo.Secondarybutton>
             </Box>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
@@ -963,15 +961,14 @@ export default function App({ facilitator, ip, onClick }) {
               <React.Fragment />
             )}
           </VStack>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
             onPress={async (e) => {
               await formSubmitUpdate({ ...formData, form_step_number: "10" });
               if (onClick) onClick("success");
             }}
           >
             {t("SKIP_SUBMIT")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
         </VStack>
       </Layout>
     );
@@ -998,9 +995,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   const RemoveButton = ({ icon, iconType, ...btnProps }) => {
     return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="red"
+      <FrontEndTypo.Secondarybutton
         mb="2"
         {...btnProps}
         onPress={(e) => {
@@ -1011,7 +1006,7 @@ export default function App({ facilitator, ip, onClick }) {
         <HStack>
           {icon} {t("REMOVE_EXPERIENCE")}
         </HStack>
-      </Button>
+      </FrontEndTypo.Secondarybutton>
     );
   };
 
@@ -1080,15 +1075,14 @@ export default function App({ facilitator, ip, onClick }) {
               transformErrors,
             }}
           >
-            <Button
-              variant={"primary"}
+            <FrontEndTypo.Primarybutton
               type="submit"
               p="4"
               mt="10"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
@@ -1170,9 +1164,8 @@ export default function App({ facilitator, ip, onClick }) {
                 </Clipboard>
               </VStack>
               <HStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Primarybutton
                   flex={1}
-                  variant="primary"
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
@@ -1182,7 +1175,7 @@ export default function App({ facilitator, ip, onClick }) {
                   }}
                 >
                   {t("LOGIN")}
-                </Button>
+                </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
           </Modal.Body>
