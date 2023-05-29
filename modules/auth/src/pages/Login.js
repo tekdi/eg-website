@@ -220,7 +220,6 @@ export default function Login() {
                 navigate("/reset-password");
               }}
             >
-              {" "}
               {t("USER_FORGET_PASSWORD")}
             </FrontEndTypo.H2>
           </BodyMedium>

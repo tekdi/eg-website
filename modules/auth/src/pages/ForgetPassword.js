@@ -335,7 +335,6 @@ export default function ForgetPassword() {
           {OtpValue ? (
             <FrontEndTypo.Primarybutton
               flex={1}
-              variant={"primary"}
               p="4"
               onPress={() => {
                 handleLogin(credentials?.username);
