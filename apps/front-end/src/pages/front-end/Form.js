@@ -780,8 +780,8 @@ export default function App({ facilitator, ip, onClick }) {
                   data?.error?.constructor?.name === "String"
                     ? [data?.error]
                     : data?.error?.constructor?.name === "Array"
-                      ? data?.error
-                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                    ? data?.error
+                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
               },
             };
             setErrors(newErrors);

@@ -10,7 +10,6 @@ export default function QrScannerKyc() {
 
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
-  
 
   React.useEffect(() => {
     const video = videoRef.current;
@@ -45,7 +44,6 @@ export default function QrScannerKyc() {
         );
         const code = jsQR(imageData.data, imageData.width, imageData.height);
         if (code) {
-          
           console.log("qr data -> ", code.data);
         }
       }
