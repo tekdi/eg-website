@@ -9,22 +9,6 @@ export default {
     "location_type",
   ],
   properties: {
-    // created_by: {
-    //   title: "Created by",
-    //   type: "string",
-    //   format: "hidden",
-    // },
-    // context_id: {
-    //   title: "Context by",
-    //   type: "string",
-    //   format: "hidden",
-    // },
-    // updated_by: {
-    //   title: "Updated by",
-    //   type: "string",
-    //   format: "hidden",
-    // },
-
     type: {
       type: "string",
       title: "Event type",

@@ -55,12 +55,14 @@ export default function Orientation({
   getFormData,
   userIds,
   onShowScreen,
+  setIsOpen,
 }) {
   const formRef = React.useRef();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
+  const [list, setList] = React.useState({});
   const SelectButton = () => (
     <VStack>
       <Button onPress={(e) => onShowScreen(true)}>
@@ -117,6 +119,12 @@ export default function Orientation({
     setFormData({ ...formData, ...newData });
   };
 
+  const handleEventClick = (info) => {
+    console.log("Event clicked:", info?.event?.extendedProps);
+    setFormData(info?.event?.extendedProps);
+    setModalVisible(true);
+  };
+
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     if (orientationPopupSchema?.properties?.context) {
@@ -152,7 +160,6 @@ export default function Orientation({
       }}
       _sidebar={footerLinks}
     >
-      hello
       <VStack paddingLeft="5" paddingTop="5" space="xl">
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
@@ -283,30 +290,32 @@ export default function Orientation({
           <Fullcalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
-            // events={[
-            //   {
-            //     title: eventList?.map((e) => {
-            //       return e?.context ? e?.context : "hi";
-            //     }),
-            //     date:
-            //        eventList?.map((e) => {
-            //         return e?.start_date !== "Invalid date"
-            //           ? moment(e?.start_date).format("YYYY-MM-DD HH:mm:ss")
-            //           :
-            //       moment().format("YYYY-MM-DD HH:mm:ss"),
-            //     }),
-            //   },
-            // ]}
             events={eventList?.map((item) => {
               return {
                 title: item?.context ? item?.context : "hi",
                 date:
                   item?.start_date !== "Invalid date"
                     ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
-                    : moment().format("YYYY-MM-DD HH:mm:ss"),
+                    : "",
+                type: item?.context ? item?.context : "",
+                start_date:
+                  item?.start_date !== "Invalid date"
+                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                end_date:
+                  item?.end_date !== "Invalid date"
+                    ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
+                user_id: Object.values(userIds).map((e) => e?.id),
+                start_time: item?.start_time ? item?.start_time : "",
+                end_time: item?.end_time ? item?.end_time : "",
+                reminder: item?.reminder ? item?.reminder : "",
+                location: item?.location ? item?.location : "",
+                location_type: item?.location_type ? item?.location_type : "",
               };
             })}
-            // eventClick={console.log("hi")}
+            eventClick={handleEventClick}
             headerToolbar={{
               start: "prev,thisweek,next",
               center: "timeGridWeek,dayGridMonth,dayGridYear",
@@ -328,11 +337,9 @@ export default function Orientation({
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0" bg="white">
             <H1 textAlign="center" bold>
-              {" "}
               Schedule an Event
             </H1>
           </Modal.Header>
-
           {/* <Modal.Header textAlign={"Center"}>
             Schedule an Interview
           </Modal.Header>
@@ -468,7 +475,7 @@ export default function Orientation({
                   variant="blueOutlineBtn"
                   colorScheme="blueGray"
                   onPress={() => {
-                    setShowModal(false);
+                    setModalVisible(false);
                   }}
                   shadow="BlueOutlineShadow"
                 >
@@ -477,7 +484,7 @@ export default function Orientation({
                 <Button
                   variant="blueFillButton"
                   onPress={() => {
-                    // setShowModal(false);
+                    setModalVisible(false);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
