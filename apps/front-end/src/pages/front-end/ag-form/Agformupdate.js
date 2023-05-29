@@ -143,11 +143,11 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   React.useEffect(async () => {
     //console.log("pagecalled");
-    setFormData({ ...formData, edit_page_type: "registration_contact" });
+    setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page2", updateDetails);
-      setFormData({ ...formData, edit_page_type: "registration_address" });
+      setFormData({ ...formData, edit_page_type: "add_address" });
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page3.....", updateDetails);
@@ -155,7 +155,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page4.....", updateDetails);
-      setFormData({ ...formData, edit_page_type: "education" });
+      setFormData({ ...formData, edit_page_type: "add_education" });
     } else if (page === "upload") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page5.....", updateDetails);
