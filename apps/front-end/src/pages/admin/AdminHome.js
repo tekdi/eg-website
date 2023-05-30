@@ -166,7 +166,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   <IconByName isDisabled name="FilterLineIcon" />
                   <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
                   <Button
-                    variant="blueUnderlineButton"
+                   variant="link"
                     pt="4"
                     onPress={clearFilter}
                   >
