@@ -9,6 +9,7 @@ import {
   filtersByObject,
   facilitatorRegistryService,
   eventService,
+  AdminTypo,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -35,7 +36,6 @@ import {
 import {
   Button,
   HStack,
-  Text,
   VStack,
   Box,
   Modal,
@@ -43,12 +43,9 @@ import {
   FormControl,
   CheckIcon,
   CheckCircleIcon,
-  TextArea,
   Image,
   Pressable,
 } from "native-base";
-import { useNavigate } from "react-router-dom";
-import Chip from "component/Chip";
 import moment from "moment";
 
 export default function Orientation({
@@ -173,18 +170,18 @@ export default function Orientation({
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
             <IconByName name="Home4LineIcon" fontSize="24px" />
-            <Text
-              fontSize="24px"
-              fontWeight="600"
-              color="#212121"
-              fontFamily="Inter"
-            >
-              Home
-            </Text>
+            <AdminTypo.H1 color="textGreyColor.800" bold>
+              {t("HOME")}
+            </AdminTypo.H1>
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          {/* <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue
+            justifyContent="center"
+            shadow="BlueBoxShadow"
+            borderColor="PrimaryIpcolor.400"
+            borderWidth="1px"
+          >
             <VStack alignItems={"Center"}>
               <Pressable onPress={(e) => onShowScreen(true)}>
                 <Image
@@ -195,13 +192,18 @@ export default function Orientation({
                   size={"sm"}
                   resizeMode="contain"
                 />
-                <Text fontSize="sm" bold pt="4">
-                  Orientation
-                </Text>
+                <AdminTypo.H6 bold pt="4">
+                  {t("ORIENTATION")}
+                </AdminTypo.H6>
               </Pressable>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue
+            justifyContent="center"
+            shadow="BlueBoxShadow"
+            borderColor="PrimaryIpcolor.400"
+            borderWidth="1px"
+          >
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -211,12 +213,17 @@ export default function Orientation({
                 size={"sm"}
                 resizeMode="contain"
               />
-              <Text fontSize="sm" bold pt="4">
-                Training
-              </Text>
+              <AdminTypo.H6 bold pt="4">
+                {t("TRAINING")}
+              </AdminTypo.H6>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue
+            justifyContent="center"
+            shadow="BlueBoxShadow"
+            borderColor="PrimaryIpcolor.400"
+            borderWidth="1px"
+          >
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -226,12 +233,17 @@ export default function Orientation({
                 size={"sm"}
                 resizeMode="contain"
               />
-              <Text fontSize="sm" bold pt="4">
-                Master Training
-              </Text>
+              <AdminTypo.H6 bold pt="4">
+                {t("MASTER_TRAINER")}
+              </AdminTypo.H6>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue
+            justifyContent="center"
+            shadow="BlueBoxShadow"
+            borderColor="PrimaryIpcolor.400"
+            borderWidth="1px"
+          >
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -241,15 +253,16 @@ export default function Orientation({
                 size={"sm"}
                 resizeMode="contain"
               />
-              <Text fontSize="sm" bold pt="4">
-                Add a Prerak
-              </Text>
+              <AdminTypo.H6 bold pt="4">
+                {t("ADD_A_PRERAK")}
+              </AdminTypo.H6>
             </VStack>
-          </BoxBlue> */}
+          </BoxBlue>{" "}
+          */}
         </HStack>
-        <Text fontSize="xl" bold py="3">
-          Your Calender
-        </Text>
+        <AdminTypo.H3 bold py="3">
+          {t("YOUR_CALENDAR")}
+        </AdminTypo.H3>
       </VStack>
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
@@ -258,7 +271,7 @@ export default function Orientation({
               variant={"blueOutlineBtn"}
               shadow="BlueOutlineShadow"
               onPress={() => {
-                setModalVisible(!modalVisible);
+                onClick(true);
               }}
             >
               <Text color="blueText.400" bold fontSize="lg">
@@ -266,42 +279,23 @@ export default function Orientation({
               </Text>
             </Button>
 
-            <Button
-              variant={"blueOutlineBtn"}
-              shadow="BlueOutlineShadow"
-              onPress={() => {
-                onClick(true);
-              }}
-            >
-              <Text color="blueText.400" bold fontSize="lg">
-                Page
-              </Text>
-            </Button>
             <Cal />
-            <VStack space="4">
+            <VStack space="4" mt="4">
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="blue.500" />
-                <Text fontSize="sm" bold>
-                  Interview
-                </Text>
+                <AdminTypo.H6 bold>{t("INTERVIEW")}</AdminTypo.H6>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="green.500" />
-                <Text fontSize="sm" bold>
-                  Orientation Days
-                </Text>
+                <AdminTypo.H6 bold>{t("ORIENTATION_DAYS")}</AdminTypo.H6>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="yellow.500" />
-                <Text fontSize="sm" bold>
-                  Training Days
-                </Text>
+                <AdminTypo.H6 bold>{t("TRAINING_DAYS")}</AdminTypo.H6>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="purple.500" />
-                <Text fontSize="sm" bold>
-                  Camp visits
-                </Text>
+                <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
               </HStack>
             </VStack>
           </VStack>
@@ -368,9 +362,9 @@ export default function Orientation({
         <Modal.Content {...styles.modalxxl}>
           <Modal.CloseButton />
           <Modal.Header p="5" borderBottomWidth="0" bg="white">
-            <H1 textAlign="center" bold>
-              Schedule an Event
-            </H1>
+            <AdminTypo.H1 textAlign="center" bold>
+              {t("SCHEDULE_EVENT")}
+            </AdminTypo.H1>
           </Modal.Header>
 
           {/* <Modal.Header textAlign={"Center"}>
@@ -502,88 +496,31 @@ export default function Orientation({
                 onChange,
                 onSubmit,
               }}
-            >
-              <HStack justifyContent="space-between" space={2} py="5">
-                <Button
-                  variant="blueOutlineBtn"
-                  colorScheme="blueGray"
+            />
+            <Modal.Footer justifyContent={"space-between"}>
+              <Button.Group space={2}>
+                <AdminTypo.Secondarybutton
                   onPress={() => {
                     setModalVisible(false);
                   }}
                   shadow="BlueOutlineShadow"
                 >
-                  <Text>Cancel</Text>
-                </Button>
-                <Button
-                  variant="blueFillButton"
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton
                   onPress={() => {
                     setModalVisible(false);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
                 >
-                  <Text color="white">Send Invites</Text>
-                </Button>
-              </HStack>
-            </Form>
+                  {t("SEND_INVITES")}
+                </AdminTypo.PrimaryButton>
+              </Button.Group>
+            </Modal.Footer>
           </Modal.Body>
         </Modal.Content>
       </Modal>
-      <HStack space="2xl" justifyContent={"space-between"} px="3">
-        {/* <Box>
-          <VStack space="xl">
-            <Button
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              +Schedule an event
-            </Button>
-
-            <Cal />
-            <VStack space="xsm">
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="blue.500" />
-                <Text>Interview</Text>
-              </HStack>
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="green.500" />
-                <Text>Orientation Days</Text>
-              </HStack>
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="yellow.500" />
-                <Text>Training Days</Text>
-              </HStack>
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="purple.500" />
-                <Text>Camp visits</Text>
-              </HStack>
-            </VStack>
-          </VStack>
-        </Box> */}
-        {/* <Box width="50%" justifyContent={"Center"} flex={"1"}>
-          <Fullcalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={"timeGridWeek"}
-            events={[
-              {
-                title: "Orientation",
-                date: moment().format("YYYY-MM-DD HH:mm:ss"),
-              },
-              {
-                title: "Orientation",
-                date: moment().format("2023-05-14 02:00:00"),
-              },
-            ]}
-            headerToolbar={{
-              start: "prev,thisweek,next",
-              center: "timeGridWeek,dayGridMonth,dayGridYear",
-              end: "today",
-              height: "50hv",
-            }}
-          />
-        </Box> */}
-      </HStack>
     </Layout>
   );
 }

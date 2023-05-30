@@ -244,11 +244,11 @@ export default function OrientationScreen() {
         getRefAppBar={(e) => RefAppBar(e)}
         isDisabledAppBar={page === "screen1"}
         isCenter={true}
-        // key={code}
+        key={code}
         _appBar={{ onlyIconsShow: ["langBtn"] }}
         _page={{ _scollView: { bg: "white" } }}
       >
-        <Page3 />
+        <Page3 setSelectedData={selectedData} />
       </Layout>
     );
   }
