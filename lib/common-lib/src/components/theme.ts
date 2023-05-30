@@ -171,6 +171,22 @@ const DEFAULT_THEME = {
           },
           rounded: '30px'
         }),
+        blueUnderlineButton:() => ({
+          bg: `white`,
+          borderWidth: '1',
+          borderColor: `#084b82`,
+          color:'#084b82',
+          _text:'#084b82',
+          _hover: {
+            bg: `#133142`,
+            _text: `#14242D`
+          },
+          _pressed: {
+            bg: `#133142`,
+            _text: `#14242D`
+          },
+          rounded: '30px'
+        }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
@@ -205,13 +221,7 @@ const DEFAULT_THEME = {
       }
     }
   },
-  Background: {
-    linearGradient: {
-      colors: ['#CAE9FF', '#fff', '#CAE9FF'],
-      start: [0, 0],
-      end: [1, 0]
-    }
-  },
+ 
   shadows: {
     AlertShadow: {
       shadowColor: '#00000040',
@@ -302,6 +312,13 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 16,
       elevation: 1
+    }
+  },
+  bg: {
+    linearGradient: {
+      colors: ['#CAE9FF', '#CAE9FF', '#CAE9FF'],
+      start: [0, 0],
+      end: [1, 0]
     }
   },
   colors: {

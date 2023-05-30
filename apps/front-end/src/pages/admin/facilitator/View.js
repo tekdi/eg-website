@@ -155,6 +155,9 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
+          <Button  bg="bg.linearGradient" shadow="RedOutlineButton" color="primary.100">
+ekta
+          </Button>
             <Image
               source={{
                 uri: "/profile.svg",

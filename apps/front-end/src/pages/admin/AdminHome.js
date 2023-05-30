@@ -137,23 +137,13 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
         <Box flex={0.5}>
-          <HStack
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            p="10px"
-            ref={ref}
-          >
-            {/* <H2 color="white">{t("MY_PRERAKS")}</H2> */}
-            <AdminTypo.Secondarybutton onPress={clearFilter}>
-              Clear filter
-            </AdminTypo.Secondarybutton>
-          </HStack>
+          <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
           >
-            <VStack space={5} py="5" px="2">
+            <VStack space={8} py="5">
               {/* <HStack alignItems="center" space={1} width="200px" height="24px">
                 <IconByName isDisabled name="SortDescIcon" />
                 <Text>{t("SORT_BY")}</Text>
@@ -172,11 +162,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               </Select>*/}
 
               <VStack space={5}>
-                <HStack alignItems="center" width="100%">
+                <HStack alignItems="center" justifyContent="space-between">
                   <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold borderBottomWidth="1">
+                  <AdminTypo.H5 bold>
                     {t("FILTERS")}
                   </AdminTypo.H5>
+                  <Button variant="blueUnderlineButton" pt="4" onPress={clearFilter}>
+                    <AdminTypo.H6 color="blueText.400" underline bold>{t("CLEAR_FILTER")}</AdminTypo.H6>
+                  </Button>
                 </HStack>
                 <Form
                   schema={schema}
