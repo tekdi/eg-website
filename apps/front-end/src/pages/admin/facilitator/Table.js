@@ -146,8 +146,26 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
 
   return (
     <VStack>
-      <HStack justifyContent={"space-between"} my="1">
-        <AdminTypo.H1>{t("ALL_PRERAK")}</AdminTypo.H1>
+      <HStack my="1" justifyContent="space-between">
+        <HStack justifyContent="space-between" alignItems="center">
+          <Image
+            source={{
+              uri: "/profile.svg",
+            }}
+            alt=""
+            size={"xs"}
+            resizeMode="contain"
+          />
+          <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
         {/* <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
@@ -163,7 +181,6 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             {t("REGISTER_PRERAK")}
           </Button> */}
           <AdminTypo.Secondarybutton
-            shadow="BlueOutlineShadow"
             onPress={() => setModal(true)}
             rightIcon={
               <IconByName
@@ -176,15 +193,14 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           >
             {t("SEND_AN_INVITE")}
           </AdminTypo.Secondarybutton>
-          {/* <BlueFillButton
+          {/* <AdminTypo.PrimaryButton
             mx="3"
-            shadow="BlueFillShadow"
             rightIcon={
               <IconByName color="white" size="20px" name="PencilLineIcon" />
             }
           >
             {t("REGISTER_PRERAK")}
-          </BlueFillButton> */}
+          </AdminTypo.PrimaryButton> */}
           <Modal
             isOpen={modal}
             onClose={() => setModal(false)}
@@ -194,7 +210,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center"> {t("SEND_AN_INVITE")}</AdminTypo.H1>
+                <AdminTypo.H1 textAlign="center">
+                  {" "}
+                  {t("SEND_AN_INVITE")}
+                </AdminTypo.H1>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -204,7 +223,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     borderBottomColor="gray.300"
                     pb="5"
                   >
-                    <AdminTypo.H3> {t("INVITATION_LINK")}</AdminTypo.H3>
+                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
                       text={`${getBaseUrl()}facilitator-self-onboarding/${
                         facilitator?.program_users[0]?.organisation_id
@@ -228,7 +247,6 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     <Input
                       flex={0.7}
                       placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
-                      variant="underlined"
                     />
                     <AdminTypo.PrimaryButton flex={0.3}>
                       {t("SEND")}
