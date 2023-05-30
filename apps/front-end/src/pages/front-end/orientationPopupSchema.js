@@ -3,10 +3,11 @@ export default {
 
   properties: {
     event_type: {
-      title: "Event type",
+      label: "Event type",
       type: "string",
       format: "select",
       enum: ["Prerak Orientationb", "Prerak Training", "My MT", "Add a Prerak"],
+      icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
     },
     mastertrainer: {
       title: "Master Trainer",

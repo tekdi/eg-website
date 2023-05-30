@@ -22,7 +22,7 @@ export default function Chip({ label, children, isActive, ...props }) {
 
 // ChipStatus
 export function ChipStatus({ status, ...props }) {
-  const [color, setColor] = React.useState("gray.300");
+  const [color, setColor] = React.useState("textGreyColor.800");
   const [newStatus, setNewStatus] = React.useState(status);
 
   React.useEffect(() => {
