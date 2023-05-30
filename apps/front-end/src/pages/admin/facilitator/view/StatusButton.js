@@ -107,7 +107,7 @@ export default function StatusButton({ data, setData }) {
 
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
-      case "screened": 
+      case "screened":
         setDisabledBtn([
           "rejected",
           "shortlisted_for_orientation",
@@ -144,7 +144,7 @@ export default function StatusButton({ data, setData }) {
         setDisabledBtn(["rejected", "quit", "rusticate"]);
         break;
       case "quit":
-      (["rejected", "rusticate"]);
+        ["rejected", "rusticate"];
         break;
       case "rusticate":
         setDisabledBtn([]);

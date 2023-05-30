@@ -2,7 +2,7 @@ name: CI/CD check
 
 on:
   push:
-    branches: [ agmobi ]
+    branches: [ master ]
 
 jobs:
   build:
