@@ -28,7 +28,7 @@ export function ChipStatus({ status, ...props }) {
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "screened":
-        setColor("PrerakScreenedColor");
+        setColor("screenedColor");
         setNewStatus(t("SCREENED"));
         break;
       case "rejected":
@@ -59,10 +59,10 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("QUIT"));
         setColor("textMaroonColor.100");
         break;
-        case "rusticate":
-          setNewStatus(t("RUSTICATE"));
-          setColor("danger.300");
-          break;
+      case "rusticate":
+        setNewStatus(t("RUSTICATE"));
+        setColor("danger.300");
+        break;
       default:
         setNewStatus(t("APPLIED"));
         setColor("textGreyColor.800");

@@ -211,7 +211,7 @@ export default function Login() {
           </VStack>
           {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
           {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-          <FrontEndTypo.Primarybutton flex={1}  p="4" onPress={handleLogin}>
+          <FrontEndTypo.Primarybutton flex={1} p="4" onPress={handleLogin}>
             {t("LOGIN")}
           </FrontEndTypo.Primarybutton>
           <BodyMedium color="primary.500" textAlign="center">
