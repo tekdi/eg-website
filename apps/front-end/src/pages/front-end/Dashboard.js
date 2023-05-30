@@ -72,8 +72,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             space="5"
             borderBottomWidth="1"
             borderBottomColor={"gray.300"}
-            bg="info.200"
-            {...styles.inforBox}
+            shadows="BlueOutlineShadow"
           >
             <IconByName
               flex="0.1"

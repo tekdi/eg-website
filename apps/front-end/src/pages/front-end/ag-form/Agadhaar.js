@@ -203,7 +203,7 @@ export default function Agform({ userTokenInfo }) {
     <Layout
       _appBar={{
         onPressBackButton: (e) => {
-          navigate("/beneficiary/2", { state: { id: userId } });
+          navigate("/beneficiary/2", { state: { id: userId, page: "5" } });
         },
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,

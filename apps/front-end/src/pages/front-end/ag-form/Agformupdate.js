@@ -82,6 +82,7 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   React.useEffect(() => {
     setuserId(location?.state?.id);
+    console.log("hello", location?.state?.page);
   }, []);
 
   const onPressBackButton = async () => {
@@ -91,11 +92,11 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const updateData = (data, deleteData = false) => {};
 
-  const uiSchema = {
-    facilitator_id: {
-      "ui:widget": "hidden",
-    },
-  };
+  // const uiSchema = {
+  //   facilitator_id: {
+  //     "ui:widget": "hidden",
+  //   },
+  // };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -105,8 +106,11 @@ export default function AgformUpdate({ userTokenInfo }) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
         nextIndex = pages[index + 1];
+      } else if (page == "1") {
+        navigate("/beneficiary", { state: { id: userId } });
       } else {
         nextIndex = pages[index - 1];
+        console.log("reached here");
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
@@ -162,7 +166,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
   }, [page]);
 
-  //console.log("page", page);
+  console.log("page", page);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -761,9 +765,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => {
-          navigate("/beneficiary", { state: { id: userId } });
-        },
+        onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
@@ -803,7 +805,6 @@ export default function AgformUpdate({ userTokenInfo }) {
             {...{
               validator,
               schema: schema ? schema : {},
-              uiSchema,
               formData,
               customValidate,
               onChange,

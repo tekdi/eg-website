@@ -31,7 +31,7 @@ export default {
       properties: {
         state: {
           type: "string",
-          title: "STATE",
+          label: "STATE",
           format: "select",
         },
         district: {
