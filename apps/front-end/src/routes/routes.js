@@ -7,8 +7,8 @@ import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
 import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
-import Profile from "pages/front-end/PrerakProfileDetailsView";
-import FacilitatorListView from "pages/front-end/PrerakListView";
+import Profile from "pages/front-end/FacilitatorProfileDetailsView";
+import FacilitatorListView from "pages/front-end/FacilitatorListView";
 
 export default [
   { path: "/form", component: Home },

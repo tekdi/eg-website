@@ -40,27 +40,29 @@ const List = ({ data }) => {
 };
 
 const select1 = [
-  { label: "Status :", value: "status" },
-  { label: "Identified :", value: "identified" },
-  { label: "Documented", value: "documented" },
-  { label: "Enrolled", value: "enrolled" },
-  { label: "Approved", value: "approved" },
+  /* 
+    'identified',
+      'ready_to_enroll',
+      'enrolled',
+      'approved_ip',
+      'registered_in_camp',
+      'pragati_syc',
+      'rejected',
+      'dropout', */
+  { label: "Status", value: "status" },
+  { label: "ready to enroll", value: "ready_to_enroll" },
+  { label: "enrolled", value: "enrolled" },
+  { label: "approved ip", value: "approved_ip" },
+  { label: "registered in camp", value: "registered_in_camp" },
+  { label: "pragati syc", value: "pragati_syc" },
+  { label: "rejected", value: "rejected" },
+  { label: "dropout", value: "dropout" },
 ];
 
 const select2 = [
   { label: "sort", value: "sort" },
-  { label: "Top Left", value: "top left" },
-  { label: "Top", value: "top" },
-  { label: "Top Right", value: "top right" },
-  { label: "Right Top", value: "right top" },
-  { label: "Right", value: "right" },
-  { label: "Right Bottom", value: "right bottom" },
-  { label: "Bottom Left", value: "bottom left" },
-  { label: "Bottom", value: "bottom" },
-  { label: "Bottom Right", value: "bottom right" },
-  { label: "Left Top", value: "left top" },
-  { label: "Left", value: "left" },
-  { label: "Left Bottom", value: "left bottom" },
+  { label: "asc", value: "asc" },
+  { label: "desc", value: "desc" }
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {

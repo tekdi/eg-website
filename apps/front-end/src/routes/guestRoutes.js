@@ -4,7 +4,7 @@ import Home from "../pages/front-end/Home";
 const LoginComponent = React.lazy(() => import("auth/Login"));
 const ForgetPasswordComponent = React.lazy(() => import("auth/ForgetPassword"));
 
-import PrerakProfileDetailsView from "pages/front-end/PrerakProfileDetailsView";
+import PrerakProfileDetailsView from "pages/front-end/FacilitatorProfileDetailsView";
 import Orientation from "pages/front-end/Orientation";
 import AgLearnerProfileView from "pages/front-end/AgLearnerProfileView";
 export default [
