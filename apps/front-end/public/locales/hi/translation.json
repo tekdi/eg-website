@@ -326,5 +326,16 @@
   "DO":"करने योग्य",
   "DONTS":"नहीं",
   "CLEAR_FILTER":"स्पष्ट निस्यंदक",
+  "PRERAK_TRAINING": "प्रेरक ट्रेनिंग",
+  "MASTER_TRAINER": "मुख्य प्रशिक्षक",
+  "ADD_A_PRERAK": "ऐड ा प्रेरक",
+  "YOUR_CALENDAR": "आपका कैलेंडर",
+  "INTERVIEW": "साक्षात्कार",
+  "ORIENTATION_DAYS": "अभिविन्यास दिवस",
+  "TRAINING_DAYS": "प्रशिक्षण दिवस",
+  "CAMP_VISITS": "शिविर का दौरा",
+  "SEND_INVITES": "आमंत्रण भेजें",
+  "ORIENTATION": "अभिविन्यास",
+  "TRAINING": "प्रशिक्षण",
   "ALL_PRERAKS": "सभी प्रेरक"
 }

@@ -365,5 +365,16 @@
   "DO":"DO's",
   "DONTS":"Don’ts",
   "CLEAR_FILTER":"Clear filter",
+  "PRERAK_TRAINING": " Prerak Training",
+  "MASTER_TRAINER": "Master Trainer",
+  "ADD_A_PRERAK": " Add a Prerak",
+  "YOUR_CALENDAR": "Your Calender",
+  "INTERVIEW": "Interview",
+  "ORIENTATION_DAYS": "Orientation Days",
+  "TRAINING_DAYS": "Training Days",
+  "CAMP_VISITS": "Camp visits",
+  "SEND_INVITES": "Send Invites",
+  "ORIENTATION": "Orientation",
+  "TRAINING": "Training",
   "ALL_PRERAKS": "All Preraks"
 }
