@@ -83,7 +83,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow" borderColor="PrimaryIpcolor.400" borderWidth="1px">
             <VStack alignItems={"Center"}>
               <Pressable onPress={onShowScreen}>
                 <Image
@@ -100,7 +100,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               </Pressable>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow" borderColor="PrimaryIpcolor.400" borderWidth="1px">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -115,7 +115,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               </AdminTypo.H6>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow" borderColor="PrimaryIpcolor.400" borderWidth="1px">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -130,7 +130,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               </AdminTypo.H6>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          <BoxBlue justifyContent="center" shadow="BlueBoxShadow" borderColor="PrimaryIpcolor.400" borderWidth="1px">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -161,9 +161,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               onPress={() => {
                 setModalVisible(!modalVisible);
               }}
-            >
-              {" "}
-              {t("SCHEDULE_EVENT")}
+            > {t("SCHEDULE_EVENT")}
             </AdminTypo.Secondarybutton>
 
             <Cal />
