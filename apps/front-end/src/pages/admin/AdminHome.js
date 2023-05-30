@@ -164,11 +164,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               <VStack space={5}>
                 <HStack alignItems="center" justifyContent="space-between">
                   <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold>
-                    {t("FILTERS")}
-                  </AdminTypo.H5>
-                  <Button variant="blueUnderlineButton" pt="4" onPress={clearFilter}>
-                    <AdminTypo.H6 color="blueText.400" underline bold>{t("CLEAR_FILTER")}</AdminTypo.H6>
+                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+                  <Button
+                    variant="blueUnderlineButton"
+                    pt="4"
+                    onPress={clearFilter}
+                  >
+                    <AdminTypo.H6 color="blueText.400" underline bold>
+                      {t("CLEAR_FILTER")}
+                    </AdminTypo.H6>
                   </Button>
                 </HStack>
                 <Form

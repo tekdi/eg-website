@@ -171,12 +171,12 @@ const DEFAULT_THEME = {
           },
           rounded: '30px'
         }),
-        blueUnderlineButton:() => ({
+        blueUnderlineButton: () => ({
           bg: `white`,
           borderWidth: '1',
           borderColor: `#084b82`,
-          color:'#084b82',
-          _text:'#084b82',
+          color: '#084b82',
+          _text: '#084b82',
           _hover: {
             bg: `#133142`,
             _text: `#14242D`
@@ -221,7 +221,7 @@ const DEFAULT_THEME = {
       }
     }
   },
- 
+
   shadows: {
     AlertShadow: {
       shadowColor: '#00000040',

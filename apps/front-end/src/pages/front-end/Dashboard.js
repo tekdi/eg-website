@@ -66,7 +66,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack pb="5" bg="gray.200">
         <VStack space="5">
-          
           <HStack
             p="5"
             space="5"
