@@ -578,18 +578,19 @@ export default function FacilitatorView({ footerLinks }) {
                   <VStack>
                     <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
                     <VStack>
-                      {data?.qualifications && data?.qualifications
-                        ?.filter(
-                          (e) =>
-                            e?.qualification_master?.type === "qualification"
-                        )
-                        ?.map((qua, key) => {
-                          return (
-                            <Text key={key}>
-                              {qua?.qualification_master?.name}
-                            </Text>
-                          );
-                        })}
+                      {data?.qualifications &&
+                        data?.qualifications
+                          ?.filter(
+                            (e) =>
+                              e?.qualification_master?.type === "qualification"
+                          )
+                          ?.map((qua, key) => {
+                            return (
+                              <Text key={key}>
+                                {qua?.qualification_master?.name}
+                              </Text>
+                            );
+                          })}
                     </VStack>
                     <VStack space="2">
                       <Text color="warmGray.500">

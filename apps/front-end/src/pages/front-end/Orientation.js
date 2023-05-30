@@ -94,8 +94,8 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                   size={"sm"}
                   resizeMode="contain"
                 />
-                <AdminTypo.H6  bold pt="4">
-                 {t("ORIENTATION")}
+                <AdminTypo.H6 bold pt="4">
+                  {t("ORIENTATION")}
                 </AdminTypo.H6>
               </Pressable>
             </VStack>
@@ -110,7 +110,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 size={"sm"}
                 resizeMode="contain"
               />
-              <AdminTypo.H6  bold pt="4">
+              <AdminTypo.H6 bold pt="4">
                 {t("TRAINING")}
               </AdminTypo.H6>
             </VStack>
@@ -125,7 +125,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 size={"sm"}
                 resizeMode="contain"
               />
-              <AdminTypo.H6  bold pt="4">
+              <AdminTypo.H6 bold pt="4">
                 {t("MASTER_TRAINER")}
               </AdminTypo.H6>
             </VStack>
@@ -141,53 +141,48 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 resizeMode="contain"
               />
               <AdminTypo.H6 bold pt="4">
-               {t("ADD_A_PRERAK")}
+                {t("ADD_A_PRERAK")}
               </AdminTypo.H6>
             </VStack>
           </BoxBlue>
         </HStack>
         <AdminTypo.H3 bold py="3">
           {t("YOUR_CALENDAR")}
-        </AdminTypo.H3 >
+        </AdminTypo.H3>
       </VStack>
 
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
-          <VStack mb="3" alignContent="center" >
-            <AdminTypo.Secondarybutton alignContent="center"
+          <VStack mb="3" alignContent="center">
+            <AdminTypo.Secondarybutton
+              alignContent="center"
               mb="3"
               shadow="BlueOutlineShadow"
               onPress={() => {
                 setModalVisible(!modalVisible);
               }}
-              > {t("SCHEDULE_EVENT")}
+            >
+              {" "}
+              {t("SCHEDULE_EVENT")}
             </AdminTypo.Secondarybutton>
 
             <Cal />
             <VStack space="4" mt="4">
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="blue.500" />
-                <AdminTypo.H6 bold>
-                  {t("INTERVIEW")}
-                </AdminTypo.H6>
+                <AdminTypo.H6 bold>{t("INTERVIEW")}</AdminTypo.H6>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="green.500" />
-                <AdminTypo.H6  bold>
-                  {t("ORIENTATION_DAYS")}
-                </AdminTypo.H6>
+                <AdminTypo.H6 bold>{t("ORIENTATION_DAYS")}</AdminTypo.H6>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="yellow.500" />
-                <AdminTypo.H6  bold>
-                  {t("TRAINING_DAYS")}
-                </AdminTypo.H6>
+                <AdminTypo.H6 bold>{t("TRAINING_DAYS")}</AdminTypo.H6>
               </HStack>
               <HStack alignItems="Center" space="md">
                 <CheckCircleIcon size="4" color="purple.500" />
-                <AdminTypo.H6  bold>
-                  {t("CAMP_VISITS")}
-                </AdminTypo.H6>
+                <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
               </HStack>
             </VStack>
           </VStack>
@@ -361,21 +356,22 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                     setShowModal(false);
                   }}
                   shadow="BlueOutlineShadow"
-                >{t("CANCEL")}
+                >
+                  {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
                     setShowModal(false);
                   }}
                   shadow="BlueFillShadow"
-                >{t("SEND_INVITES")}
+                >
+                  {t("SEND_INVITES")}
                 </AdminTypo.PrimaryButton>
               </Button.Group>
             </Modal.Footer>
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
     </Layout>
   );
 }

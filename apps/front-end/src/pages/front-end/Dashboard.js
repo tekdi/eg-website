@@ -26,7 +26,7 @@ import {
   Select,
   Image,
   selected,
-  Container
+  Container,
 } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";

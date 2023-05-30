@@ -79,7 +79,9 @@ const Agduplicate = () => {
         <HStack bg={"#E6E6E6"} alignItems={"center"} py={5}>
           <HStack width={"90%"} mx={"auto"} alignItems={"center"}>
             <IconByName name="CheckboxCircleLineIcon" />
-            <FrontEndTypo.H5 ml={3}>{t("AADHAAR_VERIFICATION_SUCCESSFUL")}</FrontEndTypo.H5>
+            <FrontEndTypo.H5 ml={3}>
+              {t("AADHAAR_VERIFICATION_SUCCESSFUL")}
+            </FrontEndTypo.H5>
           </HStack>
         </HStack>
       )}

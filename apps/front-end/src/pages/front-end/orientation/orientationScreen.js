@@ -296,11 +296,7 @@ const Page2 = ({ onClick }) => {
         </Modal.Body>
 
         <Modal.Footer justifyContent={"space-between"}>
-          <AdminTypo.Secondarybutton
-            px="5"
-            py="1"
-            shadow="BlueOutlineShadow"
-          >
+          <AdminTypo.Secondarybutton px="5" py="1" shadow="BlueOutlineShadow">
             {t("CANCEL")}
           </AdminTypo.Secondarybutton>
 
@@ -392,7 +388,8 @@ const Page3 = () => {
             <HStack>
               <AdminTypo.Secondarybutton
                 shadow="BlueOutlineShadow"
-                onPress={() => setModal(true)}  rightIcon={
+                onPress={() => setModal(true)}
+                rightIcon={
                   <IconByName
                     color="#084B82"
                     _icon={{}}
@@ -400,7 +397,9 @@ const Page3 = () => {
                     name="AddLineIcon"
                   />
                 }
-              >{t("SCHEDULE_EVENT")} </AdminTypo.Secondarybutton>
+              >
+                {t("SCHEDULE_EVENT")}{" "}
+              </AdminTypo.Secondarybutton>
             </HStack>
           </HStack>
           <Box
@@ -414,7 +413,7 @@ const Page3 = () => {
               <HStack justifyContent={"space-between"}>
                 <AdminTypo.H6 color="textGreyColor.800" bold>
                   {t("ORIENTATION_SHEDULE")}
-                </AdminTypo.H6 >
+                </AdminTypo.H6>
                 <AdminTypo.Secondarybutton
                   onPress={() => setShowEditModal(true)}
                   shadow="BlueOutlineShadow"
@@ -478,7 +477,7 @@ const Page3 = () => {
               </HStack>
               <HStack>
                 <AdminTypo.Secondarybutton
-                 shadow="BlueOutlineShadow"
+                  shadow="BlueOutlineShadow"
                   onPress={(e) => {
                     setCameraUrl();
                     setCameraModal(true);
@@ -490,7 +489,8 @@ const Page3 = () => {
                       _icon={{ size: "15" }}
                     />
                   }
-                >{t("MARK_ATTENDANCE_ALL")} 
+                >
+                  {t("MARK_ATTENDANCE_ALL")}
                 </AdminTypo.Secondarybutton>
               </HStack>
             </HStack>
@@ -550,7 +550,9 @@ const Page3 = () => {
                           _icon={{ size: "25" }}
                         />
 
-                        <AdminTypo.H5 color="textGreyColor.100">{t("EVENT_TYPE")}</AdminTypo.H5>
+                        <AdminTypo.H5 color="textGreyColor.100">
+                          {t("EVENT_TYPE")}
+                        </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Select
                             selectedValue={service}
@@ -661,7 +663,7 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <AdminTypo.H6 pl="2"color="textGreyColor.800">
+                              <AdminTypo.H6 pl="2" color="textGreyColor.800">
                                 QR code scan
                               </AdminTypo.H6>
                             </Radio>
@@ -748,15 +750,11 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"end"}
                 >
-                  <AdminTypo.Secondarybutton
-                    shadow="BlueOutlineShadow"
-                  >
+                  <AdminTypo.Secondarybutton shadow="BlueOutlineShadow">
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
-                  <AdminTypo.PrimaryButton
-                    px="8"
-                    shadow="BlueFillShadow"
-                  >{t("SAVE")}
+                  <AdminTypo.PrimaryButton px="8" shadow="BlueFillShadow">
+                    {t("SAVE")}
                   </AdminTypo.PrimaryButton>
                 </HStack>
               </Modal.Body>
@@ -822,9 +820,7 @@ const Page3 = () => {
                 {/* )} */}
               </Modal.Body>
               <Modal.Footer justifyContent={"center"}>
-                <AdminTypo.Secondarybutton
-                  shadow="BlueOutlineShadow"
-                >
+                <AdminTypo.Secondarybutton shadow="BlueOutlineShadow">
                   {t("MARK_ABSENT")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.Secondarybutton variant="secondary" ml="4" px="5">

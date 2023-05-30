@@ -5,7 +5,7 @@ import {
   H3,
   t,
   ImageView,
-  AdminTypo
+  AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -194,7 +194,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center"> {t("SEND_AN_INVITE")}</AdminTypo.H1>
+                <AdminTypo.H1 textAlign="center">
+                  {" "}
+                  {t("SEND_AN_INVITE")}
+                </AdminTypo.H1>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -249,7 +252,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             name: t("ACTION"),
             selector: (row) => (
               <AdminTypo.Secondarybutton
-              my="3"
+                my="3"
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}
