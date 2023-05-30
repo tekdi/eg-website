@@ -5,6 +5,7 @@ import {
   t,
   IconByName,
   Layout,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
 import { HStack, VStack, Box, Text, Select, Image } from "native-base";
@@ -40,15 +41,6 @@ const List = ({ data }) => {
 };
 
 const select1 = [
-  /* 
-    'identified',
-      'ready_to_enroll',
-      'enrolled',
-      'approved_ip',
-      'registered_in_camp',
-      'pragati_syc',
-      'rejected',
-      'dropout', */
   { label: "Status", value: "status" },
   { label: "ready to enroll", value: "ready_to_enroll" },
   { label: "enrolled", value: "enrolled" },
@@ -95,7 +87,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       sortType: reqBodyData.sortValue,
     };
 
-    const result = await facilitatorRegistryService.getBeneficiariesDetails(
+    const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
     );
     console.log("result", result);
