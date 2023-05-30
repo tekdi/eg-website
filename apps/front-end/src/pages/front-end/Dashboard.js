@@ -26,7 +26,6 @@ import {
   Select,
   Image,
   selected,
-  Container,
 } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -67,13 +66,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack pb="5" bg="gray.200">
         <VStack space="5">
+          
           <HStack
             p="5"
             space="5"
             borderBottomWidth="1"
             borderBottomColor={"gray.300"}
-            bg="info.200"
-            {...styles.inforBox}
+            shadows="BlueOutlineShadow"
           >
             <IconByName
               flex="0.1"
