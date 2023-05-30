@@ -13,6 +13,7 @@ import {
   Radio,
   Stack,
   VStack,
+  Text,
 } from "native-base";
 import CustomRadio from "../../../component/CustomRadio";
 import Steper from "../../../component/Steper";
@@ -34,7 +35,9 @@ import {
   BodyMedium,
   changeLanguage,
   StudentEnumService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
+
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
@@ -44,52 +47,12 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
+  CustomR,
+  RadioBtn,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
-
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
-
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
 
 // App
 export default function Agform({ userTokenInfo }) {
@@ -626,7 +589,11 @@ export default function Agform({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
+          <Box>
+            <FrontEndTypo.H1 color="textMaroonColor.400" alignItems="center">
+              {t("IDENTIFY_THE_AG_LEARNER")}
+            </FrontEndTypo.H1>
+          </Box>
           <Center>
             <Image
               source={{
@@ -636,8 +603,7 @@ export default function Agform({ userTokenInfo }) {
               size="324px"
             />
           </Center>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
             // onPress={async (e) => {
             //   await formSubmitUpdate({ ...formData, form_step_number: "13" });
             //   if (onClick) onClick("success");
@@ -645,9 +611,8 @@ export default function Agform({ userTokenInfo }) {
             onPress={uploadProfile}
           >
             {t("SUBMIT")}
-          </Button>
-          <Button
-            variant={"secondary"}
+          </FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Secondarybutton
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -655,7 +620,7 @@ export default function Agform({ userTokenInfo }) {
             }}
           >
             {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </Layout>
     );
@@ -688,52 +653,40 @@ export default function Agform({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
-          <H1 color="red.1000">DO's</H1>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                border: "1px solid red",
-                width: 150,
-                height: 150,
-                marginRight: 10,
-              }}
-            ></div>
-            <div
-              style={{ border: "1px solid red", width: 150, height: 150 }}
-            ></div>
-          </div>
-          <H1 color="red.1000">Don’ts</H1>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                border: "1px solid red",
-                width: 150,
-                height: 150,
-                marginRight: 10,
-              }}
-            ></div>
-            <div
-              style={{ border: "1px solid red", width: 150, height: 150 }}
-            ></div>
-          </div>
-          <Button
-            variant={"primary"}
-            leftIcon={
-              <IconByName
-                name="CameraLineIcon"
-                color="white"
-                size={2}
-                isDisabled
-              />
-            }
+          <FrontEndTypo.H1
+            color="textMaroonColor.400"
+            bold
+            textAlign="center"
+          >
+            {t("IDENTIFY_THE_AG_LEARNER")}
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
+            {t("ADD_AG_PROFILE_PHOTO")}
+          </FrontEndTypo.H3>
+          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
+             {t("DO")}          
+          </FrontEndTypo.H3>
+          <HStack space="2">
+            <Box background="primary.100" width="150" height="150"></Box>
+            <Box background="primary.100" width="150" height="150"></Box>
+          </HStack>
+
+          <FrontEndTypo.H3 color="textMaroonColor.400"  bold>
+            {t("DONTS")}
+          </FrontEndTypo.H3>
+          <HStack space="2">
+            <Box background="primary.100" width="150" height="150"></Box>
+            <Box background="primary.100" width="150" height="150"></Box>
+          </HStack>
+          <FrontEndTypo.Secondarybutton
+            leftIcon={<IconByName name="CameraLineIcon" size={2} isDisabled />}
             onPress={(e) => {
               setCameraUrl();
               setCameraModal(true);
             }}
           >
             {t("TAKE_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
           <VStack space={2}>
             <input
               accept="image/*"
@@ -742,17 +695,16 @@ export default function Agform({ userTokenInfo }) {
               ref={uplodInputRef}
               onChange={handleFileInputChange}
             />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
+            <FrontEndTypo.Secondarybutton
+              leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
               onPress={(e) => {
                 uplodInputRef?.current?.click();
               }}
             >
               {t("UPLOAD_PHOTO")}
-            </Button>
+            </FrontEndTypo.Secondarybutton>
             {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
+              <FrontEndTypo.H2 color="red.400">{errors?.fileSize}</FrontEndTypo.H2>
             ) : (
               <React.Fragment />
             )}
@@ -787,12 +739,15 @@ export default function Agform({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
+              ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -809,14 +764,13 @@ export default function Agform({ userTokenInfo }) {
               transformErrors,
             }}
           >
-            <Button
-              mt="3"
-              variant={"primary"}
+            <FrontEndTypo.Primarybutton
+              mt="5"
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
