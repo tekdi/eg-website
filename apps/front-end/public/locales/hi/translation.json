@@ -330,5 +330,7 @@
   "AG_PROFILE_ARE_YOU_SURE":"क्या आप को करना है?",
   "AG_PROFILE_REACTIVATE_AG_LEARNER":"एजी लर्नर को पुन: सक्रिय करें",
   "AG_PROFILE_REACTIVAYE_MESSAGE":"आप एजी लर्नर को कार्यक्रम में फिर से शामिल होने की अनुमति दे सकते हैं",
-  "AG_PROFILE_REACTIVATE_REASON_MEASSGAE":"कार्यक्रम प्रगति में शामिल होने का कारण?"
+  "AG_PROFILE_REACTIVATE_REASON_MEASSGAE":"कार्यक्रम प्रगति में शामिल होने का कारण?",
+  "CLEAR_FILTER":"स्पष्ट निस्यंदक",
+  "ALL_PRERAKS": "सभी प्रेरक"
 }
