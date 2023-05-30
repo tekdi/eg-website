@@ -197,6 +197,11 @@ export default function OrientationScreen() {
   const [loading, setLoading] = React.useState(true);
   const [isOpen, setIsOpen] = React.useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+
+  const onClick = () => {
+    setPage("screen3");
+  };
+
   React.useEffect(async () => {
     setLoading(true);
     const result = await facilitatorRegistryService.getAll(filterObj);
@@ -229,12 +234,32 @@ export default function OrientationScreen() {
     //   setUserIds([...userIds, ...filterdData]);
     // }
   };
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
+  {
+    page === "screen3" && (
+      <Layout
+        getRefAppBar={(e) => RefAppBar(e)}
+        isDisabledAppBar={page === "screen1"}
+        isCenter={true}
+        // key={code}
+        _appBar={{ onlyIconsShow: ["langBtn"] }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <Page3 />
+      </Layout>
+    );
+  }
+
   return (
     <Box>
       <Orientation
         userIds={userIds}
         onShowScreen={setIsOpen}
         getFormData={(e) => console.log(e)}
+        onClick={onClick}
       />
       <Modal
         isOpen={isOpen}
@@ -262,6 +287,7 @@ export default function OrientationScreen() {
               pagination
               paginationServer
               paginationTotalRows={paginationTotalRows}
+              onChangePage={handlePageChange}
               onSelectedRowsChange={handleSelectRow}
               selectedRows={userIds}
               // onChangeRowsPerPage={(e) => setLimit(e)}
@@ -347,7 +373,7 @@ const Page3 = () => {
       getRefAppBar={(e) => RefAppBar(e)}
       isDisabledAppBar={page === "screen1"}
       isCenter={true}
-      key={code}
+      // key={code}
       _appBar={{ onlyIconsShow: ["langBtn"] }}
       _page={{ _scollView: { bg: "white" } }}
     >

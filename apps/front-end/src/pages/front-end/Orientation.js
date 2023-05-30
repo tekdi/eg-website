@@ -47,6 +47,7 @@ import {
   Image,
   Pressable,
 } from "native-base";
+import { useNavigate } from "react-router-dom";
 import Chip from "component/Chip";
 import moment from "moment";
 
@@ -56,8 +57,10 @@ export default function Orientation({
   userIds,
   onShowScreen,
   setIsOpen,
+  onClick,
 }) {
   const formRef = React.useRef();
+  const navigate = useNavigate();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
@@ -146,6 +149,12 @@ export default function Orientation({
     getFormData(newFormData);
     setFormData(newFormData);
     const apiResponse = await eventService.createNewEvent(newFormData);
+    if (apiResponse?.success === true) {
+      setFormData("");
+      getFormData("");
+    } else {
+      setFormData("");
+    }
   };
 
   return (
@@ -175,7 +184,7 @@ export default function Orientation({
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
+          {/* <BoxBlue justifyContent="center" shadow="BlueBoxShadow">
             <VStack alignItems={"Center"}>
               <Pressable onPress={(e) => onShowScreen(true)}>
                 <Image
@@ -236,7 +245,7 @@ export default function Orientation({
                 Add a Prerak
               </Text>
             </VStack>
-          </BoxBlue>
+          </BoxBlue> */}
         </HStack>
         <Text fontSize="xl" bold py="3">
           Your Calender
@@ -257,6 +266,17 @@ export default function Orientation({
               </Text>
             </Button>
 
+            <Button
+              variant={"blueOutlineBtn"}
+              shadow="BlueOutlineShadow"
+              onPress={() => {
+                onClick(true);
+              }}
+            >
+              <Text color="blueText.400" bold fontSize="lg">
+                Page
+              </Text>
+            </Button>
             <Cal />
             <VStack space="4">
               <HStack alignItems="Center" space="md">
@@ -290,13 +310,20 @@ export default function Orientation({
           <Fullcalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
-            events={eventList?.map((item) => {
+            // events={[
+            //   { title: "Event 1", date: "2023-05-30" },
+            //   { title: "Event 2", start: "2023-05-31", end: "2023-06-02" },
+            // ]}
+            events={eventList?.events?.map((item) => {
               return {
-                title: item?.context ? item?.context : "hi",
-                date:
-                  item?.start_date !== "Invalid date"
-                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
+                title: item?.context !== null ? item?.context : "orientation",
+                start: moment(item?.start_date).format("YYYY-MM-DD")
+                  ? moment(item?.start_date).format("YYYY-MM-DD")
+                  : "",
+                end: moment(item?.end_date).format("YYYY-MM-DD")
+                  ? moment(item?.end_date).format("YYYY-MM-DD")
+                  : "",
+
                 type: item?.context ? item?.context : "",
                 start_date:
                   item?.start_date !== "Invalid date"
@@ -315,6 +342,11 @@ export default function Orientation({
                 location_type: item?.location_type ? item?.location_type : "",
               };
             })}
+            eventTimeFormat={{
+              hour: "numeric",
+              minute: "2-digit",
+              meridiem: "short",
+            }}
             eventClick={handleEventClick}
             headerToolbar={{
               start: "prev,thisweek,next",
@@ -340,6 +372,7 @@ export default function Orientation({
               Schedule an Event
             </H1>
           </Modal.Header>
+
           {/* <Modal.Header textAlign={"Center"}>
             Schedule an Interview
           </Modal.Header>
