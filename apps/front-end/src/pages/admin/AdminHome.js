@@ -22,6 +22,7 @@ import {
   H3,
   t,
   facilitatorRegistryService,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import Chip from "component/Chip";
@@ -136,24 +137,13 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
         <Box flex={0.5}>
-          <HStack
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            p="10px"
-            bg="primary.500"
-            ref={ref}
-          >
-            <H2 color="white">{t("MY_PRERAKS")}</H2>
-            <Button onPress={clearFilter} variant={"secondary"} size={"sm"}>
-              Clear filter
-            </Button>
-          </HStack>
+          <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
           >
-            <VStack space={5} py="5" px="2">
+            <VStack space={8} py="5">
               {/* <HStack alignItems="center" space={1} width="200px" height="24px">
                 <IconByName isDisabled name="SortDescIcon" />
                 <Text>{t("SORT_BY")}</Text>
@@ -172,9 +162,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               </Select>*/}
 
               <VStack space={5}>
-                <HStack alignItems="center">
+                <HStack alignItems="center" justifyContent="space-between">
                   <IconByName isDisabled name="FilterLineIcon" />
-                  <Text>{t("FILTER")}</Text>
+                  <AdminTypo.H5 bold>
+                    {t("FILTERS")}
+                  </AdminTypo.H5>
+                  <Button variant="blueUnderlineButton" pt="4" onPress={clearFilter}>
+                    <AdminTypo.H6 color="blueText.400" underline bold>{t("CLEAR_FILTER")}</AdminTypo.H6>
+                  </Button>
                 </HStack>
                 <Form
                   schema={schema}
