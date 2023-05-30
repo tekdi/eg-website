@@ -16,7 +16,3 @@ export default function basicDetails() {
     </VStack>
   );
 }
-
-        </VStack>
-    )
-}

@@ -175,7 +175,6 @@ const DEFAULT_THEME = {
           bg: `#FFFFFF`,
           borderWidth: '1',
           borderColor: `#790000`,
-
           _hover: {
             bg: `#FFFFFF`
           },
@@ -183,8 +182,7 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
-            fontWeight: '700',
-            color: '#790000'
+            fontWeight: '700'
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
@@ -207,7 +205,24 @@ const DEFAULT_THEME = {
       }
     }
   },
+  Background: {
+    linearGradient: {
+      colors: ['#CAE9FF', '#fff', '#CAE9FF'],
+      start: [0, 0],
+      end: [1, 0]
+    }
+  },
   shadows: {
+    AlertShadow: {
+      shadowColor: '#00000040',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
     BlueOutlineShadow: {
       shadowColor: '#8B7171',
       shadowOffset: {
@@ -471,25 +486,37 @@ const DEFAULT_THEME = {
       900: '#BDB3E7'
     },
     badgeColor: {
-      400: '#FDE68A'
+      400: '#FDE68A',
+      450: '#FFEFAF'
     },
     progressBarColor: {
-      200: '#10B981'
+      200: '#10B981',
+      300: '#A7F3D0'
     },
     bgGreyColor: {
       200: '#F4F4F7'
     },
     textGreyColor: {
       100: '#616161',
+      150: '#61646B',
+      200: '#EAEAEB',
       300: '#888888',
       400: '#F5F5F5',
       500: '#424242',
-      550: '##757575',
+      550: '#757575',
+      600: '#666666',
       800: '#212121',
       900: '#1E1E1E'
     },
     textMaroonColor: {
+      100: '#FFACAF',
       400: '#790000'
+    },
+    blueText: {
+      300: '#d4eaf9',
+      350: '#CAE9FF',
+      400: '#084B82',
+      450: '#3F8BF1'
     },
     bgPinkColor: {
       300: '#F9E9DB'
@@ -521,23 +548,23 @@ const DEFAULT_THEME = {
     PrimaryIpcolor: {
       400: '#14242D'
     },
-    appliedColor: '#E0E0E0',
-    screenedColor: '#e5f4ff',
-    shortlistedColor: '#CAE9FF',
-    potentialColor: '#A7F3D0',
-    selectedColor: '#A7F3D0',
-    successColor: '#00D790',
-    underReviewColor: '#FFEFAF',
-    rejectedColor: '#FFACAF',
-    identifiedColor: '#E0E0E0',
-    documentedColor: '#FFEFAF',
-    entrolledColor: '#C7DFFF',
-    approvedColor: '#A7F3D0',
-    droppedoutColor: '#FFACAF',
-    duplicatedColor: '#E95055',
-    warningColor: '#FFCF52',
-    dangerColor: '#DC2626',
-    infoColor: '#3F8BF1',
+    AppliedColor: '#E0E0E0',
+    ScreenedColor: '#e5f4ff',
+    ShortlistedColor: '#CAE9FF',
+    PotentialColor: '#A7F3D0',
+    SelectedColor: '#A7F3D0',
+    SuccessColor: '#00D790',
+    UnderreviewColor: '#FFEFAF',
+    RejectedColor: '#FFACAF',
+    IdentifiedColor: '#E0E0E0',
+    DocumentedColor: '#FFEFAF',
+    EnrolledColor: '#C7DFFF',
+    ApprovedColor: '#A7F3D0',
+    DroppedoutColor: '#FFACAF',
+    DuplicatedColor: '#E95055',
+    WarningColor: '#FFCF52',
+    DangerColor: '#DC2626',
+    InfoColor: '#3F8BF1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',
@@ -553,11 +580,9 @@ const DEFAULT_THEME = {
     btnGray: {
       100: '#e0e0e0'
     },
-    blueText: {
-      400: '#084B82',
-      450: '#3F8BF1'
-    },
-    interviewIconColor: '#616161'
+    textRed: {
+      300: '#FF2815'
+    }
   }
 }
 
