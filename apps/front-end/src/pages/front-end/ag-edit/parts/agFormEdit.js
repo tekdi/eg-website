@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -35,6 +35,7 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -96,7 +97,7 @@ import { useScreenshot } from "use-screenshot-hook";
 // };
 
 // App
-export default function App({ ip, id }) {
+export default function agFormEdit({ ip, id }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);
@@ -149,40 +150,68 @@ export default function App({ ip, id }) {
     setFormData(qData.result);
   }, []);
 
-  console.log("FormData===>", formData);
-
   React.useEffect(async () => {
-    //console.log("pagecalled");
+    let device_ownership = formData?.core_beneficiaries[0]?.device_ownership;
+    let device_type = formData?.core_beneficiaries[0]?.device_type;
+    let marital_status = formData?.extended_users[0]?.marital_status;
+    let social_category = formData?.extended_users[0]?.social_category;
+
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+
     if (page === "2") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page2", updateDetails);
-      setFormData({ ...formData, edit_page_type: "edit_contact" });
+      setFormData({
+        ...formData,
+        edit_page_type: "edit_contact",
+        device_ownership: device_ownership,
+        device_type: device_type,
+      });
     } else if (page === "3") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page3.....", updateDetails);
-      setFormData({ ...formData, edit_page_type: "personal" });
+      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      //console.log("page3.....", updateDetails);
+      setFormData({ ...formData, edit_page_type: "edit_address" });
     } else if (page === "4") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page4.....", updateDetails);
-      setFormData({ ...formData, edit_page_type: "education" });
-    } else if (page === "upload") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      //console.log("page4.....", updateDetails);
+      setFormData({
+        ...formData,
+        edit_page_type: "personal",
+        marital_status: marital_status,
+        social_category: social_category,
+      });
+    } else if (page === "5") {
+      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page5.....", updateDetails);
+      setFormData({
+        ...formData,
+        edit_page_type: "edit_family",
+      });
+    } else if (page === "6") {
+      setFormData({
+        ...formData,
+        edit_page_type: "edit_family",
+      });
+      console.log("FormData===>", formData);
+    } else if (page === "7") {
+      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page7.....", updateDetails);
     }
   }, [page]);
 
-  React.useEffect(() => {
-    if (page == "5") {
-      console.log(cameraData);
-      if (cameraData.length <= 3) {
-        setCameraModal(true);
-      } else {
-        setCameraModal(false);
-        setPage(page - 1);
-        console.log(page);
-      }
-    }
-  }, [page, credentials]);
+  console.log("page", page);
+
+  // React.useEffect(() => {
+  //   if (page == "5") {
+  //     console.log(cameraData);
+  //     if (cameraData.length <= 3) {
+  //       setCameraModal(true);
+  //     } else {
+  //       setCameraModal(false);
+  //       setPage(page - 1);
+  //       console.log(page);
+  //     }
+  //   }
+  // }, [page, credentials]);
 
   const uiSchema = {
     dob: {
@@ -215,13 +244,6 @@ export default function App({ ip, id }) {
       },
     },
 
-    maritalstatus: {
-      "ui:widget": CustomR,
-    },
-    socialstatus: {
-      "ui:widget": CustomR,
-    },
-    // custom radio button with property name
     vo_experience: {
       items: {
         experience_in_years: { "ui:widget": CustomR },
@@ -306,6 +328,28 @@ export default function App({ ip, id }) {
     };
   };
 
+  React.useEffect(async () => {
+    if (schema?.properties?.state) {
+      const qData = await geolocationRegistryService.getStates();
+      let newSchema = schema;
+      if (schema["properties"]["state"]) {
+        newSchema = getOptions(newSchema, {
+          key: "state",
+          arr: qData?.states,
+          title: "state_name",
+          value: "state_name",
+        });
+      }
+      newSchema = await setDistric({
+        schemaData: newSchema,
+        state: formData?.state,
+        district: formData?.district,
+        block: formData?.block,
+      });
+      setSchema(newSchema);
+    }
+  }, [page]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -333,7 +377,6 @@ export default function App({ ip, id }) {
       setSubmitBtn(t("SAVE"));
       setAddBtn(t("ADD_EXPERIENCE"));
     } else {
-      console.log({ ...formData });
       setSubmitBtn(t("SAVE"));
     }
   };
@@ -441,7 +484,7 @@ export default function App({ ip, id }) {
       if (schema["properties"]["district"]) {
         newSchema = getOptions(newSchema, {
           key: "district",
-          arr: qData,
+          arr: qData?.districts,
           title: "district_name",
           value: "district_name",
         });
@@ -472,7 +515,7 @@ export default function App({ ip, id }) {
       if (schema["properties"]["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
-          arr: qData,
+          arr: qData?.blocks,
           title: "block_name",
           value: "block_name",
         });
@@ -500,7 +543,7 @@ export default function App({ ip, id }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
-          arr: qData,
+          arr: qData.villages,
           title: "village_ward_name",
           value: "village_ward_name",
         });
@@ -604,6 +647,9 @@ export default function App({ ip, id }) {
   };
 
   const onSubmit = async (data) => {
+    console.log("called");
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    console.log("");
     if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
@@ -636,16 +682,38 @@ export default function App({ ip, id }) {
     }
   };
 
+  const [cameraFile, setcameraFile] = useState();
+
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
     if (file.size <= 1048576 * 2) {
       const data = await getBase64(file);
       setCameraUrl(data);
+      setcameraFile(file);
       setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
+
+  const uploadProfile = async () => {
+    // const { id } = authUser;
+    if (userId) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: userId,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+
+      const uploadDoc = await uploadRegistryService.uploadFile(form_data);
+      console.log("uploadDoc", uploadDoc);
+    }
+  };
+
   if (cameraUrl) {
     return (
       <Layout
@@ -682,12 +750,15 @@ export default function App({ ip, id }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              if (cameraSelection >= 3) {
+              if (cameraSelection >= 2) {
+                console.log("reached here");
                 nextPreviewStep();
                 setCameraUrl();
                 setCameraModal(false);
                 pages[pages?.length - 1] === page;
               } else {
+                console.log("reached else ==>");
+                uploadProfile();
                 setCameraUrl();
                 setCameraModal(true);
                 setCameraSelection(cameraSelection + 1);
@@ -697,7 +768,7 @@ export default function App({ ip, id }) {
               if (onClick) onClick(cameraUrl); */
             }}
           >
-            {cameraSelection > 3 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
+            {cameraSelection > 2 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
           </Button>
           <Button
             variant={"secondary"}
@@ -720,6 +791,7 @@ export default function App({ ip, id }) {
           cameraModal,
           setCameraModal,
           cameraUrl,
+          setcameraFile,
           setCameraUrl: async (url) => {
             setCameraUrl(url);
             setCameraData([...cameraData, url]);
@@ -727,6 +799,58 @@ export default function App({ ip, id }) {
           },
         }}
       />
+    );
+  }
+
+  if (page === "5") {
+    return (
+      <Layout
+        _appBar={{
+          onPressBackButton: (e) => setPage("4"),
+          lang,
+          setLang,
+          onlyIconsShow: ["backBtn", "userInfo"],
+        }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <VStack py={6} px={4} mb={5} space="6">
+          <H1 color="red.1000">{t("ADD_ID_PHOTOS")}</H1>
+          <h5 color="red.1000" fontSize="3">
+            {t("CLEAR_PROFILE_MESSAGE")}
+          </h5>
+          <Button
+            variant={"primary"}
+            leftIcon={
+              <IconByName
+                name="CameraLineIcon"
+                color="white"
+                size={2}
+                isDisabled
+              />
+            }
+            onPress={(e) => {
+              setCameraUrl();
+              setCameraModal(true);
+            }}
+          >
+            {t("TAKE_PHOTO")}
+          </Button>
+          <VStack space={2}>
+            <input
+              accept="image/*"
+              type="file"
+              style={{ display: "none" }}
+              ref={uplodInputRef}
+              onChange={handleFileInputChange}
+            />
+            {errors?.fileSize ? (
+              <H2 color="red.400">{errors?.fileSize}</H2>
+            ) : (
+              <React.Fragment />
+            )}
+          </VStack>
+        </VStack>
+      </Layout>
     );
   }
 

@@ -118,7 +118,7 @@ export default {
           title: "GRAMPANCHAYAT",
           type: "string",
         },
-        addressdetails: {
+        address: {
           title: "ADDRESS_DETAIL",
           type: "string",
         },
@@ -129,15 +129,17 @@ export default {
       type: "object",
       //required: ["maritalstatus"],
       properties: {
-        maritalstatus: {
-          title: "MARITAL_STATUS",
+        marital_status: {
+          label: "MARITAL_STATUS",
           type: "string",
+          format: "CustomR",
           enumNames: ["Married", "Single", "Divorced", "Seperated", "Other"],
           enum: ["married", "single", "divorced", "seperated", "other"],
         },
-        socialstatus: {
-          title: "SOCIAL_CATEGORY",
+        social_category: {
+          label: "SOCIAL_CATEGORY",
           type: "string",
+          format: "CustomR",
           enumNames: ["Open ", "S.C.", "S.T.", "O.B.C.", "Other"],
           enum: ["open", "sc", "st", "obc", "other"],
         },

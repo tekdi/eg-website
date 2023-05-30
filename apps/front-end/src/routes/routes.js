@@ -18,8 +18,8 @@ export default [
   },
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id", component: basicDetails },
-  { path: "/ag/education/:id", component: educationDetails },
-  { path: "/ag/subjects/:id", component: chooseSubjects },
+  { path: "/beneficiary/edit/education/:id", component: educationDetails },
+  { path: "/beneficiary/edit/subjects/:id", component: chooseSubjects },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/agform", component: Agform },
   { path: "/agduplicate", component: Agduplicate },
