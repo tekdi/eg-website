@@ -22,50 +22,50 @@ export default function Chip({ label, children, isActive, ...props }) {
 
 // ChipStatus
 export function ChipStatus({ status, ...props }) {
-  const [color, setColor] = React.useState("textGreyColor.800");
+  const [color, setColor] = React.useState("appliedColor");
   const [newStatus, setNewStatus] = React.useState(status);
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "screened":
-        setColor("PrerakScreenedColor");
+        setColor("screenedColor");
         setNewStatus(t("SCREENED"));
         break;
       case "rejected":
         setNewStatus(t("REJECTED"));
-        setColor("textMaroonColor.100");
+        setColor("rejectedColor");
         break;
       case "shortlisted_for_orientation":
         setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
-        setColor("blueText.350");
+        setColor("shortlistedColor");
         break;
       case "potential_prerak":
         setNewStatus(t("POTENTIAL_PRERAK"));
-        setColor("progressBarColor.300");
+        setColor("potentialColor");
         break;
       case "selected_for_training":
         setNewStatus(t("SELECTED_FOR_TRAINING"));
-        setColor("progressBarColor.300");
+        setColor("selectedColor");
         break;
       case "selected_for_onboarding":
         setNewStatus(t("SELECTED_FOR_ONBOARDING"));
-        setColor("progressBarColor.300");
+        setColor("selectedColor");
         break;
       case "selected_prerak":
         setNewStatus(t("SELECTED_PRERAK"));
-        setColor("progressBarColor.300");
+        setColor("selectedColor");
         break;
       case "quit":
         setNewStatus(t("QUIT"));
-        setColor("textMaroonColor.100");
+        setColor("rejectedColor");
         break;
-        case "rusticate":
-          setNewStatus(t("RUSTICATE"));
-          setColor("danger.300");
-          break;
+      case "rusticate":
+        setNewStatus(t("RUSTICATE"));
+        setColor("rejectedColor");
+        break;
       default:
         setNewStatus(t("APPLIED"));
-        setColor("textGreyColor.800");
+        setColor("appliedColor");
     }
   }, [status]);
 

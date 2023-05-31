@@ -171,12 +171,12 @@ const DEFAULT_THEME = {
           },
           rounded: '30px'
         }),
-        blueUnderlineButton:() => ({
+        blueUnderlineButton: () => ({
           bg: `white`,
           borderWidth: '1',
           borderColor: `#084b82`,
-          color:'#084b82',
-          _text:'#084b82',
+          color: '#084b82',
+          _text: '#084b82',
           _hover: {
             bg: `#133142`,
             _text: `#14242D`
@@ -221,7 +221,7 @@ const DEFAULT_THEME = {
       }
     }
   },
- 
+
   shadows: {
     AlertShadow: {
       shadowColor: '#00000040',
@@ -354,13 +354,30 @@ const DEFAULT_THEME = {
       500: '#545454'
     },
     iconColor: {
+      50:'#0D99FF',
+      100:'#616161',
+      150:'#696767',
+      200:'#757575',
+       250:'#FF2815',
+      300:'#B3B3B3',
+      350:'#AFB1B6',
+      400:'#FF2815',
       500: '#aba0db',
       600: '#c3916c',
       700: '#83b0d7',
       800: '#5eb05f',
       900: '#7c8dbc',
-      1000: '#ea5fff'
-    },
+      1000: '#ea5fff',
+      
+      },
+      boxBorderColour :{
+        50:'#FFC5C0'
+
+      },
+      boxBackgroundColour : {
+        50:'#FDC5C7',
+        100:'#FAFAFA',
+      },
     studentCard: {
       500: '#B9FBC0',
       800: '#5B7E5F'
@@ -514,16 +531,24 @@ const DEFAULT_THEME = {
       200: '#F4F4F7'
     },
     textGreyColor: {
+      50: '#9E9E9E',
       100: '#616161',
+      200:'#666666',
+      250:'#696767',
       150: '#61646B',
-      200: '#EAEAEB',
+      350: '#EAEAEB',
       300: '#888888',
       400: '#F5F5F5',
+      450:'#464646',
       500: '#424242',
       550: '#757575',
-      600: '#666666',
+      600:'#727271',
+      650: '#666666',
       800: '#212121',
       900: '#1E1E1E'
+    
+      
+      
     },
     textMaroonColor: {
       100: '#FFACAF',
@@ -565,23 +590,23 @@ const DEFAULT_THEME = {
     PrimaryIpcolor: {
       400: '#14242D'
     },
-    AppliedColor: '#E0E0E0',
-    ScreenedColor: '#e5f4ff',
-    ShortlistedColor: '#CAE9FF',
-    PotentialColor: '#A7F3D0',
-    SelectedColor: '#A7F3D0',
-    SuccessColor: '#00D790',
-    UnderreviewColor: '#FFEFAF',
-    RejectedColor: '#FFACAF',
-    IdentifiedColor: '#E0E0E0',
-    DocumentedColor: '#FFEFAF',
-    EnrolledColor: '#C7DFFF',
-    ApprovedColor: '#A7F3D0',
-    DroppedoutColor: '#FFACAF',
-    DuplicatedColor: '#E95055',
-    WarningColor: '#FFCF52',
-    DangerColor: '#DC2626',
-    InfoColor: '#3F8BF1',
+    appliedColor: '#E0E0E0',
+    screenedColor: '#e5f4ff',
+    shortlistedColor: '#CAE9FF',
+    potentialColor: '#A7F3D0',
+    selectedColor: '#A7F3D0',
+    successColor: '#00D790',
+    underReviewColor: '#FFEFAF',
+    rejectedColor: '#FFACAF',
+    identifiedColor: '#E0E0E0',
+    documentedColor: '#FFEFAF',
+    entrolledColor: '#C7DFFF',
+    approvedColor: '#A7F3D0',
+    droppedoutColor: '#FFACAF',
+    duplicatedColor: '#E95055',
+    warningColor: '#FFCF52',
+    dangerColor: '#DC2626',
+    infoColor: '#3F8BF1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',

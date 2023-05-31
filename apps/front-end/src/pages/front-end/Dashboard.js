@@ -26,6 +26,7 @@ import {
   Select,
   Image,
   selected,
+  Container,
 } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -66,7 +67,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack pb="5" bg="gray.200">
         <VStack space="5">
-          
           <HStack
             p="5"
             space="5"
@@ -472,7 +472,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </Stack> */}
           <VStack p="5" space="5">
             {!form_step_number ||
-            (form_step_number && parseInt(form_step_number) < 10) ? (
+              (form_step_number && parseInt(form_step_number) < 10) ? (
               <Pressable onPress={(e) => navigate("/form")}>
                 <HStack
                   borderWidth="1"
@@ -494,6 +494,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               _text={{ textAlign: "center", textTransform: "capitalize" }}
               justifyContent="center"
             />
+          </VStack>
+          <VStack>
+            <Pressable
+              alignItems={"center"}
+              onPress={(e) => navigate("/beneficiary")}
+            >
+              <HStack
+                borderWidth="1"
+                p="3"
+                rounded="full"
+                justifyContent="center"
+                width={"300px"}
+              >
+                <FrontEndTypo.H2>{t("CREATE_BENEFICIARIES")}</FrontEndTypo.H2>
+              </HStack>
+            </Pressable>
           </VStack>
         </VStack>
       </VStack>

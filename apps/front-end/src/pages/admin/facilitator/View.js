@@ -33,7 +33,7 @@ import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import Steper from "component/Steper";
-
+import Interviewschedule from "./view/Interviewschedule";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -155,9 +155,6 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-          <Button  bg="bg.linearGradient" shadow="RedOutlineButton" color="primary.100">
-ekta
-          </Button>
             <Image
               source={{
                 uri: "/profile.svg",
@@ -171,7 +168,10 @@ ekta
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1 color="Activatedcolor.400"> {t("ALL_PRERAK")}</AdminTypo.H1>
+            <AdminTypo.H1 color="Activatedcolor.400">
+              {" "}
+              {t("ALL_PRERAK")}
+            </AdminTypo.H1>
           </HStack>
           <HStack alignItems="center" flexWrap="wrap">
             <VStack flex="0.6" direction="column">
@@ -197,7 +197,9 @@ ekta
                     name="CellphoneLineIcon"
                     color="textGreyColor.300"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600">{data?.mobile}</AdminTypo.H6>
+                  <AdminTypo.H6 color="textGreyColor.600">
+                    {data?.mobile}
+                  </AdminTypo.H6>
                 </HStack>
                 <HStack
                   bg="badgeColor.400"
@@ -333,7 +335,13 @@ ekta
               </AdminTypo.Secondarybutton>
             </VStack>
           </HStack>
-
+          <Box paddingTop="32px">
+            {data?.status === "screened" ? (
+              <Interviewschedule />
+            ) : (
+              <React.Fragment />
+            )}
+          </Box>
           <Modal
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -490,7 +498,9 @@ ekta
           </Modal>
 
           <VStack space={"5"} p="5" mt="6">
-            <AdminTypo.H4 color="textGreyColor.800" bold>{t("PROFILE_DETAILS").toUpperCase()}</AdminTypo.H4>
+            <AdminTypo.H4 color="textGreyColor.800" bold>
+              {t("PROFILE_DETAILS").toUpperCase()}
+            </AdminTypo.H4>
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -597,111 +607,113 @@ ekta
                 rounded="xl"
                 ml="3"
               >
-               <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                <HStack bg="light.100" p="1" mx="1" rounded="xl">
                   <VStack space="20px" w="100%">
-                <VStack space="20px" w="100%" rounded="xl">
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.400"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                      <AdminTypo.H5 color="textGreyColor" bold>
-                        {t("EDUCATION")}{" "}
-                      </AdminTypo.H5>
-                      <IconByName
-                        color="editIcon.300"
-                        size="30px"
-                        name="EditBoxLineIcon"
-                      ></IconByName>
-                    </HStack>
-                    <HStack>
-                      <AdminTypo.H5 color="textGreyColor.550">
-                        {t("QUALIFICATION")}{" "}
-                      </AdminTypo.H5>
-                      <AdminTypo.H5 color="textGreyColor.800" bold>
-                        {data?.qualifications && data?.qualifications
-                          ?.filter(
-                            (e) =>
-                              e?.qualification_master?.type === "qualification"
-                          )
-                          ?.map((qua, key) => {
-                            return (
-                              <AdminTypo.H5
-                                color="textGreyColor.800"
-                                bold
-                                key={key}
-                              >
-                                {qua?.qualification_master?.name}
-                              </AdminTypo.H5>
-                            );
-                          })}
-                      </AdminTypo.H5>
-                      <HStack space="2">
-                        <AdminTypo.H5 color="textGreyColor.550">
-                          {t("TEACHING_QUALIFICATION")}{" "}
+                    <VStack space="20px" w="100%" rounded="xl">
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderColor="light.400"
+                        pb="1"
+                        borderBottomWidth="1"
+                      >
+                        <AdminTypo.H5 color="textGreyColor" bold>
+                          {t("EDUCATION")}{" "}
                         </AdminTypo.H5>
-                        {data?.qualifications ? (
-                          data?.qualifications
-                            ?.filter(
-                              (e) =>
-                                e?.qualification_master?.type === "teaching"
-                            )
-                            ?.map((qua, key) => {
-                              return (
-                                <AdminTypo.H5
-                                  color="textGreyColor.800"
-                                  bold
-                                  key={key}
-                                >
-                                  {qua?.qualification_master?.name}
-                                </AdminTypo.H5>
-                              );
-                            })
-                        ) : (
-                          <Text>{"-"}</Text>
-                        )}
+                        <IconByName
+                          color="editIcon.300"
+                          size="30px"
+                          name="EditBoxLineIcon"
+                        ></IconByName>
                       </HStack>
-                    </HStack>
-
-                    <VStack space="4">
-                      <HStack space="2">
+                      <HStack>
                         <AdminTypo.H5 color="textGreyColor.550">
-                          {t("WORK_EXPERIENCE")}{" "}
+                          {t("QUALIFICATION")}{" "}
                         </AdminTypo.H5>
-                        <HStack space={5}>
-                          {data?.experience ? (
-                            data?.experience?.map((e, key) => (
-                              <Experience key={key} {...e} />
-                            ))
+                        <AdminTypo.H5 color="textGreyColor.800" bold>
+                          {data?.qualifications &&
+                            data?.qualifications
+                              ?.filter(
+                                (e) =>
+                                  e?.qualification_master?.type ===
+                                  "qualification"
+                              )
+                              ?.map((qua, key) => {
+                                return (
+                                  <AdminTypo.H5
+                                    color="textGreyColor.800"
+                                    bold
+                                    key={key}
+                                  >
+                                    {qua?.qualification_master?.name}
+                                  </AdminTypo.H5>
+                                );
+                              })}
+                        </AdminTypo.H5>
+                        <HStack space="2">
+                          <AdminTypo.H5 color="textGreyColor.550">
+                            {t("TEACHING_QUALIFICATION")}{" "}
+                          </AdminTypo.H5>
+                          {data?.qualifications ? (
+                            data?.qualifications
+                              ?.filter(
+                                (e) =>
+                                  e?.qualification_master?.type === "teaching"
+                              )
+                              ?.map((qua, key) => {
+                                return (
+                                  <AdminTypo.H5
+                                    color="textGreyColor.800"
+                                    bold
+                                    key={key}
+                                  >
+                                    {qua?.qualification_master?.name}
+                                  </AdminTypo.H5>
+                                );
+                              })
                           ) : (
-                            <AdminTypo.H5 color="textGreyColor.800" bold>
-                              {"-"}
-                            </AdminTypo.H5>
+                            <Text>{"-"}</Text>
                           )}
                         </HStack>
                       </HStack>
-                      <HStack space="2">
-                        <AdminTypo.H5 color="textGreyColor.550">
-                          {t("VOLUNTEER_EXPERIENCE")}
-                        </AdminTypo.H5>
-                        <VStack space={5}>
-                          {data?.vo_experience ? (
-                            data?.vo_experience?.map((e, key) => (
-                              <Experience key={key} {...e} />
-                            ))
-                          ) : (
-                            <AdminTypo.H5 color="textGreyColor.800" bold>
-                              {"-"}
-                            </AdminTypo.H5>
-                          )}
-                        </VStack>
-                      </HStack>
+
+                      <VStack space="4">
+                        <HStack space="2">
+                          <AdminTypo.H5 color="textGreyColor.550">
+                            {t("WORK_EXPERIENCE")}{" "}
+                          </AdminTypo.H5>
+                          <HStack space={5}>
+                            {data?.experience ? (
+                              data?.experience?.map((e, key) => (
+                                <Experience key={key} {...e} />
+                              ))
+                            ) : (
+                              <AdminTypo.H5 color="textGreyColor.800" bold>
+                                {"-"}
+                              </AdminTypo.H5>
+                            )}
+                          </HStack>
+                        </HStack>
+                        <HStack space="2">
+                          <AdminTypo.H5 color="textGreyColor.550">
+                            {t("VOLUNTEER_EXPERIENCE")}
+                          </AdminTypo.H5>
+                          <VStack space={5}>
+                            {data?.vo_experience ? (
+                              data?.vo_experience?.map((e, key) => (
+                                <Experience key={key} {...e} />
+                              ))
+                            ) : (
+                              <AdminTypo.H5 color="textGreyColor.800" bold>
+                                {"-"}
+                              </AdminTypo.H5>
+                            )}
+                          </VStack>
+                        </HStack>
+                      </VStack>
                     </VStack>
                   </VStack>
-                  </VStack>
-                  </HStack>
+                </HStack>
                 <VStack space="20px" w="100%" mt="3" rounded="xl">
                   <HStack
                     justifyContent="space-between"
@@ -747,7 +759,7 @@ ekta
                     <AdminTypo.H5 color="textGreyColor.800" bold>
                       {showData(data?.device_type)}
                     </AdminTypo.H5>
-                    </HStack>
+                  </HStack>
                 </VStack>
               </VStack>
             </HStack>

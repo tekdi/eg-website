@@ -46,7 +46,7 @@ const statusList = [
   },
   {
     status: "shortlisted_for_orientation",
-    btnStatus: "info",
+    btnStatus: "success",
     name: "SHORTLIST_FOR_ORIENTATION",
   },
   {
@@ -56,12 +56,12 @@ const statusList = [
   },
   {
     status: "selected_for_training",
-    btnStatus: "info",
+    btnStatus: "success",
     name: "SELECT_FOR_TRAINING",
   },
   {
     status: "selected_for_onboarding",
-    btnStatus: "info",
+    btnStatus: "success",
     colorScheme: "success",
     name: "SELECT_FOR_ONBOARDING",
   },
@@ -107,7 +107,7 @@ export default function StatusButton({ data, setData }) {
 
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
-      case "screened": 
+      case "screened":
         setDisabledBtn([
           "rejected",
           "shortlisted_for_orientation",
@@ -144,7 +144,7 @@ export default function StatusButton({ data, setData }) {
         setDisabledBtn(["rejected", "quit", "rusticate"]);
         break;
       case "quit":
-      (["rejected", "rusticate"]);
+        ["rejected", "rusticate"];
         break;
       case "rusticate":
         setDisabledBtn([]);

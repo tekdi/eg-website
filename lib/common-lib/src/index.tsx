@@ -21,6 +21,7 @@ import * as uploadRegistryService from './services/uploadRegistryService'
 import * as StudentEnumService from './services/StudentEnumService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
+import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
@@ -54,6 +55,7 @@ export {
   authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
+  AgRegistryService,
   ImageView,
   t,
   changeLanguage,
@@ -72,4 +74,3 @@ export * from './components/helper'
 export * from './services/Telemetry'
 export * from './components/calender'
 export * from './components/layout/HeaderTags/index'
-export * from './components/layout/CustomAlert/index'
