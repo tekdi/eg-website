@@ -5,7 +5,7 @@ import {
   H3,
   t,
   ImageView,
-  AdminTypo
+  AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -267,7 +267,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             name: t("ACTION"),
             selector: (row) => (
               <AdminTypo.Secondarybutton
-              my="3"
+                my="3"
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}

@@ -109,7 +109,8 @@ const CustomOTPBox = ({ value, onChange, required, ...props }) => {
       </HStack>
       <HStack justifyContent="space-between" alignItems="center">
         <FrontEndTypo.H4>{`${"00:" + timer}`} </FrontEndTypo.H4>
-        <FrontEndTypo.H4 mt="1"
+        <FrontEndTypo.H4
+          mt="1"
           onPress={() => {
             resetTimer();
             handleResendOtp(props?.schema?.mobile);
