@@ -4,7 +4,7 @@ import FacilitatorView from "pages/admin/facilitator/View";
 import AdminHome from "pages/admin/AdminHome";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import NotFound from "pages/NotFound";
-import OrientationScreen from "pages/front-end/orientation/orientationScreen";
+import Orientation from "pages/front-end/orientation/OrientationScreen";
 
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AdharOTP from "pages/front-end/AadhaarKyc/AadhaarOTP";
@@ -18,7 +18,7 @@ export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
-  { path: "/admin/orientation", component: OrientationScreen },
+  { path: "/admin/orientation", component: Orientation },
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
 
