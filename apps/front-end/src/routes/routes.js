@@ -13,6 +13,8 @@ import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 
 import Success from "pages/front-end/Success";
+import Profile from "pages/front-end/PrerakProfileDetailsView";
+import FacilitatorListView from "pages/front-end/BenificiaryListView";
 
 export default [
   { path: "/form", component: Home },
@@ -32,9 +34,10 @@ export default [
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/docschecklist", component: Docschecklist },
-  { path: "/ag", component: AgLearnerProfileView },
-
-  { path: "/*", component: Dashboard },
-
-  { path: "/prp/:id", component: PrerakProfileDetailsView },
+  { path: "/profile", component: Profile },
+  {
+    path: "/beneficiary",
+    component: FacilitatorListView,
+  },
+  { path: "*", component: Dashboard },
 ];
