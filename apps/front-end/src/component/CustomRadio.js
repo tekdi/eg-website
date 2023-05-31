@@ -85,7 +85,7 @@ export default function CustomRadio({
                           : "gray.500",
                     }}
                   >
-                    {item?.label}
+                    {t(item?.label)}
                   </Text>
                 </VStack>
               </Pressable>

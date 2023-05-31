@@ -396,5 +396,33 @@
   "MARK_FOR_REVIEW": "Marks for Review",
   "SEARCH_BY_AG_LEARNER_NAME": "Search By AG Learner Name",
   "TO": "to",
-  "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "Did the interview take place Successfully"
+  "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "Did the interview take place Successfully",
+  "DROPOUT":"Dropout",
+  "NEVER_ENROLLED":"Never Enrolled",
+  "ALREADY_ENROLLED_IN_OPEN_SCHOOL":"Already Enrolled In Open School",
+  "ALREADY_OPEN_SCHOOL_SYC":"Already Open School Syc",
+  "STREAM_2_(MAINSTREAM_SYC)": "Stream 2 Mainstream Syc",
+  "PRAGATI_SYC" :"Pragati Syc",
+  "SCHOOL_BEING_TOO_FAR_AWAY":"School Being Too Far Away",
+  "DUE_TO_FAIL":"Fail",
+  "GIRL_NOT_WILLING_TO_PURSUE_FURTHER_STUDIES":"Girl Not Willing To Pursue Further Studies",
+  "SOCIAL / FAMILY PRESSURE":"Social Family Pressure",
+  "ECONOMIC_DIFFICULTIES":"Economic Difficulties",
+  "FRIENDS / FRIENDS LEAVING SCHOOL": "Friend/Friends Leaving School",
+  "DUE_TO_MARRIAGES":"Due To Marriage",
+  "MIGRATION_RELATED_TO_EMPLOYMENT":"Migration Related To Employment",
+  "Add_AGS_PROFILE":"Add AG's Profile Photo",
+  "BENEFICIARY_MARITAL_STATUS_SINGLE":"Single (Divorced, widow, separated, etc.)",
+  "BENEFICIARY_MARITAL_STATUS_MARRIED":"Married",
+  "BENEFICIARY_MARITAL_STATUS_UNMARRIED":"UnMarried",
+  "BENEFICIARY_SOCIAL_STATUS_SC":"SC",
+  "BENEFICIARY_SOCIAL_STATUS_ST":"ST",
+  "BENEFICIARY_SOCIAL_STATUS_OBC":"OBC",
+  "BENEFICIARY_SOCIAL_STATUS_GENERAL":"General",
+  "BENEFICIARY_SOCIAL_STATUS_OTHERS":"Other"
+
+
+
+
+
 }
