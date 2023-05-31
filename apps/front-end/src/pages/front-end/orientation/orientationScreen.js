@@ -238,20 +238,20 @@ export default function OrientationScreen() {
     setPage(page);
   };
 
-  {
-    page === "screen3" && (
-      <Layout
-        getRefAppBar={(e) => RefAppBar(e)}
-        isDisabledAppBar={page === "screen1"}
-        isCenter={true}
-        key={code}
-        _appBar={{ onlyIconsShow: ["langBtn"] }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <Page3 setSelectedData={selectedData} />
-      </Layout>
-    );
-  }
+  // {
+  //   page === "screen3" && (
+  //     <Layout
+  //       getRefAppBar={(e) => RefAppBar(e)}
+  //       isDisabledAppBar={page === "screen1"}
+  //       isCenter={true}
+  //       key={code}
+  //       _appBar={{ onlyIconsShow: ["langBtn"] }}
+  //       _page={{ _scollView: { bg: "white" } }}
+  //     >
+  //       <Page3 setSelectedData={selectedData} />
+  //     </Layout>
+  //   );
+  // }
 
   return (
     <Box>
