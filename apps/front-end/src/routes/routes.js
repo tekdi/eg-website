@@ -7,8 +7,6 @@ import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
 import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
-import AgLearnerProfileView from "pages/front-end/AgLearnerProfileView";
-import PrerakProfileDetailsView from "pages/front-end/PrerakProfileDetailsView";
 import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 
