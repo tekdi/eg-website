@@ -13,7 +13,7 @@ import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
 import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
 import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
 import { CheatSheet } from "@shiksha/common-lib";
-import AgMenuBar from "pages/admin/facilitator/view/AgMenuBar";
+// import AgMenuBar from "pages/admin/facilitator/view/AgMenuBar";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -22,7 +22,7 @@ export default [
   { path: "/orientation", component: orientationScreen },
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
-  { path: "/menubar", component: AgMenuBar },
+  // { path: "/menubar", component: AgMenuBar },
 
   {
     path: "/admin/aadhaarStart",

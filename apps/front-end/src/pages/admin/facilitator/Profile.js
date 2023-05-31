@@ -3,17 +3,15 @@ import {
   IconByName,
   AdminLayout as Layout,
   ProgressBar,
-  H3,
-  H1,
-  H2,
   ImageView,
-  BodySmall,
   Loading,
   t,
+  AdminTypo,
 } from "@shiksha/common-lib";
-import { Heading, HStack, Text, VStack, Box, Stack } from "native-base";
+import { Heading, HStack, Text, VStack, Box, Image } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate } from "react-router-dom";
+import Steper from "component/Steper";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
@@ -34,20 +32,37 @@ export default function App({ footerLinks, userTokenInfo }) {
     <Layout _sidebar={footerLinks}>
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
-          <HStack alignItems={"center"} space="3" pt="3">
+          <HStack alignItems={"center"} space="1" pt="3">
             <IconByName
               size="sm"
               name="ArrowLeftSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <H3> {t("PRERAK_BIO")}</H3>
+            <Image
+              source={{
+                uri: "/profile.svg",
+              }}
+              alt=""
+              size={"29px"}
+              resizeMode="contain"
+              color="Activatedcolor.400"
+            />
+            <AdminTypo.H1 color="Activatedcolor.400">
+              {" "}
+              {t("PRERAK_BIO")}
+            </AdminTypo.H1>
           </HStack>
           <HStack alignItems="center" flexWrap="wrap">
-            <HStack flex="0.7" direction="column">
+            <VStack flex="0.6">
               <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <H1>
+                <AdminTypo.H1
+                  color="textGreyColor.800"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
                   {data?.first_name} {data?.last_name}
-                </H1>
+                </AdminTypo.H1>
                 <Box>
                   {data?.status ? (
                     <Chip>{data?.status}</Chip>
@@ -63,7 +78,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                     color="textGreyColor.300"
                     pt="1"
                   />
-                  <BodyLarge>{data?.mobile}</BodyLarge>
+                  <AdminTypo.H6 color="textGreyColor.600" className="fw-500">
+                    {data?.mobile}
+                  </AdminTypo.H6>
                 </HStack>
                 <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
                   <IconByName
@@ -72,24 +89,24 @@ export default function App({ footerLinks, userTokenInfo }) {
                     name="MapPinLineIcon"
                     color="textGreyColor.300"
                   />
-                  <BodyLarge>{data?.address}</BodyLarge>
+                  <AdminTypo.H6 color="textGreyColor.600" className="fw-500">
+                    {data?.address}
+                  </AdminTypo.H6>
                 </HStack>
               </HStack>
-              <H2 fontSize="18" pb="2">
+              <AdminTypo.H4 color="textGreyColor.800" pb="2" bold>
                 {" "}
-                {t("ELIGIBILITY_CRITERIA")}
-              </H2>
+                {t("ELIGIBILITY_CRITERIA").toUpperCase()}
+              </AdminTypo.H4>
               <HStack width={"100%"}>
-                <IconByName
-                  flex={0.3}
-                  name="DonutChartLineIcon"
-                  isDisabled
-                  color="darkBlue.400"
-                  _icon={{ size: "100px" }}
-                />
+                <Box flex={0.3}>
+                  <Steper size={100} type="circle" progress={75} bg="white" />
+                </Box>
                 <VStack flex={0.7} space="2">
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>{t("QUALIFICATION")}</BodySmall>
+                    <AdminTypo.H7 color="textGreyColor.500" bold>
+                      {t("QUALIFICATION")}
+                    </AdminTypo.H7>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -103,7 +120,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                     />
                   </HStack>
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>{t("WORK_EXPERIENCE")}</BodySmall>
+                    <AdminTypo.H7 color="textGreyColor.500" bold>
+                      {t("WORK_EXPERIENCE")}
+                    </AdminTypo.H7>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -114,7 +133,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                     />
                   </HStack>
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>{t("VOLUNTEER_EXPERIENCE")}</BodySmall>
+                    <AdminTypo.H7 color="textGreyColor.500" bold>
+                      {t("VOLUNTEER_EXPERIENCE")}
+                    </AdminTypo.H7>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -125,7 +146,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                     />
                   </HStack>
                   <HStack alignItems={"center"} space={"2"}>
-                    <BodySmall>{t("AVAILABILITY")}</BodySmall>
+                    <AdminTypo.H7 color="textGreyColor.500" bold>
+                      {t("AVAILABILITY")}
+                    </AdminTypo.H7>
                     <ProgressBar
                       flex="1"
                       isLabelCountHide
@@ -137,8 +160,8 @@ export default function App({ footerLinks, userTokenInfo }) {
                   </HStack>
                 </VStack>
               </HStack>
-            </HStack>
-            <HStack width="30%" pl="5">
+            </VStack>
+            <HStack flex="0.4" pl="5">
               {data?.documents?.[0]?.name ? (
                 <ImageView
                   source={{
@@ -160,142 +183,254 @@ export default function App({ footerLinks, userTokenInfo }) {
           </HStack>
 
           <VStack space={"5"} p="5" mt="6">
-            <H3>{t("APPLICATION_FORM")}</H3>
-            <HStack justifyContent="space-evenly">
+            <AdminTypo.H4 color="textGreyColor.800" bold>
+              {t("PROFILE_DETAILS")}
+            </AdminTypo.H4>
+            <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
-                <Heading
-                  fontSize="16px"
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
                   borderColor="light.400"
                   pb="1"
                   borderBottomWidth="1"
                 >
-                  {t("BASIC_DETAILS")}
-                </Heading>
-                <HStack>
-                  <Text color="warmGray.500">{t("FIRST_NAME")} </Text>
-                  <Text>{data?.first_name}</Text>
+                  <AdminTypo.H5 color="textGreyColor" bold>
+                    {t("BASIC_DETAILS")}
+                  </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <Text color="warmGray.500">{t("LAST_NAME")} </Text>
-                  <Text>{data?.last_name}</Text>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("FIRST_NAME")} :
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {" "}
+                    {data?.first_name}
+                  </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <Text color="warmGray.500">{t("MOBILE_NO")} </Text>
-                  <Text>{data?.mobile}</Text>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("LAST_NAME")}{" "}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {" "}
+                    {data?.last_name}
+                  </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <Text color="warmGray.500">{t("DATE_OF_BIRTH")} </Text>
-                  <Text>{data?.dob}</Text>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("MOBILE_NO")}{" "}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {data?.mobile}
+                  </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <Text color="warmGray.500">{t("GENDER")} </Text>
-                  <Text>{data?.gender}</Text>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("DATE_OF_BIRTH")}{" "}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {" "}
+                    {data?.dob}
+                  </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <Text color="warmGray.500">{t("ADDRESS")} </Text>
-                  <Text>{data?.address}</Text>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("GENDER")}{" "}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {" "}
+                    {data?.gender}
+                  </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <Text color="warmGray.500">{t("AADHAAR_NO")} </Text>
-                  <Text>{data?.aadhar_token}</Text>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("ADDRESS")}{" "}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {[
+                      data?.state,
+                      data?.district,
+                      data?.block,
+                      data?.village,
+                      data?.grampanchayat,
+                    ].filter((e) => e).length > 0
+                      ? [
+                          data?.state,
+                          data?.district,
+                          data?.block,
+                          data?.village,
+                          data?.grampanchayat,
+                        ]
+                          .filter((e) => e)
+                          .join(", ")
+                      : "-"}
+                  </AdminTypo.H5>
+                </HStack>
+
+                <HStack>
+                  <AdminTypo.H5 color="textGreyColor.550">
+                    {t("AADHAAR_NO")}{" "}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                    {" "}
+                    {data?.aadhar_token}
+                  </AdminTypo.H5>
                 </HStack>
               </VStack>
               <VStack
-                display="Flex"
-                flexDirection="row"
-                space="20px"
+                space={"5"}
                 w="50%"
                 bg="light.100"
                 p="6"
-                ml="2"
                 rounded="xl"
+                ml="3"
               >
-                <VStack
-                  display="Flex"
-                  flexDirection="column"
-                  space="20px"
-                  w="100%"
-                >
-                  <Heading
-                    fontSize="16px"
-                    borderColor="light.400"
-                    pb="1"
-                    borderBottomWidth="1"
-                  >
-                    {t("EDUCATION")}{" "}
-                  </Heading>
-                  <VStack>
-                    <Text color="warmGray.500">{t("QUALIFICATION")} </Text>
-                    <Text>
-                      {data?.qualifications?.map((qua, key) => {
-                        return (
-                          <Text key={key}>
-                            {qua?.qualification_master.name}
-                          </Text>
-                        );
-                      })}
-                    </Text>
-                  </VStack>
-                  <VStack>
-                    <Text color="warmGray.500">{t("WORK_EXPERIENCE")} </Text>
-                    <VStack space={5}>
-                      {data?.experience?.map((obj, key) => {
-                        return (
-                          <VStack key={key}>
-                            {obj?.role_title ? (
-                              <Text>
-                                {t("ROLE")} : {obj?.role_title}
-                              </Text>
-                            ) : (
-                              <React.Fragment />
-                            )}
-                            {obj?.experience_in_years ? (
-                              <Text>
-                                {t("YEARS_OF_EX")}: {obj?.experience_in_years}
-                              </Text>
-                            ) : (
-                              <React.Fragment />
-                            )}
-                            {obj?.description ? (
-                              <Text>
-                                {t("DESCRIPTION")} : {obj?.description}
-                              </Text>
-                            ) : (
-                              <React.Fragment />
-                            )}
-                          </VStack>
-                        );
-                      })}
-                    </VStack>
-                  </VStack>
-                  <VStack display="Flex" flexDirection="column" space="20px">
-                    <Heading
-                      fontSize="16px"
+                <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                  <VStack space="20px" w="100%">
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
                       borderColor="light.400"
                       pb="1"
                       borderBottomWidth="1"
                     >
-                      {t("OTHER_DETAILS")}
-                    </Heading>
-                    <VStack>
-                      <Text color="warmGray.500">{t("AVAILABILITY")} </Text>
-                      <Text>{data?.program_faciltators?.availability}</Text>
-                    </VStack>
-                    <VStack>
-                      <Text color="warmGray.500">{t("DEVICE_OWNERSHIP")} </Text>
-                      <Text>{data?.device_ownership}</Text>
-                    </VStack>
-                    <VStack>
-                      <Text color="warmGray.500">{t("TYPE_OF_DEVICE")} </Text>
-                      <Text>{data?.device_type}</Text>
+                      <AdminTypo.H5 color="textGreyColor" bold>
+                        {t("EDUCATION")}{" "}
+                      </AdminTypo.H5>
+                    </HStack>
+                    <HStack>
+                      <AdminTypo.H5 color="textGreyColor.550">
+                        {t("QUALIFICATION")}{" "}
+                      </AdminTypo.H5>
+                      <AdminTypo.H5 color="textGreyColor.800" bold>
+                        {data?.qualifications
+                          ?.filter(
+                            (e) =>
+                              e?.qualification_master?.type === "qualification"
+                          )
+                          ?.map((qua, key) => {
+                            return (
+                              <AdminTypo.H5
+                                color="textGreyColor.800"
+                                bold
+                                key={key}
+                              >
+                                {qua?.qualification_master?.name}
+                              </AdminTypo.H5>
+                            );
+                          })}
+                      </AdminTypo.H5>
+                      <HStack space="2">
+                        <AdminTypo.H5 color="textGreyColor.550">
+                          {t("TEACHING_QUALIFICATION")}{" "}
+                        </AdminTypo.H5>
+                        {data?.qualifications ? (
+                          data?.qualifications
+                            ?.filter(
+                              (e) =>
+                                e?.qualification_master?.type === "teaching"
+                            )
+                            ?.map((qua, key) => {
+                              return (
+                                <AdminTypo.H5
+                                  color="textGreyColor.800"
+                                  bold
+                                  key={key}
+                                >
+                                  {qua?.qualification_master?.name}
+                                </AdminTypo.H5>
+                              );
+                            })
+                        ) : (
+                          <Text>{"-"}</Text>
+                        )}
+                      </HStack>
+                    </HStack>
+
+                    <VStack space="4">
+                      <HStack space="2">
+                        <AdminTypo.H5 color="textGreyColor.550">
+                          {t("WORK_EXPERIENCE")}{" "}
+                        </AdminTypo.H5>
+                        <HStack space={5}>
+                          {data?.experience ? (
+                            data?.experience?.map((e, key) => (
+                              <Experience key={key} {...e} />
+                            ))
+                          ) : (
+                            <AdminTypo.H5 color="textGreyColor.800" bold>
+                              {"-"}
+                            </AdminTypo.H5>
+                          )}
+                        </HStack>
+                      </HStack>
+                      <HStack space="2">
+                        <AdminTypo.H5 color="textGreyColor.550">
+                          {t("VOLUNTEER_EXPERIENCE")}
+                        </AdminTypo.H5>
+                        <VStack space={5}>
+                          {data?.vo_experience ? (
+                            data?.vo_experience?.map((e, key) => (
+                              <Experience key={key} {...e} />
+                            ))
+                          ) : (
+                            <AdminTypo.H5 color="textGreyColor.800" bold>
+                              {"-"}
+                            </AdminTypo.H5>
+                          )}
+                        </VStack>
+                      </HStack>
                     </VStack>
                   </VStack>
+                </HStack>
+                <VStack space="20px" w="100%" p="6" mt="3" rounded="xl">
+                  <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderColor="light.400"
+                    pb="1"
+                    borderBottomWidth="1"
+                  >
+                    <AdminTypo.H5 color="textGreyColor" bold>
+                      {t("OTHER_DETAILS")}
+                    </AdminTypo.H5>
+                  </HStack>
+                  <HStack>
+                    <AdminTypo.H5 color="textGreyColor.550">
+                      {t("AVAILABILITY")}{" "}
+                    </AdminTypo.H5>
+                    <AdminTypo.H5 color="textGreyColor.800" bold>
+                      {data?.program_faciltators?.availability?.replaceAll(
+                        "_",
+                        " "
+                      )}
+                    </AdminTypo.H5>
+                  </HStack>
+                  <HStack>
+                    <AdminTypo.H5 color="textGreyColor.550">
+                      {t("DEVICE_OWNERSHIP")}{" "}
+                    </AdminTypo.H5>
+                    <AdminTypo.H5 color="textGreyColor.800" bold>
+                      {" "}
+                      {data?.device_ownership}
+                    </AdminTypo.H5>
+                  </HStack>
+                  <HStack>
+                    <AdminTypo.H5 color="textGreyColor.550">
+                      {t("TYPE_OF_DEVICE")}{" "}
+                    </AdminTypo.H5>
+                    <AdminTypo.H5 color="textGreyColor.800" bold>
+                      {" "}
+                      {data?.device_type}
+                    </AdminTypo.H5>
+                  </HStack>
                 </VStack>
               </VStack>
             </HStack>

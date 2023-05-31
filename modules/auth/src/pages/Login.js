@@ -10,6 +10,7 @@ import {
   IconButton,
   CloseIcon,
   Image,
+  Center,
 } from "native-base";
 import {
   useWindowSize,
@@ -21,6 +22,8 @@ import {
   Layout,
   BodyMedium,
   H2,
+  FrontEndTypo,
+  FloatingInput
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -89,9 +92,9 @@ export default function Login() {
         minH={Height - ref?.clientHeight}
         space="50px"
       >
-        <H1 color="textMaroonColor.400" textAlign="center" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
-        </H1>
+        </FrontEndTypo.H1>
         <Image
           alignSelf="center"
           source={{
@@ -104,15 +107,16 @@ export default function Login() {
         <VStack space={5} p="5">
           <Alert status="info" colorScheme="info" textAlign="center">
             <VStack space={2} flexShrink={1}>
+              
               <HStack
                 flexShrink={1}
                 space={2}
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <HStack flexShrink={1} space={2} alignItems="center">
+                <HStack flexShrink={1} space={2} alignItems="center" >
                   <Alert.Icon />
-                  {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+                  <FrontEndTypo.H4>{t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}</FrontEndTypo.H4>
                 </HStack>
               </HStack>
             </VStack>
@@ -144,7 +148,16 @@ export default function Login() {
               >
                 {t("USERNAME")}
               </FormControl.Label> */}
-              <Input
+              <FloatingInput
+              schema={{ title: t("ENTER") + " " + t("USERNAME") }}
+              onChange={(e) =>
+                setCredentials({
+                  ...credentials,
+                  username: e?.target?.value?.trim(),
+                })
+              }
+            />
+              {/* <Input
                 rounded="lg"
                 height="48px"
                 bg="white"
@@ -157,7 +170,7 @@ export default function Login() {
                     username: e?.target?.value?.trim(),
                   })
                 }
-              />
+              /> */}
               {"username" in errors ? (
                 <FormControl.ErrorMessage
                   _text={{
@@ -178,7 +191,16 @@ export default function Login() {
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
-              <Input
+              <FloatingInput
+              schema={{ title: t("ENTER") + " " + t("PASSWORD") }}
+              onChange={(e) =>
+                setCredentials({
+                  ...credentials,
+                  password: e?.target?.value,
+                })
+              }
+            />
+              {/* <Input
                 rounded="lg"
                 height="48px"
                 bg="white"
@@ -192,7 +214,7 @@ export default function Login() {
                     password: e?.target?.value,
                   })
                 }
-              />
+              /> */}
               {"password" in errors ? (
                 <FormControl.ErrorMessage
                   _text={{
@@ -210,18 +232,17 @@ export default function Login() {
           </VStack>
           {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
           {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-          <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
+          <FrontEndTypo.Primarybutton flex={1} p="4" onPress={handleLogin}>
             {t("LOGIN")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
           <BodyMedium color="primary.500" textAlign="center">
-            <H2
+            <FrontEndTypo.H2 color="blueText.450" underline
               onPress={() => {
                 navigate("/reset-password");
               }}
             >
-              {" "}
               {t("USER_FORGET_PASSWORD")}
-            </H2>
+            </FrontEndTypo.H2>
           </BodyMedium>
         </VStack>
       </VStack>

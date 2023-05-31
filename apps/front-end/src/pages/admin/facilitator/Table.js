@@ -5,7 +5,6 @@ import {
   H3,
   t,
   ImageView,
-  BlueFillButton,
   AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
@@ -65,9 +64,9 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>
+        <AdminTypo.H5 bold>
           {row?.first_name + " " + row.last_name}
-        </Text>
+        </AdminTypo.H5>
       </HStack>
     ),
     sortable: true,
@@ -147,8 +146,26 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
 
   return (
     <VStack>
-      <HStack justifyContent={"space-between"} my="1">
-        <H1>{t("ALL_PRERAK")}</H1>
+      <HStack my="1" justifyContent="space-between">
+        <HStack justifyContent="space-between" alignItems="center">
+          <Image
+            source={{
+              uri: "/profile.svg",
+            }}
+            alt=""
+            size={"xs"}
+            resizeMode="contain"
+          />
+          <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
         {/* <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
@@ -163,9 +180,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
-          <BlueOutlineButton
-            _text={{ color: "#084B82" }}
-            shadow="BlueOutlineShadow"
+          <AdminTypo.Secondarybutton
             onPress={() => setModal(true)}
             rightIcon={
               <IconByName
@@ -177,16 +192,15 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             }
           >
             {t("SEND_AN_INVITE")}
-          </BlueOutlineButton>
-          {/* <BlueFillButton
+          </AdminTypo.Secondarybutton>
+          {/* <AdminTypo.PrimaryButton
             mx="3"
-            shadow="BlueFillShadow"
             rightIcon={
               <IconByName color="white" size="20px" name="PencilLineIcon" />
             }
           >
             {t("REGISTER_PRERAK")}
-          </BlueFillButton> */}
+          </AdminTypo.PrimaryButton> */}
           <Modal
             isOpen={modal}
             onClose={() => setModal(false)}
@@ -196,7 +210,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <H1 textAlign="center"> {t("SEND_AN_INVITE")}</H1>
+                <AdminTypo.H1 textAlign="center">
+                  {" "}
+                  {t("SEND_AN_INVITE")}
+                </AdminTypo.H1>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -206,7 +223,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     borderBottomColor="gray.300"
                     pb="5"
                   >
-                    <H3> {t("INVITATION_LINK")}</H3>
+                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
                       text={`${getBaseUrl()}facilitator-self-onboarding/${
                         facilitator?.program_users[0]?.organisation_id
@@ -219,10 +236,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                           rounded="full"
                           color="blue.300"
                         />
-                        <H3 color="blue.300">
+                        <AdminTypo.H3 color="blue.300">
                           {" "}
                           {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                        </H3>
+                        </AdminTypo.H3>
                       </HStack>
                     </Clipboard>
                   </HStack>
@@ -230,11 +247,10 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     <Input
                       flex={0.7}
                       placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
-                      variant="underlined"
                     />
-                    <Button flex={0.3} variant="primary">
+                    <AdminTypo.PrimaryButton flex={0.3}>
                       {t("SEND")}
-                    </Button>
+                    </AdminTypo.PrimaryButton>
                   </HStack>
                 </VStack>
               </Modal.Body>
@@ -251,6 +267,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
             name: t("ACTION"),
             selector: (row) => (
               <AdminTypo.Secondarybutton
+                my="3"
                 onPress={() => {
                   navigate(`/admin/view/${row?.id}`);
                 }}
