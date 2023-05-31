@@ -155,15 +155,15 @@ export default {
           title: "FATHER_FULL_NAME",
           type: "object",
           properties: {
-            first_name: {
+            father_first_name: {
               type: "string",
               title: "FIRST_NAME",
             },
-            middle_name: {
+            father_middle_name: {
               type: "string",
               title: "MIDDLE_NAME",
             },
-            last_name: {
+            father_last_name: {
               type: "string",
               title: "LAST_NAME",
             },
@@ -173,15 +173,15 @@ export default {
           title: "MOTHER_FULL_NAME",
           type: "object",
           properties: {
-            first_name: {
+            mother_first_name: {
               type: "string",
               title: "FIRST_NAME",
             },
-            middle_name: {
+            mother_middle_name: {
               type: "string",
               title: "MIDDLE_NAME",
             },
-            last_name: {
+            mother_last_name: {
               type: "string",
               title: "LAST_NAME",
             },
@@ -189,44 +189,6 @@ export default {
         },
       },
     },
-    7: {
-      title: "REFERENCE_DETAILS",
-      type: "object",
-      // required: ["first_name"],
-      properties: {
-        referencefullname: {
-          title: "REFERENCE_FULL_NAME",
-          type: "object",
-          properties: {
-            first_name: {
-              type: "string",
-              title: "FIRST_NAME",
-            },
-            middle_name: {
-              type: "string",
-              title: "MIDDLE_NAME",
-            },
-            last_name: {
-              type: "string",
-              title: "LAST_NAME",
-            },
-          },
-        },
-        aglearnerrelationship: {
-          title: "AG_LERNER_RELATIONSHP",
-          type: "object",
-          properties: {
-            relation: {
-              type: "string",
-              title: "RELATION",
-            },
-            mobile: {
-              type: "number",
-              title: "MOBILE_NUMBER",
-            },
-          },
-        },
-      },
-    },
+    7: {},
   },
 };

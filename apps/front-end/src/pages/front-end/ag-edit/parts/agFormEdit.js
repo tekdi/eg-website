@@ -39,6 +39,9 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+
+import { useScreenshot } from "use-screenshot-hook";
+
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -50,8 +53,6 @@ import {
   RadioBtn,
   CustomR,
 } from "../../../../component/BaseInput.js";
-import { useScreenshot } from "use-screenshot-hook";
-
 // const CustomR = ({ options, value, onChange, required }) => {
 //   return (
 //     <CustomRadio
@@ -152,7 +153,24 @@ export default function agFormEdit({ ip, id }) {
 
   React.useEffect(async () => {
     let device_ownership = formData?.core_beneficiaries[0]?.device_ownership;
+    let mark_as_whatsapp_number =
+      formData?.core_beneficiaries[0]?.mark_as_whatsapp_number;
+    let alternative_device_ownership =
+      formData?.core_beneficiaries[0]?.alternative_device_ownership;
+    let alternative_device_type =
+      formData?.core_beneficiaries[0]?.alternative_device_type;
     let device_type = formData?.core_beneficiaries[0]?.device_type;
+
+    let father_first_name = formData?.core_beneficiaries[0]?.father_first_name;
+    let father_middle_name =
+      formData?.core_beneficiaries[0]?.father_middle_name;
+    let father_last_name = formData?.core_beneficiaries[0]?.father_last_name;
+
+    let mother_first_name = formData?.core_beneficiaries[0]?.mother_first_name;
+    let mother_last_name = formData?.core_beneficiaries[0]?.mother_last_name;
+    let mother_middle_name =
+      formData?.core_beneficiaries[0]?.mother_middle_name;
+
     let marital_status = formData?.extended_users[0]?.marital_status;
     let social_category = formData?.extended_users[0]?.social_category;
 
@@ -165,14 +183,22 @@ export default function agFormEdit({ ip, id }) {
         edit_page_type: "edit_contact",
         device_ownership: device_ownership,
         device_type: device_type,
+        mark_as_whatsapp_number: mark_as_whatsapp_number,
+        alternative_device_ownership: alternative_device_ownership,
+        alternative_device_type: alternative_device_type,
+        //father_first_name: father_first_name,
+        // father_middle_name: father_middle_name,
+        // mother_first_name: mother_first_name,
+        // mother_middle_name: mother_middle_name,
+        // mother_last_name: mother_last_name,
       });
     } else if (page === "3") {
-      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      //console.log("page3.....", updateDetails);
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page3.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "edit_address" });
     } else if (page === "4") {
-      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      //console.log("page4.....", updateDetails);
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page4.....", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "personal",
@@ -180,7 +206,7 @@ export default function agFormEdit({ ip, id }) {
         social_category: social_category,
       });
     } else if (page === "5") {
-      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
       console.log("page5.....", updateDetails);
       setFormData({
         ...formData,
@@ -189,16 +215,25 @@ export default function agFormEdit({ ip, id }) {
     } else if (page === "6") {
       setFormData({
         ...formData,
-        edit_page_type: "edit_family",
+        fatherdetails: {
+          father_first_name: father_first_name,
+          father_last_name: father_last_name,
+          father_middle_name: father_middle_name,
+        },
+        motherdetails: {
+          mother_first_name: mother_first_name,
+          mother_middle_name: mother_middle_name,
+          mother_last_name: mother_last_name,
+        },
       });
-      console.log("FormData===>", formData);
     } else if (page === "7") {
-      //const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      const updateDetails = await AgRegistryService.updateAg(
+        formData?.fatherdetails,
+        userId
+      );
       console.log("page7.....", updateDetails);
     }
   }, [page]);
-
-  console.log("page", page);
 
   // React.useEffect(() => {
   //   if (page == "5") {
@@ -647,9 +682,6 @@ export default function agFormEdit({ ip, id }) {
   };
 
   const onSubmit = async (data) => {
-    console.log("called");
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("");
     if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
@@ -751,7 +783,6 @@ export default function agFormEdit({ ip, id }) {
             variant={"primary"}
             onPress={async (e) => {
               if (cameraSelection >= 2) {
-                console.log("reached here");
                 nextPreviewStep();
                 setCameraUrl();
                 setCameraModal(false);
