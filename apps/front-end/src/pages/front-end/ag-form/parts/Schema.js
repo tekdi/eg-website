@@ -5,11 +5,34 @@ export default {
     1: {
       title: "IDENTIFY_THE_AG_LEARNER",
       type: "object",
-      required: ["first_name"],
+      required: ["first_name", "last_name"],
       properties: {
         first_name: {
           type: "string",
           title: "FIRST_NAME",
+        },
+        last_name: {
+          type: "string",
+          title: "LAST_NAME",
+        },
+        role: {
+          format: "hidden",
+          type: "string",
+          default: "beneficiaries",
+        },
+        email_id: {
+          format: "hidden",
+          type: "string",
+          default: "joey@gmail.com",
+        },
+        role_fields: {
+          properties: {
+            facilitator_id: {
+              format: "hidden",
+              type: "string",
+              default: localStorage.getItem("id"),
+            },
+          },
         },
       },
     },
@@ -20,20 +43,8 @@ export default {
       required: ["mobile"],
       properties: {
         mobile: {
-          type: "number",
+          type: "string",
           title: "MOBILE_NUMBER",
-        },
-        ownership: {
-          type: "string",
-          title: "OWNERSHIP",
-          enumNames: ["Self", "Family Member", "Neighbour", "Other", "any"],
-          enum: ["self", "familymember", "neighbour", "other", "any"],
-        },
-        type_mobile: {
-          type: "string",
-          title: "TYPE_OF_MOBILE_PHONE",
-          enumNames: ["Android", "IPhone"],
-          enum: ["android", "iphone"],
         },
       },
     },
@@ -41,7 +52,6 @@ export default {
     3: {
       title: "Complete Address",
       type: "object",
-      // required: ["state", "district", "block", "village"],
       properties: {
         state: {
           title: "STATE",
@@ -76,7 +86,7 @@ export default {
       //required: ["marital_status", "social_category"],
       properties: {
         marital_status: {
-          title: "MARITAL_STATUS",
+          label: "MARITAL_STATUS",
           type: "string",
           enumNames: [
             "Married",
@@ -86,7 +96,7 @@ export default {
           enum: ["married", "unmarried", "single"],
         },
         social_category: {
-          title: "SOCIAL_CATEGORY",
+          label: "SOCIAL_CATEGORY",
           type: "string",
           enumNames: ["General", "S.C.", "S.T.", "O.B.C.", "Other"],
           enum: ["general", "sc", "st", "obc", "other"],
@@ -103,8 +113,6 @@ export default {
           title: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
-          // enumNames: ["General", "S.C.","S.T.","O.B.C.","Other"],
-          // enum: ["general", "sc","st","obc","other"],
         },
         last_year_of_education: {
           title: "LAST_YEAR_OF_EDUCATION",

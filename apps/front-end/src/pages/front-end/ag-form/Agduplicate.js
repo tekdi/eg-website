@@ -1,4 +1,13 @@
-import { H1, H3, H4, IconByName, Layout, t } from "@shiksha/common-lib";
+import {
+  H1,
+  H3,
+  H4,
+  IconByName,
+  Layout,
+  t,
+  FrontEndTypo,
+  H2,
+} from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
   Image,
@@ -49,13 +58,18 @@ const Agduplicate = () => {
       {alreadyreg && (
         <VStack bg={"#FDC5C766"} alignItems={"center"} py={5}>
           <HStack width={"90%"} mx={"auto"} alignItems={"center"}>
-            <IconByName name="ErrorWarningLineIcon" />
-
-            <VStack>
-              <Text ml={3}>{t("AG_LEARNER_ALREADY_IDENTIFIED")}</Text>
-              <Text ml={3} fontSize={10} width={"80%"}>
+            <IconByName
+              name="ErrorWarningLineIcon"
+              color="textRed.300"
+              size="20px"
+            />
+            <VStack pl="3">
+              <FrontEndTypo.H2 color="textGreyColor.600">
+                {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3 color="textGreyColor.600">
                 {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-              </Text>
+              </FrontEndTypo.H3>
             </VStack>
           </HStack>
         </VStack>
@@ -65,7 +79,9 @@ const Agduplicate = () => {
         <HStack bg={"#E6E6E6"} alignItems={"center"} py={5}>
           <HStack width={"90%"} mx={"auto"} alignItems={"center"}>
             <IconByName name="CheckboxCircleLineIcon" />
-            <Text ml={3}>{t("AADHAAR_VERIFICATION_SUCCESSFUL")}</Text>
+            <FrontEndTypo.H5 ml={3}>
+              {t("AADHAAR_VERIFICATION_SUCCESSFUL")}
+            </FrontEndTypo.H5>
           </HStack>
         </HStack>
       )}
@@ -75,116 +91,95 @@ const Agduplicate = () => {
           rounded={5}
           alignItems={"center"}
           justifyContent={"center"}
-          bg={"#AFB1B6"}
-          width={150}
-          height={150}
+          bg="textGreyColor.400"
+          width={120}
+          height={100}
+          borderColor="textGreyColor.300"
+          borderWidth="1px"
         >
-          <IconByName name="UserLineIcon" _icon={{ size: "30px" }} />
+          <IconByName
+            name="AccountCircleLineIcon"
+            color="gray.300"
+            _icon={{ size: "50px" }}
+          />
         </VStack>
 
-        <VStack width={"80%"} mt={10}>
-          <HStack
-            width={"100%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3>{t("FULL_NAME")}</H3>
-            <H3>{firstname}</H3>
+        <VStack mt={10} space="3">
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <FrontEndTypo.H3 bold color="textMaroonColor.400">
+              {t("FULL_NAME")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>{firstname}</FrontEndTypo.H3>
           </HStack>
-          <HStack
-            width={"100%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3>{t("GENDER")}</H3>
-            <H3>{gender}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <FrontEndTypo.H3 bold color="textMaroonColor.400">
+              {t("GENDER")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>{gender}</FrontEndTypo.H3>
           </HStack>
-          <HStack
-            width={"100%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3>{t("DATE_OF_BIRTH")}</H3>
-            <H3>{DOB}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <FrontEndTypo.H3 bold color="textMaroonColor.400">
+              {t("DATE_OF_BIRTH")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>{DOB}</FrontEndTypo.H3>
           </HStack>
-          <HStack
-            width={"100%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <H3>{t("VERIFICATION_ID_NUMBER")}</H3>
-            <H3>{verify_id}</H3>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <FrontEndTypo.H3 bold color="textMaroonColor.400" width="55%">
+              {t("VERIFICATION_ID_NUMBER")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3 ellipsis>{verify_id}</FrontEndTypo.H3>
           </HStack>
-          <HStack justifyContent={"end"}>
-            <Button
-              variant={"primary"}
-              bg={"#666666"}
-              width={180}
-              marginTop={"1em"}
+          <HStack justifyContent="flex-end">
+            <FrontEndTypo.Primarybutton
+              my="3"
               onPress={() => navigate("/learnerProfile")}
             >
-              <Text color={"white"}>{t("ADD_DETAILS")}</Text>
-            </Button>
+              {t("ADD_DETAILS")}
+            </FrontEndTypo.Primarybutton>
           </HStack>
-          <HStack justifyContent={"end"}>
-            <Button
-              variant={"primary"}
-              bg={"#E6E6E6"}
-              width={"100%"}
-              marginTop={"1em"}
-              onPress={() => navigate("/learnerProfile")}
-            >
-              <Text color={"black"}>{t("DOCUMENTS_CHECKLIST")}</Text>
-            </Button>
-          </HStack>
-          <HStack justifyContent={"end"}>
-            <Button
-              variant={"primary"}
-              bg={"#E6E6E6"}
-              width={"100%"}
-              marginTop={"1em"}
-            >
-              <Text color={"black"}>{t("ADD_RSOS_NIOS_NO")}</Text>
-            </Button>
-          </HStack>
+          <FrontEndTypo.Secondarybutton
+            onPress={() => navigate("/learnerProfile")}
+          >
+            {t("DOCUMENTS_CHECKLIST")}
+          </FrontEndTypo.Secondarybutton>
+          <FrontEndTypo.Secondarybutton>
+            {t("ADD_RSOS_NIOS_NO")}
+          </FrontEndTypo.Secondarybutton>
         </VStack>
 
-        <Button
-          variant={"primary"}
+        <FrontEndTypo.Primarybutton
           width={250}
           marginTop={"10em"}
           onPress={() => navToScreen()}
         >
           {t("NEXT")}
-        </Button>
+        </FrontEndTypo.Primarybutton>
 
-        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+        <Modal
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          size="md"
+        >
           <Modal.Content>
-            <Modal.Body py={10} alignItems={"center"}>
-              <VStack alignItems={"center"} pb={2}>
-                <HStack mx={"auto"} alignItems={"center"}>
-                  <Image
-                    source={{
-                      uri: "/error.png",
-                    }}
-                    alt=""
-                    width="15px"
-                    height="15px"
-                  />
-                  <VStack>
-                    <Text ml={3} fontSize={16}>
-                      {t("AG_LEARNER_ALREADY_IDENTIFIED")}
-                    </Text>
-                  </VStack>
-                </HStack>
+            <Modal.Body py={10}>
+              <HStack mx={"auto"} alignItems={"top"}>
+                <IconByName
+                  name="ErrorWarningLineIcon"
+                  color="textRed.300"
+                  size="20px"
+                ></IconByName>
+                <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                  {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+                </FrontEndTypo.H2>
+              </HStack>
+              <VStack pt="3">
+                <FrontEndTypo.H5 color="textGreyColor.600">
+                  {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
+                </FrontEndTypo.H5>
               </VStack>
-              <Text ml={3} fontSize={12}>
-                {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-              </Text>
-              <Button
-                variant={"primary"}
-                bg={"#666666"}
-                width={250}
+              <FrontEndTypo.Primarybutton
+                py="2"
+                width="100%"
                 marginTop={"2em"}
                 onPress={() => {
                   setaddmodal(!addmodal);
@@ -192,51 +187,42 @@ const Agduplicate = () => {
                 }}
               >
                 {t("CONTINUE_ADDING")}
-              </Button>
-              <Button
-                variant={"primary"}
-                bg={"#E6E6E6"}
-                width={250}
+              </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                width="100%"
                 marginTop={"1em"}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-                <Text color={"#000000"}>{t("CANCEL_AND_GO_BACK")}</Text>
-              </Button>
+                {t("CANCEL_AND_GO_BACK")}
+              </FrontEndTypo.Secondarybutton>
             </Modal.Body>
           </Modal.Content>
         </Modal>
 
-        <Modal isOpen={addmodal} onClose={() => setaddmodal(false)}>
-          <Modal.Content>
-            <Modal.Body py={10} alignItems={"center"}>
-              <VStack alignItems={"center"} pb={2}>
-                <VStack mx={"auto"} alignItems={"center"}>
-                  <Image
-                    source={{
-                      uri: "/check.svg",
-                    }}
-                    alt=""
-                    width="50px"
-                    height="50px"
-                  />
-                  <VStack>
-                    <Text mt={3} fontSize={16}>
-                      {t("AG_ADDED_SUCCESSFULLY")}
-                    </Text>
-                    <TextArea placeholder="Explain your claim of the AG Learner*"></TextArea>
-                  </VStack>
-                </VStack>
+        <Modal isOpen={addmodal} onClose={() => setaddmodal(false)} size="md">
+          <Modal.Content py="0">
+            <Modal.Body>
+              <VStack alignItems={"center"}>
+                <IconByName
+                  name="CheckboxCircleLineIcon"
+                  color="textGreyColor.150"
+                  _icon={{ size: "50px" }}
+                />
+                <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
+                  {t("AG_ADDED_SUCCESSFULLY")}
+                </FrontEndTypo.H1>
+                <TextArea
+                  placeholder="Explain your claim of the AG Learner*"
+                  w="100%"
+                />
+                <FrontEndTypo.Primarybutton
+                  width={250}
+                  marginTop={"1em"}
+                  onPress={() => setaddmodal(!addmodal)}
+                >
+                  {t("SEND")}
+                </FrontEndTypo.Primarybutton>
               </VStack>
-
-              <Button
-                variant={"primary"}
-                bg={"#E6E6E6"}
-                width={250}
-                marginTop={"1em"}
-                onPress={() => setaddmodal(!addmodal)}
-              >
-                <Text color={"#000000"}>{t("SEND")}</Text>
-              </Button>
             </Modal.Body>
           </Modal.Content>
         </Modal>

@@ -1,4 +1,4 @@
-import { H1, H3, H4, Layout, t } from "@shiksha/common-lib";
+import { H1, H3, H4, Layout, t, SelectBottomStyle } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
   Image,
@@ -10,6 +10,7 @@ import {
   TextArea,
   Select,
   CheckIcon,
+  Box,
 } from "native-base";
 import { useNavigate } from "react-router-dom";
 
@@ -37,20 +38,12 @@ const Docschecklist = () => {
       }}
     >
       <VStack width={"90%"} margin={"auto"} mt={3}>
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("JAN_AADHAAR_CARD")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("JAN_AADHAAR_CARD")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -63,28 +56,26 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
         <HStack
           mt={8}
-          display={"flex"}
+          space="2"
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text>{t("AADHAAR_CARD")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("AADHAAR_CARD")}
+          </Text>
+
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
               bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
+              endIcon: <CheckIcon fontSize="sm" />,
             }}
             mt={1}
             onValueChange={(itemValue) => setService(itemValue)}
@@ -92,23 +83,20 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
         <HStack
           mt={8}
-          display={"flex"}
+          space="2"
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text>{t("PHOTO")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("PHOTO")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -121,23 +109,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("MOBILE_NUMBER")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("MOBILE_NUMBER")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -150,23 +130,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("MARKSHEET")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("MARKSHEET")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -179,23 +151,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("BANK_PASSBOOK")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("BANK_PASSBOOK")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -208,23 +172,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("BIRTH_CERTIFICATE")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("BIRTH_CERTIFICATE")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -237,23 +193,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("CASTE_CERTIFICATE")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("CASTE_CERTIFICATE")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -266,23 +214,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("TRANSFER_CERTIFICATE")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("TRANSFER_CERTIFICATE")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -295,23 +235,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("AFFIDAVIT")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("AFFIDAVIT")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -324,23 +256,15 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
-        <HStack
-          mt={8}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text>{t("CBOSIGN")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("CBOSIGN")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -353,24 +277,20 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
 
         <HStack
           mt={8}
           mb={8}
-          display={"flex"}
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text>{t("CBOSIGNTRANSFER")}</Text>
-          <Select
-            borderWidth={"0px"}
-            borderBottomWidth={"2px"}
-            borderRadius={"0"}
-            borderColor={"black"}
+          <Text fontSize="sm" bold color="textMaroonColor.400">
+            {t("CBOSIGNTRANSFER")}
+          </Text>
+          <SelectBottomStyle
             selectedValue={service}
-            minWidth="200"
             accessibilityLabel="Select"
             placeholder="Select"
             _selectedItem={{
@@ -383,7 +303,7 @@ const Docschecklist = () => {
             {selectData.map((item, i) => {
               return <Select.Item key={i} label={item} value={item} />;
             })}
-          </Select>
+          </SelectBottomStyle>
         </HStack>
       </VStack>
     </Layout>
