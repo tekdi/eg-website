@@ -11,12 +11,12 @@ export default {
   properties: {
     type: {
       type: "string",
-      title: "Event type",
+      label: "EVENT_TYPE",
       format: "select",
       enum: ["Orientation", "Training", "Master Training", "Add a Prerak"],
     },
     mastertrainer: {
-      title: "Master Trainer",
+      title: "MASTER_TRAINER",
       type: "string",
     },
     user_id: {
@@ -24,12 +24,12 @@ export default {
       type: ["string", "array"],
     },
     start_date: {
-      title: "Date",
+      title: "Start Date",
       type: "string",
       format: "alt-date",
     },
     end_date: {
-      title: "Date",
+      title: "End Date",
       type: "string",
       format: "alt-date",
     },
@@ -44,7 +44,7 @@ export default {
       format: "time",
     },
     reminder: {
-      title: "Reminder",
+      label: "Reminder",
       type: "string",
       format: "select",
       enum: ["1 Day Before ", "1 Week Before"],

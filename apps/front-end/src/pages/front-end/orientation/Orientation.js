@@ -28,10 +28,11 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-  Select,
+  select,
   RadioBtn,
   CustomR,
   AddButton,
+  BaseInputTemplate,
 } from "../../../component/BaseInput";
 import {
   Button,
@@ -65,16 +66,7 @@ export default function Orientation({
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
-  console.log(
-    footerLinks,
-    getFormData,
-    userIds,
-    onShowScreen,
-    setIsOpen,
-    onClick,
-    hi,
-    "987897"
-  );
+
   const SelectButton = () => (
     <VStack>
       <Button onPress={(e) => onShowScreen(true)}>
@@ -89,6 +81,7 @@ export default function Orientation({
       </Text>
     </VStack>
   );
+
   React.useEffect(() => {
     getEventList();
   }, []);
@@ -110,7 +103,14 @@ export default function Orientation({
     user_id: {
       "ui:widget": SelectButton,
     },
-    date: {
+    start_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+      },
+    },
+    end_date: {
       "ui:widget": "alt-date",
       "ui:options": {
         hideNowButton: true,
@@ -137,23 +137,7 @@ export default function Orientation({
   };
 
   const onSubmit = async (data) => {
-    let newFormData = data.formData;
-    if (orientationPopupSchema?.properties?.context) {
-      newFormData = {
-        ...newFormData,
-        ["context"]: newFormData?.context.replaceAll(" ", ""),
-      };
-    }
-
-    if (
-      orientationPopupSchema?.properties?.start_date &&
-      newFormData?.start_date
-    ) {
-      newFormData = {
-        ...newFormData,
-        ["start_date"]: newFormData?.start_date.replaceAll(" ", ""),
-      };
-    }
+    let newFormData = data?.formData;
     getFormData(newFormData);
     setFormData(newFormData);
     const apiResponse = await eventService.createNewEvent(newFormData);
@@ -190,9 +174,9 @@ export default function Orientation({
           <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Pressable
-              // onPress={() => {
-              //   onShowScreen(true);
-              // }}
+                onPress={() => {
+                  onShowScreen(true);
+                }}
               >
                 <Image
                   source={{
@@ -324,7 +308,7 @@ export default function Orientation({
                     ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                // user_id: Object.values(userIds).map((e) => e?.id),
+                user_id: Object.values(userIds).map((e) => e?.id),
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
                 reminder: item?.reminder ? item?.reminder : "",
@@ -474,13 +458,14 @@ export default function Orientation({
           <Modal.Body p="3" pb="10" bg="white">
             <Form
               ref={formRef}
-              widgets={{ RadioBtn, CustomR, Select }}
+              widgets={{ RadioBtn, CustomR, select }}
               templates={{
                 ButtonTemplates: { AddButton },
                 FieldTemplate,
                 ObjectFieldTemplate,
                 TitleFieldTemplate,
                 DescriptionFieldTemplate,
+                BaseInputTemplate,
               }}
               showErrorList={false}
               noHtml5Validate={true}
@@ -505,6 +490,7 @@ export default function Orientation({
                 <AdminTypo.PrimaryButton
                   onPress={() => {
                     setModalVisible(false);
+                    formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
                 >

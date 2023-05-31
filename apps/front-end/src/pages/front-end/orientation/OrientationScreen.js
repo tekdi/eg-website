@@ -95,7 +95,7 @@ const columns = (e) => [
   },
   {
     name: t("REGION"),
-    selector: (row) => row?.gender,
+    selector: (row) => (row?.district ? row?.district : ""),
     sortable: false,
     attr: "city",
   },

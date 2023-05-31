@@ -60,9 +60,18 @@ const DEFAULT_THEME = {
         p: '4',
         minH: '54px',
         borderColor: 'secondaryBlue.500',
-        rounded: '10px'
+        borderRadius: '10px'
       }
     },
+    Select: {
+      baseStyle: {
+        p: '4',
+        minH: '54px',
+        borderColor: 'secondaryBlue.500',
+        borderRadius: '10px'
+      }
+    },
+    
     Text: {
       baseStyle: {
         fontFamily: fontFamily,
