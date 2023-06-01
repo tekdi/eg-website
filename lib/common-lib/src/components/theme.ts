@@ -206,7 +206,8 @@ const DEFAULT_THEME = {
             bg: `#f9f5f5`
           },
           _text: {
-            fontWeight: '700'
+            fontWeight: '700',
+            color:'#790000',
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
@@ -541,7 +542,7 @@ const DEFAULT_THEME = {
     textGreyColor: {
       50: '#9E9E9E',
       100: '#616161',
-      200:'#666666',
+      200:'#666666',      
       250:'#696767',
       150: '#61646B',
       350: '#EAEAEB',
@@ -552,11 +553,9 @@ const DEFAULT_THEME = {
       550: '#757575',
       600:'#727271',
       650: '#666666',
+      700:'#828282',
       800: '#212121',
-      900: '#1E1E1E'
-    
-      
-      
+      900: '#1E1E1E' 
     },
     textMaroonColor: {
       100: '#FFACAF',
@@ -632,7 +631,8 @@ const DEFAULT_THEME = {
     },
     textRed: {
       300: '#FF2815'
-    }
+    },
+    dividerColor: '#EEEEEE'
   }
 }
 

@@ -139,7 +139,10 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                 props?.onAddClick();
               }}
             >
-              {`${t("ADD")} ${t(addBtn)}`}
+              <FrontEndTypo.H3 color="blueText.400" underline bold>
+                {" "}
+                {t("ADD_EXPERIENCE")}
+              </FrontEndTypo.H3>
             </Button>
           )}
         </VStack>
