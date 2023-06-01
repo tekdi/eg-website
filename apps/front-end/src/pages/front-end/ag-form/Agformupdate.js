@@ -37,6 +37,7 @@ import {
   StudentEnumService,
   sendAndVerifyOtp,
   CustomOTPBox,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -225,40 +226,35 @@ export default function AgformUpdate({ userTokenInfo }) {
       setSchema(newSchema);
     }
 
-    const studentTypeData = await StudentEnumService.getTypeStudent();
-    const last_education_year = await StudentEnumService.lastYear();
-    const lastStandard = await StudentEnumService.lastStandard();
-    const ReasonOfLeaving = await StudentEnumService.ReasonOfLeaving();
-    const marital_status = await StudentEnumService.marital_status();
-    const social_status = await StudentEnumService.social_status();
-    console.log("marital_status", marital_status);
+    const ListOfEnum = await benificiaryRegistoryService.listOfEnum();
+    const lastYear = await benificiaryRegistoryService.lastYear();
 
     let newSchema = schema;
     if (schema["properties"]["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
-        arr: studentTypeData,
+        arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "last_standard_of_education_year",
-        arr: last_education_year,
+        arr: lastYear,
         title: "value",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "last_standard_of_education",
-        arr: lastStandard,
+        arr: ListOfEnum?.data?.LAST_STANDARD_OF_EDUCATION,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
-        arr: ReasonOfLeaving,
+        arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
         title: "title",
         value: "value",
       });
@@ -269,14 +265,14 @@ export default function AgformUpdate({ userTokenInfo }) {
       console.log("reached here.");
       newSchema = getOptions(newSchema, {
         key: "social_category",
-        arr: social_status,
+        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: marital_status,
+        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
         title: "title",
         value: "value",
       });
