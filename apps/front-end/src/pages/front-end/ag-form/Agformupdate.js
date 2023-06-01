@@ -234,9 +234,9 @@ export default function AgformUpdate({ userTokenInfo }) {
     console.log("marital_status", marital_status);
 
     let newSchema = schema;
-    if (schema["properties"]["previous_school_type"]) {
+    if (schema["properties"]["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
-        key: "previous_school_type",
+        key: "type_of_learner",
         arr: studentTypeData,
         title: "title",
         value: "value",

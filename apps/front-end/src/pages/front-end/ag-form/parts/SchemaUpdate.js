@@ -79,7 +79,7 @@ export default {
       type: "object",
       required: [],
       properties: {
-        previous_school_type: {
+        type_of_learner: {
           label: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
