@@ -5,25 +5,21 @@ import {
   H3,
   t,
   ImageView,
+  BlueFillButton,
   AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import {
-  Button,
-  HStack,
-  Input,
-  Text,
-  VStack,
-  Modal,
-  Image,
-  Box,
-} from "native-base";
+import { Button, HStack, Input, VStack, Modal, Image, Box } from "native-base";
+
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
+    style: {
+      minHeight: "72px", // override the row height
+    },
     style: {
       minHeight: "72px", // override the row height
     },
@@ -34,8 +30,17 @@ const customStyles = {
       color: "#616161",
       size: "16px",
     },
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+    },
   },
   cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+    },
     style: {
       color: "#616161",
       size: "19px",
