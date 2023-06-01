@@ -10,6 +10,7 @@ import {
   IconButton,
   CloseIcon,
   Image,
+  Center,
 } from "native-base";
 import {
   useWindowSize,
@@ -22,6 +23,7 @@ import {
   BodyMedium,
   H2,
   FrontEndTypo,
+  FloatingInput
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -90,7 +92,7 @@ export default function Login() {
         minH={Height - ref?.clientHeight}
         space="50px"
       >
-        <FrontEndTypo.H1 color="textMaroonColor.400" textAlign="center" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
         </FrontEndTypo.H1>
         <Image
@@ -105,15 +107,16 @@ export default function Login() {
         <VStack space={5} p="5">
           <Alert status="info" colorScheme="info" textAlign="center">
             <VStack space={2} flexShrink={1}>
+              
               <HStack
                 flexShrink={1}
                 space={2}
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <HStack flexShrink={1} space={2} alignItems="center">
+                <HStack flexShrink={1} space={2} alignItems="center" >
                   <Alert.Icon />
-                  {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+                  <FrontEndTypo.H4>{t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}</FrontEndTypo.H4>
                 </HStack>
               </HStack>
             </VStack>
@@ -179,6 +182,7 @@ export default function Login() {
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
+          
               <Input
                 rounded="lg"
                 height="48px"
@@ -215,7 +219,7 @@ export default function Login() {
             {t("LOGIN")}
           </FrontEndTypo.Primarybutton>
           <BodyMedium color="primary.500" textAlign="center">
-            <FrontEndTypo.H2
+            <FrontEndTypo.H2 color="blueText.450" underline
               onPress={() => {
                 navigate("/reset-password");
               }}
