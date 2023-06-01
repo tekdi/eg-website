@@ -28,7 +28,10 @@ export default [
     component: futureStudy,
   },
 
-  { path: "/beneficiary/edit/subjects/:id", component: chooseSubjects },
+  {
+    path: "/beneficiary/edit/enrollment-details/:id",
+    component: chooseSubjects,
+  },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
   { path: "/beneficiary/2", component: AgformUpdate },

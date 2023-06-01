@@ -186,20 +186,21 @@ export default function AgformUpdate({ userTokenInfo }) {
   // Type Of Student
 
   React.useEffect(async () => {
-    const career_aspiration = await StudentEnumService.career_aspiration();
-    console.log("career_aspiration", career_aspiration);
+    const career_aspiration = await benificiaryRegistoryService.listOfEnum();
+    const Data = career_aspiration?.data?.CAREER_ASPIRATION;
+    console.log("career_aspiration", Data);
     let newSchema = schema;
     if (schema["properties"]["career_aspiration"]) {
       newSchema = getOptions(newSchema, {
         key: "career_aspiration",
-        arr: career_aspiration,
+        arr: Data,
         title: "title",
         value: "value",
       });
     }
 
     setSchema(newSchema);
-  }, []);
+  }, [formData]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -298,7 +299,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
     if (updateDetails) {
-      navigate("/");
+      navigate(`/beneficiary/edit/enrollment-details/${userId}`);
     }
   };
 
