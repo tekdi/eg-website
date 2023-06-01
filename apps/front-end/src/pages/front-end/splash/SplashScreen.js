@@ -7,6 +7,7 @@ import {
   t,
   changeLanguage,
   useWindowSize,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -139,6 +140,7 @@ const Page1 = () => {
         }}
         alt="Alternate Text"
         size={"2xl"}
+        resizeMode="contain"
       />
     </Box>
   );
@@ -150,10 +152,10 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
 
   return (
     <Stack style={stylesheet.bgimage}>
-      <Text style={stylesheet.mainText}>{t("PROJECT_PRAGATI")}</Text>
-      <Text p={2} fontSize={26} fontWeight="700" pt="24px" textAlign={"center"}>
+      <FrontEndTypo.H2 bold color="textMaroonColor.400" textAlign="center" my="4">{t("PROJECT_PRAGATI")}</FrontEndTypo.H2>
+      <FrontEndTypo.H1 color="textGreyColor.800" p={2} bold textAlign={"center"}>
         {t("SPLASHSCREEN_1")}
-      </Text>
+      </FrontEndTypo.H1>
       <VStack
         space={2}
         justifyContent="center"
@@ -170,15 +172,15 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
           alt={"Alternate Text "}
           style={stylesheet.image}
         />
-        <Box bgColor={"#FFFFFF"} style={stylesheet.boxContent}>
-          <Center>
+        <Box bg="white" width="100%" px="5">
+          <Center my="6">
             <Pressable onPress={onClickPrerakDuties}>
-              <Text style={stylesheet.text1}> {t("KNOW_PRERAK_DUTIES")}</Text>
+              <FrontEndTypo.H3 style={stylesheet.text1}> {t("KNOW_PRERAK_DUTIES")}</FrontEndTypo.H3>
             </Pressable>
           </Center>
-          <Button style={stylesheet.ProceedButton} onPress={onClick}>
+          <FrontEndTypo.Primarybutton  onPress={onClick}>
             {t("APPLY_NOW")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
         </Box>
         <Center>
           <Pressable
@@ -207,12 +209,12 @@ const Page3 = ({ onShowScreen }) => {
   return (
     <Stack>
       <Box p="5">
-        <Text fontSize={22} fontWeight="700" pt="24px" textAlign={"center"}>
+        <FrontEndTypo.H1 pt="24px" bold textAlign={"center"}>
           {t("CHOOSE_LANGUAGE")}
-        </Text>
-        <Heading pt="5" color="#828282" textAlign={"center"} fontSize={"22px"}>
+        </FrontEndTypo.H1>
+        <FrontEndTypo.H3 pt="5" color="textGreyColor.700" textAlign={"center"}>
           {t("PREFERED_LANGUAGE")}
-        </Heading>
+        </FrontEndTypo.H3>
 
         <HStack space={3} mt={50}>
           <Button
