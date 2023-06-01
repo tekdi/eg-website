@@ -46,7 +46,7 @@ const statusList = [
   },
   {
     status: "shortlisted_for_orientation",
-    btnStatus: "info",
+    btnStatus: "success",
     name: "SHORTLIST_FOR_ORIENTATION",
   },
   {
@@ -56,12 +56,12 @@ const statusList = [
   },
   {
     status: "selected_for_training",
-    btnStatus: "info",
+    btnStatus: "success",
     name: "SELECT_FOR_TRAINING",
   },
   {
     status: "selected_for_onboarding",
-    btnStatus: "info",
+    btnStatus: "success",
     colorScheme: "success",
     name: "SELECT_FOR_ONBOARDING",
   },

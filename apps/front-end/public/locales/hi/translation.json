@@ -319,6 +319,11 @@
   "PROFILE_DETAILS": "प्रोफ़ाइल विवरण",
   "MARK_AS_DROPOUT": "मार्क एज ड्रूपॉट",
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION":"पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है",
+  "PREVIOUS_SCHOOL_TYPE_PRIVATE_SCHOOL":"प्राइवेट स्कूल",
+  "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL":"सरकारी स्कूल",
+  "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED":"कभी पढ़ाई नहीं की",
+  "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL":"ओपन स्कूल",
+  "PREVIOUS_SCHOOL_TYPE_OTHER":"अन्य",
   "EDUCATIONAL": "शिक्षात्मक",
   "AADHAAR":"आधार",
   "SEND_OTP":"ओटीपी भेजें",
@@ -346,5 +351,7 @@
   "SEND_INVITES": "आमंत्रण भेजें",
   "ORIENTATION": "अभिविन्यास",
   "TRAINING": "प्रशिक्षण",
-  "ALL_PRERAKS": "सभी प्रेरक"
+  "ALL_PRERAKS": "सभी प्रेरक",
+  "All_AG_LEARNERS": "सभी एजी लर्नर्स",
+  "SEARCH_BY_AG_LEARNER_NAME": "एजी लर्नर नाम द्वारा खोजें"
 }
