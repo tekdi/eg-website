@@ -6,20 +6,11 @@ import {
   t,
   ImageView,
   BlueFillButton,
-  AdminTypo,,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import {
-  Button,
-  HStack,
-  Input,
-  Text,
-  VStack,
-  Modal,
-  Image,
-  Box,
-} from "native-base";
+import { Button, HStack, Input, VStack, Modal, Image, Box } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -78,9 +69,9 @@ const columns = (e) => [
             _icon={{ size: "35" }}
           />
         )}
-        <Text fontSize="16px" bold>
+        <AdminTypo.H5 bold>
           {row?.first_name + " " + row.last_name}
-        </Text>
+        </AdminTypo.H5>
       </HStack>
     ),
     sortable: true,

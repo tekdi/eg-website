@@ -10,6 +10,7 @@ import {
   Modal,
 } from "native-base";
 import {
+  AdminTypo,
   BodySmall,
   H1,
   H3,
@@ -117,7 +118,7 @@ export default function AgLearnerProfileView(props) {
               color="#666666"
               _icon={{ size: "60" }}
             />
-            <Text
+            <AdminTypo.H4
               fontFamily="Inter"
               fontStyle="normal"
               fontSize="16px"
@@ -125,7 +126,7 @@ export default function AgLearnerProfileView(props) {
               fontWeight="600px"
             >
               Khushboo Verma
-            </Text>
+            </AdminTypo.H4>
             <Box>{t("IDENTIFIED")}</Box>
           </VStack>
 
@@ -137,7 +138,7 @@ export default function AgLearnerProfileView(props) {
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <Text
+              <AdminTypo.H4
                 fontSize="14px"
                 color="#212121"
                 fontWeight="700"
@@ -145,7 +146,7 @@ export default function AgLearnerProfileView(props) {
                 fontStyle="normal"
               >
                 {t("PROFILE_DETAILS")}
-              </Text>
+              </AdminTypo.H4>
               <Box paddingTop="2">
                 <Progress value={45} size="xs" colorScheme="info" />
               </Box>
@@ -154,7 +155,7 @@ export default function AgLearnerProfileView(props) {
                   <HStack space="md" alignItems="Center">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
+                    <AdminTypo.H4
                       fontSize="14px"
                       color="#212121E"
                       fontWeight="400"
@@ -162,7 +163,7 @@ export default function AgLearnerProfileView(props) {
                       fontStyle="normal"
                     >
                       {t("BASIC_DETAILS")}
-                    </Text>
+                    </AdminTypo.H4>
                   </HStack>
 
                   <IconByName name="ArrowRightSLineIcon" color="#790000" />
@@ -172,7 +173,7 @@ export default function AgLearnerProfileView(props) {
                   <HStack alignItems="Center" space="md">
                     <IconByName name="MapPinLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
+                    <AdminTypo.H4
                       fontSize="14px"
                       color="#212121E"
                       fontWeight="400"
@@ -180,7 +181,7 @@ export default function AgLearnerProfileView(props) {
                       fontStyle="normal"
                     >
                       {t("ADD_YOUR_ADDRESS")}
-                    </Text>
+                    </AdminTypo.H4>
                   </HStack>
                   <IconByName name="ArrowRightSLineIcon" color="#790000" />
                 </HStack>
@@ -189,7 +190,7 @@ export default function AgLearnerProfileView(props) {
                   <HStack alignItems="Center" space="md">
                     <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
+                    <AdminTypo.H4
                       fontSize="14px"
                       color="#212121E"
                       fontWeight="400"
@@ -197,7 +198,7 @@ export default function AgLearnerProfileView(props) {
                       fontStyle="normal"
                     >
                       {t("AADHAAR_DETAILS")}
-                    </Text>
+                    </AdminTypo.H4>
                   </HStack>
 
                   <IconByName name="ArrowRightSLineIcon" color="#790000" />
@@ -215,7 +216,7 @@ export default function AgLearnerProfileView(props) {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <Text
+                <AdminTypo.H4
                   fontSize="14px"
                   color="#212121"
                   fontWeight="700"
@@ -223,7 +224,7 @@ export default function AgLearnerProfileView(props) {
                   fontStyle="normal"
                 >
                   {t("DOCUMENT_CHECKLIST")}
-                </Text>
+                </AdminTypo.H4>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
@@ -242,7 +243,7 @@ export default function AgLearnerProfileView(props) {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <Text
+                <AdminTypo.H4
                   fontSize="14px"
                   color="#212121"
                   fontWeight="700"
@@ -250,7 +251,7 @@ export default function AgLearnerProfileView(props) {
                   fontStyle="normal"
                 >
                   {t("ENROLLMENT_DETAILS")}
-                </Text>
+                </AdminTypo.H4>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
@@ -269,7 +270,7 @@ export default function AgLearnerProfileView(props) {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <Text
+                <AdminTypo.H4
                   fontSize="14px"
                   color="#212121"
                   fontWeight="700"
@@ -277,7 +278,7 @@ export default function AgLearnerProfileView(props) {
                   fontStyle="normal"
                 >
                   {t("CAMP_DETAILS")}
-                </Text>
+                </AdminTypo.H4>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
@@ -296,7 +297,7 @@ export default function AgLearnerProfileView(props) {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <Text
+                <AdminTypo.H4
                   fontSize="14px"
                   color="#212121"
                   fontWeight="700"
@@ -304,7 +305,7 @@ export default function AgLearnerProfileView(props) {
                   fontStyle="normal"
                 >
                   {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </Text>
+                </AdminTypo.H4>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
@@ -328,7 +329,7 @@ export default function AgLearnerProfileView(props) {
                 isDisabled
                 color="#790000"
               />
-              <Text
+              <AdminTypo.H4
                 color="#790000"
                 fontSize="14px"
                 fontWeight="700"
@@ -336,7 +337,7 @@ export default function AgLearnerProfileView(props) {
                 fontStyle="normal"
               >
                 {t("MARK_AS_DROPOUT")}
-              </Text>
+              </AdminTypo.H4>
             </HStack>
           </Button>
           <Button
@@ -349,7 +350,7 @@ export default function AgLearnerProfileView(props) {
             }}
           >
             <HStack alignItems="Center">
-              <Text
+              <AdminTypo.H4
                 color="#666666"
                 fontSize="14px"
                 fontWeight="700"
@@ -357,7 +358,7 @@ export default function AgLearnerProfileView(props) {
                 fontStyle="normal"
               >
                 {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </Text>
+              </AdminTypo.H4>
             </HStack>
           </Button>
         </VStack>
