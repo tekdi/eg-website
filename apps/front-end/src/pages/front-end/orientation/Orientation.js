@@ -74,9 +74,9 @@ export default function Orientation({
       <Button onPress={() => onShowScreen(true)}>
         <Text>Select preraks</Text>
       </Button>
-      <Text justifyContent="center" alignItems="center">
+      <AdminTypo.H3 color="textGreyColor.800" bold>
         {userIds !== undefined ? Object.values(userIds).length : ""}
-      </Text>
+      </AdminTypo.H3>
     </VStack>
   );
 
