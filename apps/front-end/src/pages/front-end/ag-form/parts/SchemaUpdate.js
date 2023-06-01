@@ -3,73 +3,49 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "IDENTIFY_THE_AG_LEARNER",
+      // title: "Contact Information",
+      // description: "PLEASE_WHATSAPP_NUMBER",
       type: "object",
-      required: ["first_name", "last_name"],
+      required: ["device_ownership"],
       properties: {
-        first_name: {
+        device_ownership: {
           type: "string",
-          title: "FIRST_NAME",
+          label: "OWNERSHIP",
+          format: "RadioBtn",
+          enumNames: ["Self", "Family Member", "Neighbour", "Other"],
+          enum: ["self", "family_member", "neighbour", "other"],
         },
-        last_name: {
+        device_type: {
           type: "string",
-          title: "LAST_NAME",
-        },
-        role: {
-          format: "hidden",
-          type: "string",
-          default: "beneficiaries",
-        },
-        email_id: {
-          format: "hidden",
-          type: "string",
-          default: "joey@gmail.com",
-        },
-        role_fields: {
-          properties: {
-            facilitator_id: {
-              format: "hidden",
-              type: "string",
-              default: localStorage.getItem("id"),
-            },
-          },
+          label: "TYPE_OF_MOBILE_PHONE",
+          format: "CustomR",
+          enumNames: ["Smartphone", "Basic"],
+          enum: ["smartphone", "basic"],
         },
       },
     },
     2: {
-      title: "Contact Information",
-      description: "PLEASE_WHATSAPP_NUMBER",
-      type: "object",
-      required: ["mobile"],
-      properties: {
-        mobile: {
-          type: "string",
-          title: "MOBILE_NUMBER",
-        },
-      },
-    },
-
-    3: {
       title: "Complete Address",
       type: "object",
+      // required: ["state", "district", "block", "village"],
       properties: {
         state: {
-          title: "STATE",
           type: "string",
+          label: "STATE",
           format: "select",
         },
         district: {
-          title: "DISTRICT",
+          label: "DISTRICT",
           type: "string",
           format: "select",
         },
         block: {
-          title: "BLOCK",
+          label: "BLOCK",
           type: "string",
           format: "select",
         },
         village: {
-          title: "VILLAGE_WARD",
+          label: "VILLAGE_WARD",
           type: "string",
           format: "select",
         },
@@ -80,7 +56,7 @@ export default {
       },
     },
 
-    4: {
+    3: {
       title: "Personal Details",
       type: "object",
       //required: ["marital_status", "social_category"],
@@ -88,6 +64,7 @@ export default {
         marital_status: {
           label: "MARITAL_STATUS",
           type: "string",
+          format: "CustomR",
           enumNames: [
             "Married",
             "Unmarried",
@@ -98,34 +75,36 @@ export default {
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
+          format: "CustomR",
+
           enumNames: ["General", "S.C.", "S.T.", "O.B.C.", "Other"],
           enum: ["general", "sc", "st", "obc", "other"],
         },
       },
     },
 
-    5: {
+    4: {
       title: "Education Details",
       type: "object",
       required: [],
       properties: {
-        type_of_student: {
-          title: "TYPE_OF_STUDENT",
+        previous_school_type: {
+          label: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
         },
-        last_year_of_education: {
-          title: "LAST_YEAR_OF_EDUCATION",
+        last_standard_of_education_year: {
+          label: "LAST_YEAR_OF_EDUCATION",
           type: "string",
           format: "select",
         },
         last_standard_of_education: {
-          title: "LAST_STANDARD_OF_EDUCATION",
+          label: "LAST_STANDARD_OF_EDUCATION",
           type: "string",
           format: "select",
         },
-        reason_for_leaving_education: {
-          title: "REASON_FOR_LEAVING_EDUCATION",
+        reason_of_leaving_education: {
+          label: "REASON_FOR_LEAVING_EDUCATION",
           type: "string",
           format: "select",
         },

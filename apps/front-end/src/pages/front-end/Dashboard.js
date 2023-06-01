@@ -26,6 +26,7 @@ import {
   Select,
   Image,
   selected,
+  Container,
 } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -64,9 +65,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       _appBar={{ profile_url: facilitator?.documents?.[0]?.name }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack pb="5" bg="gray.200">
+      <VStack pb="5" >
         <VStack space="5">
           <HStack
+           {...styles.inforBox}
             p="5"
             space="5"
             borderBottomWidth="1"
@@ -493,6 +495,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               _text={{ textAlign: "center", textTransform: "capitalize" }}
               justifyContent="center"
             />
+          </VStack>
+          <VStack>
+            <Pressable
+              alignItems={"center"}
+              onPress={(e) => navigate("/beneficiary")}
+            >
+              <HStack
+                borderWidth="1"
+                p="3"
+                rounded="full"
+                justifyContent="center"
+                width={"300px"}
+              >
+                <FrontEndTypo.H2>{t("CREATE_BENEFICIARIES")}</FrontEndTypo.H2>
+              </HStack>
+            </Pressable>
           </VStack>
         </VStack>
       </VStack>
