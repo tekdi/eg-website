@@ -85,7 +85,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
         <HStack display="flex" flexDirection="row" space="xl">
           <BoxBlue
             justifyContent="center"
-            
           >
             <VStack alignItems={"Center"}>
               <Pressable onPress={onShowScreen}>
@@ -105,7 +104,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </BoxBlue>
           <BoxBlue
             justifyContent="center"
-            
           >
             <VStack alignItems={"Center"}>
               <Image
@@ -123,7 +121,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </BoxBlue>
           <BoxBlue
             justifyContent="center"
-            
           >
             <VStack alignItems={"Center"}>
               <Image
@@ -141,7 +138,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </BoxBlue>
           <BoxBlue
             justifyContent="center"
-           
           >
             <VStack alignItems={"Center"}>
               <Image
@@ -174,7 +170,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 setModalVisible(!modalVisible);
               }}
             >
-              {" "}
               {t("SCHEDULE_EVENT")}
             </AdminTypo.Secondarybutton>
 
