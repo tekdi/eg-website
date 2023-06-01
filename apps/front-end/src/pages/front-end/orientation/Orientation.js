@@ -71,12 +71,24 @@ export default function Orientation({
 
   const SelectButton = () => (
     <VStack>
-      <Button onPress={(e) => onShowScreen(true)}>
+      <Button onPress={() => onShowScreen(true)}>
         <Text>Select preraks</Text>
       </Button>
       <Text justifyContent="center" alignItems="center">
         {userIds !== undefined ? Object.values(userIds).length : ""}
       </Text>
+    </VStack>
+  );
+
+  const TimePickerComponent = ({ value, onChange }) => (
+    <VStack>
+      <input
+        className="form-control"
+        type="time"
+        style={{ height: 40 }}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </VStack>
   );
 
@@ -117,6 +129,12 @@ export default function Orientation({
     },
     reminders: {
       "ui:widget": "checkboxes",
+    },
+    start_time: {
+      "ui:widget": TimePickerComponent,
+    },
+    end_time: {
+      "ui:widget": TimePickerComponent,
     },
   };
   const styles = {
@@ -484,7 +502,7 @@ export default function Orientation({
           <Modal.Body p="3" pb="10" bg="white">
             <Form
               ref={formRef}
-              widgets={{ RadioBtn, CustomR, select }}
+              widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
               templates={{
                 ButtonTemplates: { AddButton },
                 FieldTemplate,
