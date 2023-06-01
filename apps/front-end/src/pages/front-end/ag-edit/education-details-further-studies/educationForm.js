@@ -122,9 +122,22 @@ export default function App({ facilitator, ip, onClick, id }) {
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
-    console.log("qData", qData);
+    console.log("qData", qData?.result);
+    let last_standard_of_education =
+      qData?.result?.core_beneficiaries[0]?.last_standard_of_education;
+    let last_standard_of_education_year =
+      qData?.result?.core_beneficiaries[0]?.last_standard_of_education_year;
+    let reason_of_leaving_education =
+      qData?.result?.core_beneficiaries[0]?.reason_of_leaving_education;
+    let type_of_learner = qData?.result?.core_beneficiaries[0]?.type_of_learner;
 
-    setFormData(qData.result);
+    setFormData({
+      ...formData,
+      type_of_learner: type_of_learner,
+      reason_of_leaving_education: reason_of_leaving_education,
+      last_standard_of_education_year: last_standard_of_education_year,
+      last_standard_of_education: last_standard_of_education,
+    });
   }, []);
 
   React.useEffect(async () => {
@@ -164,7 +177,7 @@ export default function App({ facilitator, ip, onClick, id }) {
     }
 
     setSchema(newSchema);
-  }, [page]);
+  }, []);
 
   console.log("formData", formData);
 
@@ -530,10 +543,12 @@ export default function App({ facilitator, ip, onClick, id }) {
     }
   };
 
-  const onSubmit = async (data) => {
-    console.log("hii");
+  const EditEducation = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
+    if (updateDetails) {
+      navigate(`/beneficiary/edit/future-education/${userId}`);
+    }
   };
 
   return (
@@ -579,7 +594,6 @@ export default function App({ facilitator, ip, onClick, id }) {
               formData,
               onChange,
               onError,
-              onSubmit,
               transformErrors,
             }}
           >
@@ -587,7 +601,7 @@ export default function App({ facilitator, ip, onClick, id }) {
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => formRef?.current?.submit()}
+              onPress={() => EditEducation()}
             >
               {"SAVE"}
             </Button>
