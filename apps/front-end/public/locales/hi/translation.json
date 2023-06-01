@@ -356,5 +356,7 @@
   "SEND_INVITES": "आमंत्रण भेजें",
   "ORIENTATION": "अभिविन्यास",
   "TRAINING": "प्रशिक्षण",
-  "ALL_PRERAKS": "सभी प्रेरक"
+  "ALL_PRERAKS": "सभी प्रेरक",
+  "All_AG_LEARNERS": "सभी एजी लर्नर्स",
+  "SEARCH_BY_AG_LEARNER_NAME": "एजी लर्नर नाम द्वारा खोजें"
 }
