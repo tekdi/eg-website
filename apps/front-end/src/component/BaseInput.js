@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { BodySmall, H2, t, FloatingInput } from "@shiksha/common-lib";
+import { BodySmall, H2, t, FloatingInput, FrontEndTypo } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 
 export function BaseInputTemplate(props) {
@@ -85,8 +85,7 @@ export const ArrayFieldTemplate = ({ schema, ...props }) => {
           {props.items.map((element) => element.children)}
           {props.canAdd && (
             <Button
-              variant={"outlinePrimary"}
-              colorScheme="green"
+              variant="link"
               onPress={(e) => {
                 console.log(e);
                 const isValid = e.target.closest("form.rjsf"); //?.validateForm();
@@ -96,7 +95,7 @@ export const ArrayFieldTemplate = ({ schema, ...props }) => {
                 }
               }}
             >
-              {t("ADD_EXPERIENCE")}
+              <FrontEndTypo.H3 color="blueText.400" underline bold> {t("ADD_EXPERIENCE")}</FrontEndTypo.H3>
             </Button>
           )}
         </div>

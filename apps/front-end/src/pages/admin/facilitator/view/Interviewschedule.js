@@ -18,47 +18,40 @@ export default function Interviewschedule() {
       {status ? (
         <Shortlisted setStatus={setStatus} status={status} />
       ) : (
-        <Box paddingTop="5">
-          <HStack alignItems="center">
-            <Box
-              paddingLeft="24px"
-              flexDirection="column"
-              alignItems="flex-start"
-              width="713px"
-              height="130px"
-            >
-              <AdminTypo.H2 fontSize="26px">
+        <VStack  width="100%" p="5">
+          <HStack alignItems="center" justifyContent="space-between">
+              
+              <VStack justifyContent="center">
+              <AdminTypo.H5 bold color="textGreyColor.800">
                 {t("SCHEDULE_AN_INTERVIEW")}
-              </AdminTypo.H2>
-              <HStack paddingTop="15px" ml="-2%">
+              </AdminTypo.H5>
+              <HStack alignItems="center">
                 <IconByName
                   color="interviewIconColor"
                   name="TimeLineIcon"
                 ></IconByName>
-                <AdminTypo.H5 bold marginTop="2%">
+                <AdminTypo.H6 className="fw-500" color="textGreyColor.800">
                   16th May , 11:00 {t("TO")} 12:00
-                </AdminTypo.H5>
+                </AdminTypo.H6>
                 <IconByName
                   color="interviewIconColor"
                   name="MapPinLineIcon"
                 ></IconByName>
-                <AdminTypo.H5 bold marginTop="2%">
+                <AdminTypo.H6 className="fw-500" color="textGreyColor.800">
                   {t("ON_PHONE")}
-                </AdminTypo.H5>
+                </AdminTypo.H6>
               </HStack>
-            </Box>
-            <Box paddingBottom="15px">
+              </VStack>
               <AdminTypo.Secondarybutton
                 background="blueText.50"
-                _text={{ fontSize: "16px" }}
-                leftIcon={<IconByName name="EditBoxLineIcon" size="sm" />}
+                _text={{ fontSize: "14px" }}
+                leftIcon={<IconByName name="EditBoxLineIcon" size="16px" />}
                 onPress={() => setStatus(true)}
               >
                 {t("EDIT_DETAILS")}
               </AdminTypo.Secondarybutton>
-            </Box>
           </HStack>
-        </Box>
+          </VStack>
       )}
     </Stack>
   );
