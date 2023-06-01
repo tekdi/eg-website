@@ -38,6 +38,7 @@ import {
   sendAndVerifyOtp,
   CustomOTPBox,
   benificiaryRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -226,7 +227,7 @@ export default function AgformUpdate({ userTokenInfo }) {
       setSchema(newSchema);
     }
 
-    const ListOfEnum = await benificiaryRegistoryService.listOfEnum();
+    const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
 
     let newSchema = schema;
