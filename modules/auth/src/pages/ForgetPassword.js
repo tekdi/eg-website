@@ -25,6 +25,7 @@ import {
   authRegistryService,
   CustomOTPBox,
   FrontEndTypo,
+  FloatingInput
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -158,7 +159,7 @@ export default function ForgetPassword() {
         minH={Height - ref?.clientHeight}
         space="50px"
       >
-        <FrontEndTypo.H1 color="textMaroonColor.400" textAlign="center" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.400" ml="6"  pt="6">
           {t("USER_RESET_PASSWORD")}
         </FrontEndTypo.H1>
         <Image

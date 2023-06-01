@@ -65,9 +65,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       _appBar={{ profile_url: facilitator?.documents?.[0]?.name, exceptIconsShow:["backBtn", "userInfo"] }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack pb="5" bg="gray.200">
+      <VStack pb="5" >
         <VStack space="5">
           <HStack
+           {...styles.inforBox}
             p="5"
             space="5"
             borderBottomWidth="1"
