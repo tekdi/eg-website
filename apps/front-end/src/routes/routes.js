@@ -10,7 +10,6 @@ import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
 import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 import Success from "pages/front-end/Success";
-import AgMenuBar from "pages/admin/facilitator/view/AgMenuBar";
 import Profile from "pages/front-end/PrerakProfileDetailsView";
 import FacilitatorListView from "pages/front-end/BenificiaryListView";
 
