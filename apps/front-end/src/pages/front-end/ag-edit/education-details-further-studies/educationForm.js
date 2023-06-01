@@ -32,6 +32,9 @@ import {
   getBase64,
   BodyMedium,
   changeLanguage,
+  benificiaryRegistoryService,
+  StudentEnumService,
+  AgRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -90,7 +93,8 @@ const RadioBtn = ({ options, value, onChange, required }) => {
 };
 
 // App
-export default function App({ facilitator, ip, onClick }) {
+export default function App({ facilitator, ip, onClick, id }) {
+  const [userId, setuserId] = React.useState(id);
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -115,6 +119,54 @@ export default function App({ facilitator, ip, onClick }) {
   window.onbeforeunload = function () {
     return false;
   };
+
+  React.useEffect(async () => {
+    const qData = await benificiaryRegistoryService.getOne(userId);
+    console.log("qData", qData);
+
+    setFormData(qData.result);
+  }, []);
+
+  React.useEffect(async () => {
+    const studentTypeData = await StudentEnumService.getTypeStudent();
+    const last_education_year = await StudentEnumService.lastYear();
+    const lastStandard = await StudentEnumService.lastStandard();
+    const ReasonOfLeaving = await StudentEnumService.ReasonOfLeaving();
+    let newSchema = schema;
+    if (schema["properties"]["type_of_learner"]) {
+      newSchema = getOptions(newSchema, {
+        key: "type_of_learner",
+        arr: studentTypeData,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "last_standard_of_education_year",
+        arr: last_education_year,
+        title: "value",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "last_standard_of_education",
+        arr: lastStandard,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "reason_of_leaving_education",
+        arr: ReasonOfLeaving,
+        title: "title",
+        value: "value",
+      });
+    }
+
+    setSchema(newSchema);
+  }, [page]);
+
+  console.log("formData", formData);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -142,92 +194,92 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-    DOB: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
+  // const uiSchema = {
+  //   dob: {
+  //     "ui:widget": "alt-date",
+  //     "ui:options": {
+  //       yearsRange: yearsRange,
+  //       hideNowButton: true,
+  //       hideClearButton: true,
+  //     },
+  //   },
+  //   DOB: {
+  //     "ui:widget": "alt-date",
+  //     "ui:options": {
+  //       yearsRange: yearsRange,
+  //       hideNowButton: true,
+  //       hideClearButton: true,
+  //     },
+  //   },
 
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    //added new
+  //   qualification: {
+  //     "ui:widget": CustomR,
+  //   },
+  //   //added new
 
-    tellindetail: {
-      "ui:widget": "textarea",
-    },
-    lastyeareducation: {
-      "ui:widget": "select",
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-    makeWhatsapp: {
-      "ui:widget": RadioBtn,
-    },
-    maritalstatus: {
-      "ui:widget": CustomR,
-    },
-    socialstatus: {
-      "ui:widget": CustomR,
-    },
+  //   tellindetail: {
+  //     "ui:widget": "textarea",
+  //   },
+  //   lastyeareducation: {
+  //     "ui:widget": "select",
+  //   },
+  //   degree: {
+  //     "ui:widget": CustomR,
+  //   },
+  //   gender: {
+  //     "ui:widget": CustomR,
+  //   },
+  //   type_mobile: {
+  //     "ui:widget": CustomR,
+  //   },
+  //   sourcing_channel: {
+  //     "ui:widget": CustomR,
+  //   },
+  //   availability: {
+  //     "ui:widget": RadioBtn,
+  //   },
+  //   device_ownership: {
+  //     "ui:widget": RadioBtn,
+  //   },
+  //   device_type: {
+  //     "ui:widget": RadioBtn,
+  //   },
+  //   experience: {
+  //     related_to_teaching: {
+  //       "ui:widget": RadioBtn,
+  //     },
+  //   },
+  //   makeWhatsapp: {
+  //     "ui:widget": RadioBtn,
+  //   },
+  //   maritalstatus: {
+  //     "ui:widget": CustomR,
+  //   },
+  //   socialstatus: {
+  //     "ui:widget": CustomR,
+  //   },
 
-    ownership: {
-      "ui:widget": RadioBtn,
-    },
-    // custom radio button with property name
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-  };
+  //   ownership: {
+  //     "ui:widget": RadioBtn,
+  //   },
+  //   // custom radio button with property name
+  //   vo_experience: {
+  //     items: {
+  //       experience_in_years: { "ui:widget": CustomR },
+  //       related_to_teaching: {
+  //         "ui:widget": RadioBtn,
+  //       },
+  //     },
+  //   },
+  //   experience: {
+  //     items: {
+  //       experience_in_years: { "ui:widget": CustomR },
+  //       related_to_teaching: {
+  //         "ui:widget": RadioBtn,
+  //       },
+  //     },
+  //   },
+  // };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -295,77 +347,7 @@ export default function App({ facilitator, ip, onClick }) {
     };
   };
 
-  React.useEffect(async () => {
-    if (schema?.properties?.qualification) {
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      let newSchema = schema;
-      if (schema["properties"]["qualification"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex = newSchema?.properties?.qualification?.enum[index];
-              }
-            }
-          );
-          if (valueIndex !== "" && formData.qualification == valueIndex) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
-        }
-      }
-      if (schema["properties"]["degree"]) {
-        newSchema = getOptions(newSchema, {
-          key: "degree",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
-      setSchema(newSchema);
-    }
-
-    if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
-      let newSchema = schema;
-      if (schema["properties"]["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
-      newSchema = await setDistric({
-        schemaData: newSchema,
-        state: formData?.state,
-        district: formData?.district,
-        block: formData?.block,
-      });
-      setSchema(newSchema);
-    }
-
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
-    }
-  }, [page]);
-
   React.useEffect(() => {
-    console.log(schema1.properties, "sandesh");
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -373,9 +355,6 @@ export default function App({ facilitator, ip, onClick }) {
       setSchema(properties[newSteps[0]]);
       console.log(newSteps);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
-      setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
     if (facilitator?.id) {
@@ -385,33 +364,33 @@ export default function App({ facilitator, ip, onClick }) {
     }
   }, []);
 
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.mobile) {
-      setSubmitBtn(t("SAVE"));
-      setAddBtn(t("ADD_EXPERIENCE"));
-    } else if (schema?.properties?.reasonforleaving) {
-      if (schema?.properties?.reasonforleaving.enum[8] == "other") {
-        console.log("inner 2");
-        setSubmitBtn(t("SAVE"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-        console.log("eee");
-      }
-    } else {
-      setSubmitBtn(t("SAVE"));
-    }
-  };
+  // const updateBtnText = () => {
+  //   if (schema?.properties?.vo_experience) {
+  //     if (formData.vo_experience?.length > 0) {
+  //       setSubmitBtn(t("NEXT"));
+  //       setAddBtn(t("ADD_EXPERIENCE"));
+  //     } else {
+  //       setSubmitBtn(t("NO"));
+  //       setAddBtn(t("YES"));
+  //     }
+  //   } else if (schema?.properties?.mobile) {
+  //     setSubmitBtn(t("SAVE"));
+  //     setAddBtn(t("ADD_EXPERIENCE"));
+  //   } else if (schema?.properties?.reasonforleaving) {
+  //     if (schema?.properties?.reasonforleaving.enum[8] == "other") {
+  //       console.log("inner 2");
+  //       setSubmitBtn(t("SAVE"));
+  //       setAddBtn(t("ADD_EXPERIENCE"));
+  //       console.log("eee");
+  //     }
+  //   } else {
+  //     setSubmitBtn(t("SAVE"));
+  //   }
+  // };
 
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
+  // React.useEffect(() => {
+  //   updateBtnText();
+  // }, [formData, page, lang]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
@@ -447,61 +426,61 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-      }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
-      }
-    }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-      }
-    }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+  // const customValidate = (data, errors, c) => {
+  //   if (data?.mobile) {
+  //     if (data?.mobile?.toString()?.length !== 10) {
+  //       errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
+  //     }
+  //     if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+  //       errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
+  //     }
+  //   }
+  //   if (data?.aadhar_token) {
+  //     if (
+  //       data?.aadhar_token &&
+  //       !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+  //     ) {
+  //       errors?.aadhar_token?.addError(
+  //         `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+  //       );
+  //     }
+  //   }
+  //   if (data?.dob) {
+  //     const years = moment().diff(data?.dob, "years");
+  //     if (years < 18) {
+  //       errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
+  //     }
+  //   }
+  //   ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+  //     if (
+  //       key === "first_name" &&
+  //       data?.first_name?.replaceAll(" ", "") === ""
+  //     ) {
+  //       errors?.[key]?.addError(
+  //         `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+  //       );
+  //     }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
-    });
+  //     if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+  //       errors?.[key]?.addError(
+  //         `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+  //       );
+  //     }
+  //   });
+  //   ["vo_experience", "experience"].forEach((keyex) => {
+  //     data?.[keyex]?.map((item, index) => {
+  //       ["role_title", "organization", "description"].forEach((key) => {
+  //         if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+  //           errors[keyex][index]?.[key]?.addError(
+  //             `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+  //           );
+  //         }
+  //       });
+  //     });
+  //   });
 
-    return errors;
-  };
+  //   return errors;
+  // };
 
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
@@ -520,121 +499,12 @@ export default function App({ facilitator, ip, onClick }) {
     });
   };
 
-  const setDistric = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-      });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setVilage = async ({ block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
     updateData(newData);
-    if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({
-          aadhar_token: data?.aadhar_token,
-        });
-        if (result.isUserExist) {
-          const newErrors = {
-            aadhar_token: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
 
     if (id === "root_qualification") {
       if (schema?.properties?.qualification) {
@@ -651,37 +521,6 @@ export default function App({ facilitator, ip, onClick }) {
         }
       }
     }
-
-    if (id === "root_device_ownership") {
-      if (schema?.properties?.device_ownership) {
-        if (data?.device_ownership == "no") {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
-
-    if (id === "root_state") {
-      await setDistric({
-        schemaData: schema,
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-      });
-    }
-
-    if (id === "root_district") {
-      await setBlock({
-        district: data?.district,
-        block: data?.block,
-        schemaData: schema,
-      });
-    }
-
-    if (id === "root_block") {
-      await setVilage({ block: data?.block, schemaData: schema });
-    }
   };
 
   const onError = (data) => {
@@ -692,224 +531,16 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
-    let newFormData = data.formData;
-    if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
-      };
-    }
-
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-      };
-    }
-
-    const newData = {
-      ...formData,
-      ...newFormData,
-      ["form_step_number"]: parseInt(page) + 1,
-    };
-    setFormData(newData);
-    updateData(newData);
-    if (_.isEmpty(errors)) {
-      setStep();
-    } else {
-      const key = Object.keys(errors);
-      if (key[0]) {
-        goErrorPage(key[0]);
-      }
-    }
-  };
-
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
-      const data = await getBase64(file);
-      setCameraUrl(data);
-      setFormData({ ...formData, ["profile_url"]: data });
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-
-  if (cameraUrl) {
-    return (
-      <Layout
-        _appBar={{
-          lang,
-          setLang,
-          onPressBackButton: (e) => {
-            setCameraUrl();
-            setCameraModal(false);
-          },
-        }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          {/* add the profile image */}
-          <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
-          <h5 color="red.1000" fontSize="3">
-            {t("CLEAR_PROFILE_MESSAGE")}
-          </h5>
-          <Center>
-            <Image
-              source={{
-                uri: cameraUrl,
-              }}
-              alt=""
-              size="324px"
-            />
-          </Center>
-          <Button
-            variant={"primary"}
-            onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
-            }}
-          >
-            {t("SUBMIT")}
-          </Button>
-          <Button
-            variant={"secondary"}
-            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
-        </VStack>
-      </Layout>
-    );
-  }
-  if (cameraModal) {
-    return (
-      <Camera
-        {...{
-          cameraModal,
-          setCameraModal,
-          cameraUrl,
-          setCameraUrl: async (url) => {
-            setCameraUrl(url);
-            setFormData({ ...formData, ["profile_url"]: url });
-          },
-        }}
-      />
-    );
-  }
-
-  if (page === "upload") {
-    return (
-      <Layout
-        _appBar={{ onPressBackButton: (e) => setPage("13"), lang, setLang }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          {/* Box removal */}
-          <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
-          <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
-          <Button
-            variant={"primary"}
-            leftIcon={
-              <IconByName
-                name="CameraLineIcon"
-                color="white"
-                size={2}
-                isDisabled
-              />
-            }
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_PHOTO")}
-          </Button>
-          <VStack space={2}>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Button
-              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-              variant={"secondary"}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-            >
-              {t("UPLOAD_PHOTO")}
-            </Button>
-            {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
-            ) : (
-              <React.Fragment />
-            )}
-          </VStack>
-          <Button
-            variant={"primary"}
-            onPress={async (e) => {
-              await formSubmitUpdate({ ...formData, form_step_number: "13" });
-              if (onClick) onClick("success");
-            }}
-          >
-            {t("SKIP_SUBMIT")}
-          </Button>
-        </VStack>
-      </Layout>
-    );
-  }
-  const AddButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="green"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          if (formRef?.current.validateForm()) {
-            btnProps?.onClick();
-          }
-        }}
-      >
-        <HStack>
-          {icon} {addBtn}
-        </HStack>
-      </Button>
-    );
-  };
-
-  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="red"
-        mb="2"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          btnProps?.onClick();
-        }}
-      >
-        <HStack>
-          {icon} {t("REMOVE_EXPERIENCE")}
-        </HStack>
-      </Button>
-    );
+    console.log("hii");
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    console.log("page1", updateDetails);
   };
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
+        onlyIconsShow: ["backBtn", "userInfo"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -933,7 +564,6 @@ export default function App({ facilitator, ip, onClick }) {
             key={lang + addBtn}
             ref={formRef}
             templates={{
-              ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
               ArrayFieldTitleTemplate,
               ObjectFieldTemplate,
@@ -946,9 +576,7 @@ export default function App({ facilitator, ip, onClick }) {
             {...{
               validator,
               schema: schema ? schema : {},
-              uiSchema,
               formData,
-              customValidate,
               onChange,
               onError,
               onSubmit,
@@ -961,7 +589,7 @@ export default function App({ facilitator, ip, onClick }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {"SAVE"}
             </Button>
           </Form>
         ) : (

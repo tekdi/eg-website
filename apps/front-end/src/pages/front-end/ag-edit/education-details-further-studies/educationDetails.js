@@ -12,7 +12,7 @@ export default function basicDetails() {
 
   return (
     <VStack>
-      <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
+      <Form {...{ ip, id, facilitator }} onClick={(e) => setPage(e)} />
     </VStack>
   );
 }

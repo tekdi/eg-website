@@ -53,49 +53,6 @@ import {
   RadioBtn,
   CustomR,
 } from "../../../../component/BaseInput.js";
-// const CustomR = ({ options, value, onChange, required }) => {
-//   return (
-//     <CustomRadio
-//       items={options?.enumOptions}
-//       value={value}
-//       required={required}
-//       onChange={(value) => onChange(value)}
-//     />
-//   );
-// };
-
-// const RadioBtn = ({ options, value, onChange, required }) => {
-//   const items = options?.enumOptions;
-//   return (
-//     <Radio.Group
-//       name="exampleGroup"
-//       defaultValue="1"
-//       accessibilityLabel="pick a size"
-//       value={value}
-//       onChange={(value) => onChange(value)}
-//     >
-//       <Stack
-//         direction={{
-//           base: "column",
-//           md: "row",
-//         }}
-//         alignItems={{
-//           base: "flex-start",
-//           md: "center",
-//         }}
-//         space={4}
-//         w="75%"
-//         maxW="300px"
-//       >
-//         {items.map((item) => (
-//           <Radio key={item?.value} value={item?.value} size="lg">
-//             {item?.label}
-//           </Radio>
-//         ))}
-//       </Stack>
-//     </Radio.Group>
-//   );
-// };
 
 // App
 export default function agFormEdit({ ip, id }) {
@@ -141,9 +98,9 @@ export default function agFormEdit({ ip, id }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
+  // React.useEffect(() => {
+  //   getImage();
+  // }, [page, credentials]);
 
   //getting data
   React.useEffect(async () => {
