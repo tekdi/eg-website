@@ -13,7 +13,7 @@ import {
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
-import Orientation from "../Orientation";
+import Orientation from "./Orientation";
 import {
   Box,
   Button,
@@ -95,7 +95,7 @@ const columns = (e) => [
   },
   {
     name: t("REGION"),
-    selector: (row) => row?.gender,
+    selector: (row) => (row?.district ? row?.district : ""),
     sortable: false,
     attr: "city",
   },
@@ -188,71 +188,76 @@ const scheduleCandidates = (e) => [
   // },
 ];
 
-export default function orientationScreen() {
-  const [page, setPage] = React.useState("screen1");
-  const [code, setCode] = React.useState("en");
-  const [refAppBar, RefAppBar] = React.useState();
-  const [selectedData, setSelectedData] = React.useState();
-  const onShowScreen = () => {
-    setPage("screen2");
-  };
-  const onClick = () => {
-    setPage("screen3");
-  };
-  return (
-    <>
-      {page === "screen1" && <Orientation onShowScreen={onShowScreen} />}
-      {page === "screen2" && (
-        <Layout
-          getRefAppBar={(e) => RefAppBar(e)}
-          isDisabledAppBar={page === "screen1"}
-          isCenter={true}
-          key={code}
-          _appBar={{ onlyIconsShow: ["langBtn"] }}
-          _page={{ _scollView: { bg: "white" } }}
-        >
-          <Page2 onClick={onClick} setSelectedData={selectedData} />
-        </Layout>
-      )}
+export default function OrientationScreen() {
+  //   const [page, setPage] = React.useState("screen1");
+  //   const [code, setCode] = React.useState("en");
+  //   const [refAppBar, RefAppBar] = React.useState();
+  //   const [selectedData, setSelectedData] = React.useState();
+  //   const onShowScreen = () => {
+  //     setPage("screen2");
+  //   };
+  //   const onClick = () => {
+  //     setPage("screen3");
+  //   };
+  //   return (
+  //     <>
+  //       {page === "screen1" && <Orientation onShowScreen={onShowScreen} />}
+  //       {page === "screen2" && (
+  //         <Layout
+  //           getRefAppBar={(e) => RefAppBar(e)}
+  //           isDisabledAppBar={page === "screen1"}
+  //           isCenter={true}
+  //           key={code}
+  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
+  //           _page={{ _scollView: { bg: "white" } }}
+  //         >
+  //           <Page2 onClick={onClick} setSelectedData={selectedData} />
+  //         </Layout>
+  //       )}
 
-      {page === "screen3" && (
-        <Layout
-          getRefAppBar={(e) => RefAppBar(e)}
-          isDisabledAppBar={page === "screen1"}
-          isCenter={true}
-          key={code}
-          _appBar={{ onlyIconsShow: ["langBtn"] }}
-          _page={{ _scollView: { bg: "white" } }}
-        >
-          <Page3 setSelectedData={selectedData} />
-        </Layout>
-      )}
-    </>
-  );
-}
+  //       {page === "screen3" && (
+  //         <Layout
+  //           getRefAppBar={(e) => RefAppBar(e)}
+  //           isDisabledAppBar={page === "screen1"}
+  //           isCenter={true}
+  //           key={code}
+  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
+  //           _page={{ _scollView: { bg: "white" } }}
+  //         >
+  //           <Page3 setSelectedData={selectedData} />
+  //         </Layout>
+  //       )}
+  //     </>
+  //   );
+  // }
 
-const Page1 = ({ onShowScreen }) => {
-  return (
-    <Box>
-      <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
-    </Box>
-  );
-};
+  // const Page1 = ({ onShowScreen }) => {
+  //   return (
+  //     <Box>
+  //       <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
+  //     </Box>
+  //   );
+  // };
 
-const Page2 = ({ onClick }) => {
+  // const Page2 = ({ onClick }) => {
   changeLanguage(localStorage.getItem("lang"));
   const [data, setData] = React.useState([]);
+  const [userIds, setUserIds] = React.useState({});
   const [filterObj, setFilterObj] = React.useState();
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [selectedRowData, setSelectedRowData] = React.useState();
+  const onClick = () => {
+    setPage("screen3");
+  };
+
   React.useEffect(async () => {
     setLoading(true);
     const result = await facilitatorRegistryService.getAll(filterObj);
-
-    setData(result.data);
+    setData(result?.data);
 
     setPaginationTotalRows(result?.totalCount);
     setLoading(false);
@@ -263,62 +268,90 @@ const Page2 = ({ onClick }) => {
   }, [page, limit]);
 
   const handleSelectRow = (state) => {
-    setSelectedRowData(state.selectedRows);
+    const arr = state?.selectedRows;
+    let newObj = {};
+    arr.forEach((e) => {
+      newObj = { ...newObj, [e.id]: e };
+    });
+    setUserIds({ ...userIds, ...newObj });
+    // setSelectedRowData(state.selectedRows);
   };
-
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
   return (
-    <Modal isOpen={true} onClose={false} safeAreaTop={true}>
-      <Modal.Content {...stylesheet.modalxxl}>
-        <Modal.CloseButton />
-        <Modal.Header p="5" borderBottomWidth="0">
-          <HStack justifyContent={"center"}>
-            <AdminTypo.H2 color="textGreyColor.500" bold>
+    <Box>
+      <Orientation
+        userIds={userIds}
+        onShowScreen={setIsOpen}
+        getFormData={(e) => console.log(e)}
+        onClick={onClick}
+        hi={"hi"}
+      />
+      <Modal
+        isOpen={isOpen}
+        onClose={(e) => setIsOpen(false)}
+        safeAreaTop={true}
+      >
+        <Modal.Content {...stylesheet.modalxxl}>
+          <Modal.CloseButton />
+          <Modal.Header p="5" borderBottomWidth="0">
+            <HStack justifyContent={"center"}>
+              <AdminTypo.H2 color="textGreyColor.500" bold>
+                {t("SELECT_CANDIDATE")}
+              </AdminTypo.H2>
+            </HStack>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <DataTable
+              columns={[...columns()]}
+              data={data}
+              customStyles={customStyles}
+              subHeader
+              persistTableHead
+              selectableRows
+              progressPending={loading}
+              pagination
+              paginationServer
+              paginationTotalRows={paginationTotalRows}
+              onChangePage={handlePageChange}
+              onSelectedRowsChange={handleSelectRow}
+              selectedRows={userIds}
+              // onChangeRowsPerPage={(e) => setLimit(e)}
+              // onChangePage={(e) => setPage(e)}
+            />
+          </Modal.Body>
+
+          <Modal.Footer justifyContent={"space-between"}>
+            <AdminTypo.Secondarybutton
+              px="5"
+              py="1"
+              shadow="BlueOutlineShadow"
+              onPress={(e) => setIsOpen(false)}
+            >
+              {t("CANCEL")}
+            </AdminTypo.Secondarybutton>
+
+            <AdminTypo.PrimaryButton
+              onPress={(e) => setIsOpen(false)}
+              shadow="BlueFillShadow"
+              endIcon={
+                <IconByName
+                  isDisabled
+                  name="ArrowRightSLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "15" }}
+                />
+              }
+            >
               {t("SELECT_CANDIDATE")}
-            </AdminTypo.H2>
-          </HStack>
-        </Modal.Header>
-        <Modal.Body p="5" pb="10">
-          <DataTable
-            columns={[...columns()]}
-            data={data}
-            customStyles={customStyles}
-            subHeader
-            persistTableHead
-            selectableRows
-            progressPending={loading}
-            pagination
-            paginationServer
-            paginationTotalRows={paginationTotalRows}
-            onSelectedRowsChange={handleSelectRow}
-            // onChangeRowsPerPage={(e) => setLimit(e)}
-            // onChangePage={(e) => setPage(e)}
-          />
-        </Modal.Body>
-
-        <Modal.Footer justifyContent={"space-between"}>
-          <AdminTypo.Secondarybutton px="5" py="1" shadow="BlueOutlineShadow">
-            {t("CANCEL")}
-          </AdminTypo.Secondarybutton>
-
-          <AdminTypo.PrimaryButton
-            onPress={onClick}
-            shadow="BlueFillShadow"
-            endIcon={
-              <IconByName
-                isDisabled
-                name="ArrowRightSLineIcon"
-                color="gray.300"
-                _icon={{ size: "15" }}
-              />
-            }
-          >
-            {t("SELECT_CANDIDATE")}
-          </AdminTypo.PrimaryButton>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+            </AdminTypo.PrimaryButton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
   );
-};
+}
 
 const Page3 = () => {
   const [Height] = useWindowSize();
@@ -359,7 +392,6 @@ const Page3 = () => {
   const handleCandidateSelectRow = (state) => {
     setRowData(state);
     setShowEditModal(true);
-    console.log(state);
   };
   return (
     <ScrollView

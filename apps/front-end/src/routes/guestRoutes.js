@@ -5,7 +5,6 @@ const LoginComponent = React.lazy(() => import("auth/Login"));
 const ForgetPasswordComponent = React.lazy(() => import("auth/ForgetPassword"));
 
 import PrerakProfileDetailsView from "pages/front-end/PrerakProfileDetailsView";
-import Orientation from "pages/front-end/Orientation";
 import BenificiaryProfileView from "pages/front-end/BenificiaryProfileView";
 export default [
   {
@@ -26,6 +25,5 @@ export default [
   },
 
   { path: "/prerakprofiledetails", component: PrerakProfileDetailsView },
-  { path: "/orientation", component: Orientation },
   { path: "/benificiaryprofile", component: BenificiaryProfileView },
 ];
