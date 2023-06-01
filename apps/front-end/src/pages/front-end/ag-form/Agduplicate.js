@@ -79,7 +79,9 @@ const Agduplicate = () => {
         <HStack bg={"#E6E6E6"} alignItems={"center"} py={5}>
           <HStack width={"90%"} mx={"auto"} alignItems={"center"}>
             <IconByName name="CheckboxCircleLineIcon" />
-            <Text ml={3}>{t("AADHAAR_VERIFICATION_SUCCESSFUL")}</Text>
+            <FrontEndTypo.H5 ml={3}>
+              {t("AADHAAR_VERIFICATION_SUCCESSFUL")}
+            </FrontEndTypo.H5>
           </HStack>
         </HStack>
       )}
@@ -104,28 +106,28 @@ const Agduplicate = () => {
 
         <VStack mt={10} space="3">
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <H3 fontSize="sm" bold color="textMaroonColor.400">
+            <FrontEndTypo.H3 bold color="textMaroonColor.400">
               {t("FULL_NAME")}
-            </H3>
-            <H3>{firstname}</H3>
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>{firstname}</FrontEndTypo.H3>
           </HStack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <H3 fontSize="sm" bold color="textMaroonColor.400">
+            <FrontEndTypo.H3 bold color="textMaroonColor.400">
               {t("GENDER")}
-            </H3>
-            <H3>{gender}</H3>
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>{gender}</FrontEndTypo.H3>
           </HStack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <H3 fontSize="sm" bold color="textMaroonColor.400">
+            <FrontEndTypo.H3 bold color="textMaroonColor.400">
               {t("DATE_OF_BIRTH")}
-            </H3>
-            <H3>{DOB}</H3>
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>{DOB}</FrontEndTypo.H3>
           </HStack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <H3 fontSize="sm" bold color="textMaroonColor.400" width="55%">
+            <FrontEndTypo.H3 bold color="textMaroonColor.400" width="55%">
               {t("VERIFICATION_ID_NUMBER")}
-            </H3>
-            <H3 ellipsis>{verify_id}</H3>
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3 ellipsis>{verify_id}</FrontEndTypo.H3>
           </HStack>
           <HStack justifyContent="flex-end">
             <FrontEndTypo.Primarybutton
@@ -205,14 +207,14 @@ const Agduplicate = () => {
                   name="CheckboxCircleLineIcon"
                   color="textGreyColor.150"
                   _icon={{ size: "50px" }}
-                ></IconByName>
+                />
                 <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
                   {t("AG_ADDED_SUCCESSFULLY")}
                 </FrontEndTypo.H1>
                 <TextArea
                   placeholder="Explain your claim of the AG Learner*"
                   w="100%"
-                ></TextArea>
+                />
                 <FrontEndTypo.Primarybutton
                   width={250}
                   marginTop={"1em"}
