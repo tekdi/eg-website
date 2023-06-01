@@ -1,6 +1,40 @@
-node_modules/
-.DS_Store
+# 3pd
+bower_components/*
+jspm_packages/*
+node_modules/*
+
+# Cache files
+.cache
+.eslintcache
+.parcel-cache
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+
+# Dist / builds
+build/*
+builds/*
+dist/*
+prod-build/*
+*.tar
+*.zip
+
+# Editor-related files
 .idea
+.vscode
+.vscode-test
+
+# Env files
+.env
+.env.*
+
+# Log files
+lerna-debug.log
+npm-debug.log
 yarn-error.log
-prod-build
-admin.tar
+yarn-debug.log
+.serverless
+
+# OS files
+.DS_Store
