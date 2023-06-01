@@ -1,25 +1,18 @@
 export default {
   type: "object",
-  required: [
-    "type",
-    "user_id",
-    "start_date",
-    "start_time",
-    "location",
-    "location_type",
-  ],
+  required: ["type", "attendees", "start_date", "location", "location_type"],
   properties: {
     type: {
       type: "string",
-      label: "EVENT_TYPE",
+      label: "Event Type",
       format: "select",
       enum: ["Orientation", "Training", "Master Training", "Add a Prerak"],
     },
     mastertrainer: {
-      title: "MASTER_TRAINER",
+      title: "Master Trainer",
       type: "string",
     },
-    user_id: {
+    attendees: {
       title: "Select Candidates",
       type: ["string", "array"],
     },
@@ -45,7 +38,7 @@ export default {
     },
     reminder: {
       label: "Reminder",
-      type: "string",
+      type: ["string", "array"],
       format: "select",
       enum: ["1 Day Before ", "1 Week Before"],
     },

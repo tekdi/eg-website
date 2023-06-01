@@ -72,12 +72,8 @@ export default function Orientation({
       <Button onPress={(e) => onShowScreen(true)}>
         <Text>Select preraks</Text>
       </Button>
-      <Text>
-        {userIds !== undefined
-          ? Object.values(userIds)
-              ?.map((e) => e.first_name)
-              ?.join(", ")
-          : ""}
+      <Text justifyContent="center" alignItems="center">
+        {userIds !== undefined ? Object.values(userIds).length : ""}
       </Text>
     </VStack>
   );
@@ -89,7 +85,7 @@ export default function Orientation({
   React.useEffect(() => {
     setFormData({
       ...formData,
-      user_id:
+      attendees:
         userIds !== undefined ? Object.values(userIds).map((e) => e?.id) : "",
     });
   }, [userIds]);
@@ -100,7 +96,7 @@ export default function Orientation({
   };
 
   const uiSchema = {
-    user_id: {
+    attendees: {
       "ui:widget": SelectButton,
     },
     start_date: {
@@ -308,7 +304,7 @@ export default function Orientation({
                     ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                user_id: Object.values(userIds).map((e) => e?.id),
+                attendees: Object.values(userIds).map((e) => e?.id),
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
                 reminder: item?.reminder ? item?.reminder : "",
