@@ -148,16 +148,7 @@ export default function Login() {
               >
                 {t("USERNAME")}
               </FormControl.Label> */}
-              <FloatingInput
-              schema={{ title: t("ENTER") + " " + t("USERNAME") }}
-              onChange={(e) =>
-                setCredentials({
-                  ...credentials,
-                  username: e?.target?.value?.trim(),
-                })
-              }
-            />
-              {/* <Input
+              <Input
                 rounded="lg"
                 height="48px"
                 bg="white"
@@ -170,7 +161,7 @@ export default function Login() {
                     username: e?.target?.value?.trim(),
                   })
                 }
-              /> */}
+              />
               {"username" in errors ? (
                 <FormControl.ErrorMessage
                   _text={{
@@ -191,16 +182,8 @@ export default function Login() {
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
-              <FloatingInput
-              schema={{ title: t("ENTER") + " " + t("PASSWORD") }}
-              onChange={(e) =>
-                setCredentials({
-                  ...credentials,
-                  password: e?.target?.value,
-                })
-              }
-            />
-              {/* <Input
+          
+              <Input
                 rounded="lg"
                 height="48px"
                 bg="white"
@@ -214,7 +197,7 @@ export default function Login() {
                     password: e?.target?.value,
                   })
                 }
-              /> */}
+              />
               {"password" in errors ? (
                 <FormControl.ErrorMessage
                   _text={{

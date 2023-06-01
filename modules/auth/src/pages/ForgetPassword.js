@@ -193,19 +193,7 @@ export default function ForgetPassword() {
           )}
           <VStack space="4">
             <FormControl isRequired isInvalid={"username" in errors}>
-            <FloatingInput
-              isInvalid
-              _input={{ type: "number", sagar: "sagar" }}
-              schema={{ title: t("ENTER") + " " + t("USERNAME") }}
-              value={credentials?.username}
-              onChange={(e) =>
-                setCredentials({
-                  ...credentials,
-                  username: e?.target?.value?.trim(),
-                })
-              }
-            />
-              {/* <Input
+              <Input
                 isInvalid
                 _input={{ type: "number", sagar: "sagar" }}
                 rounded="lg"
@@ -221,7 +209,7 @@ export default function ForgetPassword() {
                     username: e?.target?.value?.trim(),
                   })
                 }
-              /> */}
+              />
               {"username" in errors ? (
                 <FormControl.ErrorMessage
                   _text={{
