@@ -47,9 +47,10 @@ function Shortlisted({ status, setStatus, update, data }) {
           </Radio.Group>
           <Box width={"450px"} paddingTop="20px" gap={"5"}>
             <FloatingInput
+            required
               schema={{ title: t("NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW") }}
             />
-            <FloatingInput schema={{ title: t("REMARKS") }} />
+            <FloatingInput required schema={{ title: t("REMARKS") }} />
           </Box>
         </Box>
         <HStack
