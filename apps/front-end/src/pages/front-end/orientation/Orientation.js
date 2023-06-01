@@ -10,6 +10,7 @@ import {
   filtersByObject,
   facilitatorRegistryService,
   eventService,
+  Loading,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -66,6 +67,7 @@ export default function Orientation({
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
+  const [loading, setLoading] = React.useState(false);
 
   const SelectButton = () => (
     <VStack>
@@ -113,6 +115,9 @@ export default function Orientation({
         hideClearButton: true,
       },
     },
+    reminders: {
+      "ui:widget": "checkboxes",
+    },
   };
   const styles = {
     modalxxl: {
@@ -134,12 +139,34 @@ export default function Orientation({
 
   const onSubmit = async (data) => {
     let newFormData = data?.formData;
+    if (orientationPopupSchema?.properties?.type) {
+      newFormData = {
+        ...newFormData,
+        ["type"]: newFormData?.type,
+      };
+    }
+
+    if (orientationPopupSchema?.properties?.name) {
+      newFormData = {
+        ...newFormData,
+        ["name"]:
+          newFormData?.type +
+          " " +
+          moment(newFormData?.start_date).format("DD-MM-YYYY"),
+      };
+    }
     getFormData(newFormData);
     setFormData(newFormData);
     const apiResponse = await eventService.createNewEvent(newFormData);
     if (apiResponse?.success === true) {
+      setModalVisible(false);
       setFormData("");
       getFormData("");
+      setLoading(true);
+      const getCalanderData = await eventService.getEventList();
+      if (getCalanderData) {
+        setLoading(false);
+      }
     } else {
       setFormData("");
     }
@@ -157,6 +184,8 @@ export default function Orientation({
       }}
       _sidebar={footerLinks}
     >
+      {loading && <Loading />}
+
       <VStack paddingLeft="5" paddingTop="5" space="xl">
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
@@ -286,7 +315,7 @@ export default function Orientation({
             // ]}
             events={eventList?.events?.map((item) => {
               return {
-                title: item?.context !== null ? item?.context : "orientation",
+                title: item?.type !== null ? item?.type : "orientation",
                 start: moment(item?.start_date).format("YYYY-MM-DD")
                   ? moment(item?.start_date).format("YYYY-MM-DD")
                   : "",
@@ -295,6 +324,7 @@ export default function Orientation({
                   : "",
 
                 type: item?.context ? item?.context : "",
+                name: item?.name ? item?.name : "",
                 start_date:
                   item?.start_date !== "Invalid date"
                     ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
@@ -307,7 +337,7 @@ export default function Orientation({
                 attendees: Object.values(userIds).map((e) => e?.id),
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
-                reminder: item?.reminder ? item?.reminder : "",
+                reminders: item?.reminders ? item?.reminders : "",
                 location: item?.location ? item?.location : "",
                 location_type: item?.location_type ? item?.location_type : "",
               };
@@ -485,7 +515,7 @@ export default function Orientation({
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
-                    setModalVisible(false);
+                    // setModalVisible(false);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
