@@ -240,9 +240,9 @@ export default function Agform({ userTokenInfo }) {
     }
   }, []);
 
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
+  // const userExist = async (filters) => {
+  //   return await facilitatorRegistryService.isExist(filters);
+  // };
 
   const formSubmitUpdate = async (formData) => {
     const { id } = authUser;
@@ -345,16 +345,13 @@ export default function Agform({ userTokenInfo }) {
     setFormData(newData);
     updateData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
+      if (data?.mobile?.toString()?.length > 10) {
+        const newErrors = {
+          mobile: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
       }
     }
   };
@@ -490,7 +487,7 @@ export default function Agform({ userTokenInfo }) {
                 type="submit"
                 onPress={otpfunction}
               >
-                {otpbtn ? "VERIFY_OTP" : "SEND_OTP"}
+                {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
