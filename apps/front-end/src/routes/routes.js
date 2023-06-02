@@ -36,7 +36,7 @@ export default [
   { path: "/profile", component: Profile },
   { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   {
-    path: "/beneficiary",
+    path: "/beneficiary/list",
     component: FacilitatorListView,
   },
   { path: "*", component: Dashboard },
