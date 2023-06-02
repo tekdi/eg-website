@@ -48,7 +48,7 @@ function App() {
         },
         {
           title: "LEARNERS",
-          route: "/beneficiary",
+          route: "/beneficiary/list",
           icon: "PencilRulerLineIcon",
         },
         {
