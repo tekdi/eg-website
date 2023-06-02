@@ -1,11 +1,18 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import { Checkbox } from "@mui/material";
-import { Box, Button, FormControl, Image, Input,HStack,Alert,VStack } from "native-base";
+import {
+  Box,
+  Button,
+  FormControl,
+  Image,
+  Input,
+  HStack,
+  Alert,
+  VStack,
+} from "native-base";
 import { useNavigate } from "react-router-dom";
-import { FrontEndTypo, t,Layout } from "@shiksha/common-lib";
-
-
+import { FrontEndTypo, t, Layout } from "@shiksha/common-lib";
 
 export default function AdharKyc() {
   const navigate = useNavigate();
@@ -96,11 +103,11 @@ export default function AdharKyc() {
 
   return (
     <Layout
-    _appBar={{
-      onlyIconsShow: ["backBtn"],
-      _box: { bg: "white", shadow: "appBarShadow" },
-      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-    }}
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
     >
       <Box borderBottomWidth="2" borderColor="gray.400">
         <Button
@@ -114,7 +121,7 @@ export default function AdharKyc() {
       </Box>
 
       <Box px="4">
-        <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400" mb="4"> 
+        <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400" mb="4">
           {t("OFFLINE_AADHAAR_VERIFICATION")}
           (OKYC)
         </FrontEndTypo.H1>
@@ -134,8 +141,8 @@ export default function AdharKyc() {
             }}
           />
           <FrontEndTypo.H4 color="gray.500">
-              {t("ENTER_YOUR_AADHAAR_NUMBER")}
-            </FrontEndTypo.H4>
+            {t("ENTER_YOUR_AADHAAR_NUMBER")}
+          </FrontEndTypo.H4>
         </Box>
 
         <Box mt="2">
@@ -148,7 +155,6 @@ export default function AdharKyc() {
             <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">
               {t("ENTER_SECURITY_CODE")}
             </FrontEndTypo.H3>
-           
           </FormControl.Label>
           <Image
             width={150}
@@ -169,28 +175,30 @@ export default function AdharKyc() {
               setData({ ...data, securityCode: e.target?.value });
             }}
           />
-           <FrontEndTypo.H4 color="gray.500">
-              {t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}
-            </FrontEndTypo.H4>
+          <FrontEndTypo.H4 color="gray.500">
+            {t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}
+          </FrontEndTypo.H4>
         </Box>
-            
+
         <Alert status="info" colorScheme="info" textAlign="center" my="4">
-            <VStack space={2} flexShrink={1}>
-              
-              <HStack
-                flexShrink={1}
-                space={2}
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <HStack flexShrink={1} space={2} alignItems="center" >
-                  <Alert.Icon />
-                  <FrontEndTypo.H4>{t("WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR")}</FrontEndTypo.H4>
-                </HStack>
+          <VStack space={2} flexShrink={1}>
+            <HStack
+              flexShrink={1}
+              space={2}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <HStack flexShrink={1} space={2} alignItems="center">
+                <Alert.Icon />
+                <FrontEndTypo.H4>
+                  {t(
+                    "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
+                  )}
+                </FrontEndTypo.H4>
               </HStack>
-            </VStack>
-          </Alert>
-        
+            </HStack>
+          </VStack>
+        </Alert>
 
         <ul style={{ padding: "0px 20px", marginTop: "10px" }}>
           <li style={{ listStyleType: "disc" }}>
@@ -203,9 +211,7 @@ export default function AdharKyc() {
 
           <li style={{ listStyleType: "disc" }}>
             <FrontEndTypo.H5 fontWeight="500" color="gray.600">
-              {t(
-                "DISCLAIMER_MESSAGE"
-              )}
+              {t("DISCLAIMER_MESSAGE")}
             </FrontEndTypo.H5>
           </li>
         </ul>
@@ -238,9 +244,9 @@ export default function AdharKyc() {
           }
           onPress={sendData}
         >
-         {t("CONTINUE")}
+          {t("CONTINUE")}
         </FrontEndTypo.Secondarybutton>
       </Box>
-   </Layout>
+    </Layout>
   );
 }

@@ -211,11 +211,10 @@ const LearnerProfile = () => {
         </VStack>
 
         <FrontEndTypo.Secondarybutton
-        my="5"
+          my="5"
           onPress={() => navToScreen()}
           leftIcon={<IconByName name="UserUnfollowLineIcon" />}
         >
-          
           {t("MARK_AS_DROPOUT")}
         </FrontEndTypo.Secondarybutton>
       </VStack>

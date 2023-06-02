@@ -29,6 +29,16 @@ export default {
       type: "object",
       // required: ["state", "district", "block", "village"],
       properties: {
+        lat: {
+          type: "string",
+          label: "Latitude",
+          format: "readOnly",
+        },
+        long: {
+          type: "string",
+          label: "Latitude",
+          format: "readOnly",
+        },
         state: {
           type: "string",
           label: "STATE",
@@ -51,6 +61,10 @@ export default {
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
+          type: "string",
+        },
+        address: {
+          title: "STREET_ADDRESS",
           type: "string",
         },
       },
@@ -85,17 +99,17 @@ export default {
           format: "select",
         },
         last_standard_of_education_year: {
-          label: "LAST_YEAR_OF_EDUCATION",
+          label: "SCHOOL_DROPOUT_YEAR",
           type: "string",
           format: "select",
         },
         last_standard_of_education: {
-          label: "LAST_STANDARD_OF_EDUCATION",
+          label: "SCHOOL_DROPOUT_CLASS",
           type: "string",
           format: "select",
         },
         reason_of_leaving_education: {
-          label: "REASON_FOR_LEAVING_EDUCATION",
+          label: "SCHOOL_DROPOUT_REASON",
           type: "string",
           format: "select",
         },

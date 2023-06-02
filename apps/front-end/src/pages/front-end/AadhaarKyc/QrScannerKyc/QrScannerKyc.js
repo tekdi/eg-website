@@ -3,7 +3,7 @@ import WestIcon from "@mui/icons-material/West";
 import { useNavigate } from "react-router-dom";
 import jsQR from "jsqr";
 import "./QrScannerKyc.css";
-import { FrontEndTypo,Layout } from "@shiksha/common-lib";
+import { FrontEndTypo, Layout } from "@shiksha/common-lib";
 
 export default function QrScannerKyc() {
   const navigate = useNavigate();
@@ -62,30 +62,32 @@ export default function QrScannerKyc() {
 
   return (
     <Layout
-    _appBar={{
-      onlyIconsShow: ["backBtn"],
-      _box: { bg: "white", shadow: "appBarShadow" },
-      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-    }}
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
     >
-    <div className="qrScannerPage">
-      <div className="topbar">
-        <button className="btn-back" onClick={() => navigate(-1)}>
-          <WestIcon />
-        </button>
+      <div className="qrScannerPage">
+        <div className="topbar">
+          <button className="btn-back" onClick={() => navigate(-1)}>
+            <WestIcon />
+          </button>
+        </div>
+
+        <div className="content">
+          <FrontEndTypo.H1 bold>
+            {t("SCAN_YOUR_AADHAR_QR_CODE")}
+          </FrontEndTypo.H1>
+
+          <video ref={videoRef} style={{ width: "100%" }} />
+          <canvas ref={canvasRef} style={{ display: "none" }} />
+
+          <FrontEndTypo.Secondarybutton mt={10}>
+            {t("CONTINUE")}
+          </FrontEndTypo.Secondarybutton>
+        </div>
       </div>
-
-      <div className="content">
-        <FrontEndTypo.H1 bold>{t("SCAN_YOUR_AADHAR_QR_CODE")}</FrontEndTypo.H1>
-
-        <video ref={videoRef} style={{ width: "100%" }} />
-        <canvas ref={canvasRef} style={{ display: "none" }} />
-
-        <FrontEndTypo.Secondarybutton mt={10}>
-         {t("CONTINUE")}
-        </FrontEndTypo.Secondarybutton>
-      </div>
-    </div>
     </Layout>
   );
 }

@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Button, FormControl, HStack, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
-import { FrontEndTypo, t,Layout } from "@shiksha/common-lib";
+import { FrontEndTypo, t, Layout } from "@shiksha/common-lib";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
@@ -68,13 +68,13 @@ export default function AdharOTP() {
 
   return (
     <Layout
-    _appBar={{
-      onlyIconsShow: ["backBtn"],
-      lang,
-      setLang,
-      _box: { bg: "white", shadow: "appBarShadow" },
-      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-    }}
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        lang,
+        setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
     >
       <Box borderBottomWidth="2" borderColor="gray.400">
         <Button
@@ -88,7 +88,7 @@ export default function AdharOTP() {
       </Box>
 
       <Box px="4">
-      <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
+        <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
           {t("OFFLINE_AADHAAR_VERIFICATION")}
           (OKYC)
         </FrontEndTypo.H1>
@@ -123,7 +123,7 @@ export default function AdharOTP() {
             flexDirection="column"
             htmlFor="securityCode"
           >
-             <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">
+            <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">
               {t("ENTER_SECURITY_CODE")}
             </FrontEndTypo.H3>
             <FrontEndTypo.H4 color="gray.500">
@@ -172,7 +172,6 @@ export default function AdharOTP() {
                       </Drawer> */}
 
       {otpFailedPopup ? (
-        
         <Box
           position="absolute"
           w="full"
@@ -204,40 +203,34 @@ export default function AdharOTP() {
             </Button>
 
             <FrontEndTypo.H1 color="textGreyColor.800" my="3">
-             {t("AADHAR_KYC_VERIFICATION_FAILED")}
+              {t("AADHAR_KYC_VERIFICATION_FAILED")}
             </FrontEndTypo.H1>
-            <FrontEndTypo.Secondarybutton  mb="5"
+            <FrontEndTypo.Secondarybutton
+              mb="5"
               onPress={() => {
                 navigate("/admin/aadhaarNumber");
               }}
             >
-             
-               {t("RETRY_AADHAR_NUMER_KYC")}
+              {t("RETRY_AADHAR_NUMER_KYC")}
             </FrontEndTypo.Secondarybutton>
 
             <FrontEndTypo.Primarybutton
-            
               onPress={() => {
                 navigate(-1);
               }}
             >
-             
-                {t("GO_BACK")}
-             
+              {t("GO_BACK")}
             </FrontEndTypo.Primarybutton>
 
-           
-
-            <HStack alignItems="center" my="3"  color="red.600">
+            <HStack alignItems="center" my="3" color="red.600">
               <ErrorOutlineIcon fontSize="small" />
-              <FrontEndTypo.H4 pl="2"  color="red.600">{t("MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD")}
-            </FrontEndTypo.H4>
+              <FrontEndTypo.H4 pl="2" color="red.600">
+                {t("MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD")}
+              </FrontEndTypo.H4>
             </HStack>
           </Box>
         </Box>
       ) : null}
-
     </Layout>
-    
   );
 }

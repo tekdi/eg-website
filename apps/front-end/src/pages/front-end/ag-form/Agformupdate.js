@@ -53,6 +53,7 @@ import {
   RadioBtn,
   CustomR,
   select,
+  readOnly,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -127,30 +128,55 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const getLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      setAlert("Geolocation is not supported by this browser.");
     }
   };
 
   const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-        position.coords.latitude +
-        "/n Longitude: " +
-        position.coords.longitude
-    );
+    let lati = position.coords.latitude;
+    let longi = position.coords.longitude;
+
+    setFormData({
+      ...formData,
+      edit_page_type: "add_address",
+      lat: lati,
+      long: longi,
+    });
   };
 
-  React.useEffect(async () => {
-    getLocation();
-  }, []);
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setAlert("User denied the request for Geolocation.");
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setAlert("Location information is unavailable.");
+
+        break;
+      case error.TIMEOUT:
+        setAlert("The request to get user location timed out.");
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setAlert("An unknown error occurred.");
+
+        break;
+    }
+  }
+
+  // React.useEffect(async () => {
+  //   if (page == "2") {
+  //   }
+  // }, [page]);
 
   React.useEffect(async () => {
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      setFormData({ ...formData, edit_page_type: "add_address" });
+      getLocation();
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "personal" });
@@ -263,7 +289,6 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
 
     if (schema["properties"]["marital_status"]) {
-      console.log("reached here.");
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
@@ -619,7 +644,6 @@ export default function AgformUpdate({ userTokenInfo }) {
       }
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      console.log("uploadDoc", uploadDoc);
       if (uploadDoc) {
         navigate("/beneficiary/3", { state: { id: userId } });
       }
@@ -662,6 +686,16 @@ export default function AgformUpdate({ userTokenInfo }) {
           >
             {t("TAKE_ANOTHER_PHOTO")}
           </Button>
+
+          <Button
+            variant={"secondary"}
+            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            onPress={(e) => {
+              navigate("/beneficiary/3", { state: { id: userId } });
+            }}
+          >
+            {t("SKIP")}
+          </Button>
         </VStack>
       </Layout>
     );
@@ -675,7 +709,6 @@ export default function AgformUpdate({ userTokenInfo }) {
           cameraUrl,
           setcameraFile,
           setCameraUrl: async (url) => {
-            console.log("url", url);
             setCameraUrl(url);
             setFormData({ ...formData, ["profile_url"]: url });
           },
@@ -732,6 +765,15 @@ export default function AgformUpdate({ userTokenInfo }) {
             >
               {t("UPLOAD_PHOTO")}
             </Button>
+            <Button
+              variant={"secondary"}
+              leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+              onPress={(e) => {
+                navigate("/beneficiary/3", { state: { id: userId } });
+              }}
+            >
+              {t("SKIP")}
+            </Button>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
@@ -776,7 +818,7 @@ export default function AgformUpdate({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox, select }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, select, readOnly }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,

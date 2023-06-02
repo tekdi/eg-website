@@ -69,12 +69,10 @@ function PrerakDuties(props) {
   let { imgUrl, title, processedButton, onPress, onSkipPress } = props;
   return (
     <Stack bg="bgGreyColor.200">
-      <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">{t("PRERAK_DUTIES")}</FrontEndTypo.H3>
-      <VStack
-        space={2}
-        alignItems="center"
-        safeAreaTop
-      >
+      <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">
+        {t("PRERAK_DUTIES")}
+      </FrontEndTypo.H3>
+      <VStack space={2} alignItems="center" safeAreaTop>
         <Image
           size={"320px"}
           resizeMode="cover"
@@ -84,12 +82,16 @@ function PrerakDuties(props) {
           key={imgUrl}
         />
         <Box bg="white" p="10">
-          <FrontEndTypo.H1 color="textGreyColor.800" bold>{title}</FrontEndTypo.H1>
+          <FrontEndTypo.H1 color="textGreyColor.800" bold>
+            {title}
+          </FrontEndTypo.H1>
           <FrontEndTypo.H4 color="textGreyColor.700">
             {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
           </FrontEndTypo.H4>
         </Box>
-        <FrontEndTypo.Primarybutton my="3" width="85%"
+        <FrontEndTypo.Primarybutton
+          my="3"
+          width="85%"
           onPress={onPress ? onPress : (e) => {}}
         >
           {processedButton}

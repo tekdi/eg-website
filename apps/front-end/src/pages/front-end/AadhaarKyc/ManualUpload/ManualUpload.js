@@ -1,8 +1,15 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Text,Image, VStack } from "native-base";
-import { Camera, getBase64, t,FrontEndTypo, IconByName,Layout} from "@shiksha/common-lib";
+import { Box, Button, FormControl, Text, Image, VStack } from "native-base";
+import {
+  Camera,
+  getBase64,
+  t,
+  FrontEndTypo,
+  IconByName,
+  Layout,
+} from "@shiksha/common-lib";
 
 export default function ManualUpload() {
   const navigate = useNavigate();
@@ -68,11 +75,11 @@ export default function ManualUpload() {
   }
   return (
     <Layout
-    _appBar={{
-      onlyIconsShow: ["backBtn"],
-      _box: { bg: "white", shadow: "appBarShadow" },
-      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-    }}
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
     >
       <Box borderBottomWidth="2" borderColor="gray.400">
         <Button
@@ -88,11 +95,12 @@ export default function ManualUpload() {
       <Box px="4">
         {!submitted ? (
           <>
-             <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400"> 
-             
+            <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
               {t("AADHAR_CARD")}
-            </FrontEndTypo.H1 >
-            <FrontEndTypo.H3 color="textGreyColor.800">{t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}</FrontEndTypo.H3>
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H3 color="textGreyColor.800">
+              {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
+            </FrontEndTypo.H3>
 
             <Button
               variant="outline"
@@ -116,11 +124,14 @@ export default function ManualUpload() {
                   />
                 ) : (
                   <>
-                   <IconByName name="Upload2FillIcon" textAlign="center" color="textGreyColor.100"/>
+                    <IconByName
+                      name="Upload2FillIcon"
+                      textAlign="center"
+                      color="textGreyColor.100"
+                    />
                     <FrontEndTypo.H2 color="textGreyColor.100">
                       {t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}
                     </FrontEndTypo.H2>
-                    
                   </>
                 )
               ) : image.back ? (
@@ -131,19 +142,24 @@ export default function ManualUpload() {
                 />
               ) : (
                 <>
-                  <IconByName name="Upload2FillIcon" textAlign="center" color="textGreyColor.100"/>
-                  <FrontEndTypo.H2 color="textGreyColor.100">{t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}</FrontEndTypo.H2  >
+                  <IconByName
+                    name="Upload2FillIcon"
+                    textAlign="center"
+                    color="textGreyColor.100"
+                  />
+                  <FrontEndTypo.H2 color="textGreyColor.100">
+                    {t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}
+                  </FrontEndTypo.H2>
                 </>
-                
               )}
               <Image
-                  source={{
-                    uri: "/aadhar.svg",
-                  }}
-                  alt="Aadhar"
-                  size={"200px"}
-                  resizeMode="contain"
-                />
+                source={{
+                  uri: "/aadhar.svg",
+                }}
+                alt="Aadhar"
+                size={"200px"}
+                resizeMode="contain"
+              />
             </Button>
 
             <Box
@@ -168,52 +184,59 @@ export default function ManualUpload() {
             {isFront ? (
               image.front ? (
                 <Button
-                 variant="link" 
+                  variant="link"
                   onPress={() => {
                     setImage((prev) => ({ ...prev, front: "" }));
                     setModal(true);
                   }}
                 >
-                  <FrontEndTypo.H3 color="blueText.450" underline>{t("UPLOAD_AGAIN")}</FrontEndTypo.H3>
+                  <FrontEndTypo.H3 color="blueText.450" underline>
+                    {t("UPLOAD_AGAIN")}
+                  </FrontEndTypo.H3>
                 </Button>
               ) : null
             ) : image.back ? (
               <Button
-              variant="link" 
+                variant="link"
                 onPress={() => {
                   setImage((prev) => ({ ...prev, back: "" }));
                   setModal(true);
                 }}
               >
-                 <FrontEndTypo.H3 color="blueText.450" underline>{t("UPLOAD_AGAIN")}</FrontEndTypo.H3>
+                <FrontEndTypo.H3 color="blueText.450" underline>
+                  {t("UPLOAD_AGAIN")}
+                </FrontEndTypo.H3>
               </Button>
             ) : null}
 
             <FrontEndTypo.Primarybutton
               bg={!image.front || !image.back ? "gray.300" : "gray.500"}
-             
               mt="10"
               disabled={!image.front || !image.back}
               onPress={handleSubmit}
             >
-             {t("CONTINUE")}
+              {t("CONTINUE")}
             </FrontEndTypo.Primarybutton>
           </>
         ) : (
           <>
             <VStack alignItems="center">
-              <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400"> 
+              <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
                 {t("AADHAAR_CARD_UPLOADED")}
               </FrontEndTypo.H1>
-              <FrontEndTypo.H2 color="worksheetBoxText.400"  my="4">{t("FRONT_VIEW")}</FrontEndTypo.H2>
-            
+              <FrontEndTypo.H2 color="worksheetBoxText.400" my="4">
+                {t("FRONT_VIEW")}
+              </FrontEndTypo.H2>
+
               <img
                 src={image.front}
                 alt="front image"
                 style={{ width: "auto", maxWidth: "280px", height: "180px" }}
               />
 
-            <FrontEndTypo.H2 color="worksheetBoxText.400"  my="4">{t("BACK_VIEW")}</FrontEndTypo.H2>
+              <FrontEndTypo.H2 color="worksheetBoxText.400" my="4">
+                {t("BACK_VIEW")}
+              </FrontEndTypo.H2>
 
               <img
                 src={image.back}
@@ -221,14 +244,10 @@ export default function ManualUpload() {
                 style={{ width: "auto", maxWidth: "280px", height: "180px" }}
               />
 
-            <FrontEndTypo.Primarybutton
-             
-              mt="10"
-            >
-            {t("CONTINUE")}
-            </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Primarybutton mt="10">
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
             </VStack>
-
           </>
         )}
       </Box>
@@ -261,13 +280,12 @@ export default function ManualUpload() {
               overflow="hidden"
             >
               <FrontEndTypo.Secondarybutton
-               
                 onPress={() => {
                   setCameraUrl();
                   setCameraModal(true);
                 }}
               >
-                  {t("TAKE_A_PHOTO")}
+                {t("TAKE_A_PHOTO")}
               </FrontEndTypo.Secondarybutton>
 
               <FormControl.Label

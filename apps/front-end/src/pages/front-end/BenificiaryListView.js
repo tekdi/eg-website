@@ -54,7 +54,7 @@ const select1 = [
 const select2 = [
   { label: "sort", value: "sort" },
   { label: "asc", value: "asc" },
-  { label: "desc", value: "desc" }
+  { label: "desc", value: "desc" },
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
@@ -63,14 +63,13 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const { form_step_number } = facilitator;
   const [service, setService] = React.useState("");
   const [sort, setSort] = React.useState("sort");
-  const [sortValue, setSortValue] = React.useState("desc")
-  const [statusValue, setStatusValue] = React.useState("applied")
+  const [sortValue, setSortValue] = React.useState("desc");
+  const [statusValue, setStatusValue] = React.useState("applied");
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [reqBodyData, setReqBodyData] = React.useState();
   const [status, setStatus] = React.useState("status");
   const [data, setData] = React.useState();
-
 
   React.useEffect(() => {
     setReqBodyData({ page, limit, statusValue, sortValue });
@@ -105,7 +104,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
       },
     },
-
   };
 
   const [record, setRecord] = React.useState(data);
@@ -140,7 +138,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             borderBottomWidth="1"
             borderBottomColor={"gray.300"}
             bg={{
-              backgroundImage: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)',
+              backgroundImage:
+                "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
             }}
             alignItems="Center"
           >
@@ -157,7 +156,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-
                 {t("ADD_MORE_AG")}
               </H2>
               <BodySmall
@@ -186,9 +184,9 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             height="50%"
             selectedValue={status}
             onValueChange={(nextValue) => {
-              setStatusValue(nextValue)
-              console.log(statusValue)
-              setStatus(nextValue)
+              setStatusValue(nextValue);
+              console.log(statusValue);
+              setStatus(nextValue);
             }}
             _selectedItem={{
               bg: "cyan.600",
@@ -204,21 +202,18 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             ))}
           </Select>
         </Box>
-        <Box
-        >
+        <Box>
           <Select
             overflowX="hidden"
             variant="rounded"
-
-
             width="50%"
             height="50%"
             selectedValue={sort}
             onValueChange={(nextValue) => {
-              setSortValue(nextValue)
-              console.log(sortValue)
+              setSortValue(nextValue);
+              console.log(sortValue);
 
-              setSort(nextValue)
+              setSort(nextValue);
             }}
             _selectedItem={{
               bg: "cyan.600",
