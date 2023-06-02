@@ -5,8 +5,7 @@ import {
   t,
   IconByName,
   Layout,
-  benificiaryRegistoryService,
-  benificiaryEnumService
+  benificiaryRegistoryService
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
 import { HStack, VStack, Box, Text, Select, Image, Pressable } from "native-base";
@@ -36,7 +35,7 @@ const List = ({ data }) => {
                   >
 
                     {item?.first_name}
-                    {item.last_name && ` ${item.last_name}`}
+                    {item?.last_name && ` ${item.last_name}`}
                   </Text>
                   <Text>{item?.mobile}</Text>
                 </VStack>
@@ -74,7 +73,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
 
 
   React.useEffect(async () => {
-    const data = await benificiaryEnumService.getStatusList()
+    const data = await benificiaryRegistoryService.getStatusList()
     setSelectStatus(data)
   }, [])
   React.useEffect(() => {
