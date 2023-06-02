@@ -484,5 +484,11 @@
   "TRAINING": "Training",
   "CLEAR_FILTER": "Clear filter",
   "ALL_PRERAKS": "All Preraks",
-  "BENEFICIARY_ALL":"All"
+  "BENEFICIARY_ALL":"All",
+  "SCHOOL_DROPOUT_YEAR":"School Dropout Year",
+  "SCHOOL_DROPOUT_CLASS":"School Dropout Class",
+  "SCHOOL_DROPOUT_REASON":"School Dropout REASON",
+  "STREET_ADDRESS":"Street Address",
+  "LATITUDE":"Latitude",
+  "LONGITUDE":"longitude"
 }
