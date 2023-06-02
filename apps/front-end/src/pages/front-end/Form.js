@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
@@ -9,7 +9,6 @@ import {
   Center,
   HStack,
   Image,
-  Input,
   Modal,
   VStack,
 } from "native-base";
@@ -29,10 +28,8 @@ import {
   BodySmall,
   filtersByObject,
   H2,
-  H4,
   getBase64,
   BodyMedium,
-  changeLanguage,
   sendAndVerifyOtp,
   FrontEndTypo,
 } from "@shiksha/common-lib";
@@ -50,78 +47,12 @@ import {
   Aadhaar,
   BaseInputTemplate,
   ArrayFieldTemplate,
+  CustomOTPBox,
+  select,
+  AddButton,
+  RemoveButton,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
-
-const handleResendOtp = async (mobile) => {
-  const sendotpBody = {
-    mobile: mobile.toString(),
-    reason: "verify_mobile",
-  };
-  const datas = await authRegistryService.sendOtp(sendotpBody);
-  localStorage.setItem("hash", datas?.data?.hash);
-};
-
-const CustomOTPBox = ({ value, onChange, required, ...props }) => {
-  const [otp, setOtp] = React.useState(new Array(6).fill(""));
-  const [timer, setTimer] = React.useState(30);
-  const timeOutCallback = React.useCallback(
-    () => setTimer((currTimer) => currTimer - 1),
-    []
-  );
-
-  useEffect(() => {
-    timer > 0 && setTimeout(timeOutCallback, 1000);
-  }, [timer, timeOutCallback]);
-
-  const resetTimer = () => {
-    if (!timer) {
-      setTimer(30);
-    }
-  };
-
-  const handleChange = (element, index) => {
-    if (isNaN(element.value)) return false;
-    const val = [...otp.map((d, idx) => (idx === index ? element.value : d))];
-    setOtp(val);
-    onChange(val.join(""));
-    if (element.nextSibling) {
-      element.nextSibling.nextSibling.focus();
-    }
-  };
-
-  return (
-    <VStack>
-      <HStack space={2}>
-        {otp.map((data, index) => {
-          return (
-            <Input
-              type="data"
-              name="otp"
-              maxLength="1"
-              key={index}
-              value={data}
-              onChange={(e) => handleChange(e.target, index)}
-              onFocus={(e) => e.target.select()}
-            />
-          );
-        })}
-      </HStack>
-      <HStack justifyContent="space-between" alignItems="center">
-        <FrontEndTypo.H4>{`${"00:" + timer}`} </FrontEndTypo.H4>
-        <FrontEndTypo.H4
-          mt="1"
-          onPress={() => {
-            resetTimer();
-            handleResendOtp(props?.schema?.mobile);
-          }}
-        >
-          {timer <= 1 ? "Resend OTP" : <React.Fragment />}
-        </FrontEndTypo.H4>
-      </HStack>
-    </VStack>
-  );
-};
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -133,7 +64,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [cameraUrl, setCameraUrl] = React.useState();
   const [cameraFile, setCameraFile] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
@@ -141,7 +71,8 @@ export default function App({ facilitator, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [verifyOtpData, setverifyOtpData] = useState();
+  const [verifyOtpData, setverifyOtpData] = React.useState();
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 10) {
@@ -163,9 +94,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   React.useEffect(() => {
-    window.onbeforeunload = function () {
-      return false;
-    };
     getImage();
   }, [page, credentials]);
 
@@ -184,55 +112,6 @@ export default function App({ facilitator, ip, onClick }) {
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
-      },
-    },
-
-    otp: {
-      "ui:widget": CustomOTPBox,
-    },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
       },
     },
   };
@@ -305,6 +184,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   React.useEffect(async () => {
     if (schema?.properties?.qualification) {
+      setLoading(true);
       const qData = await facilitatorRegistryService.getQualificationAll();
       let newSchema = schema;
       if (schema["properties"]["qualification"]) {
@@ -341,9 +221,11 @@ export default function App({ facilitator, ip, onClick }) {
         });
       }
       setSchema(newSchema);
+      setLoading(false);
     }
 
     if (schema?.properties?.state) {
+      setLoading(true);
       const qData = await geolocationRegistryService.getStates();
       let newSchema = schema;
       if (schema["properties"]["state"]) {
@@ -361,6 +243,7 @@ export default function App({ facilitator, ip, onClick }) {
         block: formData?.block,
       });
       setSchema(newSchema);
+      setLoading(false);
     }
 
     if (schema?.properties?.device_ownership) {
@@ -403,32 +286,6 @@ export default function App({ facilitator, ip, onClick }) {
     }
   }, []);
 
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.experience) {
-      if (formData.experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else {
-      setSubmitBtn(t("NEXT"));
-    }
-  };
-
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
-
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
   };
@@ -436,18 +293,22 @@ export default function App({ facilitator, ip, onClick }) {
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
     if (id) {
+      setLoading(true);
       updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
+      const result = await facilitatorRegistryService.stepUpdate({
         ...formData,
         parent_ip: ip?.id,
         id: id,
       });
+      setLoading(false);
+      return result;
     }
   };
 
   const uploadProfile = async () => {
     const { id } = facilitator;
     if (id) {
+      setLoading(true);
       const form_data = new FormData();
       const item = {
         file: cameraFile,
@@ -457,15 +318,20 @@ export default function App({ facilitator, ip, onClick }) {
       for (let key in item) {
         form_data.append(key, item[key]);
       }
-      return await uploadRegistryService.uploadFile(form_data);
+      const result = await uploadRegistryService.uploadFile(form_data);
+      setLoading(false);
+      return result;
     }
   };
 
   const formSubmitCreate = async (formData) => {
-    return await facilitatorRegistryService.create({
+    setLoading(true);
+    const result = await facilitatorRegistryService.create({
       ...formData,
       parent_ip: ip?.id,
     });
+    setLoading(false);
+    return result;
   };
 
   const goErrorPage = (key) => {
@@ -565,6 +431,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   const setDistric = async ({ state, district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.district && state) {
       const qData = await geolocationRegistryService.getDistricts({
         name: state,
@@ -591,11 +458,13 @@ export default function App({ facilitator, ip, onClick }) {
       }
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
   const setBlock = async ({ district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.block && district) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
@@ -619,11 +488,13 @@ export default function App({ facilitator, ip, onClick }) {
       }
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
   const setVilage = async ({ block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
@@ -641,6 +512,7 @@ export default function App({ facilitator, ip, onClick }) {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
@@ -735,7 +607,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -865,6 +736,7 @@ export default function App({ facilitator, ip, onClick }) {
             />
           </Center>
           <FrontEndTypo.Primarybutton
+            isLoading={loading}
             onPress={async (e) => {
               await uploadProfile();
               if (onClick) onClick("success");
@@ -873,6 +745,7 @@ export default function App({ facilitator, ip, onClick }) {
             {t("SUBMIT")}
           </FrontEndTypo.Primarybutton>
           <FrontEndTypo.Secondarybutton
+            isLoading={loading}
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -907,7 +780,7 @@ export default function App({ facilitator, ip, onClick }) {
         _appBar={{ onPressBackButton: (e) => setPage("10"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
-        <VStack py={6} px={4} mb={5} space="6"  bg="gray.100">
+        <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
           <Box p="10">
             <Steper
               type={"circle"}
@@ -922,6 +795,7 @@ export default function App({ facilitator, ip, onClick }) {
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
           <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
           <FrontEndTypo.Primarybutton
+            isLoading={loading}
             variant={"primary"}
             leftIcon={
               <IconByName
@@ -948,6 +822,7 @@ export default function App({ facilitator, ip, onClick }) {
                 onChange={handleFileInputChange}
               />
               <FrontEndTypo.Secondarybutton
+                isLoading={loading}
                 leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
                 onPress={(e) => {
                   uplodInputRef?.current?.click();
@@ -963,6 +838,7 @@ export default function App({ facilitator, ip, onClick }) {
             )}
           </VStack>
           <FrontEndTypo.Primarybutton
+            isLoading={loading}
             onPress={async (e) => {
               await formSubmitUpdate({ ...formData, form_step_number: "10" });
               if (onClick) onClick("success");
@@ -974,48 +850,15 @@ export default function App({ facilitator, ip, onClick }) {
       </Layout>
     );
   }
-  const AddButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="green"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          if (formRef?.current.validateForm()) {
-            btnProps?.onClick();
-          }
-        }}
-      >
-        <HStack>
-          {icon} {addBtn}
-        </HStack>
-      </Button>
-    );
-  };
-
-  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <FrontEndTypo.Secondarybutton
-        mb="2"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          btnProps?.onClick();
-        }}
-      >
-        <HStack>
-          {icon} {t("REMOVE_EXPERIENCE")}
-        </HStack>
-      </FrontEndTypo.Secondarybutton>
-    );
-  };
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : ["notificationBtn"],
+        exceptIconsShow:
+          `${page}` === "1"
+            ? ["backBtn", "menuBtn"]
+            : ["menuBtn", "notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -1048,9 +891,9 @@ export default function App({ facilitator, ip, onClick }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, Aadhaar }}
+            widgets={{ RadioBtn, CustomR, Aadhaar, select, CustomOTPBox }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -1077,6 +920,7 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             <FrontEndTypo.Primarybutton
+              isLoading={loading}
               type="submit"
               p="4"
               mt="10"

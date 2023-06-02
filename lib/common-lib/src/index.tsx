@@ -18,7 +18,7 @@ import * as facilitatorRegistryService from './services/facilitatorRegistryServi
 import * as enumRegistryService from './services/enumRegistoryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
-import * as StudentEnumService from './services/StudentEnumService'
+import * as enumRegistoryService from './services/enumRegistoryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
 import * as AgRegistryService from './services/AgRegistryService'
@@ -63,7 +63,7 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
-  StudentEnumService,
+  enumRegistoryService,
   FloatingInput,
   CheatSheet,
   CustomOTPBox,

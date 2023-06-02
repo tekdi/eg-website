@@ -116,10 +116,6 @@ export default function App({ ip, id }) {
     navigate("/dashboard");
   } */
 
-  window.onbeforeunload = function () {
-    return false;
-  };
-
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {
