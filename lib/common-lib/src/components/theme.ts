@@ -68,7 +68,7 @@ const DEFAULT_THEME = {
         p: '4',
         minH: '54px',
         borderColor: 'secondaryBlue.500',
-        borderRadius: '10px',
+        borderRadius: '10px'
       }
     },
     Text: {
@@ -207,7 +207,7 @@ const DEFAULT_THEME = {
           },
           _text: {
             fontWeight: '700',
-            color:'#790000',
+            color: '#790000'
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
@@ -363,30 +363,28 @@ const DEFAULT_THEME = {
       500: '#545454'
     },
     iconColor: {
-      50:'#0D99FF',
-      100:'#616161',
-      150:'#696767',
-      200:'#757575',
-       250:'#FF2815',
-      300:'#B3B3B3',
-      350:'#AFB1B6',
-      400:'#FF2815',
+      50: '#0D99FF',
+      100: '#616161',
+      150: '#696767',
+      200: '#757575',
+      250: '#FF2815',
+      300: '#B3B3B3',
+      350: '#AFB1B6',
+      400: '#FF2815',
       500: '#aba0db',
       600: '#c3916c',
       700: '#83b0d7',
       800: '#5eb05f',
       900: '#7c8dbc',
-      1000: '#ea5fff',
-      
-      },
-      boxBorderColour :{
-        50:'#FFC5C0'
-
-      },
-      boxBackgroundColour : {
-        50:'#FDC5C7',
-        100:'#FAFAFA',
-      },
+      1000: '#ea5fff'
+    },
+    boxBorderColour: {
+      50: '#FFC5C0'
+    },
+    boxBackgroundColour: {
+      50: '#FDC5C7',
+      100: '#FAFAFA'
+    },
     studentCard: {
       500: '#B9FBC0',
       800: '#5B7E5F'
@@ -542,20 +540,20 @@ const DEFAULT_THEME = {
     textGreyColor: {
       50: '#9E9E9E',
       100: '#616161',
-      200:'#666666',
-      250:'#696767',
+      200: '#666666',
+      250: '#696767',
       150: '#61646B',
       350: '#EAEAEB',
       300: '#888888',
       400: '#F5F5F5',
-      450:'#464646',
+      450: '#464646',
       500: '#424242',
       550: '#757575',
-      600:'#727271',
+      600: '#727271',
       650: '#666666',
-      700:'#828282',
+      700: '#828282',
       800: '#212121',
-      900: '#1E1E1E' 
+      900: '#1E1E1E'
     },
     textMaroonColor: {
       100: '#FFACAF',

@@ -14,7 +14,6 @@ import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 import Success from "pages/front-end/Success";
 import Profile from "pages/front-end/PrerakProfileDetailsView";
-import FacilitatorListView from "pages/front-end/BenificiaryListView";
 
 export default [
   { path: "/form", component: Home },
