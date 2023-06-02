@@ -366,6 +366,9 @@
   "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "BASIC": "Basic",
   "EDUCATIONAL": "Educational",
+  "ENROLL_15_OR_MORE":"You need to Enroll 15 or more AG Learners to set up a viable camp",
+  "ADD_MORE_AG":"Add more AGs",
+  "DATA_NOT_FOUND":"data not found",
   "COMPLETE_THIS_BEFORE_ORIENTATION": "Complete this before Orientation",
   "MY_IP": "My Ip",
   "FAQS": "FAQs",
@@ -381,9 +384,6 @@
   "AG_PROFILE_REACTIVAYE_MESSAGE": "You can allow AG Learner to rejoin the Program",
   "AG_PROFILE_REACTIVATE_REASON_MEASSGAE": "Reason for Rejoining Program Pragati?",
   "CREATE_BENEFICIARIES": "Create Beneficiaries",
-  "ENROLL_15_OR_MORE": "You need to Enroll 15 or more AG Learners to set up a viable camp",
-  "ADD_MORE_AG": "Add more AGs",
-  "DATA_NOT_FOUND": "data not found",
   "FEMALE": "Female",
   "MALE": "Male",
   "OTHER": "Other",
@@ -497,5 +497,6 @@
   "SCHOOL_DROPOUT_REASON": "School Dropout REASON",
   "STREET_ADDRESS": "Street Address",
   "LATITUDE": "Latitude",
-  "LONGITUDE": "longitude"
+  "LONGITUDE": "longitude",
+  "BENEFICIARY_ALL":"All"
 }
