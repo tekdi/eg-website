@@ -1,4 +1,4 @@
-name: CICD
+name: Deploy to DEV
 on: 
   push: 
     branches:
