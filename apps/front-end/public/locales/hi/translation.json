@@ -439,5 +439,12 @@
   "FACILITATOR_MARITAL_STATUS_MARRIED": "शादीशुदा",
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "तलाकशुदा",
   "FACILITATOR_MARITAL_STATUS_SEPARATED": "अलग रहते हैं",
-  "FACILITATOR_MARITAL_STATUS_OTHER": "अन्य"
+  "FACILITATOR_MARITAL_STATUS_OTHER": "अन्य",
+  "SCHOOL_DROPOUT_YEAR":"स्कूल ड्रॉपआउट वर्ष,",
+  "SCHOOL_DROPOUT_CLASS":"स्कूल ड्रॉपआउट कक्षा,",
+  "SCHOOL_DROPOUT_REASON":"स्कूल ड्रॉपआउट कारण",
+  "STREET_ADDRESS":"सड़क का पता",
+  "LATITUDE":"लैटिट्यूड",
+  "LONGITUDE":"लॉन्गिट्यूड"
+
 }

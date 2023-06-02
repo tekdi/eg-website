@@ -352,3 +352,53 @@ export const select = ({ options, value, onChange, required, schema }) => {
 };
 
 export { CustomOTPBox };
+export const readOnly = ({ options, value, onChange, required, schema }) => {
+  const items = options?.enumOptions ? options?.enumOptions : [];
+  const { label } = schema ? schema : {};
+  return (
+    <FormControl gap="4">
+      {label && (
+        <FormControl.Label
+          rounded="sm"
+          position="absolute"
+          left="1rem"
+          bg="white"
+          px="1"
+          m="0"
+          height={"1px"}
+          alignItems="center"
+          style={{
+            ...(value
+              ? {
+                  top: "0",
+                  opacity: 1,
+                  zIndex: 5,
+                  transition: "all 0.3s ease",
+                }
+              : {
+                  top: "0.5rem",
+                  zIndex: -2,
+                  opacity: 0,
+                  transition: "all 0.2s ease-in-out",
+                }),
+          }}
+        >
+          <Text fontSize="14" fontWeight="400">
+            {t(label)}
+            {required && <Text color={"danger.500"}>*</Text>}
+            {value && (
+              <Text
+                marginLeft={"5px"}
+                fontWeight="700"
+                fontSize={14}
+                color={"#9E9E9E"}
+              >
+                {value}
+              </Text>
+            )}
+          </Text>
+        </FormControl.Label>
+      )}
+    </FormControl>
+  );
+};
