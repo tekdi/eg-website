@@ -18,10 +18,9 @@ export default function Interviewschedule() {
       {status ? (
         <Shortlisted setStatus={setStatus} status={status} />
       ) : (
-        <VStack  width="100%" p="5">
+        <VStack width="100%" p="5">
           <HStack alignItems="center" justifyContent="space-between">
-              
-              <VStack justifyContent="center">
+            <VStack justifyContent="center">
               <AdminTypo.H5 bold color="textGreyColor.800">
                 {t("SCHEDULE_AN_INTERVIEW")}
               </AdminTypo.H5>
@@ -41,17 +40,17 @@ export default function Interviewschedule() {
                   {t("ON_PHONE")}
                 </AdminTypo.H6>
               </HStack>
-              </VStack>
-              <AdminTypo.Secondarybutton
-                background="blueText.50"
-                _text={{ fontSize: "14px" }}
-                leftIcon={<IconByName name="EditBoxLineIcon" size="16px" />}
-                onPress={() => setStatus(true)}
-              >
-                {t("EDIT_DETAILS")}
-              </AdminTypo.Secondarybutton>
+            </VStack>
+            <AdminTypo.Secondarybutton
+              background="blueText.50"
+              _text={{ fontSize: "14px" }}
+              leftIcon={<IconByName name="EditBoxLineIcon" size="16px" />}
+              onPress={() => setStatus(true)}
+            >
+              {t("EDIT_DETAILS")}
+            </AdminTypo.Secondarybutton>
           </HStack>
-          </VStack>
+        </VStack>
       )}
     </Stack>
   );

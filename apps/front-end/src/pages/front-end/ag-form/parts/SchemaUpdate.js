@@ -1,5 +1,5 @@
 export default {
-  description: "1.Basic details",
+  description: "IDENTIFY_THE_AG_LEARNER",
   type: "step",
   properties: {
     1: {
@@ -65,20 +65,11 @@ export default {
           label: "MARITAL_STATUS",
           type: "string",
           format: "CustomR",
-          enumNames: [
-            "Married",
-            "Unmarried",
-            "Single (Divorced, widow, separated, etc.)",
-          ],
-          enum: ["married", "unmarried", "single"],
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
           format: "CustomR",
-
-          enumNames: ["General", "S.C.", "S.T.", "O.B.C.", "Other"],
-          enum: ["general", "sc", "st", "obc", "other"],
         },
       },
     },
@@ -88,7 +79,7 @@ export default {
       type: "object",
       required: [],
       properties: {
-        previous_school_type: {
+        type_of_learner: {
           label: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
@@ -108,6 +99,11 @@ export default {
           type: "string",
           format: "select",
         },
+        // Why_does_AG_want_to_complete: {
+        //   label: "Why does AG want to complete 10th grade?",
+        //   type: "string",
+        //   format: "select",
+        // },
       },
     },
   },

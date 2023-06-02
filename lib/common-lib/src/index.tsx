@@ -30,6 +30,7 @@ import * as AdminTypo from './components/admin_component'
 import * as FrontEndTypo from './components/frontend_component'
 import CheatSheet from './components/CheatSheet'
 import CustomOTPBox from './components/CustomOTPBox'
+import * as eventService from './services/EventService'
 
 export {
   AdminTypo,
@@ -65,7 +66,8 @@ export {
   StudentEnumService,
   FloatingInput,
   CheatSheet,
-  CustomOTPBox
+  CustomOTPBox,
+  eventService
 }
 
 export * from './services/RestClient'

@@ -60,9 +60,18 @@ const DEFAULT_THEME = {
         p: '4',
         minH: '54px',
         borderColor: 'secondaryBlue.500',
-        rounded: '10px'
+        borderRadius: '10px'
       }
     },
+    Select: {
+      baseStyle: {
+        p: '4',
+        minH: '54px',
+        borderColor: 'secondaryBlue.500',
+        borderRadius: '10px'
+      }
+    },
+    
     Text: {
       baseStyle: {
         fontFamily: fontFamily,
@@ -534,7 +543,7 @@ const DEFAULT_THEME = {
     textGreyColor: {
       50: '#9E9E9E',
       100: '#616161',
-      200:'#666666',      
+      200:'#666666',
       250:'#696767',
       150: '#61646B',
       350: '#EAEAEB',

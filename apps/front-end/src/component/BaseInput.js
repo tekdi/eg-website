@@ -2,15 +2,24 @@ import React from "react";
 import {
   Box,
   Button,
+  CheckIcon,
   FormControl,
   HStack,
   Image,
   Radio,
+  Select,
   Stack,
   Text,
   VStack,
 } from "native-base";
-import { BodySmall, H2, t, FloatingInput, FrontEndTypo } from "@shiksha/common-lib";
+import {
+  BodySmall,
+  H2,
+  t,
+  FloatingInput,
+  IconByName,
+  FrontEndTypo,
+} from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 
 export function BaseInputTemplate(props) {
@@ -58,14 +67,16 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   );
 };
 
-export const ArrayFieldTemplate = ({ schema, ...props }) => {
-  const [isShow, setIsShow] = React.useState("no");
+export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
+  const [isShow, setIsShow] = React.useState("");
   const { title } = schema;
-  console.log(props, schema);
+  let addBtn = "";
+
   return (
-    <div>
+    <Box>
       <RadioBtn
-        value={isShow}
+        key={items}
+        value={items?.length > 0 ? "yes" : isShow !== "" ? "no" : ""}
         options={{
           enumOptions: [
             { label: t("YES"), value: "yes" },
@@ -74,35 +85,73 @@ export const ArrayFieldTemplate = ({ schema, ...props }) => {
         }}
         onChange={(e) => {
           setIsShow(e);
-          if (e === "yes" && props.items.length === 0) {
+          if (e === "yes" && items.length === 0) {
             props.onAddClick();
+          } else if (e === "no" && items.length > 0) {
+            items?.map((item, index) => item.onDropIndexClick(index)());
           }
         }}
         schema={{ label: t(title) }}
       />
-      {isShow === "yes" && (
-        <div>
-          {props.items.map((element) => element.children)}
+      {items?.length > 0 && (
+        <VStack space="6">
+          {items?.map(
+            ({
+              onDropIndexClick,
+              children,
+              hasRemove,
+              disabled,
+              readonly,
+              schema,
+              index,
+            }) => {
+              addBtn = schema?.title;
+              return (
+                <VStack key={index} space="4">
+                  <HStack alignItems="center" justifyContent="space-between">
+                    <H2 color="textMaroonColor.400">{`${index + 1}. ${t(
+                      schema?.title
+                    )}`}</H2>
+                    {hasRemove && (
+                      <IconByName
+                        p="0"
+                        color="textMaroonColor.400"
+                        name="DeleteBinLineIcon"
+                        onPress={(e) => {
+                          if (items?.length < 2) {
+                            setIsShow("no");
+                          }
+                          onDropIndexClick(index)();
+                        }}
+                        isDisabled={disabled || readonly}
+                      />
+                    )}
+                  </HStack>
+                  {children}
+                </VStack>
+              );
+            }
+          )}
           {props.canAdd && (
             <Button
-              variant="link"
+              variant={"link"}
+              colorScheme="info"
               onPress={(e) => {
-                console.log(e);
-                const isValid = e.target.closest("form.rjsf"); //?.validateForm();
-                console.log(isValid, isValid?.validateForm() ? "true" : "das");
-                if (isValid && isValid?.validateForm()) {
-                  props?.onClick();
-                }
+                props?.onAddClick();
               }}
             >
-              <FrontEndTypo.H3 color="blueText.400" underline bold> {t("ADD_EXPERIENCE")}</FrontEndTypo.H3>
+              <FrontEndTypo.H3 color="blueText.400" underline bold>
+                {" "}
+                {t("ADD_EXPERIENCE")}
+              </FrontEndTypo.H3>
             </Button>
           )}
-        </div>
+        </VStack>
       )}
-    </div>
+    </Box>
   );
 };
+
 export const FieldTemplate = ({
   id,
   style,
@@ -233,5 +282,71 @@ export const Aadhaar = (props) => {
       />
       <FloatingInput {...props} />
     </VStack>
+  );
+};
+
+export const select = ({ options, value, onChange, required, schema }) => {
+  const items = options?.enumOptions ? options?.enumOptions : [];
+  const { label } = schema ? schema : {};
+  return (
+    <FormControl gap="4">
+      {label && (
+        <FormControl.Label
+          rounded="sm"
+          position="absolute"
+          left="1rem"
+          bg="white"
+          px="1"
+          m="0"
+          height={"1px"}
+          alignItems="center"
+          style={{
+            ...(value
+              ? {
+                  top: "0",
+                  opacity: 1,
+                  zIndex: 5,
+                  transition: "all 0.3s ease",
+                }
+              : {
+                  top: "0.5rem",
+                  zIndex: -2,
+                  opacity: 0,
+                  transition: "all 0.2s ease-in-out",
+                }),
+          }}
+        >
+          <Text fontSize="12" fontWeight="400">
+            {t(label)}
+            {required ? (
+              <Text color={"danger.500"}>*</Text>
+            ) : (
+              <Text fontWeight="300" color={"#9E9E9E"}>
+                ({t("OPTIONAL")})
+              </Text>
+            )}
+          </Text>
+        </FormControl.Label>
+      )}
+      <Select
+        selectedValue={value}
+        accessibilityLabel={t(label)}
+        placeholder={t(label)}
+        _selectedItem={{
+          bg: "teal.600",
+          endIcon: <CheckIcon size="5" />,
+        }}
+        onValueChange={(itemValue) => onChange(itemValue)}
+      >
+        {items?.map((item) => (
+          <Select.Item
+            key={item?.value}
+            value={item?.value}
+            label={t(item?.label)}
+            _text={{ fontSize: 12, fontWeight: 500 }}
+          />
+        ))}
+      </Select>
+    </FormControl>
   );
 };
