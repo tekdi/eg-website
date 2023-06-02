@@ -79,9 +79,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
-  const [geoError, setGeoError] = React.useState();
-  const [latdata, setlat] = React.useState();
-  const [longdata, setlong] = React.useState();
 
   const location = useLocation();
 
@@ -133,18 +130,11 @@ export default function AgformUpdate({ userTokenInfo }) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      console.log("Geolocation is not supported by this browser.");
       setAlert("Geolocation is not supported by this browser.");
     }
   };
 
   const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-        position.coords.latitude +
-        "/n Longitude: " +
-        position.coords.longitude
-    );
     let lati = position.coords.latitude;
     let longi = position.coords.longitude;
 
@@ -155,9 +145,6 @@ export default function AgformUpdate({ userTokenInfo }) {
       long: longi,
     });
   };
-
-  console.log("latdata", latdata);
-  console.log("long", longdata);
 
   function showError(error) {
     switch (error.code) {
@@ -180,8 +167,6 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
   }
 
-  console.log("error", geoError);
-
   // React.useEffect(async () => {
   //   if (page == "2") {
   //   }
@@ -202,8 +187,6 @@ export default function AgformUpdate({ userTokenInfo }) {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
     }
   }, [page]);
-
-  console.log("formdata", formData);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -306,7 +289,6 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
 
     if (schema["properties"]["marital_status"]) {
-      console.log("reached here.");
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
@@ -565,8 +547,6 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
   };
 
-  console.log("page", page);
-
   const onError = (data) => {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
@@ -664,7 +644,6 @@ export default function AgformUpdate({ userTokenInfo }) {
       }
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      console.log("uploadDoc", uploadDoc);
       if (uploadDoc) {
         navigate("/beneficiary/3", { state: { id: userId } });
       }
@@ -730,7 +709,6 @@ export default function AgformUpdate({ userTokenInfo }) {
           cameraUrl,
           setcameraFile,
           setCameraUrl: async (url) => {
-            console.log("url", url);
             setCameraUrl(url);
             setFormData({ ...formData, ["profile_url"]: url });
           },
