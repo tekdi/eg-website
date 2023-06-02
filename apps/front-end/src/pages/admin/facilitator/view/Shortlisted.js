@@ -47,16 +47,13 @@ function Shortlisted({ status, setStatus, update, data }) {
           </Radio.Group>
           <Box width={"450px"} paddingTop="20px" gap={"5"}>
             <FloatingInput
-            required
+              required
               schema={{ title: t("NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW") }}
             />
             <FloatingInput required schema={{ title: t("REMARKS") }} />
           </Box>
         </Box>
-        <HStack
-         mt="8"
-          space={6}
-        >
+        <HStack mt="8" space={6}>
           <AdminTypo.StatusButton
             status={"success"}
             onPress={(e) => setStatus(false)}
