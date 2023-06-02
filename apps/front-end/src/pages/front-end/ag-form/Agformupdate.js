@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "../ag-form/parts/Schema.js";
+import schema1 from "../ag-form/parts/SchemaUpdate.js";
 import {
   Alert,
   Box,
@@ -13,7 +13,6 @@ import {
   Radio,
   Stack,
   VStack,
-  Text,
 } from "native-base";
 import CustomRadio from "../../../component/CustomRadio";
 import Steper from "../../../component/Steper";
@@ -38,9 +37,9 @@ import {
   StudentEnumService,
   sendAndVerifyOtp,
   CustomOTPBox,
-  FrontEndTypo,
+  benificiaryRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
-
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
@@ -53,13 +52,15 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  select,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
+import { useLocation } from "react-router-dom";
 
 // App
 
-export default function Agform({ userTokenInfo }) {
+export default function AgformUpdate({ userTokenInfo }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -76,12 +77,15 @@ export default function Agform({ userTokenInfo }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [keycloakId, setkeycloakId] = React.useState();
-  const [username, setusername] = React.useState();
-  const [verifyOtpData, setverifyOtpData] = useState();
-  const [otpbtn, setotpbtn] = React.useState(false);
+  const [userId, setuserId] = React.useState();
+
+  const location = useLocation();
 
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    setuserId(location?.state?.id);
+  }, []);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -90,11 +94,11 @@ export default function Agform({ userTokenInfo }) {
 
   const updateData = (data, deleteData = false) => {};
 
-  const uiSchema = {
-    facilitator_id: {
-      "ui:widget": "hidden",
-    },
-  };
+  // const uiSchema = {
+  //   facilitator_id: {
+  //     "ui:widget": "hidden",
+  //   },
+  // };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -104,6 +108,8 @@ export default function Agform({ userTokenInfo }) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
         nextIndex = pages[index + 1];
+      } else if (page == "1") {
+        navigate("/beneficiary", { state: { id: userId } });
       } else {
         nextIndex = pages[index - 1];
       }
@@ -136,51 +142,25 @@ export default function Agform({ userTokenInfo }) {
     );
   };
 
-  const createAg = async () => {
-    let url = await AgRegistryService.createAg(formData);
+  React.useEffect(async () => {
+    getLocation();
+  }, []);
 
-    if (url?.data) {
-      navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
+  React.useEffect(async () => {
+    setFormData({ ...formData, edit_page_type: "add_contact" });
+    if (page === "2") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      setFormData({ ...formData, edit_page_type: "add_address" });
+    } else if (page === "3") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      setFormData({ ...formData, edit_page_type: "personal" });
+    } else if (page === "4") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      setFormData({ ...formData, edit_page_type: "add_education" });
+    } else if (page === "upload") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
     }
-  };
-
-  const otpfunction = async () => {
-    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-      ...formData,
-      hash: localStorage.getItem("hash"),
-    });
-
-    setverifyOtpData(otpData);
-    if (status === true) {
-      const data = await formSubmitCreate(formData);
-
-      if (data?.error) {
-        const newErrors = {
-          mobile: {
-            __errors:
-              data?.error?.constructor?.name === "String"
-                ? [data?.error]
-                : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-          },
-        };
-        setErrors(newErrors);
-      } else {
-        createAg();
-      }
-    } else if (status === false) {
-      const newErrors = {
-        otp: {
-          __errors: [t("USER_ENTER_VALID_OTP")],
-        },
-      };
-      setErrors(newErrors);
-    } else {
-      setSchema(newSchema);
-      setotpbtn(true);
-    }
-  };
+  }, [page]);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -225,6 +205,86 @@ export default function Agform({ userTokenInfo }) {
       },
     };
   };
+
+  React.useEffect(async () => {
+    if (schema?.properties?.state) {
+      const qData = await geolocationRegistryService.getStates();
+      let newSchema = schema;
+      if (schema["properties"]["state"]) {
+        newSchema = getOptions(newSchema, {
+          key: "state",
+          arr: qData?.states,
+          title: "state_name",
+          value: "state_name",
+        });
+      }
+      newSchema = await setDistric({
+        schemaData: newSchema,
+        state: formData?.state,
+        district: formData?.district,
+        block: formData?.block,
+      });
+      setSchema(newSchema);
+    }
+
+    const ListOfEnum = await enumRegistryService.listOfEnum();
+    const lastYear = await benificiaryRegistoryService.lastYear();
+
+    let newSchema = schema;
+    if (schema["properties"]["type_of_learner"]) {
+      newSchema = getOptions(newSchema, {
+        key: "type_of_learner",
+        arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "last_standard_of_education_year",
+        arr: lastYear,
+        title: "value",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "last_standard_of_education",
+        arr: ListOfEnum?.data?.LAST_STANDARD_OF_EDUCATION,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "reason_of_leaving_education",
+        arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
+
+    if (schema["properties"]["marital_status"]) {
+      console.log("reached here.");
+      newSchema = getOptions(newSchema, {
+        key: "social_category",
+        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "marital_status",
+        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
+  }, [page]);
+
+  // Type Of Student
+
+  // React.useEffect(async () => {
+  //    }, [page]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -338,6 +398,88 @@ export default function Agform({ userTokenInfo }) {
     });
   };
 
+  const setDistric = async ({ state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.district && state) {
+      const qData = await geolocationRegistryService.getDistricts({
+        name: state,
+      });
+      if (schema["properties"]["district"]) {
+        newSchema = getOptions(newSchema, {
+          key: "district",
+          arr: qData?.districts,
+          title: "district_name",
+          value: "district_name",
+        });
+      }
+      if (schema["properties"]["block"]) {
+        newSchema = await setBlock({ district, block, schemaData: newSchema });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "district", arr: [] });
+      if (schema["properties"]["block"]) {
+        newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      }
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    formData;
+    return newSchema;
+  };
+
+  const setBlock = async ({ district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.block && district) {
+      const qData = await geolocationRegistryService.getBlocks({
+        name: district,
+      });
+      if (schema["properties"]["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData?.blocks,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+      if (schema["properties"]["village"]) {
+        newSchema = await setVilage({ block, schemaData: newSchema });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setVilage = async ({ block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: block,
+      });
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, {
+          key: "village",
+          arr: qData?.villages,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        });
+      }
+      setSchema(newSchema);
+    } else {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -356,6 +498,27 @@ export default function Agform({ userTokenInfo }) {
           setErrors(newErrors);
         }
       }
+    }
+
+    if (id === "root_state") {
+      await setDistric({
+        schemaData: schema,
+        state: data?.state,
+        district: data?.district,
+        block: data?.block,
+      });
+    }
+
+    if (id === "root_district") {
+      await setBlock({
+        district: data?.district,
+        block: data?.block,
+        schemaData: schema,
+      });
+    }
+
+    if (id === "root_block") {
+      await setVilage({ block: data?.block, schemaData: schema });
     }
   };
 
@@ -394,7 +557,10 @@ export default function Agform({ userTokenInfo }) {
       const { id } = authUser;
       let success = false;
       if (id) {
+        // const data = await formSubmitUpdate(newData);
+        // if (!_.isEmpty(data)) {
         success = true;
+        // }
       } else if (page === "2") {
         const data = await formSubmitCreate(newFormData);
         if (data?.error) {
@@ -424,6 +590,158 @@ export default function Agform({ userTokenInfo }) {
       }
     }
   };
+
+  const [cameraFile, setcameraFile] = useState();
+
+  const handleFileInputChange = async (e) => {
+    let file = e.target.files[0];
+    if (file.size <= 1048576 * 2) {
+      const data = await getBase64(file);
+      setCameraUrl(data);
+      setcameraFile(file);
+      setFormData({ ...formData, ["profile_url"]: data });
+    } else {
+      setErrors({ fileSize: t("FILE_SIZE") });
+    }
+  };
+
+  const uploadProfile = async () => {
+    const { id } = authUser;
+    if (id) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: userId,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+
+      const uploadDoc = await uploadRegistryService.uploadFile(form_data);
+      console.log("uploadDoc", uploadDoc);
+      if (uploadDoc) {
+        navigate("/beneficiary/3", { state: { id: userId } });
+      }
+    }
+  };
+  if (cameraUrl) {
+    return (
+      <Layout
+        _appBar={{
+          lang,
+          setLang,
+          onPressBackButton: (e) => {
+            setCameraUrl();
+            setCameraModal(false);
+          },
+          onlyIconsShow: ["backBtn", "userInfo"],
+        }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <VStack py={6} px={4} mb={5} space="6">
+          <Center>
+            <Image
+              source={{
+                uri: cameraUrl,
+              }}
+              alt=""
+              size="324px"
+            />
+          </Center>
+          <Button variant={"primary"} onPress={uploadProfile}>
+            {t("SUBMIT")}
+          </Button>
+          <Button
+            variant={"secondary"}
+            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            onPress={(e) => {
+              setCameraUrl();
+              setCameraModal(true);
+            }}
+          >
+            {t("TAKE_ANOTHER_PHOTO")}
+          </Button>
+        </VStack>
+      </Layout>
+    );
+  }
+  if (cameraModal) {
+    return (
+      <Camera
+        {...{
+          cameraModal,
+          setCameraModal,
+          cameraUrl,
+          setcameraFile,
+          setCameraUrl: async (url) => {
+            console.log("url", url);
+            setCameraUrl(url);
+            setFormData({ ...formData, ["profile_url"]: url });
+          },
+        }}
+      />
+    );
+  }
+
+  if (page === "upload") {
+    return (
+      <Layout
+        _appBar={{
+          onPressBackButton: (e) => setPage("4"),
+          lang,
+          setLang,
+          onlyIconsShow: ["backBtn", "userInfo"],
+        }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <VStack py={6} px={4} mb={5} space="6">
+          <H1 color="red.1000">{t("Add_AGS_PROFILE")}</H1>
+
+          <Button
+            variant={"primary"}
+            leftIcon={
+              <IconByName
+                name="CameraLineIcon"
+                color="white"
+                size={2}
+                isDisabled
+              />
+            }
+            onPress={(e) => {
+              setCameraUrl();
+              setCameraModal(true);
+            }}
+          >
+            {t("TAKE_PHOTO")}
+          </Button>
+          <VStack space={2}>
+            <input
+              accept="image/*"
+              type="file"
+              style={{ display: "none" }}
+              ref={uplodInputRef}
+              onChange={handleFileInputChange}
+            />
+            <Button
+              leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+              variant={"secondary"}
+              onPress={(e) => {
+                uplodInputRef?.current?.click();
+              }}
+            >
+              {t("UPLOAD_PHOTO")}
+            </Button>
+            {errors?.fileSize ? (
+              <H2 color="red.400">{errors?.fileSize}</H2>
+            ) : (
+              <React.Fragment />
+            )}
+          </VStack>
+        </VStack>
+      </Layout>
+    );
+  }
 
   return (
     <Layout
@@ -458,7 +776,7 @@ export default function Agform({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, select }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -466,7 +784,6 @@ export default function Agform({ userTokenInfo }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
-              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -474,7 +791,6 @@ export default function Agform({ userTokenInfo }) {
             {...{
               validator,
               schema: schema ? schema : {},
-              uiSchema,
               formData,
               customValidate,
               onChange,
@@ -483,25 +799,14 @@ export default function Agform({ userTokenInfo }) {
               transformErrors,
             }}
           >
-            {page === "2" ? (
-              <FrontEndTypo.Primarybutton
-                mt="3"
-                variant={"primary"}
-                type="submit"
-                onPress={otpfunction}
-              >
-                {otpbtn ? "VERIFY_OTP" : "SEND_OTP"}
-              </FrontEndTypo.Primarybutton>
-            ) : (
-              <FrontEndTypo.Primarybutton
-                mt="-10"
-                variant={"primary"}
-                type="submit"
-                onPress={() => formRef?.current?.submit()}
-              >
-                {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-              </FrontEndTypo.Primarybutton>
-            )}
+            <Button
+              mt="3"
+              variant={"primary"}
+              type="submit"
+              onPress={() => formRef?.current?.submit()}
+            >
+              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
+            </Button>
           </Form>
         ) : (
           <React.Fragment />

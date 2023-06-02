@@ -57,7 +57,6 @@ const select2 = [
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
-
   const [facilitator, setFacilitator] = React.useState({});
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
