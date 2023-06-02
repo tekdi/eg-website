@@ -483,5 +483,13 @@
   "ORIENTATION": "Orientation",
   "TRAINING": "Training",
   "CLEAR_FILTER": "Clear filter",
-  "ALL_PRERAKS": "All Preraks"
+  "ALL_PRERAKS": "All Preraks",
+  "AADHAR_CARD":"Aadhaar Card",
+  "OFFLINE_KYC_MESSAGE":"If the Aadhaar is connected to their mobile number you can do offline KYC verification.",
+  "COMPLETE_AADHAR_VERIFICATION_MESSAGE":"You can scan the QR code given on the Aadhaar Card to complete the Aadhaar verification.",
+  "DISCLAIMER_MESSAGE":"I understand that my Aadhaar details shall not be used or stored for any other purpose.",
+  "AADHAR_KYC_VERIFICATION_FAILED":" Aadhaar KYC Verification Failed",
+  "RETRY_AADHAR_NUMER_KYC":" Retry Aadhaar Number KYC",
+  "GO_BACK":"Go Back",
+  "SCAN_YOUR_AADHAR_QR_CODE":"Scan Your Aadhaar QR Code",
 }

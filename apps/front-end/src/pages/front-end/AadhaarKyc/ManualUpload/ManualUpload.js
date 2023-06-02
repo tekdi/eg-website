@@ -1,10 +1,8 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
-import CheckIcon from "@mui/icons-material/Check";
-import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Text } from "native-base";
-import { Camera, getBase64, t } from "@shiksha/common-lib";
+import { Box, Button, FormControl, Text,Image, VStack } from "native-base";
+import { Camera, getBase64, t,FrontEndTypo, IconByName,Layout} from "@shiksha/common-lib";
 
 export default function ManualUpload() {
   const navigate = useNavigate();
@@ -69,7 +67,13 @@ export default function ManualUpload() {
     );
   }
   return (
-    <Box position="relative">
+    <Layout
+    _appBar={{
+      onlyIconsShow: ["backBtn"],
+      _box: { bg: "white", shadow: "appBarShadow" },
+      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+    }}
+    >
       <Box borderBottomWidth="2" borderColor="gray.400">
         <Button
           variant="ghost"
@@ -84,25 +88,20 @@ export default function ManualUpload() {
       <Box px="4">
         {!submitted ? (
           <>
-            <Text fontSize="2xl" fontWeight="600" mt="4">
-              {" "}
+             <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400"> 
+             
               {t("AADHAR_CARD")}
-            </Text>
-            <Text>{t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}</Text>
+            </FrontEndTypo.H1 >
+            <FrontEndTypo.H3 color="textGreyColor.800">{t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}</FrontEndTypo.H3>
 
             <Button
               variant="outline"
-              w="full"
               maxW={480}
-              h={200}
               background="transparent"
-              borderWidth="2"
-              borderColor="gray.500"
+              borderWidth="3px"
+              borderColor="textGreyColor.100"
               rounded="md"
-              display="flex"
-              flexDirection="column"
-              alignItems={"center"}
-              justifyContent={"center"}
+              borderStyle="dashed"
               mt="16"
               onPress={() => {
                 setModal(true);
@@ -117,12 +116,11 @@ export default function ManualUpload() {
                   />
                 ) : (
                   <>
-                    <Text textAlign={"center"}>
-                      <UploadIcon />
-                    </Text>
-                    <Text>
+                   <IconByName name="Upload2FillIcon" textAlign="center" color="textGreyColor.100"/>
+                    <FrontEndTypo.H2 color="textGreyColor.100">
                       {t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}
-                    </Text>
+                    </FrontEndTypo.H2>
+                    
                   </>
                 )
               ) : image.back ? (
@@ -133,12 +131,19 @@ export default function ManualUpload() {
                 />
               ) : (
                 <>
-                  <Text textAlign={"center"}>
-                    <UploadIcon />
-                  </Text>
-                  <Text>{t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}</Text>
+                  <IconByName name="Upload2FillIcon" textAlign="center" color="textGreyColor.100"/>
+                  <FrontEndTypo.H2 color="textGreyColor.100">{t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}</FrontEndTypo.H2  >
                 </>
+                
               )}
+              <Image
+                  source={{
+                    uri: "/aadhar.svg",
+                  }}
+                  alt="Aadhar"
+                  size={"200px"}
+                  resizeMode="contain"
+                />
             </Button>
 
             <Box
@@ -163,92 +168,67 @@ export default function ManualUpload() {
             {isFront ? (
               image.front ? (
                 <Button
-                  variant="secondary"
-                  bg="gray.400"
-                  py="12px"
-                  px="20px"
-                  mt="10"
+                 variant="link" 
                   onPress={() => {
                     setImage((prev) => ({ ...prev, front: "" }));
                     setModal(true);
                   }}
                 >
-                  <Text color="white">{t("UPLOAD_AGAIN")}</Text>
+                  <FrontEndTypo.H3 color="blueText.450" underline>{t("UPLOAD_AGAIN")}</FrontEndTypo.H3>
                 </Button>
               ) : null
             ) : image.back ? (
               <Button
-                variant="secondary"
-                bg="gray.400"
-                py="12px"
-                px="20px"
-                mt="10"
+              variant="link" 
                 onPress={() => {
                   setImage((prev) => ({ ...prev, back: "" }));
                   setModal(true);
                 }}
               >
-                <Text color="white">{t("UPLOAD_AGAIN")}</Text>
+                 <FrontEndTypo.H3 color="blueText.450" underline>{t("UPLOAD_AGAIN")}</FrontEndTypo.H3>
               </Button>
             ) : null}
 
-            <Button
-              variant="secondary"
+            <FrontEndTypo.Primarybutton
               bg={!image.front || !image.back ? "gray.300" : "gray.500"}
-              py="12px"
-              px="20px"
+             
               mt="10"
               disabled={!image.front || !image.back}
               onPress={handleSubmit}
             >
-              <Text color="white">Continue</Text>
-            </Button>
+             {t("CONTINUE")}
+            </FrontEndTypo.Primarybutton>
           </>
         ) : (
           <>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              gap="1.5"
-              mt="6"
-              p="2"
-            >
-              <CheckIcon fontSize="medium" />
-              <Text color="gray.500" fontSize={16} fontWeight="semibold">
+            <VStack alignItems="center">
+              <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400"> 
                 {t("AADHAAR_CARD_UPLOADED")}
-              </Text>
-            </Box>
-
-            <div className="front__image">
-              <h4>{t("FRONT_VIEW")}</h4>
-
+              </FrontEndTypo.H1>
+              <FrontEndTypo.H2 color="worksheetBoxText.400"  my="4">{t("FRONT_VIEW")}</FrontEndTypo.H2>
+            
               <img
                 src={image.front}
                 alt="front image"
-                style={{ width: "auto", maxWidth: "480px", height: "180px" }}
+                style={{ width: "auto", maxWidth: "280px", height: "180px" }}
               />
-            </div>
 
-            <div className="back__image">
-              <h4>{t("BACK_VIEW")}</h4>
+            <FrontEndTypo.H2 color="worksheetBoxText.400"  my="4">{t("BACK_VIEW")}</FrontEndTypo.H2>
 
               <img
                 src={image.back}
                 alt="back image"
-                style={{ width: "auto", maxWidth: "480px", height: "180px" }}
+                style={{ width: "auto", maxWidth: "280px", height: "180px" }}
               />
-            </div>
 
-            <Button
-              variant="secondary"
-              bg={"gray.500"}
-              py="12px"
-              px="20px"
+            <FrontEndTypo.Primarybutton
+             
               mt="10"
             >
-              <Text color="white">{t("CONTINUE")}</Text>
-            </Button>
+            {t("CONTINUE")}
+            </FrontEndTypo.Primarybutton>
+            </VStack>
+
           </>
         )}
       </Box>
@@ -280,23 +260,15 @@ export default function ManualUpload() {
               borderColor="gray.400"
               overflow="hidden"
             >
-              <Button
-                width="full"
-                variant="ghost"
-                px="15px"
-                py="10px"
-                borderBottomWidth="1"
-                borderColor="gray.600"
-                rounded="none"
+              <FrontEndTypo.Secondarybutton
+               
                 onPress={() => {
                   setCameraUrl();
                   setCameraModal(true);
                 }}
               >
-                <Text fontSize={14} fontWeight="500" textAlign="center">
                   {t("TAKE_A_PHOTO")}
-                </Text>
-              </Button>
+              </FrontEndTypo.Secondarybutton>
 
               <FormControl.Label
                 htmlFor="galleryUpload"
@@ -369,6 +341,6 @@ export default function ManualUpload() {
           </Box>
         </Box>
       )}
-    </Box>
+    </Layout>
   );
 }

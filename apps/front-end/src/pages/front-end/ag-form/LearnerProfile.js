@@ -211,20 +211,11 @@ const LearnerProfile = () => {
         </VStack>
 
         <FrontEndTypo.Secondarybutton
-          width={250}
-          marginTop={"5em"}
+        my="5"
           onPress={() => navToScreen()}
+          leftIcon={<IconByName name="UserUnfollowLineIcon" />}
         >
-          <Image
-            source={{
-              uri: "/dropout.svg",
-            }}
-            alt="Prerak Orientation"
-            resizeMode="contain"
-            width="15px"
-            height="15px"
-            marginRight="10px"
-          />
+          
           {t("MARK_AS_DROPOUT")}
         </FrontEndTypo.Secondarybutton>
       </VStack>

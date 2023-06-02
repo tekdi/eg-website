@@ -3,7 +3,7 @@ import WestIcon from "@mui/icons-material/West";
 import { useNavigate } from "react-router-dom";
 import jsQR from "jsqr";
 import "./QrScannerKyc.css";
-import { Button, Text } from "native-base";
+import { FrontEndTypo,Layout } from "@shiksha/common-lib";
 
 export default function QrScannerKyc() {
   const navigate = useNavigate();
@@ -61,6 +61,13 @@ export default function QrScannerKyc() {
   }, []);
 
   return (
+    <Layout
+    _appBar={{
+      onlyIconsShow: ["backBtn"],
+      _box: { bg: "white", shadow: "appBarShadow" },
+      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+    }}
+    >
     <div className="qrScannerPage">
       <div className="topbar">
         <button className="btn-back" onClick={() => navigate(-1)}>
@@ -69,15 +76,16 @@ export default function QrScannerKyc() {
       </div>
 
       <div className="content">
-        <h2>Scan Your Aadhaar QR Code</h2>
+        <FrontEndTypo.H1 bold>{t("SCAN_YOUR_AADHAR_QR_CODE")}</FrontEndTypo.H1>
 
         <video ref={videoRef} style={{ width: "100%" }} />
         <canvas ref={canvasRef} style={{ display: "none" }} />
 
-        <Button variant="secondary" bg={"gray.500"} py="12px" px="20px" mt={10}>
-          <Text color="white">Continue</Text>
-        </Button>
+        <FrontEndTypo.Secondarybutton mt={10}>
+         {t("CONTINUE")}
+        </FrontEndTypo.Secondarybutton>
       </div>
     </div>
+    </Layout>
   );
 }
