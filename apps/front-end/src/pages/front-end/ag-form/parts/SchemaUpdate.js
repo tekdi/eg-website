@@ -29,6 +29,16 @@ export default {
       type: "object",
       // required: ["state", "district", "block", "village"],
       properties: {
+        lat: {
+          type: "string",
+          label: "Latitude",
+          format: "readOnly",
+        },
+        long: {
+          type: "string",
+          label: "Latitude",
+          format: "readOnly",
+        },
         state: {
           type: "string",
           label: "STATE",

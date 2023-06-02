@@ -442,6 +442,8 @@
   "SCHOOL_DROPOUT_YEAR":"स्कूल ड्रॉपआउट वर्ष,",
   "SCHOOL_DROPOUT_CLASS":"स्कूल ड्रॉपआउट कक्षा,",
   "SCHOOL_DROPOUT_REASON":"स्कूल ड्रॉपआउट कारण",
-  "STREET_ADDRESS":"सड़क का पता"
+  "STREET_ADDRESS":"सड़क का पता",
+  "LATITUDE":"लैटिट्यूड",
+  "LONGITUDE":"लॉन्गिट्यूड"
 
 }

@@ -487,7 +487,9 @@
   "SCHOOL_DROPOUT_YEAR":"School Dropout Year",
   "SCHOOL_DROPOUT_CLASS":"School Dropout Class",
   "SCHOOL_DROPOUT_REASON":"School Dropout REASON",
-  "STREET_ADDRESS":"Street Address"
+  "STREET_ADDRESS":"Street Address",
+  "LATITUDE":"Latitude",
+  "LONGITUDE":"longitude"
 
 
 
