@@ -78,6 +78,9 @@ export default function AgformUpdate({ userTokenInfo }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
+  const [geoError, setGeoError] = React.useState();
+  const [latdata, setlat] = React.useState();
+  const [longdata, setlong] = React.useState();
 
   const location = useLocation();
 
@@ -86,6 +89,8 @@ export default function AgformUpdate({ userTokenInfo }) {
   React.useEffect(() => {
     setuserId(location?.state?.id);
   }, []);
+
+  console.log("userId", userId);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -127,9 +132,10 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const getLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
       console.log("Geolocation is not supported by this browser.");
+      setGeoError("Geolocation is not supported by this browser.");
     }
   };
 
@@ -140,17 +146,56 @@ export default function AgformUpdate({ userTokenInfo }) {
         "/n Longitude: " +
         position.coords.longitude
     );
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+    setlat(lat);
+    setlong(long);
   };
 
-  React.useEffect(async () => {
-    getLocation();
-  }, []);
+  console.log("latdata", latdata);
+  console.log("long", longdata);
+
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setGeoError("User denied the request for Geolocation.");
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setGeoError("Location information is unavailable.");
+
+        break;
+      case error.TIMEOUT:
+        x.innerHTML = "";
+        setGeoError("The request to get user location timed out.");
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setGeoError("An unknown error occurred.");
+
+        break;
+    }
+  }
+
+  console.log("error", geoError);
+
+  // React.useEffect(async () => {
+  //   if (page == "2") {
+  //   }
+  // }, [page]);
 
   React.useEffect(async () => {
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
+      getLocation();
+
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      setFormData({ ...formData, edit_page_type: "add_address" });
+      setFormData({
+        ...formData,
+        edit_page_type: "add_address",
+        lat: latdata,
+        long: longdata,
+      });
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "personal" });
@@ -161,6 +206,8 @@ export default function AgformUpdate({ userTokenInfo }) {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
     }
   }, [page]);
+
+  console.log("formdata", formData);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -522,6 +569,8 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
   };
 
+  console.log("page", page);
+
   const onError = (data) => {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
@@ -662,6 +711,16 @@ export default function AgformUpdate({ userTokenInfo }) {
           >
             {t("TAKE_ANOTHER_PHOTO")}
           </Button>
+
+          <Button
+            variant={"secondary"}
+            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            onPress={(e) => {
+              navigate("/beneficiary/3", { state: { id: userId } });
+            }}
+          >
+            {t("SKIP")}
+          </Button>
         </VStack>
       </Layout>
     );
@@ -731,6 +790,15 @@ export default function AgformUpdate({ userTokenInfo }) {
               }}
             >
               {t("UPLOAD_PHOTO")}
+            </Button>
+            <Button
+              variant={"secondary"}
+              leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+              onPress={(e) => {
+                navigate("/beneficiary/3", { state: { id: userId } });
+              }}
+            >
+              {t("SKIP")}
             </Button>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
