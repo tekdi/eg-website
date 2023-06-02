@@ -1,9 +1,18 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import { Checkbox } from "@mui/material";
-import { Box, Button, FormControl, Image, Input, Text } from "native-base";
+import {
+  Box,
+  Button,
+  FormControl,
+  Image,
+  Input,
+  HStack,
+  Alert,
+  VStack,
+} from "native-base";
 import { useNavigate } from "react-router-dom";
-import { t } from "@shiksha/common-lib";
+import { FrontEndTypo, t, Layout } from "@shiksha/common-lib";
 
 export default function AdharKyc() {
   const navigate = useNavigate();
@@ -93,7 +102,13 @@ export default function AdharKyc() {
   };
 
   return (
-    <Box>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
+    >
       <Box borderBottomWidth="2" borderColor="gray.400">
         <Button
           variant="ghost"
@@ -106,19 +121,12 @@ export default function AdharKyc() {
       </Box>
 
       <Box px="4">
-        <Text fontSize="2xl" fontWeight="600" mt="4">
+        <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400" mb="4">
           {t("OFFLINE_AADHAAR_VERIFICATION")}
-          <br />
           (OKYC)
-        </Text>
+        </FrontEndTypo.H1>
 
         <Box mt="2">
-          <FormControl.Label htmlFor="aadhaarNumber" mb="2">
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
-              {t("ENTER_YOUR_AADHAAR_NUMBER")}
-            </Text>
-          </FormControl.Label>
-
           <Input
             id="aadhaarNumber"
             name="aadhaarNumber"
@@ -132,6 +140,9 @@ export default function AdharKyc() {
               setData({ ...data, aadhaarNumber: e.target?.value });
             }}
           />
+          <FrontEndTypo.H4 color="gray.500">
+            {t("ENTER_YOUR_AADHAAR_NUMBER")}
+          </FrontEndTypo.H4>
         </Box>
 
         <Box mt="2">
@@ -141,12 +152,9 @@ export default function AdharKyc() {
             display="flex"
             flexDirection="column"
           >
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
+            <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">
               {t("ENTER_SECURITY_CODE")}
-            </Text>
-            <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">
-              {t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}
-            </Text>
+            </FrontEndTypo.H3>
           </FormControl.Label>
           <Image
             width={150}
@@ -167,42 +175,48 @@ export default function AdharKyc() {
               setData({ ...data, securityCode: e.target?.value });
             }}
           />
+          <FrontEndTypo.H4 color="gray.500">
+            {t("TYPE_THE_CHARACTERS_YOU_SEE_IN_THE_PICTURE")}
+          </FrontEndTypo.H4>
         </Box>
 
-        <Text
-          display="inline-block"
-          mt="6"
-          color="gray.600"
-          fontWeight="500"
-          p="2"
-          borderWidth="2"
-          borderColor="gray.400"
-          rounded="md"
-        >
-          {t(
-            "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
-          )}
-        </Text>
+        <Alert status="info" colorScheme="info" textAlign="center" my="4">
+          <VStack space={2} flexShrink={1}>
+            <HStack
+              flexShrink={1}
+              space={2}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <HStack flexShrink={1} space={2} alignItems="center">
+                <Alert.Icon />
+                <FrontEndTypo.H4>
+                  {t(
+                    "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
+                  )}
+                </FrontEndTypo.H4>
+              </HStack>
+            </HStack>
+          </VStack>
+        </Alert>
 
         <ul style={{ padding: "0px 20px", marginTop: "10px" }}>
           <li style={{ listStyleType: "disc" }}>
-            <Text fontSize="sm" fontWeight="500" color="gray.600">
+            <FrontEndTypo.H5 color="gray.600" fontWeight="500">
               {t(
                 "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE"
               )}
-            </Text>
+            </FrontEndTypo.H5>
           </li>
 
           <li style={{ listStyleType: "disc" }}>
-            <Text fontSize="sm" fontWeight="500" color="gray.600">
-              {t(
-                "I understand that my Aadhaar details shall not be used or stored for any other purpose."
-              )}
-            </Text>
+            <FrontEndTypo.H5 fontWeight="500" color="gray.600">
+              {t("DISCLAIMER_MESSAGE")}
+            </FrontEndTypo.H5>
           </li>
         </ul>
 
-        <FormControl.Label htmlFor="checkMark">
+        <FormControl.Label htmlFor="checkMark" alignItems="center">
           <Checkbox
             id="checkMark"
             name="checkMark"
@@ -210,14 +224,13 @@ export default function AdharKyc() {
             onChange={(e) => {
               setData({ ...data, checkMark: e.target.checked });
             }}
-          />{" "}
-          <Text fontSize="sm">
+          />
+          <FrontEndTypo.H4 color="textGreyColor.800" bold>
             {t("I_HAVE_READ_AND_UNDERSTOOD_ALL_OF_THE_POINTS_ABOVE")}
-          </Text>
+          </FrontEndTypo.H4>
         </FormControl.Label>
 
-        <Button
-          variant="secondary"
+        <FrontEndTypo.Secondarybutton
           bg={
             !data.aadhaarNumber || !data.securityCode || !data.checkMark
               ? "gray.300"
@@ -231,9 +244,9 @@ export default function AdharKyc() {
           }
           onPress={sendData}
         >
-          <Text color="white">{t("CONTINUE")}</Text>
-        </Button>
+          {t("CONTINUE")}
+        </FrontEndTypo.Secondarybutton>
       </Box>
-    </Box>
+    </Layout>
   );
 }

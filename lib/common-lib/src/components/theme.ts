@@ -68,7 +68,7 @@ const DEFAULT_THEME = {
         p: '4',
         minH: '54px',
         borderColor: 'secondaryBlue.500',
-        borderRadius: '10px',
+        borderRadius: '10px'
       }
     },
     Text: {
