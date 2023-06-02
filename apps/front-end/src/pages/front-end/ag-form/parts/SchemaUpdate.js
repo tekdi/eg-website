@@ -30,12 +30,12 @@ export default {
       // required: ["state", "district", "block", "village"],
       properties: {
         lat: {
-          type: "string",
+          type: "number",
           label: "Latitude",
           format: "readOnly",
         },
         long: {
-          type: "string",
+          type: "number",
           label: "Latitude",
           format: "readOnly",
         },
