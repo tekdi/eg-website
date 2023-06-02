@@ -19,7 +19,7 @@ function App() {
   const [accessRoutes, setAccessRoutes] = React.useState([]);
   const [token, setToken] = React.useState(localStorage.getItem("token"));
   const [userTokenInfo, setUserTokenInfo] = React.useState();
-  window.onbeforeunload = () => {};
+  window.onbeforeunload = () => { };
 
   React.useEffect(async () => {
     if (token) {
@@ -49,7 +49,7 @@ function App() {
         },
         {
           title: "LEARNERS",
-          route: "/ag",
+          route: "/beneficiary",
           icon: "PencilRulerLineIcon",
         },
         {

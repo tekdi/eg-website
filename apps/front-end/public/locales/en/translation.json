@@ -379,5 +379,14 @@
   "ORIENTATION": "Orientation",
   "TRAINING": "Training",
   "CLEAR_FILTER": "Clear filter",
-  "ALL_PRERAKS": "All Preraks"
+  "ALL_PRERAKS": "All Preraks",
+  "BENEFICIARY_STATUS_IDENTIFIED":"identified",
+  "BENEFICIARY_STATUS_READY_TO_ENROLL":"ready to enroll",
+  "BENEFICIARY_STATUS_ENROLLED":"enrolled",
+  "BENEFICIARY_STATUS_APPROVED_IP":"approved ip",
+  "BENEFICIARY_STATUS_REGISTERED_IN_CAMP":"registered in camp",
+  "BENEFICIARY_STATUS_REJECTED":"rejected",
+  "BENEFICIARY_STATUS_DROPOUT":"dropout",
+  "BENEFICIARY_STATUS_PRAGATI_SYC":"pragati syc",
+  "BENEFICIARY_ALL":"All"
 }

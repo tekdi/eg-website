@@ -29,7 +29,8 @@ import * as AdminTypo from './components/admin_component'
 import * as FrontEndTypo from './components/frontend_component'
 import CheatSheet from './components/CheatSheet'
 import CustomOTPBox from './components/CustomOTPBox'
-
+import * as benificiaryEnumService from './services/benificiaryEnumService'
+import * as statusWiseCountService from './services/statusWiseCountService'
 export {
   AdminTypo,
   FrontEndTypo,
@@ -63,7 +64,9 @@ export {
   StudentEnumService,
   FloatingInput,
   CheatSheet,
-  CustomOTPBox
+  CustomOTPBox,
+  benificiaryEnumService,
+  statusWiseCountService
 }
 
 export * from './services/RestClient'

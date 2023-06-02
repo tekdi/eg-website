@@ -9,6 +9,8 @@ import Docschecklist from "pages/front-end/ag-form/Docschecklist";
 import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
 import Profile from "pages/front-end/PrerakProfileDetailsView";
 import FacilitatorListView from "pages/front-end/BenificiaryListView";
+import BenificiaryProfileView from "../pages/front-end/BenificiaryProfileView"
+import CountScreenView from "../pages/front-end/CountScreenView"
 
 export default [
   { path: "/form", component: Home },
@@ -26,9 +28,11 @@ export default [
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
+  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary",
     component: FacilitatorListView,
   },
   { path: "*", component: Dashboard },
+  { path: "/table", component: CountScreenView },
 ];

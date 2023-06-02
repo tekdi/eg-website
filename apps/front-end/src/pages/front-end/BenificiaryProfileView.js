@@ -8,9 +8,21 @@ import {
   Divider,
   Button,
 } from "native-base";
-import { IconByName, Layout, t, FrontEndTypo } from "@shiksha/common-lib";
+import { IconByName, Layout, t, FrontEndTypo, benificiaryRegistoryService } from "@shiksha/common-lib";
+import { useParams } from 'react-router-dom';
+
 
 export default function AgLearnerProfileView() {
+  React.useEffect(() => {
+    const getData = async () => {
+      let data = await benificiaryRegistoryService.getOne(id);
+      setBenificiary(data);
+    };
+
+    getData();
+  }, [])
+  const { id } = useParams()
+  const [benificiary, setBenificiary] = React.useState({});
   return (
     <Layout _appBar={{ name: t("AG_LEARNER_PROFILE") }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
@@ -28,11 +40,11 @@ export default function AgLearnerProfileView() {
               color="#790000"
               fontWeight="600px"
             >
-              Khushboo Verma
+              {benificiary?.result?.first_name}
+              {benificiary?.result?.last_name && ` ${benificiary?.result?.last_name}`}
             </Text>
-            <Box>{t("IDENTIFIED")}</Box>
+            <Box>{benificiary?.result?.[0]?.status || "unidentified"}</Box>
           </VStack>
-
           <Box
             bg="#FAFAFA"
             borderColor="#E0E0E0"
