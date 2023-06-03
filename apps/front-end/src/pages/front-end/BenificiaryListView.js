@@ -52,7 +52,7 @@ const List = ({ data }) => {
 };
 const select2 = [
   { label: "asc", value: "asc" },
-  { label: "desc", value: "desc" }
+  { label: "desc", value: "desc" },
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
@@ -107,7 +107,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
       },
     },
-
   };
 
   const [record, setRecord] = React.useState(data);
@@ -144,7 +143,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             borderBottomWidth="1"
             borderBottomColor={"gray.300"}
             bg={{
-              backgroundImage: 'linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)',
+              backgroundImage:
+                "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
             }}
             alignItems="Center"
           >
@@ -161,7 +161,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-
                 {t("ADD_MORE_AG")}
               </H2>
               <BodySmall
@@ -213,8 +212,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             ))}
           </Select>
         </Box>
-        <Box
-        >
+        <Box>
           <Select
             overflowX="hidden"
             variant="rounded"
