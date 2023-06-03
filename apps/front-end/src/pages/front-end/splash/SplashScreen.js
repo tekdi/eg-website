@@ -152,8 +152,20 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
 
   return (
     <Stack style={stylesheet.bgimage}>
-      <FrontEndTypo.H2 bold color="textMaroonColor.400" textAlign="center" my="4">{t("PROJECT_PRAGATI")}</FrontEndTypo.H2>
-      <FrontEndTypo.H1 color="textGreyColor.800" p={2} bold textAlign={"center"}>
+      <FrontEndTypo.H2
+        bold
+        color="textMaroonColor.400"
+        textAlign="center"
+        my="4"
+      >
+        {t("PROJECT_PRAGATI")}
+      </FrontEndTypo.H2>
+      <FrontEndTypo.H1
+        color="textGreyColor.800"
+        p={2}
+        bold
+        textAlign={"center"}
+      >
         {t("SPLASHSCREEN_1")}
       </FrontEndTypo.H1>
       <VStack
@@ -175,10 +187,13 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
         <Box bg="white" width="100%" px="5">
           <Center my="6">
             <Pressable onPress={onClickPrerakDuties}>
-              <FrontEndTypo.H3 style={stylesheet.text1}> {t("KNOW_PRERAK_DUTIES")}</FrontEndTypo.H3>
+              <FrontEndTypo.H3 style={stylesheet.text1}>
+                {" "}
+                {t("KNOW_PRERAK_DUTIES")}
+              </FrontEndTypo.H3>
             </Pressable>
           </Center>
-          <FrontEndTypo.Primarybutton  onPress={onClick}>
+          <FrontEndTypo.Primarybutton onPress={onClick}>
             {t("APPLY_NOW")}
           </FrontEndTypo.Primarybutton>
         </Box>

@@ -22,6 +22,7 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 export default function facilitatorProfileDetailsView({
@@ -37,54 +38,30 @@ export default function facilitatorProfileDetailsView({
     >
       <VStack bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-          <Text
-            fontFamily="Inter"
-            fontStyle="normal"
-            paddingTop="24px"
-            fontSize="18px"
-            color="#790000"
-            fontWeight="700px"
-          >
-            Welcome {facilitator?.first_name}
-          </Text>
+        <FrontEndTypo.H1 color="textMaroonColor.400" pt="5" bold>
+         
+            {t("WELCOME")} {facilitator?.first_name}
+          </FrontEndTypo.H1>
 
           <Box paddingBottom="20px">
-            <Text
-              fontSize="16px"
-              color="#1E1E1E"
-              fontWeight="500"
-              fontFamily="Inter"
-              fontStyle="normal"
-            >
+          <FrontEndTypo.H2 color="textGreyColor.900">
               {t("COMPLETE_YOUR_PROFILE")}
-            </Text>
-            <Text
-              fontSize="10px"
-              color="#1E1E1E"
-              fontWeight="400"
-              fontFamily="Inter"
-              fontStyle="normal"
-            >
+              </FrontEndTypo.H2>
+            <FrontEndTypo.H5  color="textGreyColor.900">
               {t("INCREASE_YOUR_CHANCES_OF_GETTING_SELECTED")}
-            </Text>
+            </FrontEndTypo.H5>
           </Box>
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <Text
-                fontSize="14px"
-                color="#212121"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
+            <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {t("BASIC_DETAILS")}
-              </Text>
+              </FrontEndTypo.H3>
               <Box paddingTop="2">
                 <Progress
                   value={arrList(facilitator, [
@@ -113,75 +90,51 @@ export default function facilitatorProfileDetailsView({
                   <HStack alignItems="Center" space="md">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("ADD_YOUR_PERSONAL_DETAILS")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="MapPinLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("ADD_YOUR_ADDRESS")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("ADD_IN_SOME_ADDITIONAL_DETAILS")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
               </VStack>
             </VStack>
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <Text
-                fontSize="14px"
-                color="#212121"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
+            <FrontEndTypo.H3 color="textGreyColor.800">
                 {t("EDUCATION_AND_WORK_DETAILS")}
-              </Text>
+              </FrontEndTypo.H3>
               <Box paddingTop="2">
                 <Progress value={45} size="xs" colorScheme="info" />
               </Box>
@@ -190,76 +143,51 @@ export default function facilitatorProfileDetailsView({
                   <HStack alignItems="Center" space="md">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("QUALIFICATION_DETAILS")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="HeartLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("VOLUNTEER_EXPERIENCE")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName
                       name="SuitcaseLineIcon"
                       _icon={{ size: "20" }}
                     />
-
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("WORK_EXPERIENCE")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
               </VStack>
             </VStack>
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <Text
-                fontSize="14px"
-                color="#212121"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
+            <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {t("OTHER_DETAILS")}
-              </Text>
+              </FrontEndTypo.H3>
               <Box paddingTop="2">
                 <Progress value={45} size="xs" colorScheme="info" />
               </Box>
@@ -268,118 +196,75 @@ export default function facilitatorProfileDetailsView({
                   <HStack alignItems="Center" space="md">
                     <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
 
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("OTHER_DETAILS")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("REFERENCE_CONTACT_DETAILS")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
               </VStack>
             </VStack>
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <Text
-                fontSize="14px"
-                color="#212121"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
+            <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {t("DOCUMENTS_UPLOAD")}
-              </Text>
+              </FrontEndTypo.H3>
               <Box paddingTop="2">
                 <Progress value={45} size="xs" colorScheme="info" />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
                   <Box alignItems="left">
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                  <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("AADHAAR_VERIFICATION")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </Box>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <Box justifyContent="left">
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                  <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("QUALIFICATION_PROOF")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </Box>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <Box justifyContent="left">
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                  <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("WORK_EXPERIENCE_PROOF")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </Box>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <Box justifyContent="left">
-                    <Text
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                  <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </Text>
+                    </FrontEndTypo.H3>
                   </Box>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
                 </HStack>
               </VStack>
             </VStack>
