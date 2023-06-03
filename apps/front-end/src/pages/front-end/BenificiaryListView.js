@@ -5,7 +5,8 @@ import {
   t,
   IconByName,
   Layout,
-  benificiaryRegistoryService
+  benificiaryRegistoryService,
+  FrontEndTypo
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
 import { HStack, VStack, Box, Text, Select, Image, Pressable } from "native-base";
@@ -16,9 +17,9 @@ const List = ({ data }) => {
 
   const navigate = useNavigate();
   return (
-    <VStack space="10" paddingLeft="4%" paddingTop="10%" paddingRight="4%">
+    <VStack space="4" p="5" alignContent="center" bg="bgGreyColor.200">
       {data && data.length <= 0 ? (
-        <H2>{t("DATA_NOT_FOUND")}</H2>
+        <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
       ) : (
         data &&
         data?.map((item) => (
@@ -26,22 +27,19 @@ const List = ({ data }) => {
             onPress={async () => {
               navigate(`/beneficiary/profile/${item?.id}`)
             }}>
-            <HStack alignItems="Center" justifyContent="space-between">
+            <HStack justifyContent="space-between" bg="white" p="5" shadow="FooterShadow" borderRadius="4px" space="2">
               <HStack alignItems="Center" justifyContent="space-between">
-                <IconByName name="UserAddLineIcon" />
+                <IconByName name="AccountCircleLineIcon" _icon={{ size: "30px", color: "textGreyColor.900" }} />
                 <VStack>
-                  <Text bold
-
-                  >
-
+                  <FrontEndTypo.H3 bold color="textGreyColor.800">
                     {item?.first_name}
                     {item?.last_name && ` ${item.last_name}`}
-                  </Text>
-                  <Text>{item?.mobile}</Text>
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H5  color="textGreyColor.800">{item?.mobile}</FrontEndTypo.H5>
                 </VStack>
               </HStack>
               <ChipStatus status={"screened"}>
-                <Chip>{item?.program_beneficiaries?.[0]?.status || "nothing"}</Chip>
+                {item?.program_beneficiaries?.[0]?.status || "nothing"}
               </ChipStatus>
             </HStack>
           </Pressable>
@@ -141,52 +139,50 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             p="5"
             space="5"
             borderBottomWidth="1"
-            borderBottomColor={"gray.300"}
-            bg={{
-              backgroundImage:
-                "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
-            }}
+           {...styles.inforBox}
             alignItems="Center"
           >
             <IconByName
-              flex="0.1"
               isDisabled
-              name="UserAddLineIcon"
-              _icon={{ size: "50%" }}
+              name="UserFollowLineIcon"
+              _icon={{ size: "30px" }}
             />
-            <VStack flex="0.9">
-              <H2
+            <VStack flex="0.8">
+              <FrontEndTypo.H3
+               bold
+               color="textGreyColor.800"
                 wordWrap="break-word"
                 whiteSpace="nowrap"
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
                 {t("ADD_MORE_AG")}
-              </H2>
-              <BodySmall
+              </FrontEndTypo.H3>
+              <FrontEndTypo.H4
                 wordWrap="break-word"
                 whiteSpace="nowrap"
                 overflow="hidden"
               >
                 {t("ENROLL_15_OR_MORE")}
-              </BodySmall>
+              </FrontEndTypo.H4>
             </VStack>
           </HStack>
         </VStack>
       </VStack>
       <HStack
         justifyContent="space-between"
-        paddingTop="15%"
-        paddingLeft="1%"
-        paddingRight="1%"
         alignItems="Center"
+        m="4"
       >
-        <Box>
+        <Box my="3">
           <Select
-            variant="rounded"
-            overflowX="hidden"
-            width="70%"
-            height="50%"
+          borderWidth="1px"
+          borderColor="textMaroonColor.400"
+          color="textMaroonColor.400" bold
+          borderRadius="30px"
+          shadow="RedOutlineShadow"
+          overflowX="hidden"
+            width="50%"
             selectedValue={status}
             placeholder="Status:All"
             onValueChange={(nextValue) => {
@@ -198,6 +194,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             }}
             accessibilityLabel="Select a position for Menu"
           >
+            <FrontEndTypo.H5>
             <Select.Item
               key={0}
               label={t('BENEFICIARY_ALL')}
@@ -210,14 +207,18 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                 value={option.value}
               />
             ))}
+            </FrontEndTypo.H5>
           </Select>
         </Box>
         <Box>
           <Select
-            overflowX="hidden"
-            variant="rounded"
-            width="50%"
-            height="50%"
+             borderWidth="1px"
+             borderColor="textMaroonColor.400"
+             color="textMaroonColor.400" bold
+             borderRadius="30px"
+             shadow="RedOutlineShadow"
+             overflowX="hidden"
+            width="42%"
             selectedValue={sort}
             placeholder="Sort By"
             onValueChange={(nextValue) => {
