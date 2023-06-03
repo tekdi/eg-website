@@ -907,7 +907,7 @@ export default function App({ facilitator, ip, onClick }) {
         _appBar={{ onPressBackButton: (e) => setPage("10"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
-        <VStack py={6} px={4} mb={5} space="6">
+        <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
           <Box p="10">
             <Steper
               type={"circle"}

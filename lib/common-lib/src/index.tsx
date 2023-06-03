@@ -18,9 +18,9 @@ import * as facilitatorRegistryService from './services/facilitatorRegistryServi
 import * as enumRegistryService from './services/enumRegistoryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
-import * as StudentEnumService from './services/StudentEnumService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
+import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
@@ -29,6 +29,8 @@ import * as AdminTypo from './components/admin_component'
 import * as FrontEndTypo from './components/frontend_component'
 import CheatSheet from './components/CheatSheet'
 import CustomOTPBox from './components/CustomOTPBox'
+import * as statusWiseCountService from './services/statusWiseCountService'
+import * as eventService from './services/EventService'
 
 export {
   AdminTypo,
@@ -54,16 +56,18 @@ export {
   authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
+  AgRegistryService,
   ImageView,
   t,
   changeLanguage,
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
-  StudentEnumService,
   FloatingInput,
   CheatSheet,
-  CustomOTPBox
+  CustomOTPBox,
+  statusWiseCountService,
+  eventService
 }
 
 export * from './services/RestClient'

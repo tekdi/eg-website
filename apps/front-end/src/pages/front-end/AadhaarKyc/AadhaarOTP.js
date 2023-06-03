@@ -2,12 +2,20 @@ import React from "react";
 import WestIcon from "@mui/icons-material/West";
 import CloseIcon from "@mui/icons-material/Close";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Box, Button, FormControl, Input, Text } from "native-base";
+import { Box, Button, FormControl, HStack, Input, Text } from "native-base";
 import { useNavigate } from "react-router-dom";
-import { t } from "@shiksha/common-lib";
+import { FrontEndTypo, t, Layout } from "@shiksha/common-lib";
+import Drawer from "react-modern-drawer";
+import "react-modern-drawer/dist/index.css";
 
 export default function AdharOTP() {
   const navigate = useNavigate();
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+
+  const [isOpen, setIsOpen] = React.useState(false);
+  const toggleDrawer = () => {
+    setIsOpen((prevState) => !prevState);
+  };
 
   const [data, setData] = React.useState({
     otpNumber: "",
@@ -59,7 +67,15 @@ export default function AdharOTP() {
   };
 
   return (
-    <Box>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        lang,
+        setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
+    >
       <Box borderBottomWidth="2" borderColor="gray.400">
         <Button
           variant="ghost"
@@ -72,11 +88,10 @@ export default function AdharOTP() {
       </Box>
 
       <Box px="4">
-        <Text fontSize="2xl" fontWeight="600" mt="4">
+        <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
           {t("OFFLINE_AADHAAR_VERIFICATION")}
-          <br />
           (OKYC)
-        </Text>
+        </FrontEndTypo.H1>
 
         <Box mt="6">
           <FormControl.Label htmlFor="aadhaarNumber" mb="2">
@@ -108,14 +123,14 @@ export default function AdharOTP() {
             flexDirection="column"
             htmlFor="securityCode"
           >
-            <Text fontSize="lg" fontWeight="semibold" color="gray.500">
+            <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">
               {t("ENTER_SECURITY_CODE")}
-            </Text>
-            <Text fontSize="sm" fontWeight="medium" color="gray.500" mt="0.5">
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H4 color="gray.500">
               {t(
                 "SET_A_4_DIGIT_PASSCODE_TO_SECURELY_SHARE_YOUR_AADHAAR_ZIP_FILE"
               )}
-            </Text>
+            </FrontEndTypo.H4>
           </FormControl.Label>
 
           <Input
@@ -133,18 +148,28 @@ export default function AdharOTP() {
           />
         </Box>
 
-        <Button
-          variant="secondary"
+        <FrontEndTypo.Secondarybutton
           bg={!data.otpNumber || !data.securityCode ? "gray.300" : "gray.500"}
           py="12px"
           px="20px"
           mt={20}
           disabled={!data.otpNumber || !data.securityCode}
           onPress={handleSubmit}
+          // onPress={setIsOpen(true)}
         >
           <Text color="white">{t("CONTINUE")}</Text>
-        </Button>
+        </FrontEndTypo.Secondarybutton>
+        {/* <FrontEndTypo.Primarybutton   onPress={() => { setIsOpen(true)
+                }}>ekta</FrontEndTypo.Primarybutton> */}
       </Box>
+      {/* <Drawer
+         open={isOpen}
+         onClose={toggleDrawer}
+         direction="bottom"
+         size="330px"
+        
+       >ekta
+                      </Drawer> */}
 
       {otpFailedPopup ? (
         <Box
@@ -177,55 +202,35 @@ export default function AdharOTP() {
               <CloseIcon />
             </Button>
 
-            <Text fontSize="lg" fontWeight="medium">
-              Aadhaar KYC Verification Failed
-            </Text>
-
-            <Button
-              variant={"solid"}
-              py="3.5"
-              rounded={"full"}
-              bg={"#2D142C"}
-              mt="8"
+            <FrontEndTypo.H1 color="textGreyColor.800" my="3">
+              {t("AADHAR_KYC_VERIFICATION_FAILED")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.Secondarybutton
               mb="5"
-              onPress={() => {
-                navigate(-1);
-              }}
-            >
-              <Text fontSize={"lg"} color="white" fontWeight={"semibold"}>
-                Go Back
-              </Text>
-            </Button>
-
-            <Button
-              variant={"outline"}
-              py="3"
-              rounded={"full"}
-              borderColor={"#2D142C"}
               onPress={() => {
                 navigate("/admin/aadhaarNumber");
               }}
             >
-              <Text fontSize={"lg"} color="#2D142C" fontWeight={"bold"}>
-                Retry Aadhaar Number KYC
-              </Text>
-            </Button>
+              {t("RETRY_AADHAR_NUMER_KYC")}
+            </FrontEndTypo.Secondarybutton>
 
-            <Text
-              color="red.600"
-              display="flex"
-              alignItems="center"
-              gap="1"
-              mt="2"
+            <FrontEndTypo.Primarybutton
+              onPress={() => {
+                navigate(-1);
+              }}
             >
+              {t("GO_BACK")}
+            </FrontEndTypo.Primarybutton>
+
+            <HStack alignItems="center" my="3" color="red.600">
               <ErrorOutlineIcon fontSize="small" />
-              <Text fontSize="13px">
-                Mobile Number is not linked to Aadhaar Card
-              </Text>
-            </Text>
+              <FrontEndTypo.H4 pl="2" color="red.600">
+                {t("MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD")}
+              </FrontEndTypo.H4>
+            </HStack>
           </Box>
         </Box>
       ) : null}
-    </Box>
+    </Layout>
   );
 }
