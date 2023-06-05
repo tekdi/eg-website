@@ -3,92 +3,63 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "FULL_NAME",
+      title: "CONTACT_1",
+
       type: "object",
-      required: ["first_name", "last_name", "dob"],
+      //required: ["mobile"],
       properties: {
-        first_name: {
-          type: "string",
-          title: "FIRST_NAME",
+        mobile: {
+          type: "number",
+          title: "MOBILE_NUMBER",
         },
-        middle_name: {
+        mark_as_whatsapp_number: {
           type: "string",
-          title: "MIDDLE_NAME",
+          label: "MARK_AS_WHATSAPP_NO",
+          format: "RadioBtn",
+
+          enumNames: ["Yes", "No"],
+          enum: ["yes", "no"],
         },
-        last_name: {
+        device_ownership: {
           type: "string",
-          title: "LAST_NAME",
+          label: "MARK_OWNERSHIP",
+          format: "RadioBtn",
+          enumNames: ["Self", "Family member", "Neighbour", "Other"],
+          enum: ["self", "family member", "neighbour", "other"],
         },
-        dob: {
+        device_type: {
           type: "string",
-          format: "date",
-          title: "DOB",
+          label: "TYPE_OF_MOBILE_PHONE",
+          format: "CustomR",
+          enumNames: ["Smartphone", "Basic"],
+          enum: ["smartphone", "basic"],
         },
-        edit_page_type: {
+        alternative_mobile_number: {
+          type: "number",
+          title: "ALTERNATIVE_NUMBER",
+        },
+        alternative_device_ownership: {
           type: "string",
-          default: "edit_basic",
-          format: "hidden",
+          label: "MARK_OWNERSHIP",
+          format: "RadioBtn",
+          enumNames: ["Self", "Family member", "Neighbour", "Other"],
+          enum: ["self", "family member", "neighbour", "other"],
+        },
+        alternative_device_type: {
+          label: "TYPE_OF_MOBILE_PHONE",
+          format: "CustomR",
+          type: "string",
+          enumNames: ["Smartphone", "Basic"],
+          enum: ["smartphone", "basic"],
+        },
+
+        email_id: {
+          type: "string",
+          format: "email",
+          label: "EMAIL_ID",
         },
       },
     },
-    // 2: {
-    //   title: "CONTACT_1",
-
-    //   type: "object",
-    //   //required: ["mobile"],
-    //   properties: {
-    //     mobile: {
-    //       type: "number",
-    //       title: "MOBILE_NUMBER",
-    //     },
-    //     mark_as_whatsapp_number: {
-    //       type: "string",
-    //       label: "MARK_AS_WHATSAPP_NO",
-    //       format: "RadioBtn",
-
-    //       enumNames: ["Yes", "No"],
-    //       enum: ["yes", "no"],
-    //     },
-    //     device_ownership: {
-    //       type: "string",
-    //       label: "MARK_OWNERSHIP",
-    //       format: "RadioBtn",
-    //       enumNames: ["Self", "Family member", "Neighbour", "Other"],
-    //       enum: ["self", "family member", "neighbour", "other"],
-    //     },
-    //     device_type: {
-    //       type: "string",
-    //       label: "TYPE_OF_MOBILE_PHONE",
-    //       format: "CustomR",
-    //       enumNames: ["Smartphone", "Basic"],
-    //       enum: ["smartphone", "basic"],
-    //     },
-    //     alternative_mobile_number: {
-    //       type: "number",
-    //       title: "ALTERNATIVE_NUMBER",
-    //     },
-    //     alternative_device_ownership: {
-    //       type: "string",
-    //       label: "MARK_OWNERSHIP",
-    //       format: "RadioBtn",
-    //       enumNames: ["Self", "Family member", "Neighbour", "Other"],
-    //       enum: ["self", "family member", "neighbour", "other"],
-    //     },
-    //     alternative_device_type: {
-    //       label: "TYPE_OF_MOBILE_PHONE",
-    //       format: "CustomR",
-    //       type: "string",
-    //       enumNames: ["Smartphone", "Basic"],
-    //       enum: ["smartphone", "basic"],
-    //     },
-
-    //     email_id: {
-    //       type: "string",
-    //       format: "email",
-    //       label: "EMAIL_ID",
-    //     },
-    //   },
-    // },
     // 3: {
     //   title: "ADDRESS",
     //   type: "object",

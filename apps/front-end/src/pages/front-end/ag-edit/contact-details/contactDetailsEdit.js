@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -13,9 +13,6 @@ import {
   Radio,
   Stack,
   VStack,
-  Checkbox,
-  Pressable,
-  Text,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
@@ -36,15 +33,15 @@ import {
   BodyMedium,
   changeLanguage,
   enumRegistryService,
-  updateSchemaEnum,
-  uploadRegistryService,
-  AgRegistryService,
   benificiaryRegistoryService,
+  AgRegistryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
-
-//updateSchemaEnum
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { useScreenshot } from "use-screenshot-hook";
+
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -53,42 +50,35 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-  select,
+  RadioBtn,
+  CustomR,
 } from "../../../../component/BaseInput.js";
-import { useScreenshot } from "use-screenshot-hook";
-import { useId } from "react";
 
 // App
-export default function App({ facilitator, id, ip, onClick }) {
+export default function agFormEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
+  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
+  const [cameraSelection, setCameraSelection] = React.useState(0);
   const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
+  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const { id } = useParams();
   const [userId, setuserId] = React.useState(id);
-
   const navigate = useNavigate();
-  const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 13) {
-    navigate("/dashboard");
-  }
-
-  console.log("userId", userId);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/edit/${userId}`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -98,21 +88,79 @@ export default function App({ facilitator, id, ip, onClick }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
+  //getting data
+  React.useEffect(async () => {
+    const qData = await benificiaryRegistoryService.getOne(id);
+    setFormData(qData.result);
+  }, []);
 
-  const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
-    }
-  };
+  React.useEffect(async () => {
+    let device_ownership = formData?.core_beneficiaries[0]?.device_ownership;
+    let mark_as_whatsapp_number =
+      formData?.core_beneficiaries[0]?.mark_as_whatsapp_number;
+    let alternative_device_ownership =
+      formData?.core_beneficiaries[0]?.alternative_device_ownership;
+    let alternative_device_type =
+      formData?.core_beneficiaries[0]?.alternative_device_type;
+    let device_type = formData?.core_beneficiaries[0]?.device_type;
+
+    setFormData({
+      ...formData,
+      edit_page_type: "edit_contact",
+      device_ownership: device_ownership,
+      device_type: device_type,
+      mark_as_whatsapp_number: mark_as_whatsapp_number,
+      alternative_device_ownership: alternative_device_ownership,
+      alternative_device_type: alternative_device_type,
+    });
+  }, [formData?.id]);
 
   const uiSchema = {
-    subjects: {
-      "ui:widget": "checkboxes",
+    dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+      },
+    },
+    qualification: {
+      "ui:widget": CustomR,
+    },
+    degree: {
+      "ui:widget": CustomR,
+    },
+    gender: {
+      "ui:widget": CustomR,
+    },
+    sourcing_channel: {
+      "ui:widget": CustomR,
+    },
+    availability: {
+      "ui:widget": RadioBtn,
+    },
+
+    experience: {
+      related_to_teaching: {
+        "ui:widget": RadioBtn,
+      },
+    },
+
+    vo_experience: {
+      items: {
+        experience_in_years: { "ui:widget": CustomR },
+        related_to_teaching: {
+          "ui:widget": RadioBtn,
+        },
+      },
+    },
+    experience: {
+      items: {
+        experience_in_years: { "ui:widget": CustomR },
+        related_to_teaching: {
+          "ui:widget": RadioBtn,
+        },
+      },
     },
   };
 
@@ -131,8 +179,8 @@ export default function App({ facilitator, id, ip, onClick }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
-        setPage("upload");
+        await formSubmitUpdate({ ...formData, form_step_number: "6" });
+        setPage("SAVE");
       } else {
         return true;
       }
@@ -170,94 +218,48 @@ export default function App({ facilitator, id, ip, onClick }) {
       let { enumNames, ...remainData } = newProperties;
       properties = remainData;
     }
-    if (newProperties?.type === "array") {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            items: {
-              ...(properties?.items ? properties?.items : {}),
-              ...(_.isEmpty(arr) ? {} : enumObj),
-            },
-          },
+    return {
+      ...schema,
+      ["properties"]: {
+        ...schema["properties"],
+        [key]: {
+          ...properties,
+          ...(_.isEmpty(arr) ? {} : enumObj),
         },
-      };
-    } else {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            ...(_.isEmpty(arr) ? {} : enumObj),
-          },
-        },
-      };
-    }
+      },
+    };
   };
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
+      let minYear = moment().subtract("years", 30);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
-    if (facilitator?.id) {
-      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-      const newData = JSON.parse(data);
-      setFormData({ ...newData, ...facilitator });
-    }
-
-    const qData = await benificiaryRegistoryService.getOne(userId);
-    console.log("qData", qData?.result);
-    let enrolled_for_board =
-      qData?.result?.program_beneficiaries?.enrolled_for_board;
-    let enrollment_status =
-      qData?.result?.program_beneficiaries?.enrollment_status;
-    let type_of_enrollement =
-      qData?.result?.program_beneficiaries?.type_of_enrollement;
-    let enrollment_number =
-      qData?.result?.program_beneficiaries?.enrollment_number;
-    let subjects = qData?.result?.program_beneficiaries?.subjects;
-    let subjectData = JSON.parse(subjects);
-
-    console.log("ssss", subjectData);
-
-    setFormData({
-      ...formData,
-      enrolled_for_board: enrolled_for_board,
-      enrollment_status: enrollment_status,
-      type_of_enrollement: type_of_enrollement,
-      enrollment_number: enrollment_number,
-      subjects: subjectData,
-      facilitator_id: localStorage.getItem("id"),
-    });
   }, []);
 
   const formSubmitUpdate = async (formData) => {
-    const { id } = facilitator;
+    console.log("sent data");
     if (id) {
-      updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
+      const data = await enumRegistryService.editProfileById({
         ...formData,
-        parent_ip: ip?.id,
         id: id,
       });
+      console.log(data, "sent data");
     }
   };
 
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        const data = schema1["properties"][e]["properties"][key];
+        console.log(e);
+        const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
         }
@@ -287,93 +289,50 @@ export default function App({ facilitator, id, ip, onClick }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
+    if (id === "root_mobile") {
+      if (data?.mobile?.toString()?.length > 10) {
+        const newErrors = {
+          mobile: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    if (id === "root_alternative_mobile_number") {
+      if (data?.mobile?.toString()?.length > 10) {
+        const newErrors = {
+          mobile: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
   };
 
   const onError = (data) => {
+    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
     }
   };
 
-  React.useEffect(async () => {
-    let boardData = formData?.enrolled_for_board;
-
-    let filters = {
-      board: boardData,
-    };
-
-    if (formData?.enrolled_for_board) {
-      console.log("reached");
-      let subjects = await enumRegistryService.getSubjects(filters);
-      let newSchema = schema;
-      newSchema = getOptions(newSchema, {
-        key: "subjects",
-        arr: subjects?.data,
-        title: "name",
-        value: "id",
-      });
-      console.log("newSchema", newSchema);
-      setSchema(newSchema);
-    }
-  }, [formData]);
-
-  React.useEffect(async () => {
-    if (formData?.facilitator_id) {
-      let ListofEnum = await enumRegistryService.listOfEnum();
-      console.log("ListofEnum", ListofEnum?.data?.ENROLLEMENT_STATUS);
-      let newSchema = schema;
-      newSchema = getOptions(newSchema, {
-        key: "enrollment_status",
-        arr: ListofEnum?.data?.ENROLLEMENT_STATUS,
-        title: "title",
-        value: "value",
-      });
-      console.log("newSchema", newSchema);
-      setSchema(newSchema);
-    }
-  }, [formData?.facilitator_id]);
-
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
-      const data = await getBase64(file);
-      const form_data = new FormData();
-      const item = {
-        file: file,
-        document_type: "profile",
-        user_id: userId,
-      };
-      for (let key in item) {
-        form_data.append(key, item[key]);
-      }
-      const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
-      setFormData({ ...formData, ["payment_receipt_document_id"]: id });
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-
-  const editSubmit = async () => {
+  const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page1", updateDetails);
+    console.log("page3.....", updateDetails);
   };
-
-  console.log("formData,", formData);
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        name: `${ip?.name}`.trim(),
         lang,
         setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
+      _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
         {/* Box */}
@@ -389,16 +348,16 @@ export default function App({ facilitator, id, ip, onClick }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + schema}
+            key={lang + addBtn}
             ref={formRef}
-            widgets={{ select }}
+            widgets={{ RadioBtn, CustomR }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
               ObjectFieldTemplate,
               TitleFieldTemplate,
-              BaseInputTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -410,34 +369,17 @@ export default function App({ facilitator, id, ip, onClick }) {
               formData,
               onChange,
               onError,
+              onSubmit,
               transformErrors,
             }}
           >
-            <HStack>
-              <Button
-                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-                variant={"secondary"}
-                onPress={(e) => {
-                  uplodInputRef?.current?.click();
-                }}
-              >
-                {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
-              </Button>
-              <input
-                accept="image/*"
-                type="file"
-                style={{ display: "none" }}
-                ref={uplodInputRef}
-                onChange={handleFileInputChange}
-              />
-            </HStack>
             <Button
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => editSubmit()}
+              onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {pages[pages?.length - 1] === page ? "SAVE" : submitBtn}
             </Button>
           </Form>
         ) : (

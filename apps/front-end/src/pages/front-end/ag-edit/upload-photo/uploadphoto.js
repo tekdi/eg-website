@@ -38,7 +38,7 @@ import {
   uploadRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useScreenshot } from "use-screenshot-hook";
 
@@ -55,7 +55,7 @@ import {
 } from "../../../../component/BaseInput.js";
 
 // App
-export default function agFormEdit({ ip, id }) {
+export default function agFormEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);
@@ -73,14 +73,12 @@ export default function agFormEdit({ ip, id }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const { id } = useParams();
   const [userId, setuserId] = React.useState(id);
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/edit/${userId}`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -94,139 +92,6 @@ export default function agFormEdit({ ip, id }) {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
   }, []);
-
-  React.useEffect(async () => {
-    let device_ownership = formData?.core_beneficiaries[0]?.device_ownership;
-    let mark_as_whatsapp_number =
-      formData?.core_beneficiaries[0]?.mark_as_whatsapp_number;
-    let alternative_device_ownership =
-      formData?.core_beneficiaries[0]?.alternative_device_ownership;
-    let alternative_device_type =
-      formData?.core_beneficiaries[0]?.alternative_device_type;
-    let device_type = formData?.core_beneficiaries[0]?.device_type;
-
-    let father_first_name = formData?.core_beneficiaries[0]?.father_first_name;
-    let father_middle_name =
-      formData?.core_beneficiaries[0]?.father_middle_name;
-    let father_last_name = formData?.core_beneficiaries[0]?.father_last_name;
-
-    let mother_first_name = formData?.core_beneficiaries[0]?.mother_first_name;
-    let mother_last_name = formData?.core_beneficiaries[0]?.mother_last_name;
-    let mother_middle_name =
-      formData?.core_beneficiaries[0]?.mother_middle_name;
-
-    let marital_status = formData?.extended_users[0]?.marital_status;
-    let social_category = formData?.extended_users[0]?.social_category;
-
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-
-    if (page === "2") {
-      console.log("page2", updateDetails);
-      setFormData({
-        ...formData,
-        edit_page_type: "edit_contact",
-        device_ownership: device_ownership,
-        device_type: device_type,
-        mark_as_whatsapp_number: mark_as_whatsapp_number,
-        alternative_device_ownership: alternative_device_ownership,
-        alternative_device_type: alternative_device_type,
-        //father_first_name: father_first_name,
-        // father_middle_name: father_middle_name,
-        // mother_first_name: mother_first_name,
-        // mother_middle_name: mother_middle_name,
-        // mother_last_name: mother_last_name,
-      });
-    } else if (page === "3") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page3.....", updateDetails);
-      setFormData({ ...formData, edit_page_type: "edit_address" });
-    } else if (page === "4") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page4.....", updateDetails);
-      setFormData({
-        ...formData,
-        edit_page_type: "personal",
-        marital_status: marital_status,
-        social_category: social_category,
-      });
-    } else if (page === "5") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page5.....", updateDetails);
-      setFormData({
-        ...formData,
-        edit_page_type: "edit_family",
-      });
-    } else if (page === "6") {
-      setFormData({
-        ...formData,
-        fatherdetails: {
-          father_first_name: father_first_name,
-          father_last_name: father_last_name,
-          father_middle_name: father_middle_name,
-        },
-        motherdetails: {
-          mother_first_name: mother_first_name,
-          mother_middle_name: mother_middle_name,
-          mother_last_name: mother_last_name,
-        },
-      });
-    } else if (page === "7") {
-      const updateDetails = await AgRegistryService.updateAg(
-        formData?.fatherdetails,
-        userId
-      );
-      console.log("page7.....", updateDetails);
-    }
-  }, [page]);
-
-  const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-  };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -264,58 +129,6 @@ export default function agFormEdit({ ip, id }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
-  };
-
-  React.useEffect(async () => {
-    if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
-      let newSchema = schema;
-      if (schema["properties"]["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData?.states,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
-      newSchema = await setDistric({
-        schemaData: newSchema,
-        state: formData?.state,
-        district: formData?.district,
-        block: formData?.block,
-      });
-      setSchema(newSchema);
-    }
-  }, [page]);
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -329,31 +142,6 @@ export default function agFormEdit({ ip, id }) {
       setSubmitBtn(t("NEXT"));
     }
   }, []);
-
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.mobile) {
-      setSubmitBtn(t("SAVE"));
-      setAddBtn(t("ADD_EXPERIENCE"));
-    } else {
-      setSubmitBtn(t("SAVE"));
-    }
-  };
-
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
-
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
 
   const formSubmitUpdate = async (formData) => {
     console.log("sent data");
@@ -378,41 +166,6 @@ export default function agFormEdit({ ip, id }) {
     }
   };
 
-  const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-      }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-      }
-    }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-    });
-
-    return errors;
-  };
-
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
       if (error.name === "required") {
@@ -428,87 +181,6 @@ export default function agFormEdit({ ip, id }) {
       }
       return error;
     });
-  };
-
-  const setDistric = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-      });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setVilage = async ({ block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    return newSchema;
   };
 
   const onChange = async (e, id) => {
@@ -604,7 +276,6 @@ export default function agFormEdit({ ip, id }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/edit/contact-details/${userId}`);
   };
 
   const [cameraFile, setcameraFile] = useState();
@@ -730,7 +401,7 @@ export default function agFormEdit({ ip, id }) {
     return (
       <Layout
         _appBar={{
-          onPressBackButton: (e) => setPage("4"),
+          onPressBackButton,
           lang,
           setLang,
           onlyIconsShow: ["backBtn", "userInfo"],
@@ -778,50 +449,10 @@ export default function agFormEdit({ ip, id }) {
     );
   }
 
-  const AddButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="green"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          if (formRef?.current.validateForm()) {
-            btnProps?.onClick();
-          }
-        }}
-      >
-        <HStack>
-          {icon} {addBtn}
-        </HStack>
-      </Button>
-    );
-  };
-
-  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="red"
-        mb="2"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          btnProps?.onClick();
-        }}
-      >
-        <HStack>
-          {icon} {t("REMOVE_EXPERIENCE")}
-        </HStack>
-      </Button>
-    );
-  };
-
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -846,7 +477,6 @@ export default function agFormEdit({ ip, id }) {
             ref={formRef}
             widgets={{ RadioBtn, CustomR }}
             templates={{
-              ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
               ArrayFieldTitleTemplate,
               ObjectFieldTemplate,
@@ -860,9 +490,7 @@ export default function agFormEdit({ ip, id }) {
             {...{
               validator,
               schema: schema ? schema : {},
-              uiSchema,
               formData,
-              customValidate,
               onChange,
               onError,
               onSubmit,

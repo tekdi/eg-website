@@ -36,6 +36,7 @@ import {
   sendAndVerifyOtp,
   CustomOTPBox,
   benificiaryRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -49,6 +50,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  select,
 } from "../../../../component/BaseInput";
 
 import { useLocation } from "react-router-dom";
@@ -186,7 +188,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   // Type Of Student
 
   React.useEffect(async () => {
-    const career_aspiration = await benificiaryRegistoryService.listOfEnum();
+    const career_aspiration = await enumRegistryService.listOfEnum();
     const Data = career_aspiration?.data?.CAREER_ASPIRATION;
     console.log("career_aspiration", Data);
     let newSchema = schema;
@@ -331,7 +333,7 @@ export default function AgformUpdate({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, select }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
