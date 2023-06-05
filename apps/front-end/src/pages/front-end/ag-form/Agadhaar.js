@@ -23,6 +23,7 @@ import {
   t,
   BodyMedium,
   CustomOTPBox,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -254,25 +255,23 @@ export default function Agform({ userTokenInfo }) {
             }}
           >
             {errors?.aadhar_token ? (
-              <Button
+              <FrontEndTypo.Primarybutton
                 mt="5"
-                variant={"primary"}
                 type="submit"
                 onPress={() =>
                   navigate("/beneficiary/4", { state: { id: userId } })
                 }
               >
                 {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-              </Button>
+              </FrontEndTypo.Primarybutton>
             ) : (
-              <Button
+              <FrontEndTypo.Primarybutton
                 mt="5"
-                variant={"primary"}
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
               >
                 {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-              </Button>
+              </FrontEndTypo.Primarybutton>
             )}
             {/* <Button
               mt="5"
