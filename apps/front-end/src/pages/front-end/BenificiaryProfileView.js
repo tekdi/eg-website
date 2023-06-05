@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import {
   HStack,
   VStack,
@@ -22,7 +23,8 @@ import {
   t,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import Chip from "component/Chip";
 
 const dropoutReasons = [
@@ -79,7 +81,7 @@ const reactivateReasons = [
   },
 ];
 
-export default function AgLearnerProfileView(props) {
+export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
 
@@ -87,14 +89,18 @@ export default function AgLearnerProfileView(props) {
     React.useState(false);
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
-  React.useEffect(() => {
-    const getData = async () => {
-      let data = await benificiaryRegistoryService.getOne(id);
-      setBenificiary(data);
-    };
+  const navigate = useNavigate();
 
-    getData();
+  React.useEffect(() => {
+    benificiaryDetails();
   }, []);
+
+  const benificiaryDetails = async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+
+    setBenificiary(result?.result);
+  };
+
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
   const dropoutApiCall = async () => {
@@ -134,11 +140,10 @@ export default function AgLearnerProfileView(props) {
               _icon={{ size: "80" }}
             />
             <FrontEndTypo.H2 bold color="textMaroonColor.400">
-              {benificiary?.result?.first_name}
-              {benificiary?.result?.last_name &&
-                ` ${benificiary?.result?.last_name}`}
+              {benificiary?.first_name}
+              {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
-            <Box>{benificiary?.result?.[0]?.status || "unidentified"}</Box>
+            <Box>{benificiary?.status || "unidentified"}</Box>
           </VStack>
           <Box
             bg="boxBackgroundColour.100"
@@ -164,6 +169,9 @@ export default function AgLearnerProfileView(props) {
 
                   <IconByName
                     name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/basicdetails`);
+                    }}
                     color="textMaroonColor.400"
                   />
                 </HStack>
@@ -245,6 +253,32 @@ export default function AgLearnerProfileView(props) {
                   name="ArrowRightSLineIcon"
                   color="#790000"
                   size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/enrollmentdetails`);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("EDUCATION_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/educationdetails`);
+                  }}
                 />
               </HStack>
             </VStack>
@@ -297,11 +331,11 @@ export default function AgLearnerProfileView(props) {
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
-          <FrontEndTypo.DisableOutlinebutton
+          <FrontEndTypo.Disablebutton
             onPress={(e) => setIsOpenReactive(true)}
           >
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-          </FrontEndTypo.DisableOutlinebutton>
+          </FrontEndTypo.Disablebutton>
         </VStack>
       </VStack>
       <Actionsheet
@@ -356,10 +390,7 @@ export default function AgLearnerProfileView(props) {
         isOpen={isOpenReactive}
         onClose={(e) => setIsOpenReactive(false)}
       >
-        <IconByName
-          name="CloseCircleLineIcon"
-          onPress={(e) => setIsOpenReactive(false)}
-        />
+       
         <Actionsheet.Content>
           <VStack alignItems="end" width="100%">
             <IconByName

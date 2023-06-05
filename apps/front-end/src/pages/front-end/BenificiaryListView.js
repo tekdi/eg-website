@@ -32,7 +32,7 @@ const List = ({ data }) => {
         data?.map((item) => (
           <Pressable
             onPress={async () => {
-              navigate(`/beneficiary/profile/${item?.id}`);
+              navigate(`/beneficiary/${item?.id}`);
             }}
           >
             <VStack
