@@ -32,7 +32,7 @@ export default [
   { path: "/beneficiary/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
-  { path: "/docschecklist", component: Docschecklist },
+  { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
   { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   {
