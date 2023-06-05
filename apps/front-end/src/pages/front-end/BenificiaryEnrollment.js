@@ -20,19 +20,19 @@ import {
 import { useParams } from "react-router-dom";
 
 export default function BenificiaryEnrollment() {
-  const params = useParams();
+  const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  const [userId, setUserId] = React.useState(params?.id);
 
   React.useEffect(() => {
     agDetails();
-  }, []);
+    console.log("Hello");
+  }, [id]);
 
   const agDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(userId);
-
+    const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
   };
+  console.log("ben", benificiary);
 
   return (
     <Layout _appBar={{ name: t("ENROLLMENT_DETAILS") }}>
@@ -63,15 +63,15 @@ export default function BenificiaryEnrollment() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`beneficiary/${userId}/edit/enrollment`);
+                    navigate(`beneficiary/${id}/edit/enrollment`);
                   }}
                 />
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.program_beneficiaries, [
+                  value={arrList(benificiary?.core_beneficiaries, [
                     "type_of_enrollement",
-                    "enrollment_status",
+                    "enrollement_status",
                     "enrolled_for_board",
                     "enrollment_number",
                     "subjects",
@@ -95,8 +95,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.program_beneficiaries?.type_of_enrollement
-                      ? benificiary?.program_beneficiaries?.type_of_enrollement
+                    {benificiary?.core_beneficiaries?.type_of_enrollement
+                      ? benificiary?.core_beneficiaries?.type_of_enrollement
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -119,8 +119,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.program_beneficiaries?.enrollment_status
-                      ? benificiary?.program_beneficiaries?.enrollment_status
+                    {benificiary?.core_beneficiaries?.enrollement_status
+                      ? benificiary?.core_beneficiaries?.enrollement_status
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -143,8 +143,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.program_beneficiaries?.enrolled_for_board
-                      ? benificiary?.program_beneficiaries?.enrolled_for_board
+                    {benificiary?.core_beneficiaries?.enrolled_for_board
+                      ? benificiary?.core_beneficiaries?.enrolled_for_board
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -167,8 +167,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.program_beneficiaries?.enrollment_number
-                      ? benificiary?.program_beneficiaries?.enrollment_number
+                    {benificiary?.core_beneficiaries?.enrollment_number
+                      ? benificiary?.core_beneficiaries?.enrollment_number
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -191,11 +191,12 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {JSON.parse(
-                      benificiary?.program_beneficiaries?.subjects
-                    ).map((e) => {
-                      return e + "\n";
-                    })}
+                    {benificiary?.program_beneficiaries?.subjects &&
+                      JSON.parse(
+                        benificiary?.program_beneficiaries?.subjects
+                      ).map((e) => {
+                        return e + "\n";
+                      })}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
@@ -222,10 +223,10 @@ export default function BenificiaryEnrollment() {
               <VStack space="5">
                 <Box paddingTop="2">
                   <Progress
-                    value={arrList(
-                      benificiary?.result?.program_beneficiaries[1],
-                      ["career_aspiration", "career_aspiration_details"]
-                    )}
+                    value={arrList(benificiary?.core_beneficiaries, [
+                      "career_aspiration",
+                      "career_aspiration_details",
+                    ])}
                     size="xs"
                     colorScheme="info"
                   />

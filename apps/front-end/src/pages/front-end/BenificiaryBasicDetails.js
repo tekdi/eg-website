@@ -14,9 +14,9 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 export default function BenificiaryBasicDetails() {
-  const params = useParams();
+  const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState();
-  const [userId, setUserId] = React.useState(params?.id);
+
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -24,10 +24,11 @@ export default function BenificiaryBasicDetails() {
   }, []);
 
   const benificiaryDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(userId);
+    const result = await benificiaryRegistoryService.getOne(id);
 
     setBenificiary(result?.result);
   };
+  console.log(benificiary);
 
   return (
     <Layout _appBar={{ name: t("BASIC_DETAILS") }}>
@@ -84,7 +85,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${userId}/edit/contact-info`);
+                    navigate(`/beneficiary/${id}/edit/contact-info`);
                   }}
                 />
               </HStack>
@@ -238,13 +239,13 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${userId}/edit/family-details`);
+                    navigate(`/beneficiary/${id}/edit/family-details`);
                   }}
                 />
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.core_beneficiaries[0], [
+                  value={arrList(benificiary?.core_beneficiaries, [
                     "father_first_name",
                     "father_middle_name",
                     "father_last_name",
@@ -271,14 +272,14 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.5"
                   >
-                    {benificiary?.core_beneficiaries[0]?.father_first_name
-                      ? benificiary?.core_beneficiaries[0].father_first_name
+                    {benificiary?.core_beneficiaries?.father_first_name
+                      ? benificiary?.core_beneficiaries.father_first_name
                       : "-"}{" "}
-                    {benificiary?.core_beneficiaries[0]?.father_middle_name
-                      ? benificiary?.core_beneficiaries[0].father_middle_name
+                    {benificiary?.core_beneficiaries?.father_middle_name
+                      ? benificiary?.core_beneficiaries.father_middle_name
                       : "-"}{" "}
-                    {benificiary?.core_beneficiaries[0]?.father_last_name
-                      ? benificiary?.core_beneficiaries[0].father_last_name
+                    {benificiary?.core_beneficiaries?.father_last_name
+                      ? benificiary?.core_beneficiaries.father_last_name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -301,14 +302,14 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.5"
                   >
-                    {benificiary?.core_beneficiaries[0]?.mother_first_name
-                      ? benificiary?.core_beneficiaries[0].mother_first_name
+                    {benificiary?.core_beneficiaries?.mother_first_name
+                      ? benificiary?.core_beneficiaries.mother_first_name
                       : "-"}{" "}
-                    {benificiary?.core_beneficiaries[0]?.mother_middle_name
-                      ? benificiary?.core_beneficiaries[0].mother_middle_name
+                    {benificiary?.core_beneficiaries?.mother_middle_name
+                      ? benificiary?.core_beneficiaries.mother_middle_name
                       : "-"}{" "}
-                    {benificiary?.core_beneficiaries[0]?.mother_last_name
-                      ? benificiary?.core_beneficiaries[0].mother_last_name
+                    {benificiary?.core_beneficiaries?.mother_last_name
+                      ? benificiary?.core_beneficiaries.mother_last_name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -335,13 +336,13 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${userId}/personal-details`);
+                    navigate(`/beneficiary/${id}/personal-details`);
                   }}
                 />
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.extended_users[0], [
+                  value={arrList(benificiary?.extended_users, [
                     "social_category",
                     "marital_status",
                   ])}
@@ -364,8 +365,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.extended_users[0]?.social_category
-                      ? benificiary?.extended_users[0]?.social_category
+                    {benificiary?.extended_users?.social_category
+                      ? benificiary?.extended_users?.social_category
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -388,8 +389,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.extended_users[0]?.marital_status
-                      ? benificiary?.extended_users[0]?.marital_status
+                    {benificiary?.extended_users?.marital_status
+                      ? benificiary?.extended_users?.marital_status
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -416,7 +417,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${userId}/edit/reference`);
+                    navigate(`/beneficiary/${id}/edit/reference`);
                   }}
                 />
               </HStack>
@@ -448,13 +449,13 @@ export default function BenificiaryBasicDetails() {
                     flex="0.3"
                   >
                     {benificiary?.references[0]?.first_name
-                      ? benificiary?.references[0].first_name
+                      ? benificiary?.references[0]?.first_name
                       : "-"}{" "}
                     {benificiary?.references[0]?.middle_name
-                      ? benificiary?.references[0].middle_name
+                      ? benificiary?.references[0]?.middle_name
                       : "-"}{" "}
                     {benificiary?.references[0]?.last_name
-                      ? benificiary?.references[0].last_name
+                      ? benificiary?.references[0]?.last_name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -478,7 +479,7 @@ export default function BenificiaryBasicDetails() {
                     flex="0.3"
                   >
                     {benificiary?.references[0]?.relation
-                      ? benificiary?.references[0].relation
+                      ? benificiary?.references[0]?.relation
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -502,7 +503,7 @@ export default function BenificiaryBasicDetails() {
                     flex="0.3"
                   >
                     {benificiary?.references[0]?.contact_number
-                      ? benificiary?.references[0].contact_number
+                      ? benificiary?.references[0]?.contact_number
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>

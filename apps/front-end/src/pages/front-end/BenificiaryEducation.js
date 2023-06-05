@@ -66,7 +66,7 @@ export default function BenificiaryEducation() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.core_beneficiaries[0], [
+                  value={arrList(benificiary?.core_beneficiaries, [
                     "last_standard_of_education",
                     "last_standard_of_education_year",
                     "previous_school_type",
@@ -91,9 +91,8 @@ export default function BenificiaryEducation() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.core_beneficiaries[0]
-                      ?.last_standard_of_education
-                      ? benificiary?.core_beneficiaries[0]
+                    {benificiary?.core_beneficiaries?.last_standard_of_education
+                      ? benificiary?.core_beneficiaries
                           ?.last_standard_of_education
                       : "-"}
                   </FrontEndTypo.H3>
@@ -117,9 +116,9 @@ export default function BenificiaryEducation() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.core_beneficiaries[0]
+                    {benificiary?.core_beneficiaries
                       ?.last_standard_of_education_year
-                      ? benificiary?.core_beneficiaries[0]
+                      ? benificiary?.core_beneficiaries
                           ?.last_standard_of_education_year
                       : "-"}
                   </FrontEndTypo.H3>
@@ -143,8 +142,8 @@ export default function BenificiaryEducation() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.core_beneficiaries[0]?.previous_school_type
-                      ? benificiary?.core_beneficiaries[0]?.previous_school_type
+                    {benificiary?.core_beneficiaries?.previous_school_type
+                      ? benificiary?.core_beneficiaries?.previous_school_type
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -167,9 +166,9 @@ export default function BenificiaryEducation() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.core_beneficiaries[0]
+                    {benificiary?.core_beneficiaries
                       ?.reason_of_leaving_education
-                      ? benificiary?.core_beneficiaries[0]
+                      ? benificiary?.core_beneficiaries
                           ?.reason_of_leaving_education
                       : "-"}
                   </FrontEndTypo.H3>
@@ -197,7 +196,7 @@ export default function BenificiaryEducation() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.core_beneficiaries[0], [
+                  value={arrList(benificiary?.core_beneficiaries, [
                     "career_aspiration",
                     "career_aspiration_details",
                   ])}
@@ -220,8 +219,8 @@ export default function BenificiaryEducation() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.core_beneficiaries[0]?.career_aspiration
-                      ? benificiary?.core_beneficiaries[0]?.career_aspiration
+                    {benificiary?.core_beneficiaries?.career_aspiration
+                      ? benificiary?.core_beneficiaries?.career_aspiration
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -244,9 +243,8 @@ export default function BenificiaryEducation() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.core_beneficiaries[0]
-                      ?.career_aspiration_details
-                      ? benificiary?.core_beneficiaries[0]
+                    {benificiary?.core_beneficiaries?.career_aspiration_details
+                      ? benificiary?.core_beneficiaries
                           ?.career_aspiration_details
                       : "-"}
                   </FrontEndTypo.H3>
