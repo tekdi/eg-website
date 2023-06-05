@@ -10,7 +10,6 @@ import { HStack, VStack, Box, Text, Container } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function TableView() {
     React.useEffect(() => {
         const getData = async () => {
