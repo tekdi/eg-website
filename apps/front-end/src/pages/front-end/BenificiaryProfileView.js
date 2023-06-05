@@ -8,6 +8,8 @@ import {
   Divider,
   Button,
   Modal,
+  Actionsheet,
+  useDisclose
 } from "native-base";
 import {
   AdminTypo,
@@ -78,7 +80,9 @@ const reactivateReasons = [
 ];
 
 export default function AgLearnerProfileView(props) {
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [isOpenDropOut, setIsOpenDropOut] =React.useState(false);
+  const [isOpenReactive, setIsOpenReactive] =React.useState(false);
+
   const [reactivatemodalVisible, setreactivateModalVisible] =
     React.useState(false);
   const [reasonValue, setReasonValue] = React.useState("");
@@ -105,7 +109,7 @@ export default function AgLearnerProfileView(props) {
       setModalVisible(false);
     }
   };
-
+ 
   const reactivateApiCall = async () => {
     let bodyData = {
       id: id,
@@ -288,43 +292,34 @@ export default function AgLearnerProfileView(props) {
             </VStack>
           </Box>
           <FrontEndTypo.Disablebutton
-            onPress={() => {
-              setModalVisible(true);
-            }}
+            
+            onPress={e=>setIsOpenDropOut(true)}
+            
+            
             leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
-          <FrontEndTypo.DisableOutlinebutton
-            onPress={() => {
-              setreactivateModalVisible(true);
-            }}
+          <FrontEndTypo.DisableOutlinebutton  onPress={e=>setIsOpenReactive(true)}
           >
+           
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.DisableOutlinebutton>
         </VStack>
       </VStack>
-      <Modal
-        isOpen={modalVisible}
-        safeAreaTop={true}
-        p="0"
-        m="0"
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
-      >
-        <Modal.Content
-          maxWidth="350"
-          style={{ marginBottom: 0, marginTop: "auto" }}
-        >
-          <Modal.Header p="5" borderBottomWidth="0">
-            <FrontEndTypo.H1 bold color="textGreyColor.450">
+      <Actionsheet isOpen={isOpenDropOut} onClose={e=>setIsOpenDropOut(false)}>
+
+        <Actionsheet.Content>
+          <VStack alignItems="end"  width="100%">
+          <IconByName name="CloseCircleLineIcon" onPress={e=>setIsOpenDropOut(false)}/>
+          </VStack>
+
+        <FrontEndTypo.H1 bold color="textGreyColor.450">
               {t("AG_PROFILE_ARE_YOU_SURE")}
             </FrontEndTypo.H1>
             <FrontEndTypo.H2 color="textGreyColor.450">
               {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
             </FrontEndTypo.H2>
-          </Modal.Header>
-          <Modal.Body pb="10">
             <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
               {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
             </FrontEndTypo.H2>
@@ -350,39 +345,24 @@ export default function AgLearnerProfileView(props) {
                 >
                   {t("MARK_AS_DROPOUT")}
                 </FrontEndTypo.Disablebutton>
-                <FrontEndTypo.DisableOutlinebutton
-                  flex={1}
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  {t("CANCEL")}
-                </FrontEndTypo.DisableOutlinebutton>
               </VStack>
             </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+        </Actionsheet.Content>
+      </Actionsheet>
+      
 
-      <Modal
-        isOpen={reactivatemodalVisible}
-        safeAreaTop={true}
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
-      >
-        <Modal.Content
-          maxWidth="350"
-          style={{ marginBottom: 0, marginTop: "auto" }}
-        >
-          <Modal.Header p="5" borderBottomWidth="0">
+<Actionsheet isOpen={isOpenReactive} onClose={e=>setIsOpenReactive(false)}>
+  <IconByName name="CloseCircleLineIcon" onPress={e=>setIsOpenReactive(false)}/>
+        <Actionsheet.Content>
+        <VStack alignItems="end"  width="100%">
+          <IconByName name="CloseCircleLineIcon" onPress={e=>setIsOpenDropOut(false)}/>
+          </VStack>
             <FrontEndTypo.H1 bold color="textGreyColor.450">
               {t("AG_PROFILE_ARE_YOU_SURE")}
             </FrontEndTypo.H1>
             <FrontEndTypo.H2 color="textGreyColor.450">
               {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
             </FrontEndTypo.H2>
-          </Modal.Header>
-          <Modal.Body pb="10">
             <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
               {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
             </FrontEndTypo.H2>
@@ -408,19 +388,11 @@ export default function AgLearnerProfileView(props) {
                 >
                   {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
                 </FrontEndTypo.Disablebutton>
-                <FrontEndTypo.DisableOutlinebutton
-                  flex={1}
-                  onPress={() => {
-                    setreactivateModalVisible(false);
-                  }}
-                >
-                  {t("CANCEL")}
-                </FrontEndTypo.DisableOutlinebutton>
+               
               </VStack>
             </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+         </Actionsheet.Content>
+         </Actionsheet>
     </Layout>
   );
 }
