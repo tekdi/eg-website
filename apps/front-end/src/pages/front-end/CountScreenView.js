@@ -3,8 +3,7 @@ import {
     t,
     IconByName,
     Layout,
-    benificiaryRegistoryService,
-    statusWiseCountService
+    benificiaryRegistoryService
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
 import { HStack, VStack, Box, Text, Container } from "native-base";
@@ -15,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 export default function TableView() {
     React.useEffect(() => {
         const getData = async () => {
-            let data = await statusWiseCountService.getStatusWiseCount();
+            let data = await benificiaryRegistoryService.getStatusWiseCount();
             setStatuswiseCount(data);
         };
 

@@ -1,4 +1,4 @@
-import { H1, H3, H4, Layout, t, documentChecklistService } from "@shiksha/common-lib";
+import { H1, H3, H4, Layout, t, benificiaryRegistoryService } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
   Image,
@@ -12,23 +12,23 @@ import {
   CheckIcon,
   Box,
 } from "native-base";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = () => {
 
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [id, SetId] = React.useState(localStorage.getItem("id"))
+  const { id } = useParams()
   const [selectData, setselectData] = useState([]);
   const [status, setStatus] = useState({})
 
   React.useEffect(async () => {
-    let data = await documentChecklistService.getOne(id)
+    let data = await benificiaryRegistoryService.getOne(id)
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(JSON.parse(data.result?.program_beneficiaries?.documents_status))
     }
   }, [])
   React.useEffect(async () => {
-    let data = await documentChecklistService.getDocumentStatus()
+    let data = await benificiaryRegistoryService.getDocumentStatus()
     setselectData(data)
   }, [])
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Docschecklist = () => {
       documents_status: status
     }
     if (Object.keys(status).length > 0) {
-      let dataOutput = await documentChecklistService.statusUpdate(id, data)
+      let dataOutput = await benificiaryRegistoryService.getStatusUpdate(id, data)
     }
 
   }, [status])
