@@ -5,15 +5,22 @@ import {
   t,
   IconByName,
   Layout,
-  benificiaryRegistoryService
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
-import { HStack, VStack, Box, Text, Select, Image, Pressable } from "native-base";
+import {
+  HStack,
+  VStack,
+  Box,
+  Text,
+  Select,
+  Image,
+  Pressable,
+} from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const List = ({ data }) => {
-
   const navigate = useNavigate();
   return (
     <VStack space="10" paddingLeft="4%" paddingTop="10%" paddingRight="4%">
@@ -24,16 +31,14 @@ const List = ({ data }) => {
         data?.map((item) => (
           <Pressable
             onPress={async () => {
-              navigate(`/beneficiary/profile/${item?.id}`)
-            }}>
+              navigate(`/beneficiary/${item?.id}`);
+            }}
+          >
             <HStack alignItems="Center" justifyContent="space-between">
               <HStack alignItems="Center" justifyContent="space-between">
                 <IconByName name="UserAddLineIcon" />
                 <VStack>
-                  <Text bold
-
-                  >
-
+                  <Text bold>
                     {item?.first_name}
                     {item?.last_name && ` ${item.last_name}`}
                   </Text>
@@ -41,7 +46,9 @@ const List = ({ data }) => {
                 </VStack>
               </HStack>
               <ChipStatus status={"screened"}>
-                <Chip>{item?.program_beneficiaries?.[0]?.status || "nothing"}</Chip>
+                <Chip>
+                  {item?.program_beneficiaries?.[0]?.status || "nothing"}
+                </Chip>
               </ChipStatus>
             </HStack>
           </Pressable>
@@ -61,21 +68,20 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const { form_step_number } = facilitator;
   const [service, setService] = React.useState("");
   const [sort, setSort] = React.useState("sort");
-  const [sortValue, setSortValue] = React.useState("desc")
-  const [statusValue, setStatusValue] = React.useState("")
+  const [sortValue, setSortValue] = React.useState("desc");
+  const [statusValue, setStatusValue] = React.useState("");
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [reqBodyData, setReqBodyData] = React.useState();
   const [status, setStatus] = React.useState("status");
   const [data, setData] = React.useState();
-  const [selectStatus, setSelectStatus] = React.useState([])
-  const [searchBenficiary, setSearchBenficiary] = React.useState("")
-
+  const [selectStatus, setSelectStatus] = React.useState([]);
+  const [searchBenficiary, setSearchBenficiary] = React.useState("");
 
   React.useEffect(async () => {
-    const data = await benificiaryRegistoryService.getStatusList()
-    setSelectStatus(data)
-  }, [])
+    const data = await benificiaryRegistoryService.getStatusList();
+    setSelectStatus(data);
+  }, []);
   React.useEffect(() => {
     setReqBodyData({ page, limit, statusValue, sortValue, searchBenficiary });
   }, [page, limit, statusValue, sortValue, searchBenficiary]);
@@ -88,7 +94,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       limit: reqBodyData.limit,
       status: reqBodyData.statusValue,
       sortType: reqBodyData.sortValue,
-      search: reqBodyData.searchBenficiary
+      search: reqBodyData.searchBenficiary,
     };
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
@@ -130,8 +136,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
         onlyIconsShow: ["userInfo"],
         isEnableSearchBtn: "true",
         setSearch: (value) => {
-          setSearchBenficiary(value)
-        }
+          setSearchBenficiary(value);
+        },
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -190,19 +196,15 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             selectedValue={status}
             placeholder="Status:All"
             onValueChange={(nextValue) => {
-              setStatus(nextValue)
-              setStatusValue(nextValue)
+              setStatus(nextValue);
+              setStatusValue(nextValue);
             }}
             _selectedItem={{
               bg: "cyan.600",
             }}
             accessibilityLabel="Select a position for Menu"
           >
-            <Select.Item
-              key={0}
-              label={t('BENEFICIARY_ALL')}
-              value={''}
-            />
+            <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
             {selectStatus?.map((option, index) => (
               <Select.Item
                 key={index}
@@ -221,9 +223,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             selectedValue={sort}
             placeholder="Sort By"
             onValueChange={(nextValue) => {
-              setSort(nextValue)
-              setSortValue(nextValue)
-
+              setSort(nextValue);
+              setSortValue(nextValue);
             }}
             _selectedItem={{
               bg: "secondary.700",

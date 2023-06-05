@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import {
   HStack,
   VStack,
@@ -8,21 +9,33 @@ import {
   Divider,
   Button,
 } from "native-base";
-import { IconByName, Layout, t, FrontEndTypo, benificiaryRegistoryService } from "@shiksha/common-lib";
-import { useParams } from 'react-router-dom';
+import {
+  arrList,
+  IconByName,
+  Layout,
+  t,
+  FrontEndTypo,
+  benificiaryRegistoryService,
+} from "@shiksha/common-lib";
 
+import { useNavigate } from "react-router-dom";
 
 export default function AgLearnerProfileView() {
-  React.useEffect(() => {
-    const getData = async () => {
-      let data = await benificiaryRegistoryService.getOne(id);
-      setBenificiary(data);
-    };
+  const params = useParams();
+  const [benificiary, setBenificiary] = React.useState();
+  const [userId, setUserId] = React.useState(params?.id);
+  const navigate = useNavigate();
 
-    getData();
-  }, [])
-  const { id } = useParams()
-  const [benificiary, setBenificiary] = React.useState({});
+  React.useEffect(() => {
+    benificiaryDetails();
+  }, []);
+
+  const benificiaryDetails = async () => {
+    const result = await benificiaryRegistoryService.getOne(userId);
+
+    setBenificiary(result);
+  };
+
   return (
     <Layout _appBar={{ name: t("AG_LEARNER_PROFILE") }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
@@ -33,11 +46,20 @@ export default function AgLearnerProfileView() {
               color="textGreyColor.200"
               _icon={{ size: "60" }}
             />
-            <FrontEndTypo.H2 bold color="textMaroonColor.400">
-              {benificiary?.result?.first_name}
-              {benificiary?.result?.last_name && ` ${benificiary?.result?.last_name}`}
-            </FrontEndTypo.H2>
-            <Box>{benificiary?.result?.[0]?.status || "unidentified"}</Box>
+            <Text
+              fontFamily="Inter"
+              fontStyle="normal"
+              fontSize="16px"
+              color="#790000"
+              fontWeight="600px"
+            >
+              {benificiary?.result?.first_name} {benificiary?.result?.last_name}
+            </Text>
+            <Box>
+              {benificiary?.result?.program_beneficiaries[1]?.status
+                ? benificiary?.result?.program_beneficiaries[1]?.status
+                : "-"}
+            </Box>
           </VStack>
           <Box
             bg="boxBackgroundColour.100"
@@ -47,8 +69,7 @@ export default function AgLearnerProfileView() {
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <FrontEndTypo.H3 bold
-                color="textGreyColor.800">
+              <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("PROFILE_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
@@ -59,14 +80,22 @@ export default function AgLearnerProfileView() {
                   <HStack space="md" alignItems="Center">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
 
-                    <FrontEndTypo.H3>
-                      {t("BASIC_DETAILS")}
-                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="#790000"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${userId}/basicdetails`);
+                    }}
+                  />
                 </HStack>
-                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
+                <Divider
+                  orientation="horizontal"
+                  bg="btnGray.100"
+                  thickness="1"
+                />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="MapPinLineIcon" _icon={{ size: "20" }} />
@@ -75,9 +104,16 @@ export default function AgLearnerProfileView() {
                       {t("ADD_YOUR_ADDRESS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                  />
                 </HStack>
-                <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
+                <Divider
+                  orientation="horizontal"
+                  bg="btnGray.100"
+                  thickness="1"
+                />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
@@ -87,7 +123,10 @@ export default function AgLearnerProfileView() {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName name="ArrowRightSLineIcon" color="textMaroonColor.400" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                  />
                 </HStack>
               </VStack>
             </VStack>
@@ -102,7 +141,7 @@ export default function AgLearnerProfileView() {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 <IconByName
@@ -123,13 +162,39 @@ export default function AgLearnerProfileView() {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("ENROLLMENT_DETAILS")}
                 </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
                   size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${userId}/enrollmentdetails`);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("EDUCATION_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${userId}/educationdetails`);
+                  }}
                 />
               </HStack>
             </VStack>
@@ -144,7 +209,7 @@ export default function AgLearnerProfileView() {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("CAMP_DETAILS")}
                 </FrontEndTypo.H3>
                 <IconByName
@@ -165,7 +230,7 @@ export default function AgLearnerProfileView() {
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("JOURNEY_IN_PROJECT_PRAGATI")}
                 </FrontEndTypo.H3>
                 <IconByName
@@ -176,12 +241,15 @@ export default function AgLearnerProfileView() {
               </HStack>
             </VStack>
           </Box>
-          <FrontEndTypo.Secondarybutton leftIcon={<IconByName
+          <FrontEndTypo.Secondarybutton
+            leftIcon={
+              <IconByName
                 name="UserUnfollowLineIcon"
                 color="textMaroonColor.400"
-              />}>
-              
-              {t("MARK_AS_DROPOUT")}
+              />
+            }
+          >
+            {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Secondarybutton>
         </VStack>
       </VStack>
