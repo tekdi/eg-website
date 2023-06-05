@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
   Actionsheet,
-  useDisclose
+  useDisclose,
 } from "native-base";
 import {
   AdminTypo,
@@ -80,8 +80,8 @@ const reactivateReasons = [
 ];
 
 export default function AgLearnerProfileView(props) {
-  const [isOpenDropOut, setIsOpenDropOut] =React.useState(false);
-  const [isOpenReactive, setIsOpenReactive] =React.useState(false);
+  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
+  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
 
   const [reactivatemodalVisible, setreactivateModalVisible] =
     React.useState(false);
@@ -109,7 +109,7 @@ export default function AgLearnerProfileView(props) {
       setModalVisible(false);
     }
   };
- 
+
   const reactivateApiCall = async () => {
     let bodyData = {
       id: id,
@@ -292,107 +292,116 @@ export default function AgLearnerProfileView(props) {
             </VStack>
           </Box>
           <FrontEndTypo.Disablebutton
-            
-            onPress={e=>setIsOpenDropOut(true)}
-            
-            
+            onPress={(e) => setIsOpenDropOut(true)}
             leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
-          <FrontEndTypo.DisableOutlinebutton  onPress={e=>setIsOpenReactive(true)}
+          <FrontEndTypo.DisableOutlinebutton
+            onPress={(e) => setIsOpenReactive(true)}
           >
-           
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.DisableOutlinebutton>
         </VStack>
       </VStack>
-      <Actionsheet isOpen={isOpenDropOut} onClose={e=>setIsOpenDropOut(false)}>
-
+      <Actionsheet
+        isOpen={isOpenDropOut}
+        onClose={(e) => setIsOpenDropOut(false)}
+      >
         <Actionsheet.Content>
-          <VStack alignItems="end"  width="100%">
-          <IconByName name="CloseCircleLineIcon" onPress={e=>setIsOpenDropOut(false)}/>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenDropOut(false)}
+            />
           </VStack>
 
-        <FrontEndTypo.H1 bold color="textGreyColor.450">
-              {t("AG_PROFILE_ARE_YOU_SURE")}
-            </FrontEndTypo.H1>
-            <FrontEndTypo.H2 color="textGreyColor.450">
-              {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
-            </FrontEndTypo.H2>
-            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-              {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
-            </FrontEndTypo.H2>
-            <VStack space="5">
-              <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
-                <VStack alignItems="center" space="1" flex="1">
-                  <CustomRadio
-                    options={{ enumOptions: dropoutReasons }}
-                    schema={{ grid: 2 }}
-                    value={reasonValue}
-                    onChange={(e) => {
-                      setReasonValue(e);
-                    }}
-                  />
-                </VStack>
-              </VStack>
-              <VStack space="5" pt="5">
-                <FrontEndTypo.Disablebutton
-                  flex={1}
-                  onPress={() => {
-                    dropoutApiCall();
+          <FrontEndTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H2 color="textGreyColor.450">
+            {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+            {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+          </FrontEndTypo.H2>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
+              <VStack alignItems="center" space="1" flex="1">
+                <CustomRadio
+                  options={{ enumOptions: dropoutReasons }}
+                  schema={{ grid: 2 }}
+                  value={reasonValue}
+                  onChange={(e) => {
+                    setReasonValue(e);
                   }}
-                >
-                  {t("MARK_AS_DROPOUT")}
-                </FrontEndTypo.Disablebutton>
+                />
               </VStack>
             </VStack>
+            <VStack space="5" pt="5">
+              <FrontEndTypo.Disablebutton
+                flex={1}
+                onPress={() => {
+                  dropoutApiCall();
+                }}
+              >
+                {t("MARK_AS_DROPOUT")}
+              </FrontEndTypo.Disablebutton>
+            </VStack>
+          </VStack>
         </Actionsheet.Content>
       </Actionsheet>
-      
 
-<Actionsheet isOpen={isOpenReactive} onClose={e=>setIsOpenReactive(false)}>
-  <IconByName name="CloseCircleLineIcon" onPress={e=>setIsOpenReactive(false)}/>
+      <Actionsheet
+        isOpen={isOpenReactive}
+        onClose={(e) => setIsOpenReactive(false)}
+      >
+        <IconByName
+          name="CloseCircleLineIcon"
+          onPress={(e) => setIsOpenReactive(false)}
+        />
         <Actionsheet.Content>
-        <VStack alignItems="end"  width="100%">
-          <IconByName name="CloseCircleLineIcon" onPress={e=>setIsOpenDropOut(false)}/>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenDropOut(false)}
+            />
           </VStack>
-            <FrontEndTypo.H1 bold color="textGreyColor.450">
-              {t("AG_PROFILE_ARE_YOU_SURE")}
-            </FrontEndTypo.H1>
-            <FrontEndTypo.H2 color="textGreyColor.450">
-              {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
-            </FrontEndTypo.H2>
-            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-              {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
-            </FrontEndTypo.H2>
-            <VStack space="5">
-              <VStack space="2" bg="gray.100" p="1" rounded="lg">
-                <VStack alignItems="center" space="1" flex="1">
-                  <CustomRadio
-                    options={{ enumOptions: reactivateReasons }}
-                    schema={{ grid: 2 }}
-                    value={reactivateReasonValue}
-                    onChange={(e) => {
-                      setReactivateReasonValue(e);
-                    }}
-                  />
-                </VStack>
-              </VStack>
-              <VStack space="3">
-                <FrontEndTypo.Disablebutton
-                  flex={1}
-                  onPress={() => {
-                    reactivateApiCall();
+          <FrontEndTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H2 color="textGreyColor.450">
+            {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+            {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
+          </FrontEndTypo.H2>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg">
+              <VStack alignItems="center" space="1" flex="1">
+                <CustomRadio
+                  options={{ enumOptions: reactivateReasons }}
+                  schema={{ grid: 2 }}
+                  value={reactivateReasonValue}
+                  onChange={(e) => {
+                    setReactivateReasonValue(e);
                   }}
-                >
-                  {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-                </FrontEndTypo.Disablebutton>
-               
+                />
               </VStack>
             </VStack>
-         </Actionsheet.Content>
-         </Actionsheet>
+            <VStack space="3">
+              <FrontEndTypo.Disablebutton
+                flex={1}
+                onPress={() => {
+                  reactivateApiCall();
+                }}
+              >
+                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+              </FrontEndTypo.Disablebutton>
+            </VStack>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
     </Layout>
   );
 }
