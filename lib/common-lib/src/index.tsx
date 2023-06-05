@@ -65,7 +65,7 @@ export {
   FloatingInput,
   CheatSheet,
   CustomOTPBox,
-  eventService,
+  eventService
 }
 
 export * from './services/RestClient'

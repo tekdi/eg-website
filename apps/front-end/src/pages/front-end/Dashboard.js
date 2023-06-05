@@ -68,7 +68,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack pb="5" >
+      <VStack pb="5">
         <VStack space="5">
           <HStack
             {...styles.inforBox}

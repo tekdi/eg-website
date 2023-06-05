@@ -18,5 +18,5 @@ export default [
   {
     path: "*",
     component: LoginComponent,
-  }
+  },
 ];
