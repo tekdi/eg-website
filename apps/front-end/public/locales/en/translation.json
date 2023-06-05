@@ -483,5 +483,6 @@
   "ORIENTATION": "Orientation",
   "TRAINING": "Training",
   "CLEAR_FILTER": "Clear filter",
-  "ALL_PRERAKS": "All Preraks"
+  "ALL_PRERAKS": "All Preraks",
+  "FINISH":"Finish"
 }

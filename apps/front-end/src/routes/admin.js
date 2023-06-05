@@ -5,6 +5,7 @@ import AdminHome from "pages/admin/AdminHome";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/OrientationScreen";
+import Attendence from "pages/front-end/Attendence/Attendence";
 
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AdharOTP from "pages/front-end/AadhaarKyc/AadhaarOTP";
@@ -23,7 +24,7 @@ export default [
   { path: "/admin", component: AdminHome },
   { path: "/", component: AdminHome },
   // { path: "/menubar", component: AgMenuBar },
-
+  { path: "/attendence/:id", component: Attendence },
   {
     path: "/admin/aadhaarStart",
     component: AadhaarStartKyc,

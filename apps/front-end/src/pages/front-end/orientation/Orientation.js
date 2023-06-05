@@ -12,7 +12,7 @@ import {
   eventService,
   Loading,
 } from "@shiksha/common-lib";
-
+import { useNavigate } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
 import { Calendar as Cal } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -68,6 +68,7 @@ export default function Orientation({
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const navigator = useNavigate();
 
   const SelectButton = () => (
     <VStack>
@@ -151,10 +152,17 @@ export default function Orientation({
     setFormData({ ...formData, ...newData });
   };
 
-  const handleEventClick = (info) => {
+  const handleEventClick = async (info) => {
     console.log("Event clicked:", info?.event?.extendedProps);
-    setFormData(info?.event?.extendedProps);
-    setModalVisible(true);
+    const eventResult = await eventService.getEventListById({
+      id: info?.event?.extendedProps?.event_id,
+    });
+
+    navigator(`/attendence/${info?.event?.extendedProps?.event_id}`, {
+      state: eventResult?.event,
+    });
+    // setFormData(info?.event?.extendedProps);
+    // setModalVisible(true);
   };
 
   const onSubmit = async (data) => {
@@ -335,7 +343,8 @@ export default function Orientation({
             // ]}
             events={eventList?.events?.map((item) => {
               return {
-                title: item?.type !== null ? item?.type : "orientation",
+                allDay: false,
+                title: item?.type !== null ? item?.type : "",
                 start: moment(item?.start_date).format("YYYY-MM-DD")
                   ? moment(item?.start_date).format("YYYY-MM-DD")
                   : "",
@@ -354,12 +363,13 @@ export default function Orientation({
                     ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                attendees: Object.values(userIds).map((e) => e?.id),
+                attendances: item?.attendances,
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
                 reminders: item?.reminders ? item?.reminders : "",
                 location: item?.location ? item?.location : "",
                 location_type: item?.location_type ? item?.location_type : "",
+                event_id: item?.id ? item?.id : "",
               };
             })}
             eventTimeFormat={{

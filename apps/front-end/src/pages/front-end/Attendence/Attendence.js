@@ -10,10 +10,11 @@ import {
   Camera,
   getBase64,
   AdminTypo,
+  FrontEndTypo,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
-import Orientation from "./Orientation";
 import {
   Box,
   Button,
@@ -30,8 +31,10 @@ import {
   Switch,
   Badge,
 } from "native-base";
-import React from "react";
-let switchAttendance = false;
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const stylesheet = {
   modalxxl: {
@@ -107,9 +110,7 @@ const columns = (e) => [
   },
   {
     name: t("STATUS"),
-    selector: (row, index) => (
-      <ChipStatus key={index} status={row?.program_faciltators?.status} />
-    ),
+    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
     sortable: false,
     attr: "email",
   },
@@ -121,248 +122,16 @@ const columns = (e) => [
   },
 ];
 
-const scheduleCandidates = (e) => [
-  {
-    name: t("NAME"),
-    selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_url ? (
-          <Avatar
-            source={{
-              uri: row?.profile_url,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        <Text>{row?.first_name + " " + row.last_name}</Text>
-      </HStack>
-    ),
-    sortable: false,
-    attr: "name",
-  },
-  {
-    name: t("INVITE_STATUS"),
-    selector: (row) => <Text color={"#00D790"}>Accepted</Text>,
-    sortable: false,
-    attr: "email",
-  },
-  {
-    name: t("MARK_ATTENDANCE"),
-    selector: (row) => (
-      <>
-        <HStack space={"2"}>
-          <Text>Present</Text>
-          <Switch
-            offTrackColor="#00D790"
-            onTrackColor="#DC2626"
-            onThumbColor="#E0E0E0"
-            offThumbColor="#E0E0E0"
-            value={switchAttendance}
-            onValueChange={!switchAttendance}
-          />
-        </HStack>
-      </>
-    ),
-    sortable: false,
-    attr: "email",
-  },
-  // {
-  //   name: t("ADHAR_KYC"),
-  //   selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
-
-  //   sortable: false,
-  //   attr: "city",
-  // },
-  // {
-  //   name: t("VERIFIED_DOCUMENTS"),
-  //   selector: (row) => row?.gender,
-  //   sortable: false,
-  //   attr: "city",
-  // },
-];
-
-export default function OrientationScreen() {
-  //   const [page, setPage] = React.useState("screen1");
-  //   const [code, setCode] = React.useState("en");
-  //   const [refAppBar, RefAppBar] = React.useState();
-  //   const [selectedData, setSelectedData] = React.useState();
-  //   const onShowScreen = () => {
-  //     setPage("screen2");
-  //   };
-  //   const onClick = () => {
-  //     setPage("screen3");
-  //   };
-  //   return (
-  //     <>
-  //       {page === "screen1" && <Orientation onShowScreen={onShowScreen} />}
-  //       {page === "screen2" && (
-  //         <Layout
-  //           getRefAppBar={(e) => RefAppBar(e)}
-  //           isDisabledAppBar={page === "screen1"}
-  //           isCenter={true}
-  //           key={code}
-  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
-  //           _page={{ _scollView: { bg: "white" } }}
-  //         >
-  //           <Page2 onClick={onClick} setSelectedData={selectedData} />
-  //         </Layout>
-  //       )}
-
-  //       {page === "screen3" && (
-  //         <Layout
-  //           getRefAppBar={(e) => RefAppBar(e)}
-  //           isDisabledAppBar={page === "screen1"}
-  //           isCenter={true}
-  //           key={code}
-  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
-  //           _page={{ _scollView: { bg: "white" } }}
-  //         >
-  //           <Page3 setSelectedData={selectedData} />
-  //         </Layout>
-  //       )}
-  //     </>
-  //   );
-  // }
-
-  // const Page1 = ({ onShowScreen }) => {
-  //   return (
-  //     <Box>
-  //       <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
-  //     </Box>
-  //   );
-  // };
-
-  // const Page2 = ({ onClick }) => {
-  changeLanguage(localStorage.getItem("lang"));
-  const [data, setData] = React.useState([]);
-  const [userIds, setUserIds] = React.useState({});
-  const [filterObj, setFilterObj] = React.useState();
-  const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState(1);
-  const [loading, setLoading] = React.useState(true);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [selectedRowData, setSelectedRowData] = React.useState();
-  const onClick = () => {
-    setPage("screen3");
-  };
-
-  React.useEffect(async () => {
-    setLoading(true);
-    const result = await facilitatorRegistryService.getFacilitatorByStatus({
-      limit: limit,
-      page: page,
-      status: "shortlisted_for_orientation",
-    });
-    // const result = await facilitatorRegistryService.getAll(filterObj);
-    setData(result?.data?.data);
-
-    setPaginationTotalRows(result?.totalCount);
-    setLoading(false);
-  }, [filterObj]);
-
-  React.useEffect(() => {
-    setFilterObj({ page, limit });
-  }, [page, limit]);
-
-  const handleSelectRow = (state) => {
-    const arr = state?.selectedRows;
-    let newObj = {};
-    arr.forEach((e) => {
-      newObj = { ...newObj, [e.id]: e };
-    });
-    setUserIds({ ...userIds, ...newObj });
-    // setSelectedRowData(state.selectedRows);
-  };
-  const handlePageChange = (page) => {
-    setPage(page);
-  };
-  return (
-    <Box>
-      <Orientation
-        userIds={userIds}
-        onShowScreen={setIsOpen}
-        getFormData={(e) => console.log(e)}
-        onClick={onClick}
-        hi={"hi"}
-      />
-      <Modal
-        isOpen={isOpen}
-        onClose={(e) => setIsOpen(false)}
-        safeAreaTop={true}
-      >
-        <Modal.Content {...stylesheet.modalxxl}>
-          <Modal.CloseButton />
-          <Modal.Header p="5" borderBottomWidth="0">
-            <HStack justifyContent={"center"}>
-              <AdminTypo.H2 color="textGreyColor.500" bold>
-                {t("SELECT_CANDIDATE")}
-              </AdminTypo.H2>
-            </HStack>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <DataTable
-              columns={[...columns()]}
-              data={data}
-              customStyles={customStyles}
-              subHeader
-              persistTableHead
-              selectableRows
-              progressPending={loading}
-              pagination
-              paginationServer
-              paginationTotalRows={paginationTotalRows}
-              onChangePage={handlePageChange}
-              onSelectedRowsChange={handleSelectRow}
-              selectedRows={userIds}
-              // onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
-            />
-          </Modal.Body>
-
-          <Modal.Footer justifyContent={"space-between"}>
-            <AdminTypo.Secondarybutton
-              px="5"
-              py="1"
-              shadow="BlueOutlineShadow"
-              onPress={(e) => setIsOpen(false)}
-            >
-              {t("CANCEL")}
-            </AdminTypo.Secondarybutton>
-
-            <AdminTypo.PrimaryButton
-              onPress={(e) => setIsOpen(false)}
-              shadow="BlueFillShadow"
-              endIcon={
-                <IconByName
-                  isDisabled
-                  name="ArrowRightSLineIcon"
-                  color="gray.300"
-                  _icon={{ size: "15" }}
-                />
-              }
-            >
-              {t("SELECT_CANDIDATE")}
-            </AdminTypo.PrimaryButton>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-    </Box>
-  );
-}
-
-const Page3 = () => {
+export default function Attendence() {
   const [Height] = useWindowSize();
+  const location = useLocation();
+  const navigate = useNavigate();
+  let attendenceData = location?.state;
+  let myArray = [];
 
+  attendenceData?.attendances?.map((user) => {
+    return myArray.push({ ...user, status: false });
+  });
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
@@ -371,23 +140,152 @@ const Page3 = () => {
   const [refAppBar, setRefAppBar] = React.useState();
   const [rowData, setRowData] = React.useState();
   const [showEditModal, setShowEditModal] = React.useState(false);
-  const [service, setService] = React.useState("");
+  const [service, setService] = React.useState(
+    attendenceData?.name ? attendenceData?.name : attendenceData?.type
+  );
   const [aadharKYC, setAadharKYC] = React.useState("QRcodescan");
-  const [attendance, setAttendance] = React.useState("QRcodescan");
+  const [attendance, setAttendance] = React.useState("present");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
   const [modal, setModal] = React.useState(false);
+  const [locationPermission, setLocationPermission] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+  const uplodInputRef = React.useRef();
+  const [ids, setids] = useState("");
+
+  const [switchAttendance, setSwitchAttendance] = React.useState(false);
+
+  const [cameraFile, setcameraFile] = useState();
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+  const onSwitchToggle = (value) => {
+    getLocation();
+    if (
+      value?.user_id ===
+      myArray
+        .map((i) => {
+          return i?.user_id;
+        })
+        .includes(value?.user_id)
+    ) {
+      setSwitchAttendance(true);
+    }
+  };
+
+  const scheduleCandidates = (e) => [
+    {
+      name: t("NAME"),
+      selector: (row) => (
+        <HStack alignItems={"center"} space="2">
+          {row?.profile_url ? (
+            <Avatar
+              source={{
+                uri: row?.profile_url,
+              }}
+              // alt="Alternate Text"
+              width={"35px"}
+              height={"35px"}
+            />
+          ) : (
+            <IconByName
+              isDisabled
+              name="AccountCircleLineIcon"
+              color="gray.300"
+              _icon={{ size: "35" }}
+            />
+          )}
+          <Text>{row?.user?.first_name + " " + row?.user?.last_name}</Text>
+        </HStack>
+      ),
+      sortable: false,
+      attr: "name",
+    },
+    {
+      name: t("INVITE_STATUS"),
+      selector: (row) => <Text color={"#00D790"}>Accepted</Text>,
+      sortable: false,
+      attr: "email",
+    },
+    {
+      name: t("MARK_ATTENDANCE"),
+      selector: (row) => (
+        <>
+          <HStack space={"2"}>
+            <Text>{switchAttendance === true ? "Present" : "Absent"}</Text>
+            <Switch
+              // defaultIsChecked
+              offTrackColor="#DC2626"
+              onTrackColor="#00D790"
+              onThumbColor="#E0E0E0"
+              offThumbColor="#E0E0E0"
+              value={switchAttendance}
+              onValueChange={() => {
+                onSwitchToggle(row);
+              }}
+            />
+          </HStack>
+        </>
+      ),
+      sortable: false,
+      attr: "marks",
+    },
+    {
+      name: t("ADHAR_KYC"),
+      selector: (row, index) => (
+        <ChipStatus key={index} status={row?.aadhar_verified} />
+      ),
+      sortable: false,
+      attr: "adhar_kyc",
+    },
+    // {
+    //   name: t("VERIFIED_DOCUMENTS"),
+    //   selector: (row) => row?.gender,
+    //   sortable: false,
+    //   attr: "city",
+    // },
+  ];
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };
+  function successCallback(position) {
+    // Location was provided
+    let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
+    console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+  }
+
+  function errorCallback(error) {
+    if (error.code === error.PERMISSION_DENIED) {
+      // Location access was denied by the user
+      alert("Location access denied,Please Provide location access");
+    } else if (error.code === error.POSITION_UNAVAILABLE) {
+      // Location information is unavailable
+      console.log("Location information is unavailable.");
+    } else if (error.code === error.TIMEOUT) {
+      // The request to get user location timed out
+      console.log("Request to get user location timed out.");
+    } else {
+      // Any other error occurred
+      console.log("An unknown error occurred.");
+    }
+  }
+
   React.useEffect(async () => {
     setLoading(true);
-
     const result = await facilitatorRegistryService.getAll(filterObj);
-    setData(result.data);
-    let image_url = result.data.map((val) => {
-      return val.profile_url;
-    });
-    const dataImage = await getBase64(image_url);
-    setCameraUrl(dataImage);
+    setData(myArray);
+    // let image_url = myArray.map((val) => {
+    //   return val.profile_url;
+    // });
+    // const dataImage = await getBase64(image_url);
+    // setCameraUrl(dataImage);
     setPaginationTotalRows(result?.totalCount);
     setLoading(false);
   }, [filterObj]);
@@ -396,9 +294,21 @@ const Page3 = () => {
     setFilterObj({ page, limit });
   }, [page, limit]);
 
+  const uploadAttendencePicture = async (e) => {
+    let formData = new FormData();
+    formData.append("file", cameraUrl);
+    const uploadDoc = await uploadRegistryService.uploadPicture(formData);
+    if (uploadDoc) {
+      setcameraFile(uploadDoc);
+    }
+  };
   const handleCandidateSelectRow = (state) => {
     setRowData(state);
-    setShowEditModal(true);
+    // setShowEditModal(true);
+  };
+
+  const handlePageChange = (page) => {
+    setPage(page);
   };
   return (
     <ScrollView
@@ -427,7 +337,7 @@ const Page3 = () => {
             <HStack>
               <AdminTypo.Secondarybutton
                 shadow="BlueOutlineShadow"
-                onPress={() => setModal(true)}
+                // onPress={() => setModal(true)}
                 rightIcon={
                   <IconByName
                     color="#084B82"
@@ -451,10 +361,12 @@ const Page3 = () => {
             <VStack m={"15px"}>
               <HStack justifyContent={"space-between"}>
                 <AdminTypo.H6 color="textGreyColor.800" bold>
-                  {t("ORIENTATION_SHEDULE")}
+                  {attendenceData?.name
+                    ? attendenceData?.name
+                    : attendenceData?.type}
                 </AdminTypo.H6>
                 <AdminTypo.Secondarybutton
-                  onPress={() => setShowEditModal(true)}
+                  // onPress={() => setShowEditModal(true)}
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
@@ -469,7 +381,11 @@ const Page3 = () => {
                   _icon={{ size: "15" }}
                 />
                 <AdminTypo.H5 color="textGreyColor.800">
-                  16th April, 11:00 to 12:00
+                  {attendenceData?.start_date
+                    ? moment(attendenceData?.start_date).format("Do MMM")
+                    : ""}{" "}
+                  {attendenceData?.start_time ? attendenceData?.start_time : ""}
+                  {/* 16th April, 11:00 to 12:00 */}
                 </AdminTypo.H5>
                 <IconByName
                   isDisabled
@@ -478,7 +394,7 @@ const Page3 = () => {
                   _icon={{ size: "15" }}
                 />
                 <AdminTypo.H6 color="textGreyColor.800">
-                  Jaipur, 412213
+                  {attendenceData?.location}
                 </AdminTypo.H6>
                 <IconByName
                   isDisabled
@@ -511,7 +427,7 @@ const Page3 = () => {
                   _icon={{ size: "35" }}
                 />
                 <AdminTypo.H1 color="textGreyColor.800" bold>
-                  Candidates (25)
+                  Candidates {myArray?.length}
                 </AdminTypo.H1>
               </HStack>
               <HStack>
@@ -613,17 +529,20 @@ const Page3 = () => {
                             onValueChange={(itemValue) => setService(itemValue)}
                           >
                             <Select.Item
-                              label="Prerak Orientation"
-                              value="prerakOrientation"
-                            />
-                            <Select.Item
-                              label="Organisation"
-                              value="organisation"
+                              label={
+                                attendenceData?.name
+                                  ? attendenceData?.name
+                                  : attendenceData?.type
+                              }
+                              value={
+                                attendenceData?.name
+                                  ? attendenceData?.name
+                                  : attendenceData?.type
+                              }
                             />
                           </Select>
                         </HStack>
                       </HStack>
-
                       <HStack alignItems="center" space={"2"}>
                         <IconByName
                           isDisabled
@@ -642,7 +561,7 @@ const Page3 = () => {
                             gap={"2"}
                             name="myRadioGroup"
                             accessibilityLabel="favorite number"
-                            value={"present"}
+                            value={attendance}
                             onChange={(nextValue) => {
                               setAttendance(nextValue);
                             }}
@@ -654,7 +573,6 @@ const Page3 = () => {
                               fontSize="10px"
                             >
                               <AdminTypo.H6 color="textGreyColor.800">
-                                {" "}
                                 Present
                               </AdminTypo.H6>
                             </Radio>
@@ -666,7 +584,6 @@ const Page3 = () => {
                               fontSize="sm"
                             >
                               <AdminTypo.H6 color="textGreyColor.800">
-                                {" "}
                                 Absent
                               </AdminTypo.H6>
                             </Radio>
@@ -685,7 +602,7 @@ const Page3 = () => {
                           {t("COMPLETE_AADHAR_KYC")}
                         </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
-                          <Radio.Group
+                          {/* <Radio.Group
                             flexDirection={"row"}
                             fontSize="12px"
                             gap={"2"}
@@ -730,7 +647,18 @@ const Page3 = () => {
                                 Manual Aadhaar Upload
                               </AdminTypo.H6>
                             </Radio>
-                          </Radio.Group>
+                          </Radio.Group> */}
+                          {ids?.user?.aadhar_verified !== null ? (
+                            console.log("aadhar_verified")
+                          ) : (
+                            <FrontEndTypo.Primarybutton
+                              // width="30%"
+                              children="Aadhar_eKYC"
+                              onPress={() => {
+                                navigate(`/aadhaar-kyc/${ids?.user_id}`);
+                              }}
+                            />
+                          )}
                         </HStack>
                       </HStack>
 
@@ -789,7 +717,12 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"end"}
                 >
-                  <AdminTypo.Secondarybutton shadow="BlueOutlineShadow">
+                  <AdminTypo.Secondarybutton
+                    shadow="BlueOutlineShadow"
+                    onPress={() => {
+                      setShowEditModal(false);
+                    }}
+                  >
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton px="8" shadow="BlueFillShadow">
@@ -836,7 +769,7 @@ const Page3 = () => {
                     0
                   </HStack>
                   <HStack>
-                    <AdminTypo.H6>Candidates - 1/25 </AdminTypo.H6>
+                    <AdminTypo.H6>Candidates - {myArray.length} </AdminTypo.H6>
                   </HStack>
                 </HStack>
                 <Stack>
@@ -845,42 +778,62 @@ const Page3 = () => {
                   </AdminTypo.H6>
                 </Stack>
                 {/* {cameraModal && ( */}
-                <Camera
-                  height="600px"
-                  {...{
-                    cameraModal,
-                    setCameraModal,
-                    cameraUrl,
-                    setCameraUrl: async (url) => {
-                      setCameraUrl(url);
-                    },
-                  }}
-                />
+                {cameraFile?.fileUrl ? (
+                  <img src={cameraFile?.fileUrl} alt="Image" />
+                ) : (
+                  <Camera
+                    height="300px"
+                    {...{
+                      cameraModal,
+                      setCameraModal,
+                      cameraUrl,
+                      setCameraUrl: async (url, file) => {
+                        setCameraUrl(file);
+                      },
+                    }}
+                  />
+                )}
                 {/* )} */}
               </Modal.Body>
               <Modal.Footer justifyContent={"center"}>
-                <AdminTypo.Secondarybutton shadow="BlueOutlineShadow">
-                  {t("MARK_ABSENT")}
+                <AdminTypo.Secondarybutton
+                  shadow="BlueOutlineShadow"
+                  onPress={() => {
+                    setCameraModal(false);
+                  }}
+                >
+                  {t("FINISH")}
                 </AdminTypo.Secondarybutton>
-                <AdminTypo.Secondarybutton variant="secondary" ml="4" px="5">
+                <AdminTypo.Secondarybutton
+                  variant="secondary"
+                  ml="4"
+                  px="5"
+                  onPress={uploadAttendencePicture}
+                >
                   {t("NEXT")}
                 </AdminTypo.Secondarybutton>
               </Modal.Footer>
             </Modal.Content>
           </Modal>
-
           <DataTable
             columns={[
               ...scheduleCandidates(),
               {
                 name: t(""),
                 selector: (row) => (
-                  <IconByName
-                    isDisabled
-                    name="EditBoxLineIcon"
-                    color="gray"
-                    _icon={{ size: "15" }}
-                  />
+                  <Button
+                    onPress={() => {
+                      setShowEditModal(true);
+                      setids(row);
+                    }}
+                  >
+                    <IconByName
+                      isDisabled
+                      name="EditBoxLineIcon"
+                      color="gray"
+                      _icon={{ size: "15" }}
+                    />
+                  </Button>
                 ),
               },
             ]}
@@ -892,12 +845,13 @@ const Page3 = () => {
             pagination
             paginationServer
             paginationTotalRows={paginationTotalRows}
+            onChangePage={handlePageChange}
             onRowClicked={handleCandidateSelectRow}
             onChangeRowsPerPage={(e) => setLimit(e)}
-            onChangePage={(e) => setPage(e)}
+            // onChangePage={(e) => setPage(e)}
           />
         </VStack>
       </Box>
     </ScrollView>
   );
-};
+}
