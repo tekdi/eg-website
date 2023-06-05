@@ -39,12 +39,11 @@ export default [
   { path: "/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
   { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
-  { path: "//beneficiary/:id", component: BenificiaryProfileView },
+  { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary/list",
     component: FacilitatorListView,
   },
-  { path: "*", component: Dashboard },
   { path: "/table", component: CountScreenView },
   {
     path: "/beneficiary/:id/basicdetails",
@@ -58,4 +57,5 @@ export default [
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
   },
+  { path: "*", component: Dashboard },
 ];

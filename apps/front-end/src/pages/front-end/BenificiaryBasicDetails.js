@@ -26,7 +26,7 @@ export default function BenificiaryBasicDetails() {
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(userId);
 
-    setBenificiary(result);
+    setBenificiary(result?.result);
   };
 
   return (
@@ -44,15 +44,9 @@ export default function BenificiaryBasicDetails() {
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
-                {benificiary?.result?.first_name
-                  ? benificiary?.result?.first_name
-                  : "-"}
-                {benificiary?.result?.middle_name
-                  ? benificiary?.result?.middle_name
-                  : "-"}
-                {benificiary?.result?.last_name
-                  ? benificiary?.result?.last_name
-                  : "-"}{" "}
+                {benificiary?.first_name ? benificiary?.first_name : "-"}
+                {benificiary?.middle_name ? benificiary?.middle_name : "-"}
+                {benificiary?.last_name ? benificiary?.last_name : "-"}
               </FrontEndTypo.H1>
               <IconByName
                 name="PencilLineIcon"
@@ -63,8 +57,8 @@ export default function BenificiaryBasicDetails() {
             <HStack alignItems="Center">
               <IconByName name="Cake2LineIcon" color="iconColor.300" />
               <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                {moment(benificiary?.result?.dob).format("DD/MM/YYYY")
-                  ? moment(benificiary?.result?.dob).format("DD/MM/YYYY")
+                {moment(benificiary?.dob).format("DD/MM/YYYY")
+                  ? moment(benificiary?.dob).format("DD/MM/YYYY")
                   : "-"}
               </FrontEndTypo.H3>
             </HStack>
@@ -96,7 +90,7 @@ export default function BenificiaryBasicDetails() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.result, [
+                  value={arrList(benificiary, [
                     "email_id",
                     "mobile",
                     "alternative_mobile_number",
@@ -120,9 +114,7 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.mobile
-                      ? benificiary?.result?.mobile
-                      : "-"}
+                    {benificiary?.mobile ? benificiary?.mobile : "-"}
                   </FrontEndTypo.H3>
 
                   <IconByName name="CellphoneLineIcon" color="iconColor.100" />
@@ -146,8 +138,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.alternative_mobile_number
-                      ? benificiary?.result?.alternative_mobile_number
+                    {benificiary?.alternative_mobile_number
+                      ? benificiary?.alternative_mobile_number
                       : "-"}
                   </FrontEndTypo.H3>
 
@@ -178,9 +170,7 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.email_id
-                      ? benificiary?.result?.email_id
-                      : "-"}
+                    {benificiary?.email_id ? benificiary?.email_id : "-"}
                   </FrontEndTypo.H3>
 
                   <IconByName name="MailLineIcon" color="iconColor.100" />
@@ -222,9 +212,7 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.result?.address
-                      ? benificiary?.result?.address
-                      : "-"}
+                    {benificiary?.address ? benificiary?.address : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
@@ -256,7 +244,7 @@ export default function BenificiaryBasicDetails() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.result?.core_beneficiaries[0], [
+                  value={arrList(benificiary?.core_beneficiaries[0], [
                     "father_first_name",
                     "father_middle_name",
                     "father_last_name",
@@ -283,20 +271,14 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.5"
                   >
-                    {benificiary?.result?.core_beneficiaries[0]
-                      ?.father_first_name
-                      ? benificiary?.result?.core_beneficiaries[0]
-                          .father_first_name
+                    {benificiary?.core_beneficiaries[0]?.father_first_name
+                      ? benificiary?.core_beneficiaries[0].father_first_name
                       : "-"}{" "}
-                    {benificiary?.result?.core_beneficiaries[0]
-                      ?.father_middle_name
-                      ? benificiary?.result?.core_beneficiaries[0]
-                          .father_middle_name
+                    {benificiary?.core_beneficiaries[0]?.father_middle_name
+                      ? benificiary?.core_beneficiaries[0].father_middle_name
                       : "-"}{" "}
-                    {benificiary?.result?.core_beneficiaries[0]
-                      ?.father_last_name
-                      ? benificiary?.result?.core_beneficiaries[0]
-                          .father_last_name
+                    {benificiary?.core_beneficiaries[0]?.father_last_name
+                      ? benificiary?.core_beneficiaries[0].father_last_name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -319,20 +301,14 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.5"
                   >
-                    {benificiary?.result?.core_beneficiaries[0]
-                      ?.mother_first_name
-                      ? benificiary?.result?.core_beneficiaries[0]
-                          .mother_first_name
+                    {benificiary?.core_beneficiaries[0]?.mother_first_name
+                      ? benificiary?.core_beneficiaries[0].mother_first_name
                       : "-"}{" "}
-                    {benificiary?.result?.core_beneficiaries[0]
-                      ?.mother_middle_name
-                      ? benificiary?.result?.core_beneficiaries[0]
-                          .mother_middle_name
+                    {benificiary?.core_beneficiaries[0]?.mother_middle_name
+                      ? benificiary?.core_beneficiaries[0].mother_middle_name
                       : "-"}{" "}
-                    {benificiary?.result?.core_beneficiaries[0]
-                      ?.mother_last_name
-                      ? benificiary?.result?.core_beneficiaries[0]
-                          .mother_last_name
+                    {benificiary?.core_beneficiaries[0]?.mother_last_name
+                      ? benificiary?.core_beneficiaries[0].mother_last_name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -365,7 +341,7 @@ export default function BenificiaryBasicDetails() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.result?.extended_users[0], [
+                  value={arrList(benificiary?.extended_users[0], [
                     "social_category",
                     "marital_status",
                   ])}
@@ -388,8 +364,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.result?.extended_users[0]?.social_category
-                      ? benificiary?.result?.extended_users[0]?.social_category
+                    {benificiary?.extended_users[0]?.social_category
+                      ? benificiary?.extended_users[0]?.social_category
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -412,8 +388,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.result?.extended_users[0]?.marital_status
-                      ? benificiary?.result?.extended_users[0]?.marital_status
+                    {benificiary?.extended_users[0]?.marital_status
+                      ? benificiary?.extended_users[0]?.marital_status
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -446,7 +422,7 @@ export default function BenificiaryBasicDetails() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.result?.references[0], [
+                  value={arrList(benificiary?.references[0], [
                     "first_name",
                     "middle_name",
                     "last_name",
@@ -471,14 +447,14 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.result?.references[0]?.first_name
-                      ? benificiary?.result?.references[0].first_name
+                    {benificiary?.references[0]?.first_name
+                      ? benificiary?.references[0].first_name
                       : "-"}{" "}
-                    {benificiary?.result?.references[0]?.middle_name
-                      ? benificiary?.result?.references[0].middle_name
+                    {benificiary?.references[0]?.middle_name
+                      ? benificiary?.references[0].middle_name
                       : "-"}{" "}
-                    {benificiary?.result?.references[0]?.last_name
-                      ? benificiary?.result?.references[0].last_name
+                    {benificiary?.references[0]?.last_name
+                      ? benificiary?.references[0].last_name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -501,8 +477,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.result?.references[0]?.relation
-                      ? benificiary?.result?.references[0].relation
+                    {benificiary?.references[0]?.relation
+                      ? benificiary?.references[0].relation
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -525,8 +501,8 @@ export default function BenificiaryBasicDetails() {
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {benificiary?.result?.references[0]?.contact_number
-                      ? benificiary?.result?.references[0].contact_number
+                    {benificiary?.references[0]?.contact_number
+                      ? benificiary?.references[0].contact_number
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>

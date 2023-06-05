@@ -28,11 +28,10 @@ export default function BenificiaryEnrollment() {
     agDetails();
   }, []);
 
-  let myArray = [];
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(userId);
 
-    setbenificiary(result);
+    setbenificiary(result?.result);
   };
 
   return (
@@ -70,7 +69,7 @@ export default function BenificiaryEnrollment() {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(benificiary?.result?.program_beneficiaries, [
+                  value={arrList(benificiary?.program_beneficiaries, [
                     "type_of_enrollement",
                     "enrollment_status",
                     "enrolled_for_board",
@@ -96,10 +95,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.program_beneficiaries
-                      ?.type_of_enrollement
-                      ? benificiary?.result?.program_beneficiaries
-                          ?.type_of_enrollement
+                    {benificiary?.program_beneficiaries?.type_of_enrollement
+                      ? benificiary?.program_beneficiaries?.type_of_enrollement
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -122,10 +119,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.program_beneficiaries
-                      ?.enrollment_status
-                      ? benificiary?.result?.program_beneficiaries
-                          ?.enrollment_status
+                    {benificiary?.program_beneficiaries?.enrollment_status
+                      ? benificiary?.program_beneficiaries?.enrollment_status
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -148,10 +143,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.program_beneficiaries
-                      ?.enrolled_for_board
-                      ? benificiary?.result?.program_beneficiaries
-                          ?.enrolled_for_board
+                    {benificiary?.program_beneficiaries?.enrolled_for_board
+                      ? benificiary?.program_beneficiaries?.enrolled_for_board
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -174,10 +167,8 @@ export default function BenificiaryEnrollment() {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {benificiary?.result?.program_beneficiaries
-                      ?.enrollment_number
-                      ? benificiary?.result?.program_beneficiaries
-                          ?.enrollment_number
+                    {benificiary?.program_beneficiaries?.enrollment_number
+                      ? benificiary?.program_beneficiaries?.enrollment_number
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -201,7 +192,7 @@ export default function BenificiaryEnrollment() {
                     flex="0.4"
                   >
                     {JSON.parse(
-                      benificiary?.result?.program_beneficiaries?.subjects
+                      benificiary?.program_beneficiaries?.subjects
                     ).map((e) => {
                       return e + "\n";
                     })}
