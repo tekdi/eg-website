@@ -240,9 +240,9 @@ export default function Agform({ userTokenInfo }) {
     }
   }, []);
 
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
+  // const userExist = async (filters) => {
+  //   return await facilitatorRegistryService.isExist(filters);
+  // };
 
   const formSubmitUpdate = async (formData) => {
     const { id } = authUser;
@@ -345,16 +345,13 @@ export default function Agform({ userTokenInfo }) {
     setFormData(newData);
     updateData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
+      if (data?.mobile?.toString()?.length > 10) {
+        const newErrors = {
+          mobile: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
       }
     }
   };
@@ -425,174 +422,6 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const [cameraFile, setcameraFile] = useState();
-
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
-      const data = await getBase64(file);
-      setCameraUrl(data);
-      setcameraFile(file);
-      setFormData({ ...formData, ["profile_url"]: data });
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-
-  const uploadProfile = async () => {
-    const { id } = authUser;
-    if (id) {
-      const form_data = new FormData();
-      const item = {
-        file: cameraFile,
-        document_type: "profile",
-        user_id: 1,
-      };
-      for (let key in item) {
-        form_data.append(key, item[key]);
-      }
-      return await uploadRegistryService.uploadFile(form_data);
-    }
-  };
-
-  if (cameraUrl) {
-    return (
-      <Layout
-        _appBar={{
-          lang,
-          setLang,
-          onPressBackButton: (e) => {
-            setCameraUrl();
-            setCameraModal(false);
-          },
-          onlyIconsShow: ["backBtn", "userInfo"],
-        }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          <Box>
-            <FrontEndTypo.H1 color="textMaroonColor.400" alignItems="center">
-              {t("IDENTIFY_THE_AG_LEARNER")}
-            </FrontEndTypo.H1>
-          </Box>
-          <Center>
-            <Image
-              source={{
-                uri: cameraUrl,
-              }}
-              alt=""
-              size="324px"
-            />
-          </Center>
-          <FrontEndTypo.Primarybutton
-            // onPress={async (e) => {
-            //   await formSubmitUpdate({ ...formData, form_step_number: "13" });
-            //   if (onClick) onClick("success");
-            // }}
-            onPress={uploadProfile}
-          >
-            {t("SUBMIT")}
-          </FrontEndTypo.Primarybutton>
-          <FrontEndTypo.Secondarybutton
-            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_ANOTHER_PHOTO")}
-          </FrontEndTypo.Secondarybutton>
-        </VStack>
-      </Layout>
-    );
-  }
-  if (cameraModal) {
-    return (
-      <Camera
-        {...{
-          cameraModal,
-          setCameraModal,
-          cameraUrl,
-          setCameraUrl: async (url) => {
-            setCameraUrl(url);
-            setFormData({ ...formData, ["profile_url"]: url });
-          },
-        }}
-      />
-    );
-  }
-
-  if (page === "upload") {
-    return (
-      <Layout
-        _appBar={{
-          onPressBackButton: (e) => setPage("5"),
-          lang,
-          setLang,
-          onlyIconsShow: ["backBtn", "userInfo"],
-        }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          <FrontEndTypo.H1 color="textMaroonColor.400" bold textAlign="center">
-            {t("IDENTIFY_THE_AG_LEARNER")}
-          </FrontEndTypo.H1>
-          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
-            {t("ADD_AG_PROFILE_PHOTO")}
-          </FrontEndTypo.H3>
-          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
-            {t("DO")}
-          </FrontEndTypo.H3>
-          <HStack space="2">
-            <Box background="primary.100" width="150" height="150"></Box>
-            <Box background="primary.100" width="150" height="150"></Box>
-          </HStack>
-
-          <FrontEndTypo.H3 color="textMaroonColor.400" bold>
-            {t("DONTS")}
-          </FrontEndTypo.H3>
-          <HStack space="2">
-            <Box background="primary.100" width="150" height="150"></Box>
-            <Box background="primary.100" width="150" height="150"></Box>
-          </HStack>
-          <FrontEndTypo.Secondarybutton
-            leftIcon={<IconByName name="CameraLineIcon" size={2} isDisabled />}
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_PHOTO")}
-          </FrontEndTypo.Secondarybutton>
-          <VStack space={2}>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <FrontEndTypo.Secondarybutton
-              leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-            >
-              {t("UPLOAD_PHOTO")}
-            </FrontEndTypo.Secondarybutton>
-            {errors?.fileSize ? (
-              <FrontEndTypo.H2 color="red.400">
-                {errors?.fileSize}
-              </FrontEndTypo.H2>
-            ) : (
-              <React.Fragment />
-            )}
-          </VStack>
-        </VStack>
-      </Layout>
-    );
-  }
-
   return (
     <Layout
       _appBar={{
@@ -606,6 +435,11 @@ export default function Agform({ userTokenInfo }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
+        {/* <Steper
+          type={"circle"}
+          steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
+          progress={page === "upload" ? 10 : page}
+        /> */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -653,7 +487,7 @@ export default function Agform({ userTokenInfo }) {
                 type="submit"
                 onPress={otpfunction}
               >
-                {otpbtn ? "VERIFY_OTP" : "SEND_OTP"}
+                {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton

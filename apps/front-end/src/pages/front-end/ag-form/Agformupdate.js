@@ -37,6 +37,8 @@ import {
   StudentEnumService,
   sendAndVerifyOtp,
   CustomOTPBox,
+  benificiaryRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +52,8 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  select,
+  readOnly,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -82,7 +86,6 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   React.useEffect(() => {
     setuserId(location?.state?.id);
-    console.log("hello", location?.state?.page);
   }, []);
 
   const onPressBackButton = async () => {
@@ -110,7 +113,6 @@ export default function AgformUpdate({ userTokenInfo }) {
         navigate("/beneficiary", { state: { id: userId } });
       } else {
         nextIndex = pages[index - 1];
-        console.log("reached here");
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
@@ -126,47 +128,65 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const getLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      setAlert("Geolocation is not supported by this browser.");
     }
   };
 
   const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-        position.coords.latitude +
-        "/n Longitude: " +
-        position.coords.longitude
-    );
+    let lati = position.coords.latitude;
+    let longi = position.coords.longitude;
+
+    setFormData({
+      ...formData,
+      edit_page_type: "add_address",
+      lat: lati,
+      long: longi,
+    });
   };
 
-  React.useEffect(async () => {
-    getLocation();
-  }, []);
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setAlert("User denied the request for Geolocation.");
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setAlert("Location information is unavailable.");
+
+        break;
+      case error.TIMEOUT:
+        setAlert("The request to get user location timed out.");
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setAlert("An unknown error occurred.");
+
+        break;
+    }
+  }
+
+  // React.useEffect(async () => {
+  //   if (page == "2") {
+  //   }
+  // }, [page]);
 
   React.useEffect(async () => {
-    //console.log("pagecalled");
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page2", updateDetails);
-      setFormData({ ...formData, edit_page_type: "add_address" });
+      getLocation();
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page3.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "personal" });
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page4.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "add_education" });
     } else if (page === "upload") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page5.....", updateDetails);
     }
   }, [page]);
-
-  console.log("page", page);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -232,50 +252,64 @@ export default function AgformUpdate({ userTokenInfo }) {
       });
       setSchema(newSchema);
     }
-  }, [page]);
 
-  // Type Of Student
+    const ListOfEnum = await enumRegistryService.listOfEnum();
+    const lastYear = await benificiaryRegistoryService.lastYear();
 
-  React.useEffect(async () => {
-    const studentTypeData = await StudentEnumService.getTypeStudent();
-    const last_education_year = await StudentEnumService.lastYear();
-    const lastStandard = await StudentEnumService.lastStandard();
-    const ReasonOfLeaving = await StudentEnumService.ReasonOfLeaving();
     let newSchema = schema;
-    if (schema["properties"]["previous_school_type"]) {
+    if (schema["properties"]["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
-        key: "previous_school_type",
-        arr: studentTypeData,
+        key: "type_of_learner",
+        arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "last_standard_of_education_year",
-        arr: last_education_year,
+        arr: lastYear,
         title: "value",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "last_standard_of_education",
-        arr: lastStandard,
+        arr: ListOfEnum?.data?.LAST_STANDARD_OF_EDUCATION,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
-        arr: ReasonOfLeaving,
+        arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
         title: "title",
         value: "value",
       });
+      setSchema(newSchema);
     }
 
-    setSchema(newSchema);
+    if (schema["properties"]["marital_status"]) {
+      newSchema = getOptions(newSchema, {
+        key: "social_category",
+        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "marital_status",
+        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
   }, [page]);
 
-  React.useEffect(() => {}, []);
+  // Type Of Student
+
+  // React.useEffect(async () => {
+  //    }, [page]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -610,7 +644,6 @@ export default function AgformUpdate({ userTokenInfo }) {
       }
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      console.log("uploadDoc", uploadDoc);
       if (uploadDoc) {
         navigate("/beneficiary/3", { state: { id: userId } });
       }
@@ -631,7 +664,6 @@ export default function AgformUpdate({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
           <Center>
             <Image
               source={{
@@ -654,6 +686,16 @@ export default function AgformUpdate({ userTokenInfo }) {
           >
             {t("TAKE_ANOTHER_PHOTO")}
           </Button>
+
+          <Button
+            variant={"secondary"}
+            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+            onPress={(e) => {
+              navigate("/beneficiary/3", { state: { id: userId } });
+            }}
+          >
+            {t("SKIP")}
+          </Button>
         </VStack>
       </Layout>
     );
@@ -667,7 +709,6 @@ export default function AgformUpdate({ userTokenInfo }) {
           cameraUrl,
           setcameraFile,
           setCameraUrl: async (url) => {
-            console.log("url", url);
             setCameraUrl(url);
             setFormData({ ...formData, ["profile_url"]: url });
           },
@@ -688,35 +729,8 @@ export default function AgformUpdate({ userTokenInfo }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("IDENTIFY_THE_AG_LEARNER")}</H1>
-          <H1 color="red.1000">DO's</H1>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                border: "1px solid red",
-                width: 150,
-                height: 150,
-                marginRight: 10,
-              }}
-            ></div>
-            <div
-              style={{ border: "1px solid red", width: 150, height: 150 }}
-            ></div>
-          </div>
-          <H1 color="red.1000">Don’ts</H1>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                border: "1px solid red",
-                width: 150,
-                height: 150,
-                marginRight: 10,
-              }}
-            ></div>
-            <div
-              style={{ border: "1px solid red", width: 150, height: 150 }}
-            ></div>
-          </div>
+          <H1 color="red.1000">{t("Add_AGS_PROFILE")}</H1>
+
           <Button
             variant={"primary"}
             leftIcon={
@@ -751,6 +765,15 @@ export default function AgformUpdate({ userTokenInfo }) {
             >
               {t("UPLOAD_PHOTO")}
             </Button>
+            <Button
+              variant={"secondary"}
+              leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
+              onPress={(e) => {
+                navigate("/beneficiary/3", { state: { id: userId } });
+              }}
+            >
+              {t("SKIP")}
+            </Button>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
@@ -775,6 +798,11 @@ export default function AgformUpdate({ userTokenInfo }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
+        {/* <Steper
+          type={"circle"}
+          steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
+          progress={page === "upload" ? 10 : page}
+        /> */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -790,7 +818,7 @@ export default function AgformUpdate({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, select, readOnly }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -813,14 +841,13 @@ export default function AgformUpdate({ userTokenInfo }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />

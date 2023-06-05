@@ -1,5 +1,5 @@
 export default {
-  description: "1.Basic details",
+  description: "IDENTIFY_THE_AG_LEARNER",
   type: "step",
   properties: {
     1: {
@@ -29,6 +29,16 @@ export default {
       type: "object",
       // required: ["state", "district", "block", "village"],
       properties: {
+        lat: {
+          type: "number",
+          label: "Latitude",
+          format: "readOnly",
+        },
+        long: {
+          type: "number",
+          label: "Latitude",
+          format: "readOnly",
+        },
         state: {
           type: "string",
           label: "STATE",
@@ -53,6 +63,10 @@ export default {
           title: "GRAMPANCHAYAT",
           type: "string",
         },
+        address: {
+          title: "STREET_ADDRESS",
+          type: "string",
+        },
       },
     },
 
@@ -65,20 +79,11 @@ export default {
           label: "MARITAL_STATUS",
           type: "string",
           format: "CustomR",
-          enumNames: [
-            "Married",
-            "Unmarried",
-            "Single (Divorced, widow, separated, etc.)",
-          ],
-          enum: ["married", "unmarried", "single"],
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
           format: "CustomR",
-
-          enumNames: ["General", "S.C.", "S.T.", "O.B.C.", "Other"],
-          enum: ["general", "sc", "st", "obc", "other"],
         },
       },
     },
@@ -88,26 +93,31 @@ export default {
       type: "object",
       required: [],
       properties: {
-        previous_school_type: {
+        type_of_learner: {
           label: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
         },
         last_standard_of_education_year: {
-          label: "LAST_YEAR_OF_EDUCATION",
+          label: "SCHOOL_DROPOUT_YEAR",
           type: "string",
           format: "select",
         },
         last_standard_of_education: {
-          label: "LAST_STANDARD_OF_EDUCATION",
+          label: "SCHOOL_DROPOUT_CLASS",
           type: "string",
           format: "select",
         },
         reason_of_leaving_education: {
-          label: "REASON_FOR_LEAVING_EDUCATION",
+          label: "SCHOOL_DROPOUT_REASON",
           type: "string",
           format: "select",
         },
+        // Why_does_AG_want_to_complete: {
+        //   label: "Why does AG want to complete 10th grade?",
+        //   type: "string",
+        //   format: "select",
+        // },
       },
     },
   },

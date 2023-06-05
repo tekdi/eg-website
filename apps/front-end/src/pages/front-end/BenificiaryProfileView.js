@@ -115,38 +115,27 @@ export default function AgLearnerProfileView(props) {
           <VStack alignItems="Center">
             <IconByName
               name="AccountCircleLineIcon"
-              color="#666666"
+              color="textGreyColor.200"
               _icon={{ size: "60" }}
             />
-            <AdminTypo.H4
-              fontFamily="Inter"
-              fontStyle="normal"
-              fontSize="16px"
-              color="#790000"
-              fontWeight="600px"
-            >
-              Khushboo Verma
-            </AdminTypo.H4>
-            <Box>{t("IDENTIFIED")}</Box>
+            <FrontEndTypo.H2 bold color="textMaroonColor.400">
+              {benificiary?.result?.first_name}
+              {benificiary?.result?.last_name &&
+                ` ${benificiary?.result?.last_name}`}
+            </FrontEndTypo.H2>
+            <Box>{benificiary?.result?.[0]?.status || "unidentified"}</Box>
           </VStack>
-
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <AdminTypo.H4
-                fontSize="14px"
-                color="#212121"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
+              <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("PROFILE_DETAILS")}
-              </AdminTypo.H4>
+              </FrontEndTypo.H3>
               <Box paddingTop="2">
                 <Progress value={45} size="xs" colorScheme="info" />
               </Box>
@@ -155,79 +144,70 @@ export default function AgLearnerProfileView(props) {
                   <HStack space="md" alignItems="Center">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
 
-                    <AdminTypo.H4
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
-                      {t("BASIC_DETAILS")}
-                    </AdminTypo.H4>
+                    <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                  />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider
+                  orientation="horizontal"
+                  bg="btnGray.100"
+                  thickness="1"
+                />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="MapPinLineIcon" _icon={{ size: "20" }} />
 
-                    <AdminTypo.H4
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("ADD_YOUR_ADDRESS")}
-                    </AdminTypo.H4>
+                    </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                  />
                 </HStack>
-                <Divider orientation="horizontal" bg="#E0E0E0" thickness="1" />
+                <Divider
+                  orientation="horizontal"
+                  bg="btnGray.100"
+                  thickness="1"
+                />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
                     <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
 
-                    <AdminTypo.H4
-                      fontSize="14px"
-                      color="#212121E"
-                      fontWeight="400"
-                      fontFamily="Inter"
-                      fontStyle="normal"
-                    >
+                    <FrontEndTypo.H3 color="textGreyColor.800">
                       {t("AADHAAR_DETAILS")}
-                    </AdminTypo.H4>
+                    </FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName name="ArrowRightSLineIcon" color="#790000" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                  />
                 </HStack>
               </VStack>
             </VStack>
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <AdminTypo.H4
-                  fontSize="14px"
-                  color="#212121"
-                  fontWeight="700"
-                  fontFamily="Inter"
-                  fontStyle="normal"
-                >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
-                </AdminTypo.H4>
+                </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
-                  color="#790000"
+                  color="textMaroonColor.400"
                   size="sm"
                 />
               </HStack>
@@ -235,23 +215,17 @@ export default function AgLearnerProfileView(props) {
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <AdminTypo.H4
-                  fontSize="14px"
-                  color="#212121"
-                  fontWeight="700"
-                  fontFamily="Inter"
-                  fontStyle="normal"
-                >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("ENROLLMENT_DETAILS")}
-                </AdminTypo.H4>
+                </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
@@ -262,26 +236,20 @@ export default function AgLearnerProfileView(props) {
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <AdminTypo.H4
-                  fontSize="14px"
-                  color="#212121"
-                  fontWeight="700"
-                  fontFamily="Inter"
-                  fontStyle="normal"
-                >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("CAMP_DETAILS")}
-                </AdminTypo.H4>
+                </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
-                  color="#790000"
+                  color="textMaroonColor.400"
                   size="sm"
                 />
               </HStack>
@@ -289,26 +257,20 @@ export default function AgLearnerProfileView(props) {
           </Box>
 
           <Box
-            bg="#FAFAFA"
-            borderColor="#E0E0E0"
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
-                <AdminTypo.H4
-                  fontSize="14px"
-                  color="#212121"
-                  fontWeight="700"
-                  fontFamily="Inter"
-                  fontStyle="normal"
-                >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </AdminTypo.H4>
+                </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
-                  color="#790000"
+                  color="textMaroonColor.400"
                   size="sm"
                 />
               </HStack>

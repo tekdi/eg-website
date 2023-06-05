@@ -7,6 +7,10 @@ import {
   H1,
   t,
   AdminTypo,
+  filtersByObject,
+  facilitatorRegistryService,
+  eventService,
+  Loading,
 } from "@shiksha/common-lib";
 
 // import { useTranslation } from "react-i18next";
@@ -25,33 +29,114 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-} from "../../component/BaseInput";
+  select,
+  RadioBtn,
+  CustomR,
+  AddButton,
+  BaseInputTemplate,
+} from "../../../component/BaseInput";
 import {
   Button,
   HStack,
+  Input,
+  FormControl,
+  CheckIcon,
   VStack,
   Box,
   Modal,
+  Text,
   CheckCircleIcon,
+  TextArea,
   Image,
   Pressable,
 } from "native-base";
 import moment from "moment";
 
-export default function Orientation({ footerLinks, onShowScreen }) {
-  console.log(onShowScreen);
-  // const { t } = useTranslation();
+export default function Orientation({
+  footerLinks,
+  getFormData,
+  userIds,
+  onShowScreen,
+  setIsOpen,
+  onClick,
+  hi,
+}) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
+  const [eventList, setEventList] = React.useState();
+  const [loading, setLoading] = React.useState(false);
+
+  const SelectButton = () => (
+    <VStack>
+      <Button onPress={() => onShowScreen(true)}>
+        <Text>Select preraks</Text>
+      </Button>
+      <Box alignItems="center" alignContent="center">
+        <AdminTypo.H3 color="textGreyColor.800" bold>
+          {userIds !== undefined ? Object.values(userIds).length : ""}
+        </AdminTypo.H3>
+      </Box>
+    </VStack>
+  );
+
+  const TimePickerComponent = ({ value, onChange }) => (
+    <VStack>
+      <input
+        className="form-control"
+        type="time"
+        style={{ height: 40 }}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </VStack>
+  );
+
+  React.useEffect(() => {
+    getEventList();
+  }, []);
+
+  React.useEffect(() => {
+    setFormData({
+      ...formData,
+      attendees:
+        userIds !== undefined ? Object.values(userIds).map((e) => e?.id) : "",
+    });
+  }, [userIds]);
+
+  const getEventList = async () => {
+    const eventResult = await eventService.getEventList();
+    setEventList(eventResult);
+  };
+
   const uiSchema = {
-    date: {
+    attendees: {
+      "ui:widget": SelectButton,
+    },
+    start_date: {
       "ui:widget": "alt-date",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
       },
+    },
+    end_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+      },
+    },
+    reminders: {
+      "ui:widget": "checkboxes",
+    },
+    start_time: {
+      "ui:widget": TimePickerComponent,
+    },
+    end_time: {
+      "ui:widget": TimePickerComponent,
     },
   };
   const styles = {
@@ -61,6 +146,52 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       height: "100%",
     },
   };
+  const onChange = async (data) => {
+    const newData = data.formData;
+    setFormData({ ...formData, ...newData });
+  };
+
+  const handleEventClick = (info) => {
+    console.log("Event clicked:", info?.event?.extendedProps);
+    setFormData(info?.event?.extendedProps);
+    setModalVisible(true);
+  };
+
+  const onSubmit = async (data) => {
+    let newFormData = data?.formData;
+    if (orientationPopupSchema?.properties?.type) {
+      newFormData = {
+        ...newFormData,
+        ["type"]: newFormData?.type,
+      };
+    }
+
+    if (orientationPopupSchema?.properties?.name) {
+      newFormData = {
+        ...newFormData,
+        ["name"]:
+          newFormData?.type +
+          " " +
+          moment(newFormData?.start_date).format("DD-MM-YYYY"),
+      };
+    }
+    getFormData(newFormData);
+    setFormData(newFormData);
+    const apiResponse = await eventService.createNewEvent(newFormData);
+    if (apiResponse?.success === true) {
+      setModalVisible(false);
+      setFormData("");
+      getFormData("");
+      setLoading(true);
+      const getCalanderData = await eventService.getEventList();
+      if (getCalanderData) {
+        setLoading(false);
+      }
+    } else {
+      setFormData("");
+    }
+  };
+
   return (
     <Layout
       _appBar={{
@@ -73,6 +204,8 @@ export default function Orientation({ footerLinks, onShowScreen }) {
       }}
       _sidebar={footerLinks}
     >
+      {loading && <Loading />}
+
       <VStack paddingLeft="5" paddingTop="5" space="xl">
         <Box display="flex" flexDirection="row" minWidth="2xl">
           <HStack alignItems="Center">
@@ -83,11 +216,13 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           </HStack>
         </Box>
         <HStack display="flex" flexDirection="row" space="xl">
-          <BoxBlue
-            justifyContent="center"
-          >
+          <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
-              <Pressable onPress={onShowScreen}>
+              <Pressable
+                onPress={() => {
+                  onShowScreen(true);
+                }}
+              >
                 <Image
                   source={{
                     uri: "/orientation.svg",
@@ -102,9 +237,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               </Pressable>
             </VStack>
           </BoxBlue>
-          <BoxBlue
-            justifyContent="center"
-          >
+          <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -119,9 +252,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               </AdminTypo.H6>
             </VStack>
           </BoxBlue>
-          <BoxBlue
-            justifyContent="center"
-          >
+          <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -136,9 +267,7 @@ export default function Orientation({ footerLinks, onShowScreen }) {
               </AdminTypo.H6>
             </VStack>
           </BoxBlue>
-          <BoxBlue
-            justifyContent="center"
-          >
+          <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -198,12 +327,47 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           <Fullcalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
-            events={[
-              {
-                title: "event 1",
-                date: moment().format("YYYY-MM-DD HH:mm:ss"),
-              },
-            ]}
+            // events={[
+            //   {
+            //     title: "event 1",
+            //     date: moment().format("YYYY-MM-DD HH:mm:ss"),
+            //   },
+            // ]}
+            events={eventList?.events?.map((item) => {
+              return {
+                title: item?.type !== null ? item?.type : "orientation",
+                start: moment(item?.start_date).format("YYYY-MM-DD")
+                  ? moment(item?.start_date).format("YYYY-MM-DD")
+                  : "",
+                end: moment(item?.end_date).format("YYYY-MM-DD")
+                  ? moment(item?.end_date).format("YYYY-MM-DD")
+                  : "",
+
+                type: item?.context ? item?.context : "",
+                name: item?.name ? item?.name : "",
+                start_date:
+                  item?.start_date !== "Invalid date"
+                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                end_date:
+                  item?.end_date !== "Invalid date"
+                    ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
+                attendees: Object.values(userIds).map((e) => e?.id),
+                start_time: item?.start_time ? item?.start_time : "",
+                end_time: item?.end_time ? item?.end_time : "",
+                reminders: item?.reminders ? item?.reminders : "",
+                location: item?.location ? item?.location : "",
+                location_type: item?.location_type ? item?.location_type : "",
+              };
+            })}
+            eventTimeFormat={{
+              hour: "numeric",
+              minute: "2-digit",
+              meridiem: "short",
+            }}
+            eventClick={handleEventClick}
             headerToolbar={{
               start: "prev,thisweek,next",
               center: "timeGridWeek,dayGridMonth,dayGridYear",
@@ -213,7 +377,6 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           />
         </Box>
       </HStack>
-
       <Modal
         isOpen={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -341,26 +504,30 @@ export default function Orientation({ footerLinks, onShowScreen }) {
           <Modal.Body p="3" pb="10" bg="white">
             <Form
               ref={formRef}
+              widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
               templates={{
+                ButtonTemplates: { AddButton },
                 FieldTemplate,
                 ObjectFieldTemplate,
                 TitleFieldTemplate,
                 DescriptionFieldTemplate,
+                BaseInputTemplate,
               }}
               showErrorList={false}
               noHtml5Validate={true}
               {...{
                 validator,
-                schema: orientationPopupSchema,
+                schema: orientationPopupSchema ? orientationPopupSchema : {},
                 formData,
                 uiSchema,
+                onChange,
+                onSubmit,
               }}
-            />
-            <Modal.Footer justifyContent={"space-between"}>
-              <Button.Group space={2}>
+            >
+              <HStack justifyContent="space-between" space={2} py="5">
                 <AdminTypo.Secondarybutton
                   onPress={() => {
-                    setShowModal(false);
+                    setModalVisible(false);
                   }}
                   shadow="BlueOutlineShadow"
                 >
@@ -368,14 +535,15 @@ export default function Orientation({ footerLinks, onShowScreen }) {
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
-                    setShowModal(false);
+                    // setModalVisible(false);
+                    formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
                 >
                   {t("SEND_INVITES")}
                 </AdminTypo.PrimaryButton>
-              </Button.Group>
-            </Modal.Footer>
+              </HStack>
+            </Form>
           </Modal.Body>
         </Modal.Content>
       </Modal>

@@ -11,25 +11,25 @@ function Shortlisted({ status, setStatus, update, data }) {
       background="#CAE9FF"
       rounded="lg"
     >
-      <VStack marginLeft="24px" flexDirection="column" alignItems="flex-start">
-        <AdminTypo.H2 fontSize="26px" marginTop="3%">
+      <VStack m="5">
+        <AdminTypo.H5 bold color="textGreyColor.800">
           {t("INTERVIEW_CONDUCTED")}
-        </AdminTypo.H2>
-        <HStack>
+        </AdminTypo.H5>
+        <HStack alignItems="center">
           <IconByName
             color="interviewIconColor"
             name="TimeLineIcon"
           ></IconByName>
-          <AdminTypo.H5 bold color="interviewIconColor" marginTop="3%">
+          <AdminTypo.H6 className="fw-500" color="textGreyColor.800">
             16th May , 11:00 {t("TO")} 12:00
-          </AdminTypo.H5>
+          </AdminTypo.H6>
           <IconByName
             color="interviewIconColor"
             name="MapPinLineIcon"
           ></IconByName>
-          <AdminTypo.H5 bold color="interviewIconColor" marginTop="3%">
+          <AdminTypo.H6 className="fw-500" color="textGreyColor.800">
             {t("ON_PHONE")}
-          </AdminTypo.H5>
+          </AdminTypo.H6>
         </HStack>
         <Box paddingTop="14px" gap="10px">
           <AdminTypo.H5 bold>
@@ -47,19 +47,13 @@ function Shortlisted({ status, setStatus, update, data }) {
           </Radio.Group>
           <Box width={"450px"} paddingTop="20px" gap={"5"}>
             <FloatingInput
-            required
+              required
               schema={{ title: t("NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW") }}
             />
             <FloatingInput required schema={{ title: t("REMARKS") }} />
           </Box>
         </Box>
-        <HStack
-          height="49px"
-          margin={"5"}
-          marginTop={"3"}
-          marginLeft={"0px"}
-          space={6}
-        >
+        <HStack mt="8" space={6}>
           <AdminTypo.StatusButton
             status={"success"}
             onPress={(e) => setStatus(false)}
