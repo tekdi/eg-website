@@ -164,8 +164,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               <VStack space={5}>
                 <HStack alignItems="center" justifyContent="space-between">
                   <HStack>
-                  <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+                    <IconByName isDisabled name="FilterLineIcon" />
+                    <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
                   </HStack>
                   <Button variant="link" pt="3" onPress={clearFilter}>
                     <AdminTypo.H6 color="blueText.400" underline bold>

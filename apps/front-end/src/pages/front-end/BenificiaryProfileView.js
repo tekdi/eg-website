@@ -23,7 +23,6 @@ import CustomRadio from "component/CustomRadio";
 import { useParams } from "react-router-dom";
 import Chip from "component/Chip";
 
-
 const dropoutReasons = [
   {
     label: "Family issue",
@@ -292,16 +291,16 @@ export default function AgLearnerProfileView(props) {
             onPress={() => {
               setModalVisible(true);
             }}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled/>}
-          >{t("MARK_AS_DROPOUT")}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
           <FrontEndTypo.DisableOutlinebutton
             onPress={() => {
               setreactivateModalVisible(true);
             }}
           >
-                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-             
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.DisableOutlinebutton>
         </VStack>
       </VStack>
@@ -318,19 +317,19 @@ export default function AgLearnerProfileView(props) {
           style={{ marginBottom: 0, marginTop: "auto" }}
         >
           <Modal.Header p="5" borderBottomWidth="0">
-            <FrontEndTypo.H1 bold color="textGreyColor.450">{t("AG_PROFILE_ARE_YOU_SURE")}</FrontEndTypo.H1>
-            <FrontEndTypo.H2  color="textGreyColor.450">{t("AG_PROFILE_DROPOUT_MESSAGE")} </FrontEndTypo.H2>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textGreyColor.450">
+              {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+            </FrontEndTypo.H2>
           </Modal.Header>
-          <Modal.Body  pb="10">
-            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">{t("AG_PROFILE_REASON_MEASSGAE")} </FrontEndTypo.H2>
+          <Modal.Body pb="10">
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+            </FrontEndTypo.H2>
             <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-                w="100%"
-              >
+              <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
                 <VStack alignItems="center" space="1" flex="1">
                   <CustomRadio
                     options={{ enumOptions: dropoutReasons }}
@@ -376,19 +375,19 @@ export default function AgLearnerProfileView(props) {
           style={{ marginBottom: 0, marginTop: "auto" }}
         >
           <Modal.Header p="5" borderBottomWidth="0">
-          <FrontEndTypo.H1 bold color="textGreyColor.450">{t("AG_PROFILE_ARE_YOU_SURE")}</FrontEndTypo.H1>
-          <FrontEndTypo.H2  color="textGreyColor.450">{t("AG_PROFILE_REACTIVAYE_MESSAGE")} </FrontEndTypo.H2>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textGreyColor.450">
+              {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
+            </FrontEndTypo.H2>
           </Modal.Header>
-          <Modal.Body  pb="10">
-          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">{t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")} </FrontEndTypo.H2>
+          <Modal.Body pb="10">
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
+            </FrontEndTypo.H2>
             <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-               
-              >
+              <VStack space="2" bg="gray.100" p="1" rounded="lg">
                 <VStack alignItems="center" space="1" flex="1">
                   <CustomRadio
                     options={{ enumOptions: reactivateReasons }}
