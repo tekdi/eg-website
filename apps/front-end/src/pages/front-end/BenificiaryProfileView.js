@@ -12,6 +12,7 @@ import {
 import {
   AdminTypo,
   BodySmall,
+  FrontEndTypo,
   H1,
   H3,
   IconByName,
@@ -20,6 +21,7 @@ import {
   t,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
+import { useParams } from "react-router-dom";
 
 const dropoutReasons = [
   {
@@ -81,10 +83,19 @@ export default function AgLearnerProfileView(props) {
     React.useState(false);
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
+  React.useEffect(() => {
+    const getData = async () => {
+      let data = await benificiaryRegistoryService.getOne(id);
+      setBenificiary(data);
+    };
 
+    getData();
+  }, []);
+  const { id } = useParams();
+  const [benificiary, setBenificiary] = React.useState({});
   const dropoutApiCall = async () => {
     let bodyData = {
-      id: "3",
+      id: id,
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
@@ -97,7 +108,7 @@ export default function AgLearnerProfileView(props) {
 
   const reactivateApiCall = async () => {
     let bodyData = {
-      id: "3",
+      id: id,
       status: "activate",
       reason_for_status_update: reactivateReasonValue,
     };
