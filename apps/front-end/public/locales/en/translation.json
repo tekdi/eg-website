@@ -366,7 +366,6 @@
   "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "BASIC": "Basic",
   "EDUCATIONAL": "Educational",
-  "ENROLL_15_OR_MORE": "You need to Enroll 15 or more AG Learners to set up a viable camp",
   "ADD_MORE_AG": "Add more AGs",
   "DATA_NOT_FOUND": "data not found",
   "AADHAAR": "Aadhaar",
@@ -382,6 +381,7 @@
   "AG_PROFILE_REACTIVAYE_MESSAGE": "You can allow AG Learner to rejoin the Program",
   "AG_PROFILE_REACTIVATE_REASON_MEASSGAE": "Reason for Rejoining Program Pragati?",
   "CREATE_BENEFICIARIES": "Create Beneficiaries",
+  "ENROLL_15_OR_MORE": "You need to Enroll 15 or more AG Learners to set up a viable camp",
   "COMPLETE_THIS_BEFORE_ORIENTATION": "Complete this before Orientation",
   "MY_IP": "My Ip",
   "FAQS": "FAQs",
@@ -516,5 +516,6 @@
   "STREET_ADDRESS": "Street Address",
   "LATITUDE": "Latitude",
   "LONGITUDE": "longitude",
-  "BENEFICIARY_ALL": "All"
+  "BENEFICIARY_ALL": "All",
+  "CHECK_DOCUMENTS": "Check Documents"
 }
