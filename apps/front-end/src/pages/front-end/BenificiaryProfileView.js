@@ -11,7 +11,6 @@ import {
 } from "native-base";
 import {
   AdminTypo,
-  BodySmall,
   FrontEndTypo,
   H1,
   H3,
@@ -22,6 +21,8 @@ import {
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useParams } from "react-router-dom";
+import Chip from "component/Chip";
+
 
 const dropoutReasons = [
   {
@@ -127,7 +128,7 @@ export default function AgLearnerProfileView(props) {
             <IconByName
               name="AccountCircleLineIcon"
               color="textGreyColor.200"
-              _icon={{ size: "60" }}
+              _icon={{ size: "80" }}
             />
             <FrontEndTypo.H2 bold color="textMaroonColor.400">
               {benificiary?.result?.first_name}
@@ -287,58 +288,28 @@ export default function AgLearnerProfileView(props) {
               </HStack>
             </VStack>
           </Box>
-          <Button
-            bgColor="white"
-            borderColor="#790000"
-            borderRadius="100px"
-            borderWidth="2px"
+          <FrontEndTypo.Disablebutton
             onPress={() => {
               setModalVisible(true);
             }}
-          >
-            <HStack alignItems="Center">
-              <IconByName
-                name="UserUnfollowLineIcon"
-                isDisabled
-                color="#790000"
-              />
-              <AdminTypo.H4
-                color="#790000"
-                fontSize="14px"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
-                {t("MARK_AS_DROPOUT")}
-              </AdminTypo.H4>
-            </HStack>
-          </Button>
-          <Button
-            bgColor="#AFF4C6"
-            borderColor="white"
-            borderRadius="100px"
-            borderWidth="2px"
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled/>}
+          >{t("MARK_AS_DROPOUT")}
+          </FrontEndTypo.Disablebutton>
+          <FrontEndTypo.DisableOutlinebutton
             onPress={() => {
               setreactivateModalVisible(true);
             }}
           >
-            <HStack alignItems="Center">
-              <AdminTypo.H4
-                color="#666666"
-                fontSize="14px"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
                 {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </AdminTypo.H4>
-            </HStack>
-          </Button>
+             
+          </FrontEndTypo.DisableOutlinebutton>
         </VStack>
       </VStack>
       <Modal
         isOpen={modalVisible}
         safeAreaTop={true}
+        p="0"
+        m="0"
         size="xl"
         _backdrop={{ opacity: "0.7" }}
       >
@@ -347,19 +318,17 @@ export default function AgLearnerProfileView(props) {
           style={{ marginBottom: 0, marginTop: "auto" }}
         >
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1>{t("AG_PROFILE_ARE_YOU_SURE")}</H1>
-            <H3>{t("AG_PROFILE_DROPOUT_MESSAGE")} </H3>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">{t("AG_PROFILE_ARE_YOU_SURE")}</FrontEndTypo.H1>
+            <FrontEndTypo.H2  color="textGreyColor.450">{t("AG_PROFILE_DROPOUT_MESSAGE")} </FrontEndTypo.H2>
           </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <H3>{t("AG_PROFILE_REASON_MEASSGAE")} </H3>
+          <Modal.Body  pb="10">
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">{t("AG_PROFILE_REASON_MEASSGAE")} </FrontEndTypo.H2>
             <VStack space="5">
               <VStack
                 space="2"
                 bg="gray.100"
                 p="1"
                 rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
                 w="100%"
               >
                 <VStack alignItems="center" space="1" flex="1">
@@ -374,24 +343,22 @@ export default function AgLearnerProfileView(props) {
                 </VStack>
               </VStack>
               <VStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Disablebutton
                   flex={1}
-                  variant="primary"
                   onPress={() => {
                     dropoutApiCall();
                   }}
                 >
                   {t("MARK_AS_DROPOUT")}
-                </Button>
-                <Button
+                </FrontEndTypo.Disablebutton>
+                <FrontEndTypo.DisableOutlinebutton
                   flex={1}
-                  variant="secondary"
                   onPress={() => {
                     setModalVisible(false);
                   }}
                 >
                   {t("CANCEL")}
-                </Button>
+                </FrontEndTypo.DisableOutlinebutton>
               </VStack>
             </VStack>
           </Modal.Body>
@@ -409,20 +376,18 @@ export default function AgLearnerProfileView(props) {
           style={{ marginBottom: 0, marginTop: "auto" }}
         >
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1>{t("AG_PROFILE_ARE_YOU_SURE")}</H1>
-            <H3>{t("AG_PROFILE_REACTIVAYE_MESSAGE")} </H3>
+          <FrontEndTypo.H1 bold color="textGreyColor.450">{t("AG_PROFILE_ARE_YOU_SURE")}</FrontEndTypo.H1>
+          <FrontEndTypo.H2  color="textGreyColor.450">{t("AG_PROFILE_REACTIVAYE_MESSAGE")} </FrontEndTypo.H2>
           </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <H3>{t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")} </H3>
+          <Modal.Body  pb="10">
+          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">{t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")} </FrontEndTypo.H2>
             <VStack space="5">
               <VStack
                 space="2"
                 bg="gray.100"
                 p="1"
                 rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
-                w="100%"
+               
               >
                 <VStack alignItems="center" space="1" flex="1">
                   <CustomRadio
@@ -436,27 +401,22 @@ export default function AgLearnerProfileView(props) {
                 </VStack>
               </VStack>
               <VStack space="3">
-                <Button
+                <FrontEndTypo.Disablebutton
                   flex={1}
-                  bgColor="#666666"
-                  borderColor="white"
-                  borderRadius="100px"
-                  borderWidth="2px"
                   onPress={() => {
                     reactivateApiCall();
                   }}
                 >
                   {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-                </Button>
-                <Button
+                </FrontEndTypo.Disablebutton>
+                <FrontEndTypo.DisableOutlinebutton
                   flex={1}
-                  variant="secondary"
                   onPress={() => {
                     setreactivateModalVisible(false);
                   }}
                 >
                   {t("CANCEL")}
-                </Button>
+                </FrontEndTypo.DisableOutlinebutton>
               </VStack>
             </VStack>
           </Modal.Body>

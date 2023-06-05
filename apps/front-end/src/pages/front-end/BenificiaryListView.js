@@ -27,25 +27,39 @@ const List = ({ data }) => {
             onPress={async () => {
               navigate(`/beneficiary/profile/${item?.id}`)
             }}>
-            <HStack justifyContent="space-between" bg="white" p="5" shadow="FooterShadow" borderRadius="4px" space="2">
+              <VStack bg="white" p="2" shadow="FooterShadow" borderRadius="4px" space="2">
+            <HStack justifyContent="space-between" >
               <HStack alignItems="Center" justifyContent="space-between">
-                <IconByName name="AccountCircleLineIcon" _icon={{ size: "30px", color: "textGreyColor.900" }} />
+                <IconByName name="AccountCircleLineIcon" _icon={{ size: "40px", color: "textGreyColor.900" }} />
                 <VStack>
                   <FrontEndTypo.H3 bold color="textGreyColor.800">
                     {item?.first_name}
                     {item?.last_name && ` ${item.last_name}`}
                   </FrontEndTypo.H3>
                   <FrontEndTypo.H5  color="textGreyColor.800">{item?.mobile}</FrontEndTypo.H5>
+                 
                 </VStack>
+                
               </HStack>
-              <ChipStatus status={"screened"}>
+              <ChipStatus status={"screened"} pt="3">
                 {item?.program_beneficiaries?.[0]?.status || "nothing"}
               </ChipStatus>
+              
             </HStack>
+            <VStack  bg="white" pl="2">
+              <HStack  color="blueText.450"  alignItems="center">
+              <FrontEndTypo.H4 color="blueText.450"  underline>{t("CHECK_DOCUMENTS")}</FrontEndTypo.H4><IconByName name="ArrowRightSLineIcon"/>
+              </HStack>
+                 
+                  </VStack>
+            </VStack>
+           
+    
           </Pressable>
         ))
       )}
     </VStack>
+    
   );
 };
 const select2 = [

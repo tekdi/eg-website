@@ -136,7 +136,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
-        <Box flex={0.5}>
+        <Box flex={0.9}>
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
@@ -163,9 +163,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
               <VStack space={5}>
                 <HStack alignItems="center" justifyContent="space-between">
+                  <HStack>
                   <IconByName isDisabled name="FilterLineIcon" />
                   <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-                  <Button variant="link" pt="4" onPress={clearFilter}>
+                  </HStack>
+                  <Button variant="link" pt="3" onPress={clearFilter}>
                     <AdminTypo.H6 color="blueText.400" underline bold>
                       {t("CLEAR_FILTER")}
                     </AdminTypo.H6>

@@ -452,5 +452,7 @@
   "AADHAR_KYC_VERIFICATION_FAILED": " आधार केवाईसी सत्यापन विफल",
   "RETRY_AADHAR_NUMER_KYC": " आधार संख्या केवाईसी पुनः प्रयास करें",
   "GO_BACK": "वापस जाओ",
-  "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें"
+  "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
+  "CHECK_DOCUMENTS":"दस्तावेजों की जाँच करें"
+
 }
