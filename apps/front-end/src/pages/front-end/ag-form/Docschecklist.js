@@ -27,7 +27,6 @@ const Docschecklist = () => {
       setStatus(JSON.parse(data.result?.program_beneficiaries?.documents_status))
     }
   }, [])
-  console.log(status)
   React.useEffect(async () => {
     let data = await documentChecklistService.getDocumentStatus()
     setselectData(data)
@@ -35,13 +34,13 @@ const Docschecklist = () => {
   const navigate = useNavigate();
 
   React.useEffect(async () => {
-    /*  let data = {
-       documents_status: JSON.stringify(status)
-     }
-     console.log(data)
-     let dataOutput = await documentChecklistService.statusUpdate(id, data)
-     console.log(dataOutput) */
-    console.log(status)
+    let data = {
+      edit_page_type: "document_status",
+      documents_status: status
+    }
+    if (Object.keys(status).length > 0) {
+      let dataOutput = await documentChecklistService.statusUpdate(id, data)
+    }
 
   }, [status])
 
