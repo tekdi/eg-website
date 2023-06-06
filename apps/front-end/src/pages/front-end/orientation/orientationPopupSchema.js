@@ -16,7 +16,7 @@ export default {
       title: "Event Name (Batch Number)",
       type: "string",
     },
-    mastertrainer: {
+    master_trainer: {
       title: "Master Trainer",
       type: "string",
     },

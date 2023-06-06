@@ -12,6 +12,7 @@ import {
   AdminTypo,
   FrontEndTypo,
   uploadRegistryService,
+  eventService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
@@ -30,9 +31,10 @@ import {
   Checkbox,
   Switch,
   Badge,
+  Input,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
@@ -123,16 +125,12 @@ const columns = (e) => [
 ];
 
 export default function Attendence() {
+  const { id } = useParams();
   const [Height] = useWindowSize();
   const location = useLocation();
   const navigate = useNavigate();
-  let attendenceData = location?.state;
-  let myArray = [];
 
-  attendenceData?.attendances?.map((user) => {
-    return myArray.push({ ...user, status: false });
-  });
-  const [data, setData] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
@@ -140,37 +138,31 @@ export default function Attendence() {
   const [refAppBar, setRefAppBar] = React.useState();
   const [rowData, setRowData] = React.useState();
   const [showEditModal, setShowEditModal] = React.useState(false);
-  const [service, setService] = React.useState(
-    attendenceData?.name ? attendenceData?.name : attendenceData?.type
-  );
-  const [aadharKYC, setAadharKYC] = React.useState("QRcodescan");
-  const [attendance, setAttendance] = React.useState("present");
+
+  const [locationData, setlocationData] = useState("");
+  const [attendance, setAttendance] = React.useState("absent");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
-  const [modal, setModal] = React.useState(false);
-  const [locationPermission, setLocationPermission] = React.useState(null);
+  const [event, setEvent] = useState("");
   const [loading, setLoading] = React.useState(true);
   const uplodInputRef = React.useRef();
   const [ids, setids] = useState("");
+  const [singleUser, setsingleUser] = useState("");
 
-  const [switchAttendance, setSwitchAttendance] = React.useState(false);
+  const [userData, setUserData] = useState({});
 
   const [cameraFile, setcameraFile] = useState();
 
   useEffect(() => {
     getLocation();
   }, []);
-  const onSwitchToggle = (value) => {
+
+  const onSwitchToggle = async (value) => {
+    setsingleUser(value);
     getLocation();
-    if (
-      value?.user_id ===
-      myArray
-        .map((i) => {
-          return i?.user_id;
-        })
-        .includes(value?.user_id)
-    ) {
-      setSwitchAttendance(true);
+    if (value?.status !== "present") {
+      setCameraModal(true);
+      setUserData({ ...value, index: showIndexes(users, value, "C") });
     }
   };
 
@@ -213,14 +205,14 @@ export default function Attendence() {
       selector: (row) => (
         <>
           <HStack space={"2"}>
-            <Text>{switchAttendance === true ? "Present" : "Absent"}</Text>
+            <Text>{row?.status === "present" ? "Present" : "Absent"}</Text>
             <Switch
               // defaultIsChecked
               offTrackColor="#DC2626"
               onTrackColor="#00D790"
               onThumbColor="#E0E0E0"
               offThumbColor="#E0E0E0"
-              value={switchAttendance}
+              value={row.status === "present" ? true : false}
               onValueChange={() => {
                 onSwitchToggle(row);
               }}
@@ -258,6 +250,7 @@ export default function Attendence() {
     // Location was provided
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
+    setlocationData({ latitude: latitude, longitude: longitude });
     console.log("Latitude: " + latitude + ", Longitude: " + longitude);
   }
 
@@ -279,14 +272,10 @@ export default function Attendence() {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await facilitatorRegistryService.getAll(filterObj);
-    setData(myArray);
-    // let image_url = myArray.map((val) => {
-    //   return val.profile_url;
-    // });
-    // const dataImage = await getBase64(image_url);
-    // setCameraUrl(dataImage);
-    setPaginationTotalRows(result?.totalCount);
+    const eventResult = await eventService.getEventListById({ id: id });
+    setUsers(eventResult?.event?.attendances);
+    setEvent(eventResult?.event);
+    setPaginationTotalRows(eventResult?.totalCount);
     setLoading(false);
   }, [filterObj]);
 
@@ -295,16 +284,49 @@ export default function Attendence() {
   }, [page, limit]);
 
   const uploadAttendencePicture = async (e) => {
+    console.log("cameraUrl", cameraUrl?.file);
+    // if (e === "submit") {
     let formData = new FormData();
-    formData.append("file", cameraUrl);
+    formData.append("file", cameraUrl?.file);
     const uploadDoc = await uploadRegistryService.uploadPicture(formData);
     if (uploadDoc) {
       setcameraFile(uploadDoc);
+    }
+    setCameraUrl();
+    // }
+    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
+    if (users[coruntIndex + 1]) {
+      setCameraUrl();
+      setUserData({ ...users[coruntIndex + 1], index: coruntIndex + 1 });
     }
   };
   const handleCandidateSelectRow = (state) => {
     setRowData(state);
     // setShowEditModal(true);
+  };
+  const showIndexes = (users, userData, state) => {
+    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
+    if (state === "C") {
+      return coruntIndex;
+    }
+    if (state === "N") {
+      return coruntIndex + 1;
+    }
+    if (state === "P") {
+      return coruntIndex - 1;
+    }
+  };
+
+  const updateUserData = async () => {
+    if (cameraFile?.key) {
+      const apiResponse = await eventService.updateAttendance({
+        id: singleUser?.id,
+        status: "present",
+        lat: locationData?.latitude,
+        long: locationData?.longitude,
+        photo_1: cameraFile ? cameraFile?.key : "",
+      });
+    }
   };
 
   const handlePageChange = (page) => {
@@ -334,7 +356,7 @@ export default function Attendence() {
               />
               <AdminTypo.H2>{t("PRERAK_ORIENTATION")}</AdminTypo.H2>
             </HStack>
-            <HStack>
+            {/* <HStack>
               <AdminTypo.Secondarybutton
                 shadow="BlueOutlineShadow"
                 // onPress={() => setModal(true)}
@@ -349,7 +371,7 @@ export default function Attendence() {
               >
                 {t("SCHEDULE_EVENT")}{" "}
               </AdminTypo.Secondarybutton>
-            </HStack>
+            </HStack> */}
           </HStack>
           <Box
             h={"113px"}
@@ -361,9 +383,7 @@ export default function Attendence() {
             <VStack m={"15px"}>
               <HStack justifyContent={"space-between"}>
                 <AdminTypo.H6 color="textGreyColor.800" bold>
-                  {attendenceData?.name
-                    ? attendenceData?.name
-                    : attendenceData?.type}
+                  {event?.name ? event?.name : event?.type}
                 </AdminTypo.H6>
                 <AdminTypo.Secondarybutton
                   // onPress={() => setShowEditModal(true)}
@@ -381,10 +401,10 @@ export default function Attendence() {
                   _icon={{ size: "15" }}
                 />
                 <AdminTypo.H5 color="textGreyColor.800">
-                  {attendenceData?.start_date
-                    ? moment(attendenceData?.start_date).format("Do MMM")
+                  {event?.start_date
+                    ? moment(event?.start_date).format("Do MMM")
                     : ""}{" "}
-                  {attendenceData?.start_time ? attendenceData?.start_time : ""}
+                  {event?.start_time ? event?.start_time : ""}
                   {/* 16th April, 11:00 to 12:00 */}
                 </AdminTypo.H5>
                 <IconByName
@@ -394,7 +414,7 @@ export default function Attendence() {
                   _icon={{ size: "15" }}
                 />
                 <AdminTypo.H6 color="textGreyColor.800">
-                  {attendenceData?.location}
+                  {event?.location}
                 </AdminTypo.H6>
                 <IconByName
                   isDisabled
@@ -412,7 +432,9 @@ export default function Attendence() {
                   borderRadius={"10px"}
                   p={"3px"}
                 >
-                  <Badge alignSelf="center"> Prakash Wagh</Badge>
+                  <Badge alignSelf="center">
+                    {event?.mastertrainer ? event?.mastertrainer : ""}
+                  </Badge>
                 </Box>
               </HStack>
             </VStack>
@@ -427,15 +449,15 @@ export default function Attendence() {
                   _icon={{ size: "35" }}
                 />
                 <AdminTypo.H1 color="textGreyColor.800" bold>
-                  Candidates {myArray?.length}
+                  Candidates {users?.length}
                 </AdminTypo.H1>
               </HStack>
               <HStack>
                 <AdminTypo.Secondarybutton
                   shadow="BlueOutlineShadow"
                   onPress={(e) => {
-                    setCameraUrl();
                     setCameraModal(true);
+                    setUserData(users?.[0] ? { ...users?.[0], index: 0 } : {});
                   }}
                   endIcon={
                     <IconByName
@@ -511,38 +533,14 @@ export default function Attendence() {
                           {t("EVENT_TYPE")}
                         </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
-                          <Select
-                            selectedValue={service}
-                            // minWidth="100"
-                            accessibilityLabel="Choose Service"
-                            placeholder="Select event type"
-                            _selectedItem={{
-                              bg: "teal.600",
-                              endIcon: (
-                                <IconByName
-                                  isDisabled
-                                  name="CheckboxLineIcon"
-                                  color="gray.400"
-                                  _icon={{ size: "25" }}
-                                />
-                              ),
-                            }}
-                            mt={1}
-                            onValueChange={(itemValue) => setService(itemValue)}
-                          >
-                            <Select.Item
-                              label={
-                                attendenceData?.name
-                                  ? attendenceData?.name
-                                  : attendenceData?.type
-                              }
-                              value={
-                                attendenceData?.name
-                                  ? attendenceData?.name
-                                  : attendenceData?.type
-                              }
-                            />
-                          </Select>
+                          <Input
+                            value={event?.name ? event?.name : event?.type}
+                            variant="outline"
+                            placeholder={
+                              event?.name ? event?.name : event?.type
+                            }
+                            isDisabled
+                          />
                         </HStack>
                       </HStack>
                       <HStack alignItems="center" space={"2"}>
@@ -604,62 +602,21 @@ export default function Attendence() {
                           {t("COMPLETE_AADHAR_KYC")}
                         </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
-                          {/* <Radio.Group
-                            flexDirection={"row"}
-                            fontSize="12px"
-                            gap={"2"}
-                            name="myRadioGroup"
-                            accessibilityLabel="favorite number"
-                            value={aadharKYC}
-                            onChange={(nextValue) => {
-                              setAadharKYC(nextValue);
-                            }}
-                          >
-                            <Radio
-                              value="QRcodescan"
-                              my={1}
-                              color="textGreyColor.800"
-                              fontSize="sm"
-                            >
-                              <AdminTypo.H6 pl="2" color="textGreyColor.800">
-                                QR code scan
-                              </AdminTypo.H6>
-                            </Radio>
-                            <Radio
-                              value="aadharofflineKYC"
-                              my={1}
-                              ml="2"
-                              color="textGreyColor.800"
-                              fontSize="sm"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                {" "}
-                                Aadhaar Offline KYC
-                              </AdminTypo.H6>
-                            </Radio>
-                            <Radio
-                              value="manualAadharUpload"
-                              my={1}
-                              ml="2"
-                              color="textGreyColor.800"
-                              fontSize="sm"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                {" "}
-                                Manual Aadhaar Upload
-                              </AdminTypo.H6>
-                            </Radio>
-                          </Radio.Group> */}
                           {ids?.user?.aadhar_verified !== null ? (
-                            console.log("aadhar_verified")
+                            <AdminTypo.H3 style={{ color: "green" }}>
+                              Yes
+                            </AdminTypo.H3>
                           ) : (
-                            <FrontEndTypo.Primarybutton
-                              // width="30%"
-                              children="Aadhar_eKYC"
-                              onPress={() => {
-                                navigate(`/aadhaar-kyc/${ids?.user_id}`);
-                              }}
-                            />
+                            <AdminTypo.H3 style={{ color: "red" }}>
+                              No
+                            </AdminTypo.H3>
+                            // <FrontEndTypo.Primarybutton
+                            //   // width="30%"
+                            //   children="Aadhar_eKYC"
+                            //   onPress={() => {
+                            //     navigate(`/aadhaar-kyc/${ids?.user_id}`);
+                            //   }}
+                            // />
                           )}
                         </HStack>
                       </HStack>
@@ -736,8 +693,8 @@ export default function Attendence() {
           </Modal>
 
           <Modal
-            isOpen={cameraModal}
-            onClose={() => setCameraModal(false)}
+            isOpen={userData?.id}
+            onClose={() => setUserData()}
             safeAreaTop={true}
             size={"full"}
           >
@@ -754,7 +711,6 @@ export default function Attendence() {
                 textAlign={"left"}
               >
                 <AdminTypo.H6 color="textGreyColor.900" bold>
-                  {" "}
                   {t("MARK_ATTENDANCE_ORIENTATION")}
                 </AdminTypo.H6>
               </Modal.Header>
@@ -763,15 +719,16 @@ export default function Attendence() {
                   <HStack space={"10"} ml="15px">
                     <AdminTypo.H6 color="textGreyColor.550" bold>
                       Present
-                    </AdminTypo.H6>{" "}
-                    0
+                    </AdminTypo.H6>
+                    {users.filter((e) => e.status === "present").length}
                     <AdminTypo.H6 color="textGreyColor.550" bold>
                       Absent
-                    </AdminTypo.H6>{" "}
-                    0
+                    </AdminTypo.H6>
+                    {users.filter((e) => e.status !== "present").length}
+                    Candidates name {userData?.user?.first_name}
                   </HStack>
                   <HStack>
-                    <AdminTypo.H6>Candidates - {myArray.length} </AdminTypo.H6>
+                    <AdminTypo.H6>Candidates - {users.length} </AdminTypo.H6>
                   </HStack>
                 </HStack>
                 <Stack>
@@ -779,9 +736,8 @@ export default function Attendence() {
                     {t("ATTENDANCE_CAMERA_SUBTITLE")}
                   </AdminTypo.H6>
                 </Stack>
-                {/* {cameraModal && ( */}
-                {cameraFile?.fileUrl ? (
-                  <img src={cameraFile?.fileUrl} alt="Image" />
+                {cameraUrl?.url ? (
+                  <img src={cameraUrl?.url} alt="Image" />
                 ) : (
                   <Camera
                     height="300px"
@@ -790,7 +746,7 @@ export default function Attendence() {
                       setCameraModal,
                       cameraUrl,
                       setCameraUrl: async (url, file) => {
-                        setCameraUrl(file);
+                        setCameraUrl({ url, file });
                       },
                     }}
                   />
@@ -802,11 +758,15 @@ export default function Attendence() {
                   shadow="BlueOutlineShadow"
                   onPress={() => {
                     setCameraModal(false);
+                    setUserData();
+                    updateUserData();
+                    setcameraFile("");
                   }}
                 >
                   {t("FINISH")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.Secondarybutton
+                  isDisabled={userData?.index + 1 === users.length}
                   variant="secondary"
                   ml="4"
                   px="5"
@@ -826,6 +786,7 @@ export default function Attendence() {
                   <Button
                     onPress={() => {
                       setShowEditModal(true);
+                      setRowData(row);
                       setids(row);
                     }}
                   >
@@ -839,7 +800,7 @@ export default function Attendence() {
                 ),
               },
             ]}
-            data={data}
+            data={users}
             subHeader
             persistTableHead
             // progressPending={loading}

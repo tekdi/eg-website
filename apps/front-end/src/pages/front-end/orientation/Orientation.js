@@ -59,7 +59,6 @@ export default function Orientation({
   onShowScreen,
   setIsOpen,
   onClick,
-  hi,
 }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
@@ -154,13 +153,7 @@ export default function Orientation({
 
   const handleEventClick = async (info) => {
     console.log("Event clicked:", info?.event?.extendedProps);
-    const eventResult = await eventService.getEventListById({
-      id: info?.event?.extendedProps?.event_id,
-    });
-
-    navigator(`/attendence/${info?.event?.extendedProps?.event_id}`, {
-      state: eventResult?.event,
-    });
+    navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
     // setFormData(info?.event?.extendedProps);
     // setModalVisible(true);
   };
@@ -228,7 +221,7 @@ export default function Orientation({
             <VStack alignItems={"Center"}>
               <Pressable
                 onPress={() => {
-                  onShowScreen(true);
+                  setModalVisible(true);
                 }}
               >
                 <Image
@@ -245,7 +238,7 @@ export default function Orientation({
               </Pressable>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center">
+          {/* <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -289,7 +282,7 @@ export default function Orientation({
                 {t("ADD_A_PRERAK")}
               </AdminTypo.H6>
             </VStack>
-          </BoxBlue>
+          </BoxBlue> */}
         </HStack>
         <AdminTypo.H3 bold py="3">
           {t("YOUR_CALENDAR")}
@@ -344,7 +337,7 @@ export default function Orientation({
             events={eventList?.events?.map((item) => {
               return {
                 allDay: false,
-                title: item?.type !== null ? item?.type : "",
+                title: item?.type !== null ? item?.type : item?.name,
                 start: moment(item?.start_date).format("YYYY-MM-DD")
                   ? moment(item?.start_date).format("YYYY-MM-DD")
                   : "",
@@ -403,114 +396,6 @@ export default function Orientation({
             </AdminTypo.H1>
           </Modal.Header>
 
-          {/* <Modal.Header textAlign={"Center"}>
-            Schedule an Interview
-          </Modal.Header>
-          <Modal.Body p="5" pb="10" mx={5} overflowX="hidden">
-            <FormControl>
-              <VStack space="2xl">
-                <HStack align-items="center" space="2xl">
-                  <HStack flex="0.3" alignItems="Center">
-                    <IconByName name="VidiconLineIcon" />
-                    <FormControl.Label>Event Type</FormControl.Label>
-                  </HStack>
-                  <Box flex="0.7">
-                    <FormControl maxW="300" isRequired isInvalid>
-                      <Select
-                        minWidth="200"
-                        accessibilityLabel="Choose Event"
-                        placeholder="Choose Event"
-                        _selectedItem={{
-                          bg: "teal.600",
-                          endIcon: <CheckIcon size={5} />,
-                        }}
-                        mt="1"
-                      >
-                        <Select.Item label="Prerak Orientation" value="PO" />
-                        <Select.Item label="Prerak Training" value="PT" />
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </HStack>
-                <VStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="UserFollowLineIcon" />
-                      <FormControl.Label>Master Trainer</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Chip textAlign="Center"> Prakash Wagh</Chip>
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="UserAddLineIcon" />
-                      <FormControl.Label>Candidates</FormControl.Label>
-                    </HStack>
-                    <Button bgColor="white" borderColor="black" flex="0.7">
-                      <Text>Select Candidates</Text>
-                    </Button>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="CalendarLineIcon" />
-                      <FormControl.Label>Date</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input></Input>
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="TimeLineIcon" />
-                      <FormControl.Label>Time</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input />
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="Notification2LineIcon" />
-                      <FormControl.Label>Reminder</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input />
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"} flex={"1"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="MapPinLineIcon" />
-                      <FormControl.Label>Location</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input />
-                    </Box>
-                  </HStack>
-                </VStack>
-              </VStack>
-            </FormControl>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setShowModal(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onPress={() => {
-                  setShowModal(false);
-                }}
-              >
-                Send Invites
-              </Button>
-            </Button.Group>
-          </Modal.Footer> */}
           <Modal.Body p="3" pb="10" bg="white">
             <Form
               ref={formRef}
