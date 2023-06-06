@@ -6,10 +6,14 @@ export default {
       type: "string",
       label: "Event Type",
       format: "select",
-      enum: ["Orientation", "Training", "Master Training", "Add a Prerak"],
+      enum: [
+        "Prerak Orientation",
+        "Prerak FLN Training",
+        "Prerak Camp Execution Training",
+      ],
     },
     name: {
-      title: "Event Name",
+      title: "Event Name (Batch Number)",
       type: "string",
     },
     mastertrainer: {

@@ -491,7 +491,9 @@ export default function Attendence() {
                       />
                     )}
                     <AdminTypo.H6 bold color="textGreyColor.800">
-                      {rowData?.first_name + " " + rowData?.last_name}
+                      {rowData?.user?.first_name +
+                        " " +
+                        rowData?.user?.last_name}
                     </AdminTypo.H6>
                   </HStack>
 
