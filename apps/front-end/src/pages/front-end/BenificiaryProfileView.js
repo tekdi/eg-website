@@ -3,20 +3,13 @@ import { useParams } from "react-router-dom";
 import {
   HStack,
   VStack,
-  Text,
   Box,
   Progress,
   Divider,
-  Button,
-  Modal,
   Actionsheet,
-  useDisclose,
 } from "native-base";
 import {
-  AdminTypo,
   FrontEndTypo,
-  H1,
-  H3,
   IconByName,
   Layout,
   benificiaryRegistoryService,
