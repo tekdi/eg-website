@@ -19,26 +19,36 @@ import {
   t,
   Layout,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function BenificiaryEducation() {
   const params = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [userId, setUserId] = React.useState(params?.id);
 
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     benificiaryDetails();
   }, []);
+
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/profile/${userId}`);
+  };
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(userId);
 
     setbenificiary(result?.result);
   };
-  console.log(benificiary);
 
   return (
-    <Layout _appBar={{ name: t("EDUCATION_DETAILS") }}>
+    <Layout
+      _appBar={{
+        onPressBackButton,
+        name: t("EDUCATION_DETAILS"),
+      }}
+    >
       <VStack paddingBottom="64px">
         <VStack
           paddingLeft="16px"
@@ -66,7 +76,7 @@ export default function BenificiaryEducation() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/education/${id}`);
+                    navigate(`/beneficiary/edit/education/${userId}`);
                   }}
                 />
               </HStack>
@@ -202,7 +212,7 @@ export default function BenificiaryEducation() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/future-education/${id}`);
+                    navigate(`/beneficiary/edit/future-education/${userId}`);
                   }}
                 />
               </HStack>

@@ -92,15 +92,15 @@ export default [
     component: AdharKyc,
   },
   {
-    path: "/beneficiary/:id/basicdetails",
+    path: "/beneficiary/basicdetails/:id",
     component: BenificiaryBasicDetails,
   },
   {
-    path: "/beneficiary/:id/educationdetails",
+    path: "/beneficiary/educationdetails/:id",
     component: BenificiaryEducation,
   },
   {
-    path: "/beneficiary/:id/enrollmentdetails",
+    path: "/beneficiary/enrollmentdetails/:id",
     component: BenificiaryEnrollment,
   },
   { path: "*", component: Dashboard },

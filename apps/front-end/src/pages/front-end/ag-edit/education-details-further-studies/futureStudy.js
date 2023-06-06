@@ -86,7 +86,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   }, []);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    navigate(`/beneficiary/educationdetails/${userId}`);
   };
   const ref = React.createRef(null);
 
@@ -222,9 +222,9 @@ export default function AgformUpdate({ userTokenInfo }) {
     const qData = await benificiaryRegistoryService.getOne(userId);
     console.log("qData", qData?.result);
     let career_aspiration =
-      qData?.result?.core_beneficiaries[0]?.career_aspiration;
+      qData?.result?.core_beneficiaries?.career_aspiration;
     let career_aspiration_details =
-      qData?.result?.core_beneficiaries[0]?.career_aspiration_details;
+      qData?.result?.core_beneficiaries?.career_aspiration_details;
 
     setFormData({
       ...formData,
@@ -301,7 +301,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
     if (updateDetails) {
-      navigate(`/beneficiary/edit/enrollment-details/${userId}`);
+      navigate(`/beneficiary/educationdetails/${userId}`);
     }
   };
 

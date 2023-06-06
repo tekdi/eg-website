@@ -85,10 +85,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   console.log("userId", userId);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/profile/${userId}`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -323,12 +320,13 @@ export default function App({ facilitator, id, ip, onClick }) {
     if (formData?.facilitator_id) {
       let ListofEnum = await enumRegistryService.listOfEnum();
       console.log("ListofEnum", ListofEnum?.data?.ENROLLEMENT_STATUS);
+      list = ListofEnum?.data?.ENROLLEMENT_STATUS;
       let newSchema = schema;
       newSchema = getOptions(newSchema, {
         key: "enrollment_status",
-        arr: ListofEnum?.data?.ENROLLEMENT_STATUS,
+        arr: list,
         title: "title",
-        value: "value",
+        value: "title",
       });
       console.log("newSchema", newSchema);
       setSchema(newSchema);
@@ -359,6 +357,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   const editSubmit = async () => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   console.log("formData,", formData);
