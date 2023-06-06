@@ -15,10 +15,9 @@ import Tab from './components/Tab'
 import Loading from './components/Loading'
 import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
-import * as enumRegistryService from './services/enumRegistoryService'
+import * as enumRegistryService from './services/enumRegistryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
-import * as enumRegistoryService from './services/enumRegistoryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
 import * as AgRegistryService from './services/AgRegistryService'
@@ -66,7 +65,6 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
-  enumRegistoryService,
   FloatingInput,
   CheatSheet,
   CustomOTPBox,

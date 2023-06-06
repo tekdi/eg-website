@@ -1,6 +1,6 @@
 import React from "react";
 import { BodyMedium, H3, Layout, t, FrontEndTypo } from "@shiksha/common-lib";
-import { Button, VStack, Box, Text, Image } from "native-base";
+import { Button, VStack, Text, Image } from "native-base";
 import { useNavigate } from "react-router-dom";
 
 export default function Success() {
@@ -15,7 +15,7 @@ export default function Success() {
           {t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY")}
         </H3>
         <Text fontWeight="700" fontSize="30px" textAlign={"center"}>
-          Complete Your Aadhaar Verification Now
+          {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
         </Text>
         <VStack space={5}>
           <Image
