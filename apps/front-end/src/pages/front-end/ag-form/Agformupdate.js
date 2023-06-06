@@ -34,12 +34,11 @@ import {
   getBase64,
   BodyMedium,
   changeLanguage,
-  StudentEnumService,
   sendAndVerifyOtp,
   CustomOTPBox,
   benificiaryRegistoryService,
   enumRegistryService,
-  FrontEndTypo
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";

@@ -53,6 +53,9 @@ export default function BenificiaryBasicDetails() {
                 name="PencilLineIcon"
                 color="iconColor.200"
                 _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}`);
+                }}
               />
             </HStack>
             <HStack alignItems="Center">
