@@ -36,6 +36,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
 
+  // styles
   const styles = {
     inforBox: {
       style: {
