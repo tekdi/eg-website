@@ -18,7 +18,7 @@ export default {
         role: {
           format: "hidden",
           type: "string",
-          default: "beneficiaries",
+          default: "beneficiary",
         },
         email_id: {
           format: "hidden",
