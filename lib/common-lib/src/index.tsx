@@ -34,6 +34,7 @@ import * as eventService from './services/EventService'
 import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
 
+// export
 export {
   AdminTypo,
   FrontEndTypo,
