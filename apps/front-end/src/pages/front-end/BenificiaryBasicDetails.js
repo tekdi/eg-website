@@ -426,7 +426,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/reference`);
+                    navigate(`/beneficiary/edit/reference-details/${id}`);
                   }}
                 />
               </HStack>

@@ -80,6 +80,7 @@ export default function agFormEdit({ ip }) {
   const onPressBackButton = async () => {
     navigate(`/beneficiary/basicdetails/${userId}`);
   };
+
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
   const getImage = () => takeScreenshot({ ref });
@@ -88,83 +89,31 @@ export default function agFormEdit({ ip }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
   }, []);
 
   React.useEffect(async () => {
-    let device_ownership = formData?.core_beneficiaries?.device_ownership;
-    let mark_as_whatsapp_number =
-      formData?.core_beneficiaries?.mark_as_whatsapp_number;
-    let alternative_device_ownership =
-      formData?.core_beneficiaries?.alternative_device_ownership;
-    let alternative_device_type =
-      formData?.core_beneficiaries?.alternative_device_type;
-    let device_type = formData?.core_beneficiaries?.device_type;
+    let rfirst_name = formData?.references[0]?.first_name;
+    let rmiddle_name = formData?.references[0]?.middle_name;
+    let rlast_name = formData?.references[0]?.last_name;
+    let rrelation = formData?.references[0]?.relation;
+    let rcontact_number = formData?.references[0]?.contact_number;
 
     setFormData({
       ...formData,
-      edit_page_type: "edit_contact",
-      device_ownership: device_ownership,
-      device_type: device_type,
-      mark_as_whatsapp_number: mark_as_whatsapp_number,
-      alternative_device_ownership: alternative_device_ownership,
-      alternative_device_type: alternative_device_type,
+      referencefullname: {
+        first_name: rfirst_name,
+        middle_name: rmiddle_name,
+        last_name: rlast_name,
+        relation: rrelation,
+        contact_number: rcontact_number,
+      },
     });
   }, [formData?.id]);
 
-  console.log("formaaaaaaaaaaa", formData);
-
-  const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-  };
+  const uiSchema = {};
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -200,36 +149,6 @@ export default function agFormEdit({ ip }) {
         nextPreviewStep();
       }
     }
-  };
-
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
   };
 
   React.useEffect(() => {
@@ -269,6 +188,43 @@ export default function agFormEdit({ ip }) {
     }
   };
 
+  console.log("form", formData);
+
+  const customValidate = (data, errors, c) => {
+    if (data?.mobile) {
+      if (data?.mobile?.toString()?.length !== 10) {
+        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
+      }
+      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
+      }
+    }
+    if (data?.dob) {
+      const years = moment().diff(data?.dob, "years");
+      if (years < 18) {
+        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
+      }
+    }
+    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+      if (
+        key === "first_name" &&
+        data?.first_name?.replaceAll(" ", "") === ""
+      ) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+    });
+
+    return errors;
+  };
+
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
       if (error.name === "required") {
@@ -292,23 +248,16 @@ export default function agFormEdit({ ip }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length > 10) {
-        const newErrors = {
-          mobile: {
-            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
-    if (id === "root_alternative_mobile_number") {
-      if (data?.mobile?.toString()?.length > 10) {
-        const newErrors = {
-          mobile: {
-            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
-          },
-        };
-        setErrors(newErrors);
+      if (data?.mobile?.toString()?.length === 10) {
+        const result = await userExist({ mobile: data?.mobile });
+        if (result.isUserExist) {
+          const newErrors = {
+            mobile: {
+              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            },
+          };
+          setErrors(newErrors);
+        }
       }
     }
   };
@@ -322,7 +271,10 @@ export default function agFormEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    const updateDetails = await AgRegistryService.updateAg(
+      formData?.referencefullname,
+      userId
+    );
     console.log("page3.....", updateDetails);
     navigate(`/beneficiary/basicdetails/${userId}`);
   };
@@ -331,6 +283,7 @@ export default function agFormEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
+        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -370,6 +323,7 @@ export default function agFormEdit({ ip }) {
               schema: schema ? schema : {},
               uiSchema,
               formData,
+              customValidate,
               onChange,
               onError,
               onSubmit,
