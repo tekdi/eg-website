@@ -30,7 +30,6 @@ import * as AdminTypo from './components/admin_component'
 import * as FrontEndTypo from './components/frontend_component'
 import CheatSheet from './components/CheatSheet'
 import CustomOTPBox from './components/CustomOTPBox'
-import * as statusWiseCountService from './services/statusWiseCountService'
 import * as eventService from './services/EventService'
 import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
@@ -70,7 +69,6 @@ export {
   FloatingInput,
   CheatSheet,
   CustomOTPBox,
-  statusWiseCountService,
   eventService,
   aadhaarService,
   Alert

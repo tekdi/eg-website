@@ -15,7 +15,9 @@ import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 import Success from "pages/front-end/Success";
 import Profile from "pages/front-end/PrerakProfileDetailsView";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
-
+import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
+import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
+import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
 export default [
   { path: "/form", component: Home },
   {
@@ -33,9 +35,10 @@ export default [
   { path: "/beneficiary/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
-  { path: "/docschecklist", component: Docschecklist },
+  { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
   { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
+  { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary/list",
     component: BenificiaryListView,
@@ -44,6 +47,16 @@ export default [
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
+    path: "/beneficiary/:id/basicdetails",
+    component: BenificiaryBasicDetails,
+  },
+  {
+    path: "/beneficiary/:id/educationdetails",
+    component: BenificiaryEducation,
+  },
+  {
+    path: "/beneficiary/:id/enrollmentdetails",
+    component: BenificiaryEnrollment,
   },
   { path: "*", component: Dashboard },
 ];
