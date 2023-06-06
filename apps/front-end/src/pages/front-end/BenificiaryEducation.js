@@ -62,7 +62,13 @@ export default function BenificiaryEducation() {
                 >
                   {t("EDUCATION_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/education/${id}`);
+                  }}
+                />
               </HStack>
               <Box paddingTop="2">
                 <Progress
@@ -192,7 +198,13 @@ export default function BenificiaryEducation() {
                 >
                   {t("FURTHUR_STUDIES")}
                 </FrontEndTypo.H3>
-                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/future-education/${id}`);
+                  }}
+                />
               </HStack>
               <Box paddingTop="2">
                 <Progress

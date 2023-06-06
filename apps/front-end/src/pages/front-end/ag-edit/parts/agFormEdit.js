@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "../parts/schema.js";
+import schema1 from "./schema.js";
 import {
   Alert,
   Box,
@@ -15,7 +15,7 @@ import {
   VStack,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper";
+import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -34,9 +34,14 @@ import {
   changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
+  AgRegistryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+
+import { useScreenshot } from "use-screenshot-hook";
+
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -44,55 +49,13 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-} from "../../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
-
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
+  BaseInputTemplate,
+  RadioBtn,
+  CustomR,
+} from "../../../../component/BaseInput.js";
 
 // App
-export default function App({ ip, id }) {
+export default function agFormEdit({ ip, id }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);
@@ -110,15 +73,8 @@ export default function App({ ip, id }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [userId, setuserId] = React.useState(id);
   const navigate = useNavigate();
-  /*  const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 7) {
-    navigate("/dashboard");
-  } */
-
-  window.onbeforeunload = function () {
-    return false;
-  };
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -134,29 +90,94 @@ export default function App({ ip, id }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
-
-  //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
-    console.log(qData.result, "asd");
     setFormData(qData.result);
   }, []);
 
-  React.useEffect(() => {
-    if (page == "5") {
-      console.log(cameraData);
-      if (cameraData.length <= 3) {
-        setCameraModal(true);
-      } else {
-        setCameraModal(false);
-        setPage(page - 1);
-        console.log(page);
-      }
+  React.useEffect(async () => {
+    let device_ownership = formData?.core_beneficiaries[0]?.device_ownership;
+    let mark_as_whatsapp_number =
+      formData?.core_beneficiaries[0]?.mark_as_whatsapp_number;
+    let alternative_device_ownership =
+      formData?.core_beneficiaries[0]?.alternative_device_ownership;
+    let alternative_device_type =
+      formData?.core_beneficiaries[0]?.alternative_device_type;
+    let device_type = formData?.core_beneficiaries[0]?.device_type;
+
+    let father_first_name = formData?.core_beneficiaries[0]?.father_first_name;
+    let father_middle_name =
+      formData?.core_beneficiaries[0]?.father_middle_name;
+    let father_last_name = formData?.core_beneficiaries[0]?.father_last_name;
+
+    let mother_first_name = formData?.core_beneficiaries[0]?.mother_first_name;
+    let mother_last_name = formData?.core_beneficiaries[0]?.mother_last_name;
+    let mother_middle_name =
+      formData?.core_beneficiaries[0]?.mother_middle_name;
+
+    let marital_status = formData?.extended_users[0]?.marital_status;
+    let social_category = formData?.extended_users[0]?.social_category;
+
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+
+    if (page === "2") {
+      console.log("page2", updateDetails);
+      setFormData({
+        ...formData,
+        edit_page_type: "edit_contact",
+        device_ownership: device_ownership,
+        device_type: device_type,
+        mark_as_whatsapp_number: mark_as_whatsapp_number,
+        alternative_device_ownership: alternative_device_ownership,
+        alternative_device_type: alternative_device_type,
+        //father_first_name: father_first_name,
+        // father_middle_name: father_middle_name,
+        // mother_first_name: mother_first_name,
+        // mother_middle_name: mother_middle_name,
+        // mother_last_name: mother_last_name,
+      });
+    } else if (page === "3") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page3.....", updateDetails);
+      setFormData({ ...formData, edit_page_type: "edit_address" });
+    } else if (page === "4") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page4.....", updateDetails);
+      setFormData({
+        ...formData,
+        edit_page_type: "personal",
+        marital_status: marital_status,
+        social_category: social_category,
+      });
+    } else if (page === "5") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page5.....", updateDetails);
+      setFormData({
+        ...formData,
+        edit_page_type: "edit_family",
+      });
+    } else if (page === "6") {
+      setFormData({
+        ...formData,
+        fatherdetails: {
+          father_first_name: father_first_name,
+          father_last_name: father_last_name,
+          father_middle_name: father_middle_name,
+        },
+        motherdetails: {
+          mother_first_name: mother_first_name,
+          mother_middle_name: mother_middle_name,
+          mother_last_name: mother_last_name,
+        },
+      });
+    } else if (page === "7") {
+      const updateDetails = await AgRegistryService.updateAg(
+        formData?.fatherdetails,
+        userId
+      );
+      console.log("page7.....", updateDetails);
     }
-  }, [page, credentials]);
+  }, [page]);
 
   const uiSchema = {
     dob: {
@@ -167,15 +188,6 @@ export default function App({ ip, id }) {
         hideClearButton: true,
       },
     },
-    /*  DOB : {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    }, */
-
     qualification: {
       "ui:widget": CustomR,
     },
@@ -185,40 +197,19 @@ export default function App({ ip, id }) {
     gender: {
       "ui:widget": CustomR,
     },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
     sourcing_channel: {
       "ui:widget": CustomR,
     },
     availability: {
       "ui:widget": RadioBtn,
     },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
+
     experience: {
       related_to_teaching: {
         "ui:widget": RadioBtn,
       },
     },
-    makeWhatsapp: {
-      "ui:widget": RadioBtn,
-    },
-    maritalstatus: {
-      "ui:widget": CustomR,
-    },
-    socialstatus: {
-      "ui:widget": CustomR,
-    },
 
-    ownership: {
-      "ui:widget": RadioBtn,
-    },
-    // custom radio button with property name
     vo_experience: {
       items: {
         experience_in_years: { "ui:widget": CustomR },
@@ -303,6 +294,28 @@ export default function App({ ip, id }) {
     };
   };
 
+  React.useEffect(async () => {
+    if (schema?.properties?.state) {
+      const qData = await geolocationRegistryService.getStates();
+      let newSchema = schema;
+      if (schema["properties"]["state"]) {
+        newSchema = getOptions(newSchema, {
+          key: "state",
+          arr: qData?.states,
+          title: "state_name",
+          value: "state_name",
+        });
+      }
+      newSchema = await setDistric({
+        schemaData: newSchema,
+        state: formData?.state,
+        district: formData?.district,
+        block: formData?.block,
+      });
+      setSchema(newSchema);
+    }
+  }, [page]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -330,7 +343,6 @@ export default function App({ ip, id }) {
       setSubmitBtn(t("SAVE"));
       setAddBtn(t("ADD_EXPERIENCE"));
     } else {
-      console.log({ ...formData });
       setSubmitBtn(t("SAVE"));
     }
   };
@@ -397,17 +409,6 @@ export default function App({ ip, id }) {
         );
       }
     });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
-    });
 
     return errors;
   };
@@ -438,7 +439,7 @@ export default function App({ ip, id }) {
       if (schema["properties"]["district"]) {
         newSchema = getOptions(newSchema, {
           key: "district",
-          arr: qData,
+          arr: qData?.districts,
           title: "district_name",
           value: "district_name",
         });
@@ -469,7 +470,7 @@ export default function App({ ip, id }) {
       if (schema["properties"]["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
-          arr: qData,
+          arr: qData?.blocks,
           title: "block_name",
           value: "block_name",
         });
@@ -497,7 +498,7 @@ export default function App({ ip, id }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
-          arr: qData,
+          arr: qData.villages,
           title: "village_ward_name",
           value: "village_ward_name",
         });
@@ -601,48 +602,43 @@ export default function App({ ip, id }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
-    let newFormData = data.formData;
-    if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
-      };
-    }
-
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-      };
-    }
-
-    const newData = {
-      ...formData,
-      ...newFormData,
-      ["form_step_number"]: parseInt(page) + 1,
-    };
-    setFormData(newData);
-    if (_.isEmpty(errors)) {
-      setStep();
-    } else {
-      const key = Object.keys(errors);
-      if (key[0]) {
-        goErrorPage(key[0]);
-      }
-    }
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    console.log("page3.....", updateDetails);
+    navigate(`/beneficiary/edit/contact-details/${userId}`);
   };
+
+  const [cameraFile, setcameraFile] = useState();
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
     if (file.size <= 1048576 * 2) {
       const data = await getBase64(file);
       setCameraUrl(data);
+      setcameraFile(file);
       setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
+
+  const uploadProfile = async () => {
+    // const { id } = authUser;
+    if (userId) {
+      const form_data = new FormData();
+      const item = {
+        file: cameraFile,
+        document_type: "profile",
+        user_id: userId,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+
+      const uploadDoc = await uploadRegistryService.uploadFile(form_data);
+      console.log("uploadDoc", uploadDoc);
+    }
+  };
+
   if (cameraUrl) {
     return (
       <Layout
@@ -679,12 +675,14 @@ export default function App({ ip, id }) {
           <Button
             variant={"primary"}
             onPress={async (e) => {
-              if (cameraSelection >= 3) {
+              if (cameraSelection >= 2) {
                 nextPreviewStep();
                 setCameraUrl();
                 setCameraModal(false);
                 pages[pages?.length - 1] === page;
               } else {
+                console.log("reached else ==>");
+                uploadProfile();
                 setCameraUrl();
                 setCameraModal(true);
                 setCameraSelection(cameraSelection + 1);
@@ -694,7 +692,7 @@ export default function App({ ip, id }) {
               if (onClick) onClick(cameraUrl); */
             }}
           >
-            {cameraSelection > 3 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
+            {cameraSelection > 2 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
           </Button>
           <Button
             variant={"secondary"}
@@ -717,6 +715,7 @@ export default function App({ ip, id }) {
           cameraModal,
           setCameraModal,
           cameraUrl,
+          setcameraFile,
           setCameraUrl: async (url) => {
             setCameraUrl(url);
             setCameraData([...cameraData, url]);
@@ -724,6 +723,58 @@ export default function App({ ip, id }) {
           },
         }}
       />
+    );
+  }
+
+  if (page === "5") {
+    return (
+      <Layout
+        _appBar={{
+          onPressBackButton: (e) => setPage("4"),
+          lang,
+          setLang,
+          onlyIconsShow: ["backBtn", "userInfo"],
+        }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <VStack py={6} px={4} mb={5} space="6">
+          <H1 color="red.1000">{t("ADD_ID_PHOTOS")}</H1>
+          <h5 color="red.1000" fontSize="3">
+            {t("CLEAR_PROFILE_MESSAGE")}
+          </h5>
+          <Button
+            variant={"primary"}
+            leftIcon={
+              <IconByName
+                name="CameraLineIcon"
+                color="white"
+                size={2}
+                isDisabled
+              />
+            }
+            onPress={(e) => {
+              setCameraUrl();
+              setCameraModal(true);
+            }}
+          >
+            {t("TAKE_PHOTO")}
+          </Button>
+          <VStack space={2}>
+            <input
+              accept="image/*"
+              type="file"
+              style={{ display: "none" }}
+              ref={uplodInputRef}
+              onChange={handleFileInputChange}
+            />
+            {errors?.fileSize ? (
+              <H2 color="red.400">{errors?.fileSize}</H2>
+            ) : (
+              <React.Fragment />
+            )}
+          </VStack>
+        </VStack>
+      </Layout>
     );
   }
 
@@ -793,6 +844,7 @@ export default function App({ ip, id }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -800,6 +852,7 @@ export default function App({ ip, id }) {
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
