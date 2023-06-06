@@ -88,7 +88,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/contact-details/${id}`);
+                    navigate(`/beneficiary/${id}/edit/contact-info`);
                   }}
                 />
               </HStack>
@@ -199,13 +199,7 @@ export default function BenificiaryBasicDetails() {
                 >
                   {t("ADDRESS_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/address/${id}`);
-                  }}
-                />
+                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
               </HStack>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" space="xl">
@@ -248,7 +242,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/family-details/${id}`);
+                    navigate(`/beneficiary/${id}/edit/family-details`);
                   }}
                 />
               </HStack>
@@ -345,7 +339,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/personal-details/${id}`);
+                    navigate(`/beneficiary/${id}/personal-details`);
                   }}
                 />
               </HStack>
