@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "../parts/schema.js";
+import schema1 from "./schema.js";
 import {
   Alert,
   Box,
@@ -15,7 +15,7 @@ import {
   VStack,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper";
+import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -34,9 +34,14 @@ import {
   changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
+  AgRegistryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { useScreenshot } from "use-screenshot-hook";
+
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -44,55 +49,13 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-} from "../../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
-
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
+  BaseInputTemplate,
+  RadioBtn,
+  CustomR,
+} from "../../../../component/BaseInput.js";
 
 // App
-export default function App({ ip, id }) {
+export default function agFormEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);
@@ -110,17 +73,13 @@ export default function App({ ip, id }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const { id } = useParams();
+
+  const [userId, setuserId] = React.useState(id);
   const navigate = useNavigate();
-  /*  const { form_step_number } = facilitator;
-  if (form_step_number && parseInt(form_step_number) >= 7) {
-    navigate("/dashboard");
-  } */
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/edit/${userId}`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -130,29 +89,27 @@ export default function App({ ip, id }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
+  // React.useEffect(() => {
+  //   getImage();
+  // }, [page, credentials]);
 
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
-    console.log(qData.result, "asd");
     setFormData(qData.result);
   }, []);
 
-  React.useEffect(() => {
-    if (page == "5") {
-      console.log(cameraData);
-      if (cameraData.length <= 3) {
-        setCameraModal(true);
-      } else {
-        setCameraModal(false);
-        setPage(page - 1);
-        console.log(page);
-      }
-    }
-  }, [page, credentials]);
+  React.useEffect(async () => {
+    let marital_status = formData?.extended_users[0]?.marital_status;
+    let social_category = formData?.extended_users[0]?.social_category;
+
+    setFormData({
+      ...formData,
+      edit_page_type: "personal",
+      marital_status: marital_status,
+      social_category: social_category,
+    });
+  }, [formData?.id]);
 
   const uiSchema = {
     dob: {
@@ -163,15 +120,6 @@ export default function App({ ip, id }) {
         hideClearButton: true,
       },
     },
-    /*  DOB : {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    }, */
-
     qualification: {
       "ui:widget": CustomR,
     },
@@ -181,40 +129,19 @@ export default function App({ ip, id }) {
     gender: {
       "ui:widget": CustomR,
     },
-    type_mobile: {
-      "ui:widget": CustomR,
-    },
     sourcing_channel: {
       "ui:widget": CustomR,
     },
     availability: {
       "ui:widget": RadioBtn,
     },
-    device_ownership: {
-      "ui:widget": RadioBtn,
-    },
-    device_type: {
-      "ui:widget": RadioBtn,
-    },
+
     experience: {
       related_to_teaching: {
         "ui:widget": RadioBtn,
       },
     },
-    makeWhatsapp: {
-      "ui:widget": RadioBtn,
-    },
-    maritalstatus: {
-      "ui:widget": CustomR,
-    },
-    socialstatus: {
-      "ui:widget": CustomR,
-    },
 
-    ownership: {
-      "ui:widget": RadioBtn,
-    },
-    // custom radio button with property name
     vo_experience: {
       items: {
         experience_in_years: { "ui:widget": CustomR },
@@ -313,32 +240,6 @@ export default function App({ ip, id }) {
     }
   }, []);
 
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.mobile) {
-      setSubmitBtn(t("SAVE"));
-      setAddBtn(t("ADD_EXPERIENCE"));
-    } else {
-      console.log({ ...formData });
-      setSubmitBtn(t("SAVE"));
-    }
-  };
-
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
-
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
-
   const formSubmitUpdate = async (formData) => {
     console.log("sent data");
     if (id) {
@@ -393,17 +294,6 @@ export default function App({ ip, id }) {
         );
       }
     });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
-    });
 
     return errors;
   };
@@ -423,87 +313,6 @@ export default function App({ ip, id }) {
       }
       return error;
     });
-  };
-
-  const setDistric = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-      });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setVilage = async ({ block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    return newSchema;
   };
 
   const onChange = async (e, id) => {
@@ -597,176 +406,15 @@ export default function App({ ip, id }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
-    let newFormData = data.formData;
-    if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
-      };
-    }
-
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-      };
-    }
-
-    const newData = {
-      ...formData,
-      ...newFormData,
-      ["form_step_number"]: parseInt(page) + 1,
-    };
-    setFormData(newData);
-    if (_.isEmpty(errors)) {
-      setStep();
-    } else {
-      const key = Object.keys(errors);
-      if (key[0]) {
-        goErrorPage(key[0]);
-      }
-    }
-  };
-
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
-      const data = await getBase64(file);
-      setCameraUrl(data);
-      setFormData({ ...formData, ["profile_url"]: data });
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-  if (cameraUrl) {
-    return (
-      <Layout
-        _appBar={{
-          lang,
-          setLang,
-          onPressBackButton: (e) => {
-            setCameraUrl();
-            setCameraModal(false);
-          },
-        }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          {/* add the profile image */}
-          <H1 color="red.1000">{t("ADD_ID_PHOTOS")}</H1>
-          <h5 color="red.1000" fontSize="3">
-            {t("CLEAR_PROFILE_MESSAGE")}
-          </h5>
-
-          <Center>
-            <Image
-              source={{
-                uri: cameraUrl,
-                //show the image
-              }}
-              alt=""
-              size="324px"
-            />
-          </Center>
-          <h5 color="red.1000" fontSize="2">
-            {t("FRONT_VIEW")}
-          </h5>
-          <Button
-            variant={"primary"}
-            onPress={async (e) => {
-              if (cameraSelection >= 3) {
-                nextPreviewStep();
-                setCameraUrl();
-                setCameraModal(false);
-                pages[pages?.length - 1] === page;
-              } else {
-                setCameraUrl();
-                setCameraModal(true);
-                setCameraSelection(cameraSelection + 1);
-              }
-              /*  await formSubmitUpdate({ ...formData, form_step_number: "5" });
-              console.log(...formData);
-              if (onClick) onClick(cameraUrl); */
-            }}
-          >
-            {cameraSelection > 3 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
-          </Button>
-          <Button
-            variant={"secondary"}
-            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
-        </VStack>
-      </Layout>
-    );
-  }
-  if (cameraModal) {
-    return (
-      <Camera
-        {...{
-          cameraModal,
-          setCameraModal,
-          cameraUrl,
-          setCameraUrl: async (url) => {
-            setCameraUrl(url);
-            setCameraData([...cameraData, url]);
-            setFormData({ ...formData, ["profile_url"]: cameraData });
-          },
-        }}
-      />
-    );
-  }
-
-  const AddButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="green"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          if (formRef?.current.validateForm()) {
-            btnProps?.onClick();
-          }
-        }}
-      >
-        <HStack>
-          {icon} {addBtn}
-        </HStack>
-      </Button>
-    );
-  };
-
-  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="red"
-        mb="2"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          btnProps?.onClick();
-        }}
-      >
-        <HStack>
-          {icon} {t("REMOVE_EXPERIENCE")}
-        </HStack>
-      </Button>
-    );
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    console.log("page3.....", updateDetails);
+    navigate(`/beneficiary/edit/contact-details/${userId}`);
   };
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -789,13 +437,14 @@ export default function App({ ip, id }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ RadioBtn, CustomR }}
             templates={{
-              ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
               ArrayFieldTitleTemplate,
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -818,7 +467,7 @@ export default function App({ ip, id }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {pages[pages?.length - 1] === page ? "Save" : submitBtn}
             </Button>
           </Form>
         ) : (

@@ -53,6 +53,9 @@ export default function BenificiaryBasicDetails() {
                 name="PencilLineIcon"
                 color="iconColor.200"
                 _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}`);
+                }}
               />
             </HStack>
             <HStack alignItems="Center">
@@ -85,7 +88,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/contact-info`);
+                    navigate(`/beneficiary/edit/contact-details/${id}`);
                   }}
                 />
               </HStack>
@@ -196,7 +199,13 @@ export default function BenificiaryBasicDetails() {
                 >
                   {t("ADDRESS_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/address/${id}`);
+                  }}
+                />
               </HStack>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" space="xl">
@@ -239,7 +248,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/family-details`);
+                    navigate(`/beneficiary/edit/family-details/${id}`);
                   }}
                 />
               </HStack>
@@ -336,7 +345,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/personal-details`);
+                    navigate(`/beneficiary/edit/personal-details/${id}`);
                   }}
                 />
               </HStack>

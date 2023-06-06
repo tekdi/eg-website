@@ -1,8 +1,14 @@
 import Dashboard from "pages/front-end/Dashboard";
 import Home from "pages/front-end/Home";
-import basicDetails from "../pages/front-end/AGDetails/basicDetails";
-import educationDetails from "../pages/front-end/AGDetails/education-details-further-studies/educationDetails";
-import chooseSubjects from "../pages/front-end/AGDetails/choose-subjects/subjectDetails";
+import basicDetails from "../pages/front-end/ag-edit/basicDetails";
+import educationDetails from "../pages/front-end/ag-edit/education-details-further-studies/educationDetails";
+import contactDetailsEdit from "../pages/front-end/ag-edit/contact-details/contactDetailsEdit";
+import addressEdit from "../pages/front-end/ag-edit/address/addressEdit";
+import personaldetails from "../pages/front-end/ag-edit/personal-details/personaldetails";
+import familydetails from "../pages/front-end/ag-edit/family-details/familydetails";
+import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
+import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
+import subjectDetails from "../pages/front-end/ag-edit/choose-subjects/subjectDetails";
 import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
@@ -26,9 +32,40 @@ export default [
     component: Home,
   },
   { path: "/dashboard", component: Dashboard },
-  { path: "/ag/:id", component: basicDetails },
-  { path: "/ag/education/:id", component: educationDetails },
-  { path: "/ag/subjects/:id", component: chooseSubjects },
+  { path: "/beneficiary/edit/:id", component: basicDetails },
+  {
+    path: "/beneficiary/edit/contact-details/:id",
+    component: contactDetailsEdit,
+  },
+  {
+    path: "/beneficiary/edit/address/:id",
+    component: addressEdit,
+  },
+  {
+    path: "/beneficiary/edit/personal-details/:id",
+    component: personaldetails,
+  },
+
+  {
+    path: "/beneficiary/edit/family-details/:id",
+    component: familydetails,
+  },
+
+  {
+    path: "/beneficiary/edit/upload-photo/:id",
+    component: uploadphoto,
+  },
+
+  { path: "/beneficiary/edit/education/:id", component: educationDetails },
+  {
+    path: "/beneficiary/edit/future-education/:id",
+    component: futureStudy,
+  },
+
+  {
+    path: "/beneficiary/edit/enrollment-details/:id",
+    component: subjectDetails,
+  },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
   { path: "/beneficiary/2", component: AgformUpdate },

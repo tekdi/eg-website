@@ -440,7 +440,9 @@
   "FRIENDS / FRIENDS LEAVING SCHOOL": "Friends leaving school",
   "DUE_TO_MARRIAGES": "Marriage",
   "MIGRATION_RELATED_TO_EMPLOYMENT": "Migration related to employment",
-  "CAREER_ASPIRATION_FURTHER_STUDIES": "Further studies",
+  "CAREER_ASPIRATION_FURTHER_STUDIES": "Further Studies",
+  "CAREER_ASPIRATION_SKILL_TRAINING": "Skill Training",
+  "CAREER_ASPIRATION_SMALL_BUSINESS": "Small Business",
   "APPLIED_NEW_FOR_CHANGE": "Applied new for change",
   "CAST_CERTIFICATE": "Cast Certificate",
   "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "Transfer Certificate With CBO Sign",
@@ -521,6 +523,7 @@
   "LATITUDE": "Latitude",
   "LONGITUDE": "longitude",
   "BENEFICIARY_ALL": "All",
+  "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT": "Upload the Payment receipt For Enrollment",
   "CAPTCHA_CODE": "Captcha code",
   "TRY_OTHER": "Try Other",
   "CHECK_DOCUMENTS": "Check Documents"
