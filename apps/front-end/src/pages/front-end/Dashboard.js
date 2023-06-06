@@ -36,6 +36,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
 
+  // styles
   const styles = {
     inforBox: {
       style: {
@@ -68,40 +69,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      
-      <VStack bg="primary.50"  pb="5">
+      <VStack bg="primary.50" pb="5">
         <VStack space="5">
-          {facilitator.status === "" && (
-            <HStack
-              {...styles.inforBox}
-              p="5"
-              space="5"
-              borderBottomWidth="1"
-              borderBottomColor={"gray.300"}
-              shadows="BlueOutlineShadow"
-            >
-              <IconByName
-                flex="0.1"
-                isDisabled
-                name="UserLineIcon"
-                _icon={{ size: "25px" }}
-              />
-              <VStack flex="0.9">
-                <FrontEndTypo.H2 bold>
-                  {t("APPLICATION_UNDER_REVIEW")}
-                </FrontEndTypo.H2>
-                <BodySmall
-                  wordWrap="break-word"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {t("MEANWHILE_PROFILE")}
-                </BodySmall>
-              </VStack>
-            </HStack>
-          )}
-          {facilitator.status === "applied" && (
+          {["lead", "applied", ""].includes(facilitator.status) && (
             <Stack>
               <HStack
                 {...styles.inforBox}
@@ -132,10 +102,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   size={"30px"}
                   resizeMode="contain"
                 />
-                <FrontEndTypo.H1
-                  color="textMaroonColor.400"
-                  pl="1"
-                >
+                <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
                   {t("WELCOME")} {facilitator?.first_name},
                 </FrontEndTypo.H1>
               </HStack>
@@ -199,12 +166,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.H3>
                   </HStack>
                   <HStack space="2">
-                    <FrontEndTypo.Secondarybutton
-                      width="50%"
-                    >{t("REJECT")}</FrontEndTypo.Secondarybutton>
-                    <FrontEndTypo.Primarybutton
-                      width="50%"
-                    >{t("ACCEPT")}</FrontEndTypo.Primarybutton>
+                    <FrontEndTypo.Secondarybutton width="50%">
+                      {t("REJECT")}
+                    </FrontEndTypo.Secondarybutton>
+                    <FrontEndTypo.Primarybutton width="50%">
+                      {t("ACCEPT")}
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                   <HStack flex="1" my="6">
                     <Image
@@ -224,12 +191,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <FrontEndTypo.H2 bold>
                     {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
                   </FrontEndTypo.H2>
-                  <FrontEndTypo.Primarybutton
-                    width="100%"
-                  >{t("AADHAR_NUMBER_KYC")}</FrontEndTypo.Primarybutton>
-                  <FrontEndTypo.Secondarybutton
-                    width="100%"
-                  >{t("SCAN_QR_CODE")}</FrontEndTypo.Secondarybutton>
+                  <FrontEndTypo.Primarybutton width="100%">
+                    {t("AADHAR_NUMBER_KYC")}
+                  </FrontEndTypo.Primarybutton>
+                  <FrontEndTypo.Secondarybutton width="100%">
+                    {t("SCAN_QR_CODE")}
+                  </FrontEndTypo.Secondarybutton>
                 </Stack>
                 <Stack bg="bgPinkColor.300" space="6" p={4}>
                   <FrontEndTypo.H2 color="textMaroonColor.400">
@@ -291,8 +258,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           isDisabled
                           name="Upload2FillIcon"
                           _icon={{ size: "25px" }}
-                        />}
-                        >{t("UPLOAD_NOW")}</FrontEndTypo.Secondarybutton>
+                        />
+                      }
+                    >
+                      {t("UPLOAD_NOW")}
+                    </FrontEndTypo.Secondarybutton>
                   </HStack>
                 </Stack>
               </Stack>
@@ -382,7 +352,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     name="UserLineIcon"
                     _icon={{ size: "20px" }}
                   />
-                  <FrontEndTypo.H3 >
+                  <FrontEndTypo.H3>
                     {t("CONDUCTED_BY")}: IP Name
                   </FrontEndTypo.H3>
                 </HStack>
@@ -392,9 +362,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     name="TimeLineIcon"
                     _icon={{ size: "20px" }}
                   />
-                  <FrontEndTypo.H3 >
-                    9th April, 11 am
-                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3>9th April, 11 am</FrontEndTypo.H3>
                 </HStack>
                 <HStack space="5">
                   <IconByName
@@ -402,19 +370,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     name="MapPinLineIcon"
                     _icon={{ size: "20px" }}
                   />
-                  <FrontEndTypo.H3 >
-                    {t("ONLINE")}: Google Meet
-                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3>{t("ONLINE")}: Google Meet</FrontEndTypo.H3>
                 </HStack>
                 <HStack space="2">
-                  <FrontEndTypo.Secondarybutton
-                    width="50%"
-                    
-                  >{t("REJECT")}</FrontEndTypo.Secondarybutton>
-                  <FrontEndTypo.Primarybutton
-                    width="50%"
-                    
-                  >{t("ACCEPT")}</FrontEndTypo.Primarybutton>
+                  <FrontEndTypo.Secondarybutton width="50%">
+                    {t("REJECT")}
+                  </FrontEndTypo.Secondarybutton>
+                  <FrontEndTypo.Primarybutton width="50%">
+                    {t("ACCEPT")}
+                  </FrontEndTypo.Primarybutton>
                 </HStack>
                 <HStack>
                   <IconByName
@@ -422,11 +386,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     name="FileTextLineIcon"
                     _icon={{ size: "20px" }}
                   />
-                  <FrontEndTypo.H3 bold  space="1" pl="2">
+                  <FrontEndTypo.H3 bold space="1" pl="2">
                     {t("DOCUMENTS_YOU_NEED_TO_CARRY")}
                   </FrontEndTypo.H3>
                 </HStack>
-                <FrontEndTypo.H3 >
+                <FrontEndTypo.H3>
                   {t("MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS")}
                 </FrontEndTypo.H3>
                 <View style={{ marginBottom: 10 }} space="3">
@@ -461,12 +425,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H2 bold>
                   {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
                 </FrontEndTypo.H2>
-                <FrontEndTypo.Primarybutton
-                  width="100%"
-                >{t("AADHAR_NUMBER_KYC")}</FrontEndTypo.Primarybutton>
-                <FrontEndTypo.Secondarybutton
-                  width="100%"
-                >{t("SCAN_QR_CODE")}</FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton width="100%">
+                  {t("AADHAR_NUMBER_KYC")}
+                </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton width="100%">
+                  {t("SCAN_QR_CODE")}
+                </FrontEndTypo.Secondarybutton>
               </Stack>
               <Stack bg="bgPinkColor.300" space="6" p={4}>
                 <FrontEndTypo.H2 color="textMaroonColor.400">
@@ -530,25 +494,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         _icon={{ size: "25px" }}
                       />
                     }
-                  >{t("UPLOAD_NOW")}</FrontEndTypo.Secondarybutton>
+                  >
+                    {t("UPLOAD_NOW")}
+                  </FrontEndTypo.Secondarybutton>
                 </HStack>
               </Stack>
             </Stack>
-          )}
-          {facilitator.status === "" && (
-            <HStack flex="1" px="4">
-              <Image
-                source={{
-                  uri: "/hello.svg",
-                }}
-                alt="Add AG"
-                size={"32px"}
-                resizeMode="contain"
-              />
-              <FrontEndTypo.H1 bold color="textMaroonColor.400" pl="1">
-                {t("WELCOME")} {facilitator?.first_name},
-              </FrontEndTypo.H1>
-            </HStack>
           )}
           {/* <HStack space="2" alignItems="Center" width="100%" justifyContent="space-evenly" px="5">
               <VStack  space={2} width="50%">
@@ -574,7 +525,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack>
           </HStack> */}
           {/* potential prerak  */}
-          {facilitator.status === "potential_prerak" && (
+          {["potential_prerak"].includes(facilitator.status) && (
             <Stack>
               <HStack
                 {...styles.inforBox}
@@ -649,7 +600,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             </Stack>
           )}
-          {facilitator.status === "" && (
+          {["lead", "applied", ""].includes(facilitator.status) && (
             <Stack>
               <VStack p="5" space="5">
                 {!form_step_number ||
