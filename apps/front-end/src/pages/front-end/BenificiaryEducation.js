@@ -87,6 +87,7 @@ export default function BenificiaryEducation() {
                         ?.last_standard_of_education
                     : "-"}
                 </FrontEndTypo.H3>
+                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
               </HStack>
 
               <HStack
@@ -198,6 +199,7 @@ export default function BenificiaryEducation() {
                     ? benificiary?.core_beneficiaries?.career_aspiration
                     : "-"}
                 </FrontEndTypo.H3>
+                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
               </HStack>
 
               <HStack alignItems="Center" justifyContent="space-between">

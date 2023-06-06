@@ -35,6 +35,7 @@ function AppShell({
   if (localStorage.getItem('console')) {
     console.log({ accessRoutes })
   }
+
   React.useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search)
     const searchParams = Object.fromEntries(urlSearchParams.entries())
@@ -71,24 +72,6 @@ function AppShell({
     }
 
     getData()
-    const subscription = eventBus.subscribe('AUTH', (data, envelop) => {
-      if (data.eventType == 'LOGIN_SUCCESS') {
-        setToken(localStorage.getItem('token'))
-      } else if (data.eventType == 'LOGOUT') {
-        if (skipLogin) {
-          setTimeout(() => {
-            window.location.href = '/oauth2/sign_out?rd=/'
-          }, 1)
-        } else {
-          setTimeout(() => {
-            window.location.href = '/'
-          }, 1)
-        }
-      }
-    })
-    return () => {
-      eventBus.unsubscribe(subscription)
-    }
   }, [token, routes, otherProps?.footerLinks])
 
   if (!Object.keys(theme).length) {

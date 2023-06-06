@@ -121,6 +121,9 @@ export default function BenificiaryBasicDetails() {
                   name="CellphoneLineIcon"
                   color="iconColor.100"
                   _icon={{ size: "20px" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/edit/contact-info`);
+                  }}
                 />
               </HStack>
 
@@ -197,6 +200,17 @@ export default function BenificiaryBasicDetails() {
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4">
                   {t("HOME")}
                 </FrontEndTypo.H3>
+                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
+              </HStack>
+              <VStack space="2" paddingTop="5">
+                <HStack alignItems="Center" space="xl">
+                  <FrontEndTypo.H3
+                    color="textGreyColor.50"
+                    fontWeight="400"
+                    flex="0.4"
+                  >
+                    {t("HOME")}
+                  </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
                   {benificiary?.address ? benificiary?.address : "-"}
@@ -251,6 +265,37 @@ export default function BenificiaryBasicDetails() {
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
                   {t("FATHER")}
                 </FrontEndTypo.H3>
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/edit/family-details`);
+                  }}
+                />
+              </HStack>
+              <Box paddingTop="2">
+                <Progress
+                  value={arrList(benificiary?.core_beneficiaries, [
+                    "father_first_name",
+                    "father_middle_name",
+                    "father_last_name",
+                    "mother_first_name",
+                    "mother_middle_name",
+                    "mother_last_name",
+                  ])}
+                  size="xs"
+                  colorScheme="info"
+                />
+              </Box>
+              <VStack space="2" paddingTop="5">
+                <HStack alignItems="Center" justifyContent="space-between">
+                  <FrontEndTypo.H3
+                    color="textGreyColor.50"
+                    fontWeight="400"
+                    flex="0.4"
+                  >
+                    {t("FATHER")}
+                  </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.5">
                   {benificiary?.core_beneficiaries?.father_first_name
@@ -332,6 +377,13 @@ export default function BenificiaryBasicDetails() {
                     ? benificiary?.extended_users?.social_category
                     : "-"}
                 </FrontEndTypo.H3>
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/personal-details`);
+                  }}
+                />
               </HStack>
 
               <HStack alignItems="Center" space="2xl">
@@ -438,6 +490,8 @@ export default function BenificiaryBasicDetails() {
           </VStack>
         </VStack>
       </VStack>
+      </VStack>
+    </VStack>
     </Layout>
   );
 }

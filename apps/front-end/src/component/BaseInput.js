@@ -19,6 +19,7 @@ import {
   FloatingInput,
   IconByName,
   FrontEndTypo,
+  CustomOTPBox,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 
@@ -141,8 +142,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
               }}
             >
               <FrontEndTypo.H3 color="blueText.400" underline bold>
-                {" "}
-                {t("ADD_EXPERIENCE")}
+                {`${t("ADD")} ${t(addBtn)}`}
               </FrontEndTypo.H3>
             </Button>
           )}
@@ -351,6 +351,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
   );
 };
 
+export { CustomOTPBox };
 export const readOnly = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label } = schema ? schema : {};

@@ -34,7 +34,6 @@ import {
   getBase64,
   BodyMedium,
   changeLanguage,
-  StudentEnumService,
   sendAndVerifyOtp,
   CustomOTPBox,
   benificiaryRegistoryService,
