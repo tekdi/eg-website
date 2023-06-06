@@ -382,7 +382,7 @@ const DEFAULT_THEME = {
       50: '#FFC5C0'
     },
     boxBackgroundColour: {
-      50: '#FDC5C7',
+      50: '#FFC5C0',
       100: '#FAFAFA'
     },
     studentCard: {
