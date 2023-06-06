@@ -230,7 +230,6 @@ const DEFAULT_THEME = {
       }
     }
   },
-
   shadows: {
     AlertShadow: {
       shadowColor: '#00000040',
@@ -320,6 +319,16 @@ const DEFAULT_THEME = {
       },
       shadowOpacity: 1,
       shadowRadius: 16,
+      elevation: 1
+    },
+    appShadow: {
+      shadowColor: '#f1f1f1',
+      shadowOffset: {
+        width: 0,
+        height: 1
+      },
+      shadowOpacity: 1,
+      shadowRadius: `3px 2px`,
       elevation: 1
     }
   },
