@@ -526,5 +526,19 @@
   "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT": "Upload the Payment receipt For Enrollment",
   "CAPTCHA_CODE": "Captcha code",
   "TRY_OTHER": "Try Other",
-  "CHECK_DOCUMENTS": "Check Documents"
+  "CHECK_DOCUMENTS": "Check Documents",
+  "YOUR_APPLICATION_IS_UNDER_REVIEW": "Your Application is Under Review",
+  "YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS": "You need to upload these documents before attending your Pragati orientation",
+  "THIS_CAN_BE_YOUR_HIGHEST_GRADE": "This can be your highest grade or graduation certificate",
+  "THIS_CAN_BE_LETTER_OF": "This can be letter of recommendation from your company/workplace",
+  "THIS_CAN_BE_REFERENCE_OR_LETTER_OF": "This can be references or letter of recommendation from the organization",
+  "CONGRATULATIONS_YOURE_SHORTLISTED_FOR_THE_ORIENTATION": "Congratulations you’re shortlisted for the orientation!",
+  "MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS": "Make sure you have the following list of documents with you when you attend the orientation",
+  "GRADUATION_CERTIFICATES": "Graduation Certificates",
+  "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
+  "SELECTED_FOR_INTERVIEW": "Selected for Interview",
+  "CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW": "Congratulations you are selected for the interview!",
+  "YOU_ARE_NOW_A_PRAGATI_MOBILIZER": "You are Now a Pragati Mobilizer",
+  "ITS_TIME_TO_START_MOBILIZING": "It’s Time to Start Mobilizing!",
+  "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 AG learners to set up available camp"
 }
