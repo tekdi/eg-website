@@ -17,13 +17,11 @@ import {
   t,
   Layout,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     agDetails();
@@ -65,7 +63,7 @@ export default function BenificiaryEnrollment() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/enrollment-details/${id}`);
+                    navigate(`beneficiary/${id}/edit/enrollment`);
                   }}
                 />
               </HStack>
@@ -220,13 +218,7 @@ export default function BenificiaryEnrollment() {
                 >
                   {t("UPLOAD_RECEIPT")}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/enrollment-details/${id}`);
-                  }}
-                />
+                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
               </HStack>
               <VStack space="5">
                 <Box paddingTop="2">
