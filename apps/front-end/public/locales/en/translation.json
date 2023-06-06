@@ -151,7 +151,7 @@
   "SKIP_SUBMIT": "Skip and submit",
   "COMPLETE_FORM": "Complete your form",
   "APPLICATION_UNDER_REVIEW": "Application Under Review",
-  "MEANWHILE_PROFILE": "Meanwhile complete your profile to increase your chances of getting hired",
+  "MEANWHILE_PROFILE": "Meanwhile complete your profile to increase your chances of becoming Prerak",
   "HOW_CAN_CONTACT_YOU": "How Can we Contact You?",
   "PLEASE_WHATSAPP_NUMBER": "(Please Enter Your Whatsapp Number)",
   "WHAT_IS_YOUR_DATE_OF_BIRTH": "What is Your Date of Birth ?",
@@ -455,7 +455,7 @@
   "SEARCH_BY_AG_LEARNER_NAME": "Search By AG Learner Name",
   "TO": "to",
   "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "Did the interview take place Successfully",
-  "Add_AGS_PROFILE": "Add AG's Profile Photo",
+  "Add_AGS_PROFILE": "Add Beneficiary Profile Photo",
   "BENEFICIARY_MARITAL_STATUS_SINGLE": "Single (Divorced, widow, separated, etc.)",
   "BENEFICIARY_MARITAL_STATUS_MARRIED": "Married",
   "BENEFICIARY_MARITAL_STATUS_UNMARRIED": "UnMarried",
@@ -533,5 +533,10 @@
   "CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW":"Congratulations you are selected for the interview!",
   "YOU_ARE_NOW_A_PRAGATI_MOBILIZER":"You are Now a Pragati Mobilizer",
   "ITS_TIME_TO_START_MOBILIZING":"It’s Time to Start Mobilizing!",
-  "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO":" You will need to Enroll atleast 15 AG learners to set up available camp"
+  "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO":" You will need to Enroll atleast 15 AG learners to set up available camp",
+  "COMPLETE_ADDRESS":"Complete Address",
+  "IDENTIFY_BENEFICIARY": "Identify Beneficiary", 
+  "BENEFICIARY_PROFILE": "Beneficiary Profile",  
+  "BENEFICIARY_PROFILE_REACTIVATE_BENEFICIARY": "Reactivate Beneficiary",
+  "CONTACT_INFORMATION": "Contact Information"
 }

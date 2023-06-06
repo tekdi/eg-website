@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "IDENTIFY_THE_AG_LEARNER",
+      title: "IDENTIFY_BENEFICIARY",
       type: "object",
       required: ["first_name", "last_name"],
       properties: {
@@ -37,7 +37,7 @@ export default {
       },
     },
     2: {
-      title: "Contact Information",
+      title: "CONTACT_INFORMATION",
       description: "PLEASE_WHATSAPP_NUMBER",
       type: "object",
       required: ["mobile"],
