@@ -368,9 +368,9 @@
   "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "BASIC": "Basic",
   "EDUCATIONAL": "Educational",
-  "ENROLL_15_OR_MORE":"You need to Enroll 15 or more AG Learners to set up a viable camp",
-  "ADD_MORE_AG":"Add more AGs",
-  "DATA_NOT_FOUND":"data not found",
+  "ENROLL_15_OR_MORE": "You need to Enroll 15 or more AG Learners to set up a viable camp",
+  "ADD_MORE_AG": "Add more AGs",
+  "DATA_NOT_FOUND": "data not found",
   "COMPLETE_THIS_BEFORE_ORIENTATION": "Complete this before Orientation",
   "MY_IP": "My Ip",
   "FAQS": "FAQs",
@@ -491,7 +491,9 @@
   "COMPLETE_AADHAR_VERIFICATION_MESSAGE": "You can scan the QR code given on the Aadhaar Card to complete the Aadhaar verification.",
   "DISCLAIMER_MESSAGE": "I understand that my Aadhaar details shall not be used or stored for any other purpose.",
   "AADHAR_KYC_VERIFICATION_FAILED": " Aadhaar KYC Verification Failed",
-  "RETRY_AADHAR_NUMER_KYC": " Retry Aadhaar Number KYC",
+  "RETRY_AADHAR_NUMER_KYC": " Retry using Aadhaar Number KYC",
+  "RETRY_AADHAR_QR_KYC": " Retry Aadhaar QR KYC",
+  "RETRY_AADHAR_UPLOAD_KYC": " Retry Aadhaar upload KYC",
   "GO_BACK": "Go Back",
   "SCAN_YOUR_AADHAR_QR_CODE": "Scan Your Aadhaar QR Code",
   "SCHOOL_DROPOUT_YEAR": "School Dropout Year",
@@ -500,5 +502,7 @@
   "STREET_ADDRESS": "Street Address",
   "LATITUDE": "Latitude",
   "LONGITUDE": "longitude",
-  "BENEFICIARY_ALL":"All"
+  "BENEFICIARY_ALL": "All",
+  "CAPTCHA_CODE": "Captcha code",
+  "TRY_OTHER": "Try Other"
 }

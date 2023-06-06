@@ -476,7 +476,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </Stack> */}
           <VStack p="5" space="5">
             {!form_step_number ||
-              (form_step_number && parseInt(form_step_number) < 10) ? (
+            (form_step_number && parseInt(form_step_number) < 10) ? (
               <Pressable onPress={(e) => navigate("/form")}>
                 <HStack
                   borderWidth="1"

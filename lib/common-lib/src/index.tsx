@@ -32,6 +32,8 @@ import CheatSheet from './components/CheatSheet'
 import CustomOTPBox from './components/CustomOTPBox'
 import * as statusWiseCountService from './services/statusWiseCountService'
 import * as eventService from './services/EventService'
+import * as aadhaarService from './services/aadhaarService'
+import Alert from './components/Alert'
 
 export {
   AdminTypo,
@@ -69,7 +71,9 @@ export {
   CheatSheet,
   CustomOTPBox,
   statusWiseCountService,
-  eventService
+  eventService,
+  aadhaarService,
+  Alert
 }
 
 export * from './services/RestClient'

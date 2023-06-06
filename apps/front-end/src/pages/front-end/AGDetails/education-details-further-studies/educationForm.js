@@ -130,14 +130,6 @@ export default function App({ facilitator, ip, onClick }) {
     getImage();
   }, [page, credentials]);
 
-  const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
-    }
-  };
-
   const uiSchema = {
     dob: {
       "ui:widget": "alt-date",
@@ -375,9 +367,7 @@ export default function App({ facilitator, ip, onClick }) {
       setSubmitBtn(t("NEXT"));
     }
     if (facilitator?.id) {
-      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-      const newData = JSON.parse(data);
-      setFormData({ ...newData, ...facilitator });
+      setFormData(facilitator);
     }
   }, []);
 

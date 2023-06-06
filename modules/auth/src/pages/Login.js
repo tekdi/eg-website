@@ -141,84 +141,86 @@ export default function Login() {
           ) : (
             <React.Fragment />
           )}
-          <VStack space="2">
-            <FormControl isRequired isInvalid={"username" in errors}>
-              {/* <FormControl.Label
+          <form>
+            <VStack space="2">
+              <FormControl isRequired isInvalid={"username" in errors}>
+                {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
                 mb="10px"
               >
                 {t("USERNAME")}
               </FormControl.Label> */}
-              <Input
-                rounded="lg"
-                height="48px"
-                bg="white"
-                variant="unstyled"
-                p={"10px"}
-                placeholder={t("ENTER") + " " + t("USERNAME")}
-                onChange={(e) =>
-                  setCredentials({
-                    ...credentials,
-                    username: e?.target?.value?.trim(),
-                  })
-                }
-              />
-              {"username" in errors ? (
-                <FormControl.ErrorMessage
-                  _text={{
-                    fontSize: "xs",
-                    color: "error.500",
-                    fontWeight: 500,
-                  }}
-                >
-                  {errors.username}
-                </FormControl.ErrorMessage>
-              ) : (
-                <React.Fragment />
-              )}
-            </FormControl>
-            <FormControl isRequired isInvalid={"password" in errors}>
-              {/* <FormControl.Label
+                <Input
+                  rounded="lg"
+                  height="48px"
+                  bg="white"
+                  variant="unstyled"
+                  p={"10px"}
+                  placeholder={t("ENTER") + " " + t("USERNAME")}
+                  onChange={(e) =>
+                    setCredentials({
+                      ...credentials,
+                      username: e?.target?.value?.trim(),
+                    })
+                  }
+                />
+                {"username" in errors ? (
+                  <FormControl.ErrorMessage
+                    _text={{
+                      fontSize: "xs",
+                      color: "error.500",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {errors.username}
+                  </FormControl.ErrorMessage>
+                ) : (
+                  <React.Fragment />
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={"password" in errors}>
+                {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
 
-              <Input
-                rounded="lg"
-                height="48px"
-                bg="white"
-                variant="unstyled"
-                p={"10px"}
-                placeholder={t("ENTER") + " " + t("PASSWORD")}
-                type="password"
-                onChange={(e) =>
-                  setCredentials({
-                    ...credentials,
-                    password: e?.target?.value,
-                  })
-                }
-              />
-              {"password" in errors ? (
-                <FormControl.ErrorMessage
-                  _text={{
-                    fontSize: "xs",
-                    color: "error.500",
-                    fontWeight: 500,
-                  }}
-                >
-                  {errors.password}
-                </FormControl.ErrorMessage>
-              ) : (
-                <React.Fragment />
-              )}
-            </FormControl>
-          </VStack>
-          {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
-          {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-          <FrontEndTypo.Primarybutton flex={1} p="4" onPress={handleLogin}>
-            {t("LOGIN")}
-          </FrontEndTypo.Primarybutton>
+                <Input
+                  rounded="lg"
+                  height="48px"
+                  bg="white"
+                  variant="unstyled"
+                  p={"10px"}
+                  placeholder={t("ENTER") + " " + t("PASSWORD")}
+                  type="password"
+                  onChange={(e) =>
+                    setCredentials({
+                      ...credentials,
+                      password: e?.target?.value,
+                    })
+                  }
+                />
+                {"password" in errors ? (
+                  <FormControl.ErrorMessage
+                    _text={{
+                      fontSize: "xs",
+                      color: "error.500",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {errors.password}
+                  </FormControl.ErrorMessage>
+                ) : (
+                  <React.Fragment />
+                )}
+              </FormControl>
+            </VStack>
+            {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
+            {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
+            <FrontEndTypo.Primarybutton flex={1} p="4" onPress={handleLogin}>
+              {t("LOGIN")}
+            </FrontEndTypo.Primarybutton>
+          </form>
           <BodyMedium color="primary.500" textAlign="center">
             <FrontEndTypo.H2
               color="blueText.450"

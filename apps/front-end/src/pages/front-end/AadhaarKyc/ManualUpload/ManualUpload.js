@@ -1,7 +1,17 @@
 import React from "react";
 import WestIcon from "@mui/icons-material/West";
-import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Text, Image, VStack } from "native-base";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  FormControl,
+  Text,
+  Image,
+  VStack,
+  HStack,
+  Actionsheet,
+  Pressable,
+} from "native-base";
 import {
   Camera,
   getBase64,
@@ -9,15 +19,17 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
+  authRegistryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 
-export default function ManualUpload() {
-  const navigate = useNavigate();
-
-  const [image, setImage] = React.useState({
-    front: "",
-    back: "",
-  });
+export default function ManualUpload({
+  setLoading,
+  setPage,
+  setOtpFailedPopup,
+}) {
+  const { id } = useParams();
+  const [image, setImage] = React.useState();
 
   const [isFront, setIsFront] = React.useState(true);
   const [modal, setModal] = React.useState(false);
@@ -26,28 +38,68 @@ export default function ManualUpload() {
   const [cameraModal, setCameraModal] = React.useState(false);
 
   const [submitted, setSubmitted] = React.useState(false);
-
-  React.useEffect(() => {
-    console.log("images -> ", image);
-  }, [image]);
+  const uplodInputRef = React.useRef();
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 25) {
       const data = await getBase64(file);
-      setCameraUrl(data);
-      // setImage(data);
       if (isFront) {
-        setImage((prev) => ({ ...prev, front: data }));
+        setImage((prev) => ({ ...prev, front: data, front_file: file }));
       } else {
-        setImage((prev) => ({ ...prev, back: data }));
+        setImage((prev) => ({ ...prev, back: data, back_file: file }));
       }
-      setModal(false);
+    } else {
+      setErrors({ fileSize: t("FILE_SIZE") });
+    }
+    setModal(false);
+  };
+
+  const uploadProfile = async () => {
+    if (id) {
+      setLoading(true);
+      const form_data = new FormData();
+      const item = {
+        file: image?.front_file,
+        document_type: "identification",
+        document_sub_type: "aadhaar_front",
+        user_id: id,
+      };
+      for (let key in item) {
+        form_data.append(key, item[key]);
+      }
+      const form_data_back = new FormData();
+      const item_back = {
+        file: image?.back_file,
+        document_type: "identification",
+        document_sub_type: "aadhaar_back",
+        user_id: id,
+      };
+      for (let key in item_back) {
+        form_data_back.append(key, item_back[key]);
+      }
+
+      const result = await Promise.all([
+        uploadRegistryService.uploadFile(form_data),
+        uploadRegistryService.uploadFile(form_data_back),
+        authRegistryService.aadhaarKyc({
+          id,
+          aadhar_verified: "yes",
+          aadhaar_verification_mode: "upload",
+        }),
+      ]);
+      setLoading(false);
+      setPage("aadhaarSuccess");
+      return result;
     }
   };
 
   const handleSubmit = () => {
-    setSubmitted(true);
+    if (image?.front && image?.back) {
+      setSubmitted(true);
+    } else if (image?.front) {
+      setIsFront(false);
+    }
   };
 
   if (cameraModal) {
@@ -80,109 +132,91 @@ export default function ManualUpload() {
         _box: { bg: "white", shadow: "appBarShadow" },
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      <Box borderBottomWidth="2" borderColor="gray.400">
-        <Button
-          variant="ghost"
-          display="flex"
-          justifyContent="flex-start"
-          onPress={() => navigate(-1)}
-        >
-          <WestIcon />
-        </Button>
-      </Box>
-
       <Box px="4">
         {!submitted ? (
-          <>
-            <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
-              {t("AADHAR_CARD")}
-            </FrontEndTypo.H1>
-            <FrontEndTypo.H3 color="textGreyColor.800">
-              {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
-            </FrontEndTypo.H3>
-
-            <Button
+          <VStack space="10">
+            <VStack>
+              <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
+                {t("AADHAR_CARD")}
+              </FrontEndTypo.H1>
+              <FrontEndTypo.H3 color="textGreyColor.800">
+                {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
+              </FrontEndTypo.H3>
+            </VStack>
+            <Pressable
               variant="outline"
-              maxW={480}
-              background="transparent"
               borderWidth="3px"
               borderColor="textGreyColor.100"
-              rounded="md"
+              rounded="lg"
               borderStyle="dashed"
-              mt="16"
+              alignItems="center"
+              gap="4"
+              p="4"
               onPress={() => {
                 setModal(true);
               }}
             >
-              {isFront ? (
-                image.front ? (
-                  <img
-                    src={image.front}
-                    alt="front image"
-                    style={{ widt: "auto", maxWidth: "480px", height: "196px" }}
-                  />
-                ) : (
-                  <>
-                    <IconByName
-                      name="Upload2FillIcon"
-                      textAlign="center"
-                      color="textGreyColor.100"
-                    />
-                    <FrontEndTypo.H2 color="textGreyColor.100">
-                      {t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}
-                    </FrontEndTypo.H2>
-                  </>
-                )
-              ) : image.back ? (
+              {(isFront && image?.front) || (!isFront && image?.back) ? (
                 <img
-                  src={image.back}
-                  alt="back image"
+                  src={(isFront && image?.front) || (!isFront && image?.back)}
+                  alt="front image"
                   style={{ widt: "auto", maxWidth: "480px", height: "196px" }}
                 />
               ) : (
-                <>
+                <VStack alignItems="center">
                   <IconByName
                     name="Upload2FillIcon"
                     textAlign="center"
                     color="textGreyColor.100"
                   />
-                  <FrontEndTypo.H2 color="textGreyColor.100">
-                    {t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")}
+                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
+                    {isFront && image?.back
+                      ? t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")
+                      : t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}
                   </FrontEndTypo.H2>
-                </>
+                </VStack>
               )}
               <Image
                 source={{
                   uri: "/aadhar.svg",
                 }}
                 alt="Aadhar"
-                size={"200px"}
+                w="200px"
+                h="113"
                 resizeMode="contain"
               />
-            </Button>
-
-            <Box
+            </Pressable>
+            <HStack
               display="flex"
               flexDirection="row"
               gap="3"
               alignItems="center"
               justifyContent="center"
-              mt="6"
             >
-              <button
-                onClick={() => setIsFront(!isFront)}
-                className={`btn-indicator ${isFront ? "active" : ""}`}
-              ></button>
+              <IconByName
+                name={
+                  !isFront
+                    ? "CheckboxBlankCircleLineIcon"
+                    : "CheckboxCircleLineIcon"
+                }
+                onPress={() => setIsFront(true)}
+              />
 
-              <button
-                onClick={() => setIsFront(!isFront)}
-                className={`btn-indicator ${!isFront ? "active" : ""}`}
-              ></button>
-            </Box>
-
+              <IconByName
+                name={
+                  isFront
+                    ? "CheckboxBlankCircleLineIcon"
+                    : "CheckboxCircleLineIcon"
+                }
+                onPress={() => {
+                  image?.front ? setIsFront(false) : "";
+                }}
+              />
+            </HStack>
             {isFront ? (
-              image.front ? (
+              image?.front ? (
                 <Button
                   variant="link"
                   onPress={() => {
@@ -195,7 +229,7 @@ export default function ManualUpload() {
                   </FrontEndTypo.H3>
                 </Button>
               ) : null
-            ) : image.back ? (
+            ) : image?.back ? (
               <Button
                 variant="link"
                 onPress={() => {
@@ -208,156 +242,109 @@ export default function ManualUpload() {
                 </FrontEndTypo.H3>
               </Button>
             ) : null}
-
-            <FrontEndTypo.Primarybutton
-              bg={!image.front || !image.back ? "gray.300" : "gray.500"}
-              mt="10"
-              disabled={!image.front || !image.back}
-              onPress={handleSubmit}
-            >
-              {t("CONTINUE")}
-            </FrontEndTypo.Primarybutton>
-          </>
+            <VStack space={"4"}>
+              <FrontEndTypo.Primarybutton
+                bg={!image?.front || !image?.back ? "gray.300" : "gray.500"}
+                onPress={handleSubmit}
+              >
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                onPress={(e) => setOtpFailedPopup(true)}
+              >
+                {t("TRY_OTHER")}
+              </FrontEndTypo.Secondarybutton>
+            </VStack>{" "}
+          </VStack>
         ) : (
-          <>
-            <VStack alignItems="center">
-              <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
-                {t("AADHAAR_CARD_UPLOADED")}
-              </FrontEndTypo.H1>
-              <FrontEndTypo.H2 color="worksheetBoxText.400" my="4">
+          <VStack space={"5"} py="5">
+            <FrontEndTypo.H1 bold color="textMaroonColor.400">
+              {t("AADHAAR_CARD_UPLOADED")}
+            </FrontEndTypo.H1>
+            <VStack alignItems="center" space={"3"}>
+              <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("FRONT_VIEW")}
               </FrontEndTypo.H2>
 
               <img
-                src={image.front}
+                src={image?.front}
                 alt="front image"
                 style={{ width: "auto", maxWidth: "280px", height: "180px" }}
               />
-
-              <FrontEndTypo.H2 color="worksheetBoxText.400" my="4">
+            </VStack>
+            <VStack alignItems="center" space={"3"}>
+              <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("BACK_VIEW")}
               </FrontEndTypo.H2>
 
               <img
-                src={image.back}
+                src={image?.back}
                 alt="back image"
                 style={{ width: "auto", maxWidth: "280px", height: "180px" }}
               />
-
-              <FrontEndTypo.Primarybutton mt="10">
-                {t("CONTINUE")}
-              </FrontEndTypo.Primarybutton>
             </VStack>
-          </>
+            <FrontEndTypo.Primarybutton
+              flex="1"
+              onPress={(e) => uploadProfile()}
+            >
+              {t("CONTINUE")}
+            </FrontEndTypo.Primarybutton>
+
+            <FrontEndTypo.Secondarybutton
+              flex="1"
+              onPress={(e) => {
+                setImage();
+                setSubmitted(false);
+                setIsFront(true);
+              }}
+            >
+              {t("CLEAR")}
+            </FrontEndTypo.Secondarybutton>
+          </VStack>
         )}
       </Box>
 
       {modal && (
-        <Box
-          position="absolute"
-          width="full"
-          height="100vh"
-          bg="black:alpha.20"
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-end"
-        >
-          <Box
-            bg="gray.100"
-            display="flex"
-            flexDirection="column"
-            gap="5"
-            p="6"
-          >
-            <Box
-              bg="white:alpha.80"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              rounded="md"
-              borderWidth="1"
-              borderColor="gray.400"
-              overflow="hidden"
-            >
-              <FrontEndTypo.Secondarybutton
-                onPress={() => {
-                  setCameraUrl();
-                  setCameraModal(true);
-                }}
-              >
-                {t("TAKE_A_PHOTO")}
-              </FrontEndTypo.Secondarybutton>
-
-              <FormControl.Label
-                htmlFor="galleryUpload"
-                p="0"
-                m="0"
-                w="full"
-                borderBottomWidth="1"
-                borderColor="gray.600"
-                rounded="none"
-              >
-                <Text
-                  w="full"
-                  px="15px"
-                  py="10px"
-                  m="0"
-                  fontSize={14}
-                  fontWeight="500"
-                  textAlign="center"
-                >
-                  {t("UPLOAD_FROM_GALLERY")}
-                </Text>
-              </FormControl.Label>
-              <input
-                type="file"
-                id="galleryUpload"
-                style={{ display: "none" }}
-                onChange={handleFileInputChange}
+        <Actionsheet isOpen={modal} onClose={(e) => setModal(false)}>
+          <Actionsheet.Content alignItems={"left"}>
+            <HStack justifyContent={"space-between"} alignItems="strat">
+              <FrontEndTypo.H1 color="textGreyColor.800" p="2">
+                {t("AADHAR_KYC_VERIFICATION_FAILED")}
+              </FrontEndTypo.H1>
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setModal(false)}
               />
-
-              <FormControl.Label
-                htmlFor="fileUpload"
-                p="0"
-                m="0"
-                w="full"
-                rounded="none"
-              >
-                <Text
-                  w="full"
-                  px="15px"
-                  py="10px"
-                  m="0"
-                  fontSize={14}
-                  fontWeight="500"
-                  textAlign="center"
-                >
-                  {t("Upload a file")}
-                </Text>
-              </FormControl.Label>
-              <input
-                type="file"
-                id="fileUpload"
-                style={{ display: "none" }}
-                onChange={handleFileInputChange}
-              />
-            </Box>
-
-            <Button
-              bg="white:alpha.80"
-              variant="outline"
-              px="15px"
-              py="10px"
-              rounded="md"
-              className="btn-cancel"
+            </HStack>
+          </Actionsheet.Content>
+          <VStack bg="white" width={"100%"} space="5" p="5">
+            <FrontEndTypo.Secondarybutton
               onPress={() => {
-                setModal(false);
+                setCameraUrl();
+                setCameraModal(true);
               }}
             >
-              {t("CANCEL")}
-            </Button>
-          </Box>
-        </Box>
+              {t("TAKE_A_PHOTO")}
+            </FrontEndTypo.Secondarybutton>
+            <Box>
+              <input
+                accept="image/*"
+                type="file"
+                style={{ display: "none" }}
+                ref={uplodInputRef}
+                onChange={handleFileInputChange}
+              />
+              <FrontEndTypo.Secondarybutton
+                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+                onPress={(e) => {
+                  uplodInputRef?.current?.click();
+                }}
+              >
+                {t("UPLOAD_FROM_GALLERY")}
+              </FrontEndTypo.Secondarybutton>
+            </Box>
+          </VStack>
+        </Actionsheet>
       )}
     </Layout>
   );

@@ -451,7 +451,11 @@
   "COMPLETE_AADHAR_VERIFICATION_MESSAGE": "आधार सत्यापन पूरा करने के लिए आप आधार कार्ड पर दिए गए क्यूआर कोड को स्कैन कर सकते हैं.",
   "DISCLAIMER_MESSAGE": "मैं समझता हूं कि मेरे आधार विवरण का उपयोग या किसी अन्य उद्देश्य के लिए संग्रहीत नहीं किया जाएगा.",
   "AADHAR_KYC_VERIFICATION_FAILED": " आधार केवाईसी सत्यापन विफल",
-  "RETRY_AADHAR_NUMER_KYC": " आधार संख्या केवाईसी पुनः प्रयास करें",
+  "RETRY_AADHAR_NUMER_KYC": "आधार संख्या केवाईसी पुनः प्रयास करें",
+  "RETRY_AADHAR_QR_KYC": "आधार क्यूआर केवाईसी पुनः प्रयास करें",
+  "RETRY_AADHAR_UPLOAD_KYC": "आधार फोटो केवाईसी पुनः प्रयास करें",
   "GO_BACK": "वापस जाओ",
-  "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें"
+  "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
+  "CAPTCHA_CODE": "कैप्चा कोड",
+  "TRY_OTHER": "कोई दूसरा कोशिश"
 }
