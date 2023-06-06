@@ -517,5 +517,6 @@
   "LATITUDE": "Latitude",
   "LONGITUDE": "longitude",
   "BENEFICIARY_ALL": "All",
-  "CHECK_DOCUMENTS": "Check Documents"
+  "CHECK_DOCUMENTS": "Check Documents",
+  "USER_ID":"User Id"
 }

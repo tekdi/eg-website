@@ -78,7 +78,7 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("User_Id"),
+    name: t("USER_ID"),
     selector: (row) => row.id,
   },
   {
@@ -107,10 +107,9 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${
-            item[key] && typeof item[key] === "string"
-              ? item[key].trim()
-              : item[key]
+          `${item[key] && typeof item[key] === "string"
+            ? item[key].trim()
+            : item[key]
           }`
         )
       ) {
@@ -230,9 +229,8 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onboarding/${
-                        facilitator?.program_users[0]?.organisation_id
-                      }`}
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id
+                        }`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -250,10 +248,11 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   </HStack>
                   <HStack space="5" pt="5">
                     <Input
+                      isDisabled
                       flex={0.7}
                       placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
                     />
-                    <AdminTypo.PrimaryButton flex={0.3}>
+                    <AdminTypo.PrimaryButton isDisabled flex={0.3}>
                       {t("SEND")}
                     </AdminTypo.PrimaryButton>
                   </HStack>

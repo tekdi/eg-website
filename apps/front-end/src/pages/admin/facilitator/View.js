@@ -71,7 +71,16 @@ export default function FacilitatorView({ footerLinks }) {
   const [credentials, setCredentials] = React.useState();
   const [otpData, setotpData] = React.useState();
   const [errors, setErrors] = React.useState({});
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [confirmPassword, setConfirmPassword] = React.useState(false);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPassword(!confirmPassword);
+  };
   const navigate = useNavigate();
 
   React.useEffect(async () => {
@@ -144,6 +153,7 @@ export default function FacilitatorView({ footerLinks }) {
       setCredentials();
     }
   };
+
 
   if (!data) {
     return <Loading />;
@@ -378,11 +388,14 @@ export default function FacilitatorView({ footerLinks }) {
                   <VStack space={30}>
                     <Input
                       id="password"
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       InputRightElement={
                         <IconByName
                           name="EyeOffLineIcon"
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                          onPress={() => {
+                            togglePasswordVisibility()
+                          }}
                         />
                       }
                       placeholder={
@@ -419,11 +432,14 @@ export default function FacilitatorView({ footerLinks }) {
 
                     <Input
                       id="confirmPassword"
-                      type="password"
+                      type={confirmPassword ? 'text' : 'password'}
                       InputRightElement={
                         <IconByName
                           name="EyeOffLineIcon"
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                          onPress={() => {
+                            toggleConfirmPasswordVisibility()
+                          }}
                         />
                       }
                       placeholder={
@@ -478,16 +494,16 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       credentials?.password === credentials?.confirmPassword
                         ? handleResetPassword(
-                            credentials?.password,
-                            credentials?.confirmPassword
-                          )
+                          credentials?.password,
+                          credentials?.confirmPassword
+                        )
                         : toast.show({
-                            title: "Error",
-                            variant: "solid",
-                            description: t(
-                              "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-                            ),
-                          });
+                          title: "Error",
+                          variant: "solid",
+                          description: t(
+                            "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+                          ),
+                        });
                     }}
                   >
                     {t("USER_SET_NEW_PASSWORD")}
@@ -578,14 +594,14 @@ export default function FacilitatorView({ footerLinks }) {
                       data?.grampanchayat,
                     ].filter((e) => e).length > 0
                       ? [
-                          data?.state,
-                          data?.district,
-                          data?.block,
-                          data?.village,
-                          data?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")
+                        data?.state,
+                        data?.district,
+                        data?.block,
+                        data?.village,
+                        data?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(", ")
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
