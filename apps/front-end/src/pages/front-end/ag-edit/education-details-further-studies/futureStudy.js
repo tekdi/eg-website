@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "../ag-form/parts/SchemaAdhaar.js";
+import schema1 from "./futureStudySchema.js";
 import {
   Alert,
   Box,
@@ -13,21 +13,33 @@ import {
   Radio,
   Stack,
   VStack,
-  Text,
 } from "native-base";
-import CustomRadio from "../../../component/CustomRadio";
-import Steper from "../../../component/Steper";
 import {
   facilitatorRegistryService,
+  geolocationRegistryService,
+  uploadRegistryService,
+  AgRegistryService,
+  Camera,
   Layout,
+  H1,
   t,
+  login,
+  H3,
+  IconByName,
+  BodySmall,
+  filtersByObject,
+  H2,
+  getBase64,
   BodyMedium,
+  changeLanguage,
+  StudentEnumService,
+  sendAndVerifyOtp,
   CustomOTPBox,
-  FrontEndTypo,
+  benificiaryRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
-
 import moment from "moment";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -38,37 +50,47 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
-} from "../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-import Success from "../Success.js";
+  select,
+} from "../../../../component/BaseInput";
+
+import { useLocation } from "react-router-dom";
 
 // App
 
-export default function Agform({ userTokenInfo }) {
+export default function AgformUpdate({ userTokenInfo }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
+  const [cameraModal, setCameraModal] = React.useState(false);
+  const [credentials, setCredentials] = React.useState();
+  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
+  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
+  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState();
+  const { id } = useParams();
+  const [userId, setuserId] = React.useState(id);
 
   const location = useLocation();
+
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setuserId(location?.state?.id);
+    console.log("hello", userId);
   }, []);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
   };
   const ref = React.createRef(null);
+
+  const updateData = (data, deleteData = false) => {};
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -78,8 +100,11 @@ export default function Agform({ userTokenInfo }) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
         nextIndex = pages[index + 1];
+      } else if (page == "1") {
+        navigate("/beneficiary", { state: { id: userId } });
       } else {
         nextIndex = pages[index - 1];
+        console.log("reached here");
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
@@ -92,6 +117,29 @@ export default function Agform({ userTokenInfo }) {
       }
     }
   };
+
+  React.useEffect(async () => {
+    //console.log("pagecalled");
+    setFormData({ ...formData, edit_page_type: "add_contact" });
+    if (page === "2") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page2", updateDetails);
+      setFormData({ ...formData, edit_page_type: "add_address" });
+    } else if (page === "3") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page3.....", updateDetails);
+      setFormData({ ...formData, edit_page_type: "personal" });
+    } else if (page === "4") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page4.....", updateDetails);
+      setFormData({ ...formData, edit_page_type: "add_education" });
+    } else if (page === "upload") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      console.log("page5.....", updateDetails);
+    }
+  }, [page]);
+
+  console.log("page", page);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -107,6 +155,55 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
+  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
+    let enumObj = {};
+    let arrData = arr;
+    if (!_.isEmpty(filters)) {
+      arrData = filtersByObject(arr, filters);
+    }
+    enumObj = {
+      ...enumObj,
+      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
+    };
+    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
+    const newProperties = schema["properties"][key];
+    let properties = {};
+    if (newProperties) {
+      if (newProperties.enum) delete newProperties.enum;
+      let { enumNames, ...remainData } = newProperties;
+      properties = remainData;
+    }
+    return {
+      ...schema,
+      ["properties"]: {
+        ...schema["properties"],
+        [key]: {
+          ...properties,
+          ...(_.isEmpty(arr) ? {} : enumObj),
+        },
+      },
+    };
+  };
+
+  // Type Of Student
+
+  React.useEffect(async () => {
+    const career_aspiration = await enumRegistryService.listOfEnum();
+    const Data = career_aspiration?.data?.CAREER_ASPIRATION;
+    console.log("career_aspiration", Data);
+    let newSchema = schema;
+    if (schema["properties"]["career_aspiration"]) {
+      newSchema = getOptions(newSchema, {
+        key: "career_aspiration",
+        arr: Data,
+        title: "title",
+        value: "value",
+      });
+    }
+
+    setSchema(newSchema);
+  }, [formData]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -114,12 +211,34 @@ export default function Agform({ userTokenInfo }) {
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
+      let minYear = moment().subtract("years", 50);
+      let maxYear = moment().subtract("years", 18);
+      setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
   }, []);
 
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
+  React.useEffect(async () => {
+    const qData = await benificiaryRegistoryService.getOne(userId);
+    console.log("qData", qData?.result);
+    let career_aspiration =
+      qData?.result?.core_beneficiaries[0]?.career_aspiration;
+    let career_aspiration_details =
+      qData?.result?.core_beneficiaries[0]?.career_aspiration_details;
+
+    setFormData({
+      ...formData,
+      career_aspiration_details: career_aspiration_details,
+      career_aspiration: career_aspiration,
+    });
+  }, []);
+
+  const formSubmitUpdate = async (formData) => {
+    const { id } = authUser;
+
+    if (id) {
+      updateData({}, true);
+    }
   };
 
   const goErrorPage = (key) => {
@@ -131,21 +250,6 @@ export default function Agform({ userTokenInfo }) {
         }
       });
     }
-  };
-
-  const customValidate = (data, errors, c) => {
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
-      }
-    }
-
-    return errors;
   };
 
   const transformErrors = (errors, uiSchema) => {
@@ -168,17 +272,16 @@ export default function Agform({ userTokenInfo }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
-    console.log("data", data);
-    console.log("ee", id);
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({ aadhar_token: data?.aadhar_token });
+    updateData(newData);
+    if (id === "root_mobile") {
+      if (data?.mobile?.toString()?.length === 10) {
+        const result = await userExist({ mobile: data?.mobile });
         if (result.isUserExist) {
           const newErrors = {
-            aadhar_token: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
+            mobile: {
+              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
             },
           };
           setErrors(newErrors);
@@ -194,18 +297,18 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  console.log("error", errors);
-
-  const onSubmit = () => {
-    navigate(`/beneficiary/profile/${userId}`);
+  const EditEducation = async (data) => {
+    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    console.log("page1", updateDetails);
+    if (updateDetails) {
+      navigate(`/beneficiary/edit/enrollment-details/${userId}`);
+    }
   };
 
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => {
-          navigate("/beneficiary/2", { state: { id: userId, page: "5" } });
-        },
+        onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
@@ -230,7 +333,7 @@ export default function Agform({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, select }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -238,7 +341,6 @@ export default function Agform({ userTokenInfo }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
-              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -247,40 +349,19 @@ export default function Agform({ userTokenInfo }) {
               validator,
               schema: schema ? schema : {},
               formData,
-              customValidate,
               onChange,
               onError,
-              onSubmit,
               transformErrors,
             }}
           >
-            {errors?.aadhar_token ? (
-              <FrontEndTypo.Primarybutton
-                mt="5"
-                type="submit"
-                onPress={() =>
-                  navigate("/beneficiary/4", { state: { id: userId } })
-                }
-              >
-                {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-              </FrontEndTypo.Primarybutton>
-            ) : (
-              <FrontEndTypo.Primarybutton
-                mt="5"
-                type="submit"
-                onPress={() => formRef?.current?.submit()}
-              >
-                {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-              </FrontEndTypo.Primarybutton>
-            )}
-            {/* <Button
-              mt="5"
+            <Button
+              mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => formRef?.current?.submit()}
+              onPress={() => EditEducation()}
             >
               {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-            </Button> */}
+            </Button>
           </Form>
         ) : (
           <React.Fragment />

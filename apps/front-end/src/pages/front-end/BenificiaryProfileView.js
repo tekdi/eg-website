@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import {
   HStack,
   VStack,
@@ -8,10 +9,11 @@ import {
   Divider,
   Button,
   Modal,
+  Actionsheet,
+  useDisclose,
 } from "native-base";
 import {
   AdminTypo,
-  BodySmall,
   FrontEndTypo,
   H1,
   H3,
@@ -21,7 +23,9 @@ import {
   t,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import Chip from "component/Chip";
 
 const dropoutReasons = [
   {
@@ -77,20 +81,26 @@ const reactivateReasons = [
   },
 ];
 
-export default function AgLearnerProfileView(props) {
-  const [modalVisible, setModalVisible] = React.useState(false);
+export default function BenificiaryProfileView(props) {
+  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
+  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
+
   const [reactivatemodalVisible, setreactivateModalVisible] =
     React.useState(false);
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
-  React.useEffect(() => {
-    const getData = async () => {
-      let data = await benificiaryRegistoryService.getOne(id);
-      setBenificiary(data);
-    };
+  const navigate = useNavigate();
 
-    getData();
+  React.useEffect(() => {
+    benificiaryDetails();
   }, []);
+
+  const benificiaryDetails = async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+
+    setBenificiary(result?.result);
+  };
+
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
   const dropoutApiCall = async () => {
@@ -127,14 +137,13 @@ export default function AgLearnerProfileView(props) {
             <IconByName
               name="AccountCircleLineIcon"
               color="textGreyColor.200"
-              _icon={{ size: "60" }}
+              _icon={{ size: "80" }}
             />
             <FrontEndTypo.H2 bold color="textMaroonColor.400">
-              {benificiary?.result?.first_name}
-              {benificiary?.result?.last_name &&
-                ` ${benificiary?.result?.last_name}`}
+              {benificiary?.first_name}
+              {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
-            <Box>{benificiary?.result?.[0]?.status || "unidentified"}</Box>
+            <Box>{benificiary?.status || "unidentified"}</Box>
           </VStack>
           <Box
             bg="boxBackgroundColour.100"
@@ -160,6 +169,9 @@ export default function AgLearnerProfileView(props) {
 
                   <IconByName
                     name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/basicdetails`);
+                    }}
                     color="textMaroonColor.400"
                   />
                 </HStack>
@@ -241,6 +253,32 @@ export default function AgLearnerProfileView(props) {
                   name="ArrowRightSLineIcon"
                   color="#790000"
                   size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/enrollmentdetails`);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("EDUCATION_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/educationdetails`);
+                  }}
                 />
               </HStack>
             </VStack>
@@ -287,181 +325,115 @@ export default function AgLearnerProfileView(props) {
               </HStack>
             </VStack>
           </Box>
-          <Button
-            bgColor="white"
-            borderColor="#790000"
-            borderRadius="100px"
-            borderWidth="2px"
-            onPress={() => {
-              setModalVisible(true);
-            }}
+          <FrontEndTypo.Disablebutton
+            onPress={(e) => setIsOpenDropOut(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
           >
-            <HStack alignItems="Center">
-              <IconByName
-                name="UserUnfollowLineIcon"
-                isDisabled
-                color="#790000"
-              />
-              <AdminTypo.H4
-                color="#790000"
-                fontSize="14px"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
-                {t("MARK_AS_DROPOUT")}
-              </AdminTypo.H4>
-            </HStack>
-          </Button>
-          <Button
-            bgColor="#AFF4C6"
-            borderColor="white"
-            borderRadius="100px"
-            borderWidth="2px"
-            onPress={() => {
-              setreactivateModalVisible(true);
-            }}
-          >
-            <HStack alignItems="Center">
-              <AdminTypo.H4
-                color="#666666"
-                fontSize="14px"
-                fontWeight="700"
-                fontFamily="Inter"
-                fontStyle="normal"
-              >
-                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </AdminTypo.H4>
-            </HStack>
+            {t("MARK_AS_DROPOUT")}
+          </FrontEndTypo.Disablebutton>
+          <Button onPress={(e) => setIsOpenReactive(true)}>
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </Button>
         </VStack>
       </VStack>
-      <Modal
-        isOpen={modalVisible}
-        safeAreaTop={true}
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
+      <Actionsheet
+        isOpen={isOpenDropOut}
+        onClose={(e) => setIsOpenDropOut(false)}
       >
-        <Modal.Content
-          maxWidth="350"
-          style={{ marginBottom: 0, marginTop: "auto" }}
-        >
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1>{t("AG_PROFILE_ARE_YOU_SURE")}</H1>
-            <H3>{t("AG_PROFILE_DROPOUT_MESSAGE")} </H3>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <H3>{t("AG_PROFILE_REASON_MEASSGAE")} </H3>
-            <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
-                w="100%"
-              >
-                <VStack alignItems="center" space="1" flex="1">
-                  <CustomRadio
-                    options={{ enumOptions: dropoutReasons }}
-                    schema={{ grid: 2 }}
-                    value={reasonValue}
-                    onChange={(e) => {
-                      setReasonValue(e);
-                    }}
-                  />
-                </VStack>
-              </VStack>
-              <VStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  onPress={() => {
-                    dropoutApiCall();
-                  }}
-                >
-                  {t("MARK_AS_DROPOUT")}
-                </Button>
-                <Button
-                  flex={1}
-                  variant="secondary"
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  {t("CANCEL")}
-                </Button>
-              </VStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+        <Actionsheet.Content>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenDropOut(false)}
+            />
+          </VStack>
 
-      <Modal
-        isOpen={reactivatemodalVisible}
-        safeAreaTop={true}
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
-      >
-        <Modal.Content
-          maxWidth="350"
-          style={{ marginBottom: 0, marginTop: "auto" }}
-        >
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1>{t("AG_PROFILE_ARE_YOU_SURE")}</H1>
-            <H3>{t("AG_PROFILE_REACTIVAYE_MESSAGE")} </H3>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <H3>{t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")} </H3>
-            <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
-                w="100%"
-              >
-                <VStack alignItems="center" space="1" flex="1">
-                  <CustomRadio
-                    options={{ enumOptions: reactivateReasons }}
-                    schema={{ grid: 2 }}
-                    value={reactivateReasonValue}
-                    onChange={(e) => {
-                      setReactivateReasonValue(e);
-                    }}
-                  />
-                </VStack>
-              </VStack>
-              <VStack space="3">
-                <Button
-                  flex={1}
-                  bgColor="#666666"
-                  borderColor="white"
-                  borderRadius="100px"
-                  borderWidth="2px"
-                  onPress={() => {
-                    reactivateApiCall();
+          <FrontEndTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H2 color="textGreyColor.450">
+            {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+            {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+          </FrontEndTypo.H2>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
+              <VStack alignItems="center" space="1" flex="1">
+                <CustomRadio
+                  options={{ enumOptions: dropoutReasons }}
+                  schema={{ grid: 2 }}
+                  value={reasonValue}
+                  onChange={(e) => {
+                    setReasonValue(e);
                   }}
-                >
-                  {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-                </Button>
-                <Button
-                  flex={1}
-                  variant="secondary"
-                  onPress={() => {
-                    setreactivateModalVisible(false);
-                  }}
-                >
-                  {t("CANCEL")}
-                </Button>
+                />
               </VStack>
             </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+            <VStack space="5" pt="5">
+              <FrontEndTypo.Disablebutton
+                flex={1}
+                onPress={() => {
+                  dropoutApiCall();
+                }}
+              >
+                {t("MARK_AS_DROPOUT")}
+              </FrontEndTypo.Disablebutton>
+            </VStack>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
+
+      <Actionsheet
+        isOpen={isOpenReactive}
+        onClose={(e) => setIsOpenReactive(false)}
+      >
+        <IconByName
+          name="CloseCircleLineIcon"
+          onPress={(e) => setIsOpenReactive(false)}
+        />
+        <Actionsheet.Content>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenDropOut(false)}
+            />
+          </VStack>
+          <FrontEndTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H2 color="textGreyColor.450">
+            {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+            {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
+          </FrontEndTypo.H2>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg">
+              <VStack alignItems="center" space="1" flex="1">
+                <CustomRadio
+                  options={{ enumOptions: reactivateReasons }}
+                  schema={{ grid: 2 }}
+                  value={reactivateReasonValue}
+                  onChange={(e) => {
+                    setReactivateReasonValue(e);
+                  }}
+                />
+              </VStack>
+            </VStack>
+            <VStack space="3">
+              <FrontEndTypo.Disablebutton
+                flex={1}
+                onPress={() => {
+                  reactivateApiCall();
+                }}
+              >
+                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+              </FrontEndTypo.Disablebutton>
+            </VStack>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
     </Layout>
   );
 }
