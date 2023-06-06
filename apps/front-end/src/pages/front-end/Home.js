@@ -3,10 +3,7 @@ import Form from "./Form";
 import SplashScreen from "./splash/SplashScreen";
 import PrerakDuties from "./splash/PrerakDuties";
 import Success from "./Success";
-import {
-  facilitatorRegistryService,
-  initializeI18n,
-} from "@shiksha/common-lib";
+import { facilitatorRegistryService } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 
 function Home({ userTokenInfo }) {
@@ -17,8 +14,7 @@ function Home({ userTokenInfo }) {
 
   React.useEffect(async () => {
     if (userTokenInfo) {
-      const fa_id = localStorage.getItem("id");
-      const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
+      const fa_data = userTokenInfo.authUser;
       localStorage.setItem("profile_url", fa_data?.documents?.[0]?.name);
       setFacilitator(fa_data);
       if (fa_data?.program_faciltators?.parent_ip) {

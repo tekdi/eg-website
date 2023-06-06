@@ -1,13 +1,10 @@
 import React from "react";
-import WestIcon from "@mui/icons-material/West";
 import { useNavigate } from "react-router-dom";
 import jsQR from "jsqr";
 import "./QrScannerKyc.css";
-import { FrontEndTypo, Layout } from "@shiksha/common-lib";
+import { FrontEndTypo, Layout, t } from "@shiksha/common-lib";
 
-export default function QrScannerKyc() {
-  const navigate = useNavigate();
-
+export default function QrScannerKyc({ setOtpFailedPopup }) {
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
 
@@ -69,12 +66,6 @@ export default function QrScannerKyc() {
       }}
     >
       <div className="qrScannerPage">
-        <div className="topbar">
-          <button className="btn-back" onClick={() => navigate(-1)}>
-            <WestIcon />
-          </button>
-        </div>
-
         <div className="content">
           <FrontEndTypo.H1 bold>
             {t("SCAN_YOUR_AADHAR_QR_CODE")}
@@ -85,6 +76,13 @@ export default function QrScannerKyc() {
 
           <FrontEndTypo.Secondarybutton mt={10}>
             {t("CONTINUE")}
+          </FrontEndTypo.Secondarybutton>
+
+          <FrontEndTypo.Secondarybutton
+            mt={10}
+            onPress={(e) => setOtpFailedPopup(true)}
+          >
+            {t("TRY_OTHER")}
           </FrontEndTypo.Secondarybutton>
         </div>
       </div>

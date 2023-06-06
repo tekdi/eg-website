@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "./subjectForm";
+import Form from "./educationForm";
 import { useParams } from "react-router-dom";
 import { IconByName } from "@shiksha/common-lib";
 import { VStack } from "native-base";
@@ -12,7 +12,7 @@ export default function basicDetails() {
 
   return (
     <VStack>
-      <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
+      <Form {...{ ip, id, facilitator }} onClick={(e) => setPage(e)} />
     </VStack>
   );
 }
