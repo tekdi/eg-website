@@ -92,11 +92,16 @@ export default function FacilitatorView({ footerLinks }) {
 
   const validate = () => {
     let arr = {};
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (
       typeof credentials?.password === "undefined" ||
       credentials?.password === ""
     ) {
       arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
+    }
+    else if (!regex.test(credentials?.password)) {
+      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
+
     }
 
     if (
@@ -105,12 +110,18 @@ export default function FacilitatorView({ footerLinks }) {
     ) {
       arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
     }
+    else if (!regex.test(credentials?.confirmPassword)) {
+      arr = { ...arr, confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH") };
+
+    }
 
     setErrors(arr);
     if (arr.password || arr.confirmPassword) {
       return false;
     }
-    return true;
+    else {
+      return true
+    }
   };
 
   const handleSendOtp = async () => {
@@ -384,7 +395,7 @@ export default function FacilitatorView({ footerLinks }) {
                   </ChipStatus>
                 </HStack>
                 <FormControl isRequired isInvalid mt="4">
-                  <VStack space={30}>
+                  <VStack space={3}>
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -493,16 +504,16 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       credentials?.password === credentials?.confirmPassword
                         ? handleResetPassword(
-                            credentials?.password,
-                            credentials?.confirmPassword
-                          )
+                          credentials?.password,
+                          credentials?.confirmPassword
+                        )
                         : toast.show({
-                            title: "Error",
-                            variant: "solid",
-                            description: t(
-                              "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-                            ),
-                          });
+                          title: "Error",
+                          variant: "solid",
+                          description: t(
+                            "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+                          ),
+                        });
                     }}
                   >
                     {t("USER_SET_NEW_PASSWORD")}
@@ -593,14 +604,14 @@ export default function FacilitatorView({ footerLinks }) {
                       data?.grampanchayat,
                     ].filter((e) => e).length > 0
                       ? [
-                          data?.state,
-                          data?.district,
-                          data?.block,
-                          data?.village,
-                          data?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")
+                        data?.state,
+                        data?.district,
+                        data?.block,
+                        data?.village,
+                        data?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(", ")
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
