@@ -93,7 +93,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => { };
+  const updateData = (data, deleteData = false) => {};
 
   // const uiSchema = {
   //   facilitator_id: {
@@ -337,7 +337,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => { };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {

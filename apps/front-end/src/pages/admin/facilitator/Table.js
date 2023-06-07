@@ -246,7 +246,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                       </HStack>
                     </Clipboard>
                   </HStack>
-                  <HStack space="5" pt="5">
+                  {/* <HStack space="5" pt="5">
                     <Input
                       isDisabled
                       flex={0.7}
@@ -255,7 +255,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                     <AdminTypo.PrimaryButton isDisabled flex={0.3}>
                       {t("SEND")}
                     </AdminTypo.PrimaryButton>
-                  </HStack>
+                  </HStack> */}
                 </VStack>
               </Modal.Body>
             </Modal.Content>
