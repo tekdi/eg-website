@@ -4,7 +4,7 @@ const LoginComponent = React.lazy(() => import("auth/Login"));
 const ForgetPasswordComponent = React.lazy(() => import("auth/ForgetPassword"));
 export default [
   {
-    path: "/facilitator-self-onboarding/:id",
+    path: "/admin/facilitator-self-onboarding/:id",
     component: Home,
   },
   {
