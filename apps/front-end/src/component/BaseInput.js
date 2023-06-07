@@ -286,7 +286,6 @@ export const Aadhaar = (props) => {
 };
 
 export const select = ({ options, value, onChange, required, schema }) => {
-  console.log("select");
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label } = schema ? schema : {};
   return (

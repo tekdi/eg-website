@@ -1,7 +1,5 @@
 import {
-  BodySmall,
   facilitatorRegistryService,
-  H2,
   t,
   IconByName,
   Layout,
@@ -13,9 +11,7 @@ import {
   HStack,
   VStack,
   Box,
-  Text,
   Select,
-  Image,
   Pressable,
 } from "native-base";
 import React from "react";
