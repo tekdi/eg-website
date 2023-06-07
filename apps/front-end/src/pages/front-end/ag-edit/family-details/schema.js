@@ -9,6 +9,8 @@ export default {
       properties: {
         father_details: {
           title: "FATHER_FULL_NAME",
+          description: "FATHER_FULL_NAME",
+
           type: "object",
           properties: {
             father_first_name: {
@@ -27,6 +29,8 @@ export default {
         },
         mother_details: {
           title: "MOTHER_FULL_NAME",
+          description: "MOTHER_FULL_NAME",
+
           type: "object",
           properties: {
             mother_first_name: {

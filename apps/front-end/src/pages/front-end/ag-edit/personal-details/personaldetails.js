@@ -36,6 +36,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -53,6 +54,7 @@ import {
   RadioBtn,
   CustomR,
 } from "../../../../component/BaseInput.js";
+import { Fragment } from "react";
 
 // App
 export default function agFormEdit({ ip }) {
@@ -79,7 +81,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/edit/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -100,8 +102,8 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   React.useEffect(async () => {
-    let marital_status = formData?.extended_users[0]?.marital_status;
-    let social_category = formData?.extended_users[0]?.social_category;
+    let marital_status = formData?.extended_users?.marital_status;
+    let social_category = formData?.extended_users?.social_category;
 
     setFormData({
       ...formData,
@@ -408,7 +410,7 @@ export default function agFormEdit({ ip }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/edit/contact-details/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (
@@ -461,14 +463,14 @@ export default function agFormEdit({ ip }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Save" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
