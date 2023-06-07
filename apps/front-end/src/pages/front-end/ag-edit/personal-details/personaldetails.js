@@ -81,7 +81,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/edit/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -102,8 +102,8 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   React.useEffect(async () => {
-    let marital_status = formData?.extended_users[0]?.marital_status;
-    let social_category = formData?.extended_users[0]?.social_category;
+    let marital_status = formData?.extended_users?.marital_status;
+    let social_category = formData?.extended_users?.social_category;
 
     setFormData({
       ...formData,
@@ -410,7 +410,7 @@ export default function agFormEdit({ ip }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/edit/contact-details/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (
