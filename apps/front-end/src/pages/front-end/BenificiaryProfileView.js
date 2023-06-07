@@ -123,7 +123,12 @@ export default function BenificiaryProfileView(props) {
   };
 
   return (
-    <Layout _appBar={{ name: t("BENEFICIARY_PROFILE") }}>
+    <Layout _appBar={{
+      name: t("BENEFICIARY_PROFILE"),
+      onPressBackButton: (e) => {
+        navigate(`/beneficiary/list`);
+      },
+    }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <VStack alignItems="Center">
@@ -225,6 +230,9 @@ export default function BenificiaryProfileView(props) {
                   name="ArrowRightSLineIcon"
                   color="textMaroonColor.400"
                   size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/docschecklist`);
+                  }}
                 />
               </HStack>
             </VStack>
