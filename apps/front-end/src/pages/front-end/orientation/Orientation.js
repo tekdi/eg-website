@@ -154,8 +154,6 @@ export default function Orientation({
   const handleEventClick = async (info) => {
     console.log("Event clicked:", info?.event?.extendedProps);
     navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
-    // setFormData(info?.event?.extendedProps);
-    // setModalVisible(true);
   };
 
   const onSubmit = async (data) => {

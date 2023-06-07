@@ -663,52 +663,6 @@ export default function Attendence() {
                       </HStack>
 
                       <HStack alignItems="center" space={5}>
-                        {/* <HStack alignItems="center" space={2}>
-                          <IconByName
-                            isDisabled
-                            name="FileTextLine"
-                            color="gray.400"
-                            _icon={{ size: "25" }}
-                          />
-                          <AdminTypo.H5 mt={"12px"} color="textGreyColor.100">
-                            {t("DOCUMENT_VERIFICATION")}
-                          </AdminTypo.H5>
-                          <Stack
-                            direction={{
-                              base: "column",
-                              md: "row",
-                            }}
-                            space={3}
-                            alignItems="flex-start"
-                          >
-                            <Checkbox
-                              value="qualification certificate"
-                              color="textGreyColor.800"
-                              fontSize="sm"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Qualification Certificate
-                              </AdminTypo.H6>
-                            </Checkbox>
-                            <Checkbox
-                              value="volunteer proof"
-                              color="textGreyColor.800"
-                              fontSize="sm"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Volunteer Proof
-                              </AdminTypo.H6>
-                            </Checkbox>
-                            <Checkbox
-                              value="work proof"
-                              color="textGreyColor.800"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Work Proof
-                              </AdminTypo.H6>
-                            </Checkbox>
-                          </Stack>
-                        </HStack> */}
                         <Form
                           schema={schema}
                           ref={formRef}
@@ -810,8 +764,6 @@ export default function Attendence() {
                     />
                   </React.Suspense>
                 )}
-
-                {/* )} */}
               </Modal.Body>
               <Modal.Footer justifyContent={"center"}>
                 <AdminTypo.Secondarybutton
