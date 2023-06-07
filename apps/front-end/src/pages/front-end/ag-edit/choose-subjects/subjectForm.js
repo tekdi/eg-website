@@ -85,7 +85,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   console.log("userId", userId);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/profile/${userId}`);
+    navigate(`/beneficiary/${userId}/profile`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -357,7 +357,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   const editSubmit = async () => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
-    navigate(`/beneficiary/profile/${userId}`);
+    navigate(`/beneficiary/${userId}/profile`);
   };
 
   console.log("formData,", formData);

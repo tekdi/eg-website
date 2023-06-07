@@ -54,7 +54,7 @@ export default function BenificiaryBasicDetails() {
                 color="iconColor.200"
                 _icon={{ size: "20" }}
                 onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}`);
+                  navigate(`/beneficiary/edit/${id}/basic-info`);
                 }}
               />
             </HStack>
@@ -88,7 +88,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/contact-details/${id}`);
+                    navigate(`/beneficiary/edit/${id}/contact-details`);
                   }}
                 />
               </HStack>
@@ -203,7 +203,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/address/${id}`);
+                    navigate(`/beneficiary/edit/${id}/address`);
                   }}
                 />
               </HStack>
@@ -248,7 +248,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/family-details/${id}`);
+                    navigate(`/beneficiary/edit/${id}/family-details`);
                   }}
                 />
               </HStack>
@@ -345,7 +345,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/personal-details/${id}`);
+                    navigate(`/beneficiary/edit/${id}/personal-details`);
                   }}
                 />
               </HStack>
@@ -426,7 +426,7 @@ export default function BenificiaryBasicDetails() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/reference-details/${id}`);
+                    navigate(`/beneficiary/edit/${id}/reference-details`);
                   }}
                 />
               </HStack>

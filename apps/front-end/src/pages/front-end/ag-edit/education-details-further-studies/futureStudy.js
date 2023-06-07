@@ -86,7 +86,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/educationdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/educationdetails`);
   };
   const ref = React.createRef(null);
 
@@ -301,7 +301,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
     if (updateDetails) {
-      navigate(`/beneficiary/educationdetails/${userId}`);
+      navigate(`/beneficiary/${userId}/educationdetails`);
     }
   };
 

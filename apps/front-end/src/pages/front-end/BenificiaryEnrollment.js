@@ -65,7 +65,7 @@ export default function BenificiaryEnrollment() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/enrollment-details/${id}`);
+                    navigate(`/beneficiary/edit/${id}/enrollment-details`);
                   }}
                 />
               </HStack>
@@ -224,7 +224,7 @@ export default function BenificiaryEnrollment() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/enrollment-details/${id}`);
+                    navigate(`/beneficiary/edit/${id}/enrollment-details`);
                   }}
                 />
               </HStack>

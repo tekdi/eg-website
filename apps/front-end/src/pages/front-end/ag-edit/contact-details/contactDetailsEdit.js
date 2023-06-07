@@ -78,7 +78,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/basicdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -114,8 +114,6 @@ export default function agFormEdit({ ip }) {
       alternative_device_type: alternative_device_type,
     });
   }, [formData?.id]);
-
-  console.log("formaaaaaaaaaaa", formData);
 
   const uiSchema = {
     dob: {
@@ -247,20 +245,17 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        console.log(e);
         const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
@@ -314,7 +309,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -323,8 +317,7 @@ export default function agFormEdit({ ip }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/basicdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (

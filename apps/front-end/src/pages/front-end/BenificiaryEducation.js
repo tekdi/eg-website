@@ -33,7 +33,7 @@ export default function BenificiaryEducation() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/profile/${userId}`);
+    navigate(`/beneficiary/${userId}/profile`);
   };
 
   const benificiaryDetails = async () => {
@@ -76,7 +76,7 @@ export default function BenificiaryEducation() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/education/${userId}`);
+                    navigate(`/beneficiary/edit/${userId}/education`);
                   }}
                 />
               </HStack>
@@ -212,7 +212,7 @@ export default function BenificiaryEducation() {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/edit/future-education/${userId}`);
+                    navigate(`/beneficiary/edit/${userId}/future-education`);
                   }}
                 />
               </HStack>

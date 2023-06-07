@@ -78,7 +78,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/basicdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const ref = React.createRef(null);
@@ -524,7 +524,7 @@ export default function agFormEdit({ ip }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/basicdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (

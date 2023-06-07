@@ -33,42 +33,42 @@ export default [
     component: Home,
   },
   { path: "/dashboard", component: Dashboard },
-  { path: "/beneficiary/edit/:id", component: basicDetails },
+  { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
-    path: "/beneficiary/edit/contact-details/:id",
+    path: "/beneficiary/edit/:id/contact-details",
     component: contactDetailsEdit,
   },
   {
-    path: "/beneficiary/edit/address/:id",
+    path: "/beneficiary/edit/:id/address",
     component: addressEdit,
   },
   {
-    path: "/beneficiary/edit/personal-details/:id",
+    path: "/beneficiary/edit/:id/personal-details",
     component: personaldetails,
   },
 
   {
-    path: "/beneficiary/edit/family-details/:id",
+    path: "/beneficiary/edit/:id/family-details",
     component: familydetails,
   },
 
   {
-    path: "/beneficiary/edit/upload-photo/:id",
+    path: "/beneficiary/edit/:id/upload-photo",
     component: uploadphoto,
   },
 
-  { path: "/beneficiary/edit/education/:id", component: educationDetails },
+  { path: "/beneficiary/edit/:id/education", component: educationDetails },
   {
-    path: "/beneficiary/edit/future-education/:id",
+    path: "/beneficiary/edit/:id/future-education",
     component: futureStudy,
   },
 
   {
-    path: "/beneficiary/edit/enrollment-details/:id",
+    path: "/beneficiary/edit/:id/enrollment-details",
     component: subjectDetails,
   },
   {
-    path: "/beneficiary/edit/reference-details/:id",
+    path: "/beneficiary/edit/:id/reference-details",
     component: referencedetails,
   },
   //add a new route /ag/:ID(param), component:basic details
@@ -80,7 +80,7 @@ export default [
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
-  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
+  { path: "/beneficiary/:id/profile", component: BenificiaryProfileView },
   { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary/list",
@@ -92,15 +92,15 @@ export default [
     component: AdharKyc,
   },
   {
-    path: "/beneficiary/basicdetails/:id",
+    path: "/beneficiary/:id/basicdetails",
     component: BenificiaryBasicDetails,
   },
   {
-    path: "/beneficiary/educationdetails/:id",
+    path: "/beneficiary/:id/educationdetails",
     component: BenificiaryEducation,
   },
   {
-    path: "/beneficiary/enrollmentdetails/:id",
+    path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
   },
   { path: "*", component: Dashboard },

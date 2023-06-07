@@ -170,7 +170,7 @@ export default function BenificiaryProfileView(props) {
                   <IconByName
                     name="ArrowRightSLineIcon"
                     onPress={(e) => {
-                      navigate(`/beneficiary/basicdetails/${id}`);
+                      navigate(`/beneficiary/${id}/basicdetails`);
                     }}
                     color="textMaroonColor.400"
                   />
@@ -254,7 +254,7 @@ export default function BenificiaryProfileView(props) {
                   color="#790000"
                   size="sm"
                   onPress={(e) => {
-                    navigate(`/beneficiary/enrollmentdetails/${id}`);
+                    navigate(`/beneficiary/${id}/enrollmentdetails`);
                   }}
                 />
               </HStack>
@@ -277,7 +277,7 @@ export default function BenificiaryProfileView(props) {
                   color="#790000"
                   size="sm"
                   onPress={(e) => {
-                    navigate(`/beneficiary/educationdetails/${id}`);
+                    navigate(`/beneficiary/${id}/educationdetails`);
                   }}
                 />
               </HStack>

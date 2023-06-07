@@ -175,7 +175,7 @@ export default function App({ facilitator, ip, onClick, id }) {
   }, [formData]);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/educationdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/educationdetails`);
   };
 
   const ref = React.createRef(null);
@@ -423,7 +423,7 @@ export default function App({ facilitator, ip, onClick, id }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
     if (updateDetails) {
-      navigate(`/beneficiary/educationdetails/${userId}`);
+      navigate(`/beneficiary/${userId}/educationdetails`);
     }
   };
 

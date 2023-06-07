@@ -604,7 +604,7 @@ export default function agFormEdit({ ip, id }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/basicdetails/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const [cameraFile, setcameraFile] = useState();
