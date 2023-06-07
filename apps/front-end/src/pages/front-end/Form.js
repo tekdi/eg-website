@@ -284,7 +284,6 @@ export default function App({ facilitator, ip, onClick }) {
     const { id } = facilitator;
     if (id) {
       setLoading(true);
-      updateData({}, true);
       const result = await facilitatorRegistryService.stepUpdate({
         ...formData,
         parent_ip: ip?.id,
@@ -316,8 +315,9 @@ export default function App({ facilitator, ip, onClick }) {
 
   const formSubmitCreate = async (formData) => {
     setLoading(true);
-    const result = await facilitatorRegistryService.create({
+    const result = await facilitatorRegistryService.register({
       ...formData,
+      mobile: `${formData.mobile}`,
       parent_ip: ip?.id,
     });
     setLoading(false);
@@ -511,7 +511,6 @@ export default function App({ facilitator, ip, onClick }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
@@ -618,7 +617,6 @@ export default function App({ facilitator, ip, onClick }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
-    updateData(newData);
     if (_.isEmpty(errors)) {
       const { id } = facilitator;
       let success = false;
