@@ -17,8 +17,8 @@ export default function CustomRadio({
   schema,
   required,
 }) {
-  const { _hstack, icons, _pressable, grid, label } = schema;
-  const { enumOptions } = options;
+  const { _hstack, icons, _pressable, grid, label } = schema ? schema : {};
+  const { enumOptions } = options ? options : {};
   let items = [enumOptions];
   if (grid && enumOptions?.constructor.name === "Array") {
     items = chunk(enumOptions, grid);
@@ -85,7 +85,7 @@ export default function CustomRadio({
                           : "gray.500",
                     }}
                   >
-                    {item?.label}
+                    {t(item?.label)}
                   </Text>
                 </VStack>
               </Pressable>

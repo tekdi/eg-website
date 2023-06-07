@@ -1,6 +1,6 @@
 import React from "react";
 import { VStack, Text, Image, Box, Button, Stack } from "native-base";
-import { t } from "@shiksha/common-lib";
+import { FrontEndTypo, t } from "@shiksha/common-lib";
 const stylesheet = {
   mainBox: {
     justifyContent: "center",
@@ -68,43 +68,41 @@ const stylesheet = {
 function PrerakDuties(props) {
   let { imgUrl, title, processedButton, onPress, onSkipPress } = props;
   return (
-    <Stack style={stylesheet.bgimage}>
-      <Text style={stylesheet.mainText}>{t("PRERAK_DUTIES")}</Text>
-      <VStack
-        space={2}
-        justifyContent="center"
-        alignItems="center"
-        safeAreaTop
-        mb={6}
-      >
+    <Stack bg="bgGreyColor.200">
+      <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">
+        {t("PRERAK_DUTIES")}
+      </FrontEndTypo.H3>
+      <VStack space={2} alignItems="center" safeAreaTop>
         <Image
-          size={"2xl"}
+          size={"320px"}
           resizeMode="cover"
           source={imgUrl}
           alt={"Alternate Text "}
-          style={stylesheet.image}
           //If key is not given image should not be change
           key={imgUrl}
         />
-        <Box bgColor={"#FFFFFF"} style={stylesheet.boxContent}>
-          <Text style={stylesheet.text1}>{title}</Text>
-          <Text style={stylesheet.text2}>
+        <Box bg="white" p="10">
+          <FrontEndTypo.H1 color="textGreyColor.800" bold>
+            {title}
+          </FrontEndTypo.H1>
+          <FrontEndTypo.H4 color="textGreyColor.700">
             {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
-          </Text>
+          </FrontEndTypo.H4>
         </Box>
-        <Button
-          style={stylesheet.ProceedButton}
+        <FrontEndTypo.Primarybutton
+          my="3"
+          width="85%"
           onPress={onPress ? onPress : (e) => {}}
         >
           {processedButton}
-        </Button>
+        </FrontEndTypo.Primarybutton>
         {onSkipPress && (
-          <Text
+          <FrontEndTypo.H3
             style={stylesheet.skipText}
             onPress={onSkipPress ? onSkipPress : (e) => {}}
           >
             {t("SKIP_TO_APPLY")}
-          </Text>
+          </FrontEndTypo.H3>
         )}
       </VStack>
     </Stack>

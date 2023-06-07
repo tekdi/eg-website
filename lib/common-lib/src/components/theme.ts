@@ -60,7 +60,15 @@ const DEFAULT_THEME = {
         p: '4',
         minH: '54px',
         borderColor: 'secondaryBlue.500',
-        rounded: '10px'
+        borderRadius: '10px'
+      }
+    },
+    Select: {
+      baseStyle: {
+        p: '4',
+        minH: '54px',
+        borderColor: 'secondaryBlue.500',
+        borderRadius: '10px'
       }
     },
     Text: {
@@ -171,6 +179,22 @@ const DEFAULT_THEME = {
           },
           rounded: '30px'
         }),
+        blueUnderlineButton: () => ({
+          bg: `white`,
+          borderWidth: '1',
+          borderColor: `#084b82`,
+          color: '#084b82',
+          _text: '#084b82',
+          _hover: {
+            bg: `#133142`,
+            _text: `#14242D`
+          },
+          _pressed: {
+            bg: `#133142`,
+            _text: `#14242D`
+          },
+          rounded: '30px'
+        }),
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
@@ -207,6 +231,16 @@ const DEFAULT_THEME = {
     }
   },
   shadows: {
+    AlertShadow: {
+      shadowColor: '#00000040',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
     BlueOutlineShadow: {
       shadowColor: '#8B7171',
       shadowOffset: {
@@ -286,6 +320,23 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 16,
       elevation: 1
+    },
+    appShadow: {
+      shadowColor: '#f1f1f1',
+      shadowOffset: {
+        width: 0,
+        height: 1
+      },
+      shadowOpacity: 1,
+      shadowRadius: `3px 2px`,
+      elevation: 1
+    }
+  },
+  bg: {
+    linearGradient: {
+      colors: ['#CAE9FF', '#CAE9FF', '#CAE9FF'],
+      start: [0, 0],
+      end: [1, 0]
     }
   },
   colors: {
@@ -321,12 +372,27 @@ const DEFAULT_THEME = {
       500: '#545454'
     },
     iconColor: {
+      50: '#0D99FF',
+      100: '#616161',
+      150: '#696767',
+      200: '#757575',
+      250: '#FF2815',
+      300: '#B3B3B3',
+      350: '#AFB1B6',
+      400: '#FF2815',
       500: '#aba0db',
       600: '#c3916c',
       700: '#83b0d7',
       800: '#5eb05f',
       900: '#7c8dbc',
       1000: '#ea5fff'
+    },
+    boxBorderColour: {
+      50: '#FFC5C0'
+    },
+    boxBackgroundColour: {
+      50: '#FFC5C0',
+      100: '#FAFAFA'
     },
     studentCard: {
       500: '#B9FBC0',
@@ -470,25 +536,43 @@ const DEFAULT_THEME = {
       900: '#BDB3E7'
     },
     badgeColor: {
-      400: '#FDE68A'
+      400: '#FDE68A',
+      450: '#FFEFAF'
     },
     progressBarColor: {
-      200: '#10B981'
+      200: '#10B981',
+      300: '#A7F3D0'
     },
     bgGreyColor: {
       200: '#F4F4F7'
     },
     textGreyColor: {
+      50: '#9E9E9E',
       100: '#616161',
+      200: '#666666',
+      250: '#696767',
+      150: '#61646B',
+      350: '#EAEAEB',
       300: '#888888',
       400: '#F5F5F5',
+      450: '#464646',
       500: '#424242',
-      550: '##757575',
+      550: '#757575',
+      600: '#727271',
+      650: '#666666',
+      700: '#828282',
       800: '#212121',
       900: '#1E1E1E'
     },
     textMaroonColor: {
+      100: '#FFACAF',
       400: '#790000'
+    },
+    blueText: {
+      300: '#d4eaf9',
+      350: '#CAE9FF',
+      400: '#084B82',
+      450: '#3F8BF1'
     },
     bgPinkColor: {
       300: '#F9E9DB'
@@ -499,6 +583,44 @@ const DEFAULT_THEME = {
     sendMessageBtn: {
       200: '#14242D'
     },
+    Darkmaroonprimarybutton: {
+      400: '#2D142C'
+    },
+    Darkmaroonsecondarybutton: {
+      400: '#BDBDBD'
+    },
+    Disablecolor: {
+      400: '#BDBDBD'
+    },
+    Defaultcolor: {
+      400: '#616161'
+    },
+    Focusedcolor: {
+      400: '#3F8BF1'
+    },
+    Activatedcolor: {
+      400: '#757575'
+    },
+    PrimaryIpcolor: {
+      400: '#14242D'
+    },
+    appliedColor: '#E0E0E0',
+    screenedColor: '#e5f4ff',
+    shortlistedColor: '#CAE9FF',
+    potentialColor: '#A7F3D0',
+    selectedColor: '#A7F3D0',
+    successColor: '#00D790',
+    underReviewColor: '#FFEFAF',
+    rejectedColor: '#FFACAF',
+    identifiedColor: '#E0E0E0',
+    documentedColor: '#FFEFAF',
+    entrolledColor: '#C7DFFF',
+    approvedColor: '#A7F3D0',
+    droppedoutColor: '#FFACAF',
+    duplicatedColor: '#E95055',
+    warningColor: '#FFCF52',
+    dangerColor: '#DC2626',
+    infoColor: '#3F8BF1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',
@@ -514,10 +636,10 @@ const DEFAULT_THEME = {
     btnGray: {
       100: '#e0e0e0'
     },
-    blueText: {
-      400: '#084B82',
-      450: '#3F8BF1'
-    }
+    textRed: {
+      300: '#FF2815'
+    },
+    dividerColor: '#EEEEEE'
   }
 }
 

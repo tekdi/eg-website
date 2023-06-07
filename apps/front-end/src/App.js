@@ -7,6 +7,7 @@ import {
   facilitatorRegistryService,
   setLocalUser,
   t,
+  logout,
 } from "@shiksha/common-lib";
 import guestRoutes from "./routes/guestRoutes";
 import routes from "./routes/routes";
@@ -24,7 +25,11 @@ function App() {
     if (token) {
       const tokenData = getTokernUserInfo();
       const { hasura } = tokenData?.resource_access;
-      const user = await facilitatorRegistryService.getInfo();
+      const { status, ...user } = await facilitatorRegistryService.getInfo();
+      if (`${status}` === "401") {
+        logout();
+        window.location.reload();
+      }
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
       if (hasura?.roles?.includes("facilitator")) {
@@ -43,10 +48,12 @@ function App() {
       footerLinks={[
         {
           title: "HOME",
+          route: "/",
           icon: "Home4LineIcon",
         },
         {
           title: "LEARNERS",
+          route: "/beneficiary/list",
           icon: "PencilRulerLineIcon",
         },
         {

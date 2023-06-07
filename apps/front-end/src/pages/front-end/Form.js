@@ -15,6 +15,7 @@ import {
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
+  authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
   Camera,
@@ -29,6 +30,8 @@ import {
   H2,
   getBase64,
   BodyMedium,
+  sendAndVerifyOtp,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +47,10 @@ import {
   Aadhaar,
   BaseInputTemplate,
   ArrayFieldTemplate,
+  CustomOTPBox,
+  select,
+  AddButton,
+  RemoveButton,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 
@@ -57,7 +64,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [cameraUrl, setCameraUrl] = React.useState();
   const [cameraFile, setCameraFile] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
@@ -65,6 +71,8 @@ export default function App({ facilitator, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [verifyOtpData, setverifyOtpData] = React.useState();
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 10) {
@@ -88,14 +96,6 @@ export default function App({ facilitator, ip, onClick }) {
   React.useEffect(() => {
     getImage();
   }, [page, credentials]);
-
-  const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
-    }
-  };
 
   const uiSchema = {
     dob: {
@@ -176,6 +176,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   React.useEffect(async () => {
     if (schema?.properties?.qualification) {
+      setLoading(true);
       const qData = await facilitatorRegistryService.getQualificationAll();
       let newSchema = schema;
       if (schema["properties"]["qualification"]) {
@@ -212,15 +213,17 @@ export default function App({ facilitator, ip, onClick }) {
         });
       }
       setSchema(newSchema);
+      setLoading(false);
     }
 
     if (schema?.properties?.state) {
+      setLoading(true);
       const qData = await geolocationRegistryService.getStates();
       let newSchema = schema;
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
-          arr: qData,
+          arr: qData?.states,
           title: "state_name",
           value: "state_name",
         });
@@ -232,6 +235,7 @@ export default function App({ facilitator, ip, onClick }) {
         block: formData?.block,
       });
       setSchema(newSchema);
+      setLoading(false);
     }
 
     if (schema?.properties?.device_ownership) {
@@ -268,37 +272,9 @@ export default function App({ facilitator, ip, onClick }) {
       setSubmitBtn(t("NEXT"));
     }
     if (facilitator?.id) {
-      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-      const newData = JSON.parse(data);
-      setFormData({ ...newData, ...facilitator });
+      setFormData(facilitator);
     }
   }, []);
-
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.experience) {
-      if (formData.experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else {
-      setSubmitBtn(t("NEXT"));
-    }
-  };
-
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
@@ -307,18 +283,22 @@ export default function App({ facilitator, ip, onClick }) {
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
     if (id) {
+      setLoading(true);
       updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
+      const result = await facilitatorRegistryService.stepUpdate({
         ...formData,
         parent_ip: ip?.id,
         id: id,
       });
+      setLoading(false);
+      return result;
     }
   };
 
   const uploadProfile = async () => {
     const { id } = facilitator;
     if (id) {
+      setLoading(true);
       const form_data = new FormData();
       const item = {
         file: cameraFile,
@@ -328,15 +308,20 @@ export default function App({ facilitator, ip, onClick }) {
       for (let key in item) {
         form_data.append(key, item[key]);
       }
-      return await uploadRegistryService.uploadFile(form_data);
+      const result = await uploadRegistryService.uploadFile(form_data);
+      setLoading(false);
+      return result;
     }
   };
 
   const formSubmitCreate = async (formData) => {
-    return await facilitatorRegistryService.create({
+    setLoading(true);
+    const result = await facilitatorRegistryService.create({
       ...formData,
       parent_ip: ip?.id,
     });
+    setLoading(false);
+    return result;
   };
 
   const goErrorPage = (key) => {
@@ -436,6 +421,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   const setDistric = async ({ state, district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.district && state) {
       const qData = await geolocationRegistryService.getDistricts({
         name: state,
@@ -443,7 +429,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["district"]) {
         newSchema = getOptions(newSchema, {
           key: "district",
-          arr: qData,
+          arr: qData?.districts,
           title: "district_name",
           value: "district_name",
         });
@@ -462,11 +448,13 @@ export default function App({ facilitator, ip, onClick }) {
       }
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
   const setBlock = async ({ district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.block && district) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
@@ -474,7 +462,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
-          arr: qData,
+          arr: qData?.blocks,
           title: "block_name",
           value: "block_name",
         });
@@ -490,11 +478,13 @@ export default function App({ facilitator, ip, onClick }) {
       }
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
   const setVilage = async ({ block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
@@ -502,7 +492,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
-          arr: qData,
+          arr: qData?.villages,
           title: "village_ward_name",
           value: "village_ward_name",
         });
@@ -512,6 +502,7 @@ export default function App({ facilitator, ip, onClick }) {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
@@ -606,7 +597,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -638,23 +628,39 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
+        const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+          ...newFormData,
+          hash: localStorage.getItem("hash"),
+        });
+        setverifyOtpData(otpData);
+        if (status === true) {
+          const data = await formSubmitCreate(newFormData);
+          if (data?.error) {
+            const newErrors = {
+              mobile: {
+                __errors:
+                  data?.error?.constructor?.name === "String"
+                    ? [data?.error]
+                    : data?.error?.constructor?.name === "Array"
+                    ? data?.error
+                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          } else {
+            if (data?.username && data?.password) {
+              setCredentials(data);
+            }
+          }
+        } else if (status === false) {
           const newErrors = {
-            mobile: {
-              __errors:
-                data?.error?.constructor?.name === "String"
-                  ? [data?.error]
-                  : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            otp: {
+              __errors: [t("USER_ENTER_VALID_OTP")],
             },
           };
           setErrors(newErrors);
         } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
+          setSchema(newSchema);
         }
       } else if (page <= 1) {
         success = true;
@@ -719,17 +725,17 @@ export default function App({ facilitator, ip, onClick }) {
               size="324px"
             />
           </Center>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
+            isLoading={loading}
             onPress={async (e) => {
               await uploadProfile();
               if (onClick) onClick("success");
             }}
           >
             {t("SUBMIT")}
-          </Button>
-          <Button
-            variant={"secondary"}
+          </FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Secondarybutton
+            isLoading={loading}
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -737,7 +743,7 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </Layout>
     );
@@ -764,7 +770,7 @@ export default function App({ facilitator, ip, onClick }) {
         _appBar={{ onPressBackButton: (e) => setPage("10"), lang, setLang }}
         _page={{ _scollView: { bg: "white" } }}
       >
-        <VStack py={6} px={4} mb={5} space="6">
+        <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
           <Box p="10">
             <Steper
               type={"circle"}
@@ -778,7 +784,8 @@ export default function App({ facilitator, ip, onClick }) {
           </Box>
           <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
           <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
-          <Button
+          <FrontEndTypo.Primarybutton
+            isLoading={loading}
             variant={"primary"}
             leftIcon={
               <IconByName
@@ -794,7 +801,7 @@ export default function App({ facilitator, ip, onClick }) {
             }}
           >
             {t("TAKE_PHOTO")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
           <VStack space={2}>
             <Box>
               <input
@@ -804,15 +811,15 @@ export default function App({ facilitator, ip, onClick }) {
                 ref={uplodInputRef}
                 onChange={handleFileInputChange}
               />
-              <Button
+              <FrontEndTypo.Secondarybutton
+                isLoading={loading}
                 leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-                variant={"secondary"}
                 onPress={(e) => {
                   uplodInputRef?.current?.click();
                 }}
               >
                 {t("UPLOAD_PHOTO")}
-              </Button>
+              </FrontEndTypo.Secondarybutton>
             </Box>
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
@@ -820,63 +827,28 @@ export default function App({ facilitator, ip, onClick }) {
               <React.Fragment />
             )}
           </VStack>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
+            isLoading={loading}
             onPress={async (e) => {
               await formSubmitUpdate({ ...formData, form_step_number: "10" });
               if (onClick) onClick("success");
             }}
           >
             {t("SKIP_SUBMIT")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
         </VStack>
       </Layout>
     );
   }
-  const AddButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="green"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          if (formRef?.current.validateForm()) {
-            btnProps?.onClick();
-          }
-        }}
-      >
-        <HStack>
-          {icon} {addBtn}
-        </HStack>
-      </Button>
-    );
-  };
-
-  const RemoveButton = ({ icon, iconType, ...btnProps }) => {
-    return (
-      <Button
-        variant={"outlinePrimary"}
-        colorScheme="red"
-        mb="2"
-        {...btnProps}
-        onPress={(e) => {
-          updateBtnText();
-          btnProps?.onClick();
-        }}
-      >
-        <HStack>
-          {icon} {t("REMOVE_EXPERIENCE")}
-        </HStack>
-      </Button>
-    );
-  };
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : ["notificationBtn"],
+        exceptIconsShow:
+          `${page}` === "1"
+            ? ["backBtn", "menuBtn"]
+            : ["menuBtn", "notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -909,9 +881,9 @@ export default function App({ facilitator, ip, onClick }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, Aadhaar }}
+            widgets={{ RadioBtn, CustomR, Aadhaar, select, CustomOTPBox }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,
@@ -937,15 +909,15 @@ export default function App({ facilitator, ip, onClick }) {
               transformErrors,
             }}
           >
-            <Button
-              variant={"primary"}
+            <FrontEndTypo.Primarybutton
+              isLoading={loading}
               type="submit"
               p="4"
               mt="10"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
@@ -1027,9 +999,8 @@ export default function App({ facilitator, ip, onClick }) {
                 </Clipboard>
               </VStack>
               <HStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Primarybutton
                   flex={1}
-                  variant="primary"
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
@@ -1039,7 +1010,7 @@ export default function App({ facilitator, ip, onClick }) {
                   }}
                 >
                   {t("LOGIN")}
-                </Button>
+                </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
           </Modal.Body>

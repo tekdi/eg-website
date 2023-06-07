@@ -15,16 +15,28 @@ import Tab from './components/Tab'
 import Loading from './components/Loading'
 import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
+import * as enumRegistryService from './services/enumRegistryService'
 import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
-import * as StudentEnumService from './services/StudentEnumService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
+import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
+import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
 import FloatingInput from './components/FloatingInput'
+import * as AdminTypo from './components/admin_component'
+import * as FrontEndTypo from './components/frontend_component'
+import CheatSheet from './components/CheatSheet'
+import CustomOTPBox from './components/CustomOTPBox'
+import * as eventService from './services/EventService'
+import * as aadhaarService from './services/aadhaarService'
+import Alert from './components/Alert'
 
+// export
 export {
+  AdminTypo,
+  FrontEndTypo,
   AppBar,
   Header,
   Footer,
@@ -46,12 +58,19 @@ export {
   authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
+  AgRegistryService,
   ImageView,
-  StudentEnumService,
   t,
   changeLanguage,
   Camera,
-  FloatingInput
+  enumRegistryService,
+  benificiaryRegistoryService,
+  FloatingInput,
+  CheatSheet,
+  CustomOTPBox,
+  eventService,
+  aadhaarService,
+  Alert
 }
 
 export * from './services/RestClient'

@@ -9,10 +9,11 @@ import {
   useWindowSize,
   Camera,
   getBase64,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
-import Orientation from "../Orientation";
+import Orientation from "./Orientation";
 import {
   Box,
   Button,
@@ -94,7 +95,7 @@ const columns = (e) => [
   },
   {
     name: t("REGION"),
-    selector: (row) => row?.gender,
+    selector: (row) => (row?.district ? row?.district : ""),
     sortable: false,
     attr: "city",
   },
@@ -187,71 +188,76 @@ const scheduleCandidates = (e) => [
   // },
 ];
 
-export default function orientationScreen() {
-  const [page, setPage] = React.useState("screen1");
-  const [code, setCode] = React.useState("en");
-  const [refAppBar, RefAppBar] = React.useState();
-  const [selectedData, setSelectedData] = React.useState();
-  const onShowScreen = () => {
-    setPage("screen2");
-  };
-  const onClick = () => {
-    setPage("screen3");
-  };
-  return (
-    <>
-      {page === "screen1" && <Orientation onShowScreen={onShowScreen} />}
-      {page === "screen2" && (
-        <Layout
-          getRefAppBar={(e) => RefAppBar(e)}
-          isDisabledAppBar={page === "screen1"}
-          isCenter={true}
-          key={code}
-          _appBar={{ onlyIconsShow: ["langBtn"] }}
-          _page={{ _scollView: { bg: "white" } }}
-        >
-          <Page2 onClick={onClick} setSelectedData={selectedData} />
-        </Layout>
-      )}
+export default function OrientationScreen() {
+  //   const [page, setPage] = React.useState("screen1");
+  //   const [code, setCode] = React.useState("en");
+  //   const [refAppBar, RefAppBar] = React.useState();
+  //   const [selectedData, setSelectedData] = React.useState();
+  //   const onShowScreen = () => {
+  //     setPage("screen2");
+  //   };
+  //   const onClick = () => {
+  //     setPage("screen3");
+  //   };
+  //   return (
+  //     <>
+  //       {page === "screen1" && <Orientation onShowScreen={onShowScreen} />}
+  //       {page === "screen2" && (
+  //         <Layout
+  //           getRefAppBar={(e) => RefAppBar(e)}
+  //           isDisabledAppBar={page === "screen1"}
+  //           isCenter={true}
+  //           key={code}
+  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
+  //           _page={{ _scollView: { bg: "white" } }}
+  //         >
+  //           <Page2 onClick={onClick} setSelectedData={selectedData} />
+  //         </Layout>
+  //       )}
 
-      {page === "screen3" && (
-        <Layout
-          getRefAppBar={(e) => RefAppBar(e)}
-          isDisabledAppBar={page === "screen1"}
-          isCenter={true}
-          key={code}
-          _appBar={{ onlyIconsShow: ["langBtn"] }}
-          _page={{ _scollView: { bg: "white" } }}
-        >
-          <Page3 setSelectedData={selectedData} />
-        </Layout>
-      )}
-    </>
-  );
-}
+  //       {page === "screen3" && (
+  //         <Layout
+  //           getRefAppBar={(e) => RefAppBar(e)}
+  //           isDisabledAppBar={page === "screen1"}
+  //           isCenter={true}
+  //           key={code}
+  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
+  //           _page={{ _scollView: { bg: "white" } }}
+  //         >
+  //           <Page3 setSelectedData={selectedData} />
+  //         </Layout>
+  //       )}
+  //     </>
+  //   );
+  // }
 
-const Page1 = ({ onShowScreen }) => {
-  return (
-    <Box>
-      <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
-    </Box>
-  );
-};
+  // const Page1 = ({ onShowScreen }) => {
+  //   return (
+  //     <Box>
+  //       <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
+  //     </Box>
+  //   );
+  // };
 
-const Page2 = ({ onClick }) => {
+  // const Page2 = ({ onClick }) => {
   changeLanguage(localStorage.getItem("lang"));
   const [data, setData] = React.useState([]);
+  const [userIds, setUserIds] = React.useState({});
   const [filterObj, setFilterObj] = React.useState();
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [selectedRowData, setSelectedRowData] = React.useState();
+  const onClick = () => {
+    setPage("screen3");
+  };
+
   React.useEffect(async () => {
     setLoading(true);
     const result = await facilitatorRegistryService.getAll(filterObj);
-
-    setData(result.data);
+    setData(result?.data);
 
     setPaginationTotalRows(result?.totalCount);
     setLoading(false);
@@ -262,69 +268,90 @@ const Page2 = ({ onClick }) => {
   }, [page, limit]);
 
   const handleSelectRow = (state) => {
-    setSelectedRowData(state.selectedRows);
+    const arr = state?.selectedRows;
+    let newObj = {};
+    arr.forEach((e) => {
+      newObj = { ...newObj, [e.id]: e };
+    });
+    setUserIds({ ...userIds, ...newObj });
+    // setSelectedRowData(state.selectedRows);
   };
-
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
   return (
-    <Modal isOpen={true} onClose={false} safeAreaTop={true}>
-      <Modal.Content {...stylesheet.modalxxl}>
-        <Modal.CloseButton />
-        <Modal.Header p="5" borderBottomWidth="0">
-          <HStack justifyContent={"center"}>
-            <H1 color="textGreyColor.500" fontSize="sm">
-              {" "}
+    <Box>
+      <Orientation
+        userIds={userIds}
+        onShowScreen={setIsOpen}
+        getFormData={(e) => console.log(e)}
+        onClick={onClick}
+        hi={"hi"}
+      />
+      <Modal
+        isOpen={isOpen}
+        onClose={(e) => setIsOpen(false)}
+        safeAreaTop={true}
+      >
+        <Modal.Content {...stylesheet.modalxxl}>
+          <Modal.CloseButton />
+          <Modal.Header p="5" borderBottomWidth="0">
+            <HStack justifyContent={"center"}>
+              <AdminTypo.H2 color="textGreyColor.500" bold>
+                {t("SELECT_CANDIDATE")}
+              </AdminTypo.H2>
+            </HStack>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <DataTable
+              columns={[...columns()]}
+              data={data}
+              customStyles={customStyles}
+              subHeader
+              persistTableHead
+              selectableRows
+              progressPending={loading}
+              pagination
+              paginationServer
+              paginationTotalRows={paginationTotalRows}
+              onChangePage={handlePageChange}
+              onSelectedRowsChange={handleSelectRow}
+              selectedRows={userIds}
+              // onChangeRowsPerPage={(e) => setLimit(e)}
+              // onChangePage={(e) => setPage(e)}
+            />
+          </Modal.Body>
+
+          <Modal.Footer justifyContent={"space-between"}>
+            <AdminTypo.Secondarybutton
+              px="5"
+              py="1"
+              shadow="BlueOutlineShadow"
+              onPress={(e) => setIsOpen(false)}
+            >
+              {t("CANCEL")}
+            </AdminTypo.Secondarybutton>
+
+            <AdminTypo.PrimaryButton
+              onPress={(e) => setIsOpen(false)}
+              shadow="BlueFillShadow"
+              endIcon={
+                <IconByName
+                  isDisabled
+                  name="ArrowRightSLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "15" }}
+                />
+              }
+            >
               {t("SELECT_CANDIDATE")}
-            </H1>
-          </HStack>
-        </Modal.Header>
-        <Modal.Body p="5" pb="10">
-          <DataTable
-            columns={[...columns()]}
-            data={data}
-            customStyles={customStyles}
-            subHeader
-            persistTableHead
-            selectableRows
-            progressPending={loading}
-            pagination
-            paginationServer
-            paginationTotalRows={paginationTotalRows}
-            onSelectedRowsChange={handleSelectRow}
-            // onChangeRowsPerPage={(e) => setLimit(e)}
-            // onChangePage={(e) => setPage(e)}
-          />
-        </Modal.Body>
-
-        <Modal.Footer justifyContent={"space-between"}>
-          <Button
-            variant="blueOutlineBtn"
-            px="5"
-            py="1"
-            shadow="BlueOutlineShadow"
-          >
-            {t("CANCEL")}
-          </Button>
-
-          <Button
-            onPress={onClick}
-            shadow="BlueFillShadow"
-            variant={"blueFillButton"}
-            endIcon={
-              <IconByName
-                isDisabled
-                name="ArrowRightSLineIcon"
-                color="gray.300"
-                _icon={{ size: "15" }}
-              />
-            }
-          >
-            <Text color="white">{t("SELECT_CANDIDATE")}</Text>
-          </Button>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+            </AdminTypo.PrimaryButton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
   );
-};
+}
 
 const Page3 = () => {
   const [Height] = useWindowSize();
@@ -365,7 +392,6 @@ const Page3 = () => {
   const handleCandidateSelectRow = (state) => {
     setRowData(state);
     setShowEditModal(true);
-    console.log(state);
   };
   return (
     <ScrollView
@@ -382,26 +408,30 @@ const Page3 = () => {
                 color="gray.300"
                 _icon={{ size: "35" }}
               />
-              <H1>{t("HOME")}</H1>
+              <AdminTypo.H2 pl="3">{t("HOME")}</AdminTypo.H2>
               <IconByName
                 isDisabled
                 name="ArrowRightSLineIcon"
                 color="gray.300"
                 _icon={{ size: "35" }}
               />
-              <H1>{t("PRERAK_ORIENTATION")}</H1>
+              <AdminTypo.H2>{t("PRERAK_ORIENTATION")}</AdminTypo.H2>
             </HStack>
             <HStack>
-              <Button
-                variant={"blueOutlineBtn"}
+              <AdminTypo.Secondarybutton
                 shadow="BlueOutlineShadow"
                 onPress={() => setModal(true)}
+                rightIcon={
+                  <IconByName
+                    color="#084B82"
+                    _icon={{}}
+                    size="15px"
+                    name="AddLineIcon"
+                  />
+                }
               >
-                <Text color="blueText.400" bold fontSize="lg">
-                  {" "}
-                  {t("SCHEDULE_EVENT")} +
-                </Text>
-              </Button>
+                {t("SCHEDULE_EVENT")}{" "}
+              </AdminTypo.Secondarybutton>
             </HStack>
           </HStack>
           <Box
@@ -413,16 +443,15 @@ const Page3 = () => {
           >
             <VStack m={"15px"}>
               <HStack justifyContent={"space-between"}>
-                <Text color="textGreyColor.800" bold fontSize="sm">
+                <AdminTypo.H6 color="textGreyColor.800" bold>
                   {t("ORIENTATION_SHEDULE")}
-                </Text>
-                <Button
-                  variant={"blueOutlineBtn"}
+                </AdminTypo.H6>
+                <AdminTypo.Secondarybutton
                   onPress={() => setShowEditModal(true)}
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
-                </Button>
+                </AdminTypo.Secondarybutton>
               </HStack>
 
               <HStack space={"3"} fontSize={"14px"}>
@@ -432,27 +461,27 @@ const Page3 = () => {
                   color="gray"
                   _icon={{ size: "15" }}
                 />
-                <Text color="textGreyColor.800" fontSize="sm">
+                <AdminTypo.H5 color="textGreyColor.800">
                   16th April, 11:00 to 12:00
-                </Text>
+                </AdminTypo.H5>
                 <IconByName
                   isDisabled
                   name="MapPinLineIcon"
                   color="gray"
                   _icon={{ size: "15" }}
                 />
-                <Text color="textGreyColor.800" fontSize="sm">
+                <AdminTypo.H6 color="textGreyColor.800">
                   Jaipur, 412213
-                </Text>
+                </AdminTypo.H6>
                 <IconByName
                   isDisabled
                   name="UserLineIcon"
                   color="gray"
                   _icon={{ size: "15" }}
                 />
-                <Text color="textGreyColor.800" fontSize="sm">
+                <AdminTypo.H6 color="textGreyColor.800">
                   Master Trainer -
-                </Text>
+                </AdminTypo.H6>
                 <Box
                   bgColor={"#FFFFFF"}
                   height={"29px"}
@@ -474,15 +503,13 @@ const Page3 = () => {
                   color="gray"
                   _icon={{ size: "35" }}
                 />
-                <Text fontSize={"24px"} color="textGreyColor.800" bold>
+                <AdminTypo.H1 color="textGreyColor.800" bold>
                   Candidates (25)
-                </Text>
+                </AdminTypo.H1>
               </HStack>
               <HStack>
-                <Button
-                  variant={"blueOutlineBtn"}
+                <AdminTypo.Secondarybutton
                   shadow="BlueOutlineShadow"
-                  colorScheme="blueGray"
                   onPress={(e) => {
                     setCameraUrl();
                     setCameraModal(true);
@@ -495,11 +522,8 @@ const Page3 = () => {
                     />
                   }
                 >
-                  <Text color="blueText.400" fontSize="sm">
-                    {" "}
-                    {t("MARK_ATTENDANCE_ALL")}
-                  </Text>
-                </Button>
+                  {t("MARK_ATTENDANCE_ALL")}
+                </AdminTypo.Secondarybutton>
               </HStack>
             </HStack>
           </Stack>
@@ -513,10 +537,9 @@ const Page3 = () => {
             <Modal.Content rounded="2xl" bg="translate">
               <Modal.CloseButton />
               <Modal.Header p="1" borderBottomWidth="0" bg="white">
-                <H1 textAlign="center" color="textGreyColor.500">
-                  {" "}
+                <AdminTypo.H1 textAlign="center" color="textGreyColor.500">
                   {t("EDIT_DETAILS")}
-                </H1>
+                </AdminTypo.H1>
               </Modal.Header>
               <Modal.Body p="1" pb="10" bg="white">
                 <VStack space="5">
@@ -544,9 +567,9 @@ const Page3 = () => {
                         _icon={{ size: "35" }}
                       />
                     )}
-                    <H1 fontSize="sm" bold color="textGreyColor.800">
+                    <AdminTypo.H6 bold color="textGreyColor.800">
                       {rowData?.first_name + " " + rowData?.last_name}
-                    </H1>
+                    </AdminTypo.H6>
                   </HStack>
 
                   <HStack alignItems="center" space={2}>
@@ -559,7 +582,9 @@ const Page3 = () => {
                           _icon={{ size: "25" }}
                         />
 
-                        <H4 color="textGreyColor.100">{t("EVENT_TYPE")}</H4>
+                        <AdminTypo.H5 color="textGreyColor.100">
+                          {t("EVENT_TYPE")}
+                        </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Select
                             selectedValue={service}
@@ -600,9 +625,9 @@ const Page3 = () => {
                           _icon={{ size: "25" }}
                         />
 
-                        <H4 color="textGreyColor.100">
+                        <AdminTypo.H5 color="textGreyColor.100">
                           {t("MARK_ATTENDANCE")}
-                        </H4>
+                        </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Radio.Group
                             flexDirection={"row"}
@@ -621,10 +646,10 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="10px"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 {" "}
                                 Present
-                              </Text>
+                              </AdminTypo.H6>
                             </Radio>
                             <Radio
                               value="absent"
@@ -633,10 +658,10 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 {" "}
                                 Absent
-                              </Text>
+                              </AdminTypo.H6>
                             </Radio>
                           </Radio.Group>
                         </HStack>
@@ -649,9 +674,9 @@ const Page3 = () => {
                           color="gray.400"
                           _icon={{ size: "25" }}
                         />
-                        <H4 color="textGreyColor.100">
+                        <AdminTypo.H5 color="textGreyColor.100">
                           {t("COMPLETE_AADHAR_KYC")}
-                        </H4>
+                        </AdminTypo.H5>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Radio.Group
                             flexDirection={"row"}
@@ -670,9 +695,9 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 pl="2" color="textGreyColor.800">
                                 QR code scan
-                              </Text>
+                              </AdminTypo.H6>
                             </Radio>
                             <Radio
                               value="aadharofflineKYC"
@@ -681,10 +706,10 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 {" "}
                                 Aadhaar Offline KYC
-                              </Text>
+                              </AdminTypo.H6>
                             </Radio>
                             <Radio
                               value="manualAadharUpload"
@@ -693,10 +718,10 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 {" "}
                                 Manual Aadhaar Upload
-                              </Text>
+                              </AdminTypo.H6>
                             </Radio>
                           </Radio.Group>
                         </HStack>
@@ -710,9 +735,9 @@ const Page3 = () => {
                             color="gray.400"
                             _icon={{ size: "25" }}
                           />
-                          <H4 mt={"12px"} color="textGreyColor.100">
+                          <AdminTypo.H5 mt={"12px"} color="textGreyColor.100">
                             {t("DOCUMENT_VERIFICATION")}
-                          </H4>
+                          </AdminTypo.H5>
                           <Stack
                             direction={{
                               base: "column",
@@ -726,24 +751,24 @@ const Page3 = () => {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 {" "}
                                 Qualification Certificate
-                              </Text>
+                              </AdminTypo.H6>
                             </Checkbox>
                             <Checkbox
                               value="volunteer"
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 Volunteer Proof
-                              </Text>
+                              </AdminTypo.H6>
                             </Checkbox>
                             <Checkbox value="work" color="textGreyColor.800">
-                              <Text fontSize="14px" color="textGreyColor.800">
+                              <AdminTypo.H6 color="textGreyColor.800">
                                 Work Proof
-                              </Text>
+                              </AdminTypo.H6>
                             </Checkbox>
                           </Stack>
                         </HStack>
@@ -757,20 +782,12 @@ const Page3 = () => {
                   mt={"20px"}
                   justifyContent={"end"}
                 >
-                  <Button
-                    variant="blueOutlineBtn"
-                    shadow="BlueOutlineShadow"
-                    color="blueText.400"
-                  >
+                  <AdminTypo.Secondarybutton shadow="BlueOutlineShadow">
                     {t("CANCEL")}
-                  </Button>
-                  <Button
-                    variant="blueFillButton"
-                    px="8"
-                    shadow="BlueFillShadow"
-                  >
-                    <Text color="white">{t("SAVE")}</Text>
-                  </Button>
+                  </AdminTypo.Secondarybutton>
+                  <AdminTypo.PrimaryButton px="8" shadow="BlueFillShadow">
+                    {t("SAVE")}
+                  </AdminTypo.PrimaryButton>
                 </HStack>
               </Modal.Body>
             </Modal.Content>
@@ -794,31 +811,31 @@ const Page3 = () => {
                 bg="white"
                 textAlign={"left"}
               >
-                <H1 fontSize="sm" color="textGreyColor.900" bold>
+                <AdminTypo.H6 color="textGreyColor.900" bold>
                   {" "}
                   {t("MARK_ATTENDANCE_ORIENTATION")}
-                </H1>
+                </AdminTypo.H6>
               </Modal.Header>
               <Modal.Body p="3" pb="10" bg="white">
                 <HStack justifyContent={"space-between"}>
                   <HStack space={"10"} ml="15px">
-                    <Text color="textGreyColor.550" fontSize="sm" bold>
+                    <AdminTypo.H6 color="textGreyColor.550" bold>
                       Present
-                    </Text>{" "}
+                    </AdminTypo.H6>{" "}
                     0
-                    <Text color="textGreyColor.550" fontSize="sm" bold>
+                    <AdminTypo.H6 color="textGreyColor.550" bold>
                       Absent
-                    </Text>{" "}
+                    </AdminTypo.H6>{" "}
                     0
                   </HStack>
                   <HStack>
-                    <Text fontSize="sm">Candidates - 1/25 </Text>
+                    <AdminTypo.H6>Candidates - 1/25 </AdminTypo.H6>
                   </HStack>
                 </HStack>
                 <Stack>
-                  <Text my="15px" color="textGreyColor.100">
+                  <AdminTypo.H6 my="15px" color="textGreyColor.100">
                     {t("ATTENDANCE_CAMERA_SUBTITLE")}
-                  </Text>
+                  </AdminTypo.H6>
                 </Stack>
                 {/* {cameraModal && ( */}
                 <Camera
@@ -835,16 +852,12 @@ const Page3 = () => {
                 {/* )} */}
               </Modal.Body>
               <Modal.Footer justifyContent={"center"}>
-                <Button
-                  color="blueText.400"
-                  variant="blueOutlineBtn"
-                  shadow="BlueOutlineShadow"
-                >
+                <AdminTypo.Secondarybutton shadow="BlueOutlineShadow">
                   {t("MARK_ABSENT")}
-                </Button>
-                <Button variant="secondary" ml="4" px="5">
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.Secondarybutton variant="secondary" ml="4" px="5">
                   {t("NEXT")}
-                </Button>
+                </AdminTypo.Secondarybutton>
               </Modal.Footer>
             </Modal.Content>
           </Modal>

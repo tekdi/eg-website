@@ -10,6 +10,7 @@ import {
   IconButton,
   CloseIcon,
   Image,
+  Center,
 } from "native-base";
 import {
   useWindowSize,
@@ -19,6 +20,10 @@ import {
   logout,
   H1,
   Layout,
+  BodyMedium,
+  H2,
+  FrontEndTypo,
+  FloatingInput,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -87,9 +92,9 @@ export default function Login() {
         minH={Height - ref?.clientHeight}
         space="50px"
       >
-        <H1 color="textMaroonColor.400" textAlign="center" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
-        </H1>
+        </FrontEndTypo.H1>
         <Image
           alignSelf="center"
           source={{
@@ -110,7 +115,9 @@ export default function Login() {
               >
                 <HStack flexShrink={1} space={2} alignItems="center">
                   <Alert.Icon />
-                  {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+                  <FrontEndTypo.H4>
+                    {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+                  </FrontEndTypo.H4>
                 </HStack>
               </HStack>
             </VStack>
@@ -132,88 +139,99 @@ export default function Login() {
               </VStack>
             </Alert>
           ) : (
-            <></>
+            <React.Fragment />
           )}
-          <VStack space="2">
-            <FormControl isRequired isInvalid={"username" in errors}>
-              {/* <FormControl.Label
+          <form>
+            <VStack space="2">
+              <FormControl isRequired isInvalid={"username" in errors}>
+                {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
                 mb="10px"
               >
                 {t("USERNAME")}
               </FormControl.Label> */}
-              <Input
-                rounded="lg"
-                height="48px"
-                bg="white"
-                variant="unstyled"
-                p={"10px"}
-                placeholder={t("ENTER") + " " + t("USERNAME")}
-                onChange={(e) =>
-                  setCredentials({
-                    ...credentials,
-                    username: e?.target?.value?.trim(),
-                  })
-                }
-              />
-              {"username" in errors ? (
-                <FormControl.ErrorMessage
-                  _text={{
-                    fontSize: "xs",
-                    color: "error.500",
-                    fontWeight: 500,
-                  }}
-                >
-                  {errors.username}
-                </FormControl.ErrorMessage>
-              ) : (
-                <></>
-              )}
-            </FormControl>
-            <FormControl isRequired isInvalid={"password" in errors}>
-              {/* <FormControl.Label
+                <Input
+                  rounded="lg"
+                  height="48px"
+                  bg="white"
+                  variant="unstyled"
+                  p={"10px"}
+                  placeholder={t("ENTER") + " " + t("USERNAME")}
+                  onChange={(e) =>
+                    setCredentials({
+                      ...credentials,
+                      username: e?.target?.value?.trim(),
+                    })
+                  }
+                />
+                {"username" in errors ? (
+                  <FormControl.ErrorMessage
+                    _text={{
+                      fontSize: "xs",
+                      color: "error.500",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {errors.username}
+                  </FormControl.ErrorMessage>
+                ) : (
+                  <React.Fragment />
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={"password" in errors}>
+                {/* <FormControl.Label
                 _text={{ fontSize: "14px", fontWeight: "400" }}
               >
                 {t("PASSWORD")}
               </FormControl.Label> */}
-              <Input
-                rounded="lg"
-                height="48px"
-                bg="white"
-                variant="unstyled"
-                p={"10px"}
-                placeholder={t("ENTER") + " " + t("PASSWORD")}
-                type="password"
-                onChange={(e) =>
-                  setCredentials({
-                    ...credentials,
-                    password: e?.target?.value,
-                  })
-                }
-              />
-              {"password" in errors ? (
-                <FormControl.ErrorMessage
-                  _text={{
-                    fontSize: "xs",
-                    color: "error.500",
-                    fontWeight: 500,
-                  }}
-                >
-                  {errors.password}
-                </FormControl.ErrorMessage>
-              ) : (
-                <></>
-              )}
-            </FormControl>
-          </VStack>
-          {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
-          {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-          <Button flex={1} variant={"primary"} p="4" onPress={handleLogin}>
-            {t("LOGIN")}
-          </Button>
-          {/* <BodyMedium color="primary.500" textAlign="center">
-              {t("CHANGE_MY_PASSWORD")}
-            </BodyMedium> */}
+
+                <Input
+                  rounded="lg"
+                  height="48px"
+                  bg="white"
+                  variant="unstyled"
+                  p={"10px"}
+                  placeholder={t("ENTER") + " " + t("PASSWORD")}
+                  type="password"
+                  onChange={(e) =>
+                    setCredentials({
+                      ...credentials,
+                      password: e?.target?.value,
+                    })
+                  }
+                />
+                {"password" in errors ? (
+                  <FormControl.ErrorMessage
+                    _text={{
+                      fontSize: "xs",
+                      color: "error.500",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {errors.password}
+                  </FormControl.ErrorMessage>
+                ) : (
+                  <React.Fragment />
+                )}
+              </FormControl>
+            </VStack>
+            {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
+            {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
+            <FrontEndTypo.Primarybutton flex={1} p="4" onPress={handleLogin}>
+              {t("LOGIN")}
+            </FrontEndTypo.Primarybutton>
+          </form>
+          <BodyMedium color="primary.500" textAlign="center">
+            <FrontEndTypo.H2
+              color="blueText.450"
+              underline
+              onPress={() => {
+                navigate("/reset-password");
+              }}
+            >
+              {t("USER_FORGET_PASSWORD")}
+            </FrontEndTypo.H2>
+          </BodyMedium>
         </VStack>
       </VStack>
     </Layout>

@@ -138,14 +138,13 @@ const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
 const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
   const nSize = parseInt(size ? size : "40px");
   const fontSize = Math.floor(nSize / 5);
-  console.log(stage);
   return (
     <HStack space={4}>
       <Stack
         style={{
           background: `radial-gradient(closest-side, ${
             bg ? bg : "#F4F4F7"
-          } 59%, transparent 60% 100%), conic-gradient(${cColor} ${per}%, ${rColor} 0)`,
+          } 59%, transparent 70% 100%), conic-gradient(${cColor} ${per}%, ${rColor} 0)`,
           animation: "progress 2s 1 forwards",
         }}
         w={`${nSize}px`}
@@ -158,7 +157,9 @@ const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
         <Text fontSize={`${fontSize === 0 ? 1 : fontSize}px`}>
           {steps?.length > 0 ? (
             <HStack>
-              <Text>{per === 100 ? stage?.index + 1 : stage?.index}</Text>
+              <Text fontWeight={600}>
+                {per === 100 ? stage?.index + 1 : stage?.index}
+              </Text>
               <Text color="#9E9E9E">/{steps?.length}</Text>
             </HStack>
           ) : (
@@ -171,13 +172,25 @@ const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
           <HStack space={1} alignItems="center">
             {steps
               ?.map((e, key) => (
-                <Text key={key} fontSize="8px" fontWeight="400" color={cColor}>
+                <Text
+                  key={key}
+                  fontSize="8px"
+                  fontWeight="400"
+                  color={
+                    stage?.index > key
+                      ? cColor
+                      : stage?.index === key
+                      ? "gray.500"
+                      : "gray.400"
+                  }
+                >
                   {e?.label}
                 </Text>
               ))
               .reduce((prev, curr) => [
                 prev,
                 <IconByName
+                  key={prev}
                   name="ArrowRightSLineIcon"
                   isDisabled
                   _icon={{ size: "10px" }}
