@@ -123,7 +123,7 @@ export default function BenificiaryProfileView(props) {
   };
 
   return (
-    <Layout _appBar={{ name: t("AG_LEARNER_PROFILE") }}>
+    <Layout _appBar={{ name: t("BENEFICIARY_PROFILE") }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <VStack alignItems="Center">
@@ -324,9 +324,11 @@ export default function BenificiaryProfileView(props) {
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
+
           <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.Disablebutton>
+
         </VStack>
       </VStack>
       <Actionsheet

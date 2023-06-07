@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "FULL_NAME",
+      title: "Full Name",
       type: "object",
       required: ["first_name", "last_name", "dob"],
       properties: {

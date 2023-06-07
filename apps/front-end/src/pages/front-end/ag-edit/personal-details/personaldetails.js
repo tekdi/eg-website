@@ -36,6 +36,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -53,6 +54,7 @@ import {
   RadioBtn,
   CustomR,
 } from "../../../../component/BaseInput.js";
+import { Fragment } from "react";
 
 // App
 export default function agFormEdit({ ip }) {
@@ -461,14 +463,14 @@ export default function agFormEdit({ ip }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Save" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
