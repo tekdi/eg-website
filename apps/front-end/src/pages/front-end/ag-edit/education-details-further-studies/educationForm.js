@@ -35,6 +35,7 @@ import {
   benificiaryRegistoryService,
   StudentEnumService,
   AgRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +46,7 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
+  BaseInputTemplate,
 } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 
@@ -584,6 +586,7 @@ export default function App({ facilitator, ip, onClick, id }) {
               ObjectFieldTemplate,
               TitleFieldTemplate,
               DescriptionFieldTemplate,
+              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -597,14 +600,14 @@ export default function App({ facilitator, ip, onClick, id }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
               type="submit"
               onPress={() => EditEducation()}
             >
               {"SAVE"}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
