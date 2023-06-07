@@ -7,13 +7,7 @@ import {
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
-import {
-  HStack,
-  VStack,
-  Box,
-  Select,
-  Pressable,
-} from "native-base";
+import { HStack, VStack, Box, Select, Pressable } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
