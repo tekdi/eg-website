@@ -46,7 +46,7 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-  BaseInputTemplate
+  BaseInputTemplate,
 } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 

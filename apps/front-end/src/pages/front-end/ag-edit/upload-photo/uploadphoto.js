@@ -326,7 +326,9 @@ export default function agFormEdit({ ip }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           {/* add the profile image */}
-          <FrontEndTypo.H2 color="textMaroonColor.400">{t("ADD_ID_PHOTOS")}</FrontEndTypo.H2>
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t("ADD_ID_PHOTOS")}
+          </FrontEndTypo.H2>
           <FrontEndTypo.H4 color="textMaroonColor.400">
             {t("CLEAR_PROFILE_MESSAGE")}
           </FrontEndTypo.H4>
@@ -408,8 +410,10 @@ export default function agFormEdit({ ip }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-        <FrontEndTypo.H2 color="textMaroonColor.400">{t("ADD_ID_PHOTOS")}</FrontEndTypo.H2>
-        <FrontEndTypo.H4 color="textMaroonColor.400">
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t("ADD_ID_PHOTOS")}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H4 color="textMaroonColor.400">
             {t("CLEAR_PROFILE_MESSAGE")}
           </FrontEndTypo.H4>
           <FrontEndTypo.Primarybutton
@@ -437,7 +441,9 @@ export default function agFormEdit({ ip }) {
               onChange={handleFileInputChange}
             />
             {errors?.fileSize ? (
-              <FrontEndTypo.H2 color="textMaroonColor.400">{errors?.fileSize}</FrontEndTypo.H2>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {errors?.fileSize}
+              </FrontEndTypo.H2>
             ) : (
               <React.Fragment />
             )}
@@ -516,7 +522,9 @@ export default function agFormEdit({ ip }) {
         <Modal.Content>
           {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
-            <FrontEndTypo.H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</FrontEndTypo.H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("STORE_YOUR_CREDENTIALS")}
+            </FrontEndTypo.H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
@@ -535,9 +543,8 @@ export default function agFormEdit({ ip }) {
                     </FrontEndTypo.H4>
                   </HStack>
                   <HStack alignItems="center" space="5">
-                  <FrontEndTypo.H3>{t("PASSWORD")}</FrontEndTypo.H3>
-                  <FrontEndTypo.H4 ellipsis>
-
+                    <FrontEndTypo.H3>{t("PASSWORD")}</FrontEndTypo.H3>
+                    <FrontEndTypo.H4 ellipsis>
                       {credentials?.password}
                     </FrontEndTypo.H4>
                   </HStack>

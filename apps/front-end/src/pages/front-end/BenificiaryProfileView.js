@@ -328,7 +328,6 @@ export default function BenificiaryProfileView(props) {
           <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.Disablebutton>
-
         </VStack>
       </VStack>
       <Actionsheet
