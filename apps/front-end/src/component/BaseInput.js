@@ -6,8 +6,10 @@ import {
   FormControl,
   HStack,
   Image,
+  Pressable,
   Radio,
   Select,
+  Spinner,
   Stack,
   Text,
   VStack,
@@ -15,19 +17,22 @@ import {
 import {
   BodySmall,
   H2,
-  t,
   FloatingInput,
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
+  getBase64,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
+import { useTranslation } from "react-i18next";
 
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
 }
 
 export function AddButton({ icon, iconType, ...btnProps }) {
+  const { t } = useTranslation();
   return (
     <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
       <HStack>
@@ -38,6 +43,7 @@ export function AddButton({ icon, iconType, ...btnProps }) {
 }
 
 export function RemoveButton({ icon, iconType, ...btnProps }) {
+  const { t } = useTranslation();
   return (
     <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
       <HStack>
@@ -48,6 +54,7 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
 }
 
 export const TitleFieldTemplate = ({ id, required, title }) => {
+  const { t } = useTranslation();
   return (
     <VStack>
       <H2 id={id}>
@@ -59,6 +66,7 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
 };
 
 export const DescriptionFieldTemplate = ({ description, id }) => {
+  const { t } = useTranslation();
   return (
     <VStack pb="3">
       <BodySmall id={id} color="textMaroonColor.400">
@@ -71,6 +79,7 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
 export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   const [isShow, setIsShow] = React.useState("");
   const { title } = schema;
+  const { t } = useTranslation();
   let addBtn = "";
 
   return (
@@ -165,14 +174,20 @@ export const FieldTemplate = ({
   ...props
 }) => {
   const { type } = schema;
+  const { t } = useTranslation();
   return (
-    <VStack style={style} space={id === "root" && label ? "10" : "0"}>
-      {label && typeof type === "string" && type !== "string" && (
+    <VStack
+      style={style}
+      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+    >
+      {(label || schema?.label) && typeof type === "string" && (
         <Box>
-          {id === "root" && (
+          {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
               <HStack space="1" alignItems="center">
-                <H2 color="textMaroonColor.400">{t(label)}</H2>
+                <H2 color="textMaroonColor.400">
+                  {t(schema?.label ? schema?.label : label)}
+                </H2>
                 <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
               </HStack>
             </label>
@@ -189,6 +204,7 @@ export const FieldTemplate = ({
   );
 };
 export const ObjectFieldTemplate = (props) => {
+  const { t } = useTranslation();
   return (
     <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
@@ -225,10 +241,11 @@ export const CustomR = ({
 
 export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
-  const { label } = schema ? schema : {};
+  const { label, format } = schema ? schema : {};
+  const { t } = useTranslation();
   return (
     <FormControl gap="4">
-      {label && (
+      {label && !format && (
         <FormControl.Label>
           <H2 color="textMaroonColor.400">{t(label)}</H2>
           {required && <H2 color="textMaroonColor.400">*</H2>}
@@ -245,7 +262,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
         <Stack
           direction={{
             base: "column",
-            md: "row",
+            sm: "row",
           }}
           alignItems={{
             base: "flex-start",
@@ -287,10 +304,12 @@ export const Aadhaar = (props) => {
 
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label } = schema ? schema : {};
+  const { label, title } = schema ? schema : {};
+  const { t } = useTranslation();
+
   return (
     <FormControl gap="4">
-      {label && (
+      {(label || (!label && title)) && (
         <FormControl.Label
           rounded="sm"
           position="absolute"
@@ -317,7 +336,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           }}
         >
           <Text fontSize="12" fontWeight="400">
-            {t(label)}
+            {t(label ? label : title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
             ) : (
@@ -330,8 +349,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
       )}
       <Select
         selectedValue={value}
-        accessibilityLabel={t(label)}
-        placeholder={t(label)}
+        accessibilityLabel={t(label ? label : title)}
+        placeholder={t(label ? label : title)}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
@@ -355,6 +374,7 @@ export { CustomOTPBox };
 export const readOnly = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label } = schema ? schema : {};
+  const { t } = useTranslation();
   return (
     <FormControl gap="4">
       {label && (
@@ -400,5 +420,89 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
     </FormControl>
+  );
+};
+
+export const FileUpload = ({ options, value, onChange, required, schema }) => {
+  const { label, title } = schema ? schema : {};
+  const uplodInputRef = React.useRef();
+  const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState({});
+  const [file, setFile] = React.useState({});
+  const { t } = useTranslation();
+
+  const uploadProfile = async (file) => {
+    setLoading(true);
+    const form_data = new FormData();
+    const item = {
+      file,
+    };
+    for (let key in item) {
+      form_data.append(key, item[key]);
+    }
+    const result = await uploadRegistryService.uploadFile(form_data);
+    setLoading(false);
+    onChange(result.fileUrl);
+    setFile(result.fileUrl);
+  };
+
+  const handleFileInputChange = async (e) => {
+    let file = e.target.files[0];
+    if (file.size <= 1048576 * 25) {
+      uploadProfile(file);
+    } else {
+      setErrors({ fileSize: t("FILE_SIZE") });
+    }
+  };
+
+  return (
+    <VStack space={2}>
+      <VStack
+        justifyContent="center"
+        borderWidth="1"
+        borderStyle="dotted"
+        borderColor="textGreyColor.50"
+        alignItems="center"
+        minH="200px"
+      >
+        {value ? (
+          <Image
+            source={{
+              uri: value,
+            }}
+            alt={`Alternate ${t(label)}`}
+            width={"190px"}
+            height={"190px"}
+          />
+        ) : loading ? (
+          <Spinner
+            color={"primary.500"}
+            accessibilityLabel="Loading posts"
+            size="lg"
+          />
+        ) : (
+          <Box>
+            <input
+              accept="image/*"
+              type="file"
+              style={{ display: "none" }}
+              ref={uplodInputRef}
+              onChange={handleFileInputChange}
+            />
+            <Pressable
+              onPress={(e) => {
+                uplodInputRef?.current?.click();
+              }}
+              alignItems="center"
+              gap="5"
+            >
+              <IconByName name="Upload2FillIcon" isDisabled />
+              {t(label ? label : title)}
+            </Pressable>
+          </Box>
+        )}
+      </VStack>
+      {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
+    </VStack>
   );
 };

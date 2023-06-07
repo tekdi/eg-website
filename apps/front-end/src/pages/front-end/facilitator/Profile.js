@@ -1,36 +1,18 @@
 import React from "react";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useState } from "react";
-import {
-  HStack,
-  VStack,
-  ArrowBackIcon,
-  Text,
-  Box,
-  Progress,
-  ChevronDownIcon,
-  Divider,
-  iconLeft,
-  Button,
-  Icon,
-  ChevronLeftIcon,
-} from "native-base";
+import { HStack, VStack, Box, Progress, Divider } from "native-base";
 import {
   IconByName,
   arrList,
-  facilitatorRegistryService,
   t,
   Layout,
   FrontEndTypo,
 } from "@shiksha/common-lib";
+import { useNavigate } from "react-router-dom";
 
-export default function facilitatorProfileDetailsView({
-  userTokenInfo,
-  footerLinks,
-}) {
+export default function Profile({ userTokenInfo, footerLinks }) {
   const [facilitator, Setfacilitator] = useState(userTokenInfo?.authUser);
-
+  const navigator = useNavigate();
   return (
     <Layout
       _appBar={{ name: t("YOUR_PROFILE") }}
@@ -58,9 +40,16 @@ export default function facilitatorProfileDetailsView({
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                {t("BASIC_DETAILS")}
-              </FrontEndTypo.H3>
+              <HStack alignItems="center" justifyContent="space-between">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("BASIC_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="EditBoxLineIcon"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => navigator("/profile/edit/basic_details")}
+                />
+              </HStack>
               <Box paddingTop="2">
                 <Progress
                   value={arrList(facilitator, [

@@ -20,11 +20,13 @@ import CountScreenView from "../pages/front-end/CountScreenView";
 import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 import Success from "pages/front-end/Success";
-import Profile from "pages/front-end/PrerakProfileDetailsView";
+import Profile from "pages/front-end/facilitator/Profile";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
+import EditForm from "../pages/front-end/facilitator/edit/Form";
+import Experience from "../pages/front-end/facilitator/edit/Experience";
 
 export default [
   { path: "/form", component: Home },
@@ -79,8 +81,7 @@ export default [
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
-  { path: "/profile", component: Profile },
-  { path: "/beneficiary/:id/profile", component: BenificiaryProfileView },
+  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary/list",
@@ -103,5 +104,8 @@ export default [
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
   },
+  { path: "/profile", component: Profile },
+  { path: "/profile/edit/experience/:type", component: Experience },
+  { path: "/profile/edit/:step", component: EditForm },
   { path: "*", component: Dashboard },
 ];
