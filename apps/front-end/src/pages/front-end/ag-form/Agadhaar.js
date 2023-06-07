@@ -213,12 +213,7 @@ export default function Agform({ userTokenInfo }) {
       is_duplicate: "no",
     };
     const adhaar = await AgRegistryService.updateAg(data, userId);
-    console.log("adhaar", adhaar);
-  };
-
-  const addAdhaarduplicate = async () => {
-    const adhaar = await AgRegistryService.updateAg(formData, userId);
-    console.log("adhaar", adhaar);
+    navigate(`/beneficiary/${userId}/profile`);
   };
 
   React.useEffect(() => {
@@ -241,14 +236,13 @@ export default function Agform({ userTokenInfo }) {
       setModalVisible(!modalVisible);
     } else {
       addAdhaar();
-
-      //navigate(`/beneficiary/${userId}/profile`);
     }
   };
 
-  console.log("formdata", formData);
-
-  console.log("isExistflag", isExistflag);
+  const addAdhaarduplicate = async () => {
+    const adhaarduplicate = await AgRegistryService.updateAg(formData, userId);
+    navigate(`/beneficiary/${userId}/profile`);
+  };
 
   return (
     <Layout
