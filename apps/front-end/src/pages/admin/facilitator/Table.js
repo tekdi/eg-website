@@ -1,11 +1,8 @@
 import {
   IconByName,
   facilitatorRegistryService,
-  H1,
-  H3,
   t,
   ImageView,
-  BlueFillButton,
   AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";

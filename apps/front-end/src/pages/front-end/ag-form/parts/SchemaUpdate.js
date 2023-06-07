@@ -1,5 +1,5 @@
 export default {
-  description: "IDENTIFY_THE_AG_LEARNER",
+  description: "IDENTIFY_BENEFICIARY",
   type: "step",
   properties: {
     1: {
@@ -10,7 +10,7 @@ export default {
       properties: {
         device_ownership: {
           type: "string",
-          label: "OWNERSHIP",
+          label: "DEVICE_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["Self", "Family Member", "Neighbour", "Other"],
           enum: ["self", "family_member", "neighbour", "other"],
@@ -25,7 +25,7 @@ export default {
       },
     },
     2: {
-      title: "Complete Address",
+      title: "COMPLETE_ADDRESS",
       type: "object",
       // required: ["state", "district", "block", "village"],
       properties: {
@@ -71,7 +71,7 @@ export default {
     },
 
     3: {
-      title: "Personal Details",
+      title: "PERSONAL_DETAILS",
       type: "object",
       //required: ["marital_status", "social_category"],
       properties: {
@@ -89,7 +89,7 @@ export default {
     },
 
     4: {
-      title: "Education Details",
+      title: "EDUCATION_DETAILS",
       type: "object",
       required: [],
       properties: {

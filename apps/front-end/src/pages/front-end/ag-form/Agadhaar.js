@@ -197,7 +197,7 @@ export default function Agform({ userTokenInfo }) {
   console.log("error", errors);
 
   const onSubmit = () => {
-    navigate(`/beneficiary/profile/${userId}`);
+    navigate("/beneficiary/4", { state: { id: userId } });
   };
 
   return (
