@@ -80,13 +80,7 @@ export default function BenificiaryEnrollment() {
                     ? benificiary?.core_beneficiaries?.type_of_enrollement
                     : "-"}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`beneficiary/${id}/edit/enrollment`);
-                  }}
-                />
+            
               </HStack>
 
               <HStack

@@ -196,12 +196,7 @@ export default function BenificiaryBasicDetails() {
               />
             </HStack>
             <VStack space="3" pt="5">
-              <HStack alignItems="Center" space="xl">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4">
-                  {t("HOME")}
-                </FrontEndTypo.H3>
-                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
-              </HStack>
+          
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" space="xl">
                   <FrontEndTypo.H3
@@ -218,7 +213,7 @@ export default function BenificiaryBasicDetails() {
                 </HStack>
               </VStack>
             </VStack>
-
+</VStack>
             <VStack
               px="5"
               py="3"
@@ -241,39 +236,10 @@ export default function BenificiaryBasicDetails() {
                   }}
                 />
               </HStack>
-              <Box>
-                <Progress
-                  value={arrList(benificiary?.core_beneficiaries, [
-                    "father_first_name",
-                    "father_middle_name",
-                    "father_last_name",
-                    "mother_first_name",
-                    "mother_middle_name",
-                    "mother_last_name",
-                  ])}
-                  size="xs"
-                  colorScheme="info"
-                />
-              </Box>
-              <VStack space="2" pt="5">
-                <HStack
-                  alignItems="Center"
-                  justifyContent="space-between"
-                  borderBottomWidth="1px"
-                  borderBottomColor="appliedColor"
-                >
-                  <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
-                    {t("FATHER")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="EditBoxLineIcon"
-                    color="iconColor.100"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/edit/family-details`);
-                    }}
-                  />
-                </HStack>
-                <Box paddingTop="2">
+             
+              <VStack space="2">
+                
+                <Box pt="2">
                   <Progress
                     value={arrList(benificiary?.core_beneficiaries, [
                       "father_first_name",
@@ -288,16 +254,22 @@ export default function BenificiaryBasicDetails() {
                   />
                 </Box>
                 <VStack space="2" paddingTop="5">
-                  <HStack alignItems="Center" justifyContent="space-between">
+                  <HStack
+                    alignItems="Center"
+                    space="xl"
+                    borderBottomWidth="1px"
+                    borderBottomColor="appliedColor"
+                  >
                     <FrontEndTypo.H3
                       color="textGreyColor.50"
                       fontWeight="400"
-                      flex="0.4"
+                      flex="0.3"
+                      pb="2"
                     >
                       {t("FATHER")}
                     </FrontEndTypo.H3>
 
-                    <FrontEndTypo.H3 color="textGreyColor.800" flex="0.5">
+                    <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4" >
                       {benificiary?.core_beneficiaries?.father_first_name
                         ? benificiary?.core_beneficiaries.father_first_name
                         : "-"}{" "}
@@ -310,11 +282,11 @@ export default function BenificiaryBasicDetails() {
                     </FrontEndTypo.H3>
                   </HStack>
                   <HStack alignItems="Center" justifyContent="space-between">
-                    <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4">
+                    <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
                       {t("MOTHER")}
                     </FrontEndTypo.H3>
 
-                    <FrontEndTypo.H3 color="textGreyColor.800" flex="0.5">
+                    <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                       {benificiary?.core_beneficiaries?.mother_first_name
                         ? benificiary?.core_beneficiaries.mother_first_name
                         : "-"}{" "}
@@ -329,7 +301,9 @@ export default function BenificiaryBasicDetails() {
                 </VStack>
               </VStack>
 
-              <VStack
+            
+            </VStack>
+            <VStack
                 px="5"
                 py="3"
                 mb="3"
@@ -377,13 +351,7 @@ export default function BenificiaryBasicDetails() {
                         ? benificiary?.extended_users?.social_category
                         : "-"}
                     </FrontEndTypo.H3>
-                    <IconByName
-                      name="EditBoxLineIcon"
-                      color="iconColor.100"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/personal-details`);
-                      }}
-                    />
+                   
                   </HStack>
 
                   <HStack alignItems="Center" space="2xl">
@@ -488,10 +456,8 @@ export default function BenificiaryBasicDetails() {
                   </HStack>
                 </VStack>
               </VStack>
-            </VStack>
           </VStack>
         </VStack>
-      </VStack>
     </Layout>
   );
 }

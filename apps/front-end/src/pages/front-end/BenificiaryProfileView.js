@@ -386,7 +386,7 @@ export default function BenificiaryProfileView(props) {
           <VStack alignItems="end" width="100%">
             <IconByName
               name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenDropOut(false)}
+              onPress={(e) => setIsOpenReactive(false)}
             />
           </VStack>
           <FrontEndTypo.H1 bold color="textGreyColor.450">
