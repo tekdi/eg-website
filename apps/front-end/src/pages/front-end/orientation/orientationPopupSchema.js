@@ -1,6 +1,13 @@
 export default {
   type: "object",
-  required: ["type", "attendees", "start_date", "location", "location_type"],
+  required: [
+    "type",
+    "attendees",
+    "master_trainer",
+    "start_date",
+    "location",
+    "location_type",
+  ],
   properties: {
     type: {
       type: "string",

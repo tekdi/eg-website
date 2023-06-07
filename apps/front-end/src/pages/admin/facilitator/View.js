@@ -71,7 +71,16 @@ export default function FacilitatorView({ footerLinks }) {
   const [credentials, setCredentials] = React.useState();
   const [otpData, setotpData] = React.useState();
   const [errors, setErrors] = React.useState({});
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [confirmPassword, setConfirmPassword] = React.useState(false);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPassword(!confirmPassword);
+  };
   const navigate = useNavigate();
 
   React.useEffect(async () => {
@@ -378,11 +387,14 @@ export default function FacilitatorView({ footerLinks }) {
                   <VStack space={30}>
                     <Input
                       id="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       InputRightElement={
                         <IconByName
                           name="EyeOffLineIcon"
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                          onPress={() => {
+                            togglePasswordVisibility();
+                          }}
                         />
                       }
                       placeholder={
@@ -419,11 +431,14 @@ export default function FacilitatorView({ footerLinks }) {
 
                     <Input
                       id="confirmPassword"
-                      type="password"
+                      type={confirmPassword ? "text" : "password"}
                       InputRightElement={
                         <IconByName
                           name="EyeOffLineIcon"
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                          onPress={() => {
+                            toggleConfirmPasswordVisibility();
+                          }}
                         />
                       }
                       placeholder={
