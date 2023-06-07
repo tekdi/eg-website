@@ -11,6 +11,16 @@ export default {
           type: "string",
           title: "AADHAAR_NUMBER",
         },
+        edit_page_type: {
+          type: "string",
+          format: "hidden",
+          default: "add_ag_duplication",
+        },
+        aadhar_no: {
+          type: "string",
+          format: "hidden",
+          default: "",
+        },
       },
     },
   },

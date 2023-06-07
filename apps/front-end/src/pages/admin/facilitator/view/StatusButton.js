@@ -164,15 +164,7 @@ export default function StatusButton({ data, setData }) {
     >
       <AdminTypo.StatusButton
         status="success"
-        variant={"statusBtnAdmin"}
-        colorScheme="success"
-        leftIcon={
-          <IconByName
-            name="CheckboxCircleLineIcon"
-            _icon={{ color: "#00D790" }}
-            size="20px"
-          ></IconByName>
-        }
+       
         onPress={() => {
           setShowModal("screened");
           setReason();

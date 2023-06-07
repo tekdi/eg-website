@@ -28,12 +28,15 @@ export default function BenificiaryBasicDetails() {
 
     setBenificiary(result?.result);
   };
-  console.log(benificiary);
+
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/${id}/profile`);
+  };
 
   return (
-    <Layout _appBar={{ name: t("BASIC_DETAILS") }}>
-      <VStack bg="bgGreyColor.200">
-        <VStack px="5" pt="3">
+    <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
+      <VStack paddingBottom="64px" bg="bgGreyColor.200">
+        <VStack px="16px"  space="24px">
           <Center>
             <IconByName
               name="AccountCircleLineIcon"
@@ -53,6 +56,9 @@ export default function BenificiaryBasicDetails() {
                 name="PencilLineIcon"
                 color="iconColor.200"
                 _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/basic-info`);
+                }}
               />
             </HStack>
             <HStack alignItems="Center">
@@ -83,7 +89,7 @@ export default function BenificiaryBasicDetails() {
                 color="iconColor.100"
                 _icon={{ size: "20" }}
                 onPress={(e) => {
-                  navigate(`/beneficiary/${id}/edit/contact-info`);
+                  navigate(`/beneficiary/edit/${id}/contact-info`);
                 }}
               />
             </HStack>
@@ -122,7 +128,7 @@ export default function BenificiaryBasicDetails() {
                   color="iconColor.100"
                   _icon={{ size: "20px" }}
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/contact-info`);
+                    navigate(`/beneficiary/edit/${id}/contact-info`);
                   }}
                 />
               </HStack>
@@ -193,11 +199,12 @@ export default function BenificiaryBasicDetails() {
                 name="EditBoxLineIcon"
                 _icon={{ size: "20" }}
                 color="iconColor.100"
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/address`);
+                }}
               />
             </HStack>
-            <VStack space="3" pt="5">
-          
-              <VStack space="2" paddingTop="5">
+              <VStack >
                 <HStack alignItems="Center" space="xl">
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
@@ -213,53 +220,53 @@ export default function BenificiaryBasicDetails() {
                 </HStack>
               </VStack>
             </VStack>
-</VStack>
-            <VStack
-              px="5"
-              py="3"
-              mb="3"
-              borderRadius="10px"
-              borderWidth="1px"
-              bg="white"
-              borderColor="appliedColor"
-            >
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 bold color="textGreyColor.800">
-                  {t("FAMILY_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/family-details`);
-                  }}
+          
+          <VStack
+            px="5"
+            py="3"
+            mb="3"
+            borderRadius="10px"
+            borderWidth="1px"
+            bg="white"
+            borderColor="appliedColor"
+          >
+            <HStack justifyContent="space-between" alignItems="Center">
+              <FrontEndTypo.H3 bold color="textGreyColor.800">
+                {t("FAMILY_DETAILS")}
+              </FrontEndTypo.H3>
+              <IconByName
+                name="EditBoxLineIcon"
+                color="iconColor.100"
+                _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/family-details`);
+                }}
+              />
+            </HStack>
+
+            <VStack space="2">
+              <Box pt="2">
+                <Progress
+                  value={arrList(benificiary?.core_beneficiaries, [
+                    "father_first_name",
+                    "father_middle_name",
+                    "father_last_name",
+                    "mother_first_name",
+                    "mother_middle_name",
+                    "mother_last_name",
+                  ])}
+                  size="xs"
+                  colorScheme="info"
                 />
-              </HStack>
-             
-              <VStack space="2">
-                
-                <Box pt="2">
-                  <Progress
-                    value={arrList(benificiary?.core_beneficiaries, [
-                      "father_first_name",
-                      "father_middle_name",
-                      "father_last_name",
-                      "mother_first_name",
-                      "mother_middle_name",
-                      "mother_last_name",
-                    ])}
-                    size="xs"
-                    colorScheme="info"
-                  />
-                </Box>
-                <VStack space="2" paddingTop="5">
-                  <HStack
-                    alignItems="Center"
-                    space="xl"
-                    borderBottomWidth="1px"
-                    borderBottomColor="appliedColor"
-                  >
+              </Box>
+              <VStack space="2" paddingTop="5">
+                <HStack
+                  alignItems="Center"
+                  space="xl"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
+                 
                     <FrontEndTypo.H3
                       color="textGreyColor.50"
                       fontWeight="400"
@@ -321,7 +328,7 @@ export default function BenificiaryBasicDetails() {
                     color="iconColor.100"
                     _icon={{ size: "20" }}
                     onPress={(e) => {
-                      navigate(`/beneficiary/${id}/personal-details`);
+                      navigate(`/beneficiary/edit/${id}/personal-details`);
                     }}
                   />
                 </HStack>
@@ -346,13 +353,12 @@ export default function BenificiaryBasicDetails() {
                       {t("SOCIAL")}
                     </FrontEndTypo.H3>
 
-                    <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                      {benificiary?.extended_users?.social_category
-                        ? benificiary?.extended_users?.social_category
-                        : "-"}
-                    </FrontEndTypo.H3>
-                   
-                  </HStack>
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
+                  {benificiary?.extended_users?.social_category
+                    ? benificiary?.extended_users?.social_category
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
 
                   <HStack alignItems="Center" space="2xl">
                     <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
@@ -367,41 +373,43 @@ export default function BenificiaryBasicDetails() {
                   </HStack>
                 </VStack>
               </VStack>
-
-              <VStack
-                px="5"
-                py="3"
-                mb="3"
-                borderRadius="10px"
-                borderWidth="1px"
-                bg="white"
-                borderColor="appliedColor"
-              >
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3 bold color="textGreyColor.800">
-                    {t("REFERENCE_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="EditBoxLineIcon"
-                    color="iconColor.100"
-                    _icon={{ size: "20" }}
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/edit/reference`);
-                    }}
-                  />
-                </HStack>
-                <Box>
-                  <Progress
-                    value={arrList(benificiary?.references[0], [
-                      "first_name",
-                      "middle_name",
-                      "last_name",
-                      "relation",
-                    ])}
-                    size="xs"
-                    colorScheme="info"
-                  />
-                </Box>
+          <VStack
+            px="5"
+            py="3"
+            mb="3"
+            borderRadius="10px"
+            borderWidth="1px"
+            bg="white"
+            borderColor="appliedColor"
+          >
+            <HStack justifyContent="space-between" alignItems="Center">
+              <FrontEndTypo.H3 bold color="textGreyColor.800">
+                {t("REFERENCE_DETAILS")}
+              </FrontEndTypo.H3>
+              <IconByName
+                name="EditBoxLineIcon"
+                color="iconColor.100"
+                _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/reference-details`);
+                }}
+              />
+            </HStack>
+            <Box>
+              <Progress
+                value={arrList(benificiary?.references[0], [
+                  "first_name",
+                  "middle_name",
+                  "last_name",
+                  "relation",
+                ])}
+                size="xs"
+                colorScheme="info"
+              />
+            </Box>
+              
+               
+               
                 <VStack space="2" pt="5">
                   <HStack
                     alignItems="Center"
@@ -455,8 +463,9 @@ export default function BenificiaryBasicDetails() {
                     </FrontEndTypo.H3>
                   </HStack>
                 </VStack>
-              </VStack>
           </VStack>
+          </VStack>
+
         </VStack>
     </Layout>
   );
