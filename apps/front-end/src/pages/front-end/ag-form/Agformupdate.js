@@ -38,7 +38,6 @@ import {
   CustomOTPBox,
   benificiaryRegistoryService,
   enumRegistryService,
-  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
