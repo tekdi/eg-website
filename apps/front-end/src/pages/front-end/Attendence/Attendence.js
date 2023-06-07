@@ -13,6 +13,7 @@ import {
   FrontEndTypo,
   uploadRegistryService,
   eventService,
+  Loading,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
@@ -36,7 +37,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import moment from "moment";
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
+
 import { useNavigate } from "react-router-dom";
+import schema from "./schema";
 
 const stylesheet = {
   modalxxl: {
@@ -140,19 +145,21 @@ export default function Attendence() {
   const [showEditModal, setShowEditModal] = React.useState(false);
 
   const [locationData, setlocationData] = useState("");
-  const [attendance, setAttendance] = React.useState("absent");
+  const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
   const [event, setEvent] = useState("");
   const [loading, setLoading] = React.useState(true);
   const uplodInputRef = React.useRef();
+  const formRef = React.useRef();
+
   const [ids, setids] = useState("");
   const [singleUser, setsingleUser] = useState("");
+  const [formData, setFormData] = useState({});
 
   const [userData, setUserData] = useState({});
 
   const [cameraFile, setcameraFile] = useState();
-
   useEffect(() => {
     getLocation();
   }, []);
@@ -163,6 +170,31 @@ export default function Attendence() {
     if (value?.status !== "present") {
       setCameraModal(true);
       setUserData({ ...value, index: showIndexes(users, value, "C") });
+    }
+  };
+
+  const handleFormChange = ({ formData }) => {
+    setFormData(formData);
+  };
+
+  const uiSchema = {
+    documents_status: {
+      "ui:widget": "checkboxes",
+      "ui:options": {
+        inline: true,
+      },
+    },
+  };
+
+  const onSubmit = async (data) => {
+    console.log(data?.documents_status, "data?.documents_status");
+    const apiResponse = await eventService.editAttendanceDocumentList({
+      id: ids?.user_id,
+      page_type: "documents_checklist",
+      documents_status: data?.documents_status,
+    });
+    if (apiResponse) {
+      setShowEditModal(false);
     }
   };
 
@@ -433,7 +465,7 @@ export default function Attendence() {
                   p={"3px"}
                 >
                   <Badge alignSelf="center">
-                    {event?.mastertrainer ? event?.mastertrainer : ""}
+                    {event?.master_trainer ? event?.master_trainer : ""}
                   </Badge>
                 </Box>
               </HStack>
@@ -477,9 +509,14 @@ export default function Attendence() {
             isOpen={showEditModal}
             onClose={() => setShowEditModal(false)}
             safeAreaTop={true}
-            size={"xxl"}
+            // size={"xxl"}
+            size="xl"
           >
-            <Modal.Content rounded="2xl" bg="translate">
+            <Modal.Content
+              rounded="2xl"
+              bg="translate"
+              style={{ height: 1000 }}
+            >
               <Modal.CloseButton />
               <Modal.Header p="1" borderBottomWidth="0" bg="white">
                 <AdminTypo.H1 textAlign="center" color="textGreyColor.500">
@@ -604,7 +641,11 @@ export default function Attendence() {
                         <HStack alignItems="center" space={"2"} p="1">
                           {ids?.user?.aadhar_verified !== null ? (
                             <AdminTypo.H3 style={{ color: "green" }}>
-                              Yes
+                              Yes (
+                              {ids?.user?.aadhaar_verification_mode !== null
+                                ? ids?.user?.aadhaar_verification_mode
+                                : ""}
+                              )
                             </AdminTypo.H3>
                           ) : (
                             <AdminTypo.H3 style={{ color: "red" }}>
@@ -622,7 +663,7 @@ export default function Attendence() {
                       </HStack>
 
                       <HStack alignItems="center" space={5}>
-                        <HStack alignItems="center" space={2}>
+                        {/* <HStack alignItems="center" space={2}>
                           <IconByName
                             isDisabled
                             name="FileTextLine"
@@ -641,17 +682,16 @@ export default function Attendence() {
                             alignItems="flex-start"
                           >
                             <Checkbox
-                              value="qualification"
+                              value="qualification certificate"
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
                               <AdminTypo.H6 color="textGreyColor.800">
-                                {" "}
                                 Qualification Certificate
                               </AdminTypo.H6>
                             </Checkbox>
                             <Checkbox
-                              value="volunteer"
+                              value="volunteer proof"
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
@@ -659,35 +699,52 @@ export default function Attendence() {
                                 Volunteer Proof
                               </AdminTypo.H6>
                             </Checkbox>
-                            <Checkbox value="work" color="textGreyColor.800">
+                            <Checkbox
+                              value="work proof"
+                              color="textGreyColor.800"
+                            >
                               <AdminTypo.H6 color="textGreyColor.800">
                                 Work Proof
                               </AdminTypo.H6>
                             </Checkbox>
                           </Stack>
-                        </HStack>
+                        </HStack> */}
+                        <Form
+                          schema={schema}
+                          ref={formRef}
+                          uiSchema={uiSchema}
+                          formData={formData}
+                          validator={validator}
+                          onChange={handleFormChange}
+                          onSubmit={onSubmit}
+                        >
+                          <HStack
+                            alignItems="center"
+                            space={5}
+                            mt={"20px"}
+                            justifyContent={"space-between"}
+                          >
+                            <AdminTypo.Secondarybutton
+                              shadow="BlueOutlineShadow"
+                              onPress={() => {
+                                setShowEditModal(false);
+                              }}
+                            >
+                              {t("CANCEL")}
+                            </AdminTypo.Secondarybutton>
+                            <AdminTypo.PrimaryButton
+                              px="8"
+                              shadow="BlueFillShadow"
+                              onPress={() => onSubmit(formData)}
+                            >
+                              {t("SAVE")}
+                            </AdminTypo.PrimaryButton>
+                          </HStack>
+                        </Form>
                       </HStack>
                     </VStack>
                   </HStack>
                 </VStack>
-                <HStack
-                  alignItems="center"
-                  space={5}
-                  mt={"20px"}
-                  justifyContent={"end"}
-                >
-                  <AdminTypo.Secondarybutton
-                    shadow="BlueOutlineShadow"
-                    onPress={() => {
-                      setShowEditModal(false);
-                    }}
-                  >
-                    {t("CANCEL")}
-                  </AdminTypo.Secondarybutton>
-                  <AdminTypo.PrimaryButton px="8" shadow="BlueFillShadow">
-                    {t("SAVE")}
-                  </AdminTypo.PrimaryButton>
-                </HStack>
               </Modal.Body>
             </Modal.Content>
           </Modal>
@@ -739,18 +796,21 @@ export default function Attendence() {
                 {cameraUrl?.url ? (
                   <img src={cameraUrl?.url} alt="Image" />
                 ) : (
-                  <Camera
-                    height="300px"
-                    {...{
-                      cameraModal,
-                      setCameraModal,
-                      cameraUrl,
-                      setCameraUrl: async (url, file) => {
-                        setCameraUrl({ url, file });
-                      },
-                    }}
-                  />
+                  <React.Suspense fallback={<Loading />}>
+                    <Camera
+                      height="300px"
+                      {...{
+                        cameraModal,
+                        setCameraModal,
+                        cameraUrl,
+                        setCameraUrl: async (url, file) => {
+                          setCameraUrl({ url, file });
+                        },
+                      }}
+                    />
+                  </React.Suspense>
                 )}
+
                 {/* )} */}
               </Modal.Body>
               <Modal.Footer justifyContent={"center"}>
