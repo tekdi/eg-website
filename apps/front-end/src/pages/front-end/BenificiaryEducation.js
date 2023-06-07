@@ -52,6 +52,9 @@ export default function BenificiaryEducation() {
                 name="EditBoxLineIcon"
                 _icon={{ size: "20" }}
                 color="iconColor.100"
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${userId}/education`);
+                }}
               />
             </HStack>
             <Box paddingTop="2">
@@ -92,13 +95,6 @@ export default function BenificiaryEducation() {
                         ?.last_standard_of_education
                     : "-"}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${userId}/education`);
-                  }}
-                />
               </HStack>
 
               <HStack
@@ -187,6 +183,9 @@ export default function BenificiaryEducation() {
                 name="EditBoxLineIcon"
                 _icon={{ size: "20" }}
                 color="iconColor.100"
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${userId}/future-education`);
+                }}
               />
             </HStack>
             <Box>
@@ -210,13 +209,6 @@ export default function BenificiaryEducation() {
                     ? benificiary?.core_beneficiaries?.career_aspiration
                     : "-"}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${userId}/future-education`);
-                  }}
-                />
               </HStack>
 
               <HStack alignItems="Center" justifyContent="space-between">
