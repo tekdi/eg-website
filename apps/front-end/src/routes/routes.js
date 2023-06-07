@@ -35,7 +35,7 @@ export default [
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
-    path: "/beneficiary/edit/:id/contact-details",
+    path: "/beneficiary/edit/:id/contact-info",
     component: contactDetailsEdit,
   },
   {

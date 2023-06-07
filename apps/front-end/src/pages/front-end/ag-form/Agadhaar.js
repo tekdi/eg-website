@@ -180,7 +180,7 @@ export default function Agform({ userTokenInfo }) {
     setFormData(newData);
     if (id === "root_aadhar_token") {
       if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({ aadhar_token: data?.aadhar_token });
+        const result = await userExist({ aadhar_no: data?.aadhar_token });
         if (result.isUserExist) {
           setisExistflag(true);
         } else {
@@ -207,12 +207,12 @@ export default function Agform({ userTokenInfo }) {
   };
 
   const addAdhaar = async () => {
-    let data = {
-      edit_page_type: "add_aadhaar",
+    let adddata = {
+      edit_page_type: "add_ag_duplication",
       aadhar_no: formData?.aadhar_token,
       is_duplicate: "no",
     };
-    const adhaar = await AgRegistryService.updateAg(data, userId);
+    const adhaar = await AgRegistryService.updateAg(adddata, userId);
     navigate(`/beneficiary/${userId}/profile`);
   };
 

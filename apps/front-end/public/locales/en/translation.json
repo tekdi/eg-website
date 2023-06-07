@@ -524,10 +524,11 @@
   "IDENTIFY_BENEFICIARY": "Identify Learner",  
   "CONTACT_INFORMATION": "Contact Information",
   "BENEFICIARY_ALL": "All",
+  "CHECK_DOCUMENTS": "Check Documents",
+  "USER_ID": "User Id",
   "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT": "Upload the Payment receipt For Enrollment",
   "CAPTCHA_CODE": "Captcha code",
   "TRY_OTHER": "Try Other",
-  "CHECK_DOCUMENTS": "Check Documents",
   "YOUR_APPLICATION_IS_UNDER_REVIEW": "Your Application is Under Review",
   "YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS": "You need to upload these documents before attending your Pragati orientation",
   "THIS_CAN_BE_YOUR_HIGHEST_GRADE": "This can be your highest grade or graduation certificate",
@@ -541,5 +542,6 @@
   "CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW": "Congratulations you are selected for the interview!",
   "YOU_ARE_NOW_A_PRAGATI_MOBILIZER": "You are Now a Pragati Mobilizer",
   "ITS_TIME_TO_START_MOBILIZING": "It's Time to Start Mobilizing!",
-  "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 Learner to set up available camp"
+  "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 Learner to set up available camp",
+  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER":"Explain your claim of the AG Learner"
 }

@@ -503,5 +503,6 @@
 "BENEFICIARY_PROFILE_REACTIVATE_BENEFICIARY": "विद्यार्थी को पुन: सक्रिय करें",
 "CONTACT_INFORMATION": "संपर्क जानकारी",
   "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
-  "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें"
+  "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें",
+  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "एजी शिक्षार्थी के अपने दावे की व्याख्या करें"
 }
