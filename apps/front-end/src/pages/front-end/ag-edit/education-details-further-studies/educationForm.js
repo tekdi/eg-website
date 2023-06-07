@@ -35,6 +35,7 @@ import {
   benificiaryRegistoryService,
   StudentEnumService,
   AgRegistryService,
+  enumRegistryService,
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
@@ -118,20 +119,16 @@ export default function App({ facilitator, ip, onClick, id }) {
     navigate("/dashboard");
   }
 
-  window.onbeforeunload = function () {
-    return false;
-  };
-
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
     console.log("qData", qData?.result);
     let last_standard_of_education =
-      qData?.result?.core_beneficiaries[0]?.last_standard_of_education;
+      qData?.result?.core_beneficiaries?.last_standard_of_education;
     let last_standard_of_education_year =
-      qData?.result?.core_beneficiaries[0]?.last_standard_of_education_year;
+      qData?.result?.core_beneficiaries?.last_standard_of_education_year;
     let reason_of_leaving_education =
-      qData?.result?.core_beneficiaries[0]?.reason_of_leaving_education;
-    let type_of_learner = qData?.result?.core_beneficiaries[0]?.type_of_learner;
+      qData?.result?.core_beneficiaries?.reason_of_leaving_education;
+    let type_of_learner = qData?.result?.core_beneficiaries?.type_of_learner;
 
     setFormData({
       ...formData,
@@ -143,52 +140,46 @@ export default function App({ facilitator, ip, onClick, id }) {
   }, []);
 
   React.useEffect(async () => {
-    const studentTypeData = await StudentEnumService.getTypeStudent();
-    const last_education_year = await StudentEnumService.lastYear();
-    const lastStandard = await StudentEnumService.lastStandard();
-    const ReasonOfLeaving = await StudentEnumService.ReasonOfLeaving();
+    const ListOfEnum = await enumRegistryService.listOfEnum();
+    const lastYear = await benificiaryRegistoryService.lastYear();
     let newSchema = schema;
+    console.log("schema", schema);
     if (schema["properties"]["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
-        arr: studentTypeData,
+        arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "last_standard_of_education_year",
-        arr: last_education_year,
+        arr: lastYear,
         title: "value",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "last_standard_of_education",
-        arr: lastStandard,
+        arr: ListOfEnum?.data?.LAST_STANDARD_OF_EDUCATION,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
-        arr: ReasonOfLeaving,
-        title: "title",
+        arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
+        title: t("title"),
         value: "value",
       });
     }
-
     setSchema(newSchema);
-  }, []);
-
-  console.log("formData", formData);
+  }, [formData]);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/${userId}/educationdetails`);
   };
+
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
   const getImage = () => takeScreenshot({ ref });
@@ -208,93 +199,6 @@ export default function App({ facilitator, ip, onClick, id }) {
       localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
     }
   };
-
-  // const uiSchema = {
-  //   dob: {
-  //     "ui:widget": "alt-date",
-  //     "ui:options": {
-  //       yearsRange: yearsRange,
-  //       hideNowButton: true,
-  //       hideClearButton: true,
-  //     },
-  //   },
-  //   DOB: {
-  //     "ui:widget": "alt-date",
-  //     "ui:options": {
-  //       yearsRange: yearsRange,
-  //       hideNowButton: true,
-  //       hideClearButton: true,
-  //     },
-  //   },
-
-  //   qualification: {
-  //     "ui:widget": CustomR,
-  //   },
-  //   //added new
-
-  //   tellindetail: {
-  //     "ui:widget": "textarea",
-  //   },
-  //   lastyeareducation: {
-  //     "ui:widget": "select",
-  //   },
-  //   degree: {
-  //     "ui:widget": CustomR,
-  //   },
-  //   gender: {
-  //     "ui:widget": CustomR,
-  //   },
-  //   type_mobile: {
-  //     "ui:widget": CustomR,
-  //   },
-  //   sourcing_channel: {
-  //     "ui:widget": CustomR,
-  //   },
-  //   availability: {
-  //     "ui:widget": RadioBtn,
-  //   },
-  //   device_ownership: {
-  //     "ui:widget": RadioBtn,
-  //   },
-  //   device_type: {
-  //     "ui:widget": RadioBtn,
-  //   },
-  //   experience: {
-  //     related_to_teaching: {
-  //       "ui:widget": RadioBtn,
-  //     },
-  //   },
-  //   makeWhatsapp: {
-  //     "ui:widget": RadioBtn,
-  //   },
-  //   maritalstatus: {
-  //     "ui:widget": CustomR,
-  //   },
-  //   socialstatus: {
-  //     "ui:widget": CustomR,
-  //   },
-
-  //   ownership: {
-  //     "ui:widget": RadioBtn,
-  //   },
-  //   // custom radio button with property name
-  //   vo_experience: {
-  //     items: {
-  //       experience_in_years: { "ui:widget": CustomR },
-  //       related_to_teaching: {
-  //         "ui:widget": RadioBtn,
-  //       },
-  //     },
-  //   },
-  //   experience: {
-  //     items: {
-  //       experience_in_years: { "ui:widget": CustomR },
-  //       related_to_teaching: {
-  //         "ui:widget": RadioBtn,
-  //       },
-  //     },
-  //   },
-  // };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -378,34 +282,6 @@ export default function App({ facilitator, ip, onClick, id }) {
       setFormData({ ...newData, ...facilitator });
     }
   }, []);
-
-  // const updateBtnText = () => {
-  //   if (schema?.properties?.vo_experience) {
-  //     if (formData.vo_experience?.length > 0) {
-  //       setSubmitBtn(t("NEXT"));
-  //       setAddBtn(t("ADD_EXPERIENCE"));
-  //     } else {
-  //       setSubmitBtn(t("NO"));
-  //       setAddBtn(t("YES"));
-  //     }
-  //   } else if (schema?.properties?.mobile) {
-  //     setSubmitBtn(t("SAVE"));
-  //     setAddBtn(t("ADD_EXPERIENCE"));
-  //   } else if (schema?.properties?.reasonforleaving) {
-  //     if (schema?.properties?.reasonforleaving.enum[8] == "other") {
-  //       console.log("inner 2");
-  //       setSubmitBtn(t("SAVE"));
-  //       setAddBtn(t("ADD_EXPERIENCE"));
-  //       console.log("eee");
-  //     }
-  //   } else {
-  //     setSubmitBtn(t("SAVE"));
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   updateBtnText();
-  // }, [formData, page, lang]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
@@ -549,7 +425,7 @@ export default function App({ facilitator, ip, onClick, id }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
     if (updateDetails) {
-      navigate(`/beneficiary/edit/future-education/${userId}`);
+      navigate(`/beneficiary/${userId}/educationdetails`);
     }
   };
 

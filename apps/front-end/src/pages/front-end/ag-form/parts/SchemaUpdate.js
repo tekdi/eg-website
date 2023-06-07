@@ -12,14 +12,14 @@ export default {
           type: "string",
           label: "DEVICE_OWNERSHIP",
           format: "RadioBtn",
-          enumNames: ["Self", "Family Member", "Neighbour", "Other"],
+          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
         device_type: {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
           format: "CustomR",
-          enumNames: ["Smartphone", "Basic"],
+          enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },
       },
@@ -38,6 +38,10 @@ export default {
           type: "number",
           label: "Latitude",
           format: "readOnly",
+        },
+        address: {
+          title: "STREET_ADDRESS",
+          type: "string",
         },
         state: {
           type: "string",
@@ -61,10 +65,6 @@ export default {
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
-          type: "string",
-        },
-        address: {
-          title: "STREET_ADDRESS",
           type: "string",
         },
       },
