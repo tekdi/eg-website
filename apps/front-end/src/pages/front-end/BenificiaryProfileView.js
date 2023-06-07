@@ -3,20 +3,13 @@ import { useParams } from "react-router-dom";
 import {
   HStack,
   VStack,
-  Text,
   Box,
   Progress,
   Divider,
-  Button,
-  Modal,
   Actionsheet,
-  useDisclose,
 } from "native-base";
 import {
-  AdminTypo,
   FrontEndTypo,
-  H1,
-  H3,
   IconByName,
   Layout,
   benificiaryRegistoryService,
@@ -331,9 +324,9 @@ export default function BenificiaryProfileView(props) {
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
-          <Button onPress={(e) => setIsOpenReactive(true)}>
-            {t("BENEFICIARY_PROFILE_REACTIVATE_BENEFICIARY")}
-          </Button>
+          <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+          </FrontEndTypo.Disablebutton>
         </VStack>
       </VStack>
       <Actionsheet
@@ -388,15 +381,11 @@ export default function BenificiaryProfileView(props) {
         isOpen={isOpenReactive}
         onClose={(e) => setIsOpenReactive(false)}
       >
-        <IconByName
-          name="CloseCircleLineIcon"
-          onPress={(e) => setIsOpenReactive(false)}
-        />
         <Actionsheet.Content>
           <VStack alignItems="end" width="100%">
             <IconByName
               name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenDropOut(false)}
+              onPress={(e) => setIsOpenReactive(false)}
             />
           </VStack>
           <FrontEndTypo.H1 bold color="textGreyColor.450">

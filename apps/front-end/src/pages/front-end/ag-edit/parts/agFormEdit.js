@@ -36,6 +36,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -77,10 +78,7 @@ export default function agFormEdit({ ip, id }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -604,7 +602,7 @@ export default function agFormEdit({ ip, id }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/edit/contact-details/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const [cameraFile, setcameraFile] = useState();
@@ -672,8 +670,7 @@ export default function agFormEdit({ ip, id }) {
           <h5 color="red.1000" fontSize="2">
             {t("FRONT_VIEW")}
           </h5>
-          <Button
-            variant={"primary"}
+          <FrontEndTypo.Primarybutton
             onPress={async (e) => {
               if (cameraSelection >= 2) {
                 nextPreviewStep();
@@ -693,9 +690,8 @@ export default function agFormEdit({ ip, id }) {
             }}
           >
             {cameraSelection > 2 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
-          </Button>
-          <Button
-            variant={"secondary"}
+          </FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Secondarybutton
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -703,7 +699,7 @@ export default function agFormEdit({ ip, id }) {
             }}
           >
             {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </Layout>
     );
@@ -821,7 +817,6 @@ export default function agFormEdit({ ip, id }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
@@ -869,14 +864,13 @@ export default function agFormEdit({ ip, id }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />

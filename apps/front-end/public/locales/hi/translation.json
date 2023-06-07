@@ -414,8 +414,6 @@
   "DUE_TO_MARRIAGES": "शादी हो जाने के कारण",
   "MIGRATION_RELATED_TO_EMPLOYMENT": "रोजगार से संबंधित प्रवास के कारण",
   "CAREER_ASPIRATION_FURTHER_STUDIES": "आगे का अध्ययन",
-  "CAREER_ASPIRATION_SKILL_TRAINING": "कौशल प्रशिक्षण",
-  "CAREER_ASPIRATION_SMALL_BUSINESS": "लघु व्यवसाय",
   "APPLIED_NEW_FOR_CHANGE": "नए बदलाव लागू करने के लिए",
   "CAST_CERTIFICATE": "कास्ट सर्टिफिकेट",
   "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "सीबीओ हस्ताक्षर के साथ हस्तांतरण प्रमाण पत्र",
@@ -499,11 +497,10 @@
   "RELATION": "नाता",
   "ENROLLMENT_STATUS": "एनरोलमेंट स्थिति",
   "ENROLLMENT_NUMBER": "एनरोलमेंट नम्बर",
-  "COMPLETE_ADDRESS":"पता पूरा करें",
+  "COMPLETE_ADDRESS": "पता पूरा करें",
   "BENEFICIARY_PROFILE": "विद्यार्थी प्रोफाइल",
   "IDENTIFY_BENEFICIARY": "विद्यार्थी की पहचान करें",
-"BENEFICIARY_PROFILE_REACTIVATE_BENEFICIARY": "विद्यार्थी को पुन: सक्रिय करें",
-"CONTACT_INFORMATION": "संपर्क जानकारी",
   "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
-  "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें"
+  "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें",
+  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "एजी शिक्षार्थी के अपने दावे की व्याख्या करें"
 }
