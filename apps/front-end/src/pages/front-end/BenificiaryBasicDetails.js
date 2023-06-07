@@ -28,10 +28,13 @@ export default function BenificiaryBasicDetails() {
 
     setBenificiary(result?.result);
   };
-  console.log(benificiary);
+
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/${id}/profile`);
+  };
 
   return (
-    <Layout _appBar={{ name: t("BASIC_DETAILS") }}>
+    <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <Center>
