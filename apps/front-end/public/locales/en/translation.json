@@ -544,5 +544,17 @@
   "ITS_TIME_TO_START_MOBILIZING": "It's Time to Start Mobilizing!",
   "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 Learner to set up available camp",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER":"Explain your claim of the AG Learner",
-  "SMARTPHONE":"Smartphone"
+  "SMARTPHONE":"Smartphone",
+  "ADD_REMINDER": "Add Reminder",
+  "ADD_RSOS_NIOS_NO.": "Add the RSOS / NIOS number",
+  "All_AG_LEARNERS": "All learners",
+  "BENEFICIARY_PROFILE": "Learner Profile",
+  "CASTE_CERTIFICATE ": "Caste Certificate",
+  "E_AADHAAR_CARD_VERIFICATION": "E-Aadhaar card verification",
+  "HOW_CAN_WE_CONTACT_YOU": "How Can We Contact You",
+  "NO_I_USE_A_FAMILY_MEMBERS": "No, use a family member's mobile phone",
+  "PART_TIME": "Part Time",
+  "STORE_YOUR_USER_CREDENTIALS": "Store your user credentials",
+  "TELL_US_YOUR_NAME_AS_PER_AADHAAR_CARD": "Tell us your name as per aadhaar card",
+  "WHAT_DO_YOU_IDENTIFY_AS": "what's your gender"
 }
