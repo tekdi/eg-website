@@ -136,7 +136,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
-        <Box flex={0.9}>
+        <Box width="18%">
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
@@ -190,7 +190,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           maxH={Height - refAppBar?.clientHeight}
           minH={Height - refAppBar?.clientHeight}
         >
-          <Box flex={1} roundedBottom={"2xl"} py={6} px={4} mb={5}>
+          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
             <Table
               admindata={admindata}
               setadminLimit={setadminLimit}

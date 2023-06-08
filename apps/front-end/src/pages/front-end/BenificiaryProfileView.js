@@ -336,7 +336,6 @@ export default function BenificiaryProfileView(props) {
           <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.Disablebutton>
-
         </VStack>
       </VStack>
       <Actionsheet
@@ -395,7 +394,7 @@ export default function BenificiaryProfileView(props) {
           <VStack alignItems="end" width="100%">
             <IconByName
               name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenDropOut(false)}
+              onPress={(e) => setIsOpenReactive(false)}
             />
           </VStack>
           <FrontEndTypo.H1 bold color="textGreyColor.450">
