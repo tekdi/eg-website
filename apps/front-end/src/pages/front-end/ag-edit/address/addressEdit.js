@@ -36,6 +36,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -78,7 +79,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/edit/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const ref = React.createRef(null);
@@ -524,6 +525,7 @@ export default function agFormEdit({ ip }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (
@@ -576,14 +578,13 @@ export default function agFormEdit({ ip }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "SAVE" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />

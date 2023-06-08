@@ -36,6 +36,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -325,10 +326,12 @@ export default function agFormEdit({ ip }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           {/* add the profile image */}
-          <H1 color="red.1000">{t("ADD_ID_PHOTOS")}</H1>
-          <h5 color="red.1000" fontSize="3">
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t("ADD_ID_PHOTOS")}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H4 color="textMaroonColor.400">
             {t("CLEAR_PROFILE_MESSAGE")}
-          </h5>
+          </FrontEndTypo.H4>
 
           <Center>
             <Image
@@ -340,11 +343,10 @@ export default function agFormEdit({ ip }) {
               size="324px"
             />
           </Center>
-          <h5 color="red.1000" fontSize="2">
+          <FrontEndTypo.H2 color="worksheetBoxText.400">
             {t("FRONT_VIEW")}
-          </h5>
-          <Button
-            variant={"primary"}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.Primarybutton
             onPress={async (e) => {
               if (cameraSelection >= 2) {
                 nextPreviewStep();
@@ -364,9 +366,8 @@ export default function agFormEdit({ ip }) {
             }}
           >
             {cameraSelection > 2 ? setSubmitBtn(t("SAVE")) : t("SAVE")}
-          </Button>
-          <Button
-            variant={"secondary"}
+          </FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Secondarybutton
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
               setCameraUrl();
@@ -374,7 +375,7 @@ export default function agFormEdit({ ip }) {
             }}
           >
             {t("TAKE_ANOTHER_PHOTO")}
-          </Button>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </Layout>
     );
@@ -409,12 +410,13 @@ export default function agFormEdit({ ip }) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("ADD_ID_PHOTOS")}</H1>
-          <h5 color="red.1000" fontSize="3">
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t("ADD_ID_PHOTOS")}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H4 color="textMaroonColor.400">
             {t("CLEAR_PROFILE_MESSAGE")}
-          </h5>
-          <Button
-            variant={"primary"}
+          </FrontEndTypo.H4>
+          <FrontEndTypo.Primarybutton
             leftIcon={
               <IconByName
                 name="CameraLineIcon"
@@ -429,7 +431,7 @@ export default function agFormEdit({ ip }) {
             }}
           >
             {t("TAKE_PHOTO")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
           <VStack space={2}>
             <input
               accept="image/*"
@@ -439,7 +441,9 @@ export default function agFormEdit({ ip }) {
               onChange={handleFileInputChange}
             />
             {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {errors?.fileSize}
+              </FrontEndTypo.H2>
             ) : (
               <React.Fragment />
             )}
@@ -497,14 +501,13 @@ export default function agFormEdit({ ip }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
@@ -519,7 +522,9 @@ export default function agFormEdit({ ip }) {
         <Modal.Content>
           {/* <Modal.CloseButton /> */}
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("STORE_YOUR_CREDENTIALS")}
+            </FrontEndTypo.H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
@@ -532,28 +537,16 @@ export default function agFormEdit({ ip }) {
                   borderColor="gray.300"
                 >
                   <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
+                    <FrontEndTypo.H3>{t("USERNAME")}</FrontEndTypo.H3>
+                    <FrontEndTypo.H4 ellipsis>
                       {credentials?.username}
-                    </BodySmall>
+                    </FrontEndTypo.H4>
                   </HStack>
                   <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
+                    <FrontEndTypo.H3>{t("PASSWORD")}</FrontEndTypo.H3>
+                    <FrontEndTypo.H4 ellipsis>
                       {credentials?.password}
-                    </BodySmall>
+                    </FrontEndTypo.H4>
                   </HStack>
                 </Box>
               </VStack>
@@ -572,16 +565,15 @@ export default function agFormEdit({ ip }) {
                       rounded="full"
                       color="blue.300"
                     />
-                    <H3 color="blue.300">
+                    <FrontEndTypo.H3 color="blue.300">
                       {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
+                    </FrontEndTypo.H3>
                   </HStack>
                 </Clipboard>
               </VStack>
               <HStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Primarybutton
                   flex={1}
-                  variant="primary"
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
@@ -591,7 +583,7 @@ export default function agFormEdit({ ip }) {
                   }}
                 >
                   {t("LOGIN")}
-                </Button>
+                </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
           </Modal.Body>

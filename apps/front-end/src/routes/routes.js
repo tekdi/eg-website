@@ -5,6 +5,7 @@ import educationDetails from "../pages/front-end/ag-edit/education-details-furth
 import contactDetailsEdit from "../pages/front-end/ag-edit/contact-details/contactDetailsEdit";
 import addressEdit from "../pages/front-end/ag-edit/address/addressEdit";
 import personaldetails from "../pages/front-end/ag-edit/personal-details/personaldetails";
+import referencedetails from "../pages/front-end/ag-edit/reference-details/referencedetails";
 import familydetails from "../pages/front-end/ag-edit/family-details/familydetails";
 import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
 import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
@@ -32,39 +33,43 @@ export default [
     component: Home,
   },
   { path: "/dashboard", component: Dashboard },
-  { path: "/beneficiary/edit/:id", component: basicDetails },
+  { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
-    path: "/beneficiary/edit/contact-details/:id",
+    path: "/beneficiary/edit/:id/contact-info",
     component: contactDetailsEdit,
   },
   {
-    path: "/beneficiary/edit/address/:id",
+    path: "/beneficiary/edit/:id/address",
     component: addressEdit,
   },
   {
-    path: "/beneficiary/edit/personal-details/:id",
+    path: "/beneficiary/edit/:id/personal-details",
     component: personaldetails,
   },
 
   {
-    path: "/beneficiary/edit/family-details/:id",
+    path: "/beneficiary/edit/:id/family-details",
     component: familydetails,
   },
 
   {
-    path: "/beneficiary/edit/upload-photo/:id",
+    path: "/beneficiary/edit/:id/upload-photo",
     component: uploadphoto,
   },
 
-  { path: "/beneficiary/edit/education/:id", component: educationDetails },
+  { path: "/beneficiary/edit/:id/education", component: educationDetails },
   {
-    path: "/beneficiary/edit/future-education/:id",
+    path: "/beneficiary/edit/:id/future-education",
     component: futureStudy,
   },
 
   {
-    path: "/beneficiary/edit/enrollment-details/:id",
+    path: "/beneficiary/edit/:id/enrollment-details",
     component: subjectDetails,
+  },
+  {
+    path: "/beneficiary/edit/:id/reference-details",
+    component: referencedetails,
   },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
@@ -75,7 +80,7 @@ export default [
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
   { path: "/profile", component: Profile },
-  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
+  { path: "/beneficiary/:id/profile", component: BenificiaryProfileView },
   { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary/list",
