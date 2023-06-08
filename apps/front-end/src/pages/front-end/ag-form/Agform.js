@@ -425,7 +425,7 @@ export default function Agform({ userTokenInfo }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        //onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -495,7 +495,7 @@ export default function Agform({ userTokenInfo }) {
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
               >
-                {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
               </FrontEndTypo.Primarybutton>
             )}
           </Form>

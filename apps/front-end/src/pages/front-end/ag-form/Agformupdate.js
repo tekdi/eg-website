@@ -846,7 +846,7 @@ export default function AgformUpdate({ userTokenInfo }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (

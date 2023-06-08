@@ -14,6 +14,7 @@ import {
   Stack,
   VStack,
   Text,
+  TextArea,
 } from "native-base";
 import CustomRadio from "../../../component/CustomRadio";
 import Steper from "../../../component/Steper";
@@ -24,6 +25,8 @@ import {
   BodyMedium,
   CustomOTPBox,
   FrontEndTypo,
+  IconByName,
+  AgRegistryService,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -57,12 +60,15 @@ export default function Agform({ userTokenInfo }) {
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
+  const [isExistflag, setisExistflag] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [addmodal, setaddmodal] = React.useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setuserId(location?.state?.id);
+    setuserId(653);
   }, []);
 
   const onPressBackButton = async () => {
@@ -174,14 +180,11 @@ export default function Agform({ userTokenInfo }) {
     setFormData(newData);
     if (id === "root_aadhar_token") {
       if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({ aadhar_token: data?.aadhar_token });
+        const result = await userExist({ aadhar_no: data?.aadhar_token });
         if (result.isUserExist) {
-          const newErrors = {
-            aadhar_token: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
+          setisExistflag(true);
+        } else {
+          setisExistflag(false);
         }
       }
     }
@@ -194,10 +197,51 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  console.log("error", errors);
+  const getReason = (e) => {
+    const value = e?.nativeEvent?.text;
+    setFormData({
+      ...formData,
+      duplicate_reason: value,
+    });
+    console.log("e", value);
+  };
+
+  const addAdhaar = async () => {
+    let adddata = {
+      edit_page_type: "add_ag_duplication",
+      aadhar_no: formData?.aadhar_token,
+      is_duplicate: "no",
+    };
+    const adhaar = await AgRegistryService.updateAg(adddata, userId);
+    navigate(`/beneficiary/${userId}/profile`);
+  };
+
+  React.useEffect(() => {
+    if (!isExistflag) {
+      setFormData({
+        ...formData,
+        aadhar_no: formData?.aadhar_token,
+        is_duplicate: "no",
+      });
+    }
+  }, [formData?.aadhar_token]);
 
   const onSubmit = () => {
-    navigate(`/beneficiary/profile/${userId}`);
+    if (isExistflag) {
+      setFormData({
+        ...formData,
+        aadhar_no: formData?.aadhar_token,
+        is_duplicate: "yes",
+      });
+      setModalVisible(!modalVisible);
+    } else {
+      addAdhaar();
+    }
+  };
+
+  const addAdhaarduplicate = async () => {
+    const adhaarduplicate = await AgRegistryService.updateAg(formData, userId);
+    navigate(`/beneficiary/${userId}/profile`);
   };
 
   return (
@@ -286,6 +330,84 @@ export default function Agform({ userTokenInfo }) {
           <React.Fragment />
         )}
       </Box>
+
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        size="md"
+      >
+        <Modal.Content>
+          <Modal.Body py={10}>
+            <HStack mx={"auto"} alignItems={"top"}>
+              <IconByName
+                name="ErrorWarningLineIcon"
+                color="textRed.300"
+                size="20px"
+              ></IconByName>
+              <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+              </FrontEndTypo.H2>
+            </HStack>
+            <VStack pt="3">
+              <FrontEndTypo.H5 color="textGreyColor.600">
+                {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
+              </FrontEndTypo.H5>
+            </VStack>
+            <FrontEndTypo.Primarybutton
+              py="2"
+              width="100%"
+              marginTop={"2em"}
+              onPress={() => {
+                setaddmodal(!addmodal);
+                setModalVisible(!modalVisible);
+              }}
+            >
+              {t("CONTINUE_ADDING")}
+            </FrontEndTypo.Primarybutton>
+            <FrontEndTypo.Secondarybutton
+              width="100%"
+              marginTop={"1em"}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              {t("CANCEL_AND_GO_BACK")}
+            </FrontEndTypo.Secondarybutton>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={addmodal} onClose={() => setaddmodal(false)} size="md">
+        <Modal.Content py="0">
+          <Modal.Body>
+            <VStack alignItems={"center"}>
+              <IconByName
+                name="CheckboxCircleLineIcon"
+                color="textGreyColor.150"
+                _icon={{ size: "50px" }}
+              />
+              <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
+                {t("AG_ADDED_SUCCESSFULLY")}
+              </FrontEndTypo.H1>
+              <TextArea
+                placeholder="Explain your claim of the AG Learner*"
+                w="100%"
+                onChange={(e) => {
+                  getReason(e);
+                }}
+              />
+              <FrontEndTypo.Primarybutton
+                width={250}
+                marginTop={"1em"}
+                onPress={() => {
+                  setaddmodal(!addmodal);
+                  addAdhaarduplicate();
+                }}
+              >
+                {t("SEND")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }

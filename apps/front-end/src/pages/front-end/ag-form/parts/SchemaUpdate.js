@@ -1,5 +1,5 @@
 export default {
-  description: "IDENTIFY_THE_AG_LEARNER",
+  description: "IDENTIFY_BENEFICIARY",
   type: "step",
   properties: {
     1: {
@@ -10,22 +10,22 @@ export default {
       properties: {
         device_ownership: {
           type: "string",
-          label: "OWNERSHIP",
+          label: "DEVICE_OWNERSHIP",
           format: "RadioBtn",
-          enumNames: ["Self", "Family Member", "Neighbour", "Other"],
+          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
         device_type: {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
           format: "CustomR",
-          enumNames: ["Smartphone", "Basic"],
+          enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },
       },
     },
     2: {
-      title: "Complete Address",
+      title: "COMPLETE_ADDRESS",
       type: "object",
       // required: ["state", "district", "block", "village"],
       properties: {
@@ -38,6 +38,10 @@ export default {
           type: "number",
           label: "Latitude",
           format: "readOnly",
+        },
+        address: {
+          title: "STREET_ADDRESS",
+          type: "string",
         },
         state: {
           type: "string",
@@ -63,15 +67,11 @@ export default {
           title: "GRAMPANCHAYAT",
           type: "string",
         },
-        address: {
-          title: "STREET_ADDRESS",
-          type: "string",
-        },
       },
     },
 
     3: {
-      title: "Personal Details",
+      title: "PERSONAL_DETAILS",
       type: "object",
       //required: ["marital_status", "social_category"],
       properties: {
@@ -89,7 +89,7 @@ export default {
     },
 
     4: {
-      title: "Education Details",
+      title: "EDUCATION_DETAILS",
       type: "object",
       required: [],
       properties: {
