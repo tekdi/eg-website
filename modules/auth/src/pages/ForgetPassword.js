@@ -165,7 +165,7 @@ export default function ForgetPassword() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/forget_password.png",
+            uri: "/images/auth/forget_password.png",
           }}
           alt="reset password"
           width="240"

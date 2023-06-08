@@ -179,7 +179,7 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
           size={"2xl"}
           resizeMode="cover"
           source={{
-            uri: "/img7.png",
+            uri: "/images/facilitator-duties/img7.png",
           }}
           alt={"Alternate Text "}
           style={stylesheet.image}

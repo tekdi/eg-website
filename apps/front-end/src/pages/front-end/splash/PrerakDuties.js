@@ -116,7 +116,7 @@ export default function SwiperFile({ onClick }) {
       {page === "1" ? (
         <PrerakDuties
           title={"Identify Out-of-School Girls"}
-          imgUrl={`/img1.png`}
+          imgUrl={`/images/facilitator-duties/img1.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("2")}
           onSkipPress={onClick}
@@ -124,7 +124,7 @@ export default function SwiperFile({ onClick }) {
       ) : page === "2" ? (
         <PrerakDuties
           title={"Counsel Parents"}
-          imgUrl={`/img2.png`}
+          imgUrl={`/images/facilitator-duties/img2.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("3")}
           onSkipPress={onClick}
@@ -132,7 +132,7 @@ export default function SwiperFile({ onClick }) {
       ) : page === "3" ? (
         <PrerakDuties
           title={"Register Girls for Exams"}
-          imgUrl={`/img3.png`}
+          imgUrl={`/images/facilitator-duties/img3.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("4")}
           onSkipPress={onClick}
@@ -140,7 +140,7 @@ export default function SwiperFile({ onClick }) {
       ) : page === "4" ? (
         <PrerakDuties
           title={"Identify Out-of-School Girls"}
-          imgUrl={`/img4.png`}
+          imgUrl={`/images/facilitator-duties/img4.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("5")}
           onSkipPress={onClick}
@@ -148,7 +148,7 @@ export default function SwiperFile({ onClick }) {
       ) : page === "5" ? (
         <PrerakDuties
           title={"Help Girls Attend Exams"}
-          imgUrl={`/img5.png`}
+          imgUrl={`/images/facilitator-duties/img5.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("6")}
           onSkipPress={onClick}
@@ -156,7 +156,7 @@ export default function SwiperFile({ onClick }) {
       ) : page === "6" ? (
         <PrerakDuties
           title={"Identify Out-of-School Girls "}
-          imgUrl={"/img6.png"}
+          imgUrl={"/images/facilitator-duties/img6.png"}
           processedButton={"Apply Now"}
           onPress={onClick}
         />
