@@ -440,6 +440,7 @@
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "तलाकशुदा",
   "FACILITATOR_MARITAL_STATUS_SEPARATED": "अलग रहते हैं",
   "FACILITATOR_MARITAL_STATUS_OTHER": "अन्य",
+  "FINISH":"समाप्त",
   "SCHOOL_DROPOUT_YEAR": "स्कूल ड्रॉपआउट वर्ष,",
   "SCHOOL_DROPOUT_CLASS": "स्कूल ड्रॉपआउट कक्षा,",
   "SCHOOL_DROPOUT_REASON": "स्कूल ड्रॉपआउट कारण",
