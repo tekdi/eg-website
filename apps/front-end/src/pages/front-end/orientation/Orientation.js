@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   capture,
   IconByName,
@@ -62,11 +62,13 @@ export default function Orientation({
 }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
+  const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = useState({});
   const navigator = useNavigate();
 
   const SelectButton = () => (
@@ -95,7 +97,7 @@ export default function Orientation({
   );
 
   React.useEffect(() => {
-    getEventList();
+    getEventLists();
   }, []);
 
   React.useEffect(() => {
@@ -106,7 +108,7 @@ export default function Orientation({
     });
   }, [userIds]);
 
-  const getEventList = async () => {
+  const getEventLists = async () => {
     const eventResult = await eventService.getEventList();
     setEventList(eventResult);
   };
@@ -120,6 +122,7 @@ export default function Orientation({
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2023, 2030],
       },
     },
     end_date: {
@@ -127,6 +130,7 @@ export default function Orientation({
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2023, 2030],
       },
     },
     reminders: {
@@ -147,14 +151,33 @@ export default function Orientation({
     },
   };
   const onChange = async (data) => {
+    setErrors();
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
   };
 
   const handleEventClick = async (info) => {
-    console.log("Event clicked:", info?.event?.extendedProps);
     navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
   };
+
+  // const handleEventAdded = (event) => {
+  //   console.log("Event added:", event);
+  //   const api = calendarRef?.current?.getApi();
+  //   const newEvent = {
+  //     title: event?.type !== null ? event?.type : event?.name,
+  //     start: moment(event?.start_date).format("YYYY-MM-DD")
+  //       ? `${moment(event?.start_date).format("YYYY-MM-DD")} ${
+  //           event?.start_time
+  //         }`
+  //       : "",
+  //     end: moment(event?.end_date).format("YYYY-MM-DD")
+  //       ? `${moment(event?.end_date).format("YYYY-MM-DD")} ${event?.end_time}`
+  //       : "",
+  //   };
+  //   if (api) {
+  //     api.addEvent(newEvent);
+  //   }
+  // };
 
   const onSubmit = async (data) => {
     let newFormData = data?.formData;
@@ -174,20 +197,29 @@ export default function Orientation({
           moment(newFormData?.start_date).format("DD-MM-YYYY"),
       };
     }
-    getFormData(newFormData);
-    setFormData(newFormData);
-    const apiResponse = await eventService.createNewEvent(newFormData);
-    if (apiResponse?.success === true) {
-      setModalVisible(false);
-      setFormData("");
-      getFormData("");
-      setLoading(true);
-      const getCalanderData = await eventService.getEventList();
-      if (getCalanderData) {
-        setLoading(false);
-      }
+    if (newFormData?.attendees?.length === 0) {
+      const newErrors = {
+        attendees: {
+          __errors: [t("SELECT_CANDIDATES")],
+        },
+      };
+      setErrors(newErrors);
     } else {
-      setFormData("");
+      getFormData(newFormData);
+      setFormData(newFormData);
+      const apiResponse = await eventService.createNewEvent(newFormData);
+      if (apiResponse?.success === true) {
+        setModalVisible(false);
+        setFormData({});
+        getFormData("");
+        setLoading(true);
+        const getCalanderData = await eventService.getEventList();
+        if (getCalanderData) {
+          setLoading(false);
+        }
+      } else {
+        setFormData({});
+      }
     }
   };
 
@@ -286,7 +318,6 @@ export default function Orientation({
           {t("YOUR_CALENDAR")}
         </AdminTypo.H3>
       </VStack>
-
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
           <VStack mb="3" alignContent="center">
@@ -295,6 +326,7 @@ export default function Orientation({
               mb="3"
               shadow="BlueOutlineShadow"
               onPress={() => {
+                setFormData("");
                 setModalVisible(!modalVisible);
               }}
             >
@@ -324,42 +356,25 @@ export default function Orientation({
         </Box>
         <Box width="50%" justifyContent={"Center"} flex={"1"}>
           <Fullcalendar
+            ref={calendarRef}
+            key={eventList}
+            // eventAdd={handleEventAdded}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
-            // events={[
-            //   {
-            //     title: "event 1",
-            //     date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            //   },
-            // ]}
             events={eventList?.events?.map((item) => {
               return {
                 allDay: false,
                 title: item?.type !== null ? item?.type : item?.name,
                 start: moment(item?.start_date).format("YYYY-MM-DD")
-                  ? moment(item?.start_date).format("YYYY-MM-DD")
+                  ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
+                      item?.start_time
+                    }`
                   : "",
                 end: moment(item?.end_date).format("YYYY-MM-DD")
-                  ? moment(item?.end_date).format("YYYY-MM-DD")
+                  ? `${moment(item?.end_date).format("YYYY-MM-DD")} ${
+                      item?.end_time
+                    }`
                   : "",
-
-                type: item?.context ? item?.context : "",
-                name: item?.name ? item?.name : "",
-                start_date:
-                  item?.start_date !== "Invalid date"
-                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
-                end_date:
-                  item?.end_date !== "Invalid date"
-                    ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
-                mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                attendances: item?.attendances,
-                start_time: item?.start_time ? item?.start_time : "",
-                end_time: item?.end_time ? item?.end_time : "",
-                reminders: item?.reminders ? item?.reminders : "",
-                location: item?.location ? item?.location : "",
-                location_type: item?.location_type ? item?.location_type : "",
                 event_id: item?.id ? item?.id : "",
               };
             })}
@@ -406,6 +421,7 @@ export default function Orientation({
                 DescriptionFieldTemplate,
                 BaseInputTemplate,
               }}
+              extraErrors={errors}
               showErrorList={false}
               noHtml5Validate={true}
               {...{
@@ -428,7 +444,6 @@ export default function Orientation({
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
-                    // setModalVisible(false);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
