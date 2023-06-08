@@ -1,18 +1,29 @@
 export default {
   type: "object",
-  required: ["type", "attendees", "start_date", "location", "location_type"],
+  required: [
+    "type",
+    "attendees",
+    "master_trainer",
+    "start_date",
+    "location",
+    "location_type",
+  ],
   properties: {
     type: {
       type: "string",
       label: "Event Type",
       format: "select",
-      enum: ["Orientation", "Training", "Master Training", "Add a Prerak"],
+      enum: [
+        "Prerak Orientation",
+        "Prerak FLN Training",
+        "Prerak Camp Execution Training",
+      ],
     },
     name: {
-      title: "Event Name",
+      title: "Event Name (Batch Number)",
       type: "string",
     },
-    mastertrainer: {
+    master_trainer: {
       title: "Master Trainer",
       type: "string",
     },
