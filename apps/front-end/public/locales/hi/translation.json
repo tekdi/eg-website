@@ -500,5 +500,8 @@
   "ENROLLMENT_STATUS": "एनरोलमेंट स्थिति",
   "ENROLLMENT_NUMBER": "एनरोलमेंट नम्बर",
   "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
-  "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें"
+  "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें",
+  "DEGREE": "डिग्री",
+  "DOCUMENT": "दस्तावेज़",
+  "TEACHING_DEGREE": "अध्यापन की डिग्री"
 }
