@@ -20,6 +20,7 @@ export default function FacilitatorQualification({
   const id = localStorage.getItem("id");
 
   const [facilitator, setfacilitator] = React.useState();
+  const [qualification, setQualification] = React.useState();
 
   const navigate = useNavigate();
   const arrPersonal = {
@@ -34,49 +35,58 @@ export default function FacilitatorQualification({
 
   const facilitatorDetails = async () => {
     const result = await facilitatorRegistryService.getOne({ id });
-
     setfacilitator(result);
   };
   console.log("facilitator", facilitator);
+
+  React.useEffect(() => {
+    qualifications();
+  }, [facilitator]);
+
+  const qualifications = async () => {
+    const qua = await facilitatorRegistryService.getQualificationAll();
+
+    const ids = JSON.parse(
+      facilitator?.program_faciltators?.qualification_ids
+        ? facilitator?.program_faciltators?.qualification_ids
+        : "[]"
+    );
+    const arr = qua.filter((item) => ids.includes(item.id));
+    setQualification(arr);
+  };
+  console.log("qualification", qualification);
+
   return (
-    <Layout _appBar={{ name: t("BASIC_DETAILS") }}>
-      {facilitator?.experience.map((exp, index) => (
-        <VStack
-          paddingBottom="64px"
-          bg="bgGreyColor.200"
-          paddingLeft="16px"
-          paddingRight="16px"
-          space="24px"
-        >
-          <Box
-            marginTop="20px"
-            bg="boxBackgroundColour.100"
-            borderColor="#E0E0E0"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+    <Layout _appBar={{ name: t("QUALIFICATION_DETAILS") }}>
+      {facilitator?.qualifications.map((qua, index) => (
+        <VStack bg="bgGreyColor.200">
+          <VStack key={index} px="5" pt="3">
+            <VStack
+              px="5"
+              py="4"
+              mb="3"
+              borderRadius="10px"
+              borderWidth="1px"
+              bg="white"
+              borderColor="appliedColor"
+            >
               <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3
-                  fontWeight="700"
-                  bold
-                  color="textGreyColor.800"
-                >
+                <FrontEndTypo.H3 bold color="textGreyColor.800">
                   {t("QUALIFICATION")}
                 </FrontEndTypo.H3>
                 <IconByName
                   name="EditBoxLineIcon"
                   color="iconColor.100"
+                  _icon={{ size: "20" }}
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/contact-info`);
+                    navigate(``);
                   }}
                 />
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(facilitator, [
-                    "email_id",
+                  value={arrList(qua?.qualification_master, [
+                    "name",
                     "mobile",
                     "alternative_mobile_number",
                   ])}
@@ -85,12 +95,13 @@ export default function FacilitatorQualification({
                 />
               </Box>
               <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.3"
-                  >
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
+                  <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
                     {t("DEGREE")}
                   </FrontEndTypo.H3>
 
@@ -99,7 +110,9 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {facilitator?.mobile ? facilitator?.mobile : "-"}
+                    {qua?.qualification_master?.name
+                      ? qua?.qualification_master?.name
+                      : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -107,7 +120,12 @@ export default function FacilitatorQualification({
                   bg="AppliedColor"
                   thickness="1"
                 />
-                <HStack alignItems="Center" justifyContent="space-between">
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -121,9 +139,7 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {facilitator?.alternative_mobile_number
-                      ? facilitator?.alternative_mobile_number
-                      : "-"}
+                    {qua?.document_reference ? qua?.document_reference : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -151,12 +167,16 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {facilitator?.email_id ? facilitator?.email_id : "-"}
+                    {/* {qualification?.map((item) => item?.name).join(", ")} */}
+                    {facilitator?.qualifications?.qualification_master?.type ===
+                    "teaching"
+                      ? "Yes"
+                      : "No"}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
             </VStack>
-          </Box>
+          </VStack>
         </VStack>
       ))}
     </Layout>

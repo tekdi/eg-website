@@ -337,112 +337,114 @@ export default function FacilitatorBasicDetails({
               </VStack>
             </VStack>
           </Box>
-          <Box
-            bg="boxBackgroundColour.100"
-            borderColor="#E0E0E0"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3
-                  fontWeight="700"
-                  bold
-                  color="textGreyColor.800"
-                >
-                  {t("REFERENCE_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/reference`);
-                  }}
-                />
-              </HStack>
-              <Box paddingTop="2">
-                <Progress
-                  value={arrList(facilitator?.references[0], [
-                    "name",
-                    "designation",
-                    "contact_number",
-                  ])}
-                  size="xs"
-                  colorScheme="info"
-                />
-              </Box>
-              <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" space="2xl">
+          {facilitator?.references.map((exp, index) => (
+            <Box
+              bg="boxBackgroundColour.100"
+              borderColor="#E0E0E0"
+              borderRadius="10px"
+              borderWidth="1px"
+              paddingBottom="24px"
+            >
+              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+                <HStack justifyContent="space-between" alignItems="Center">
                   <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.4"
-                  >
-                    {t("NAME")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3
+                    fontWeight="700"
+                    bold
                     color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="0.3"
                   >
-                    {facilitator?.references[0]?.name
-                      ? facilitator?.references[0]?.name
-                      : "-"}
+                    {t("REFERENCE_DETAILS")}
                   </FrontEndTypo.H3>
+                  <IconByName
+                    name="EditBoxLineIcon"
+                    color="iconColor.100"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/edit/reference`);
+                    }}
+                  />
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" space="2xl">
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.4"
-                  >
-                    {t("DESIGNATION")}
-                  </FrontEndTypo.H3>
+                <Box paddingTop="2">
+                  <Progress
+                    value={arrList(facilitator?.references[index], [
+                      "name",
+                      "designation",
+                      "contact_number",
+                    ])}
+                    size="xs"
+                    colorScheme="info"
+                  />
+                </Box>
+                <VStack space="2" paddingTop="5">
+                  <HStack alignItems="Center" space="2xl">
+                    <FrontEndTypo.H3
+                      color="textGreyColor.50"
+                      fontWeight="400"
+                      flex="0.4"
+                    >
+                      {t("NAME")}
+                    </FrontEndTypo.H3>
 
-                  <FrontEndTypo.H3
-                    color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="0.3"
-                  >
-                    {facilitator?.references[0]?.designation
-                      ? facilitator?.references[0]?.designation
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" space="2xl">
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.4"
-                  >
-                    {t("CONTACT")}
-                  </FrontEndTypo.H3>
+                    <FrontEndTypo.H3
+                      color="textGreyColor.800"
+                      fontWeight="400"
+                      flex="0.3"
+                    >
+                      {facilitator?.references[index]?.name
+                        ? facilitator?.references[index]?.name
+                        : "-"}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                  <Divider
+                    orientation="horizontal"
+                    bg="AppliedColor"
+                    thickness="1"
+                  />
+                  <HStack alignItems="Center" space="2xl">
+                    <FrontEndTypo.H3
+                      color="textGreyColor.50"
+                      fontWeight="400"
+                      flex="0.4"
+                    >
+                      {t("DESIGNATION")}
+                    </FrontEndTypo.H3>
 
-                  <FrontEndTypo.H3
-                    color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="0.3"
-                  >
-                    {facilitator?.references[0]?.contact_number
-                      ? facilitator?.references[0]?.contact_number
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
+                    <FrontEndTypo.H3
+                      color="textGreyColor.800"
+                      fontWeight="400"
+                      flex="0.3"
+                    >
+                      {facilitator?.references[index]?.designation
+                        ? facilitator?.references[index]?.designation
+                        : "-"}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                  <Divider
+                    orientation="horizontal"
+                    bg="AppliedColor"
+                    thickness="1"
+                  />
+                  <HStack alignItems="Center" space="2xl">
+                    <FrontEndTypo.H3
+                      color="textGreyColor.50"
+                      fontWeight="400"
+                      flex="0.4"
+                    >
+                      {t("CONTACT")}
+                    </FrontEndTypo.H3>
+
+                    <FrontEndTypo.H3
+                      color="textGreyColor.800"
+                      fontWeight="400"
+                      flex="0.3"
+                    >
+                      {facilitator?.references[index]?.contact_number
+                        ? facilitator?.references[index]?.contact_number
+                        : "-"}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                </VStack>
               </VStack>
-            </VStack>
-          </Box>
+            </Box>
+          ))}
           <Box
             bg="#FAFAFA"
             borderColor="#E0E0E0"

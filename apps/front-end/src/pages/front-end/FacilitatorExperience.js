@@ -1,6 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { HStack, VStack, Box, Progress, Divider, Center } from "native-base";
+import {
+  HStack,
+  VStack,
+  Box,
+  Progress,
+  Divider,
+  Center,
+  Link,
+} from "native-base";
 import {
   arrList,
   FrontEndTypo,
@@ -18,11 +26,8 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
   const [experience, setExperience] = React.useState([]);
   const [facilitator, setFacilitator] = React.useState({});
+  const [arrexperience, setArrExperience] = React.useState([]);
   const navigate = useNavigate();
-  const arrPersonal = {
-    ...facilitator?.extended_users,
-    gender: facilitator?.gender,
-  };
 
   React.useEffect(() => {
     const user = userTokenInfo?.authUser ? userTokenInfo?.authUser : {};
@@ -33,8 +38,18 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
       setExperience(user?.experience ? user?.experience : []);
     }
   }, [type]);
-  console.log("facilitator", facilitator);
+  console.log(facilitator);
 
+  React.useEffect(() => {
+    const arrPersonal = facilitator?.experience?.map((item) => {
+      const { name, type_of_document } = item.reference;
+      return { ...item, ...{ name, type_of_document } };
+    });
+
+    setArrExperience(arrPersonal);
+    console.log("----------------", arrPersonal);
+  }, []);
+  console.log("arr", arrexperience);
   return (
     <Layout
       _appBar={{
@@ -44,27 +59,17 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
             : t("WORK_EXPERIENCE"),
       }}
     >
-      <VStack
-        paddingBottom="64px"
-        bg="bgGreyColor.200"
-        paddingLeft="16px"
-        paddingRight="16px"
-        space="24px"
-      >
-        <Box
-          marginTop="20px"
-          bg="boxBackgroundColour.100"
-          borderColor="#E0E0E0"
-          borderRadius="10px"
-          borderWidth="1px"
-          paddingBottom="24px"
-        >
+      <VStack bg="bgGreyColor.200">
+        <VStack px="5" pt="3">
           {experience.map((exp, index) => (
             <VStack
-              paddingLeft="16px"
-              paddingRight="16px"
-              paddingTop="16px"
-              key={index}
+              px="5"
+              py="4"
+              mb="3"
+              borderRadius="10px"
+              borderWidth="1px"
+              bg="white"
+              borderColor="appliedColor"
             >
               <HStack justifyContent="space-between" alignItems="Center">
                 <FrontEndTypo.H3
@@ -80,23 +85,34 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/contact-info`);
+                    navigate(``);
                   }}
                 />
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(facilitator, [
-                    "email_id",
-                    "mobile",
-                    "alternative_mobile_number",
+                  value={arrList(arrexperience, [
+                    "role_title",
+                    "organization",
+                    "description",
+                    "experience_in_years",
+                    "related_to_teaching",
+                    "name",
+                    "document_reference",
+                    "contact_number",
+                    "type_of_document",
                   ])}
                   size="xs"
                   colorScheme="info"
                 />
               </Box>
               <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" justifyContent="space-between">
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -113,12 +129,13 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     {exp?.role_title ? exp?.role_title : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
+
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -135,17 +152,12 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     {exp?.organization ? exp?.organization : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
 
                 <HStack
                   alignItems="Center"
                   justifyContent="space-between"
-                  alignContent="left"
-                  position="left"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
                 >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
@@ -163,12 +175,13 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     {exp?.description ? exp?.description : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
+
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -185,12 +198,13 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     {exp?.experience_in_years ? exp?.experience_in_years : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
+
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -204,17 +218,16 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {facilitator?.alternative_mobile_number
-                      ? facilitator?.alternative_mobile_number
-                      : "-"}
+                    {exp?.related_to_teaching ? exp?.related_to_teaching : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
+
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -228,17 +241,16 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {facilitator?.alternative_mobile_number
-                      ? facilitator?.alternative_mobile_number
-                      : "-"}
+                    {exp?.reference?.name ? exp?.reference?.name : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
+
+                <HStack
+                  alignItems="Center"
+                  justifyContent="space-between"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
@@ -252,16 +264,12 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {facilitator?.alternative_mobile_number
-                      ? facilitator?.alternative_mobile_number
+                    {exp?.reference?.contact_number
+                      ? exp?.reference?.contact_number
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="AppliedColor"
-                  thickness="1"
-                />
+
                 <HStack alignItems="Center" justifyContent="space-between">
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
@@ -276,19 +284,39 @@ export default function FacilitatorExperience({ userTokenInfo, footerLinks }) {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {exp?.reference?.document_reference?.name
-                      ? exp?.reference?.document_reference?.name
+                    {exp?.reference?.type_of_document
+                      ? exp?.reference?.type_of_document
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
             </VStack>
           ))}
-        </Box>
+        </VStack>
         {type === "vo_experience" ? (
-          <a href={""}>+Add more volunteer Experience</a>
+          <Link
+            _text={{
+              _light: {
+                color: "cyan.500",
+              },
+              color: "cyan.300",
+            }}
+            href={""}
+          >
+            +Add more volunteer Experience
+          </Link>
         ) : (
-          <a href={""}>+Add more work Experience</a>
+          <Link
+            _text={{
+              _light: {
+                color: "cyan.500",
+              },
+              color: "cyan.300",
+            }}
+            href={""}
+          >
+            +Add more work Experience
+          </Link>
         )}
       </VStack>
     </Layout>
