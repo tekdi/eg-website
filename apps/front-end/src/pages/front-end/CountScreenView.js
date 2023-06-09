@@ -1,16 +1,13 @@
 import {
-  H2,
   t,
-  IconByName,
   Layout,
   benificiaryRegistoryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
-import Chip, { ChipStatus } from "component/Chip";
-import { HStack, VStack, Box, Text, Container } from "native-base";
+import { HStack, VStack} from "native-base";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
-export default function TableView() {
+export default function TableView({footerLinks} ) {
   React.useEffect(() => {
     const getData = async () => {
       let data = await benificiaryRegistoryService.getStatusWiseCount();
@@ -22,40 +19,33 @@ export default function TableView() {
   const [statuswiseCount, setStatuswiseCount] = React.useState({});
 
   return (
-    <VStack space="15" paddingLeft="4%" paddingTop="10%" paddingRight="4%">
-      <Container>
-        <Box
-          borderWidth={1}
-          borderColor="gray.300"
-          borderRadius={4}
-          overflow="hidden"
-        >
-          <Box
-            flexDirection="row"
-            borderBottomWidth={1}
-            borderBottomColor="gray.300"
-            bg="gray.100"
-            p={2}
-          >
-            <Box flex={1} justifyContent="center" alignItems="center">
-              <Text fontWeight="bold">Status</Text>
-            </Box>
-            <Box flex={1} justifyContent="center" alignItems="center">
-              <Text fontWeight="bold">Count</Text>
-            </Box>
-          </Box>
-          {statuswiseCount?.data?.map((item) => (
-            <Box flexDirection="row" p={2}>
-              <Box flex={1}>
-                <Text>{`${t(item.status)}`}</Text>
-              </Box>
-              <Box flex={1} justifyContent="center" alignItems="center">
-                <Text>{item.count}</Text>
-              </Box>
-            </Box>
+    <Layout
+    _appBar={{
+      onlyIconsShow: ["backBtn", "userInfo"],
+      _box: { bg: "white", shadow: "appBarShadow" },
+      _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+
+    }}
+    _footer={{ menues: footerLinks }}
+
+  >
+        <VStack space="4" p="5" alignContent="center" bg="bgGreyColor.200">
+
+                              <HStack justifyContent="space-between" px="2">
+<FrontEndTypo.H2 color="textMaroonColor.400" bold>{t("STATUS")}</FrontEndTypo.H2>
+             <FrontEndTypo.H2 color="textMaroonColor.400" bold >{t("COUNT")}</FrontEndTypo.H2>
+             </HStack>
+                            {statuswiseCount?.data?.map((item) => (
+             <HStack  bg="white" px="4" py="5"
+             shadow="FooterShadow"
+             borderRadius="4px"
+             space="2" justifyContent="space-between">
+                <FrontEndTypo.H3 bold color="textGreyColor.800">{`${t(item.status)}`}</FrontEndTypo.H3>
+                <FrontEndTypo.H2>{item.count}</FrontEndTypo.H2>
+            </HStack>
           ))}
-        </Box>
-      </Container>
-    </VStack>
+            </VStack>
+   
+    </Layout>
   );
 }

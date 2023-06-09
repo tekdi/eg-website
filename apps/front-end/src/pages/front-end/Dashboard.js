@@ -62,14 +62,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
   }, []);
   return (
-    <Layout
+    <Layout 
       _appBar={{
         profile_url: facilitator?.documents?.[0]?.name,
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="primary.50" pb="5">
+      <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
           {facilitator.status === "lead" ||
             facilitator.status === "applied" ||
