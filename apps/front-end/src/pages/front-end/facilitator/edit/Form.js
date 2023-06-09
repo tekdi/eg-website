@@ -2,7 +2,16 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Center, HStack, Image, Modal, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  Center,
+  HStack,
+  Image,
+  Modal,
+  Pressable,
+  VStack,
+} from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -37,6 +46,7 @@ import {
   FileUpload,
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
+import PhotoUpload from "./PhotoUpload.js";
 
 // App
 export default function App({ userTokenInfo }) {
@@ -44,12 +54,9 @@ export default function App({ userTokenInfo }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [cameraFile, setCameraFile] = React.useState();
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState(userTokenInfo?.authUser);
+  const [formData, setFormData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
@@ -57,6 +64,38 @@ export default function App({ userTokenInfo }) {
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [qualifications, setQualifications] = React.useState([]);
+
+  const getData = async () => {
+    const { id } = userTokenInfo?.authUser;
+    if (id) {
+      const result = await facilitatorRegistryService.getOne({ id });
+      if (step === "qualification_details") {
+        const dataF = result?.qualifications;
+        const arr = result?.program_faciltators?.qualification_ids;
+        let arrData = arr
+          ? JSON.parse(arr)
+              ?.filter((e) =>
+                qualifications.find(
+                  (item) => item.id == e && item.type === "teaching"
+                )
+              )
+              ?.map((e) => `${e}`)
+          : [];
+        const newData = {
+          ...dataF,
+          qualification_ids: arrData,
+          qualification_master_id: `${
+            dataF?.qualification_master_id ? dataF?.qualification_master_id : ""
+          }`,
+          type_of_document: dataF?.document_reference?.doument_type,
+        };
+        setFormData(newData);
+      } else {
+        setFormData(result);
+      }
+    }
+  };
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -89,21 +128,33 @@ export default function App({ userTokenInfo }) {
       } else {
         nextIndex = pages[index - 1];
       }
-      if (nextIndex !== undefined) {
+      if (pageStape === "p") {
+        if (nextIndex === "personal_details") {
+          navigate(`/profile/edit/array-form/reference_details`);
+        } else if (nextIndex === "work_availability_details") {
+          navigate(`/profile/edit/array-form/experience`);
+        }
+      } else if (nextIndex === "work_availability_details") {
+        navigate(`/profile/edit/array-form/reference_details`);
+      } else if (nextIndex === "qualification_details") {
+        navigate(`/profile/edit/array-form/vo_experience`);
+      } else if (nextIndex !== undefined) {
         navigate(`/profile/edit/${nextIndex}`);
       } else if (pageStape.toLowerCase() === "n") {
         navigate(`/profile/edit/upload`);
       } else {
-        return true;
+        navigate(`/profile`);
       }
     }
   };
 
   React.useEffect(async () => {
+    let newSchema = schema;
+
     if (schema?.properties?.qualification_master_id) {
       setLoading(true);
       const qData = await facilitatorRegistryService.getQualificationAll();
-      let newSchema = schema;
+      setQualifications(qData);
       if (schema["properties"]["qualification_master_id"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_master_id",
@@ -124,7 +175,7 @@ export default function App({ userTokenInfo }) {
           );
           if (
             valueIndex !== "" &&
-            formData.qualification_master_id == valueIndex
+            formData?.qualification_master_id == valueIndex
           ) {
             setAlert(t("YOU_NOT_ELIGIBLE"));
           } else {
@@ -132,6 +183,19 @@ export default function App({ userTokenInfo }) {
           }
         }
       }
+
+      if (schema?.properties?.document_id) {
+        setLoading(true);
+        if (schema["properties"]["document_id"]) {
+          newSchema = getOptions(newSchema, {
+            key: "state",
+            extra: { userId: formData?.id },
+          });
+        }
+        setSchema(newSchema);
+        setLoading(false);
+      }
+
       if (schema["properties"]["qualification_ids"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_ids",
@@ -140,16 +204,14 @@ export default function App({ userTokenInfo }) {
           value: "id",
           filters: { type: "teaching" },
         });
-        console.log(newSchema);
       }
       setSchema(newSchema);
       setLoading(false);
     }
-    console.log(schema);
+
     if (schema?.properties?.state) {
       setLoading(true);
       const qData = await geolocationRegistryService.getStates();
-      let newSchema = schema;
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
@@ -176,7 +238,6 @@ export default function App({ userTokenInfo }) {
       }
     }
     const ListOfEnum = await enumRegistryService.listOfEnum();
-    let newSchema = schema;
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
@@ -193,6 +254,16 @@ export default function App({ userTokenInfo }) {
       });
       setSchema(newSchema);
     }
+
+    if (schema["properties"]["qualification_reference_document_id"]) {
+      setLoading(true);
+      newSchema = getOptions(newSchema, {
+        key: "qualification_reference_document_id",
+        extra: { userId: formData?.id },
+      });
+      setSchema(newSchema);
+      setLoading(false);
+    }
   }, [page]);
 
   React.useEffect(() => {
@@ -206,6 +277,7 @@ export default function App({ userTokenInfo }) {
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
+      getData();
     }
   }, [step]);
 
@@ -223,25 +295,6 @@ export default function App({ userTokenInfo }) {
         ...(overide ? overide : {}),
         id: id,
       });
-      setLoading(false);
-      return result;
-    }
-  };
-
-  const uploadProfile = async () => {
-    const { id } = formData;
-    if (id) {
-      setLoading(true);
-      const form_data = new FormData();
-      const item = {
-        file: cameraFile,
-        document_type: "profile",
-        user_id: id,
-      };
-      for (let key in item) {
-        form_data.append(key, item[key]);
-      }
-      const result = await uploadRegistryService.uploadFile(form_data);
       setLoading(false);
       return result;
     }
@@ -498,6 +551,22 @@ export default function App({ userTokenInfo }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
+
+    if (id === "root_type_of_document") {
+      let newSchema = schema;
+      if (schema["properties"]["qualification_reference_document_id"]) {
+        setLoading(true);
+        newSchema = getOptions(schema, {
+          key: "qualification_reference_document_id",
+          extra: {
+            userId: formData?.id,
+            document_type: data.type_of_document,
+          },
+        });
+        setSchema(newSchema);
+        setLoading(false);
+      }
+    }
   };
 
   const onSubmit = async (data) => {
@@ -516,27 +585,16 @@ export default function App({ userTokenInfo }) {
       };
     }
     if (_.isEmpty(errors)) {
-      if (step === "reference_details") {
-        console.log(newFormData);
-      } else if (
-        ["work_experience_details", "vo_experience_details"].includes(step)
-      ) {
+      if (["reference_details"].includes(step)) {
         const result = await Promise.all(
-          newFormData.vo_experience.map((item) => {
+          newFormData.reference.map((item) => {
             const newdata = filterObject(
               item,
-              Object.keys(schema?.properties?.vo_experience?.items?.properties)
+              Object.keys(schema?.properties?.reference?.items?.properties)
             );
-            return formSubmitUpdate(newdata, {
-              page_type: "work_experience_details",
-              type:
-                step === "vo_experience_details"
-                  ? "vo_experience"
-                  : "experience",
-            });
+            return formSubmitUpdate(newdata);
           })
         );
-        console.log(result);
       } else {
         const newdata = filterObject(
           newFormData,
@@ -552,151 +610,8 @@ export default function App({ userTokenInfo }) {
     }
   };
 
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
-      const data = await getBase64(file);
-      setCameraUrl(data);
-      setCameraFile(file);
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-
-  if (cameraUrl) {
-    return (
-      <Layout
-        _appBar={{
-          lang,
-          setLang,
-          onPressBackButton: (e) => {
-            setCameraUrl();
-            setCameraModal(false);
-          },
-        }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("ADD_PROFILE_PHOTO")}</H1>
-          <h5 color="red.1000" fontSize="3">
-            {t("CLEAR_PROFILE_MESSAGE")}
-          </h5>
-          <Center>
-            <Image
-              source={{
-                uri: cameraUrl,
-              }}
-              alt=""
-              size="324px"
-            />
-          </Center>
-          <FrontEndTypo.Primarybutton
-            isLoading={loading}
-            onPress={async (e) => {
-              await uploadProfile();
-              if (onClick) onClick("success");
-            }}
-          >
-            {t("SUBMIT")}
-          </FrontEndTypo.Primarybutton>
-          <FrontEndTypo.Secondarybutton
-            isLoading={loading}
-            leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_ANOTHER_PHOTO")}
-          </FrontEndTypo.Secondarybutton>
-        </VStack>
-      </Layout>
-    );
-  }
-  if (cameraModal) {
-    return (
-      <Camera
-        {...{
-          cameraModal,
-          setCameraModal,
-          cameraUrl,
-          setCameraUrl: async (url, blob) => {
-            setCameraUrl(url);
-            setCameraFile(blob);
-          },
-        }}
-      />
-    );
-  }
-
   if (page === "upload") {
-    return (
-      <Layout
-        _appBar={{
-          onPressBackButton: (e) =>
-            navigate(`/profile/edit/${pages[pages.length - 1]}`),
-          lang,
-          setLang,
-        }}
-        _page={{ _scollView: { bg: "white" } }}
-      >
-        <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
-          <H1 color="red.1000">{t("JUST_ONE_STEP")}</H1>
-          <H2 color="red.1000">{t("ADD_PROFILE_PHOTO")} -</H2>
-          <FrontEndTypo.Primarybutton
-            isLoading={loading}
-            variant={"primary"}
-            leftIcon={
-              <IconByName
-                name="CameraLineIcon"
-                color="white"
-                size={2}
-                isDisabled
-              />
-            }
-            onPress={(e) => {
-              setCameraUrl();
-              setCameraModal(true);
-            }}
-          >
-            {t("TAKE_PHOTO")}
-          </FrontEndTypo.Primarybutton>
-          <VStack space={2}>
-            <Box>
-              <input
-                accept="image/*"
-                type="file"
-                style={{ display: "none" }}
-                ref={uplodInputRef}
-                onChange={handleFileInputChange}
-              />
-              <FrontEndTypo.Secondarybutton
-                isLoading={loading}
-                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-                onPress={(e) => {
-                  uplodInputRef?.current?.click();
-                }}
-              >
-                {t("UPLOAD_PHOTO")}
-              </FrontEndTypo.Secondarybutton>
-            </Box>
-            {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
-            ) : (
-              <React.Fragment />
-            )}
-          </VStack>
-          <FrontEndTypo.Primarybutton
-            isLoading={loading}
-            onPress={async (e) => {
-              if (onClick) onClick("success");
-            }}
-          >
-            {t("SKIP_SUBMIT")}
-          </FrontEndTypo.Primarybutton>
-        </VStack>
-      </Layout>
-    );
+    return <PhotoUpload {...{ formData, cameraFile, setCameraFile }} />;
   }
 
   const onClickSubmit = (backToProfile) => {

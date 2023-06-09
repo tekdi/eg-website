@@ -6,10 +6,8 @@ import {
   FormControl,
   HStack,
   Image,
-  Pressable,
   Radio,
   Select,
-  Spinner,
   Stack,
   Text,
   VStack,
@@ -21,11 +19,12 @@ import {
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
-  getBase64,
-  uploadRegistryService,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
+import FileUpload from "./formCustomeInputs/FileUpload";
+
+export { CustomOTPBox, FileUpload };
 
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
@@ -370,7 +369,6 @@ export const select = ({ options, value, onChange, required, schema }) => {
   );
 };
 
-export { CustomOTPBox };
 export const readOnly = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label } = schema ? schema : {};
@@ -420,89 +418,5 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
     </FormControl>
-  );
-};
-
-export const FileUpload = ({ options, value, onChange, required, schema }) => {
-  const { label, title } = schema ? schema : {};
-  const uplodInputRef = React.useRef();
-  const [loading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState({});
-  const [file, setFile] = React.useState({});
-  const { t } = useTranslation();
-
-  const uploadProfile = async (file) => {
-    setLoading(true);
-    const form_data = new FormData();
-    const item = {
-      file,
-    };
-    for (let key in item) {
-      form_data.append(key, item[key]);
-    }
-    const result = await uploadRegistryService.uploadFile(form_data);
-    setLoading(false);
-    onChange(result.fileUrl);
-    setFile(result.fileUrl);
-  };
-
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
-      uploadProfile(file);
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-
-  return (
-    <VStack space={2}>
-      <VStack
-        justifyContent="center"
-        borderWidth="1"
-        borderStyle="dotted"
-        borderColor="textGreyColor.50"
-        alignItems="center"
-        minH="200px"
-      >
-        {value ? (
-          <Image
-            source={{
-              uri: value,
-            }}
-            alt={`Alternate ${t(label)}`}
-            width={"190px"}
-            height={"190px"}
-          />
-        ) : loading ? (
-          <Spinner
-            color={"primary.500"}
-            accessibilityLabel="Loading posts"
-            size="lg"
-          />
-        ) : (
-          <Box>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Pressable
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-              alignItems="center"
-              gap="5"
-            >
-              <IconByName name="Upload2FillIcon" isDisabled />
-              {t(label ? label : title)}
-            </Pressable>
-          </Box>
-        )}
-      </VStack>
-      {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
-    </VStack>
   );
 };

@@ -138,31 +138,8 @@ export default {
         },
       },
     },
-    reference_details: {
-      step_name: "REFERENCE_DETAILS",
-      title: "ADD_A_REFERENCE",
-      type: "object",
-      properties: {
-        Reference: {
-          type: "array",
-          items: {
-            properties: {
-              name: {
-                type: "string",
-              },
-              designation: {
-                type: "string",
-              },
-              contact_number: {
-                type: "string",
-              },
-            },
-          },
-        },
-      },
-    },
     work_availability_details: {
-      step_name: "REFERENCE_DETAILS",
+      step_name: "OTHER_DETAILS",
       type: "object",
       properties: {
         availability: {
@@ -176,12 +153,12 @@ export default {
       },
     },
     qualification_details: {
-      step_name: "REFERENCE_DETAILS",
+      step_name: "QUALIFICATION_DETAILS",
       type: "object",
       properties: {
         qualification_master_id: {
           label: "YOUR_HIGHEST_QUALIFICATION",
-          type: "string",
+          type: ["string", "number"],
           format: "CustomR",
           grid: 2,
         },
@@ -191,15 +168,14 @@ export default {
         },
         qualification_reference_document_id: {
           label: "UPLOAD_YOUR_DOCUMENT",
-          type: "string",
+          type: ["string", "number"],
           format: "FileUpload",
         },
         qualification_ids: {
           type: "array",
           label: "TEACHING_RALATED_DEGREE",
           items: {
-            type: "string",
-            enum: ["sagar"],
+            type: ["string", "number"],
           },
           uniqueItems: true,
         },

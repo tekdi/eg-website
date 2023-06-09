@@ -26,7 +26,7 @@ import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
 import EditForm from "../pages/front-end/facilitator/edit/Form";
-import Experience from "../pages/front-end/facilitator/edit/Experience";
+import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
 
 export default [
   { path: "/form", component: Home },
@@ -105,7 +105,8 @@ export default [
     component: BenificiaryEnrollment,
   },
   { path: "/profile", component: Profile },
-  { path: "/profile/edit/experience/:type", component: Experience },
+  { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
+  { path: "/profile/edit/:step/:photoNo", component: EditForm },
   { path: "*", component: Dashboard },
 ];
