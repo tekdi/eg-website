@@ -62,7 +62,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
   }, []);
   return (
-    <Layout 
+    <Layout
       _appBar={{
         profile_url: facilitator?.documents?.[0]?.name,
         exceptIconsShow: ["backBtn", "userInfo"],

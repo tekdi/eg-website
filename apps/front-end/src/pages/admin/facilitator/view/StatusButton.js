@@ -164,7 +164,6 @@ export default function StatusButton({ data, setData }) {
     >
       <AdminTypo.StatusButton
         status="success"
-       
         onPress={() => {
           setShowModal("screened");
           setReason();
