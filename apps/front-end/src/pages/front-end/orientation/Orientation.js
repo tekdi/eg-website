@@ -366,6 +366,7 @@ export default function Orientation({
             key={eventList}
             // eventAdd={handleEventAdded}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            timeZone="Asia/Kolkata"
             initialView={"timeGridWeek"}
             dayHeaderFormat={{
               weekday: "short",
@@ -397,7 +398,7 @@ export default function Orientation({
                     ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                attendances: item?.attendances,
+                attendances: item?.attendances ? item?.attendances : "",
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
                 reminders: item?.reminders ? item?.reminders : "",
