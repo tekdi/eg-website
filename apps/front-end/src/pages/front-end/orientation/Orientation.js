@@ -154,10 +154,34 @@ export default function Orientation({
     setErrors();
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
+    if (newData?.start_date > newData?.end_date) {
+      const newErrors = {
+        attendees: {
+          __errors: ["The end date should be later than the start date."],
+        },
+      };
+      setErrors(newErrors);
+    }
   };
 
   const handleEventClick = async (info) => {
     navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
+  };
+
+  const clearForm = () => {
+    setFormData({
+      attendees: [],
+      type: "",
+      name: "",
+      master_trainer: "",
+      start_date: "",
+      end_date: "",
+      start_time: "",
+      end_time: "",
+      reminders: [],
+      location: "",
+      location_type: "",
+    });
   };
 
   // const handleEventAdded = (event) => {
@@ -197,6 +221,7 @@ export default function Orientation({
           moment(newFormData?.start_date).format("DD-MM-YYYY"),
       };
     }
+
     if (newFormData?.attendees?.length === 0) {
       const newErrors = {
         attendees: {
@@ -326,13 +351,12 @@ export default function Orientation({
               mb="3"
               shadow="BlueOutlineShadow"
               onPress={() => {
-                setFormData("");
+                clearForm();
                 setModalVisible(!modalVisible);
               }}
             >
               {t("SCHEDULE_EVENT")}
             </AdminTypo.Secondarybutton>
-
             <Cal />
             <VStack space="4" mt="4">
               <HStack alignItems="Center" space="md">

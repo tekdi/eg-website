@@ -226,7 +226,7 @@ export default function OrientationScreen() {
   const handleSelectRow = (state) => {
     const arr = state?.selectedRows;
     let newObj = {};
-    arr.map((e) => {
+    arr.forEach((e) => {
       newObj = { ...newObj, [e.id]: e };
     });
     setUserIds({ ...newObj });
