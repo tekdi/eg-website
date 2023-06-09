@@ -551,5 +551,15 @@
   "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT": "नामांकन के लिए भुगतान रसीद अपलोड करें",
   "USER_ID": "उपयोगकर्ता आईडी",
   "VERIFIED_DOCUMENTS": "सत्यापित दस्तावेज",
-  "SKIP":"छोडे एवं आगे बढे"
+  "SKIP":"छोडे एवं आगे बढे",
+  "NOT_ENROLLED":"नामांकित नहीं है",
+  "DEGREE": "डिग्री",
+  "DOCUMENT": "दस्तावेज़",
+  "TEACHING_DEGREE": "अध्यापन की डिग्री",
+  "DESIGNATION": "पद",
+  "TITLE": "शीर्षक",
+  "COMPANY": "कंपनी",
+  "YEARS": "वर्ष",
+  "TEACHING_RELATED": "अध्यापन से संबंधित",
+  "REFERENCE": "संदर्भ"
 }
