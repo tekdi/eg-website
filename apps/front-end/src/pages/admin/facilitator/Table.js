@@ -227,9 +227,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onboarding/${
-                        facilitator?.program_users[0]?.organisation_id
-                      }`}
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id}`}
                     >
                       <HStack space="3">
                         <IconByName
