@@ -367,6 +367,11 @@ export default function Orientation({
             // eventAdd={handleEventAdded}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridWeek"}
+            dayHeaderFormat={{
+              weekday: "short",
+              day: "numeric",
+              omitCommas: true,
+            }}
             events={eventList?.events?.map((item) => {
               return {
                 allDay: false,
