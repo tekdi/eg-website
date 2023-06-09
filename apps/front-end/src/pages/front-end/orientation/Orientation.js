@@ -370,7 +370,7 @@ export default function Orientation({
             events={eventList?.events?.map((item) => {
               return {
                 allDay: false,
-                title: item?.type !== null ? item?.type : item?.name,
+                title: item?.name !== null ? item?.name : item?.type,
                 start: moment(item?.start_date).format("YYYY-MM-DD")
                   ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
                       item?.start_time
@@ -381,6 +381,23 @@ export default function Orientation({
                       item?.end_time
                     }`
                   : "",
+                type: item?.type ? item?.type : "",
+                name: item?.name ? item?.name : "",
+                start_date:
+                  item?.start_date !== "Invalid date"
+                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                end_date:
+                  item?.end_date !== "Invalid date"
+                    ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
+                attendances: item?.attendances,
+                start_time: item?.start_time ? item?.start_time : "",
+                end_time: item?.end_time ? item?.end_time : "",
+                reminders: item?.reminders ? item?.reminders : "",
+                location: item?.location ? item?.location : "",
+                location_type: item?.location_type ? item?.location_type : "",
                 event_id: item?.id ? item?.id : "",
               };
             })}
