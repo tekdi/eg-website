@@ -69,7 +69,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="primary.50" pb="5" zIndex={-1}>
+      <VStack bg="primary.50" pb="5">
         <VStack space="5">
           {facilitator.status === "lead" ||
             facilitator.status === "applied" ||
