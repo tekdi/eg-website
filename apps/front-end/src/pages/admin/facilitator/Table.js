@@ -75,8 +75,9 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("USER_ID"),
-    selector: (row) => row.id,
+    name: t("DISTRICT"),
+
+    selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
     name: t("MOBILE_NUMBER"),
@@ -86,7 +87,9 @@ const columns = (e) => [
   },
   {
     name: t("STATUS"),
-    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
+    selector: (row, index) => (
+      <ChipStatus key={index} status={row?.program_faciltators?.status} />
+    ),
     sortable: true,
     attr: "email",
   },
@@ -104,9 +107,10 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${item[key] && typeof item[key] === "string"
-            ? item[key].trim()
-            : item[key]
+          `${
+            item[key] && typeof item[key] === "string"
+              ? item[key].trim()
+              : item[key]
           }`
         )
       ) {
@@ -123,26 +127,58 @@ function getBaseUrl() {
 }
 
 // Table component
-function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
+function Table({
+  facilitator,
+  setadminPage,
+  setadminLimit,
+  admindata,
+  formData,
+}) {
   const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState(1);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filterObj, setFilterObj] = React.useState();
+  const [limit, setLimit] = React.useState();
+  const [page, setPage] = React.useState();
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState();
+  // const [filterObj, setFilterObj] = React.useState();
   const [modal, setModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await facilitatorRegistryService.filter(filterObj);
-    setData(admindata ? admindata : result.data?.data);
-    setPaginationTotalRows(result?.totalCount);
+    setData(admindata);
     setLoading(false);
   }, [admindata]);
 
-  React.useEffect(() => {
-    setFilterObj({ page, limit });
+  // React.useEffect(async () => {
+  //   setLoading(true);
+
+  //   const result = await facilitatorRegistryService.filter(filterObj);
+  //   console.log("result", result);
+  //   setData(result.data?.data);
+  //   //setPaginationTotalRows(result?.totalCount);
+  //   // setLimit(result?.limit);
+  //   setLoading(false);
+  // }, []);
+
+  //console.log("admindata", formData);
+
+  React.useEffect(async () => {
+    setLoading(true);
+
+    let _formData = formData;
+    let adminpage = page;
+    let adminlimit = limit;
+
+    const result = await facilitatorRegistryService.filter(
+      _formData,
+      adminpage,
+      adminlimit
+    );
+    console.log("filterData...>", result.data);
+    setData(result.data?.data);
+    setPaginationTotalRows(result?.data.totalCount);
+    // setLimit(result?.limit);
+    setLoading(false);
   }, [page, limit]);
 
   return (
@@ -226,8 +262,9 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${getBaseUrl()}facilitator-self-onboarding/${facilitator?.program_users[0]?.organisation_id
-                        }`}
+                      text={`${getBaseUrl()}facilitator-self-onboarding/${
+                        facilitator?.program_users[0]?.organisation_id
+                      }`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -283,6 +320,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
         persistTableHead
         progressPending={loading}
         pagination
+        paginationRowsPerPageOptions={[15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {

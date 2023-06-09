@@ -68,7 +68,7 @@ export default function Agform({ userTokenInfo }) {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setuserId(653);
+    setuserId(location?.state?.id);
   }, []);
 
   const onPressBackButton = async () => {
@@ -213,7 +213,9 @@ export default function Agform({ userTokenInfo }) {
       is_duplicate: "no",
     };
     const adhaar = await AgRegistryService.updateAg(adddata, userId);
-    navigate(`/beneficiary/${userId}/profile`);
+    navigate(`/aadhaar-kyc/${userId}`, {
+      state: { aadhar_no: formData?.aadhar_no },
+    });
   };
 
   React.useEffect(() => {
@@ -241,7 +243,9 @@ export default function Agform({ userTokenInfo }) {
 
   const addAdhaarduplicate = async () => {
     const adhaarduplicate = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/profile`);
+    navigate(`/aadhaar-kyc/${userId}`, {
+      state: { aadhar_no: formData?.aadhar_no },
+    });
   };
 
   return (
