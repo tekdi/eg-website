@@ -184,24 +184,6 @@ export default function Orientation({
     });
   };
 
-  const handleEventAdded = (event) => {
-    const api = calendarRef?.current?.getApi();
-    const newEvent = {
-      title: event?.type !== null ? event?.type : event?.name,
-      start: moment(event?.start_date).format("YYYY-MM-DD")
-        ? `${moment(event?.start_date).format("YYYY-MM-DD")} ${
-            event?.start_time
-          }`
-        : "",
-      end: moment(event?.end_date).format("YYYY-MM-DD")
-        ? `${moment(event?.end_date).format("YYYY-MM-DD")} ${event?.end_time}`
-        : "",
-    };
-    if (api) {
-      api.addEvent(newEvent);
-    }
-  };
-
   const onSubmit = async (data) => {
     let newFormData = data?.formData;
     if (orientationPopupSchema?.properties?.type) {
@@ -468,7 +450,6 @@ export default function Orientation({
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
-                    handleEventAdded(formData);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
