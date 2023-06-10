@@ -92,16 +92,19 @@ export default function SplashScreen({
   onPreferedLanguage,
   isBackButton
 }) {
-  console.log(isBackButton, "ss")
+  console.log(isBackButton)
   const [page, setPage] = React.useState("screen1");
   const [code, setCode] = React.useState("en");
-  const location = useLocation()
+
   const [refAppBar, RefAppBar] = React.useState();
   changeLanguage(localStorage.getItem("lang"));
   React.useEffect(() => {
     //if location is pressed directly setpage screen2
     if (isBackButton === "SplashScreen") {
+      isBackButton = ""
+      console.log(isBackButton, "1")
       setPage("screen3");
+
     }
     else {
       const setTime = setTimeout(() => {

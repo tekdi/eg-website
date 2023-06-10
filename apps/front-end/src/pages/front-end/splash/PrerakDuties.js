@@ -77,15 +77,11 @@ function PrerakDuties(props) {
   const setBackButton = () => {
     let data = page - 1
     console.log(data)
-    if (data == 0) {
+    if (data === 0) {
       let data = "SplashScreen"
-      navigate(`/facilitator-self-onboarding/${id}`, { state: data })
-      //navigate to splashscreen screen 2
-      //send data in location
+      navigate(-1, { state: data })
     }
     else {
-      console.log("inside", location)
-
       setPage(data.toString());
 
     }
