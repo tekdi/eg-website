@@ -77,7 +77,7 @@ const columns = (e) => [
           />
         )}
         <Text textOverflow="ellipsis">
-          {row?.first_name + " " + row.last_name}
+          {row?.first_name + " " + row?.last_name}
         </Text>
       </HStack>
     ),
@@ -86,10 +86,7 @@ const columns = (e) => [
   },
   {
     name: t("QUALIFICATION"),
-    selector: (row) =>
-      row?.qualifications?.map((val) => {
-        return " " + val.qualification_master.name;
-      }),
+    selector: (row) => row?.qualifications?.qualification_master?.name,
     sortable: false,
     attr: "qualification",
   },
