@@ -23,54 +23,54 @@ import Chip from "component/Chip";
 const dropoutReasons = [
   {
     label: "Family issue",
-    value: "Family issue",
+    value: "family_issue",
   },
   {
     label: "Community Issue",
-    value: "Community Issue",
+    value: "community_issue",
   },
   {
     label: "Getting Married",
-    value: "Getting Married",
+    value: "getting_married",
   },
   {
     label: "Personal Reasons",
-    value: "Personal Reasons",
+    value: "personal_reasons",
   },
   {
     label: "Moving away",
-    value: "Moving away",
+    value: "moving_away",
   },
   {
     label: "Other",
-    value: "Other",
+    value: "other",
   },
 ];
 
 const reactivateReasons = [
   {
     label: "Career Aspirations",
-    value: "Career Aspirations",
+    value: "career_aspirations",
   },
   {
     label: "Convinced by Prerak",
-    value: "Convinced by Prerak",
+    value: "convinced_by_prerak",
   },
   {
     label: "Moved back",
-    value: "Moved back",
+    value: "moved_back",
   },
   {
     label: "Issue Resolved",
-    value: "Issue Resolved",
+    value: "issue_resolved",
   },
   {
     label: "Changed Mind",
-    value: "Changed Mind",
+    value: "changed_mind",
   },
   {
     label: "Other",
-    value: "Other",
+    value: "other",
   },
 ];
 
@@ -98,20 +98,20 @@ export default function BenificiaryProfileView(props) {
   const [benificiary, setBenificiary] = React.useState({});
   const dropoutApiCall = async () => {
     let bodyData = {
-      id: id,
+      id: benificiary?.program_beneficiaries?.id.toString(),
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     if (result) {
       setReasonValue("");
-      setModalVisible(false);
+      setIsOpenDropOut(false);
     }
   };
 
   const reactivateApiCall = async () => {
     let bodyData = {
-      id: id,
+      id: benificiary?.program_beneficiaries?.id.toString(),
       status: "activate",
       reason_for_status_update: reactivateReasonValue,
     };
@@ -119,6 +119,7 @@ export default function BenificiaryProfileView(props) {
     if (result) {
       setReactivateReasonValue("");
       setreactivateModalVisible(false);
+      setIsOpenReactive(false);
     }
   };
 
@@ -328,16 +329,35 @@ export default function BenificiaryProfileView(props) {
               </HStack>
             </VStack>
           </Box>
-          <FrontEndTypo.Disablebutton
-            onPress={(e) => setIsOpenDropOut(true)}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
-          >
-            {t("MARK_AS_DROPOUT")}
-          </FrontEndTypo.Disablebutton>
 
-          <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
-            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-          </FrontEndTypo.Disablebutton>
+          {benificiary?.program_beneficiaries?.status === "identified" ||
+          benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
+          benificiary?.program_beneficiaries?.status === "enrolled" ||
+          benificiary?.program_beneficiaries?.status === "approved_ip" ||
+          benificiary?.program_beneficiaries?.status === "registered_in_camp" ||
+          benificiary?.program_beneficiaries?.status === "pragati_syc" ||
+          benificiary?.program_beneficiaries?.status === "activate" ||
+          benificiary?.program_beneficiaries?.status === null ? (
+            <FrontEndTypo.Disablebutton
+              onPress={(e) => setIsOpenDropOut(true)}
+              leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+            >
+              {t("MARK_AS_DROPOUT")}
+            </FrontEndTypo.Disablebutton>
+          ) : (
+            <React.Fragment></React.Fragment>
+          )}
+
+          {benificiary?.program_beneficiaries?.status === "rejected" ||
+          benificiary?.program_beneficiaries?.status === "dropout" ? (
+            <FrontEndTypo.Disablebutton
+              onPress={(e) => setIsOpenReactive(true)}
+            >
+              {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+            </FrontEndTypo.Disablebutton>
+          ) : (
+            <React.Fragment></React.Fragment>
+          )}
         </VStack>
       </VStack>
       <Actionsheet
