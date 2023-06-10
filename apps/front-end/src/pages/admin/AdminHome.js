@@ -120,7 +120,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     },
     WORK_EXPERIENCE: {
       "ui:widget": CustomRadio,
-      
     },
   };
 
@@ -144,21 +143,40 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   };
 
   function CustomFieldTemplate(props) {
-    const { id, classNames, style, label, help, required, description, errors, children } = props;
+    const {
+      id,
+      classNames,
+      style,
+      label,
+      help,
+      required,
+      description,
+      errors,
+      children,
+    } = props;
     return (
-      <VStack className={classNames} style={{borderTopColor:"#EEEEEE",borderTopWidth:"1px"}}>
-        <HStack  style={{ justifyContent:"space-between"}} >
-          {id!=="root" && 
-          <HStack style={{ justifyContent:"space-between"}} width="100%">
-          <label  style={{fontWeight:"bold", color:"textGreyColor.400", paddingBottom:"12px"}}>
-            {label}
-            {required ? '*' : null}
-          </label>
-          <IconByName name="SearchLineIcon" _icon={{size:"15px"}} />
+      <VStack
+        className={classNames}
+        style={{ borderTopColor: "#EEEEEE", borderTopWidth: "1px" }}
+      >
+        <HStack style={{ justifyContent: "space-between" }}>
+          {id !== "root" && (
+            <HStack style={{ justifyContent: "space-between" }} width="100%">
+              <label
+                style={{
+                  fontWeight: "bold",
+                  color: "textGreyColor.400",
+                  paddingBottom: "12px",
+                }}
+              >
+                {label}
+                {required ? "*" : null}
+              </label>
+              <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
+            </HStack>
+          )}
         </HStack>
-       }
-        </HStack>
-          {children}       
+        {children}
       </VStack>
     );
   }
@@ -166,7 +184,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
-        <Box width="18%" style={{borderRightColor:"#EEEEEE",borderRightWidth:"2px"}}>
+        <Box
+          width="18%"
+          style={{ borderRightColor: "#EEEEEE", borderRightWidth: "2px" }}
+        >
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
@@ -191,7 +212,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 <Select.Item label="abc" value="ux" /> 
               </Select>*/}
 
-              <VStack space={3} >
+              <VStack space={3}>
                 <HStack alignItems="center" justifyContent="space-between">
                   <HStack>
                     <IconByName isDisabled name="FilterLineIcon" />
@@ -210,7 +231,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   validator={validator}
                   formData={formData}
                   templates={{
-                    FieldTemplate : CustomFieldTemplate    
+                    FieldTemplate: CustomFieldTemplate,
                   }}
                 >
                   <Button display={"none"} type="submit"></Button>
