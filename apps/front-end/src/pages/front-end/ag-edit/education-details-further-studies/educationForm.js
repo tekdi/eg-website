@@ -434,7 +434,7 @@ export default function App({ facilitator, ip, onClick, id }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
-        name: `${ip?.name}`.trim(),
+        name: t("EDUCATIONAL_DETAILS"),
         lang,
         setLang,
       }}
@@ -482,7 +482,7 @@ export default function App({ facilitator, ip, onClick, id }) {
               type="submit"
               onPress={() => EditEducation()}
             >
-              {"SAVE"}
+              {t("SAVE")}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (

@@ -7,7 +7,7 @@ export default {
       type: "object",
       properties: {
         type_of_enrollement: {
-          label: "TYPES_OF_ENROLLMENT",
+          label: "TYPE_OF_ENROLLMENT",
           type: "string",
           format: "select",
           enumNames: ["New", "Old"],

@@ -419,7 +419,7 @@ export default function agFormEdit({ ip }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Save" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
