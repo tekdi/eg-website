@@ -36,7 +36,7 @@ export default function BenificiaryBasicDetails() {
   return (
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
-        <VStack paddingLeft="16px" paddingRight="16px" space="24px">
+        <VStack px="16px" space="24px">
           <Center>
             <IconByName
               name="AccountCircleLineIcon"
@@ -204,24 +204,23 @@ export default function BenificiaryBasicDetails() {
                 }}
               />
             </HStack>
-            <VStack space="3" pt="5">
-              <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" space="xl">
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.4"
-                  >
-                    {t("HOME")}
-                  </FrontEndTypo.H3>
+            <VStack>
+              <HStack alignItems="Center" space="xl">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  {t("HOME")}
+                </FrontEndTypo.H3>
 
-                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                    {benificiary?.address ? benificiary?.address : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-              </VStack>
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
+                  {benificiary?.address ? benificiary?.address : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
             </VStack>
           </VStack>
+
           <VStack
             px="5"
             py="3"
@@ -371,7 +370,6 @@ export default function BenificiaryBasicDetails() {
               </HStack>
             </VStack>
           </VStack>
-
           <VStack
             px="5"
             py="3"
@@ -406,6 +404,7 @@ export default function BenificiaryBasicDetails() {
                 colorScheme="info"
               />
             </Box>
+
             <VStack space="2" pt="5">
               <HStack
                 alignItems="Center"

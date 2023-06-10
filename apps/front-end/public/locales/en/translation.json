@@ -552,10 +552,17 @@
   "CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW": "Congratulations you are selected for the interview!",
   "YOU_ARE_NOW_A_PRAGATI_MOBILIZER": "You are Now a Pragati Mobilizer",
   "ITS_TIME_TO_START_MOBILIZING": "It's Time to Start Mobilizing!",
+  "DEGREE": "Degree",
+  "DOCUMENT": "Document",
+  "TEACHING_DEGREE": "Teaching Degree",
   "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 Learner to set up available camp",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "Explain your claim of the AG Learner",
   "SMARTPHONE": "Smartphone",
   "ADD": "Add",
   "PHOTOS": "photos",
-  "DESIGNATION": "designation"
+  "DESIGNATION": "designation",
+  "PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
+  "CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
+  "SELECT_CANDIDATES": "Please select Candidates for Event",
+  "COUNT": "Count"
 }

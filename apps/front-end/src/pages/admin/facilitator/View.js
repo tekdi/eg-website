@@ -92,11 +92,14 @@ export default function FacilitatorView({ footerLinks }) {
 
   const validate = () => {
     let arr = {};
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (
       typeof credentials?.password === "undefined" ||
       credentials?.password === ""
     ) {
       arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
+    } else if (!regex.test(credentials?.password)) {
+      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
     }
 
     if (
@@ -104,13 +107,27 @@ export default function FacilitatorView({ footerLinks }) {
       credentials?.confirmPassword === ""
     ) {
       arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
+    } else if (!regex.test(credentials?.confirmPassword)) {
+      arr = {
+        ...arr,
+        confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
+      };
+    }
+    else if (credentials?.confirmPassword !== credentials?.password) {
+      arr = {
+        ...arr,
+        confirmPassword: t(
+          "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+        ),
+      };
     }
 
     setErrors(arr);
     if (arr.password || arr.confirmPassword) {
       return false;
+    } else {
+      return true;
     }
-    return true;
   };
 
   const handleSendOtp = async () => {
@@ -149,6 +166,12 @@ export default function FacilitatorView({ footerLinks }) {
           return { status: false };
         }
       }
+      else if (password !== confirm_password) {
+        setCredentials();
+        setModalVisible(false);
+        return { status: false };
+      }
+
     } else {
       setCredentials();
     }
@@ -172,27 +195,28 @@ export default function FacilitatorView({ footerLinks }) {
               size="30px"
               resizeMode="contain"
             />
+
+            <AdminTypo.H1 color="Activatedcolor.400">
+              {" "}
+              {t("ALL_PRERAK")}
+            </AdminTypo.H1>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1 color="Activatedcolor.400">
-              {" "}
-              {t("ALL_PRERAK")}
+            <AdminTypo.H1
+              color="textGreyColor.800"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
           </HStack>
           <HStack alignItems="center" flexWrap="wrap">
             <VStack flex="0.6" direction="column">
               <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <AdminTypo.H1
-                  color="textGreyColor.800"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {data?.first_name} {data?.last_name}
-                </AdminTypo.H1>
                 <ChipStatus status={data?.status} />
                 <HStack
                   bg="badgeColor.400"
@@ -206,7 +230,7 @@ export default function FacilitatorView({ footerLinks }) {
                     name="CellphoneLineIcon"
                     color="textGreyColor.300"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600">
+                  <AdminTypo.H6 color="textGreyColor.600" bold>
                     {data?.mobile}
                   </AdminTypo.H6>
                 </HStack>
@@ -223,7 +247,7 @@ export default function FacilitatorView({ footerLinks }) {
                     name="MapPinLineIcon"
                     color="textGreyColor.300"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600" className="fw-500">
+                  <AdminTypo.H6 color="textGreyColor.600" bold>
                     {[
                       data?.state,
                       data?.district,
@@ -384,7 +408,7 @@ export default function FacilitatorView({ footerLinks }) {
                   </ChipStatus>
                 </HStack>
                 <FormControl isRequired isInvalid mt="4">
-                  <VStack space={30}>
+                  <VStack space={3}>
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -493,16 +517,21 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       credentials?.password === credentials?.confirmPassword
                         ? handleResetPassword(
-                            credentials?.password,
-                            credentials?.confirmPassword
-                          )
-                        : toast.show({
-                            title: "Error",
-                            variant: "solid",
-                            description: t(
-                              "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-                            ),
-                          });
+                          credentials?.password,
+                          credentials?.confirmPassword
+                        )
+                        : credentials?.password !== credentials?.confirmPassword
+                      handleResetPassword(
+                        credentials?.password,
+                        credentials?.confirmPassword
+                      )
+                      /* toast.show({
+                        title: "Error",
+                        variant: "solid",
+                        description: t(
+                          "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
+                        ),
+                      }); */
                     }}
                   >
                     {t("USER_SET_NEW_PASSWORD")}
@@ -584,7 +613,7 @@ export default function FacilitatorView({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("ADDRESS")}{" "}
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                  <AdminTypo.H5 color="textGreyColor.800" pl="1" bold>
                     {[
                       data?.state,
                       data?.district,
@@ -593,14 +622,14 @@ export default function FacilitatorView({ footerLinks }) {
                       data?.grampanchayat,
                     ].filter((e) => e).length > 0
                       ? [
-                          data?.state,
-                          data?.district,
-                          data?.block,
-                          data?.village,
-                          data?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")
+                        data?.state,
+                        data?.district,
+                        data?.block,
+                        data?.village,
+                        data?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(", ")
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
@@ -646,49 +675,31 @@ export default function FacilitatorView({ footerLinks }) {
                           {t("QUALIFICATION")}{" "}
                         </AdminTypo.H5>
                         <AdminTypo.H5 color="textGreyColor.800" bold>
-                          {data?.qualifications &&
-                            data?.qualifications
-                              ?.filter(
-                                (e) =>
-                                  e?.qualification_master?.type ===
-                                  "qualification"
-                              )
-                              ?.map((qua, key) => {
-                                return (
-                                  <AdminTypo.H5
-                                    color="textGreyColor.800"
-                                    bold
-                                    key={key}
-                                  >
-                                    {qua?.qualification_master?.name}
-                                  </AdminTypo.H5>
-                                );
-                              })}
+                          {
+                            <AdminTypo.H5
+                              color="textGreyColor.800"
+                              bold
+
+                            >
+                              {data?.qualifications?.qualification_master?.name}
+                            </AdminTypo.H5>
+
+                          }
                         </AdminTypo.H5>
                         <HStack space="2">
                           <AdminTypo.H5 color="textGreyColor.550">
                             {t("TEACHING_QUALIFICATION")}{" "}
                           </AdminTypo.H5>
-                          {data?.qualifications ? (
-                            data?.qualifications
-                              ?.filter(
-                                (e) =>
-                                  e?.qualification_master?.type === "teaching"
-                              )
-                              ?.map((qua, key) => {
-                                return (
-                                  <AdminTypo.H5
-                                    color="textGreyColor.800"
-                                    bold
-                                    key={key}
-                                  >
-                                    {qua?.qualification_master?.name}
-                                  </AdminTypo.H5>
-                                );
-                              })
-                          ) : (
-                            <Text>{"-"}</Text>
-                          )}
+                          {
+                            <AdminTypo.H5
+                              color="textGreyColor.800"
+                              bold
+                            >
+                              {/* qualification get api get list of qualification =>take id which is 
+                              an array   */}
+                              {data?.program_faciltators?.qualification_ids}
+                            </AdminTypo.H5>
+                          }
                         </HStack>
                       </HStack>
 
@@ -697,7 +708,7 @@ export default function FacilitatorView({ footerLinks }) {
                           <AdminTypo.H5 color="textGreyColor.550">
                             {t("WORK_EXPERIENCE")}{" "}
                           </AdminTypo.H5>
-                          <HStack space={5}>
+                          <VStack space={5} width="70%">
                             {data?.experience ? (
                               data?.experience?.map((e, key) => (
                                 <Experience key={key} {...e} />
@@ -707,13 +718,13 @@ export default function FacilitatorView({ footerLinks }) {
                                 {"-"}
                               </AdminTypo.H5>
                             )}
-                          </HStack>
+                          </VStack>
                         </HStack>
                         <HStack space="2">
                           <AdminTypo.H5 color="textGreyColor.550">
                             {t("VOLUNTEER_EXPERIENCE")}
                           </AdminTypo.H5>
-                          <VStack space={5}>
+                          <VStack space={5} width="70%">
                             {data?.vo_experience ? (
                               data?.vo_experience?.map((e, key) => (
                                 <Experience key={key} {...e} />

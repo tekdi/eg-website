@@ -77,7 +77,7 @@ const columns = (e) => [
           />
         )}
         <Text textOverflow="ellipsis">
-          {row?.first_name + " " + row.last_name}
+          {row?.first_name + " " + row?.last_name}
         </Text>
       </HStack>
     ),
@@ -86,10 +86,7 @@ const columns = (e) => [
   },
   {
     name: t("QUALIFICATION"),
-    selector: (row) =>
-      row?.qualifications?.map((val) => {
-        return " " + val.qualification_master.name;
-      }),
+    selector: (row) => row?.qualifications?.qualification_master?.name,
     sortable: false,
     attr: "qualification",
   },
@@ -99,12 +96,12 @@ const columns = (e) => [
     sortable: false,
     attr: "city",
   },
-  {
-    name: t("ELIGIBILITY"),
-    selector: (row) => row?.gender,
-    sortable: false,
-    attr: "city",
-  },
+  // {
+  //   name: t("ELIGIBILITY"),
+  //   selector: (row) => row?.gender,
+  //   sortable: false,
+  //   attr: "city",
+  // },
   {
     name: t("STATUS"),
     selector: (row, index) => (
@@ -191,57 +188,6 @@ const scheduleCandidates = (e) => [
 ];
 
 export default function OrientationScreen() {
-  //   const [page, setPage] = React.useState("screen1");
-  //   const [code, setCode] = React.useState("en");
-  //   const [refAppBar, RefAppBar] = React.useState();
-  //   const [selectedData, setSelectedData] = React.useState();
-  //   const onShowScreen = () => {
-  //     setPage("screen2");
-  //   };
-  //   const onClick = () => {
-  //     setPage("screen3");
-  //   };
-  //   return (
-  //     <>
-  //       {page === "screen1" && <Orientation onShowScreen={onShowScreen} />}
-  //       {page === "screen2" && (
-  //         <Layout
-  //           getRefAppBar={(e) => RefAppBar(e)}
-  //           isDisabledAppBar={page === "screen1"}
-  //           isCenter={true}
-  //           key={code}
-  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
-  //           _page={{ _scollView: { bg: "white" } }}
-  //         >
-  //           <Page2 onClick={onClick} setSelectedData={selectedData} />
-  //         </Layout>
-  //       )}
-
-  //       {page === "screen3" && (
-  //         <Layout
-  //           getRefAppBar={(e) => RefAppBar(e)}
-  //           isDisabledAppBar={page === "screen1"}
-  //           isCenter={true}
-  //           key={code}
-  //           _appBar={{ onlyIconsShow: ["langBtn"] }}
-  //           _page={{ _scollView: { bg: "white" } }}
-  //         >
-  //           <Page3 setSelectedData={selectedData} />
-  //         </Layout>
-  //       )}
-  //     </>
-  //   );
-  // }
-
-  // const Page1 = ({ onShowScreen }) => {
-  //   return (
-  //     <Box>
-  //       <Button onPress={onShowScreen}>{t("APPLY_NOW")}</Button>
-  //     </Box>
-  //   );
-  // };
-
-  // const Page2 = ({ onClick }) => {
   changeLanguage(localStorage.getItem("lang"));
   const [data, setData] = React.useState([]);
   const [userIds, setUserIds] = React.useState({});
@@ -280,7 +226,7 @@ export default function OrientationScreen() {
     arr.forEach((e) => {
       newObj = { ...newObj, [e.id]: e };
     });
-    setUserIds({ ...userIds, ...newObj });
+    setUserIds({ ...newObj });
     // setSelectedRowData(state.selectedRows);
   };
   const handlePageChange = (page) => {
@@ -323,8 +269,8 @@ export default function OrientationScreen() {
               onChangePage={handlePageChange}
               onSelectedRowsChange={handleSelectRow}
               selectedRows={userIds}
-              // onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
+            // onChangeRowsPerPage={(e) => setLimit(e)}
+            // onChangePage={(e) => setPage(e)}
             />
           </Modal.Body>
 

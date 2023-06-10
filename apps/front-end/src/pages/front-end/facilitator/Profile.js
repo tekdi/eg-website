@@ -1,6 +1,20 @@
 import React from "react";
 import { useState } from "react";
-import { HStack, VStack, Box, Progress, Divider } from "native-base";
+import { useNavigate } from "react-router-dom";
+import {
+  HStack,
+  VStack,
+  ArrowBackIcon,
+  Text,
+  Box,
+  Progress,
+  ChevronDownIcon,
+  Divider,
+  iconLeft,
+  Button,
+  Icon,
+  ChevronLeftIcon,
+} from "native-base";
 import {
   IconByName,
   arrList,
@@ -12,7 +26,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const [facilitator, Setfacilitator] = useState(userTokenInfo?.authUser);
-  const navigator = useNavigate();
+
+  const navigate = useNavigate();
+
   return (
     <Layout
       _appBar={{ name: t("YOUR_PROFILE") }}
@@ -40,14 +56,16 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack alignItems="center" justifyContent="space-between">
+              <HStack alignItems="Center" justifyContent="space-between">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("BASIC_DETAILS")}
                 </FrontEndTypo.H3>
                 <IconByName
-                  name="EditBoxLineIcon"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => navigator("/profile/edit/basic_details")}
+                  name="ArrowRightSLineIcon"
+                  color="textMaroonColor.400"
+                  onPress={(e) => {
+                    navigate(`/facilitatorbasicdetail`);
+                  }}
                 />
               </HStack>
               <Box paddingTop="2">
@@ -73,59 +91,6 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   colorScheme="info"
                 />
               </Box>
-              <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <HStack alignItems="Center" space="md">
-                    <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("ADD_YOUR_PERSONAL_DETAILS")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <HStack alignItems="Center" space="md">
-                    <IconByName name="MapPinLineIcon" _icon={{ size: "20" }} />
-
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("ADD_YOUR_ADDRESS")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <HStack alignItems="Center" space="md">
-                    <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("ADD_IN_SOME_ADDITIONAL_DETAILS")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-              </VStack>
             </VStack>
           </Box>
 
@@ -137,7 +102,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <FrontEndTypo.H3 color="textGreyColor.800">
+              <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {t("EDUCATION_AND_WORK_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
@@ -155,6 +120,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/facilitatorqualification`);
+                    }}
                   />
                 </HStack>
                 <Divider
@@ -173,6 +141,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/facilitator-experience/vo_experience`);
+                    }}
                   />
                 </HStack>
                 <Divider
@@ -193,6 +164,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/facilitator-experience/experience`);
+                    }}
                   />
                 </HStack>
               </VStack>
@@ -207,122 +181,18 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                {t("OTHER_DETAILS")}
-              </FrontEndTypo.H3>
+              <HStack alignItems="Center" justifyContent="space-between">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("AADHAAR_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="textMaroonColor.400"
+                />
+              </HStack>
               <Box paddingTop="2">
                 <Progress value={45} size="xs" colorScheme="info" />
               </Box>
-              <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <HStack alignItems="Center" space="md">
-                    <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("OTHER_DETAILS")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <HStack alignItems="Center" space="md">
-                    <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("REFERENCE_CONTACT_DETAILS")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-              </VStack>
-            </VStack>
-          </Box>
-
-          <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                {t("DOCUMENTS_UPLOAD")}
-              </FrontEndTypo.H3>
-              <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
-              </Box>
-              <VStack space="2" paddingTop="5">
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <Box alignItems="left">
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("AADHAAR_VERIFICATION")}
-                    </FrontEndTypo.H3>
-                  </Box>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <Box justifyContent="left">
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("QUALIFICATION_PROOF")}
-                    </FrontEndTypo.H3>
-                  </Box>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <Box justifyContent="left">
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H3>
-                  </Box>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <Box justifyContent="left">
-                    <FrontEndTypo.H3 color="textGreyColor.800">
-                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H3>
-                  </Box>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                  />
-                </HStack>
-              </VStack>
             </VStack>
           </Box>
         </VStack>

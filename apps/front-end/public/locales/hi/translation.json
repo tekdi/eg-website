@@ -509,5 +509,10 @@
   "CONTACT_INFORMATION": "संपर्क जानकारी",
   "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
   "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें",
-  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "एजी शिक्षार्थी के अपने दावे की व्याख्या करें"
+  "DEGREE": "डिग्री",
+  "DOCUMENT": "दस्तावेज़",
+  "TEACHING_DEGREE": "अध्यापन की डिग्री",
+  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "एजी शिक्षार्थी के अपने दावे की व्याख्या करें",
+  "SELECT_CANDIDATES":"कृपया इवेंट के लिए उम्मीदवारों का चयन करें",
+  "COUNT": "गिनती"
 }

@@ -5,8 +5,12 @@ export default {
     1: {
       title: "ADDRESS",
       type: "object",
-      //required: ["state", "district", "block", "village"],
+      required: ["state", "district", "block", "village", "address"],
       properties: {
+        address: {
+          title: "STREET_ADDRESS",
+          type: "string",
+        },
         state: {
           title: "STATE",
           type: "string",
@@ -31,10 +35,7 @@ export default {
           title: "GRAMPANCHAYAT",
           type: "string",
         },
-        address: {
-          title: "ADDRESS_DETAIL",
-          type: "string",
-        },
+
         edit_page_type: {
           type: "string",
           format: "hidden",

@@ -7,7 +7,7 @@ export default {
       type: "object",
       properties: {
         type_of_enrollement: {
-          title: "TYPES_OF_ENROLLMENT",
+          label: "TYPE_OF_ENROLLMENT",
           type: "string",
           format: "select",
           enumNames: ["New", "Old"],
@@ -15,7 +15,7 @@ export default {
         },
         enrollment_status: {
           type: "string",
-          title: "ENROLLMENT_STATUS",
+          label: "ENROLLMENT_STATUS",
           format: "select",
         },
         enrolled_for_board: {

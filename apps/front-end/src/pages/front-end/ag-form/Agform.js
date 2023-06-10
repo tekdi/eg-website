@@ -144,6 +144,10 @@ export default function Agform({ userTokenInfo }) {
   };
 
   const otpfunction = async () => {
+    if (formData?.mobile.length < 10) {
+      errors?.mobile?.addError(t("MINIMUM_LENGTH_IS_10"));
+    }
+
     const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
       ...formData,
       hash: localStorage.getItem("hash"),
@@ -299,22 +303,17 @@ export default function Agform({ userTokenInfo }) {
         );
       }
 
+      if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
     });
 
     return errors;
