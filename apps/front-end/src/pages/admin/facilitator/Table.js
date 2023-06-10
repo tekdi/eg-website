@@ -86,7 +86,8 @@ const columns = (e) => [
   },
   {
     name: t("STATUS"),
-    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
+    selector: (row, index) =>
+      <ChipStatus key={index} status={row?.program_faciltators?.status} />,
     sortable: true,
     attr: "email",
   },
@@ -104,10 +105,9 @@ const filters = (data, filter) => {
       if (
         item[key] === undefined ||
         !filter[key].includes(
-          `${
-            item[key] && typeof item[key] === "string"
-              ? item[key].trim()
-              : item[key]
+          `${item[key] && typeof item[key] === "string"
+            ? item[key].trim()
+            : item[key]
           }`
         )
       ) {

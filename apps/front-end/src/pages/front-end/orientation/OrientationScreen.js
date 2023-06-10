@@ -86,10 +86,7 @@ const columns = (e) => [
   },
   {
     name: t("QUALIFICATION"),
-    selector: (row) =>
-      row?.qualifications?.map((val) => {
-        return " " + val.qualification_master.name;
-      }),
+    selector: (row) => row?.qualifications?.qualification_master?.name,
     sortable: false,
     attr: "qualification",
   },
@@ -323,8 +320,8 @@ export default function OrientationScreen() {
               onChangePage={handlePageChange}
               onSelectedRowsChange={handleSelectRow}
               selectedRows={userIds}
-              // onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
+            // onChangeRowsPerPage={(e) => setLimit(e)}
+            // onChangePage={(e) => setPage(e)}
             />
           </Modal.Body>
 
