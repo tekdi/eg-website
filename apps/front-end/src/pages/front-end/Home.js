@@ -4,13 +4,23 @@ import SplashScreen from "./splash/SplashScreen";
 import PrerakDuties from "./splash/PrerakDuties";
 import Success from "./Success";
 import { facilitatorRegistryService } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 function Home({ userTokenInfo }) {
+  const location = useLocation()
+  // console.log(location.state, "location data spalsh")
   const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
   const [ip, setIp] = React.useState({});
   const { id } = useParams();
+  /*  React.useEffect(() => {
+     console.log("ssq")
+ 
+     if (location.state == "SplashScreen") {
+       console.log("ssq")
+       setPage("SplashScreen")
+     }
+   }, [page]) */
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -28,18 +38,23 @@ function Home({ userTokenInfo }) {
     } else {
       const data = await facilitatorRegistryService.getOrganization({ id });
       localStorage.setItem("profile_url", data?.documents?.[0]?.name);
+
       setIp(data);
+
     }
   }, []);
 
+  // console.log(page)
   return page === "success" ? (
     <Success {...{ facilitator }} />
   ) : page === "SplashScreen" ? (
+
     <SplashScreen
       page={page}
       onClick={() => setPage("Form")}
       onClickPrerakDuties={() => setPage("Prerak_Duties")}
       onPreferedLanguage={() => setPage("Prerak_Duties")}
+    // isBackButton={location.state || ""}
     />
   ) : page === "Prerak_Duties" ? (
     <PrerakDuties page={page} onClick={() => setPage("Form")} />
