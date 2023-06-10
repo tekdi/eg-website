@@ -172,20 +172,17 @@ export default function FacilitatorView({ footerLinks }) {
               size="30px"
               resizeMode="contain"
             />
+           
+            <AdminTypo.H1 color="Activatedcolor.400">
+              {" "}
+              {t("ALL_PRERAK")}
+            </AdminTypo.H1>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1 color="Activatedcolor.400">
-              {" "}
-              {t("ALL_PRERAK")}
-            </AdminTypo.H1>
-          </HStack>
-          <HStack alignItems="center" flexWrap="wrap">
-            <VStack flex="0.6" direction="column">
-              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <AdminTypo.H1
+             <AdminTypo.H1
                   color="textGreyColor.800"
                   whiteSpace="nowrap"
                   overflow="hidden"
@@ -193,6 +190,11 @@ export default function FacilitatorView({ footerLinks }) {
                 >
                   {data?.first_name} {data?.last_name}
                 </AdminTypo.H1>
+          </HStack>
+          <HStack alignItems="center" flexWrap="wrap">
+            <VStack flex="0.6" direction="column">
+              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
+               
                 <ChipStatus status={data?.status} />
                 <HStack
                   bg="badgeColor.400"
@@ -206,7 +208,7 @@ export default function FacilitatorView({ footerLinks }) {
                     name="CellphoneLineIcon"
                     color="textGreyColor.300"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600">
+                  <AdminTypo.H6 color="textGreyColor.600" bold>
                     {data?.mobile}
                   </AdminTypo.H6>
                 </HStack>
@@ -223,7 +225,7 @@ export default function FacilitatorView({ footerLinks }) {
                     name="MapPinLineIcon"
                     color="textGreyColor.300"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600" className="fw-500">
+                  <AdminTypo.H6 color="textGreyColor.600" bold>
                     {[
                       data?.state,
                       data?.district,
@@ -344,13 +346,13 @@ export default function FacilitatorView({ footerLinks }) {
               </AdminTypo.Secondarybutton>
             </VStack>
           </HStack>
-          <Box paddingTop="32px">
+          {/* <Box paddingTop="32px">
             {data?.status === "screened" ? (
               <Interviewschedule />
             ) : (
               <React.Fragment />
             )}
-          </Box>
+          </Box> */}
           <Modal
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -584,7 +586,7 @@ export default function FacilitatorView({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("ADDRESS")}{" "}
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                  <AdminTypo.H5 color="textGreyColor.800" pl="1" bold>
                     {[
                       data?.state,
                       data?.district,
@@ -697,7 +699,7 @@ export default function FacilitatorView({ footerLinks }) {
                           <AdminTypo.H5 color="textGreyColor.550">
                             {t("WORK_EXPERIENCE")}{" "}
                           </AdminTypo.H5>
-                          <HStack space={5}>
+                          <VStack space={5}  width="70%">
                             {data?.experience ? (
                               data?.experience?.map((e, key) => (
                                 <Experience key={key} {...e} />
@@ -707,13 +709,13 @@ export default function FacilitatorView({ footerLinks }) {
                                 {"-"}
                               </AdminTypo.H5>
                             )}
-                          </HStack>
+                          </VStack>
                         </HStack>
                         <HStack space="2">
                           <AdminTypo.H5 color="textGreyColor.550">
                             {t("VOLUNTEER_EXPERIENCE")}
                           </AdminTypo.H5>
-                          <VStack space={5}>
+                          <VStack space={5} width="70%">
                             {data?.vo_experience ? (
                               data?.vo_experience?.map((e, key) => (
                                 <Experience key={key} {...e} />
