@@ -98,7 +98,7 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/login.png",
+            uri: "/images/auth/login.png",
           }}
           alt=""
           width="240"
