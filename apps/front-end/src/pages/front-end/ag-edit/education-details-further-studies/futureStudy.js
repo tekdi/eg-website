@@ -311,6 +311,7 @@ export default function AgformUpdate({ userTokenInfo }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
+        name: t("FURTHER_STUDIES"),
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -360,7 +361,7 @@ export default function AgformUpdate({ userTokenInfo }) {
               type="submit"
               onPress={() => EditEducation()}
             >
-              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (

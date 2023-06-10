@@ -23,6 +23,7 @@ import {
   t,
   facilitatorRegistryService,
   AdminTypo,
+  geolocationRegistryService,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import Chip from "component/Chip";
@@ -34,10 +35,13 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const ref = React.useRef(null);
   const [formData, setFormData] = React.useState({});
   const [getQualificationAll, setgetQualificationAll] = React.useState();
+  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+
   const [service, setService] = React.useState();
-  const [adminlimit, setadminLimit] = React.useState(10);
+  const [adminlimit, setadminLimit] = React.useState();
   const [adminpage, setadminPage] = React.useState(1);
   const [admindata, setadminData] = React.useState();
+  const [totalCount, settotalCount] = React.useState();
 
   let finalData;
 
@@ -45,6 +49,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     const getQualification =
       await facilitatorRegistryService.getQualificationAll();
     setgetQualificationAll(getQualification);
+    let name = "RAJASTHAN";
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name,
+    });
+    setgetDistrictsAll(getDistricts?.districts);
   }, []);
 
   const schema = {
@@ -56,7 +65,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         items: {
           type: "string",
 
-          enum: ["ajmer", "Alwar", "Bikaner", "Banswara", "Baran", "Barmer"],
+          enumNames: getDistrictsAll?.map((item, i) => {
+            return item?.district_name;
+          }),
+          enum: getDistrictsAll?.map((item, i) => {
+            return item?.district_name;
+          }),
         },
         uniqueItems: true,
       },
@@ -118,6 +132,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     );
     console.log("result.data", result?.data?.data);
     setadminData(result?.data?.data);
+    settotalCount(result?.data?.totalCount);
+
     setFormData(_formData);
   };
 
@@ -230,7 +246,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         >
           <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
             <Table
+              formData={formData}
               admindata={admindata}
+              totalCount={totalCount}
               setadminLimit={setadminLimit}
               setadminPage={setadminPage}
               facilitator={userTokenInfo?.authUser}
