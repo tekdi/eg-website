@@ -364,15 +364,18 @@ export default function Orientation({
           <Fullcalendar
             ref={calendarRef}
             key={eventList}
-            // eventAdd={handleEventAdded}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             timeZone="Asia/Kolkata"
-            initialView={"timeGridWeek"}
-            dayHeaderFormat={{
-              weekday: "short",
-              day: "numeric",
-              omitCommas: true,
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
             }}
+            initialView="dayGridMonth"
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
             events={eventList?.events?.map((item) => {
               return {
                 allDay: false,
@@ -413,12 +416,6 @@ export default function Orientation({
               meridiem: "short",
             }}
             eventClick={handleEventClick}
-            headerToolbar={{
-              start: "prev,thisweek,next",
-              center: "timeGridWeek,dayGridMonth,dayGridYear",
-              end: "today",
-              height: "50hv",
-            }}
           />
         </Box>
       </HStack>
