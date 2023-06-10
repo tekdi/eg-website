@@ -269,8 +269,8 @@ export default function OrientationScreen() {
               onChangePage={handlePageChange}
               onSelectedRowsChange={handleSelectRow}
               selectedRows={userIds}
-              // onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
+            // onChangeRowsPerPage={(e) => setLimit(e)}
+            // onChangePage={(e) => setPage(e)}
             />
           </Modal.Body>
 

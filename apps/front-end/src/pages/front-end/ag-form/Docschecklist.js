@@ -26,9 +26,11 @@ const Docschecklist = () => {
   const { id } = useParams();
   const [selectData, setselectData] = useState([]);
   const [status, setStatus] = useState({});
+  const [benificiary, setBenificiary] = React.useState({});
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(data?.result);
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(
         JSON.parse(data.result?.program_beneficiaries?.documents_status)
@@ -57,10 +59,13 @@ const Docschecklist = () => {
   return (
     <Layout
       _appBar={{
+        name: `${benificiary?.first_name} ${
+          benificiary?.last_name && benificiary?.last_name
+        }`,
         lang,
         setLang,
         onPressBackButton: (e) => {
-          navigate("/agduplicate");
+          navigate(`/beneficiary/profile/${id}`);
         },
         onlyIconsShow: ["backBtn", "userInfo"],
       }}
