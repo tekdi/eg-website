@@ -9,7 +9,7 @@ import React from "react";
 import { QrReader } from "react-qr-reader";
 import { useTranslation } from "react-i18next";
 
-const App = ({ setOtpFailedPopup, setPage, setError }) => {
+const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
   const [selected, setSelected] = React.useState("environment");
   const [startScan, setStartScan] = React.useState(true);
   const [loadingScan, setLoadingScan] = React.useState(false);
@@ -30,13 +30,32 @@ const App = ({ setOtpFailedPopup, setPage, setError }) => {
         qr_data: scanData.text,
       });
       console.log(result);
-      setError({
-        top: `QR code ${result?.error}`,
-      });
+      if (result?.error) {
+        setError({
+          top: `QR code ${result?.error}`,
+        });
+        setPage();
+        setOtpFailedPopup(false);
+      } else {
+        setError();
+        const aadhaarResult = await authRegistryService.aadhaarKyc({
+          id,
+          aadhar_verified: "yes",
+          aadhaar_verification_mode: "qr",
+        });
+        if (aadhaarResult?.error) {
+          setError({
+            top: `QR code ${aadhaarResult?.error}`,
+          });
+          setPage();
+          setOtpFailedPopup(false);
+        } else {
+          setPage("aadhaarSuccess");
+          setOtpFailedPopup(false);
+        }
+      }
       setStartScan(false);
       setLoadingScan(false);
-      setPage();
-      setOtpFailedPopup(false);
     }
   };
   const handleError = (err) => {

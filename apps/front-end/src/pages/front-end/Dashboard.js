@@ -451,14 +451,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
               </FrontEndTypo.H2>
               <FrontEndTypo.Primarybutton
-                onPress={(e) => navigate(`/aadhaar-kyc/${facilitator?.id}`)}
+                onPress={(e) =>
+                  navigate(`/aadhaar-kyc/${facilitator?.id}`, { state: "/" })
+                }
                 width="100%"
               >
                 {t("AADHAR_NUMBER_KYC")}
               </FrontEndTypo.Primarybutton>
               <FrontEndTypo.Secondarybutton
                 width="100%"
-                onPress={(e) => navigate(`/aadhaar-kyc/${facilitator?.id}/QR`)}
+                onPress={(e) =>
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, { state: "/" })
+                }
               >
                 {t("SCAN_QR_CODE")}
               </FrontEndTypo.Secondarybutton>

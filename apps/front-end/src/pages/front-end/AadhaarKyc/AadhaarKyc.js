@@ -19,11 +19,12 @@ import {
   IconByName,
 } from "@shiksha/common-lib";
 import AdharOTP from "./AadhaarOTP";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
 
 export default function AdharKyc() {
+  const location = useLocation();
   const [page, setPage] = React.useState();
   const [error, setError] = React.useState();
   const [data, setData] = React.useState({});
@@ -111,7 +112,7 @@ export default function AdharKyc() {
   return (
     <Box>
       {page === "qr" ? (
-        <QrScannerKyc {...{ setOtpFailedPopup, setPage, setError }} />
+        <QrScannerKyc {...{ setOtpFailedPopup, setPage, setError, id }} />
       ) : page === "upload" ? (
         <ManualUpload {...{ setLoading, setPage, setOtpFailedPopup }} />
       ) : page === "otp" && data?.aadhaarNumber ? (
@@ -171,8 +172,12 @@ export default function AdharKyc() {
               <FrontEndTypo.Primarybutton
                 mt={20}
                 onPress={(e) => {
-                  navigate(-1);
-                  navigate(0);
+                  if (location?.state) {
+                    navigate(location?.state);
+                  } else {
+                    navigate(-1);
+                    navigate(0);
+                  }
                 }}
               >
                 {t("CONTINUE")}
