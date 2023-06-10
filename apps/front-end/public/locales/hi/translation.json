@@ -440,7 +440,7 @@
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "तलाकशुदा",
   "FACILITATOR_MARITAL_STATUS_SEPARATED": "अलग रहते हैं",
   "FACILITATOR_MARITAL_STATUS_OTHER": "अन्य",
-  "FINISH":"समाप्त",
+  "FINISH": "समाप्त",
   "SCHOOL_DROPOUT_YEAR": "स्कूल ड्रॉपआउट वर्ष,",
   "SCHOOL_DROPOUT_CLASS": "स्कूल ड्रॉपआउट कक्षा,",
   "SCHOOL_DROPOUT_REASON": "स्कूल ड्रॉपआउट कारण",
@@ -505,5 +505,10 @@
   "CONTACT_INFORMATION": "संपर्क जानकारी",
   "SCAN_YOUR_AADHAR_QR_CODE": "अपना आधार क्यूआर कोड स्कैन करें",
   "CHECK_DOCUMENTS": "दस्तावेजों की जाँच करें",
-  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "एजी शिक्षार्थी के अपने दावे की व्याख्या करें"
+  "DEGREE": "डिग्री",
+  "DOCUMENT": "दस्तावेज़",
+  "TEACHING_DEGREE": "अध्यापन की डिग्री",
+  "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "एजी शिक्षार्थी के अपने दावे की व्याख्या करें",
+  "SELECT_CANDIDATES":"कृपया इवेंट के लिए उम्मीदवारों का चयन करें",
+  "COUNT": "गिनती"
 }

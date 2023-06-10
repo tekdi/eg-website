@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   capture,
   IconByName,
@@ -62,11 +62,13 @@ export default function Orientation({
 }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
+  const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = useState({});
   const navigator = useNavigate();
 
   const SelectButton = () => (
@@ -95,7 +97,7 @@ export default function Orientation({
   );
 
   React.useEffect(() => {
-    getEventList();
+    getEventLists();
   }, []);
 
   React.useEffect(() => {
@@ -106,7 +108,7 @@ export default function Orientation({
     });
   }, [userIds]);
 
-  const getEventList = async () => {
+  const getEventLists = async () => {
     const eventResult = await eventService.getEventList();
     setEventList(eventResult);
   };
@@ -120,6 +122,7 @@ export default function Orientation({
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2023, 2030],
       },
     },
     end_date: {
@@ -127,6 +130,7 @@ export default function Orientation({
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2023, 2030],
       },
     },
     reminders: {
@@ -147,13 +151,37 @@ export default function Orientation({
     },
   };
   const onChange = async (data) => {
+    setErrors();
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
+    if (newData?.start_date > newData?.end_date) {
+      const newErrors = {
+        attendees: {
+          __errors: ["The end date should be later than the start date."],
+        },
+      };
+      setErrors(newErrors);
+    }
   };
 
   const handleEventClick = async (info) => {
-    console.log("Event clicked:", info?.event?.extendedProps);
     navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
+  };
+
+  const clearForm = () => {
+    setFormData({
+      attendees: [],
+      type: "",
+      name: "",
+      master_trainer: "",
+      start_date: "",
+      end_date: "",
+      start_time: "",
+      end_time: "",
+      reminders: [],
+      location: "",
+      location_type: "",
+    });
   };
 
   const onSubmit = async (data) => {
@@ -174,20 +202,31 @@ export default function Orientation({
           moment(newFormData?.start_date).format("DD-MM-YYYY"),
       };
     }
-    getFormData(newFormData);
-    setFormData(newFormData);
-    const apiResponse = await eventService.createNewEvent(newFormData);
-    if (apiResponse?.success === true) {
-      setModalVisible(false);
-      setFormData("");
-      getFormData("");
-      setLoading(true);
-      const getCalanderData = await eventService.getEventList();
-      if (getCalanderData) {
-        setLoading(false);
-      }
+
+    if (newFormData?.attendees?.length === 0) {
+      const newErrors = {
+        attendees: {
+          __errors: [t("SELECT_CANDIDATES")],
+        },
+      };
+      setErrors(newErrors);
     } else {
-      setFormData("");
+      getFormData(newFormData);
+      setFormData(newFormData);
+      const apiResponse = await eventService.createNewEvent(newFormData);
+      if (apiResponse?.success === true) {
+        setModalVisible(false);
+        setFormData({});
+        getFormData("");
+        setLoading(true);
+        const getCalanderData = await eventService.getEventList();
+        setEventList(getCalanderData);
+        if (getCalanderData) {
+          setLoading(false);
+        }
+      } else {
+        setFormData({});
+      }
     }
   };
 
@@ -286,7 +325,6 @@ export default function Orientation({
           {t("YOUR_CALENDAR")}
         </AdminTypo.H3>
       </VStack>
-
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
           <VStack mb="3" alignContent="center">
@@ -295,12 +333,12 @@ export default function Orientation({
               mb="3"
               shadow="BlueOutlineShadow"
               onPress={() => {
+                clearForm();
                 setModalVisible(!modalVisible);
               }}
             >
               {t("SCHEDULE_EVENT")}
             </AdminTypo.Secondarybutton>
-
             <Cal />
             <VStack space="4" mt="4">
               <HStack alignItems="Center" space="md">
@@ -324,26 +362,35 @@ export default function Orientation({
         </Box>
         <Box width="50%" justifyContent={"Center"} flex={"1"}>
           <Fullcalendar
+            ref={calendarRef}
+            key={eventList}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={"timeGridWeek"}
-            // events={[
-            //   {
-            //     title: "event 1",
-            //     date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            //   },
-            // ]}
+            timeZone="Asia/Kolkata"
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
+            }}
+            initialView="dayGridMonth"
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
             events={eventList?.events?.map((item) => {
               return {
                 allDay: false,
-                title: item?.type !== null ? item?.type : item?.name,
+                title: item?.name !== null ? item?.name : item?.type,
                 start: moment(item?.start_date).format("YYYY-MM-DD")
-                  ? moment(item?.start_date).format("YYYY-MM-DD")
+                  ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
+                      item?.start_time
+                    }`
                   : "",
                 end: moment(item?.end_date).format("YYYY-MM-DD")
-                  ? moment(item?.end_date).format("YYYY-MM-DD")
+                  ? `${moment(item?.end_date).format("YYYY-MM-DD")} ${
+                      item?.end_time
+                    }`
                   : "",
-
-                type: item?.context ? item?.context : "",
+                type: item?.type ? item?.type : "",
                 name: item?.name ? item?.name : "",
                 start_date:
                   item?.start_date !== "Invalid date"
@@ -354,7 +401,7 @@ export default function Orientation({
                     ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                attendances: item?.attendances,
+                attendances: item?.attendances ? item?.attendances : "",
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
                 reminders: item?.reminders ? item?.reminders : "",
@@ -369,12 +416,6 @@ export default function Orientation({
               meridiem: "short",
             }}
             eventClick={handleEventClick}
-            headerToolbar={{
-              start: "prev,thisweek,next",
-              center: "timeGridWeek,dayGridMonth,dayGridYear",
-              end: "today",
-              height: "50hv",
-            }}
           />
         </Box>
       </HStack>
@@ -406,6 +447,7 @@ export default function Orientation({
                 DescriptionFieldTemplate,
                 BaseInputTemplate,
               }}
+              extraErrors={errors}
               showErrorList={false}
               noHtml5Validate={true}
               {...{
@@ -428,7 +470,6 @@ export default function Orientation({
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
-                    // setModalVisible(false);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"

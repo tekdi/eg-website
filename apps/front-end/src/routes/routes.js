@@ -25,6 +25,9 @@ import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
+import FacilitatorBasicDetails from "pages/front-end/FacilitatorBasicDetails";
+import FacilitatorQualification from "pages/front-end/FacilitatorQualification";
+import FacilitatorExperience from "pages/front-end/FacilitatorExperience";
 
 export default [
   { path: "/form", component: Home },
@@ -106,6 +109,18 @@ export default [
   {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
+  },
+  {
+    path: "/facilitatorbasicdetail",
+    component: FacilitatorBasicDetails,
+  },
+  {
+    path: "/facilitatorqualification",
+    component: FacilitatorQualification,
+  },
+  {
+    path: "/facilitator-experience/:type",
+    component: FacilitatorExperience,
   },
   { path: "*", component: Dashboard },
 ];

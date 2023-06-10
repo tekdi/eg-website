@@ -532,7 +532,8 @@ export default function agFormEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: `${ip?.name}`.trim(),
+        name: t("ADDRESS"),
+
         lang,
         setLang,
       }}
@@ -583,7 +584,7 @@ export default function agFormEdit({ ip }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "SAVE" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (

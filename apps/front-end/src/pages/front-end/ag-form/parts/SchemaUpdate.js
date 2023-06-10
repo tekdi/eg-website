@@ -6,7 +6,7 @@ export default {
       // title: "Contact Information",
       // description: "PLEASE_WHATSAPP_NUMBER",
       type: "object",
-      required: ["device_ownership"],
+      required: ["device_ownership", "device_type"],
       properties: {
         device_ownership: {
           type: "string",
@@ -27,7 +27,7 @@ export default {
     2: {
       title: "COMPLETE_ADDRESS",
       type: "object",
-      // required: ["state", "district", "block", "village"],
+      required: ["state", "district", "block", "village"],
       properties: {
         lat: {
           type: "number",
@@ -73,7 +73,7 @@ export default {
     3: {
       title: "PERSONAL_DETAILS",
       type: "object",
-      //required: ["marital_status", "social_category"],
+      required: ["marital_status", "social_category"],
       properties: {
         marital_status: {
           label: "MARITAL_STATUS",
@@ -91,7 +91,12 @@ export default {
     4: {
       title: "EDUCATION_DETAILS",
       type: "object",
-      required: [],
+      required: [
+        "type_of_learner",
+        "last_standard_of_education_year",
+        "last_standard_of_education",
+        "reason_of_leaving_education",
+      ],
       properties: {
         type_of_learner: {
           label: "TYPE_OF_STUDENT",
