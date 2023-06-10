@@ -31,12 +31,22 @@ export default function AdharKyc() {
   const [captchaImg, setCaptchaImg] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
-  const { id } = useParams();
+  const { id, type } = useParams();
   const navigate = useNavigate();
 
   React.useEffect(async () => {
-    aadhaarInit();
-  }, []);
+    if (!page) {
+      aadhaarInit();
+    }
+    setLoading(false);
+  }, [page]);
+
+  React.useEffect(() => {
+    const typeData = type?.toLowerCase();
+    if (typeData === "qr") {
+      setPage(typeData);
+    }
+  }, [type]);
 
   const getCaptcha = async (id) => {
     const res = await aadhaarService.initiate({ id });
@@ -101,7 +111,7 @@ export default function AdharKyc() {
   return (
     <Box>
       {page === "qr" ? (
-        <QrScannerKyc {...{ setOtpFailedPopup }} />
+        <QrScannerKyc {...{ setOtpFailedPopup, setPage, setError }} />
       ) : page === "upload" ? (
         <ManualUpload {...{ setLoading, setPage, setOtpFailedPopup }} />
       ) : page === "otp" && data?.aadhaarNumber ? (
@@ -362,14 +372,14 @@ export default function AdharKyc() {
           >
             {t("RETRY_AADHAR_NUMER_KYC")}
           </FrontEndTypo.Secondarybutton>
-          {/* <FrontEndTypo.Secondarybutton
+          <FrontEndTypo.Secondarybutton
             onPress={() => {
               setPage("qr");
               setOtpFailedPopup(false);
             }}
           >
             {t("RETRY_AADHAR_QR_KYC")}
-          </FrontEndTypo.Secondarybutton> */}
+          </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Secondarybutton
             onPress={() => {
               setPage("upload");

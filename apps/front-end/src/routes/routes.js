@@ -92,6 +92,10 @@ export default [
     component: AdharKyc,
   },
   {
+    path: "/aadhaar-kyc/:id/:type",
+    component: AdharKyc,
+  },
+  {
     path: "/beneficiary/:id/basicdetails",
     component: BenificiaryBasicDetails,
   },
