@@ -30,7 +30,7 @@ const Docschecklist = () => {
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(data?.result)
+    setBenificiary(data?.result);
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(
         JSON.parse(data.result?.program_beneficiaries?.documents_status)
@@ -59,7 +59,9 @@ const Docschecklist = () => {
   return (
     <Layout
       _appBar={{
-        name: `${benificiary?.first_name} ${benificiary?.last_name && benificiary?.last_name}`,
+        name: `${benificiary?.first_name} ${
+          benificiary?.last_name && benificiary?.last_name
+        }`,
         lang,
         setLang,
         onPressBackButton: (e) => {
