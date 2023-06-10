@@ -545,5 +545,6 @@
   "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 Learner to set up available camp",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER":"Explain your claim of the AG Learner",
   "SMARTPHONE":"Smartphone",
-  "SELECT_CANDIDATES":"Please select Candidates for Event"
+  "SELECT_CANDIDATES":"Please select Candidates for Event",
+  "COUNT": "Count"
 }
