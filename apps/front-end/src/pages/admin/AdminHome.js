@@ -48,6 +48,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [adminlimit, setadminLimit] = React.useState();
   const [adminpage, setadminPage] = React.useState(1);
   const [admindata, setadminData] = React.useState();
+  const [totalCount, settotalCount] = React.useState();
 
   let finalData;
 
@@ -138,6 +139,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     );
     console.log("result.data", result?.data?.data);
     setadminData(result?.data?.data);
+    settotalCount(result?.data?.totalCount);
+
     setFormData(_formData);
   };
 
@@ -207,6 +210,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             <Table
               formData={formData}
               admindata={admindata}
+              totalCount={totalCount}
               setadminLimit={setadminLimit}
               setadminPage={setadminPage}
               facilitator={userTokenInfo?.authUser}
