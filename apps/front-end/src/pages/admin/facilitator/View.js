@@ -344,13 +344,13 @@ export default function FacilitatorView({ footerLinks }) {
               </AdminTypo.Secondarybutton>
             </VStack>
           </HStack>
-          <Box paddingTop="32px">
+          {/* <Box paddingTop="32px">
             {data?.status === "screened" ? (
               <Interviewschedule />
             ) : (
               <React.Fragment />
             )}
-          </Box>
+          </Box> */}
           <Modal
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
