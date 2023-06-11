@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "CONTACT_1",
+      title: "CONTACT_DETAILS",
 
       type: "object",
       //required: ["mobile"],
