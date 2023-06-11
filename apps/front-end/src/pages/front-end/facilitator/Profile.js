@@ -1,40 +1,24 @@
 import React from "react";
 import { useState } from "react";
+import { HStack, VStack, Box, Progress, Divider } from "native-base";
+import { IconByName, arrList, Layout, FrontEndTypo } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
-import {
-  HStack,
-  VStack,
-  ArrowBackIcon,
-  Text,
-  Box,
-  Progress,
-  ChevronDownIcon,
-  Divider,
-  iconLeft,
-  Button,
-  Icon,
-  ChevronLeftIcon,
-} from "native-base";
-import {
-  IconByName,
-  arrList,
-  t,
-  Layout,
-  FrontEndTypo,
-} from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const [facilitator, Setfacilitator] = useState(userTokenInfo?.authUser);
-
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Layout
-      _appBar={{ name: t("YOUR_PROFILE") }}
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
+      }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="bgGreyColor.200">
+      <VStack bg="bgGreyColor.200" pb="10">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <FrontEndTypo.H1 color="textMaroonColor.400" pt="5" bold>
             {t("WELCOME")} {facilitator?.first_name}
@@ -142,7 +126,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
                     onPress={(e) => {
-                      navigate(`/facilitator-experience/vo_experience`);
+                      navigate(`/profile/edit/array-form/vo_experience`);
                     }}
                   />
                 </HStack>
@@ -165,7 +149,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
                     onPress={(e) => {
-                      navigate(`/facilitator-experience/experience`);
+                      navigate(`/profile/edit/array-form/experience`);
                     }}
                   />
                 </HStack>

@@ -138,6 +138,27 @@ export default {
         },
       },
     },
+    reference_details: {
+      title: "ADD_A_REFERENCE",
+      step_name: "REFERENCE_DETAILS",
+      type: "object",
+      required: ["name"],
+      properties: {
+        name: {
+          type: "string",
+          title: "NAME",
+          help: "NAME_OF_YOUR_EMPLOYER",
+        },
+        designation: {
+          type: "string",
+          title: "DESIGNATION",
+        },
+        contact_number: {
+          type: "number",
+          title: "CONTACT_NUMBER",
+        },
+      },
+    },
     work_availability_details: {
       step_name: "OTHER_DETAILS",
       type: "object",

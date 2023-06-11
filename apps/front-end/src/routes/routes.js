@@ -27,9 +27,8 @@ import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
 import EditForm from "../pages/front-end/facilitator/edit/Form";
 import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
-import FacilitatorBasicDetails from "pages/front-end/FacilitatorBasicDetails";
-import FacilitatorQualification from "pages/front-end/FacilitatorQualification";
-import FacilitatorExperience from "pages/front-end/FacilitatorExperience";
+import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
+import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
 
 export default [
   { path: "/form", component: Home },
@@ -118,10 +117,6 @@ export default [
   {
     path: "/facilitatorqualification",
     component: FacilitatorQualification,
-  },
-  {
-    path: "/facilitator-experience/:type",
-    component: FacilitatorExperience,
   },
   { path: "*", component: Dashboard },
 ];

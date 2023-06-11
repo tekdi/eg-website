@@ -10,7 +10,6 @@ import {
   filterObject,
   FrontEndTypo,
   getOptions,
-  IconByName,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -29,13 +28,14 @@ import {
   FileUpload,
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
+import ItemComponent from "./ItemComponent.js";
 
 // App
 export default function App({ userTokenInfo }) {
   const { type } = useParams();
   const [schema, setSchema] = React.useState({});
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState(userTokenInfo?.authUser);
+  const [formData, setFormData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
@@ -44,6 +44,8 @@ export default function App({ userTokenInfo }) {
   const { t } = useTranslation();
   const [data, setData] = React.useState();
   const [addMore, setAddMore] = React.useState();
+  const [keys, setKeys] = React.useState([]);
+  const [labels, setLabels] = React.useState([]);
   const stepLabel =
     type === "reference_details"
       ? "REFERENCE_DETAILS"
@@ -61,7 +63,7 @@ export default function App({ userTokenInfo }) {
       } else if (type === "experience") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else {
-        navigate(`/profile/edit/personal_details`);
+        navigate(`/profile/edit/reference_details`);
       }
     } else if (type === "reference_details") {
       navigate(`/profile/edit/work_availability_details`);
@@ -75,7 +77,10 @@ export default function App({ userTokenInfo }) {
   React.useEffect(async () => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
-      let newSchema1 = properties[type];
+      let newSchema1 =
+        properties[
+          ["vo_experience", "experience"].includes(type) ? "experience" : type
+        ];
       if (newSchema1) {
         let newSchema = newSchema1;
         if (newSchema1?.properties?.document_id) {
@@ -88,7 +93,17 @@ export default function App({ userTokenInfo }) {
           }
           setLoading(false);
         }
-        setSchema(newSchema);
+        setSchema({ ...newSchema, title: stepLabel });
+        const newKeys = Object.keys(newSchema?.properties);
+        const newLabels = newKeys.map((e) =>
+          newSchema?.properties?.[e]?.label
+            ? newSchema?.properties?.[e]?.label
+            : newSchema?.properties?.[e]?.title
+            ? newSchema?.properties?.[e]?.title
+            : ""
+        );
+        setLabels(newLabels);
+        setKeys(newKeys);
       }
 
       getData();
@@ -110,7 +125,7 @@ export default function App({ userTokenInfo }) {
   };
 
   const formSubmitUpdate = async (data, overide) => {
-    const { id } = formData;
+    const { id } = userTokenInfo?.authUser;
     if (id) {
       setLoading(true);
       const result = await facilitatorRegistryService.profileStapeUpdate({
@@ -170,11 +185,12 @@ export default function App({ userTokenInfo }) {
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
+    console.log(errors);
     if (_.isEmpty(errors)) {
-      const newdata = filterObject(
-        newFormData,
-        Object.keys(schema?.properties)
-      );
+      const newdata = filterObject(newFormData, [
+        ...Object.keys(schema?.properties),
+        "arr_id",
+      ]);
       const data = await formSubmitUpdate({
         ...newdata,
         page_type:
@@ -187,7 +203,17 @@ export default function App({ userTokenInfo }) {
     }
   };
 
-  const dataDelete = async (id) => {
+  const onAdd = () => {
+    setFormData();
+    setAddMore(true);
+  };
+
+  const onEdit = (item) => {
+    setFormData({ ...item, arr_id: item?.id });
+    setAddMore(true);
+  };
+
+  const onDelete = async (id) => {
     if (type === "reference_details") {
       const result = await facilitatorRegistryService.referenceDelete({ id });
     } else {
@@ -224,27 +250,21 @@ export default function App({ userTokenInfo }) {
               data.constructor.name === "Array" &&
               data?.map((item, index) => (
                 <Box key={index}>
-                  {Object.keys(item)?.map((subItem) => (
-                    <spam>
-                      {typeof item?.[subItem] === "string"
-                        ? item?.[subItem]
-                        : "-"}
-                    </spam>
-                  ))}
-                  <IconByName
-                    color="textMaroonColor.400"
-                    name="DeleteBinLineIcon"
-                    onPress={(e) => dataDelete(item?.id)}
+                  <ItemComponent
+                    item={{
+                      ...item,
+                      ...(item?.reference?.constructor.name === "Object"
+                        ? item?.reference
+                        : {}),
+                    }}
+                    onEdit={(e) => onEdit(e)}
+                    onDelete={(e) => onDelete(e.id)}
+                    arr={keys}
+                    label={labels}
                   />
                 </Box>
               ))}
-            <Button
-              variant={"link"}
-              colorScheme="info"
-              onPress={(e) => {
-                setAddMore(true);
-              }}
-            >
+            <Button variant={"link"} colorScheme="info" onPress={onAdd}>
               <FrontEndTypo.H3 color="blueText.400" underline bold>
                 {`${t("ADD")} ${t(stepLabel)}`}
               </FrontEndTypo.H3>
@@ -324,6 +344,14 @@ export default function App({ userTokenInfo }) {
               >
                 {t("SAVE")}
               </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                isLoading={loading}
+                p="4"
+                mt="4"
+                onPress={() => setAddMore()}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
             </Form>
           </Box>
         )}

@@ -8,6 +8,7 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
+  ImageView,
 } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import moment from "moment";
@@ -17,50 +18,51 @@ export default function FacilitatorQualification({
   userTokenInfo,
   footerLinks,
 }) {
-  const id = localStorage.getItem("id");
-
   const [facilitator, setfacilitator] = React.useState();
+  const [qualifications, setQualifications] = React.useState();
   const [qualification, setQualification] = React.useState();
-
   const navigate = useNavigate();
-  const arrPersonal = {
-    ...facilitator?.extended_users,
-    gender: facilitator?.gender,
-  };
-  console.log("hello", arrPersonal);
 
   React.useEffect(() => {
     facilitatorDetails();
   }, []);
 
   const facilitatorDetails = async () => {
+    const { id } = userTokenInfo?.authUser;
     const result = await facilitatorRegistryService.getOne({ id });
     setfacilitator(result);
+    setQualification(result?.qualifications ? result?.qualifications : {});
   };
-  console.log("facilitator", facilitator);
 
   React.useEffect(() => {
-    qualifications();
+    getQualification();
   }, [facilitator]);
 
-  const qualifications = async () => {
+  const getQualification = async () => {
     const qua = await facilitatorRegistryService.getQualificationAll();
-
     const ids = JSON.parse(
       facilitator?.program_faciltators?.qualification_ids
         ? facilitator?.program_faciltators?.qualification_ids
         : "[]"
     );
     const arr = qua.filter((item) => ids.includes(item.id));
-    setQualification(arr);
+    setQualifications(arr);
   };
-  console.log("qualification", qualification);
 
   return (
-    <Layout _appBar={{ name: t("QUALIFICATION_DETAILS") }}>
-      {facilitator?.qualifications.map((qua, index) => (
-        <VStack bg="bgGreyColor.200">
-          <VStack key={index} px="5" pt="3">
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["backBtn"],
+        _box: { bg: "white", shadow: "appBarShadow" },
+        leftIcon: (
+          <FrontEndTypo.H2>{t("QUALIFICATION_DETAILS")}</FrontEndTypo.H2>
+        ),
+      }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
+    >
+      {
+        <VStack>
+          <VStack px="5" pt="3">
             <VStack
               px="5"
               py="4"
@@ -79,17 +81,20 @@ export default function FacilitatorQualification({
                   color="iconColor.100"
                   _icon={{ size: "20" }}
                   onPress={(e) => {
-                    navigate(``);
+                    navigate(`/profile/edit/qualification_details`);
                   }}
                 />
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(qua?.qualification_master, [
-                    "name",
-                    "mobile",
-                    "alternative_mobile_number",
-                  ])}
+                  value={arrList(
+                    { ...qualification, teaching: qualifications },
+                    [
+                      "qualification_master_id",
+                      "qualification_reference_document_id",
+                      "teaching",
+                    ]
+                  )}
                   size="xs"
                   colorScheme="info"
                 />
@@ -110,8 +115,8 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {qua?.qualification_master?.name
-                      ? qua?.qualification_master?.name
+                    {qualification?.qualification_master?.name
+                      ? qualification?.qualification_master?.name
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
@@ -139,7 +144,10 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {qua?.document_reference ? qua?.document_reference : "-"}
+                    <ImageView
+                      text={qualification?.document_reference?.name}
+                      source={{ uri: qualification?.document_reference?.id }}
+                    />
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -167,18 +175,14 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {/* {qualification?.map((item) => item?.name).join(", ")} */}
-                    {facilitator?.qualifications?.qualification_master?.type ===
-                    "teaching"
-                      ? "Yes"
-                      : "No"}
+                    {qualifications?.map((e) => e.name).join(", ")}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
             </VStack>
           </VStack>
         </VStack>
-      ))}
+      }
     </Layout>
   );
 }

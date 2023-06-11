@@ -91,6 +91,9 @@ export default function App({ userTokenInfo }) {
           type_of_document: dataF?.document_reference?.doument_type,
         };
         setFormData(newData);
+      } else if (step === "reference_details") {
+        const newData = result?.references;
+        setFormData(newData);
       } else {
         setFormData(result);
       }
@@ -129,13 +132,13 @@ export default function App({ userTokenInfo }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        if (nextIndex === "personal_details") {
-          navigate(`/profile/edit/array-form/reference_details`);
-        } else if (nextIndex === "work_availability_details") {
+        if (nextIndex === "work_availability_details") {
           navigate(`/profile/edit/array-form/experience`);
+        } else if (nextIndex !== undefined) {
+          navigate(`/profile/edit/${nextIndex}`);
+        } else {
+          navigate(`/profile`);
         }
-      } else if (nextIndex === "work_availability_details") {
-        navigate(`/profile/edit/array-form/reference_details`);
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else if (nextIndex !== undefined) {
@@ -255,7 +258,7 @@ export default function App({ userTokenInfo }) {
       setSchema(newSchema);
     }
 
-    if (schema["properties"]["qualification_reference_document_id"]) {
+    if (schema["properties"]?.["qualification_reference_document_id"]) {
       setLoading(true);
       newSchema = getOptions(newSchema, {
         key: "qualification_reference_document_id",
@@ -585,23 +588,23 @@ export default function App({ userTokenInfo }) {
       };
     }
     if (_.isEmpty(errors)) {
-      if (["reference_details"].includes(step)) {
-        const result = await Promise.all(
-          newFormData.reference.map((item) => {
-            const newdata = filterObject(
-              item,
-              Object.keys(schema?.properties?.reference?.items?.properties)
-            );
-            return formSubmitUpdate(newdata);
-          })
-        );
-      } else {
-        const newdata = filterObject(
-          newFormData,
-          Object.keys(schema?.properties)
-        );
-        const data = await formSubmitUpdate(newdata);
-      }
+      // if (["reference_details"].includes(step)) {
+      //   const result = await Promise.all(
+      //     newFormData.reference.map((item) => {
+      //       const newdata = filterObject(
+      //         item,
+      //         Object.keys(schema?.properties?.reference?.items?.properties)
+      //       );
+      //       return formSubmitUpdate(newdata);
+      //     })
+      //   );
+      // } else {
+      const newdata = filterObject(
+        newFormData,
+        Object.keys(schema?.properties)
+      );
+      const data = await formSubmitUpdate(newdata);
+      // }
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
