@@ -5,11 +5,11 @@ export default {
     1: {
       title: "FURTHER_STUDIES",
       type: "object",
-      //required: ["mobile"],
+      required: ["career_aspiration"],
       properties: {
         career_aspiration: {
           type: "string",
-          title: "CAREER_ASPIRATION",
+          label: "CAREER_ASPIRATION",
           format: "select",
         },
 

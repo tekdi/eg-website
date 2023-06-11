@@ -20,11 +20,15 @@ import CountScreenView from "../pages/front-end/CountScreenView";
 import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 import Success from "pages/front-end/Success";
-import Profile from "pages/front-end/PrerakProfileDetailsView";
+import Profile from "pages/front-end/facilitator/Profile";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
+import EditForm from "../pages/front-end/facilitator/edit/Form";
+import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
+import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
+import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
 
 export default [
   { path: "/form", component: Home },
@@ -79,8 +83,7 @@ export default [
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
-  { path: "/profile", component: Profile },
-  { path: "/beneficiary/:id/profile", component: BenificiaryProfileView },
+  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
     path: "/beneficiary/list",
@@ -89,6 +92,10 @@ export default [
   { path: "/table", component: CountScreenView },
   {
     path: "/aadhaar-kyc/:id",
+    component: AdharKyc,
+  },
+  {
+    path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
   },
   {
@@ -102,6 +109,18 @@ export default [
   {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
+  },
+  { path: "/profile", component: Profile },
+  { path: "/profile/edit/array-form/:type", component: ArrayForm },
+  { path: "/profile/edit/:step", component: EditForm },
+  { path: "/profile/edit/:step/:photoNo", component: EditForm },
+  {
+    path: "/facilitatorbasicdetail",
+    component: FacilitatorBasicDetails,
+  },
+  {
+    path: "/facilitatorqualification",
+    component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
 ];
