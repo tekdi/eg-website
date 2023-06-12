@@ -380,6 +380,13 @@
   "PRERAK_ORIENTATION": "Prerak Orientation",
   "PRERAK_REFERRAL": "Prerak Referral",
   "PRERAK_TRAINING": "Prerak Training",
+  "PRERAK_PROCEED_BTN":"Proceed",
+  "PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS":"Identify Out-of-School Girls",
+  "PRERAK_COUNSEL_PARENTS":"Counsel Parents",
+  "PRERAK_REGISTER_GIRLS_FOR_EXAMS":"Register Girls for Exams",
+  "PRERAK_CONDUCT_CAMPS":"Conduct Camps",
+  "PRERAK_HELP_GIRLS_ATTEND_EXAMS":"Help Girls Attend Exams",
+  "PRERAK_GUIDE_THEM_TOWARDS_FUTURE_GOALS":"Guide them towards Future Goals",
   "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL": "Government School",
   "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED": "Never Studied",
   "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL": "Open School",
@@ -576,5 +583,5 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
 }

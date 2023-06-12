@@ -153,9 +153,9 @@ export default function SwiperFile({ onClick }) {
     <Stack>
       {page === "1" ? (
         <PrerakDuties
-          title={"Identify Out-of-School Girls"}
+          title={t("PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS")}
           imgUrl={`/images/facilitator-duties/img1.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("2")}
           setPage={setPage}
           page={page}
@@ -163,9 +163,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "2" ? (
         <PrerakDuties
-          title={"Counsel Parents"}
+          title={t("PRERAK_COUNSEL_PARENTS")}
           imgUrl={`/images/facilitator-duties/img2.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("3")}
           page={page}
           setPage={setPage}
@@ -173,9 +173,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "3" ? (
         <PrerakDuties
-          title={"Register Girls for Exams"}
+          title={t("PRERAK_REGISTER_GIRLS_FOR_EXAMS")}
           imgUrl={`/images/facilitator-duties/img3.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("4")}
           page={page}
           setPage={setPage}
@@ -183,9 +183,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "4" ? (
         <PrerakDuties
-          title={"Conduct Camps"}
+          title={t("PRERAK_CONDUCT_CAMPS")}
           imgUrl={`/images/facilitator-duties/img4.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("5")}
           page={page}
           setPage={setPage}
@@ -193,9 +193,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "5" ? (
         <PrerakDuties
-          title={"Help Girls Attend Exams"}
+          title={t("PRERAK_HELP_GIRLS_ATTEND_EXAMS")}
           imgUrl={`/images/facilitator-duties/img5.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("6")}
           page={page}
           setPage={setPage}
@@ -203,9 +203,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "6" ? (
         <PrerakDuties
-          title={"Guide them towards Future Goals"}
+          title={t("PRERAK_GUIDE_THEM_TOWARDS_FUTURE_GOALS")}
           imgUrl={"/images/facilitator-duties/img6.png"}
-          processedButton={"Apply Now"}
+          processedButton={t("APPLY_NOW")}
           page={page}
           setPage={setPage}
           onPress={onClick}
