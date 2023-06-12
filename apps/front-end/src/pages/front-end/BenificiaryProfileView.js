@@ -290,7 +290,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
-          <Box
+          {/* <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
@@ -309,9 +309,9 @@ export default function BenificiaryProfileView(props) {
                 />
               </HStack>
             </VStack>
-          </Box>
+          </Box> */}
 
-          <Box
+          {/* <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
@@ -330,14 +330,13 @@ export default function BenificiaryProfileView(props) {
                 />
               </HStack>
             </VStack>
-          </Box>
+          </Box> */}
           <FrontEndTypo.Disablebutton
             onPress={(e) => setIsOpenDropOut(true)}
             leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
-
           <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.Disablebutton>
