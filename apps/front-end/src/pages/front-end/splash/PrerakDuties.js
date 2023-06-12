@@ -104,19 +104,20 @@ function PrerakDuties(props) {
         _page={{ _scollView: { bg: "white" } }}
       >
         <Stack bg="bgGreyColor.200">
-          <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">
+          <FrontEndTypo.H3 color="textMaroonColor.400" mt="2"  textAlign="center">
             {t("PRERAK_DUTIES")}
           </FrontEndTypo.H3>
-          <VStack space={2} alignItems="center" safeAreaTop>
+          <VStack alignItems="center" safeAreaTop>
             <Image
-              size={"320px"}
-              resizeMode="cover"
+              width="320px"
+              height="292px"
+              resizeMode="contain"
               source={imgUrl}
               alt={"Alternate Text "}
               //If key is not given image should not be change
               key={imgUrl}
             />
-            <Box bg="white" p="10">
+            <Box bg="white" width="322px" mb="5" py="5" textAlign="center">
               <FrontEndTypo.H1 color="textGreyColor.800" bold>
                 {title}
               </FrontEndTypo.H1>
@@ -125,15 +126,13 @@ function PrerakDuties(props) {
               </FrontEndTypo.H4>
             </Box>
             <FrontEndTypo.Primarybutton
-              my="3"
               width="85%"
               onPress={onPress ? onPress : (e) => { }}
             >
               {processedButton}
             </FrontEndTypo.Primarybutton>
             {onSkipPress && (
-              <FrontEndTypo.H3
-                style={stylesheet.skipText}
+              <FrontEndTypo.H3  color="blueText.400" my="5"  underline bold
                 onPress={onSkipPress ? onSkipPress : (e) => { }}
               >
                 {t("SKIP_TO_APPLY")}
@@ -184,7 +183,7 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "4" ? (
         <PrerakDuties
-          title={"Identify Out-of-School Girls"}
+          title={"Conduct Camps"}
           imgUrl={`/images/facilitator-duties/img4.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("5")}
@@ -204,7 +203,7 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "6" ? (
         <PrerakDuties
-          title={"Identify Out-of-School Girls "}
+          title={"Guide them towards Future Goals"}
           imgUrl={"/images/facilitator-duties/img6.png"}
           processedButton={"Apply Now"}
           page={page}
