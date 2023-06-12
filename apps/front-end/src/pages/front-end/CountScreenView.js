@@ -8,6 +8,10 @@ import { HStack, VStack } from "native-base";
 import React from "react";
 
 export default function TableView({ footerLinks }) {
+  React.useEffect(async () => {
+    const data = await benificiaryRegistoryService.getStatusList();
+    setSelectStatus(data);
+  }, []);
   React.useEffect(() => {
     const getData = async () => {
       let data = await benificiaryRegistoryService.getStatusWiseCount();
@@ -17,7 +21,19 @@ export default function TableView({ footerLinks }) {
     getData();
   }, []);
   const [statuswiseCount, setStatuswiseCount] = React.useState({});
+  const [selectStatus, setSelectStatus] = React.useState();
+  //const [statusData, setStatusData] = React.useState([])
+  const statusData = []
 
+  for (let i = 0; i < statuswiseCount?.data?.length; i++) {
+    if (statuswiseCount.data[i].status === selectStatus[i].value) {
+      const dataObject = {};
+      dataObject.status = statuswiseCount.data[i].status
+      dataObject.title = selectStatus[i].title
+      dataObject.count = statuswiseCount.data[i].count
+      statusData.push(dataObject)
+    }
+  }
   return (
     <Layout
       _appBar={{
@@ -36,7 +52,7 @@ export default function TableView({ footerLinks }) {
             {t("COUNT")}
           </FrontEndTypo.H2>
         </HStack>
-        {statuswiseCount?.data?.map((item) => (
+        {statusData?.map((item) => (
           <HStack
             bg="white"
             px="4"
@@ -47,7 +63,7 @@ export default function TableView({ footerLinks }) {
             justifyContent="space-between"
           >
             <FrontEndTypo.H3 bold color="textGreyColor.800">{`${t(
-              item.status
+              item.title
             )}`}</FrontEndTypo.H3>
             <FrontEndTypo.H2>{item.count}</FrontEndTypo.H2>
           </HStack>
