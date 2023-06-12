@@ -69,10 +69,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="primary.50" pb="5">
+      <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
-          {["lead", "applied", ""].includes(facilitator.status) && (
-            <Stack>
+          {facilitator.status === "lead" ||
+            facilitator.status === "applied" ||
+            (facilitator.status === "" && (
               <HStack
                 {...styles.inforBox}
                 p="5"
@@ -93,182 +94,140 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <FrontEndTypo.H4>{t("MEANWHILE_PROFILE")}</FrontEndTypo.H4>
                 </VStack>
               </HStack>
-              <HStack py="6" flex="1" px="4">
-                <Image
-                  source={{
-                    uri: "/hello.svg",
-                  }}
-                  alt="Add AG"
-                  size={"30px"}
-                  resizeMode="contain"
-                />
-                <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                  {t("WELCOME")} {facilitator?.first_name},
-                </FrontEndTypo.H1>
-              </HStack>
-            </Stack>
-          )}
+            ))}
           {facilitator.status === "application_screened" ||
             (facilitator.status === "screened" && (
-              <Stack>
-                <HStack
-                  {...styles.inforBox}
-                  p="5"
-                  borderBottomWidth="1"
-                  borderBottomColor={"gray.300"}
-                  shadows="BlueOutlineShadow"
-                >
+              <HStack
+                {...styles.inforBox}
+                p="5"
+                borderBottomWidth="1"
+                borderBottomColor={"gray.300"}
+                shadows="BlueOutlineShadow"
+              >
+                <IconByName
+                  flex="0.1"
+                  isDisabled
+                  name="UserLineIcon"
+                  _icon={{ size: "25px" }}
+                />
+                <VStack flex="0.9">
+                  <FrontEndTypo.H3 bold>
+                    {t("SELECTED_FOR_INTERVIEW")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H4>
+                    {t("CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW")}
+                  </FrontEndTypo.H4>
+                </VStack>
+              </HStack>
+            ))}
+          {facilitator.status === "shortlisted_for_orientation" && (
+            <HStack
+              {...styles.inforBox}
+              p="5"
+              borderBottomWidth="1"
+              borderBottomColor={"gray.300"}
+              shadows="BlueOutlineShadow"
+            >
+              <IconByName
+                flex="0.1"
+                isDisabled
+                name="UserLineIcon"
+                _icon={{ size: "25px" }}
+              />
+              <VStack flex="0.9">
+                <FrontEndTypo.H3 bold>
+                  {t("SHORTLISTED_FOR_ORIENTATION")}
+                </FrontEndTypo.H3>
+                <FrontEndTypo.H4>
+                  {t("CONGRATULATIONS_YOURE_SHORTLISTED_FOR_THE_ORIENTATION")}
+                </FrontEndTypo.H4>
+              </VStack>
+            </HStack>
+          )}
+          {facilitator.status === "potential_prerak" && (
+            <HStack
+              {...styles.inforBox}
+              p="5"
+              borderBottomWidth="1"
+              borderBottomColor={"gray.300"}
+              shadows="BlueOutlineShadow"
+            >
+              <IconByName
+                flex="0.1"
+                isDisabled
+                name="UserLineIcon"
+                _icon={{ size: "25px" }}
+              />
+              <VStack flex="0.9">
+                <FrontEndTypo.H3 bold>
+                  {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
+                </FrontEndTypo.H3>
+                <FrontEndTypo.H4>
+                  {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
+                </FrontEndTypo.H4>
+              </VStack>
+            </HStack>
+          )}
+          <Stack>
+            <HStack py="6" flex="1" px="4">
+              <Image
+                source={{
+                  uri: "/hello.svg",
+                }}
+                alt="Add AG"
+                size={"30px"}
+                resizeMode="contain"
+              />
+              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
+                {t("WELCOME")} {facilitator?.first_name},
+              </FrontEndTypo.H1>
+            </HStack>
+          </Stack>
+          {/* {["application_screened", "screened"].includes(
+            facilitator.status
+          ) && (
+            <Stack>
+              <Stack space="5" p="5">
+                <FrontEndTypo.H3 bold>{t("INTERVIEW_DETAILS")}</FrontEndTypo.H3>
+                <HStack space="5">
                   <IconByName
-                    flex="0.1"
                     isDisabled
                     name="UserLineIcon"
-                    _icon={{ size: "25px" }}
+                    _icon={{ size: "20px" }}
                   />
-                  <VStack flex="0.9">
-                    <FrontEndTypo.H3 bold>
-                      {t("SELECTED_FOR_INTERVIEW")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW")}
-                    </FrontEndTypo.H4>
-                  </VStack>
-                </HStack>
-                <Stack space="5" p="5">
-                  <FrontEndTypo.H3 bold>
-                    {t("INTERVIEW_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <HStack space="5">
-                    <IconByName
-                      isDisabled
-                      name="UserLineIcon"
-                      _icon={{ size: "20px" }}
-                    />
-                    <FrontEndTypo.H3>
-                      {t("CONDUCTED_BY")}: IP Name
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <HStack space="5">
-                    <IconByName
-                      isDisabled
-                      name="TimeLineIcon"
-                      _icon={{ size: "20px" }}
-                    />
-                    <FrontEndTypo.H3>9th April, 11 am</FrontEndTypo.H3>
-                  </HStack>
-                  <HStack space="5">
-                    <IconByName
-                      isDisabled
-                      name="MapPinLineIcon"
-                      _icon={{ size: "20px" }}
-                    />
-                    <FrontEndTypo.H3>
-                      {t("ONLINE")}: Google Meet
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <HStack space="2">
-                    <FrontEndTypo.Secondarybutton width="50%">
-                      {t("REJECT")}
-                    </FrontEndTypo.Secondarybutton>
-                    <FrontEndTypo.Primarybutton width="50%">
-                      {t("ACCEPT")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                  <HStack flex="1" my="6">
-                    <Image
-                      source={{
-                        uri: "/hello.svg",
-                      }}
-                      alt="Add AG"
-                      size={"30px"}
-                      resizeMode="contain"
-                    />
-                    <FrontEndTypo.H1 color="textMaroonColor.400">
-                      {t("WELCOME")} {facilitator?.first_name},
-                    </FrontEndTypo.H1>
-                  </HStack>
-                </Stack>
-                <Stack bg="white" space="5" p="5">
-                  <FrontEndTypo.H2 bold>
-                    {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-                  </FrontEndTypo.H2>
-                  <FrontEndTypo.Primarybutton width="100%">
-                    {t("AADHAR_NUMBER_KYC")}
-                  </FrontEndTypo.Primarybutton>
-                  <FrontEndTypo.Secondarybutton width="100%">
-                    {t("SCAN_QR_CODE")}
-                  </FrontEndTypo.Secondarybutton>
-                </Stack>
-                <Stack bg="bgPinkColor.300" space="6" p={4}>
-                  <FrontEndTypo.H2 color="textMaroonColor.400">
-                    {t("UPLOAD_YOUR_DOCUMENTS")}
-                  </FrontEndTypo.H2>
                   <FrontEndTypo.H3>
-                    {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
+                    {t("CONDUCTED_BY")}: IP Name
                   </FrontEndTypo.H3>
-                  <HStack space="2">
-                    <IconByName
-                      isDisabled
-                      name="CheckboxCircleLineIcon"
-                      _icon={{ size: "20px" }}
-                    />
-                    <VStack width="99%">
-                      <FrontEndTypo.H3 bold>
-                        {t("QUALIFICATION_PROOF")}
-                      </FrontEndTypo.H3>
-                      <FrontEndTypo.H4>
-                        {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
-                      </FrontEndTypo.H4>
-                    </VStack>
-                  </HStack>
-                  <HStack space="2">
-                    <IconByName
-                      isDisabled
-                      name="CheckboxCircleLineIcon"
-                      _icon={{ size: "20px" }}
-                    />
-                    <VStack width="99%">
-                      <FrontEndTypo.H3 bold>
-                        {t("WORK_EXPERIENCE_PROOF")}
-                      </FrontEndTypo.H3>
-                      <FrontEndTypo.H4>
-                        {t("THIS_CAN_BE_LETTER_OF")}
-                      </FrontEndTypo.H4>
-                    </VStack>
-                  </HStack>
-                  <HStack space="2">
-                    <IconByName
-                      isDisabled
-                      name="CheckboxCircleLineIcon"
-                      _icon={{ size: "20px" }}
-                    />
-                    <VStack width="99%">
-                      <FrontEndTypo.H3 bold>
-                        {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                      </FrontEndTypo.H3>
-                      <FrontEndTypo.H4>
-                        {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                      </FrontEndTypo.H4>
-                    </VStack>
-                  </HStack>
-                  <HStack>
-                    <FrontEndTypo.Secondarybutton
-                      width="100%"
-                      endIcon={
-                        <IconByName
-                          isDisabled
-                          name="Upload2FillIcon"
-                          _icon={{ size: "25px" }}
-                        />
-                      }
-                    >
-                      {t("UPLOAD_NOW")}
-                    </FrontEndTypo.Secondarybutton>
-                  </HStack>
-                </Stack>
+                </HStack>
+                <HStack space="5">
+                  <IconByName
+                    isDisabled
+                    name="TimeLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <FrontEndTypo.H3>9th April, 11 am</FrontEndTypo.H3>
+                </HStack>
+                <HStack space="5">
+                  <IconByName
+                    isDisabled
+                    name="MapPinLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <FrontEndTypo.H3>{t("ONLINE")}: Google Meet</FrontEndTypo.H3>
+                </HStack>
+                <HStack space="2">
+                  <FrontEndTypo.Secondarybutton width="50%">
+                    {t("REJECT")}
+                  </FrontEndTypo.Secondarybutton>
+                  <FrontEndTypo.Primarybutton width="50%">
+                    {t("ACCEPT")}
+                  </FrontEndTypo.Primarybutton>
+                </HStack>
               </Stack>
-            ))}
-          {/* {facilitator.status==="shortlisted_for_orientation" &&
-          <Stack>
+            </Stack>
+          )} */}
+          {/* {facilitator.status === "shortlisted_for_orientation" && (
+            <Stack>
             <HStack
               {...styles.inforBox}
               p="5"
@@ -291,57 +250,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </FrontEndTypo.H4>
               </VStack>
             </HStack>
-            <HStack flex="1" py="6" px="4">
-               <Image
-              source={{
-                uri: "/hello.svg",
-              }}
-              alt="Add AG"
-              size={"30px"}
-              resizeMode="contain"
-            />
-              <FrontEndTypo.H1 color="textMaroonColor.400">
-                {t("WELCOME")} {facilitator?.first_name},
-              </FrontEndTypo.H1>
-            </HStack>
-            {facilitator.status==="applied"&&<Stack bg="white" space="5" p="5">
-              <FrontEndTypo.H2 bold>
-                {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-              </FrontEndTypo.H2>
-              <FrontEndTypo.Primarybutton
-                width="100%"
-                {t("AADHAR_NUMBER_KYC")}
-              ></FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton
-                width="100%"
-                {t("SCAN_QR_CODE")}
-              ></FrontEndTypo.Secondarybutton>
-            </Stack>}
-          </Stack>} */}
-          {facilitator.status === "shortlisted_for_orientation" && (
+            </Stack>
+          )} */}
+
+          {/* Used shortlisted_for_orientation */}
+          {/* {facilitator.status === "shortlisted_for_orientation" && (
             <Stack>
-              <HStack
-                {...styles.inforBox}
-                p="5"
-                borderBottomWidth="1"
-                borderBottomColor={"gray.300"}
-                shadows="BlueOutlineShadow"
-              >
-                <IconByName
-                  flex="0.1"
-                  isDisabled
-                  name="UserLineIcon"
-                  _icon={{ size: "25px" }}
-                />
-                <VStack flex="0.9">
-                  <FrontEndTypo.H3 bold>
-                    {t("SHORTLISTED_FOR_ORIENTATION")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("CONGRATULATIONS_YOURE_SHORTLISTED_FOR_THE_ORIENTATION")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>{" "}
               <Stack bg="bgPinkColor.300" space="6" p={4}>
                 <FrontEndTypo.H3 bold>
                   {t("ORIENTATION_DETAILS")}
@@ -408,158 +322,46 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   >{`\u2022 Volunteer Experience Proof`}</FrontEndTypo.H3>
                 </View>
               </Stack>
-              <HStack flex="1" my="6">
-                <Image
-                  source={{
-                    uri: "/hello.svg",
-                  }}
-                  alt="Add AG"
-                  size={"32px"}
-                  resizeMode="contain"
-                />
-                <FrontEndTypo.H1 color="textMaroonColor.400">
-                  {t("WELCOME")} {facilitator?.first_name},
-                </FrontEndTypo.H1>
-              </HStack>
-              <Stack bg="white" space="5" p="5">
-                <FrontEndTypo.H2 bold>
-                  {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.Primarybutton width="100%">
-                  {t("AADHAR_NUMBER_KYC")}
-                </FrontEndTypo.Primarybutton>
-                <FrontEndTypo.Secondarybutton width="100%">
-                  {t("SCAN_QR_CODE")}
-                </FrontEndTypo.Secondarybutton>
-              </Stack>
-              <Stack bg="bgPinkColor.300" space="6" p={4}>
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("UPLOAD_YOUR_DOCUMENTS")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.H3>
-                  {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
-                </FrontEndTypo.H3>
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
-                      {t("QUALIFICATION_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
-                    </FrontEndTypo.H4>
-                  </VStack>
-                </HStack>
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
-                      {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_LETTER_OF")}
-                    </FrontEndTypo.H4>
-                  </VStack>
-                </HStack>
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
-                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                    </FrontEndTypo.H4>
-                  </VStack>
-                </HStack>
-                <HStack>
-                  <FrontEndTypo.Secondarybutton
-                    width="100%"
-                    endIcon={
-                      <IconByName
-                        isDisabled
-                        name="Upload2FillIcon"
-                        _icon={{ size: "25px" }}
-                      />
-                    }
-                  >
-                    {t("UPLOAD_NOW")}
-                  </FrontEndTypo.Secondarybutton>
-                </HStack>
-              </Stack>
             </Stack>
-          )}
-          {/* <HStack space="2" alignItems="Center" width="100%" justifyContent="space-evenly" px="5">
-              <VStack  space={2} width="50%">
-                <Button alignItems="Center" variant='outline'  py="5">
-                    <IconByName
-                        isDisabled
-                        name="UserAddLineIcon"
-                        _icon={{ size: "60px" }}
-                      />
-                      <Text fontSize="md">{t("ADD_AN_AG")}</Text>
-                </Button>
-              </VStack>
-            
-              <VStack width="50%" space={2} >
-              <Button  variant='outline'   py="5">
+          )} */}
+          {/* <HStack
+            space="2"
+            alignItems="Center"
+            width="100%"
+            justifyContent="space-evenly"
+            px="5"
+          >
+            <VStack space={2} width="50%">
+              <Button alignItems="Center" variant="outline" py="5">
                 <IconByName
-                    isDisabled
-                    name="BriefcaseLineIcon"
-                    _icon={{ size: "60px" }}
-                  />
-                  <Text fontSize="md">{t("PRERAK_DUTIES")}</Text>
-                </Button>
-              </VStack>
+                  isDisabled
+                  name="UserAddLineIcon"
+                  _icon={{ size: "60px" }}
+                />
+                <Text fontSize="md">{t("ADD_AN_AG")}</Text>
+              </Button>
+            </VStack>
+            <VStack width="50%" space={2}>
+              <Button variant="outline" py="5">
+                <IconByName
+                  isDisabled
+                  name="BriefcaseLineIcon"
+                  _icon={{ size: "60px" }}
+                />
+                <Text fontSize="md">{t("PRERAK_DUTIES")}</Text>
+              </Button>
+            </VStack>
           </HStack> */}
-          {/* potential prerak  */}
+          {/* potential prerak */}
           {["potential_prerak"].includes(facilitator.status) && (
             <Stack>
-              <HStack
-                {...styles.inforBox}
-                p="5"
-                borderBottomWidth="1"
-                borderBottomColor={"gray.300"}
-                shadows="BlueOutlineShadow"
-              >
-                <IconByName
-                  flex="0.1"
-                  isDisabled
-                  name="UserLineIcon"
-                  _icon={{ size: "25px" }}
-                />
-                <VStack flex="0.9">
-                  <FrontEndTypo.H3 bold>
-                    {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-              <HStack flex="1" p="3" my="6">
-                <FrontEndTypo.H1 color="textMaroonColor.400">
-                  {t("WELCOME")} {facilitator?.first_name},
-                </FrontEndTypo.H1>
-              </HStack>
               <RedOutlineButton
                 background="#FCEEE2"
                 mx="5"
                 p="10"
                 width="40%"
                 shadow="RedBoxShadow"
+                onPress={(e) => navigate("/beneficiary")}
               >
                 <Image
                   source={{
@@ -592,23 +394,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </HStack>
                   </VStack>
                 </Alert>
-                <FrontEndTypo.Secondarybutton width="100%">
-                  <FrontEndTypo.H4 bold color="textMaroonColor.400">
-                    {t("ADD_AN_AG_LEARNER")}{" "}
-                  </FrontEndTypo.H4>
-                </FrontEndTypo.Secondarybutton>
               </Stack>
             </Stack>
           )}
           {["lead", "applied", ""].includes(facilitator.status) && (
             <Stack>
-              <VStack p="5" space="5">
+              <VStack p="5" pt={1}>
                 {!form_step_number ||
                 (form_step_number && parseInt(form_step_number) < 10) ? (
                   <Pressable onPress={(e) => navigate("/form")}>
                     <HStack
                       borderWidth="1"
-                      p="5"
+                      p="3"
                       rounded="full"
                       justifyContent="center"
                     >
@@ -618,16 +415,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 ) : (
                   <React.Fragment />
                 )}
-                <ChipStatus
+                {/* <ChipStatus
                   status={facilitator?.status}
                   flex="1"
                   py="5"
                   rounded="full"
                   _text={{ textAlign: "center", textTransform: "capitalize" }}
                   justifyContent="center"
-                />
+                /> */}
               </VStack>
-              <VStack>
+              {/* <VStack>
                 <Pressable
                   alignItems={"center"}
                   onPress={(e) => navigate("/beneficiary")}
@@ -644,7 +441,108 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.H2>
                   </HStack>
                 </Pressable>
-              </VStack>
+               
+              </VStack> */}
+            </Stack>
+          )}
+          {facilitator?.aadhar_verified !== "yes" && (
+            <Stack bg="white" space="5" p="5">
+              <FrontEndTypo.H2 bold>
+                {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.Primarybutton
+                onPress={(e) =>
+                  navigate(`/aadhaar-kyc/${facilitator?.id}`, { state: "/" })
+                }
+                width="100%"
+              >
+                {t("AADHAR_NUMBER_KYC")}
+              </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                onPress={(e) =>
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, { state: "/" })
+                }
+              >
+                {t("SCAN_QR_CODE")}
+              </FrontEndTypo.Secondarybutton>
+            </Stack>
+          )}
+          {[
+            "lead",
+            "applied",
+            "",
+            "screened",
+            "application_screened",
+            "shortlisted_for_orientation",
+            "potential_prerak",
+          ].includes(facilitator.status) && (
+            <Stack bg="bgPinkColor.300" space="6" p={4}>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("UPLOAD_YOUR_DOCUMENTS")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3>
+                {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
+              </FrontEndTypo.H3>
+              <HStack space="2">
+                <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack width="99%">
+                  <FrontEndTypo.H3 bold>
+                    {t("QUALIFICATION_PROOF")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H4>
+                    {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
+                  </FrontEndTypo.H4>
+                </VStack>
+              </HStack>
+              <HStack space="2">
+                <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack width="99%">
+                  <FrontEndTypo.H3 bold>
+                    {t("WORK_EXPERIENCE_PROOF")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H4>
+                    {t("THIS_CAN_BE_LETTER_OF")}
+                  </FrontEndTypo.H4>
+                </VStack>
+              </HStack>
+              <HStack space="2">
+                <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack width="99%">
+                  <FrontEndTypo.H3 bold>
+                    {t("VOLUNTEER_EXPERIENCE_PROOF")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H4>
+                    {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
+                  </FrontEndTypo.H4>
+                </VStack>
+              </HStack>
+              <HStack>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  endIcon={
+                    <IconByName
+                      isDisabled
+                      name="Upload2FillIcon"
+                      _icon={{ size: "25px" }}
+                    />
+                  }
+                >
+                  {t("UPLOAD_NOW")}
+                </FrontEndTypo.Secondarybutton>
+              </HStack>
             </Stack>
           )}
         </VStack>

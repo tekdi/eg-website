@@ -82,13 +82,8 @@ export default function App({ facilitator, id, ip, onClick }) {
     navigate("/dashboard");
   }
 
-  console.log("userId", userId);
-
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/${userId}/profile`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -217,7 +212,6 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
 
     const qData = await benificiaryRegistoryService.getOne(userId);
-    console.log("qData", qData?.result);
     let enrolled_for_board =
       qData?.result?.program_beneficiaries?.enrolled_for_board;
     let enrollment_status =
@@ -228,8 +222,6 @@ export default function App({ facilitator, id, ip, onClick }) {
       qData?.result?.program_beneficiaries?.enrollment_number;
     let subjects = qData?.result?.program_beneficiaries?.subjects;
     let subjectData = JSON.parse(subjects);
-
-    console.log("ssss", subjectData);
 
     setFormData({
       ...formData,
@@ -304,36 +296,30 @@ export default function App({ facilitator, id, ip, onClick }) {
       board: boardData,
     };
 
-    if (formData?.enrolled_for_board) {
-      console.log("reached");
-      let subjects = await enumRegistryService.getSubjects(filters);
-      let newSchema = schema;
-      newSchema = getOptions(newSchema, {
-        key: "subjects",
-        arr: subjects?.data,
-        title: "name",
-        value: "id",
-      });
-      console.log("newSchema", newSchema);
-      setSchema(newSchema);
-    }
-  }, [formData]);
+    let subjects = await enumRegistryService.getSubjects(filters);
+    let newSchema = schema;
+    newSchema = getOptions(newSchema, {
+      key: "subjects",
+      arr: subjects?.data,
+      title: "name",
+      value: "id",
+    });
+    setSchema(newSchema);
+  }, [formData?.enrolled_for_board]);
 
   React.useEffect(async () => {
-    if (formData?.facilitator_id) {
-      let ListofEnum = await enumRegistryService.listOfEnum();
-      console.log("ListofEnum", ListofEnum?.data?.ENROLLEMENT_STATUS);
-      let newSchema = schema;
-      newSchema = getOptions(newSchema, {
-        key: "enrollment_status",
-        arr: ListofEnum?.data?.ENROLLEMENT_STATUS,
-        title: "title",
-        value: "value",
-      });
-      console.log("newSchema", newSchema);
-      setSchema(newSchema);
-    }
-  }, [formData?.facilitator_id]);
+    let ListofEnum = await enumRegistryService.listOfEnum();
+    let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
+    let newSchema = schema;
+    newSchema = getOptions(newSchema, {
+      key: "enrollment_status",
+      arr: list,
+      title: "title",
+      value: "title",
+    });
+
+    setSchema(newSchema);
+  }, [formData?.enrollment_number]);
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
@@ -358,16 +344,16 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   const editSubmit = async () => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page1", updateDetails);
+    navigate(`/beneficiary/${userId}/profile`);
   };
-
-  console.log("formData,", formData);
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
+        name: t("ENROLLMENT_DETAILS"),
+
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -437,7 +423,7 @@ export default function App({ facilitator, id, ip, onClick }) {
               type="submit"
               onPress={() => editSubmit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </Button>
           </Form>
         ) : (

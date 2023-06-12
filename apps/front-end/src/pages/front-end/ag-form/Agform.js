@@ -84,10 +84,11 @@ export default function Agform({ userTokenInfo }) {
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
+    navigate('/')
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => {};
+  const updateData = (data, deleteData = false) => { };
 
   const uiSchema = {
     facilitator_id: {
@@ -129,9 +130,9 @@ export default function Agform({ userTokenInfo }) {
   const showPosition = (position) => {
     console.log(
       "Latitude: " +
-        position.coords.latitude +
-        "/n Longitude: " +
-        position.coords.longitude
+      position.coords.latitude +
+      "/n Longitude: " +
+      position.coords.longitude
     );
   };
 
@@ -144,6 +145,10 @@ export default function Agform({ userTokenInfo }) {
   };
 
   const otpfunction = async () => {
+    if (formData?.mobile.length < 10) {
+      errors?.mobile?.addError(t("MINIMUM_LENGTH_IS_10"));
+    }
+
     const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
       ...formData,
       hash: localStorage.getItem("hash"),
@@ -160,8 +165,8 @@ export default function Agform({ userTokenInfo }) {
               data?.error?.constructor?.name === "String"
                 ? [data?.error]
                 : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                  ? data?.error
+                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
@@ -251,7 +256,7 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => {};
+  const formSubmitCreate = async (formData) => { };
 
   const goErrorPage = (key) => {
     if (key) {
@@ -299,22 +304,17 @@ export default function Agform({ userTokenInfo }) {
         );
       }
 
+      if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
     });
 
     return errors;
@@ -425,7 +425,7 @@ export default function Agform({ userTokenInfo }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        //onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },

@@ -78,10 +78,7 @@ export default function agFormEdit({ ip, id }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -605,7 +602,7 @@ export default function agFormEdit({ ip, id }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/edit/contact-details/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const [cameraFile, setcameraFile] = useState();
@@ -820,8 +817,7 @@ export default function agFormEdit({ ip, id }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow: `${page}` === "1" ? ["backBtn"] : [],
-        name: `${ip?.name}`.trim(),
+        name: t("BASIC_DETAILS"),
         lang,
         setLang,
       }}

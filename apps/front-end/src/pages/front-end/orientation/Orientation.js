@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   capture,
   IconByName,
@@ -12,7 +12,7 @@ import {
   eventService,
   Loading,
 } from "@shiksha/common-lib";
-
+import { useNavigate } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
 import { Calendar as Cal } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -59,15 +59,17 @@ export default function Orientation({
   onShowScreen,
   setIsOpen,
   onClick,
-  hi,
 }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
+  const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = useState({});
+  const navigator = useNavigate();
 
   const SelectButton = () => (
     <VStack>
@@ -95,7 +97,7 @@ export default function Orientation({
   );
 
   React.useEffect(() => {
-    getEventList();
+    getEventLists();
   }, []);
 
   React.useEffect(() => {
@@ -106,7 +108,7 @@ export default function Orientation({
     });
   }, [userIds]);
 
-  const getEventList = async () => {
+  const getEventLists = async () => {
     const eventResult = await eventService.getEventList();
     setEventList(eventResult);
   };
@@ -120,6 +122,7 @@ export default function Orientation({
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2023, 2030],
       },
     },
     end_date: {
@@ -127,6 +130,7 @@ export default function Orientation({
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2023, 2030],
       },
     },
     reminders: {
@@ -147,14 +151,37 @@ export default function Orientation({
     },
   };
   const onChange = async (data) => {
+    setErrors();
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
+    if (newData?.start_date > newData?.end_date) {
+      const newErrors = {
+        attendees: {
+          __errors: ["The end date should be later than the start date."],
+        },
+      };
+      setErrors(newErrors);
+    }
   };
 
-  const handleEventClick = (info) => {
-    console.log("Event clicked:", info?.event?.extendedProps);
-    setFormData(info?.event?.extendedProps);
-    setModalVisible(true);
+  const handleEventClick = async (info) => {
+    navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
+  };
+
+  const clearForm = () => {
+    setFormData({
+      attendees: [],
+      type: "",
+      name: "",
+      master_trainer: "",
+      start_date: "",
+      end_date: "",
+      start_time: "",
+      end_time: "",
+      reminders: [],
+      location: "",
+      location_type: "",
+    });
   };
 
   const onSubmit = async (data) => {
@@ -175,20 +202,31 @@ export default function Orientation({
           moment(newFormData?.start_date).format("DD-MM-YYYY"),
       };
     }
-    getFormData(newFormData);
-    setFormData(newFormData);
-    const apiResponse = await eventService.createNewEvent(newFormData);
-    if (apiResponse?.success === true) {
-      setModalVisible(false);
-      setFormData("");
-      getFormData("");
-      setLoading(true);
-      const getCalanderData = await eventService.getEventList();
-      if (getCalanderData) {
-        setLoading(false);
-      }
+
+    if (newFormData?.attendees?.length === 0) {
+      const newErrors = {
+        attendees: {
+          __errors: [t("SELECT_CANDIDATES")],
+        },
+      };
+      setErrors(newErrors);
     } else {
-      setFormData("");
+      getFormData(newFormData);
+      setFormData(newFormData);
+      const apiResponse = await eventService.createNewEvent(newFormData);
+      if (apiResponse?.success === true) {
+        setModalVisible(false);
+        setFormData({});
+        getFormData("");
+        setLoading(true);
+        const getCalanderData = await eventService.getEventList();
+        setEventList(getCalanderData);
+        if (getCalanderData) {
+          setLoading(false);
+        }
+      } else {
+        setFormData({});
+      }
     }
   };
 
@@ -220,7 +258,7 @@ export default function Orientation({
             <VStack alignItems={"Center"}>
               <Pressable
                 onPress={() => {
-                  onShowScreen(true);
+                  setModalVisible(true);
                 }}
               >
                 <Image
@@ -237,7 +275,7 @@ export default function Orientation({
               </Pressable>
             </VStack>
           </BoxBlue>
-          <BoxBlue justifyContent="center">
+          {/* <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -281,13 +319,12 @@ export default function Orientation({
                 {t("ADD_A_PRERAK")}
               </AdminTypo.H6>
             </VStack>
-          </BoxBlue>
+          </BoxBlue> */}
         </HStack>
         <AdminTypo.H3 bold py="3">
           {t("YOUR_CALENDAR")}
         </AdminTypo.H3>
       </VStack>
-
       <HStack space="2xl" justifyContent="space-between" px="3">
         <Box>
           <VStack mb="3" alignContent="center">
@@ -296,12 +333,12 @@ export default function Orientation({
               mb="3"
               shadow="BlueOutlineShadow"
               onPress={() => {
+                clearForm();
                 setModalVisible(!modalVisible);
               }}
             >
               {t("SCHEDULE_EVENT")}
             </AdminTypo.Secondarybutton>
-
             <Cal />
             <VStack space="4" mt="4">
               <HStack alignItems="Center" space="md">
@@ -325,25 +362,35 @@ export default function Orientation({
         </Box>
         <Box width="50%" justifyContent={"Center"} flex={"1"}>
           <Fullcalendar
+            ref={calendarRef}
+            key={eventList}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={"timeGridWeek"}
-            // events={[
-            //   {
-            //     title: "event 1",
-            //     date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            //   },
-            // ]}
+            timeZone="Asia/Kolkata"
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
+            }}
+            initialView="dayGridMonth"
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
             events={eventList?.events?.map((item) => {
               return {
-                title: item?.type !== null ? item?.type : "orientation",
+                allDay: false,
+                title: item?.name !== null ? item?.name : item?.type,
                 start: moment(item?.start_date).format("YYYY-MM-DD")
-                  ? moment(item?.start_date).format("YYYY-MM-DD")
+                  ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
+                      item?.start_time
+                    }`
                   : "",
                 end: moment(item?.end_date).format("YYYY-MM-DD")
-                  ? moment(item?.end_date).format("YYYY-MM-DD")
+                  ? `${moment(item?.end_date).format("YYYY-MM-DD")} ${
+                      item?.end_time
+                    }`
                   : "",
-
-                type: item?.context ? item?.context : "",
+                type: item?.type ? item?.type : "",
                 name: item?.name ? item?.name : "",
                 start_date:
                   item?.start_date !== "Invalid date"
@@ -354,12 +401,13 @@ export default function Orientation({
                     ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                attendees: Object.values(userIds).map((e) => e?.id),
+                attendances: item?.attendances ? item?.attendances : "",
                 start_time: item?.start_time ? item?.start_time : "",
                 end_time: item?.end_time ? item?.end_time : "",
                 reminders: item?.reminders ? item?.reminders : "",
                 location: item?.location ? item?.location : "",
                 location_type: item?.location_type ? item?.location_type : "",
+                event_id: item?.id ? item?.id : "",
               };
             })}
             eventTimeFormat={{
@@ -368,12 +416,6 @@ export default function Orientation({
               meridiem: "short",
             }}
             eventClick={handleEventClick}
-            headerToolbar={{
-              start: "prev,thisweek,next",
-              center: "timeGridWeek,dayGridMonth,dayGridYear",
-              end: "today",
-              height: "50hv",
-            }}
           />
         </Box>
       </HStack>
@@ -393,114 +435,6 @@ export default function Orientation({
             </AdminTypo.H1>
           </Modal.Header>
 
-          {/* <Modal.Header textAlign={"Center"}>
-            Schedule an Interview
-          </Modal.Header>
-          <Modal.Body p="5" pb="10" mx={5} overflowX="hidden">
-            <FormControl>
-              <VStack space="2xl">
-                <HStack align-items="center" space="2xl">
-                  <HStack flex="0.3" alignItems="Center">
-                    <IconByName name="VidiconLineIcon" />
-                    <FormControl.Label>Event Type</FormControl.Label>
-                  </HStack>
-                  <Box flex="0.7">
-                    <FormControl maxW="300" isRequired isInvalid>
-                      <Select
-                        minWidth="200"
-                        accessibilityLabel="Choose Event"
-                        placeholder="Choose Event"
-                        _selectedItem={{
-                          bg: "teal.600",
-                          endIcon: <CheckIcon size={5} />,
-                        }}
-                        mt="1"
-                      >
-                        <Select.Item label="Prerak Orientation" value="PO" />
-                        <Select.Item label="Prerak Training" value="PT" />
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </HStack>
-                <VStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="UserFollowLineIcon" />
-                      <FormControl.Label>Master Trainer</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Chip textAlign="Center"> Prakash Wagh</Chip>
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="UserAddLineIcon" />
-                      <FormControl.Label>Candidates</FormControl.Label>
-                    </HStack>
-                    <Button bgColor="white" borderColor="black" flex="0.7">
-                      <Text>Select Candidates</Text>
-                    </Button>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="CalendarLineIcon" />
-                      <FormControl.Label>Date</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input></Input>
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="TimeLineIcon" />
-                      <FormControl.Label>Time</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input />
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="Notification2LineIcon" />
-                      <FormControl.Label>Reminder</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input />
-                    </Box>
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2xl"} flex={"1"}>
-                    <HStack flex="0.3" alignItems="Center">
-                      <IconByName name="MapPinLineIcon" />
-                      <FormControl.Label>Location</FormControl.Label>
-                    </HStack>
-                    <Box flex="0.7">
-                      <Input />
-                    </Box>
-                  </HStack>
-                </VStack>
-              </VStack>
-            </FormControl>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setShowModal(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onPress={() => {
-                  setShowModal(false);
-                }}
-              >
-                Send Invites
-              </Button>
-            </Button.Group>
-          </Modal.Footer> */}
           <Modal.Body p="3" pb="10" bg="white">
             <Form
               ref={formRef}
@@ -513,6 +447,7 @@ export default function Orientation({
                 DescriptionFieldTemplate,
                 BaseInputTemplate,
               }}
+              extraErrors={errors}
               showErrorList={false}
               noHtml5Validate={true}
               {...{
@@ -535,7 +470,6 @@ export default function Orientation({
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
                   onPress={() => {
-                    // setModalVisible(false);
                     formRef?.current?.submit();
                   }}
                   shadow="BlueFillShadow"
