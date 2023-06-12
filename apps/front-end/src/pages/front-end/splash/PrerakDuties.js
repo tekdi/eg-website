@@ -122,11 +122,12 @@ function PrerakDuties(props) {
               alt={"Alternate Text "}
               //If key is not given image should not be change
               key={imgUrl}
+              borderRadius="10px"
             />
-            <Box bg="white" width="322px" mb="5" py="5" textAlign="center">
-              <FrontEndTypo.H1 color="textGreyColor.800" bold>
+            <Box bg="white" mb="5" py="5" px="45px" textAlign="center">
+              <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {title}
-              </FrontEndTypo.H1>
+              </FrontEndTypo.H3>
               <FrontEndTypo.H4 color="textGreyColor.700">
                 {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
               </FrontEndTypo.H4>
@@ -203,7 +204,7 @@ export default function SwiperFile({ onClick }) {
         <PrerakDuties
           title={t("PRERAK_HELP_GIRLS_ATTEND_EXAMS")}
           imgUrl={`/images/facilitator-duties/img5.png`}
-          processedButton={t("PRERAK_PROCEED_BTN")}
+          processedButton={t("PRERAK_PROCEED_BTN")} 
           onPress={(e) => setPage("6")}
           page={page}
           setPage={setPage}

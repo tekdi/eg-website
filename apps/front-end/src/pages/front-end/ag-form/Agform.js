@@ -127,15 +127,6 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-        position.coords.latitude +
-        "/n Longitude: " +
-        position.coords.longitude
-    );
-  };
-
   const createAg = async () => {
     let url = await AgRegistryService.createAg(formData);
 
