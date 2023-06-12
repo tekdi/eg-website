@@ -90,9 +90,8 @@ export default function SplashScreen({
   onClick,
   onClickPrerakDuties,
   onPreferedLanguage,
-  isBackButton
+  isBackButton,
 }) {
-  console.log(isBackButton)
   const [page, setPage] = React.useState("screen1");
   const [code, setCode] = React.useState("en");
 
@@ -101,21 +100,16 @@ export default function SplashScreen({
   React.useEffect(() => {
     //if location is pressed directly setpage screen2
     if (isBackButton === "SplashScreen") {
-      isBackButton = ""
-      console.log(isBackButton, "1")
+      isBackButton = "";
       setPage("screen3");
-
-    }
-    else {
+    } else {
       const setTime = setTimeout(() => {
-
         setPage("screen2");
       }, 1000);
       return (e) => {
         clearTimeout(setTime);
       };
     }
-
   }, []);
 
   const onShowScreen = (code) => {
@@ -135,7 +129,6 @@ export default function SplashScreen({
       {page === "screen1" ? (
         <Page1 />
       ) : page === "screen3" ? (
-
         <Page2 {...{ onClick, onClickPrerakDuties, refAppBar, code }} />
       ) : page === "screen2" ? (
         <Page3 onShowScreen={onShowScreen} />
@@ -162,7 +155,6 @@ const Page1 = () => {
 };
 
 const Page2 = ({ onClick, onClickPrerakDuties }) => {
-
   changeLanguage(localStorage.getItem("lang"));
   const navigate = useNavigate();
 

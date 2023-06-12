@@ -288,7 +288,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
-          <Box
+          {/* <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
@@ -307,9 +307,9 @@ export default function BenificiaryProfileView(props) {
                 />
               </HStack>
             </VStack>
-          </Box>
+          </Box> */}
 
-          <Box
+          {/* <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
@@ -330,6 +330,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
+          </Box> */}
           {benificiary?.program_beneficiaries?.status === "identified" ||
           benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
           benificiary?.program_beneficiaries?.status === "enrolled" ||
