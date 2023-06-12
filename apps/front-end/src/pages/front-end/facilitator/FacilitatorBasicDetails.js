@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import { HStack, VStack, Box, Progress, Divider, Center } from "native-base";
 import {
   arrList,
@@ -9,7 +8,6 @@ import {
   t,
   Layout,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
@@ -17,26 +15,20 @@ export default function FacilitatorBasicDetails({
   userTokenInfo,
   footerLinks,
 }) {
-  const id = localStorage.getItem("id");
-  console.log(id);
-  //   const [facilitator, Setfacilitator] = useState(userTokenInfo?.authUser);
-
   const [facilitator, setfacilitator] = React.useState();
-
   const navigate = useNavigate();
   const arrPersonal = {
     ...facilitator?.extended_users,
     gender: facilitator?.gender,
   };
-  console.log("hello", arrPersonal);
 
   React.useEffect(() => {
     facilitatorDetails();
   }, []);
 
   const facilitatorDetails = async () => {
+    const { id } = userTokenInfo?.authUser;
     const result = await facilitatorRegistryService.getOne({ id });
-
     setfacilitator(result);
   };
   console.log("facilitator", facilitator);
@@ -64,7 +56,7 @@ export default function FacilitatorBasicDetails({
                 color="iconColor.200"
                 _icon={{ size: "20" }}
                 onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}`);
+                  navigate(`/profile/edit/basic_details`);
                 }}
               />
             </HStack>
@@ -98,7 +90,7 @@ export default function FacilitatorBasicDetails({
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/edit/contact-info`);
+                    navigate(`/profile/edit/contact_details`);
                   }}
                 />
               </HStack>
@@ -209,7 +201,13 @@ export default function FacilitatorBasicDetails({
                 >
                   {t("ADDRESS_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/profile/edit/address_details`);
+                  }}
+                />
               </HStack>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" space="xl">
@@ -253,7 +251,7 @@ export default function FacilitatorBasicDetails({
                   name="EditBoxLineIcon"
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/personal-details`);
+                    navigate(`/profile/edit/personal_details`);
                   }}
                 />
               </HStack>
@@ -337,7 +335,7 @@ export default function FacilitatorBasicDetails({
               </VStack>
             </VStack>
           </Box>
-          {facilitator?.references.map((exp, index) => (
+          {
             <Box
               bg="boxBackgroundColour.100"
               borderColor="#E0E0E0"
@@ -358,13 +356,13 @@ export default function FacilitatorBasicDetails({
                     name="EditBoxLineIcon"
                     color="iconColor.100"
                     onPress={(e) => {
-                      navigate(`/beneficiary/${id}/edit/reference`);
+                      navigate(`/profile/edit/reference_details`);
                     }}
                   />
                 </HStack>
                 <Box paddingTop="2">
                   <Progress
-                    value={arrList(facilitator?.references[index], [
+                    value={arrList(facilitator?.references, [
                       "name",
                       "designation",
                       "contact_number",
@@ -388,8 +386,8 @@ export default function FacilitatorBasicDetails({
                       fontWeight="400"
                       flex="0.3"
                     >
-                      {facilitator?.references[index]?.name
-                        ? facilitator?.references[index]?.name
+                      {facilitator?.references.name
+                        ? facilitator?.references.name
                         : "-"}
                     </FrontEndTypo.H3>
                   </HStack>
@@ -412,8 +410,8 @@ export default function FacilitatorBasicDetails({
                       fontWeight="400"
                       flex="0.3"
                     >
-                      {facilitator?.references[index]?.designation
-                        ? facilitator?.references[index]?.designation
+                      {facilitator?.references.designation
+                        ? facilitator?.references.designation
                         : "-"}
                     </FrontEndTypo.H3>
                   </HStack>
@@ -436,15 +434,15 @@ export default function FacilitatorBasicDetails({
                       fontWeight="400"
                       flex="0.3"
                     >
-                      {facilitator?.references[index]?.contact_number
-                        ? facilitator?.references[index]?.contact_number
+                      {facilitator?.references.contact_number
+                        ? facilitator?.references.contact_number
                         : "-"}
                     </FrontEndTypo.H3>
                   </HStack>
                 </VStack>
               </VStack>
             </Box>
-          ))}
+          }
           <Box
             bg="#FAFAFA"
             borderColor="#E0E0E0"
@@ -461,7 +459,13 @@ export default function FacilitatorBasicDetails({
                 >
                   {t("OTHER_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName name="EditBoxLineIcon" color="iconColor.100" />
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/profile/edit/work_availability_details`);
+                  }}
+                />
               </HStack>
               <Box paddingTop="2">
                 <Progress
