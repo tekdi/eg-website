@@ -71,19 +71,18 @@ const stylesheet = {
 function PrerakDuties(props) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation()
-  let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } = props;
+  const location = useLocation();
+  let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } =
+    props;
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const setBackButton = () => {
-    let data = page - 1
-    console.log(data)
+    let data = page - 1;
+    console.log(data);
     if (data === 0) {
-      let data = "SplashScreen"
-      navigate(-1, { state: data })
-    }
-    else {
+      let data = "SplashScreen";
+      navigate(-1, { state: data });
+    } else {
       setPage(data.toString());
-
     }
   };
 
@@ -93,57 +92,66 @@ function PrerakDuties(props) {
         _appBar={{
           lang,
           setLang,
-          exceptIconsShow:
-
-            ["menuBtn", "userInfo", "helpBtn", "loginBtn", "notificationBtn"],
+          exceptIconsShow: [
+            "menuBtn",
+            "userInfo",
+            "helpBtn",
+            "loginBtn",
+            "notificationBtn",
+          ],
           onPressBackButton: (e) => {
-            setBackButton()
-
+            setBackButton();
           },
         }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <Stack bg="bgGreyColor.200">
-          <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">
+          <FrontEndTypo.H3
+            color="textMaroonColor.400"
+            mt="2"
+            textAlign="center"
+          >
             {t("PRERAK_DUTIES")}
           </FrontEndTypo.H3>
-          <VStack space={2} alignItems="center" safeAreaTop>
+          <VStack alignItems="center" safeAreaTop>
             <Image
-              size={"320px"}
-              resizeMode="cover"
+              width="320px"
+              height="292px"
+              resizeMode="contain"
               source={imgUrl}
               alt={"Alternate Text "}
               //If key is not given image should not be change
               key={imgUrl}
+              borderRadius="10px"
             />
-            <Box bg="white" p="10">
-              <FrontEndTypo.H1 color="textGreyColor.800" bold>
+            <Box bg="white" mb="5" py="5" px="45px" textAlign="center">
+              <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {title}
-              </FrontEndTypo.H1>
+              </FrontEndTypo.H3>
               <FrontEndTypo.H4 color="textGreyColor.700">
                 {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
               </FrontEndTypo.H4>
             </Box>
             <FrontEndTypo.Primarybutton
-              my="3"
               width="85%"
-              onPress={onPress ? onPress : (e) => { }}
+              onPress={onPress ? onPress : (e) => {}}
             >
               {processedButton}
             </FrontEndTypo.Primarybutton>
             {onSkipPress && (
               <FrontEndTypo.H3
-                style={stylesheet.skipText}
-                onPress={onSkipPress ? onSkipPress : (e) => { }}
+                color="blueText.400"
+                my="5"
+                underline
+                bold
+                onPress={onSkipPress ? onSkipPress : (e) => {}}
               >
                 {t("SKIP_TO_APPLY")}
               </FrontEndTypo.H3>
             )}
           </VStack>
         </Stack>
-
       </Layout>
-
     </React.Fragment>
   );
 }
@@ -154,9 +162,9 @@ export default function SwiperFile({ onClick }) {
     <Stack>
       {page === "1" ? (
         <PrerakDuties
-          title={"Identify Out-of-School Girls"}
+          title={t("PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS")}
           imgUrl={`/images/facilitator-duties/img1.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("2")}
           setPage={setPage}
           page={page}
@@ -164,9 +172,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "2" ? (
         <PrerakDuties
-          title={"Counsel Parents"}
+          title={t("PRERAK_COUNSEL_PARENTS")}
           imgUrl={`/images/facilitator-duties/img2.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("3")}
           page={page}
           setPage={setPage}
@@ -174,9 +182,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "3" ? (
         <PrerakDuties
-          title={"Register Girls for Exams"}
+          title={t("PRERAK_REGISTER_GIRLS_FOR_EXAMS")}
           imgUrl={`/images/facilitator-duties/img3.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("4")}
           page={page}
           setPage={setPage}
@@ -184,9 +192,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "4" ? (
         <PrerakDuties
-          title={"Identify Out-of-School Girls"}
+          title={t("PRERAK_CONDUCT_CAMPS")}
           imgUrl={`/images/facilitator-duties/img4.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("5")}
           page={page}
           setPage={setPage}
@@ -194,9 +202,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "5" ? (
         <PrerakDuties
-          title={"Help Girls Attend Exams"}
+          title={t("PRERAK_HELP_GIRLS_ATTEND_EXAMS")}
           imgUrl={`/images/facilitator-duties/img5.png`}
-          processedButton={"Proceed"}
+          processedButton={t("PRERAK_PROCEED_BTN")} 
           onPress={(e) => setPage("6")}
           page={page}
           setPage={setPage}
@@ -204,9 +212,9 @@ export default function SwiperFile({ onClick }) {
         />
       ) : page === "6" ? (
         <PrerakDuties
-          title={"Identify Out-of-School Girls "}
+          title={t("PRERAK_GUIDE_THEM_TOWARDS_FUTURE_GOALS")}
           imgUrl={"/images/facilitator-duties/img6.png"}
-          processedButton={"Apply Now"}
+          processedButton={t("APPLY_NOW")}
           page={page}
           setPage={setPage}
           onPress={onClick}
