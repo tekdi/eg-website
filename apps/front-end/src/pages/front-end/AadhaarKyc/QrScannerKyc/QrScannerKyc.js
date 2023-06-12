@@ -1,91 +1,173 @@
+import {
+  useWindowSize,
+  IconByName,
+  FrontEndTypo,
+  authRegistryService,
+} from "@shiksha/common-lib";
+import { Box, VStack, HStack } from "native-base";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import jsQR from "jsqr";
-import "./QrScannerKyc.css";
-import { FrontEndTypo, Layout, t } from "@shiksha/common-lib";
+import { QrReader } from "react-qr-reader";
+import { useTranslation } from "react-i18next";
 
-export default function QrScannerKyc({ setOtpFailedPopup }) {
-  const videoRef = React.useRef(null);
-  const canvasRef = React.useRef(null);
+const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
+  const [selected, setSelected] = React.useState("environment");
+  const [startScan, setStartScan] = React.useState(true);
+  const [loadingScan, setLoadingScan] = React.useState(false);
+  const [data, setData] = React.useState("");
+  const { t } = useTranslation();
+  const [width, height] = useWindowSize();
+  const topElement = React.useRef(null);
+  const bottomElement = React.useRef(null);
+  const [cameraHeight, setCameraHeight] = React.useState();
+  const [cameraWidth, setCameraWidth] = React.useState();
+  const [torch, setTorch] = React.useState(false);
 
-  React.useEffect(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    const constraints = {
-      video: { facingMode: "environment" }, // use back camera by default
-    };
-
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then((stream) => {
-        video.srcObject = stream;
-        video.play();
-        requestAnimationFrame(tick);
-      })
-      .catch((error) => {
-        console.error(error);
+  const handleScan = async (scanData) => {
+    setLoadingScan(true);
+    if (scanData && scanData !== "") {
+      setData(scanData);
+      const result = await authRegistryService.aadhaarQr({
+        qr_data: scanData.text,
       });
-
-    const tick = () => {
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.height = video.videoHeight;
-        canvas.width = video.videoWidth;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = context.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-        const code = jsQR(imageData.data, imageData.width, imageData.height);
-        if (code) {
-          console.log("qr data -> ", code.data);
+      console.log(result);
+      if (result?.error) {
+        setError({
+          top: `QR code ${result?.error}`,
+        });
+        setPage();
+        setOtpFailedPopup(false);
+      } else {
+        setError();
+        const aadhaarResult = await authRegistryService.aadhaarKyc({
+          id,
+          aadhar_verified: "yes",
+          aadhaar_verification_mode: "qr",
+        });
+        if (aadhaarResult?.error) {
+          setError({
+            top: `QR code ${aadhaarResult?.error}`,
+          });
+          setPage();
+          setOtpFailedPopup(false);
+        } else {
+          setPage("aadhaarSuccess");
+          setOtpFailedPopup(false);
         }
       }
-      requestAnimationFrame(tick);
-    };
+      setStartScan(false);
+      setLoadingScan(false);
+    }
+  };
+  const handleError = (err) => {
+    console.error(err);
+  };
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    async function fetchData() {
+      let newHeight =
+        height -
+        ((topElement?.current?.clientHeight
+          ? topElement?.current?.clientHeight
+          : 0) +
+          (bottomElement?.current?.clientHeight
+            ? bottomElement?.current?.clientHeight
+            : 0));
+      if (isMounted) {
+        setCameraWidth(topElement?.current?.clientWidth);
+        setCameraHeight(newHeight);
+      }
+    }
+
+    fetchData();
 
     return () => {
-      if (video.srcObject) {
-        const stream = video.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop());
-        video.srcObject = null;
-      }
+      isMounted = false;
     };
-  }, []);
-
+  });
   return (
-    <Layout
-      _appBar={{
-        onlyIconsShow: ["backBtn"],
-        _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-      }}
-    >
-      <div className="qrScannerPage">
-        <div className="content">
-          <FrontEndTypo.H1 bold>
-            {t("SCAN_YOUR_AADHAR_QR_CODE")}
-          </FrontEndTypo.H1>
-
-          <video ref={videoRef} style={{ width: "100%" }} />
-          <canvas ref={canvasRef} style={{ display: "none" }} />
-
-          <FrontEndTypo.Secondarybutton mt={10}>
-            {t("CONTINUE")}
-          </FrontEndTypo.Secondarybutton>
-
-          <FrontEndTypo.Secondarybutton
-            mt={10}
-            onPress={(e) => setOtpFailedPopup(true)}
+    <Box alignItems={"center"}>
+      <Box position="fixed" {...{ width, height }} bg="gray.900">
+        <Box p="20px" ref={topElement}>
+          <HStack
+            space={4}
+            justifyContent="space-between"
+            flex={1}
+            alignItems="center"
           >
-            {t("TRY_OTHER")}
-          </FrontEndTypo.Secondarybutton>
-        </div>
-      </div>
-    </Layout>
+            <IconByName
+              isDisabled
+              color={"gray.900"}
+              _icon={{
+                size: "0px",
+              }}
+            />
+            <IconByName
+              name="CloseCircleLineIcon"
+              color={"white"}
+              _icon={{
+                size: "30px",
+              }}
+              onPress={(e) => {
+                setPage();
+                setOtpFailedPopup(true);
+              }}
+            />
+          </HStack>
+        </Box>
+        {startScan && (
+          <QrReader
+            facingMode={selected ? "user" : "environment"}
+            delay={2000}
+            onError={handleError}
+            onResult={handleScan}
+            advanced={[{ torch: torch }]}
+            torch={torch}
+            videoContainerStyle={{
+              height: cameraHeight,
+              width: cameraWidth,
+              padding: 0,
+            }}
+            videoStyle={{
+              height: cameraHeight,
+              width: cameraWidth,
+            }}
+          />
+        )}
+
+        <Box py="30px" px="20px" ref={bottomElement}>
+          <HStack
+            space={4}
+            justifyContent="space-between"
+            flex={1}
+            alignItems="center"
+          >
+            {startScan && (
+              <IconByName
+                name="FlashlightLineIcon"
+                color={"white"}
+                _icon={{
+                  size: "30px",
+                }}
+                onPress={(e) => setTorch(!torch)}
+              />
+            )}
+            {startScan && (
+              <IconByName
+                name="CameraSwitchLineIcon"
+                color={"white"}
+                _icon={{
+                  size: "30px",
+                }}
+                onPress={(e) => setSelected(!selected)}
+              />
+            )}
+          </HStack>
+        </Box>
+      </Box>
+    </Box>
   );
-}
+};
+
+export default App;

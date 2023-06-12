@@ -445,31 +445,28 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack> */}
             </Stack>
           )}
-          {facilitator.aadhar_token !== "" ? (
-            <React.Fragment></React.Fragment>
-          ) : (
-            [
-              "screened",
-              "",
-              "application_screened",
-              "potential_prerak",
-              "shortlisted_for_orientation",
-            ].includes(facilitator.status) && (
-              <Stack bg="white" space="5" p="5">
-                <FrontEndTypo.H2 bold>
-                  {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.Primarybutton
-                  onPress={(e) => navigate("/aadhaar-kyc/:id")}
-                  width="100%"
-                >
-                  {t("AADHAR_NUMBER_KYC")}
-                </FrontEndTypo.Primarybutton>
-                {/* <FrontEndTypo.Secondarybutton width="100%">
-                  {t("SCAN_QR_CODE")}
-                </FrontEndTypo.Secondarybutton> */}
-              </Stack>
-            )
+          {facilitator?.aadhar_verified !== "yes" && (
+            <Stack bg="white" space="5" p="5">
+              <FrontEndTypo.H2 bold>
+                {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.Primarybutton
+                onPress={(e) =>
+                  navigate(`/aadhaar-kyc/${facilitator?.id}`, { state: "/" })
+                }
+                width="100%"
+              >
+                {t("AADHAR_NUMBER_KYC")}
+              </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                onPress={(e) =>
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, { state: "/" })
+                }
+              >
+                {t("SCAN_QR_CODE")}
+              </FrontEndTypo.Secondarybutton>
+            </Stack>
           )}
           {[
             "lead",

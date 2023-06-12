@@ -51,8 +51,9 @@ const LearnerProfile = () => {
       _appBar={{
         lang,
         setLang,
-        onPressBackButton: (e) => {},
+        onPressBackButton: (e) => { navigate('/') },
         onlyIconsShow: ["backBtn", "userInfo"],
+
       }}
     >
       {alreadyreg && (
