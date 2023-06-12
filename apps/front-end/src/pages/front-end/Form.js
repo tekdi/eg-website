@@ -914,7 +914,7 @@ export default function App({ facilitator, ip, onClick }) {
               mt="10"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SUBMIT") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
