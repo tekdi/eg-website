@@ -4,10 +4,20 @@ import {
   t,
   ImageView,
   AdminTypo,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { Button, HStack, Input, VStack, Modal, Image, Box } from "native-base";
+import {
+  Button,
+  HStack,
+  Input,
+  VStack,
+  Modal,
+  Image,
+  Box,
+  Text,
+} from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -75,8 +85,9 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("USER_ID"),
-    selector: (row) => row.id,
+    name: t("REGION"),
+
+    selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
     name: t("MOBILE_NUMBER"),
@@ -86,7 +97,9 @@ const columns = (e) => [
   },
   {
     name: t("STATUS"),
-    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
+    selector: (row, index) => (
+      <ChipStatus key={index} status={row?.program_faciltators?.status} />
+    ),
     sortable: true,
     attr: "email",
   },
@@ -124,27 +137,74 @@ function getBaseUrl() {
 }
 
 // Table component
-function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
+function Table({
+  facilitator,
+  setadminPage,
+  setadminLimit,
+  admindata,
+  formData,
+  totalCount,
+}) {
   const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState(1);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filterObj, setFilterObj] = React.useState();
+  const [limit, setLimit] = React.useState();
+  const [page, setPage] = React.useState();
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState();
+  // const [filterObj, setFilterObj] = React.useState();
   const [modal, setModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [facilitaorStatus, setfacilitaorStatus] = React.useState();
+
   const navigate = useNavigate();
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await facilitatorRegistryService.filter(filterObj);
-    setData(admindata ? admindata : result.data?.data);
-    setPaginationTotalRows(result?.totalCount);
+    setData(admindata);
     setLoading(false);
+    setPaginationTotalRows(totalCount);
   }, [admindata]);
 
-  React.useEffect(() => {
-    setFilterObj({ page, limit });
+  React.useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    setfacilitaorStatus(result?.data?.FACILITATOR_STATUS);
+  }, []);
+
+  React.useEffect(async () => {
+    setLoading(true);
+
+    let _formData = formData;
+    let adminpage = page;
+    let adminlimit = limit;
+
+    const result = await facilitatorRegistryService.filter(
+      _formData,
+      adminpage,
+      adminlimit
+    );
+    setData(result.data?.data);
+    setPaginationTotalRows(result?.data?.totalCount);
+    // setLimit(result?.limit);
+    setLoading(false);
   }, [page, limit]);
+
+  const filterByStatus = async (value) => {
+    setLoading(true);
+
+    let _formData = formData;
+    let adminpage = page;
+    let adminlimit = limit;
+    let status = value;
+
+    const result = await facilitatorRegistryService.filter(
+      _formData,
+      adminpage,
+      adminlimit,
+      status
+    );
+    setData(result.data?.data);
+    setPaginationTotalRows(result?.data?.totalCount);
+    // setLimit(result?.limit);
+    setLoading(false);
+  };
 
   return (
     <VStack>
@@ -195,14 +255,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           >
             {t("SEND_AN_INVITE")}
           </AdminTypo.Secondarybutton>
-          {/* <AdminTypo.PrimaryButton
-            mx="3"
-            rightIcon={
-              <IconByName color="white" size="20px" name="PencilLineIcon" />
-            }
-          >
-            {t("REGISTER_PRERAK")}
-          </AdminTypo.PrimaryButton> */}
+
           <Modal
             isOpen={modal}
             onClose={() => setModal(false)}
@@ -259,6 +312,33 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
           </Modal>
         </HStack>
       </HStack>
+      <HStack position={"relative"} top={10} zIndex={1}>
+        <Text
+          cursor={"pointer"}
+          mx={3}
+          onPress={() => {
+            filterByStatus("ALL");
+          }}
+        >
+          {t("BENEFICIARY_ALL")}
+        </Text>
+        {facilitaorStatus?.map((item) => {
+          return (
+            <Text
+              cursor={"pointer"}
+              mx={3}
+              onPress={() => {
+                filterByStatus(item?.value);
+              }}
+            >
+              {t(item?.title)}
+            </Text>
+          );
+        })}
+        {/* <Text mx={5}>{t("Applied")}</Text>
+        <Text mx={5}>{t("Screened")}</Text>
+        <Text mx={5}>{t("ALL")}</Text> */}
+      </HStack>
 
       <DataTable
         customStyles={customStyles}
@@ -283,6 +363,7 @@ function Table({ facilitator, setadminPage, setadminLimit, admindata }) {
         persistTableHead
         progressPending={loading}
         pagination
+        paginationRowsPerPageOptions={[15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {

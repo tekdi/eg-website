@@ -1,104 +1,111 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
 import {
   Alert,
   Box,
-  Button,
   Center,
   HStack,
   Image,
   Modal,
-  Radio,
-  Stack,
+  Pressable,
   VStack,
 } from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
+  uploadRegistryService,
   Camera,
   Layout,
   H1,
-  t,
-  login,
-  H3,
   IconByName,
-  BodySmall,
-  filtersByObject,
   H2,
   getBase64,
   BodyMedium,
-  changeLanguage,
-  enumRegistryService,
-  benificiaryRegistoryService,
-  AgRegistryService,
-  uploadRegistryService,
+  filterObject,
   FrontEndTypo,
+  enumRegistryService,
+  getOptions,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { useScreenshot } from "use-screenshot-hook";
-
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  RadioBtn,
   CustomR,
-} from "../../../../component/BaseInput.js";
+  RadioBtn,
+  Aadhaar,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
+  CustomOTPBox,
+  select,
+  FileUpload,
+} from "component/BaseInput";
+import { useTranslation } from "react-i18next";
+import PhotoUpload from "./PhotoUpload.js";
 
 // App
-export default function agFormEdit({ ip }) {
+export default function App({ userTokenInfo }) {
+  const { step } = useParams();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
-  const [cameraSelection, setCameraSelection] = React.useState(0);
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
+  const [cameraFile, setCameraFile] = React.useState();
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
+  const [formData, setFormData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const { id } = useParams();
-  const [userId, setuserId] = React.useState(id);
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [qualifications, setQualifications] = React.useState([]);
+
+  const getData = async () => {
+    const { id } = userTokenInfo?.authUser;
+    if (id) {
+      const result = await facilitatorRegistryService.getOne({ id });
+      if (step === "qualification_details") {
+        const dataF = result?.qualifications;
+        const arr = result?.program_faciltators?.qualification_ids;
+        let arrData = arr
+          ? JSON.parse(arr)
+              ?.filter((e) =>
+                qualifications.find(
+                  (item) => item.id == e && item.type === "teaching"
+                )
+              )
+              ?.map((e) => `${e}`)
+          : [];
+        const newData = {
+          ...dataF,
+          qualification_ids: arrData,
+          qualification_master_id: `${
+            dataF?.qualification_master_id ? dataF?.qualification_master_id : ""
+          }`,
+          type_of_document: dataF?.document_reference?.doument_type,
+        };
+        setFormData(newData);
+      } else if (step === "reference_details") {
+        const newData = result?.references;
+        setFormData(newData);
+      } else {
+        setFormData(result);
+      }
+    }
+  };
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    const data = await nextPreviewStep("p");
+    if (data && onClick) {
+      onClick("SplashScreen");
+    }
   };
-
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
-  };
-
-  // React.useEffect(() => {
-  //   getImage();
-  // }, [page, credentials]);
-
-  //getting data
-  React.useEffect(async () => {
-    const qData = await benificiaryRegistoryService.getOne(id);
-    setFormData(qData.result);
-  }, []);
 
   const uiSchema = {
     dob: {
@@ -109,50 +116,14 @@ export default function agFormEdit({ ip }) {
         hideClearButton: true,
       },
     },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
+    qualification_ids: {
+      "ui:widget": "checkboxes",
     },
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
-    const properties = schema1.properties;
     if (index !== undefined) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
@@ -160,65 +131,90 @@ export default function agFormEdit({ ip }) {
       } else {
         nextIndex = pages[index - 1];
       }
-      if (nextIndex !== undefined) {
-        setPage(nextIndex);
-        setSchema(properties[nextIndex]);
-      } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "6" });
-        setPage("SAVE");
-      } else {
-        return true;
-      }
-    }
-  };
-  const setStep = async (pageNumber = "") => {
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      if (pageNumber !== "") {
-        if (page !== pageNumber) {
-          setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+      if (pageStape === "p") {
+        if (nextIndex === "work_availability_details") {
+          navigate(`/profile/edit/array-form/experience`);
+        } else if (nextIndex !== undefined) {
+          navigate(`/profile/edit/${nextIndex}`);
+        } else {
+          navigate(`/profile`);
         }
+      } else if (nextIndex === "qualification_details") {
+        navigate(`/profile/edit/array-form/vo_experience`);
+      } else if (nextIndex !== undefined) {
+        navigate(`/profile/edit/${nextIndex}`);
+      } else if (pageStape.toLowerCase() === "n") {
+        navigate(`/profile/edit/upload`);
       } else {
-        nextPreviewStep();
+        navigate(`/profile`);
       }
     }
-  };
-
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
   };
 
   React.useEffect(async () => {
+    let newSchema = schema;
+
+    if (schema?.properties?.qualification_master_id) {
+      setLoading(true);
+      const qData = await facilitatorRegistryService.getQualificationAll();
+      setQualifications(qData);
+      if (schema["properties"]["qualification_master_id"]) {
+        newSchema = getOptions(newSchema, {
+          key: "qualification_master_id",
+          arr: qData,
+          title: "name",
+          value: "id",
+          filters: { type: "qualification" },
+        });
+        if (newSchema?.properties?.qualification_master_id) {
+          let valueIndex = "";
+          newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
+            (e, index) => {
+              if (e.match("12")) {
+                valueIndex =
+                  newSchema?.properties?.qualification_master_id?.enum[index];
+              }
+            }
+          );
+          if (
+            valueIndex !== "" &&
+            formData?.qualification_master_id == valueIndex
+          ) {
+            setAlert(t("YOU_NOT_ELIGIBLE"));
+          } else {
+            setAlert();
+          }
+        }
+      }
+
+      if (schema?.properties?.document_id) {
+        setLoading(true);
+        if (schema["properties"]["document_id"]) {
+          newSchema = getOptions(newSchema, {
+            key: "state",
+            extra: { userId: formData?.id },
+          });
+        }
+        setSchema(newSchema);
+        setLoading(false);
+      }
+
+      if (schema["properties"]["qualification_ids"]) {
+        newSchema = getOptions(newSchema, {
+          key: "qualification_ids",
+          arr: qData,
+          title: "name",
+          value: "id",
+          filters: { type: "teaching" },
+        });
+      }
+      setSchema(newSchema);
+      setLoading(false);
+    }
+
     if (schema?.properties?.state) {
+      setLoading(true);
       const qData = await geolocationRegistryService.getStates();
-      let newSchema = schema;
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
@@ -234,68 +230,76 @@ export default function agFormEdit({ ip }) {
         block: formData?.block,
       });
       setSchema(newSchema);
+      setLoading(false);
     }
-  }, [formData?.id]);
+
+    if (schema?.properties?.device_ownership) {
+      if (formData?.device_ownership == "no") {
+        setAlert(t("YOU_NOT_ELIGIBLE"));
+      } else {
+        setAlert();
+      }
+    }
+    const ListOfEnum = await enumRegistryService.listOfEnum();
+    if (schema["properties"]?.["marital_status"]) {
+      newSchema = getOptions(newSchema, {
+        key: "social_category",
+        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "marital_status",
+        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
+
+    if (schema["properties"]?.["qualification_reference_document_id"]) {
+      setLoading(true);
+      newSchema = getOptions(newSchema, {
+        key: "qualification_reference_document_id",
+        extra: { userId: formData?.id },
+      });
+      setSchema(newSchema);
+      setLoading(false);
+    }
+  }, [page]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      const newStep = step ? step : newSteps[0];
+      setPage(newStep);
+      setSchema(properties[newStep]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 30);
+      let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
-      setSubmitBtn(t("NEXT"));
+      getData();
     }
-  }, []);
-
-  const updateBtnText = () => {
-    if (schema?.properties?.vo_experience) {
-      if (formData.vo_experience?.length > 0) {
-        setSubmitBtn(t("NEXT"));
-        setAddBtn(t("ADD_EXPERIENCE"));
-      } else {
-        setSubmitBtn(t("NO"));
-        setAddBtn(t("YES"));
-      }
-    } else if (schema?.properties?.mobile) {
-      setSubmitBtn(t("SAVE"));
-      setAddBtn(t("ADD_EXPERIENCE"));
-    } else {
-      setSubmitBtn(t("SAVE"));
-    }
-  };
-
-  React.useEffect(() => {
-    updateBtnText();
-  }, [formData, page, lang]);
+  }, [step]);
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
   };
 
-  const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
+  const formSubmitUpdate = async (data, overide) => {
+    const { id } = formData;
     if (id) {
-      const data = await enumRegistryService.editProfileById({
-        ...formData,
+      setLoading(true);
+      const result = await facilitatorRegistryService.profileStapeUpdate({
+        ...data,
+        page_type: step,
+        ...(overide ? overide : {}),
         id: id,
       });
-      console.log(data, "sent data");
-    }
-  };
-
-  const goErrorPage = (key) => {
-    if (key) {
-      pages.forEach((e) => {
-        console.log(e);
-        const data = schema1["properties"]?.[e]["properties"]?.[key];
-        if (data) {
-          setStep(e);
-        }
-      });
+      setLoading(false);
+      return result;
     }
   };
 
@@ -306,6 +310,16 @@ export default function agFormEdit({ ip }) {
       }
       if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
+      }
+    }
+    if (data?.aadhar_token) {
+      if (
+        data?.aadhar_token &&
+        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+      ) {
+        errors?.aadhar_token?.addError(
+          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+        );
       }
     }
     if (data?.dob) {
@@ -330,6 +344,28 @@ export default function agFormEdit({ ip }) {
         );
       }
     });
+    ["vo_experience", "experience"].forEach((keyex) => {
+      data?.[keyex]?.map((item, index) => {
+        ["role_title", "organization", "description"].forEach((key) => {
+          if (item?.[key]) {
+            if (
+              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
+              item?.[key]?.replaceAll(" ", "") === ""
+            ) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("REQUIRED_MESSAGE")} ${t(
+                  schema?.properties?.[key]?.title
+                )}`
+              );
+            } else if (key === "description" && item?.[key].length > 200) {
+              errors[keyex][index]?.[key]?.addError(
+                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
+              );
+            }
+          }
+        });
+      });
+    });
 
     return errors;
   };
@@ -353,6 +389,7 @@ export default function agFormEdit({ ip }) {
 
   const setDistric = async ({ state, district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.district && state) {
       const qData = await geolocationRegistryService.getDistricts({
         name: state,
@@ -379,11 +416,13 @@ export default function agFormEdit({ ip }) {
       }
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
   const setBlock = async ({ district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.block && district) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
@@ -407,11 +446,13 @@ export default function agFormEdit({ ip }) {
       }
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
   const setVilage = async ({ block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
@@ -419,7 +460,7 @@ export default function agFormEdit({ ip }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
-          arr: qData.villages,
+          arr: qData?.villages,
           title: "village_ward_name",
           value: "village_ward_name",
         });
@@ -429,6 +470,7 @@ export default function agFormEdit({ ip }) {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
       setSchema(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
@@ -512,35 +554,90 @@ export default function agFormEdit({ ip }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
-  };
 
-  const onError = (data) => {
-    console.log(data);
-    if (data[0]) {
-      const key = data[0]?.property?.slice(1);
-      goErrorPage(key);
+    if (id === "root_type_of_document") {
+      let newSchema = schema;
+      if (schema["properties"]["qualification_reference_document_id"]) {
+        setLoading(true);
+        newSchema = getOptions(schema, {
+          key: "qualification_reference_document_id",
+          extra: {
+            userId: formData?.id,
+            document_type: data.type_of_document,
+          },
+        });
+        setSchema(newSchema);
+        setLoading(false);
+      }
     }
   };
 
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    let newFormData = data.formData;
+    if (schema?.properties?.first_name) {
+      newFormData = {
+        ...newFormData,
+        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+      };
+    }
+
+    if (schema?.properties?.last_name && newFormData?.last_name) {
+      newFormData = {
+        ...newFormData,
+        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+      };
+    }
+    if (_.isEmpty(errors)) {
+      // if (["reference_details"].includes(step)) {
+      //   const result = await Promise.all(
+      //     newFormData.reference.map((item) => {
+      //       const newdata = filterObject(
+      //         item,
+      //         Object.keys(schema?.properties?.reference?.items?.properties)
+      //       );
+      //       return formSubmitUpdate(newdata);
+      //     })
+      //   );
+      // } else {
+      const newdata = filterObject(
+        newFormData,
+        Object.keys(schema?.properties)
+      );
+      const data = await formSubmitUpdate(newdata);
+      // }
+      if (localStorage.getItem("backToProfile") === "false") {
+        nextPreviewStep();
+      } else {
+        navigate("/profile");
+      }
+    }
+  };
+
+  if (page === "upload") {
+    return <PhotoUpload {...{ formData, cameraFile, setCameraFile }} />;
+  }
+
+  const onClickSubmit = (backToProfile) => {
+    if (formRef.current.validateForm()) {
+      formRef?.current?.submit();
+    }
+    localStorage.setItem("backToProfile", backToProfile);
   };
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("ADDRESS"),
-
+        onlyIconsShow: ["backBtn"],
+        leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "white" } }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* Box */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -553,9 +650,16 @@ export default function agFormEdit({ ip }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR }}
+            widgets={{
+              RadioBtn,
+              CustomR,
+              Aadhaar,
+              select,
+              CustomOTPBox,
+              FileUpload,
+            }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -563,6 +667,7 @@ export default function agFormEdit({ ip }) {
               TitleFieldTemplate,
               DescriptionFieldTemplate,
               BaseInputTemplate,
+              ArrayFieldTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -574,110 +679,32 @@ export default function agFormEdit({ ip }) {
               formData,
               customValidate,
               onChange,
-              onError,
               onSubmit,
               transformErrors,
             }}
           >
             <FrontEndTypo.Primarybutton
-              mt="3"
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
+              isLoading={loading}
+              p="4"
+              mt="4"
+              onPress={() => onClickSubmit(false)}
             >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              {t("SAVE_AND_NEXT")}
             </FrontEndTypo.Primarybutton>
+
+            <FrontEndTypo.Secondarybutton
+              isLoading={loading}
+              p="4"
+              mt="4"
+              onPress={() => onClickSubmit(true)}
+            >
+              {t("SAVE_AND_PROFILE")}
+            </FrontEndTypo.Secondarybutton>
           </Form>
         ) : (
           <React.Fragment />
         )}
       </Box>
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.username}
-                    </BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.password}
-                    </BodySmall>
-                  </HStack>
-                </Box>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

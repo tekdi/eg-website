@@ -10,7 +10,7 @@ export default {
       properties: {
         type_of_learner: {
           type: "string",
-          title: "Type of Student",
+          label: "Type of Student",
         },
         last_standard_of_education: {
           type: "string",
