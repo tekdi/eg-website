@@ -143,9 +143,38 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
+  console.log("formData", formData);
+
   const otpfunction = async () => {
     if (formData?.mobile.length < 10) {
-      errors?.mobile?.addError(t("MINIMUM_LENGTH_IS_10"));
+      const data = await formSubmitCreate(formData);
+
+      const newErrors = {
+        mobile: {
+          __errors:
+            data?.error?.constructor?.name === "String"
+              ? [data?.error]
+              : data?.error?.constructor?.name === "Array"
+              ? data?.error
+              : [t("MINIMUM_LENGTH_IS_10")],
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (!(formData?.mobile > 6666666666 && formData?.mobile < 9999999999)) {
+      const data = await formSubmitCreate(formData);
+      const newErrors = {
+        mobile: {
+          __errors:
+            data?.error?.constructor?.name === "String"
+              ? [data?.error]
+              : data?.error?.constructor?.name === "Array"
+              ? data?.error
+              : [t("PLEASE_ENTER_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
     }
 
     const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
