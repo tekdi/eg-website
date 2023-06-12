@@ -9,31 +9,19 @@ import React from "react";
 
 export default function TableView({ footerLinks }) {
   React.useEffect(async () => {
-    const data = await benificiaryRegistoryService.getStatusList();
-    setSelectStatus(data);
-  }, []);
-  React.useEffect(() => {
-    const getData = async () => {
-      let data = await benificiaryRegistoryService.getStatusWiseCount();
-      setStatuswiseCount(data);
-    };
-
-    getData();
-  }, []);
-  const [statuswiseCount, setStatuswiseCount] = React.useState({});
-  const [selectStatus, setSelectStatus] = React.useState();
-  //const [statusData, setStatusData] = React.useState([])
-  const statusData = []
-
-  for (let i = 0; i < statuswiseCount?.data?.length; i++) {
-    if (statuswiseCount.data[i].status === selectStatus[i].value) {
-      const dataObject = {};
-      dataObject.status = statuswiseCount.data[i].status
-      dataObject.title = selectStatus[i].title
-      dataObject.count = statuswiseCount.data[i].count
-      statusData.push(dataObject)
+    const selectStatus = await benificiaryRegistoryService.getStatusList();
+    let statuswiseCount = await benificiaryRegistoryService.getStatusWiseCount();
+    for (let i = 0; i < statuswiseCount?.data?.length; i++) {
+      if (statuswiseCount.data[i].status === selectStatus[i].value) {
+        const dataObject = {};
+        dataObject.status = statuswiseCount.data[i].status
+        dataObject.title = selectStatus[i].title
+        dataObject.count = statuswiseCount.data[i].count
+        setStatusData(prevStatusData => [...prevStatusData, dataObject]);
+      }
     }
-  }
+  }, []);
+  const [statusData, setStatusData] = React.useState([])
   return (
     <Layout
       _appBar={{
@@ -62,7 +50,7 @@ export default function TableView({ footerLinks }) {
             space="2"
             justifyContent="space-between"
           >
-            <FrontEndTypo.H3 bold color="textGreyColor.800">{`${t(
+            <FrontEndTypo.H3 bold color="textGreyColor.800" >{`${t(
               item.title
             )}`}</FrontEndTypo.H3>
             <FrontEndTypo.H2>{item.count}</FrontEndTypo.H2>
