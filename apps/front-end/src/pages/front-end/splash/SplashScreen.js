@@ -21,7 +21,7 @@ import {
   Pressable,
 } from "native-base";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const stylesheet = {
   mainBox: {
@@ -90,18 +90,26 @@ export default function SplashScreen({
   onClick,
   onClickPrerakDuties,
   onPreferedLanguage,
+  isBackButton,
 }) {
   const [page, setPage] = React.useState("screen1");
   const [code, setCode] = React.useState("en");
+
   const [refAppBar, RefAppBar] = React.useState();
   changeLanguage(localStorage.getItem("lang"));
   React.useEffect(() => {
-    const setTime = setTimeout(() => {
-      setPage("screen2");
-    }, 1000);
-    return (e) => {
-      clearTimeout(setTime);
-    };
+    //if location is pressed directly setpage screen2
+    if (isBackButton === "SplashScreen") {
+      isBackButton = "";
+      setPage("screen3");
+    } else {
+      const setTime = setTimeout(() => {
+        setPage("screen2");
+      }, 1000);
+      return (e) => {
+        clearTimeout(setTime);
+      };
+    }
   }, []);
 
   const onShowScreen = (code) => {

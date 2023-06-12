@@ -84,6 +84,7 @@ export default function Agform({ userTokenInfo }) {
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
+    navigate("/");
   };
   const ref = React.createRef(null);
 
@@ -124,15 +125,6 @@ export default function Agform({ userTokenInfo }) {
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
-  };
-
-  const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-        position.coords.latitude +
-        "/n Longitude: " +
-        position.coords.longitude
-    );
   };
 
   const createAg = async () => {

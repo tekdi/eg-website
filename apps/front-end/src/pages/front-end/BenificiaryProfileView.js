@@ -22,54 +22,54 @@ import Chip from "component/Chip";
 
 const dropoutReasons = [
   {
-    label: "Family issue",
+    label: "PRERAK_FAMILY_ISSUE",
     value: "Family issue",
   },
   {
-    label: "Community Issue",
+    label: "PRERAK_COMMUNITY_ISSUE",
     value: "Community Issue",
   },
   {
-    label: "Getting Married",
+    label: "PRERAK_GETTING_MARRIED",
     value: "Getting Married",
   },
   {
-    label: "Personal Reasons",
+    label: "PRERAK_PERSONAL_REASONS",
     value: "Personal Reasons",
   },
   {
-    label: "Moving away",
+    label: "PRERAK_MOVING_AWAY",
     value: "Moving away",
   },
   {
-    label: "Other",
+    label: "OTHER",
     value: "Other",
   },
 ];
 
 const reactivateReasons = [
   {
-    label: "Career Aspirations",
+    label: "CAREER_ASPIRATIONS",
     value: "Career Aspirations",
   },
   {
-    label: "Convinced by Prerak",
+    label: "PRERAK_CONVINCED_BY_PRERAK",
     value: "Convinced by Prerak",
   },
   {
-    label: "Moved back",
+    label: "PRERAK_MOVED_BACK",
     value: "Moved back",
   },
   {
-    label: "Issue Resolved",
+    label: "PRERAK_ISSUE_RESOLVED",
     value: "Issue Resolved",
   },
   {
-    label: "Changed Mind",
+    label: "PRERAK_CHANGED_MIND",
     value: "Changed Mind",
   },
   {
-    label: "Other",
+    label: "OTHER",
     value: "Other",
   },
 ];
@@ -287,7 +287,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
-          <Box
+          {/* <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
@@ -306,9 +306,9 @@ export default function BenificiaryProfileView(props) {
                 />
               </HStack>
             </VStack>
-          </Box>
+          </Box> */}
 
-          <Box
+          {/* <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
@@ -327,14 +327,13 @@ export default function BenificiaryProfileView(props) {
                 />
               </HStack>
             </VStack>
-          </Box>
+          </Box> */}
           <FrontEndTypo.Disablebutton
             onPress={(e) => setIsOpenDropOut(true)}
             leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
           >
             {t("MARK_AS_DROPOUT")}
           </FrontEndTypo.Disablebutton>
-
           <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
             {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
           </FrontEndTypo.Disablebutton>

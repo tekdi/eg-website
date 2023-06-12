@@ -242,7 +242,6 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
   const { label, format } = schema ? schema : {};
   const { t } = useTranslation();
-
   return (
     <FormControl gap="4">
       {label && !format && (
