@@ -112,13 +112,10 @@ export default function FacilitatorView({ footerLinks }) {
         ...arr,
         confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
       };
-    }
-    else if (credentials?.confirmPassword !== credentials?.password) {
+    } else if (credentials?.confirmPassword !== credentials?.password) {
       arr = {
         ...arr,
-        confirmPassword: t(
-          "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-        ),
+        confirmPassword: t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"),
       };
     }
 
@@ -165,13 +162,11 @@ export default function FacilitatorView({ footerLinks }) {
           setModalVisible(false);
           return { status: false };
         }
-      }
-      else if (password !== confirm_password) {
+      } else if (password !== confirm_password) {
         setCredentials();
         setModalVisible(false);
         return { status: false };
       }
-
     } else {
       setCredentials();
     }
@@ -517,14 +512,15 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       credentials?.password === credentials?.confirmPassword
                         ? handleResetPassword(
-                          credentials?.password,
-                          credentials?.confirmPassword
-                        )
-                        : credentials?.password !== credentials?.confirmPassword
+                            credentials?.password,
+                            credentials?.confirmPassword
+                          )
+                        : credentials?.password !==
+                          credentials?.confirmPassword;
                       handleResetPassword(
                         credentials?.password,
                         credentials?.confirmPassword
-                      )
+                      );
                       /* toast.show({
                         title: "Error",
                         variant: "solid",
@@ -622,14 +618,14 @@ export default function FacilitatorView({ footerLinks }) {
                       data?.grampanchayat,
                     ].filter((e) => e).length > 0
                       ? [
-                        data?.state,
-                        data?.district,
-                        data?.block,
-                        data?.village,
-                        data?.grampanchayat,
-                      ]
-                        .filter((e) => e)
-                        .join(", ")
+                          data?.state,
+                          data?.district,
+                          data?.block,
+                          data?.village,
+                          data?.grampanchayat,
+                        ]
+                          .filter((e) => e)
+                          .join(", ")
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
@@ -676,33 +672,25 @@ export default function FacilitatorView({ footerLinks }) {
                         </AdminTypo.H5>
                         <AdminTypo.H5 color="textGreyColor.800" bold>
                           {
-                            <AdminTypo.H5
-                              color="textGreyColor.800"
-                              bold
-
-                            >
+                            <AdminTypo.H5 color="textGreyColor.800" bold>
                               {data?.qualifications?.qualification_master?.name}
                             </AdminTypo.H5>
-
                           }
                         </AdminTypo.H5>
-                        </HStack>
+                      </HStack>
 
-                        <HStack space="2">
-                          <AdminTypo.H5 color="textGreyColor.550">
-                            {t("TEACHING_QUALIFICATION")}:{" "}
-                          </AdminTypo.H5>
-                          {
-                            <AdminTypo.H5
-                              color="textGreyColor.800"
-                              bold
-                            >
-                              {/* qualification get api get list of qualification =>take id which is 
+                      <HStack space="2">
+                        <AdminTypo.H5 color="textGreyColor.550">
+                          {t("TEACHING_QUALIFICATION")}:{" "}
+                        </AdminTypo.H5>
+                        {
+                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                            {/* qualification get api get list of qualification =>take id which is 
                               an array   */}
-                              {data?.program_faciltators?.qualification_ids}
-                            </AdminTypo.H5>
-                          }
-                        </HStack>
+                            {data?.program_faciltators?.qualification_ids}
+                          </AdminTypo.H5>
+                        }
+                      </HStack>
 
                       <VStack space="4">
                         <HStack space="2">

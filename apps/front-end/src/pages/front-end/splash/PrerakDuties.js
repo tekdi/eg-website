@@ -71,19 +71,18 @@ const stylesheet = {
 function PrerakDuties(props) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation()
-  let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } = props;
+  const location = useLocation();
+  let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } =
+    props;
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const setBackButton = () => {
-    let data = page - 1
-    console.log(data)
+    let data = page - 1;
+    console.log(data);
     if (data === 0) {
-      let data = "SplashScreen"
-      navigate(-1, { state: data })
-    }
-    else {
+      let data = "SplashScreen";
+      navigate(-1, { state: data });
+    } else {
       setPage(data.toString());
-
     }
   };
 
@@ -93,18 +92,25 @@ function PrerakDuties(props) {
         _appBar={{
           lang,
           setLang,
-          exceptIconsShow:
-
-            ["menuBtn", "userInfo", "helpBtn", "loginBtn", "notificationBtn"],
+          exceptIconsShow: [
+            "menuBtn",
+            "userInfo",
+            "helpBtn",
+            "loginBtn",
+            "notificationBtn",
+          ],
           onPressBackButton: (e) => {
-            setBackButton()
-
+            setBackButton();
           },
         }}
         _page={{ _scollView: { bg: "white" } }}
       >
         <Stack bg="bgGreyColor.200">
-          <FrontEndTypo.H3 color="textMaroonColor.400" mt="2"  textAlign="center">
+          <FrontEndTypo.H3
+            color="textMaroonColor.400"
+            mt="2"
+            textAlign="center"
+          >
             {t("PRERAK_DUTIES")}
           </FrontEndTypo.H3>
           <VStack alignItems="center" safeAreaTop>
@@ -127,22 +133,24 @@ function PrerakDuties(props) {
             </Box>
             <FrontEndTypo.Primarybutton
               width="85%"
-              onPress={onPress ? onPress : (e) => { }}
+              onPress={onPress ? onPress : (e) => {}}
             >
               {processedButton}
             </FrontEndTypo.Primarybutton>
             {onSkipPress && (
-              <FrontEndTypo.H3  color="blueText.400" my="5"  underline bold
-                onPress={onSkipPress ? onSkipPress : (e) => { }}
+              <FrontEndTypo.H3
+                color="blueText.400"
+                my="5"
+                underline
+                bold
+                onPress={onSkipPress ? onSkipPress : (e) => {}}
               >
                 {t("SKIP_TO_APPLY")}
               </FrontEndTypo.H3>
             )}
           </VStack>
         </Stack>
-
       </Layout>
-
     </React.Fragment>
   );
 }
