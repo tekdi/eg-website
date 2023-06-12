@@ -18,7 +18,6 @@ export default function BenificiaryEnrollment() {
 
   React.useEffect(() => {
     agDetails();
-    console.log("Hello");
   }, [id]);
 
   const agDetails = async () => {

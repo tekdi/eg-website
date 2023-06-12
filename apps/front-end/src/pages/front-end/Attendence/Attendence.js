@@ -152,6 +152,7 @@ export default function Attendence() {
   const [loading, setLoading] = React.useState(true);
   const uplodInputRef = React.useRef();
   const formRef = React.useRef();
+  const [error, setError] = useState("");
 
   const [ids, setids] = useState("");
   const [singleUser, setsingleUser] = useState("");
@@ -187,7 +188,6 @@ export default function Attendence() {
   };
 
   const onSubmit = async (data) => {
-    console.log(data?.documents_status, "data?.documents_status");
     const apiResponse = await eventService.editAttendanceDocumentList({
       id: ids?.user_id,
       page_type: "documents_checklist",
@@ -228,7 +228,9 @@ export default function Attendence() {
     },
     {
       name: t("INVITE_STATUS"),
-      selector: (row) => <Text color={"#00D790"}>Accepted</Text>,
+      selector: (row) => {
+        <Text>{row?.rsvp ? row?.rsvp : ""}</Text>;
+      },
       sortable: false,
       attr: "email",
     },
@@ -237,7 +239,9 @@ export default function Attendence() {
       selector: (row) => (
         <>
           <HStack space={"2"}>
-            <Text>{row?.status === "present" ? "Present" : "Absent"}</Text>
+            <Text key={row?.id}>
+              {row?.status === "present" ? "Present" : "Absent"}
+            </Text>
             <Switch
               // defaultIsChecked
               offTrackColor="#DC2626"
@@ -283,7 +287,7 @@ export default function Attendence() {
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     setlocationData({ latitude: latitude, longitude: longitude });
-    console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+    console.log("Latitude ", "Longitude");
   }
 
   function errorCallback(error) {
@@ -316,16 +320,18 @@ export default function Attendence() {
   }, [page, limit]);
 
   const uploadAttendencePicture = async (e) => {
-    console.log("cameraUrl", cameraUrl?.file);
-    // if (e === "submit") {
-    let formData = new FormData();
-    formData.append("file", cameraUrl?.file);
-    const uploadDoc = await uploadRegistryService.uploadPicture(formData);
-    if (uploadDoc) {
-      setcameraFile(uploadDoc);
+    setError("");
+    if (cameraFile?.key) {
+      const apiResponse = await eventService.updateAttendance({
+        id: userData?.id,
+        status: "present",
+        lat: locationData?.latitude,
+        long: locationData?.longitude,
+        photo_1: cameraFile ? cameraFile?.key : "",
+      });
+    } else {
+      setError("Capture Picture First");
     }
-    setCameraUrl();
-    // }
     const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
     if (users[coruntIndex + 1]) {
       setCameraUrl();
@@ -358,6 +364,8 @@ export default function Attendence() {
         long: locationData?.longitude,
         photo_1: cameraFile ? cameraFile?.key : "",
       });
+    } else {
+      setError("Capture Picture First");
     }
   };
 
@@ -379,7 +387,14 @@ export default function Attendence() {
                 color="gray.300"
                 _icon={{ size: "35" }}
               />
-              <AdminTypo.H2 pl="3">{t("HOME")}</AdminTypo.H2>
+              <AdminTypo.H2
+                pl="3"
+                onPress={() => {
+                  navigate("/admin");
+                }}
+              >
+                {t("HOME")}
+              </AdminTypo.H2>
               <IconByName
                 isDisabled
                 name="ArrowRightSLineIcon"
@@ -598,7 +613,9 @@ export default function Attendence() {
                             gap={"2"}
                             name="myRadioGroup"
                             accessibilityLabel="favorite number"
-                            value={attendance}
+                            value={
+                              ids?.status !== "present" ? "absent" : "present"
+                            }
                             onChange={(nextValue) => {
                               setAttendance(nextValue);
                             }}
@@ -711,6 +728,7 @@ export default function Attendence() {
           >
             <Modal.Content
               rounded="2xl"
+              size="full"
               bg="translate"
               {...stylesheet.modalxxl}
             >
@@ -752,12 +770,19 @@ export default function Attendence() {
                 ) : (
                   <React.Suspense fallback={<Loading />}>
                     <Camera
-                      height="300px"
                       {...{
                         cameraModal,
                         setCameraModal,
                         cameraUrl,
                         setCameraUrl: async (url, file) => {
+                          setError("");
+                          let formData = new FormData();
+                          formData.append("file", file);
+                          const uploadDoc =
+                            await uploadRegistryService.uploadPicture(formData);
+                          if (uploadDoc) {
+                            setcameraFile(uploadDoc);
+                          }
                           setCameraUrl({ url, file });
                         },
                       }}
@@ -765,14 +790,18 @@ export default function Attendence() {
                   </React.Suspense>
                 )}
               </Modal.Body>
-              <Modal.Footer justifyContent={"center"}>
+              <Modal.Footer justifyContent="space-between" alignItems="center">
+                {error && (
+                  <AdminTypo.H4 style={{ color: "red" }}>{error}</AdminTypo.H4>
+                )}
                 <AdminTypo.Secondarybutton
                   shadow="BlueOutlineShadow"
                   onPress={() => {
-                    setCameraModal(false);
-                    setUserData();
                     updateUserData();
+                    cameraFile ? setUserData() : error;
+                    // setCameraModal(false);
                     setcameraFile("");
+                    setCameraUrl();
                   }}
                 >
                   {t("FINISH")}
@@ -782,7 +811,9 @@ export default function Attendence() {
                   variant="secondary"
                   ml="4"
                   px="5"
-                  onPress={uploadAttendencePicture}
+                  onPress={() => {
+                    cameraFile ? uploadAttendencePicture() : error;
+                  }}
                 >
                   {t("NEXT")}
                 </AdminTypo.Secondarybutton>
@@ -812,6 +843,7 @@ export default function Attendence() {
                 ),
               },
             ]}
+            key={users}
             data={users}
             subHeader
             persistTableHead

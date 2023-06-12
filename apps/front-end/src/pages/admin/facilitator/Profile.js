@@ -33,11 +33,6 @@ export default function App({ footerLinks, userTokenInfo }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-            <IconByName
-              size="sm"
-              name="ArrowLeftSLineIcon"
-              onPress={(e) => navigate(-1)}
-            />
             <Image
               source={{
                 uri: "/profile.svg",
@@ -51,18 +46,23 @@ export default function App({ footerLinks, userTokenInfo }) {
               {" "}
               {t("PRERAK_BIO")}
             </AdminTypo.H1>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
+            <AdminTypo.H1
+              color="textGreyColor.800"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {data?.first_name} {data?.last_name}
+            </AdminTypo.H1>
           </HStack>
           <HStack alignItems="center" flexWrap="wrap">
             <VStack flex="0.6">
               <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <AdminTypo.H1
-                  color="textGreyColor.800"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {data?.first_name} {data?.last_name}
-                </AdminTypo.H1>
                 <Box>
                   {data?.status ? (
                     <Chip>{data?.status}</Chip>
@@ -78,7 +78,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                     color="textGreyColor.300"
                     pt="1"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600" className="fw-500">
+                  <AdminTypo.H6 color="textGreyColor.600" bold>
                     {data?.mobile}
                   </AdminTypo.H6>
                 </HStack>
@@ -89,7 +89,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                     name="MapPinLineIcon"
                     color="textGreyColor.300"
                   />
-                  <AdminTypo.H6 color="textGreyColor.600" className="fw-500">
+                  <AdminTypo.H6 color="textGreyColor.600" bold>
                     {data?.address}
                   </AdminTypo.H6>
                 </HStack>
@@ -359,7 +359,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                         <AdminTypo.H5 color="textGreyColor.550">
                           {t("WORK_EXPERIENCE")}{" "}
                         </AdminTypo.H5>
-                        <HStack space={5}>
+                        <VStack space={5} width="70%">
                           {data?.experience ? (
                             data?.experience?.map((e, key) => (
                               <Experience key={key} {...e} />
@@ -369,13 +369,13 @@ export default function App({ footerLinks, userTokenInfo }) {
                               {"-"}
                             </AdminTypo.H5>
                           )}
-                        </HStack>
+                        </VStack>
                       </HStack>
                       <HStack space="2">
                         <AdminTypo.H5 color="textGreyColor.550">
                           {t("VOLUNTEER_EXPERIENCE")}
                         </AdminTypo.H5>
-                        <VStack space={5}>
+                        <VStack space={5} width="70%">
                           {data?.vo_experience ? (
                             data?.vo_experience?.map((e, key) => (
                               <Experience key={key} {...e} />

@@ -228,6 +228,29 @@ export default function agFormEdit({ ip }) {
     };
   };
 
+  React.useEffect(async () => {
+    const ListOfEnum = await enumRegistryService.listOfEnum();
+
+    let newSchema = schema;
+
+    if (schema["properties"]["marital_status"]) {
+      newSchema = getOptions(newSchema, {
+        key: "social_category",
+        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "marital_status",
+        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
+  }, [page]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -417,7 +440,7 @@ export default function agFormEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: `${ip?.name}`.trim(),
+        name: t("PERSONAL_DETAILS"),
         lang,
         setLang,
       }}
@@ -469,7 +492,7 @@ export default function agFormEdit({ ip }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Save" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (

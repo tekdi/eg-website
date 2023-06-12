@@ -1,6 +1,9 @@
 import React from "react";
 import { VStack, Text, Image, Box, Button, Stack } from "native-base";
-import { FrontEndTypo, t } from "@shiksha/common-lib";
+import { AppBar, FrontEndTypo, t, Layout } from "@shiksha/common-lib";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import SplashScreen from "../splash/SplashScreen";
+
 const stylesheet = {
   mainBox: {
     justifyContent: "center",
@@ -66,46 +69,82 @@ const stylesheet = {
 };
 
 function PrerakDuties(props) {
-  let { imgUrl, title, processedButton, onPress, onSkipPress } = props;
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation()
+  let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } = props;
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const setBackButton = () => {
+    let data = page - 1
+    console.log(data)
+    if (data === 0) {
+      let data = "SplashScreen"
+      navigate(-1, { state: data })
+    }
+    else {
+      setPage(data.toString());
+
+    }
+  };
+
   return (
-    <Stack bg="bgGreyColor.200">
-      <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">
-        {t("PRERAK_DUTIES")}
-      </FrontEndTypo.H3>
-      <VStack space={2} alignItems="center" safeAreaTop>
-        <Image
-          size={"320px"}
-          resizeMode="cover"
-          source={imgUrl}
-          alt={"Alternate Text "}
-          //If key is not given image should not be change
-          key={imgUrl}
-        />
-        <Box bg="white" p="10">
-          <FrontEndTypo.H1 color="textGreyColor.800" bold>
-            {title}
-          </FrontEndTypo.H1>
-          <FrontEndTypo.H4 color="textGreyColor.700">
-            {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
-          </FrontEndTypo.H4>
-        </Box>
-        <FrontEndTypo.Primarybutton
-          my="3"
-          width="85%"
-          onPress={onPress ? onPress : (e) => {}}
-        >
-          {processedButton}
-        </FrontEndTypo.Primarybutton>
-        {onSkipPress && (
-          <FrontEndTypo.H3
-            style={stylesheet.skipText}
-            onPress={onSkipPress ? onSkipPress : (e) => {}}
-          >
-            {t("SKIP_TO_APPLY")}
+    <React.Fragment>
+      <Layout
+        _appBar={{
+          lang,
+          setLang,
+          exceptIconsShow:
+
+            ["menuBtn", "userInfo", "helpBtn", "loginBtn", "notificationBtn"],
+          onPressBackButton: (e) => {
+            setBackButton()
+
+          },
+        }}
+        _page={{ _scollView: { bg: "white" } }}
+      >
+        <Stack bg="bgGreyColor.200">
+          <FrontEndTypo.H3 color="textMaroonColor.400" my="4" textAlign="center">
+            {t("PRERAK_DUTIES")}
           </FrontEndTypo.H3>
-        )}
-      </VStack>
-    </Stack>
+          <VStack space={2} alignItems="center" safeAreaTop>
+            <Image
+              size={"320px"}
+              resizeMode="cover"
+              source={imgUrl}
+              alt={"Alternate Text "}
+              //If key is not given image should not be change
+              key={imgUrl}
+            />
+            <Box bg="white" p="10">
+              <FrontEndTypo.H1 color="textGreyColor.800" bold>
+                {title}
+              </FrontEndTypo.H1>
+              <FrontEndTypo.H4 color="textGreyColor.700">
+                {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
+              </FrontEndTypo.H4>
+            </Box>
+            <FrontEndTypo.Primarybutton
+              my="3"
+              width="85%"
+              onPress={onPress ? onPress : (e) => { }}
+            >
+              {processedButton}
+            </FrontEndTypo.Primarybutton>
+            {onSkipPress && (
+              <FrontEndTypo.H3
+                style={stylesheet.skipText}
+                onPress={onSkipPress ? onSkipPress : (e) => { }}
+              >
+                {t("SKIP_TO_APPLY")}
+              </FrontEndTypo.H3>
+            )}
+          </VStack>
+        </Stack>
+
+      </Layout>
+
+    </React.Fragment>
   );
 }
 
@@ -116,48 +155,60 @@ export default function SwiperFile({ onClick }) {
       {page === "1" ? (
         <PrerakDuties
           title={"Identify Out-of-School Girls"}
-          imgUrl={`/img1.png`}
+          imgUrl={`/images/facilitator-duties/img1.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("2")}
+          setPage={setPage}
+          page={page}
           onSkipPress={onClick}
         />
       ) : page === "2" ? (
         <PrerakDuties
           title={"Counsel Parents"}
-          imgUrl={`/img2.png`}
+          imgUrl={`/images/facilitator-duties/img2.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("3")}
+          page={page}
+          setPage={setPage}
           onSkipPress={onClick}
         />
       ) : page === "3" ? (
         <PrerakDuties
           title={"Register Girls for Exams"}
-          imgUrl={`/img3.png`}
+          imgUrl={`/images/facilitator-duties/img3.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("4")}
+          page={page}
+          setPage={setPage}
           onSkipPress={onClick}
         />
       ) : page === "4" ? (
         <PrerakDuties
           title={"Identify Out-of-School Girls"}
-          imgUrl={`/img4.png`}
+          imgUrl={`/images/facilitator-duties/img4.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("5")}
+          page={page}
+          setPage={setPage}
           onSkipPress={onClick}
         />
       ) : page === "5" ? (
         <PrerakDuties
           title={"Help Girls Attend Exams"}
-          imgUrl={`/img5.png`}
+          imgUrl={`/images/facilitator-duties/img5.png`}
           processedButton={"Proceed"}
           onPress={(e) => setPage("6")}
+          page={page}
+          setPage={setPage}
           onSkipPress={onClick}
         />
       ) : page === "6" ? (
         <PrerakDuties
           title={"Identify Out-of-School Girls "}
-          imgUrl={"/img6.png"}
+          imgUrl={"/images/facilitator-duties/img6.png"}
           processedButton={"Apply Now"}
+          page={page}
+          setPage={setPage}
           onPress={onClick}
         />
       ) : (
