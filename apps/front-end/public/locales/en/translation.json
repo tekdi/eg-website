@@ -194,7 +194,7 @@
   "ECONOMIC_DIFFICULTIES": "Economic Difficulties",
   "EDIT_DETAILS": "Edit Details",
   "EDUCATION": "Education",
-  "EDUCATION_AND_WORK_DETAILS": "Education and Work Details",
+  "EDUCATION_AND_WORK_DETAILS": "Education and job Details",
   "EDUCATION_DETAILS": "Educational Details",
   "EDUCATIONAL": "Educational",
   "EDUCATIONAL_DETAILS": "Educational Details",
@@ -570,9 +570,9 @@
   "WHAT_DO_YOU_IDENTIFY_AS": "what's your gender",
   "WHAT_IS_YOUR_DATE_OF_BIRTH": "What is Your Date of Birth ?",
   "WHERE_DO_YOU_CURRENTLY_LIVE": "Where do you currently Live?",
-  "WORK_DETAILS": "Work Details",
-  "WORK_EXPERIENCE": "Work Experience",
-  "WORK_EXPERIENCE_PROOF": "Work Experience Proof",
+  "WORK_DETAILS": "Job Details",
+  "WORK_EXPERIENCE": "Job Experience",
+  "WORK_EXPERIENCE_PROOF": "Job Experience Proof",
   "YEARS": "Years",
   "YEARS_OF_EX": "Years of ex",
   "YES": "Yes",
@@ -590,5 +590,5 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your job availability will be ?"
 }
