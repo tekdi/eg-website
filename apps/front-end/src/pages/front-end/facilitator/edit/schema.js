@@ -49,8 +49,6 @@ export default {
           format: "CustomR",
           grid: 2,
           icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
-          enumNames: ["Android", "IPhone"],
-          enum: ["android", "iphone"],
         },
         alternative_mobile_number: {
           type: "number",
@@ -110,15 +108,15 @@ export default {
           grid: 3,
           icons: [
             {
-              name: "UserFollowLineIcon",
+              name: "Female",
               _icon: { size: "30" },
             },
             {
-              name: "UserLineIcon",
+              name: "Male",
               _icon: { size: "30" },
             },
             {
-              name: "UserStarLineIcon",
+              name: "Other",
               _icon: { size: "30" },
             },
           ],

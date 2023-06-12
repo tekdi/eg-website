@@ -141,6 +141,7 @@
   "FILE_SIZE": "file size must be less then 25MB",
   "TAKE_ANOTHER_PHOTO": "Take another Photo",
   "REQUIRED_MESSAGE": "Please enter a valid data",
+  "OPTIONAL": "Optional",
   "SELECT_MESSAGE": "Please select a valid option",
   "YOU_NOT_ELIGIBLE": "You may not be eligible for the position",
   "DASHBOARD": "Dashboard",
@@ -565,5 +566,6 @@
   "CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "SELECT_CANDIDATES": "Please select Candidates for Event",
   "COUNT": "Count",
-  "NAME_OF_YOUR_EMPLOYER": "For eg. Name of your Employer or your senior "
+  "NAME_OF_YOUR_EMPLOYER": "For eg. Name of your Employer or your senior",
+  "NA": "N/A"
 }

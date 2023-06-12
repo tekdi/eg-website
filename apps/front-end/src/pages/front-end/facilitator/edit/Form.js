@@ -2,26 +2,11 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import {
-  Alert,
-  Box,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Pressable,
-  VStack,
-} from "native-base";
+import { Alert, Box, HStack } from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
-  uploadRegistryService,
-  Camera,
   Layout,
-  H1,
-  IconByName,
-  H2,
-  getBase64,
   BodyMedium,
   filterObject,
   FrontEndTypo,
@@ -65,11 +50,16 @@ export default function App({ userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [qualifications, setQualifications] = React.useState([]);
+  const [enumObj, setEnumObj] = React.useState();
 
   const getData = async () => {
     const { id } = userTokenInfo?.authUser;
     if (id) {
       const result = await facilitatorRegistryService.getOne({ id });
+      const ListOfEnum = await enumRegistryService.listOfEnum();
+      if (!ListOfEnum?.error) {
+        setEnumObj(ListOfEnum?.data);
+      }
       if (step === "qualification_details") {
         const dataF = result?.qualifications;
         const arr = result?.program_faciltators?.qualification_ids;
@@ -137,7 +127,7 @@ export default function App({ userTokenInfo }) {
         } else if (nextIndex !== undefined) {
           navigate(`/profile/edit/${nextIndex}`);
         } else {
-          navigate(`/profile`);
+          navigate(`/facilitatorbasicdetail`);
         }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
@@ -186,17 +176,15 @@ export default function App({ userTokenInfo }) {
           }
         }
       }
-
-      if (schema?.properties?.document_id) {
-        setLoading(true);
-        if (schema["properties"]["document_id"]) {
-          newSchema = getOptions(newSchema, {
-            key: "state",
-            extra: { userId: formData?.id },
-          });
-        }
-        setSchema(newSchema);
-        setLoading(false);
+      if (schema["properties"]?.["qualification_reference_document_id"]) {
+        const { id } = userTokenInfo?.authUser;
+        newSchema = getOptions(newSchema, {
+          key: "qualification_reference_document_id",
+          extra: {
+            userId: id,
+            document_type: formData?.type_of_document,
+          },
+        });
       }
 
       if (schema["properties"]["qualification_ids"]) {
@@ -208,7 +196,6 @@ export default function App({ userTokenInfo }) {
           filters: { type: "teaching" },
         });
       }
-      setSchema(newSchema);
       setLoading(false);
     }
 
@@ -229,7 +216,6 @@ export default function App({ userTokenInfo }) {
         district: formData?.district,
         block: formData?.block,
       });
-      setSchema(newSchema);
       setLoading(false);
     }
 
@@ -240,34 +226,41 @@ export default function App({ userTokenInfo }) {
         setAlert();
       }
     }
-    const ListOfEnum = await enumRegistryService.listOfEnum();
+
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
-        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
+        arr: enumObj?.BENEFICIARY_SOCIAL_STATUS,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        arr: enumObj?.BENEFICIARY_MARITAL_STATUS,
         title: "title",
         value: "value",
       });
-      setSchema(newSchema);
     }
 
-    if (schema["properties"]?.["qualification_reference_document_id"]) {
-      setLoading(true);
+    if (schema["properties"]["device_type"]) {
       newSchema = getOptions(newSchema, {
-        key: "qualification_reference_document_id",
-        extra: { userId: formData?.id },
+        key: "device_type",
+        arr: enumObj?.MOBILE_TYPE,
+        title: "title",
+        value: "value",
       });
-      setSchema(newSchema);
-      setLoading(false);
     }
-  }, [page]);
+
+    if (schema["properties"]["document_id"]) {
+      const { id } = userTokenInfo?.authUser;
+      newSchema = getOptions(newSchema, {
+        key: "document_id",
+        extra: { userId: id },
+      });
+    }
+    setSchema(newSchema);
+  }, [page, formData]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -289,7 +282,7 @@ export default function App({ userTokenInfo }) {
   };
 
   const formSubmitUpdate = async (data, overide) => {
-    const { id } = formData;
+    const { id } = userTokenInfo?.authUser;
     if (id) {
       setLoading(true);
       const result = await facilitatorRegistryService.profileStapeUpdate({
@@ -557,12 +550,13 @@ export default function App({ userTokenInfo }) {
 
     if (id === "root_type_of_document") {
       let newSchema = schema;
+      const user = userTokenInfo?.authUser;
       if (schema["properties"]["qualification_reference_document_id"]) {
         setLoading(true);
         newSchema = getOptions(schema, {
           key: "qualification_reference_document_id",
           extra: {
-            userId: formData?.id,
+            userId: user?.id,
             document_type: data.type_of_document,
           },
         });

@@ -1,30 +1,29 @@
 import React from "react";
-import { useState } from "react";
-import {
-  HStack,
-  VStack,
-  Box,
-  Progress,
-  Divider,
-  Center,
-  Link,
-} from "native-base";
+import { HStack, VStack, Box, Progress } from "native-base";
 import {
   arrList,
   FrontEndTypo,
   IconByName,
-  facilitatorRegistryService,
-  t,
-  Layout,
+  ImageView,
 } from "@shiksha/common-lib";
+import { useTranslation } from "react-i18next";
 
-export default function ItemComponent({ arr, label, item, onEdit, onDelete }) {
+export default function ItemComponent({
+  schema,
+  index,
+  arr,
+  label,
+  item,
+  onEdit,
+  onDelete,
+}) {
   const { type } = item;
+  const { t } = useTranslation();
   return (
     <VStack
       px="5"
       py="4"
-      mb="3"
+      space="3"
       borderRadius="10px"
       borderWidth="1px"
       bg="white"
@@ -32,9 +31,10 @@ export default function ItemComponent({ arr, label, item, onEdit, onDelete }) {
     >
       <HStack justifyContent="space-between" alignItems="Center">
         <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
+          {index && `${index}. `}
           {type === "vo_experience"
             ? t("VOLUNTEER_EXPERIENCE")
-            : t("WORK_EXPERIENCE")}
+            : t("JOB_EXPERIENCE")}
         </FrontEndTypo.H3>
         <HStack alignItems="center">
           <IconByName
@@ -74,7 +74,13 @@ export default function ItemComponent({ arr, label, item, onEdit, onDelete }) {
               fontWeight="400"
               flex="0.4"
             >
-              {item?.[key] ? item?.[key] : "-"}
+              {schema.properties[key].format === "FileUpload" ? (
+                <ImageView source={{ document_id: item?.[key] }} text="link" />
+              ) : item?.[key] ? (
+                item?.[key]
+              ) : (
+                "-"
+              )}
             </FrontEndTypo.H3>
           </HStack>
         ))}

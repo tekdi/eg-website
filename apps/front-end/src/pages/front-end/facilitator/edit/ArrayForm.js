@@ -39,7 +39,7 @@ export default function App({ userTokenInfo }) {
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [data, setData] = React.useState();
@@ -75,6 +75,7 @@ export default function App({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
+    const { id } = userTokenInfo?.authUser;
     if (schema1.type === "step") {
       const properties = schema1.properties;
       let newSchema1 =
@@ -88,7 +89,7 @@ export default function App({ userTokenInfo }) {
           if (newSchema["properties"]["document_id"]) {
             newSchema = getOptions(newSchema, {
               key: "document_id",
-              extra: { userId: formData?.id },
+              extra: { userId: id },
             });
           }
           setLoading(false);
@@ -178,14 +179,29 @@ export default function App({ userTokenInfo }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
+    const user = userTokenInfo?.authUser;
     setErrors();
+    if (id === "root_reference_details_type_of_document") {
+      let newSchema = schema;
+      setLoading(true);
+      if (newSchema["properties"]["document_id"]) {
+        newSchema = getOptions(newSchema, {
+          key: "document_id",
+          extra: {
+            userId: user.id,
+            document_type: data?.reference_details?.type_of_document,
+          },
+        });
+      }
+      setLoading(false);
+      setSchema(newSchema);
+    }
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
-    console.log(errors);
     if (_.isEmpty(errors)) {
       const newdata = filterObject(newFormData, [
         ...Object.keys(schema?.properties),
@@ -251,6 +267,8 @@ export default function App({ userTokenInfo }) {
               data?.map((item, index) => (
                 <Box key={index}>
                   <ItemComponent
+                    schema={schema}
+                    index={index + 1}
                     item={{
                       ...item,
                       ...(item?.reference?.constructor.name === "Object"
