@@ -10,6 +10,7 @@ import {
   filterObject,
   FrontEndTypo,
   getOptions,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -31,7 +32,7 @@ import { useTranslation } from "react-i18next";
 import ItemComponent from "./ItemComponent.js";
 
 // App
-export default function App({ userTokenInfo }) {
+export default function App({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
   const [schema, setSchema] = React.useState({});
   const formRef = React.useRef();
@@ -46,6 +47,7 @@ export default function App({ userTokenInfo }) {
   const [addMore, setAddMore] = React.useState();
   const [keys, setKeys] = React.useState([]);
   const [labels, setLabels] = React.useState([]);
+  const [enumObj, setEnumObj] = React.useState();
   const stepLabel =
     type === "reference_details"
       ? "REFERENCE_DETAILS"
@@ -75,6 +77,7 @@ export default function App({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
+    const { id } = userTokenInfo?.authUser;
     if (schema1.type === "step") {
       const properties = schema1.properties;
       let newSchema1 =
@@ -83,30 +86,60 @@ export default function App({ userTokenInfo }) {
         ];
       if (newSchema1) {
         let newSchema = newSchema1;
-        if (newSchema1?.properties?.document_id) {
-          setLoading(true);
-          if (newSchema["properties"]["document_id"]) {
-            newSchema = getOptions(newSchema, {
+        if (
+          newSchema["properties"]?.["reference_details"]?.["properties"]?.[
+            "document_id"
+          ]
+        ) {
+          newSchema = getOptions(newSchema, {
+            key: "reference_details",
+            extra: getOptions(newSchema["properties"]?.["reference_details"], {
               key: "document_id",
-              extra: { userId: formData?.id },
-            });
-          }
-          setLoading(false);
+              extra: {
+                userId: id,
+              },
+            }),
+          });
         }
         setSchema({ ...newSchema, title: stepLabel });
-        const newKeys = Object.keys(newSchema?.properties);
-        const newLabels = newKeys.map((e) =>
+        const refPro =
+          newSchema?.properties["reference_details"]?.["properties"];
+        let newKeys = Object.keys(newSchema?.properties).filter(
+          (e) => e !== "reference_details"
+        );
+
+        let newLabels = newKeys.map((e) =>
           newSchema?.properties?.[e]?.label
             ? newSchema?.properties?.[e]?.label
             : newSchema?.properties?.[e]?.title
             ? newSchema?.properties?.[e]?.title
             : ""
         );
+
+        if (refPro) {
+          let refKeys = Object.keys(refPro);
+          newKeys = [...newKeys, ...refKeys];
+          const refLabels = refKeys.map((e) =>
+            refPro?.[e]?.label
+              ? refPro?.[e]?.label
+              : refPro?.[e]?.title
+              ? refPro?.[e]?.title
+              : ""
+          );
+          newLabels = [...newLabels, ...refLabels];
+        }
         setLabels(newLabels);
         setKeys(newKeys);
+
+        const ListOfEnum = await enumRegistryService.listOfEnum();
+        if (!ListOfEnum?.error) {
+          setEnumObj(ListOfEnum?.data);
+        }
       }
 
       getData();
+      setFormData();
+      setAddMore();
     }
   }, [type]);
 
@@ -178,14 +211,36 @@ export default function App({ userTokenInfo }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
+    const user = userTokenInfo?.authUser;
     setErrors();
+    if (id === "root_reference_details_type_of_document") {
+      let newSchema = schema;
+      setLoading(true);
+      if (
+        newSchema["properties"]?.["reference_details"]?.["properties"]?.[
+          "document_id"
+        ]
+      ) {
+        newSchema = getOptions(newSchema, {
+          key: "reference_details",
+          extra: getOptions(newSchema["properties"]?.["reference_details"], {
+            key: "document_id",
+            extra: {
+              userId: user.id,
+              document_type: data?.reference_details?.type_of_document,
+            },
+          }),
+        });
+      }
+      setLoading(false);
+      setSchema(newSchema);
+    }
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
-    console.log(errors);
     if (_.isEmpty(errors)) {
       const newdata = filterObject(newFormData, [
         ...Object.keys(schema?.properties),
@@ -209,7 +264,11 @@ export default function App({ userTokenInfo }) {
   };
 
   const onEdit = (item) => {
-    setFormData({ ...item, arr_id: item?.id });
+    setFormData({
+      ...item,
+      reference_details: item?.reference,
+      arr_id: item?.id,
+    });
     setAddMore(true);
   };
 
@@ -222,8 +281,8 @@ export default function App({ userTokenInfo }) {
     setData(data.filter((e) => e.id !== id));
   };
 
-  const onClickSubmit = () => {
-    if (localStorage.getItem("backToProfile") === "false") {
+  const onClickSubmit = (data) => {
+    if (!data) {
       nextPreviewStep();
     } else {
       navigate("/profile");
@@ -242,28 +301,40 @@ export default function App({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {!addMore ? (
-          <VStack>
+          <VStack space={"4"}>
             {data &&
               data.constructor.name === "Array" &&
-              data?.map((item, index) => (
-                <Box key={index}>
-                  <ItemComponent
-                    item={{
-                      ...item,
-                      ...(item?.reference?.constructor.name === "Object"
-                        ? item?.reference
-                        : {}),
-                    }}
-                    onEdit={(e) => onEdit(e)}
-                    onDelete={(e) => onDelete(e.id)}
-                    arr={keys}
-                    label={labels}
-                  />
-                </Box>
-              ))}
+              data?.map((item, index) => {
+                const { name, contact_number, type_of_document, document_id } =
+                  item?.reference ? item?.reference : {};
+                return (
+                  <Box key={index}>
+                    <ItemComponent
+                      schema={schema}
+                      index={index + 1}
+                      item={{
+                        ...item,
+                        ...(item?.reference?.constructor.name === "Object"
+                          ? {
+                              name,
+                              contact_number,
+                              type_of_document,
+                              document_id,
+                            }
+                          : {}),
+                      }}
+                      onEdit={(e) => onEdit(e)}
+                      onDelete={(e) => onDelete(e.id)}
+                      arr={keys}
+                      label={labels}
+                    />
+                  </Box>
+                );
+              })}
             <Button variant={"link"} colorScheme="info" onPress={onAdd}>
               <FrontEndTypo.H3 color="blueText.400" underline bold>
                 {`${t("ADD")} ${t(stepLabel)}`}

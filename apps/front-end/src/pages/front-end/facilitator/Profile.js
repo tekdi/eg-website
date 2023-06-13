@@ -13,6 +13,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   return (
     <Layout
       _appBar={{
+        onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}

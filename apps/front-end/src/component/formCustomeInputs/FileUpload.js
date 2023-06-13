@@ -15,7 +15,6 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
   const [errors, setErrors] = React.useState({});
   const [file, setFile] = React.useState();
   const { t } = useTranslation();
-
   const uploadProfile = async (file) => {
     setLoading(true);
     const form_data = new FormData();
