@@ -25,6 +25,7 @@ import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
+import BenificiaryAadhaarDetails from "pages/front-end/BenificiaryAadhaarDetails";
 import EditForm from "../pages/front-end/facilitator/edit/Form";
 import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
 import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
@@ -109,6 +110,10 @@ export default [
   {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
+  },
+  {
+    path: "/beneficiary/:id/aadhaardetails",
+    component: BenificiaryAadhaarDetails,
   },
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
