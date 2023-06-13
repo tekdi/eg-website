@@ -10,7 +10,7 @@ import { QrReader } from "react-qr-reader";
 import { useTranslation } from "react-i18next";
 
 const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
-  const [selected, setSelected] = React.useState("environment");
+  const [selected, setSelected] = React.useState(false);
   const [startScan, setStartScan] = React.useState(true);
   const [loadingScan, setLoadingScan] = React.useState(false);
   const [data, setData] = React.useState("");

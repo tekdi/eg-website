@@ -5,7 +5,7 @@ export default {
       title: "FULL_NAME",
       step_name: "BASIC_DETAILS",
       type: "object",
-      required: ["first_name"],
+      required: ["first_name", "last_name", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -40,7 +40,7 @@ export default {
           label: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
           format: "RadioBtn",
-          enumNames: ["Yes", "No, I use a Family member's"],
+          enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
           enum: ["yes", "no"],
         },
         device_type: {
@@ -120,7 +120,7 @@ export default {
               _icon: { size: "30" },
             },
           ],
-          enumNames: ["Female", "Male", "Other"],
+          enumNames: ["FEMALE", "MALE", "OTHER"],
           enum: ["female", "male", "other"],
         },
         marital_status: {

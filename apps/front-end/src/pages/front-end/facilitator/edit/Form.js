@@ -34,7 +34,7 @@ import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 
 // App
-export default function App({ userTokenInfo }) {
+export default function App({ userTokenInfo, footerLinks }) {
   const { step } = useParams();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -52,43 +52,48 @@ export default function App({ userTokenInfo }) {
   const [qualifications, setQualifications] = React.useState([]);
   const [enumObj, setEnumObj] = React.useState();
 
-  const getData = async () => {
-    const { id } = userTokenInfo?.authUser;
-    if (id) {
-      const result = await facilitatorRegistryService.getOne({ id });
-      const ListOfEnum = await enumRegistryService.listOfEnum();
-      if (!ListOfEnum?.error) {
-        setEnumObj(ListOfEnum?.data);
-      }
-      if (step === "qualification_details") {
-        const dataF = result?.qualifications;
-        const arr = result?.program_faciltators?.qualification_ids;
-        let arrData = arr
-          ? JSON.parse(arr)
-              ?.filter((e) =>
-                qualifications.find(
-                  (item) => item.id == e && item.type === "teaching"
+  React.useEffect(() => {
+    const getData = async () => {
+      const { id } = userTokenInfo?.authUser;
+      if (id) {
+        const result = await facilitatorRegistryService.getOne({ id });
+        const ListOfEnum = await enumRegistryService.listOfEnum();
+        if (!ListOfEnum?.error) {
+          setEnumObj(ListOfEnum?.data);
+        }
+        if (step === "qualification_details") {
+          const dataF = result?.qualifications;
+          const arr = result?.program_faciltators?.qualification_ids;
+          let arrData = arr
+            ? JSON.parse(arr)
+                ?.filter((e) =>
+                  qualifications.find(
+                    (item) => item.id == e && item.type === "teaching"
+                  )
                 )
-              )
-              ?.map((e) => `${e}`)
-          : [];
-        const newData = {
-          ...dataF,
-          qualification_ids: arrData,
-          qualification_master_id: `${
-            dataF?.qualification_master_id ? dataF?.qualification_master_id : ""
-          }`,
-          type_of_document: dataF?.document_reference?.doument_type,
-        };
-        setFormData(newData);
-      } else if (step === "reference_details") {
-        const newData = result?.references;
-        setFormData(newData);
-      } else {
-        setFormData(result);
+                ?.map((e) => `${e}`)
+            : [];
+          const newData = {
+            ...dataF,
+            qualification_ids: arrData,
+            qualification_master_id: `${
+              dataF?.qualification_master_id
+                ? dataF?.qualification_master_id
+                : ""
+            }`,
+            type_of_document: dataF?.document_reference?.doument_type,
+          };
+          setFormData(newData);
+        } else if (step === "reference_details") {
+          const newData = result?.references;
+          setFormData(newData);
+        } else {
+          setFormData(result);
+        }
       }
-    }
-  };
+    };
+    getData();
+  }, [qualifications]);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -142,16 +147,19 @@ export default function App({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
+    const qData = await facilitatorRegistryService.getQualificationAll();
+    setQualifications(qData);
+  }, [page]);
+
+  React.useEffect(async () => {
     let newSchema = schema;
 
     if (schema?.properties?.qualification_master_id) {
       setLoading(true);
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      setQualifications(qData);
-      if (schema["properties"]["qualification_master_id"]) {
+      if (schema["properties"]?.["qualification_master_id"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_master_id",
-          arr: qData,
+          arr: qualifications,
           title: "name",
           value: "id",
           filters: { type: "qualification" },
@@ -187,20 +195,18 @@ export default function App({ userTokenInfo }) {
         });
       }
 
-      if (schema["properties"]["qualification_ids"]) {
+      if (schema["properties"]?.["qualification_ids"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_ids",
-          arr: qData,
+          arr: qualifications,
           title: "name",
           value: "id",
           filters: { type: "teaching" },
         });
       }
-      setLoading(false);
     }
 
     if (schema?.properties?.state) {
-      setLoading(true);
       const qData = await geolocationRegistryService.getStates();
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
@@ -216,7 +222,6 @@ export default function App({ userTokenInfo }) {
         district: formData?.district,
         block: formData?.block,
       });
-      setLoading(false);
     }
 
     if (schema?.properties?.device_ownership) {
@@ -243,7 +248,7 @@ export default function App({ userTokenInfo }) {
       });
     }
 
-    if (schema["properties"]["device_type"]) {
+    if (schema["properties"]?.["device_type"]) {
       newSchema = getOptions(newSchema, {
         key: "device_type",
         arr: enumObj?.MOBILE_TYPE,
@@ -252,13 +257,14 @@ export default function App({ userTokenInfo }) {
       });
     }
 
-    if (schema["properties"]["document_id"]) {
+    if (schema["properties"]?.["document_id"]) {
       const { id } = userTokenInfo?.authUser;
       newSchema = getOptions(newSchema, {
         key: "document_id",
         extra: { userId: id },
       });
     }
+    setLoading(false);
     setSchema(newSchema);
   }, [page, formData]);
 
@@ -273,7 +279,6 @@ export default function App({ userTokenInfo }) {
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
-      getData();
     }
   }, [step]);
 
@@ -336,28 +341,6 @@ export default function App({ userTokenInfo }) {
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key]) {
-            if (
-              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
-              item?.[key]?.replaceAll(" ", "") === ""
-            ) {
-              errors[keyex][index]?.[key]?.addError(
-                `${t("REQUIRED_MESSAGE")} ${t(
-                  schema?.properties?.[key]?.title
-                )}`
-              );
-            } else if (key === "description" && item?.[key].length > 200) {
-              errors[keyex][index]?.[key]?.addError(
-                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
-              );
-            }
-          }
-        });
-      });
     });
 
     return errors;
@@ -630,6 +613,7 @@ export default function App({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (

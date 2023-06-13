@@ -4,7 +4,7 @@ export default {
     experience: {
       step_name: "VOLUNTEER_EXPERIENCE",
       type: "object",
-      require: [
+      required: [
         "role_title",
         "organization",
         "experience_in_years",
@@ -43,7 +43,7 @@ export default {
         reference_details: {
           type: "object",
           label: "REFERENCE_DETAILS",
-          require: ["name", "contact_number"],
+          required: ["name", "contact_number"],
           properties: {
             name: {
               type: "string",
@@ -58,12 +58,12 @@ export default {
               type: "string",
               title: "TYPE_OF_DOCUMENT",
             },
+            document_id: {
+              title: "UPLOAD_YOUR_DOCUMENT",
+              type: ["string", "number"],
+              format: "FileUpload",
+            },
           },
-        },
-        document_id: {
-          title: "UPLOAD_YOUR_DOCUMENT",
-          type: ["string", "number"],
-          format: "FileUpload",
         },
       },
     },

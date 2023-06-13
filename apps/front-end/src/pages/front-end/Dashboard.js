@@ -68,7 +68,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const expData = facilitator?.experience?.filter(
         (e) => e?.reference?.document_id
       );
-      if (expData.length > 0) {
+      if (expData?.length > 0) {
         isAllow++;
       }
     }
@@ -76,7 +76,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const expData = facilitator?.vo_experience?.filter(
         (e) => e?.reference?.document_id
       );
-      if (expData.length > 0) {
+      if (expData?.length > 0) {
         isAllow++;
       }
     }
@@ -499,7 +499,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Secondarybutton>
             </Stack>
           )}
-          {console.log(isDocumentUpload("experience"), "asd")}
           {isDocumentUpload() && (
             <Stack bg="bgPinkColor.300" space="6" p={4}>
               <FrontEndTypo.H2 color="textMaroonColor.400">

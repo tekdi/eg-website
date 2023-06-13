@@ -34,7 +34,12 @@ export default function FacilitatorBasicDetails({
   };
 
   return (
-    <Layout _appBar={{ name: t("BASIC_DETAILS") }}>
+    <Layout
+      _appBar={{
+        name: t("BASIC_DETAILS"),
+        onPressBackButton: (e) => navigate(`/profile`),
+      }}
+    >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
           <VStack space="4" alignItems="center">
@@ -246,7 +251,15 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.address ? facilitator?.address : "-"}
+                    {[
+                      facilitator?.state,
+                      facilitator?.district,
+                      facilitator?.block,
+                      facilitator?.village,
+                      facilitator?.grampanchayat,
+                    ]
+                      .filter((e) => e)
+                      .join(", ")}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>

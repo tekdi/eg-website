@@ -74,7 +74,8 @@ export default function ItemComponent({
               fontWeight="400"
               flex="0.4"
             >
-              {schema.properties[key].format === "FileUpload" ? (
+              {schema?.properties?.[key]?.format === "FileUpload" ||
+              key === "document_id" ? (
                 <ImageView source={{ document_id: item?.[key] }} text="link" />
               ) : item?.[key] ? (
                 item?.[key]
