@@ -286,6 +286,7 @@ export default function agFormEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
+    console.log("id", data);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length > 10) {
         const newErrors = {
@@ -297,9 +298,9 @@ export default function agFormEdit({ ip }) {
       }
     }
     if (id === "root_alternative_mobile_number") {
-      if (data?.mobile?.toString()?.length > 10) {
+      if (data?.alternative_mobile_number?.toString()?.length > 10) {
         const newErrors = {
-          mobile: {
+          alternative_mobile_number: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
           },
         };
@@ -315,9 +316,21 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-  const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+  const submit = async (data) => {
+    console.log("formdata", formData?.mobile);
+    if (formData?.mobile == formData?.alternative_mobile_number) {
+      const newErrors = {
+        alternative_mobile_number: {
+          __errors: [
+            t("ALTERNATIVE_MOBILE_NUMBER_SHOULD_NOT_BE_SAME_AS_MOBILE_NUMBER"),
+          ],
+        },
+      };
+      setErrors(newErrors);
+    } else if (formData?.mobile != formData?.alternative_mobile_number) {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      navigate(`/beneficiary/${userId}/basicdetails`);
+    }
   };
 
   return (
@@ -365,7 +378,6 @@ export default function agFormEdit({ ip }) {
               formData,
               onChange,
               onError,
-              onSubmit,
               transformErrors,
             }}
           >
@@ -373,7 +385,7 @@ export default function agFormEdit({ ip }) {
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => formRef?.current?.submit()}
+              onPress={() => submit()}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </Button>

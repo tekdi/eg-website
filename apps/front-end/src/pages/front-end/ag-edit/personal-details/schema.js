@@ -5,7 +5,6 @@ export default {
     1: {
       title: "PERSONAL_DETAILS",
       type: "object",
-      required: ["maritalstatus,social_category"],
       properties: {
         marital_status: {
           label: "MARITAL_STATUS",

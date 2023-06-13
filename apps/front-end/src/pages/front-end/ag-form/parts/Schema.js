@@ -20,15 +20,6 @@ export default {
           type: "string",
           default: "beneficiary",
         },
-        role_fields: {
-          properties: {
-            facilitator_id: {
-              format: "hidden",
-              type: "string",
-              default: localStorage.getItem("id"),
-            },
-          },
-        },
       },
     },
     2: {

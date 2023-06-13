@@ -6,7 +6,7 @@ export default {
       title: "CONTACT_DETAILS",
 
       type: "object",
-      //required: ["mobile"],
+      required: ["mobile"],
       properties: {
         mobile: {
           type: "number",
@@ -56,7 +56,7 @@ export default {
         email_id: {
           type: "string",
           format: "email",
-          label: "EMAIL_ID",
+          title: "EMAIL_ID",
         },
       },
     },
