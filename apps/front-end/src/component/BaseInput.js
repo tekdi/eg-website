@@ -440,7 +440,8 @@ export const HFieldTemplate = ({
     <HStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
-      alignItems="center"
+      alignItems="start"
+      pl="3"
     >
       {(label || schema?.label) && typeof type === "string" && (
         <Box flex="0.5">
@@ -451,6 +452,7 @@ export const HFieldTemplate = ({
                   name={schema?.icons}
                   color="textGreyColor.800"
                   isDisabled
+                  pr="2"
                 />
                 <AdminTypo.H6 color="textGreyColor.100">
                   {t(schema?.label ? schema?.label : label)}
@@ -464,7 +466,7 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box flex="0.8">
+      <Box flex="0.7">
         {children}
         {errors}
         {help}
