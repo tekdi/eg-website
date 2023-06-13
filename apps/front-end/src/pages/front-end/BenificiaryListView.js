@@ -49,7 +49,7 @@ const List = ({ data }) => {
                   </VStack>
                 </HStack>
                 <ChipStatus status={"screened"} pt="3">
-                  {item?.program_beneficiaries?.[0]?.status || "nothing"}
+                  <FrontEndTypo.H3 bold>{item?.program_beneficiaries?.[0]?.status || "nothing"}</FrontEndTypo.H3>
                 </ChipStatus>
               </HStack>
               <VStack bg="white" pl="2">
