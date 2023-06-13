@@ -30,7 +30,7 @@ export default function BenificiaryBasicDetails() {
   };
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${id}/profile`);
+    navigate(`/beneficiary/profile/${id}`);
   };
 
   return (

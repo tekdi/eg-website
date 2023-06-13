@@ -153,6 +153,7 @@ function Table({
   const [modal, setModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setfacilitaorStatus] = React.useState();
+  const [status, setstatus] = React.useState("ALL");
 
   const navigate = useNavigate();
 
@@ -188,7 +189,7 @@ function Table({
 
   const filterByStatus = async (value) => {
     setLoading(true);
-
+    setstatus(value);
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
@@ -205,7 +206,7 @@ function Table({
     // setLimit(result?.limit);
     setLoading(false);
   };
-
+  console.log("status", status);
   return (
     <VStack>
       <HStack my="1" justifyContent="space-between">
@@ -320,7 +321,7 @@ function Table({
             filterByStatus("ALL");
           }}
         >
-          {t("BENEFICIARY_ALL")}
+          {t("BENEFICIARY_ALL")} {status == "ALL" && `(${paginationTotalRows})`}
         </Text>
         {facilitaorStatus?.map((item) => {
           return (
@@ -332,6 +333,7 @@ function Table({
               }}
             >
               {t(item?.title)}
+              {status == t(item?.value) && `(${paginationTotalRows})`}
             </Text>
           );
         })}

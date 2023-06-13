@@ -47,7 +47,7 @@ import Success from "../Success.js";
 
 // App
 
-export default function Agform({ userTokenInfo }) {
+export default function Agform({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -263,6 +263,7 @@ export default function Agform({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (

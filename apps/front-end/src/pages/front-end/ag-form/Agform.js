@@ -58,7 +58,7 @@ import Success from "../Success.js";
 
 // App
 
-export default function Agform({ userTokenInfo }) {
+export default function Agform({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -84,11 +84,11 @@ export default function Agform({ userTokenInfo }) {
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
-    navigate('/')
+    navigate("/");
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => { };
+  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     facilitator_id: {
@@ -127,15 +127,6 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-      position.coords.latitude +
-      "/n Longitude: " +
-      position.coords.longitude
-    );
-  };
-
   const createAg = async () => {
     let url = await AgRegistryService.createAg(formData);
 
@@ -143,8 +134,6 @@ export default function Agform({ userTokenInfo }) {
       navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
     }
   };
-
-  console.log("formData", formData);
 
   const otpfunction = async () => {
     if (formData?.mobile.length < 10) {
@@ -194,8 +183,8 @@ export default function Agform({ userTokenInfo }) {
               data?.error?.constructor?.name === "String"
                 ? [data?.error]
                 : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
@@ -214,7 +203,6 @@ export default function Agform({ userTokenInfo }) {
       setotpbtn(true);
     }
   };
-
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -271,6 +259,13 @@ export default function Agform({ userTokenInfo }) {
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
+
+    setFormData({
+      ...formData,
+      role_fields: {
+        facilitator_id: localStorage.getItem("id"),
+      },
+    });
   }, []);
 
   // const userExist = async (filters) => {
@@ -285,7 +280,7 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => { };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {
@@ -461,6 +456,7 @@ export default function Agform({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {/* <Steper
@@ -519,7 +515,7 @@ export default function Agform({ userTokenInfo }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
-                mt="-10"
+                mt="0"
                 variant={"primary"}
                 type="submit"
                 onPress={() => formRef?.current?.submit()}

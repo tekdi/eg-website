@@ -278,7 +278,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
             >
-              {item?.label}
+              {t(item?.label)}
             </Radio>
           ))}
         </Stack>
