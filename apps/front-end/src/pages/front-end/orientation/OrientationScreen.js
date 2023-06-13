@@ -202,18 +202,20 @@ export default function OrientationScreen() {
     setPage("screen3");
   };
 
-  React.useEffect(async () => {
-    setLoading(true);
-    const result = await facilitatorRegistryService.getFacilitatorByStatus({
-      limit: limit,
-      page: page,
-      status: "shortlisted_for_orientation",
-    });
-    // const result = await facilitatorRegistryService.getAll(filterObj);
-    setData(result?.data?.data);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const result = await facilitatorRegistryService.getFacilitatorByStatus({
+        limit: limit,
+        page: page,
+        status: "shortlisted_for_orientation",
+      });
+      setData(result?.data?.data);
+      setPaginationTotalRows(result?.totalCount);
+      setLoading(false);
+    };
 
-    setPaginationTotalRows(result?.totalCount);
-    setLoading(false);
+    fetchData();
   }, [filterObj]);
 
   React.useEffect(() => {
@@ -269,8 +271,8 @@ export default function OrientationScreen() {
               onChangePage={handlePageChange}
               onSelectedRowsChange={handleSelectRow}
               selectedRows={userIds}
-            // onChangeRowsPerPage={(e) => setLimit(e)}
-            // onChangePage={(e) => setPage(e)}
+              // onChangeRowsPerPage={(e) => setLimit(e)}
+              // onChangePage={(e) => setPage(e)}
             />
           </Modal.Body>
 
