@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, Suspense } from "react";
 import {
   capture,
   IconByName,
@@ -23,7 +23,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import Form from "@rjsf/core";
 import orientationPopupSchema from "./orientationPopupSchema";
 import validator from "@rjsf/validator-ajv8";
-import { Suspense } from "react";
 
 import {
   TitleFieldTemplate,
@@ -60,14 +59,10 @@ export default function Orientation({
   getFormData,
   userIds,
   onShowScreen,
-  setIsOpen,
-  onClick,
 }) {
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
   const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
@@ -167,13 +162,13 @@ export default function Orientation({
     },
   };
   const onChange = async (data, id) => {
-    setErrors();
+    setErrors({});
     const newData = data.formData;
     // formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
     //   setErrors(errors);
     // });
     setFormData({ ...formData, ...newData });
-    if (newData?.start_date > newData?.end_date) {
+    if (moment(newData?.start_date).isAfter(newData?.end_date)) {
       const newErrors = {
         attendees: {
           __errors: ["The end date should be later than the start date."],
@@ -235,7 +230,6 @@ export default function Orientation({
       if (apiResponse?.success === true) {
         setModalVisible(false);
         setFormData({});
-        getFormData("");
         setLoading(true);
         clearForm();
         const getCalanderData = await eventService.getEventList();
