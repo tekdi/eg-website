@@ -441,7 +441,7 @@ export default function Orientation({
               center: "title",
               right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
             }}
-            initialView="dayGridMonth"
+            initialView="timeGridWeek"
             editable={true}
             selectable={true}
             selectMirror={true}

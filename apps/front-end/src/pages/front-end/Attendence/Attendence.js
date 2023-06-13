@@ -329,6 +329,11 @@ export default function Attendence() {
         long: locationData?.longitude,
         photo_1: cameraFile ? cameraFile?.key : "",
       });
+      if (apiResponse?.status === 200) {
+        const eventResult = await eventService.getEventListById({ id: id });
+        setUsers(eventResult?.event?.attendances);
+        setEvent(eventResult?.event);
+      }
     } else {
       setError("Capture Picture First");
     }
@@ -364,6 +369,11 @@ export default function Attendence() {
         long: locationData?.longitude,
         photo_1: cameraFile ? cameraFile?.key : "",
       });
+      if (apiResponse?.status === 200) {
+        const eventResult = await eventService.getEventListById({ id: id });
+        setUsers(eventResult?.event?.attendances);
+        setEvent(eventResult?.event);
+      }
     } else {
       setError("Capture Picture First");
     }
