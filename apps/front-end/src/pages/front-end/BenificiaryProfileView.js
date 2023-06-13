@@ -13,6 +13,7 @@ import {
   IconByName,
   Layout,
   benificiaryRegistoryService,
+  enumRegistryService,
   t,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
@@ -80,9 +81,25 @@ export default function BenificiaryProfileView(props) {
 
   const [reactivatemodalVisible, setreactivateModalVisible] =
     React.useState(false);
+  const { id } = useParams();
+  const [benificiary, setBenificiary] = React.useState({});
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
+    React.useState();
+  const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
+    React.useState();
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    enumAPicall();
+  }, []);
+
+  const enumAPicall = async () => {
+    const result = await enumRegistryService.listOfEnum();
+    setBenificiaryDropoutReasons(result?.data?.DROPOUT_REASONS);
+    setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
+  };
 
   React.useEffect(() => {
     benificiaryDetails();
@@ -94,8 +111,6 @@ export default function BenificiaryProfileView(props) {
     setBenificiary(result?.result);
   };
 
-  const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState({});
   const dropoutApiCall = async () => {
     let bodyData = {
       id: benificiary?.program_beneficiaries?.id.toString(),
@@ -385,14 +400,22 @@ export default function BenificiaryProfileView(props) {
           <VStack space="5">
             <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
               <VStack alignItems="center" space="1" flex="1">
-                <CustomRadio
-                  options={{ enumOptions: dropoutReasons }}
-                  schema={{ grid: 2 }}
-                  value={reasonValue}
-                  onChange={(e) => {
-                    setReasonValue(e);
-                  }}
-                />
+                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryDropoutReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reasonValue}
+                    onChange={(e) => {
+                      setReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
               </VStack>
             </VStack>
             <VStack space="5" pt="5">
@@ -432,14 +455,22 @@ export default function BenificiaryProfileView(props) {
           <VStack space="5">
             <VStack space="2" bg="gray.100" p="1" rounded="lg">
               <VStack alignItems="center" space="1" flex="1">
-                <CustomRadio
-                  options={{ enumOptions: reactivateReasons }}
-                  schema={{ grid: 2 }}
-                  value={reactivateReasonValue}
-                  onChange={(e) => {
-                    setReactivateReasonValue(e);
-                  }}
-                />
+                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryReactivateReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reactivateReasonValue}
+                    onChange={(e) => {
+                      setReactivateReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
               </VStack>
             </VStack>
             <VStack space="3">
