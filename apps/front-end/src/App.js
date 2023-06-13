@@ -63,6 +63,7 @@ function App() {
         {
           title: "DASHBOARD",
           icon: "DashboardLineIcon",
+          route: "/table",
         },
       ]}
       appName="Teacher App"

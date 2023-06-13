@@ -50,7 +50,7 @@ const List = ({ data }) => {
                 </HStack>
                 <ChipStatus status={"screened"} pt="3">
                   <FrontEndTypo.H3 bold>
-                    {item?.program_beneficiaries?.[0]?.status || "nothing"}
+                    {item?.program_beneficiaries?.status || "nothing"}
                   </FrontEndTypo.H3>
                 </ChipStatus>
               </HStack>
@@ -211,16 +211,14 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             }}
             accessibilityLabel="Select a position for Menu"
           >
-            <FrontEndTypo.H5>
-              <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-              {selectStatus?.map((option, index) => (
-                <Select.Item
-                  key={index}
-                  label={`${t(option.title)}`}
-                  value={option.value}
-                />
-              ))}
-            </FrontEndTypo.H5>
+            <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
+            {selectStatus?.map((option, index) => (
+              <Select.Item
+                key={index}
+                label={t(option.title)}
+                value={option.value}
+              />
+            ))}
           </Select>
         </Box>
         <Box>
