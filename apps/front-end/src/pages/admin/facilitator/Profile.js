@@ -202,7 +202,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("FIRST_NAME")} :
+                    {t("FIRST_NAME")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {" "}
@@ -212,7 +212,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("LAST_NAME")}{" "}
+                    {t("LAST_NAME")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {" "}
@@ -222,7 +222,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("MOBILE_NO")}{" "}
+                    {t("MOBILE_NO")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {data?.mobile}
@@ -231,7 +231,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("DATE_OF_BIRTH")}{" "}
+                    {t("DATE_OF_BIRTH")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {" "}
@@ -241,7 +241,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("GENDER")}{" "}
+                    {t("GENDER")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {" "}
@@ -251,7 +251,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("ADDRESS")}{" "}
+                    {t("ADDRESS")}:{"  "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {[
@@ -276,7 +276,7 @@ export default function App({ footerLinks, userTokenInfo }) {
 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
-                    {t("AADHAAR_NO")}{" "}
+                    {t("AADHAAR_NO")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {" "}
@@ -302,62 +302,38 @@ export default function App({ footerLinks, userTokenInfo }) {
                       borderBottomWidth="1"
                     >
                       <AdminTypo.H5 color="textGreyColor" bold>
-                        {t("EDUCATION")}{" "}
+                        {t("EDUCATION")}:{" "}
                       </AdminTypo.H5>
                     </HStack>
-                    <HStack>
-                      <AdminTypo.H5 color="textGreyColor.550">
-                        {t("QUALIFICATION")}{" "}
-                      </AdminTypo.H5>
-                      <AdminTypo.H5 color="textGreyColor.800" bold>
-                        {data?.qualifications
-                          ?.filter(
-                            (e) =>
-                              e?.qualification_master?.type === "qualification"
-                          )
-                          ?.map((qua, key) => {
-                            return (
-                              <AdminTypo.H5
-                                color="textGreyColor.800"
-                                bold
-                                key={key}
-                              >
-                                {qua?.qualification_master?.name}
-                              </AdminTypo.H5>
-                            );
-                          })}
-                      </AdminTypo.H5>
+                    <VStack space="4">
                       <HStack space="2">
                         <AdminTypo.H5 color="textGreyColor.550">
-                          {t("TEACHING_QUALIFICATION")}{" "}
+                          {t("QUALIFICATION")}:{" "}
+                        </AdminTypo.H5>
+                        <AdminTypo.H5 color="textGreyColor.800" bold>
+                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                            {data?.qualifications?.qualification_master?.name}
+                          </AdminTypo.H5>
+                        </AdminTypo.H5>
+                      </HStack>
+                      <HStack space="2">
+                        <AdminTypo.H5 color="textGreyColor.550">
+                          {t("TEACHING_QUALIFICATION")}:{" "}
                         </AdminTypo.H5>
                         {data?.qualifications ? (
-                          data?.qualifications
-                            ?.filter(
-                              (e) =>
-                                e?.qualification_master?.type === "teaching"
-                            )
-                            ?.map((qua, key) => {
-                              return (
-                                <AdminTypo.H5
-                                  color="textGreyColor.800"
-                                  bold
-                                  key={key}
-                                >
-                                  {qua?.qualification_master?.name}
-                                </AdminTypo.H5>
-                              );
-                            })
+                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                            {data?.qualifications?.qualification_master?.name}
+                          </AdminTypo.H5>
                         ) : (
                           <Text>{"-"}</Text>
                         )}
                       </HStack>
-                    </HStack>
+                    </VStack>
 
                     <VStack space="4">
                       <HStack space="2">
                         <AdminTypo.H5 color="textGreyColor.550">
-                          {t("WORK_EXPERIENCE")}{" "}
+                          {t("WORK_EXPERIENCE")}:{" "}
                         </AdminTypo.H5>
                         <VStack space={5} width="70%">
                           {data?.experience ? (
@@ -373,7 +349,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                       </HStack>
                       <HStack space="2">
                         <AdminTypo.H5 color="textGreyColor.550">
-                          {t("VOLUNTEER_EXPERIENCE")}
+                          {t("VOLUNTEER_EXPERIENCE")}:{" "}
                         </AdminTypo.H5>
                         <VStack space={5} width="70%">
                           {data?.vo_experience ? (
@@ -404,7 +380,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                   </HStack>
                   <HStack>
                     <AdminTypo.H5 color="textGreyColor.550">
-                      {t("AVAILABILITY")}{" "}
+                      {t("AVAILABILITY")}:{" "}
                     </AdminTypo.H5>
                     <AdminTypo.H5 color="textGreyColor.800" bold>
                       {data?.program_faciltators?.availability?.replaceAll(
@@ -415,7 +391,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                   </HStack>
                   <HStack>
                     <AdminTypo.H5 color="textGreyColor.550">
-                      {t("DEVICE_OWNERSHIP")}{" "}
+                      {t("DEVICE_OWNERSHIP")}:{" "}
                     </AdminTypo.H5>
                     <AdminTypo.H5 color="textGreyColor.800" bold>
                       {" "}
@@ -424,7 +400,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                   </HStack>
                   <HStack>
                     <AdminTypo.H5 color="textGreyColor.550">
-                      {t("TYPE_OF_DEVICE")}{" "}
+                      {t("TYPE_OF_DEVICE")}:{" "}
                     </AdminTypo.H5>
                     <AdminTypo.H5 color="textGreyColor.800" bold>
                       {" "}
