@@ -61,6 +61,37 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       setFacilitator(fa_data);
     }
   }, []);
+
+  const isDocumentUpload = (key = "") => {
+    let isAllow = 0;
+    if (key === "" || key === "experience") {
+      const expData = facilitator?.experience?.filter(
+        (e) => e?.reference?.document_id
+      );
+      if (expData?.length > 0) {
+        isAllow++;
+      }
+    }
+    if (key === "" || key === "vo_experience") {
+      const expData = facilitator?.vo_experience?.filter(
+        (e) => e?.reference?.document_id
+      );
+      if (expData?.length > 0) {
+        isAllow++;
+      }
+    }
+
+    if (key === "" || key === "qualifications") {
+      const expData =
+        facilitator?.qualifications?.qualification_reference_document_id;
+      if (expData) {
+        isAllow++;
+      }
+    }
+
+    return isAllow === 0;
+  };
+
   return (
     <Layout
       _appBar={{
@@ -469,37 +500,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Secondarybutton>
             </Stack>
           )}
-          {[
-            "lead",
-            "applied",
-            "",
-            "screened",
-            "application_screened",
-            "shortlisted_for_orientation",
-            "potential_prerak",
-          ].includes(facilitator.status) && (
-              <Stack bg="bgPinkColor.300" space="6" p={4}>
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("UPLOAD_YOUR_DOCUMENTS")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.H3>
-                  {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
-                </FrontEndTypo.H3>
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
-                      {t("QUALIFICATION_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
-                    </FrontEndTypo.H4>
-                  </VStack>
-                </HStack>
+          {isDocumentUpload() && (
+            <Stack bg="bgPinkColor.300" space="6" p={4}>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("UPLOAD_YOUR_DOCUMENTS")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3>
+                {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
+              </FrontEndTypo.H3>
+              <HStack space="2">
+                <IconByName
+                  isDisabled
+                  name="CheckboxCircleLineIcon"
+                  _icon={{ size: "20px" }}
+                />
+                <VStack width="99%">
+                  <FrontEndTypo.H3 bold>
+                    {t("QUALIFICATION_PROOF")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H4>
+                    {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
+                  </FrontEndTypo.H4>
+                </VStack>
+              </HStack>
+              {isDocumentUpload("experience") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
@@ -515,6 +539,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
+              )}
+              {isDocumentUpload("vo_experience") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
@@ -530,6 +556,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
+              )}
+              {isDocumentUpload("qualifications") && (
                 <HStack>
                   <FrontEndTypo.Secondarybutton
                     width="100%"
@@ -540,12 +568,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         _icon={{ size: "25px" }}
                       />
                     }
+                    onPress={(e) => navigate("/profile")}
                   >
                     {t("UPLOAD_NOW")}
                   </FrontEndTypo.Secondarybutton>
                 </HStack>
-              </Stack>
-            )}
+              )}
+            </Stack>
+          )}
         </VStack>
       </VStack>
     </Layout>

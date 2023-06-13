@@ -134,8 +134,9 @@ export default function AdharKyc() {
         <Layout
           _appBar={{
             onlyIconsShow: ["backBtn", "userInfo"],
-            name: `${user?.first_name} ${user?.last_name ? user.last_name : ""
-              }`,
+            name: `${user?.first_name}${
+              user?.last_name ? " " + user.last_name : ""
+            }`,
             profile_url: user?.documents[0]?.name,
             _box: { bg: "white", shadow: "appBarShadow" },
             _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },

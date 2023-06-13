@@ -153,6 +153,9 @@ export default function BenificiaryProfileView(props) {
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/edit/${id}/address`);
+                    }}
                   />
                 </HStack>
                 <Divider
@@ -171,6 +174,9 @@ export default function BenificiaryProfileView(props) {
 
                   <IconByName
                     name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/aadhaardetails`);
+                    }}
                     color="textMaroonColor.400"
                   />
                 </HStack>

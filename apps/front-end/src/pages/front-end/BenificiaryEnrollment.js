@@ -24,7 +24,6 @@ export default function BenificiaryEnrollment() {
     const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
   };
-  console.log("ben", benificiary);
 
   return (
     <Layout _appBar={{ name: t("ENROLLMENT_DETAILS") }}>

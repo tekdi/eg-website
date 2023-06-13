@@ -48,7 +48,7 @@ import Success from "../Success.js";
 
 // App
 
-export default function Agform({ userTokenInfo }) {
+export default function Agform({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -158,7 +158,9 @@ export default function Agform({ userTokenInfo }) {
         !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
         errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+          `${t(
+            "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
+          )}`
         );
       }
     }
@@ -271,6 +273,7 @@ export default function Agform({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (
@@ -320,7 +323,7 @@ export default function Agform({ userTokenInfo }) {
                   navigate("/beneficiary/4", { state: { id: userId } })
                 }
               >
-                {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
@@ -328,7 +331,7 @@ export default function Agform({ userTokenInfo }) {
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
               >
-                {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
               </FrontEndTypo.Primarybutton>
             )}
             {/* <Button

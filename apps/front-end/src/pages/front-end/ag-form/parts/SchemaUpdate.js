@@ -31,12 +31,12 @@ export default {
       properties: {
         lat: {
           type: "number",
-          label: "Latitude",
+          label: "LATITUDE",
           format: "readOnly",
         },
         long: {
           type: "number",
-          label: "Latitude",
+          label: "LONGITUDE",
           format: "readOnly",
         },
         address: {
