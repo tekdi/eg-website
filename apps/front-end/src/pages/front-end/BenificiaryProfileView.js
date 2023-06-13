@@ -21,60 +21,6 @@ import { useNavigate } from "react-router-dom";
 
 import Chip from "component/Chip";
 
-const dropoutReasons = [
-  {
-    label: "Family issue",
-    value: "family_issue",
-  },
-  {
-    label: "Community Issue",
-    value: "community_issue",
-  },
-  {
-    label: "Getting Married",
-    value: "getting_married",
-  },
-  {
-    label: "Personal Reasons",
-    value: "personal_reasons",
-  },
-  {
-    label: "Moving away",
-    value: "moving_away",
-  },
-  {
-    label: "Other",
-    value: "other",
-  },
-];
-
-const reactivateReasons = [
-  {
-    label: "Career Aspirations",
-    value: "career_aspirations",
-  },
-  {
-    label: "Convinced by Prerak",
-    value: "convinced_by_prerak",
-  },
-  {
-    label: "Moved back",
-    value: "moved_back",
-  },
-  {
-    label: "Issue Resolved",
-    value: "issue_resolved",
-  },
-  {
-    label: "Changed Mind",
-    value: "changed_mind",
-  },
-  {
-    label: "Other",
-    value: "other",
-  },
-];
-
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
