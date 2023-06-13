@@ -27,6 +27,7 @@ import {
   FrontEndTypo,
   IconByName,
   AgRegistryService,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -63,14 +64,25 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [isExistflag, setisExistflag] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
-
+  const [beneficiaryData, setBeneficiaryData] = React.useState({})
   const location = useLocation();
   const navigate = useNavigate();
+  console.log(location)
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     setuserId(location?.state?.id);
-  }, []);
+    if (userId) {
+      let data = await benificiaryRegistoryService.getOne(userId)
 
+      setFormData({
+        aadhar_no: data?.result?.aadhar_no,
+        aadhar_token: data?.result?.aadhar_no,
+        edit_page_type: "add_ag_duplication",
+        is_duplicate: "no"
+      })
+    }
+
+  }, [userId]);
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
   };
@@ -176,8 +188,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
-    console.log("data", data);
-    console.log("ee", id);
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_aadhar_token") {
@@ -209,6 +219,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const addAdhaar = async () => {
+
     let adddata = {
       edit_page_type: "add_ag_duplication",
       aadhar_no: formData?.aadhar_token,
@@ -229,7 +240,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       });
     }
   }, [formData?.aadhar_token]);
-
   const onSubmit = () => {
     if (isExistflag) {
       setFormData({

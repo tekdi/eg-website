@@ -175,12 +175,14 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
+  // console.log(schema, t(schema?.label ? schema?.label : label), label, schema?.label)
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-      {(label || schema?.label) && typeof type === "string" && (
+
+      {schema?.format !== 'hidden' && (label || schema?.label) && typeof type === "string" && (
         <Box>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
@@ -322,17 +324,17 @@ export const select = ({ options, value, onChange, required, schema }) => {
           style={{
             ...(value
               ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
+                top: "0",
+                opacity: 1,
+                zIndex: 5,
+                transition: "all 0.3s ease",
+              }
               : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+                top: "0.5rem",
+                zIndex: -2,
+                opacity: 0,
+                transition: "all 0.2s ease-in-out",
+              }),
           }}
         >
           <Text fontSize="12" fontWeight="400">
@@ -389,17 +391,17 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
           style={{
             ...(value
               ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
+                top: "0",
+                opacity: 1,
+                zIndex: 5,
+                transition: "all 0.3s ease",
+              }
               : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+                top: "0.5rem",
+                zIndex: -2,
+                opacity: 0,
+                transition: "all 0.2s ease-in-out",
+              }),
           }}
         >
           <Text fontSize="14" fontWeight="400">

@@ -97,6 +97,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       _appBar={{
         profile_url: facilitator?.documents?.[0]?.name,
         exceptIconsShow: ["backBtn", "userInfo"],
+        facilitator
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -432,7 +433,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             <Stack>
               <VStack p="5" pt={1}>
                 {!form_step_number ||
-                (form_step_number && parseInt(form_step_number) < 10) ? (
+                  (form_step_number && parseInt(form_step_number) < 10) ? (
                   <Pressable onPress={(e) => navigate("/form")}>
                     <HStack
                       borderWidth="1"

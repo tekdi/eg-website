@@ -96,8 +96,8 @@ export default function agFormEdit({ ip }) {
 
   React.useEffect(async () => {
     let device_ownership = formData?.core_beneficiaries?.device_ownership;
-    let mark_as_whatsapp_number =
-      formData?.core_beneficiaries?.mark_as_whatsapp_number;
+    /*   let mark_as_whatsapp_number =
+        formData?.core_beneficiaries?.mark_as_whatsapp_number; */
     let alternative_device_ownership =
       formData?.core_beneficiaries?.alternative_device_ownership;
     let alternative_device_type =
@@ -286,7 +286,6 @@ export default function agFormEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    console.log("id", data);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length > 10) {
         const newErrors = {
@@ -307,9 +306,13 @@ export default function agFormEdit({ ip }) {
         setErrors(newErrors);
       }
     }
+
+    setFormData(newData);
+
   };
 
   const onError = (data) => {
+    console.log(data, "sandy")
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
