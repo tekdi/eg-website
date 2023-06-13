@@ -113,16 +113,37 @@ export default {
           type: "string",
           format: "select",
         },
+        previous_school_type: {
+          type: "string",
+          label: "PREVIOUS_SCHOOL_TYPE",
+          format: "select",
+        },
         reason_of_leaving_education: {
           label: "SCHOOL_DROPOUT_REASON",
           type: "string",
           format: "select",
         },
-        // Why_does_AG_want_to_complete: {
-        //   label: "Why does AG want to complete 10th grade?",
-        //   type: "string",
-        //   format: "select",
-        // },
+        learning_level: {
+          label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+          type: "string",
+          format: "CustomR",
+        },
+      },
+    },
+    5: {
+      type: "object",
+      required: ["learning_motivation", "type_of_support_needed"],
+      properties: {
+        learning_motivation: {
+          label: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
+          type: "string",
+          format: "select",
+        },
+        type_of_support_needed: {
+          label: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
+          type: "string",
+          format: "select",
+        },
       },
     },
   },

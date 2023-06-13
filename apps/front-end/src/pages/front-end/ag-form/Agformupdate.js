@@ -184,6 +184,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_education" });
+    } else if (page === "5") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      setFormData({ ...formData, edit_page_type: "add_other_details" });
     } else if (page === "upload") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
     }
@@ -281,6 +284,20 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
 
       newSchema = getOptions(newSchema, {
+        key: "previous_school_type",
+        arr: ListOfEnum?.data?.PREVIOUS_SCHOOL_TYPE,
+        title: t("title"),
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "learning_level",
+        arr: ListOfEnum?.data?.BENEFICIARY_LEARNING_LEVEL,
+        title: t("title"),
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
         arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
         title: "title",
@@ -300,6 +317,23 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       newSchema = getOptions(newSchema, {
         key: "marital_status",
         arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
+
+    if (schema["properties"]["learning_motivation"]) {
+      newSchema = getOptions(newSchema, {
+        key: "learning_motivation",
+        arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "type_of_support_needed",
+        arr: ListOfEnum?.data?.TYPE_OF_SUPPORT_NEEDED,
         title: "title",
         value: "value",
       });
@@ -723,7 +757,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     return (
       <Layout
         _appBar={{
-          onPressBackButton: (e) => setPage("4"),
+          onPressBackButton: (e) => setPage("5"),
           lang,
           setLang,
           onlyIconsShow: ["backBtn", "userInfo"],

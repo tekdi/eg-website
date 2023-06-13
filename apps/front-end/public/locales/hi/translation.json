@@ -651,5 +651,9 @@
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
   "STATUS_ALL":"स्थिति:सभी",
   "SORT_ASC":"आरोही क्रम",
-  "SORT_DESC":"अवरोही क्रम"
+  "SORT_DESC":"अवरोही क्रम",
+  "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE":"शिक्षार्थी 10वीं कक्षा क्यों पूरी करना चाहता है?",
+  "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI":"शिक्षार्थी प्रगति से क्या समर्थन चाहता है?"
+  
+
 }

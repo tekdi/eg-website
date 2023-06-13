@@ -9,6 +9,8 @@ import referencedetails from "../pages/front-end/ag-edit/reference-details/refer
 import familydetails from "../pages/front-end/ag-edit/family-details/familydetails";
 import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
 import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
+import otherdetails from "../pages/front-end/ag-edit/other-details/otherdetails";
+
 import subjectDetails from "../pages/front-end/ag-edit/choose-subjects/subjectDetails";
 import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
@@ -67,7 +69,10 @@ export default [
     path: "/beneficiary/edit/:id/future-education",
     component: futureStudy,
   },
-
+  {
+    path: "/beneficiary/edit/:id/otherdetails",
+    component: otherdetails,
+  },
   {
     path: "/beneficiary/edit/:id/enrollment-details",
     component: subjectDetails,

@@ -32,6 +32,11 @@ export default {
           type: "string",
           title: "REASON_FOR_LEAVING_STUDIES",
         },
+        learning_level: {
+          label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+          type: "string",
+          format: "CustomR",
+        },
         edit_page_type: {
           type: "string",
           default: "edit_education",

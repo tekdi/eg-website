@@ -188,8 +188,6 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-  console.log("form", formData);
-
   const customValidate = (data, errors, c) => {
     if (data?.mobile) {
       if (data?.mobile?.toString()?.length !== 10) {
@@ -275,7 +273,6 @@ export default function agFormEdit({ ip }) {
       formData?.referencefullname,
       userId
     );
-    console.log("page3.....", updateDetails);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 

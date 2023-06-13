@@ -652,5 +652,7 @@
   "LEAD":"Lead",
   "STATUS_ALL":"Status:All",
   "SORT_ASC":"asc",
-  "SORT_DESC":"desc"
+  "SORT_DESC":"desc",
+  "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE":"Why does the learner want to complete 10th grade?",
+  "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI":"What support is the learner seeking from pragati?"
 }
