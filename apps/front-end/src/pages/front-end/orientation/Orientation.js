@@ -11,6 +11,7 @@ import {
   facilitatorRegistryService,
   eventService,
   Loading,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
@@ -64,9 +65,11 @@ export default function Orientation({
   const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({});
+  const [schema, setSchema] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = useState({});
+  const [reminders, setReminders] = useState();
   const navigator = useNavigate();
 
   const SelectButton = () => (
@@ -88,6 +91,52 @@ export default function Orientation({
     </HStack>
   );
 
+  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
+    let enumObj = {};
+    let arrData = arr;
+    if (!_.isEmpty(filters)) {
+      arrData = filtersByObject(arr, filters);
+    }
+    enumObj = {
+      ...enumObj,
+      ["enumNames"]: arrData.map((e) => `${t(e?.[title])}`),
+    };
+    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
+    const newProperties = schema["properties"][key];
+    let properties = {};
+    if (newProperties) {
+      if (newProperties.enum) delete newProperties.enum;
+      let { enumNames, ...remainData } = newProperties;
+      properties = remainData;
+    }
+    if (newProperties?.type === "array") {
+      return {
+        ...schema,
+        ["properties"]: {
+          ...schema["properties"],
+          [key]: {
+            ...properties,
+            items: {
+              ...(properties?.items ? properties?.items : {}),
+              ...(_.isEmpty(arr) ? {} : enumObj),
+            },
+          },
+        },
+      };
+    } else {
+      return {
+        ...schema,
+        ["properties"]: {
+          ...schema["properties"],
+          [key]: {
+            ...properties,
+            ...(_.isEmpty(arr) ? {} : enumObj),
+          },
+        },
+      };
+    }
+  };
+
   const TimePickerComponent = ({ value, onChange }) => (
     <VStack>
       <input
@@ -103,6 +152,19 @@ export default function Orientation({
   React.useEffect(() => {
     getEventLists();
   }, []);
+
+  React.useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    setReminders(result?.data?.REMINDERS);
+    let newSchema = orientationPopupSchema;
+    newSchema = getOptions(newSchema, {
+      key: "reminders",
+      arr: result?.data?.REMINDERS,
+      title: "title",
+      value: "value",
+    });
+    setSchema(newSchema);
+  }, [formData]);
 
   React.useEffect(() => {
     setFormData({
@@ -462,7 +524,7 @@ export default function Orientation({
                 liveValidate
                 {...{
                   validator,
-                  schema: orientationPopupSchema ? orientationPopupSchema : {},
+                  schema: schema ? schema : {},
                   formData,
                   uiSchema,
                   onChange,

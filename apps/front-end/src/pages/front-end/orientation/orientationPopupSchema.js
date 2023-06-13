@@ -70,11 +70,9 @@ export default {
       icons: "Notification2LineIcon",
       label: "Reminder",
       type: "array",
-      title: "A multiple-choice list",
+      title: "Reminder",
       items: {
         type: "string",
-        enumNames: ["1 Hour Before", "1 Day Before ", "1 Week Before"],
-        enum: ["hour_1_before", "day_1_before ", "week_1_before"],
       },
       uniqueItems: true,
     },
