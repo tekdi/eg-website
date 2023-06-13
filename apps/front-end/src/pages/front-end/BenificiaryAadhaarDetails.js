@@ -117,15 +117,15 @@ export default function BenificiaryAadhaarDetails() {
             borderColor="appliedColor"
           >
             {aadhar_verified === "Pending" ? (
-              <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="6">
+              <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                 {t("COMPLETE_AADHAAR_VERIFICATION")}
               </FrontEndTypo.H2>
             ) : (
               <VStack>
-                <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="6">
+                <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                   {t("HAVE_YOU_UPDATED_AADHAAR_CARD?")}
                 </FrontEndTypo.H2>
-                <FrontEndTypo.H3 color="textGreyColor.100" pt="6">
+                <FrontEndTypo.H3 color="textGreyColor.100" py="5">
                   {t("REVERIFY_TO_MATCH_THE_AADHAAR_YOU_USED_FOR_ENROLLMENT")}
                 </FrontEndTypo.H3>
               </VStack>
@@ -148,7 +148,7 @@ export default function BenificiaryAadhaarDetails() {
               {t("SCAN_QR_CODE")}
             </FrontEndTypo.Secondarybutton>
           </VStack>
-          <VStack pt="12" px="5" pb="5">
+          <VStack py="5">
             <FrontEndTypo.H2 pb="5">{t("FRONT_VIEW")}</FrontEndTypo.H2>
             <Image
               borderWidth="1px"
@@ -160,9 +160,7 @@ export default function BenificiaryAadhaarDetails() {
               width="full"
               height="178"
             />
-            <FrontEndTypo.H2 pb="5" pt="5">
-              {t("BACK_VIEW")}
-            </FrontEndTypo.H2>
+            <FrontEndTypo.H2 py="5">{t("BACK_VIEW")}</FrontEndTypo.H2>
             <Image
               borderWidth="1px"
               borderColor="textGreyColor.50"
