@@ -169,9 +169,9 @@ export default function Orientation({
   const onChange = async (data, id) => {
     setErrors();
     const newData = data.formData;
-    formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
-      setErrors(errors);
-    });
+    // formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
+    //   setErrors(errors);
+    // });
     setFormData({ ...formData, ...newData });
     if (newData?.start_date > newData?.end_date) {
       const newErrors = {
@@ -469,7 +469,7 @@ export default function Orientation({
                 extraErrors={errors}
                 showErrorList={false}
                 noHtml5Validate={true}
-                // liveValidate
+                liveValidate
                 {...{
                   validator,
                   schema: orientationPopupSchema ? orientationPopupSchema : {},
@@ -483,6 +483,7 @@ export default function Orientation({
                   <AdminTypo.Secondarybutton
                     onPress={() => {
                       setModalVisible(false);
+                      clearForm();
                     }}
                     shadow="BlueOutlineShadow"
                   >
