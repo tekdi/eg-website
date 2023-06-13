@@ -286,6 +286,7 @@ export default function agFormEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
+    console.log("id", data);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length > 10) {
         const newErrors = {
@@ -297,9 +298,9 @@ export default function agFormEdit({ ip }) {
       }
     }
     if (id === "root_alternative_mobile_number") {
-      if (data?.mobile?.toString()?.length > 10) {
+      if (data?.alternative_mobile_number?.toString()?.length > 10) {
         const newErrors = {
-          mobile: {
+          alternative_mobile_number: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
           },
         };
