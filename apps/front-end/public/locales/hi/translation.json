@@ -355,6 +355,7 @@
   "MY_IP": "मेरा आईपी",
   "MY_PRERAKS": "मेरे प्रेरक",
   "NAME": "नाम",
+  "NA": "-",
   "NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW": "इंटरव्यू लेने वाले व्यक्ति का नाम",
   "NAME_OF_YOUR_EMPLOYER": "उदाहरण के लिए। आपके नियोक्ता या आपके वरिष्ठ का नाम",
   "NAME_SENIOR": "आपके नियोक्ता या आपके वरिष्ठ का नाम",
@@ -647,5 +648,8 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपकी उच्चतम योग्यता",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका आईपी जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "STATUS_ALL":"स्थिति:सभी",
+  "SORT_ASC":"आरोही क्रम",
+  "SORT_DESC":"अवरोही क्रम"
 }

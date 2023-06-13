@@ -26,7 +26,6 @@ export default function BenificiaryEnrollment() {
     const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
   };
-  console.log("ben", benificiary);
 
   React.useEffect(() => {
     subjects();

@@ -30,7 +30,7 @@ export default function BenificiaryBasicDetails() {
   };
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${id}/profile`);
+    navigate(`/beneficiary/profile/${id}`);
   };
 
   return (
@@ -288,10 +288,12 @@ export default function BenificiaryBasicDetails() {
                   </FrontEndTypo.H3>
                 </HStack>
                 <HStack alignItems="Center">
-                  <FrontEndTypo.H3  color="textGreyColor.50"
+                  <FrontEndTypo.H3
+                    color="textGreyColor.50"
                     fontWeight="400"
                     flex="0.3"
-                    pb="2">
+                    pb="2"
+                  >
                     {t("MOTHER")}
                   </FrontEndTypo.H3>
 

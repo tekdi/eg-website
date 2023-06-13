@@ -96,8 +96,8 @@ export default function agFormEdit({ ip }) {
 
   React.useEffect(async () => {
     let device_ownership = formData?.core_beneficiaries?.device_ownership;
-    let mark_as_whatsapp_number =
-      formData?.core_beneficiaries?.mark_as_whatsapp_number;
+    /*   let mark_as_whatsapp_number =
+        formData?.core_beneficiaries?.mark_as_whatsapp_number; */
     let alternative_device_ownership =
       formData?.core_beneficiaries?.alternative_device_ownership;
     let alternative_device_type =
@@ -297,27 +297,43 @@ export default function agFormEdit({ ip }) {
       }
     }
     if (id === "root_alternative_mobile_number") {
-      if (data?.mobile?.toString()?.length > 10) {
+      if (data?.alternative_mobile_number?.toString()?.length > 10) {
         const newErrors = {
-          mobile: {
+          alternative_mobile_number: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
           },
         };
         setErrors(newErrors);
       }
     }
+
+    setFormData(newData);
+
   };
 
   const onError = (data) => {
+    console.log(data, "sandy")
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
     }
   };
 
-  const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+  const submit = async (data) => {
+    console.log("formdata", formData?.mobile);
+    if (formData?.mobile == formData?.alternative_mobile_number) {
+      const newErrors = {
+        alternative_mobile_number: {
+          __errors: [
+            t("ALTERNATIVE_MOBILE_NUMBER_SHOULD_NOT_BE_SAME_AS_MOBILE_NUMBER"),
+          ],
+        },
+      };
+      setErrors(newErrors);
+    } else if (formData?.mobile != formData?.alternative_mobile_number) {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      navigate(`/beneficiary/${userId}/basicdetails`);
+    }
   };
 
   return (
@@ -365,7 +381,6 @@ export default function agFormEdit({ ip }) {
               formData,
               onChange,
               onError,
-              onSubmit,
               transformErrors,
             }}
           >
@@ -373,7 +388,7 @@ export default function agFormEdit({ ip }) {
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => formRef?.current?.submit()}
+              onPress={() => submit()}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </Button>

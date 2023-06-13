@@ -175,12 +175,14 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
+  // console.log(schema, t(schema?.label ? schema?.label : label), label, schema?.label)
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-      {(label || schema?.label) && typeof type === "string" && (
+
+      {schema?.format !== 'hidden' && (label || schema?.label) && typeof type === "string" && (
         <Box>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
@@ -279,7 +281,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
             >
-              {item?.label}
+              {t(item?.label)}
             </Radio>
           ))}
         </Stack>
@@ -322,17 +324,17 @@ export const select = ({ options, value, onChange, required, schema }) => {
           style={{
             ...(value
               ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
+                top: "0",
+                opacity: 1,
+                zIndex: 5,
+                transition: "all 0.3s ease",
+              }
               : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+                top: "0.5rem",
+                zIndex: -2,
+                opacity: 0,
+                transition: "all 0.2s ease-in-out",
+              }),
           }}
         >
           <Text fontSize="12" fontWeight="400">
@@ -389,17 +391,17 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
           style={{
             ...(value
               ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
+                top: "0",
+                opacity: 1,
+                zIndex: 5,
+                transition: "all 0.3s ease",
+              }
               : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+                top: "0.5rem",
+                zIndex: -2,
+                opacity: 0,
+                transition: "all 0.2s ease-in-out",
+              }),
           }}
         >
           <Text fontSize="14" fontWeight="400">
@@ -440,7 +442,8 @@ export const HFieldTemplate = ({
     <HStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
-      alignItems="center"
+      alignItems="start"
+      pl="3"
     >
       {(label || schema?.label) && typeof type === "string" && (
         <Box flex="0.5">
@@ -451,6 +454,7 @@ export const HFieldTemplate = ({
                   name={schema?.icons}
                   color="textGreyColor.800"
                   isDisabled
+                  pr="2"
                 />
                 <AdminTypo.H6 color="textGreyColor.100">
                   {t(schema?.label ? schema?.label : label)}
@@ -464,7 +468,7 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box flex="0.8">
+      <Box flex="0.7">
         {children}
         {errors}
         {help}

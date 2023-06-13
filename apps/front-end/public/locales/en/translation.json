@@ -358,6 +358,7 @@
   "NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW": "Name of the person who took the Interview",
   "NAME_OF_YOUR_EMPLOYER": "For eg. Name of your Employer or your senior ",
   "NAME_SENIOR": "Name of your Employer or your senior",
+  "NA": "N/A",
   "NEED_HELP": "Need Help ?",
   "NEIGHBOUR": "Neighbour",
   "NEVER_ENROLLED": "Never Enrolled",
@@ -647,5 +648,9 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your job availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "LEAD":"Lead",
+  "STATUS_ALL":"Status:All",
+  "SORT_ASC":"asc",
+  "SORT_DESC":"desc"
 }

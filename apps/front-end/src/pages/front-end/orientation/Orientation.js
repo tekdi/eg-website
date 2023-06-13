@@ -11,6 +11,7 @@ import {
   facilitatorRegistryService,
   eventService,
   Loading,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
@@ -64,33 +65,77 @@ export default function Orientation({
   const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({});
+  const [schema, setSchema] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = useState({});
+  const [reminders, setReminders] = useState();
   const navigator = useNavigate();
 
   const SelectButton = () => (
     <HStack space={"10"}>
-      <HStack flex="0.5">
+      <HStack flex="0.9">
         <IconByName name="UserLineIcon" isDisabled />
         <AdminTypo.H6 color="textGreyColor.100">
           {t("SELECT_CANDIDATE")} *
         </AdminTypo.H6>
       </HStack>
-      <VStack flex="0.8">
-        <Box>
-          <AdminTypo.Secondarybutton onPress={() => onShowScreen(true)}>
-            {t("SELECT_PRERAK")}
-          </AdminTypo.Secondarybutton>
-        </Box>
-        <Box alignItems="center" alignContent="center">
-          <AdminTypo.H3 color="textGreyColor.800" bold>
-            {userIds !== undefined ? Object.values(userIds).length : ""}
-          </AdminTypo.H3>
-        </Box>
-      </VStack>
+      <HStack flex="0.7" alignItems="center">
+        <AdminTypo.Secondarybutton onPress={() => onShowScreen(true)}>
+          {t("SELECT_PRERAK")}
+        </AdminTypo.Secondarybutton>
+        <AdminTypo.H3 color="textGreyColor.800" bold pl="3">
+          {userIds !== undefined ? Object.values(userIds).length : ""}
+        </AdminTypo.H3>
+      </HStack>
     </HStack>
   );
+
+  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
+    let enumObj = {};
+    let arrData = arr;
+    if (!_.isEmpty(filters)) {
+      arrData = filtersByObject(arr, filters);
+    }
+    enumObj = {
+      ...enumObj,
+      ["enumNames"]: arrData.map((e) => `${t(e?.[title])}`),
+    };
+    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
+    const newProperties = schema["properties"][key];
+    let properties = {};
+    if (newProperties) {
+      if (newProperties.enum) delete newProperties.enum;
+      let { enumNames, ...remainData } = newProperties;
+      properties = remainData;
+    }
+    if (newProperties?.type === "array") {
+      return {
+        ...schema,
+        ["properties"]: {
+          ...schema["properties"],
+          [key]: {
+            ...properties,
+            items: {
+              ...(properties?.items ? properties?.items : {}),
+              ...(_.isEmpty(arr) ? {} : enumObj),
+            },
+          },
+        },
+      };
+    } else {
+      return {
+        ...schema,
+        ["properties"]: {
+          ...schema["properties"],
+          [key]: {
+            ...properties,
+            ...(_.isEmpty(arr) ? {} : enumObj),
+          },
+        },
+      };
+    }
+  };
 
   const TimePickerComponent = ({ value, onChange }) => (
     <VStack>
@@ -107,6 +152,19 @@ export default function Orientation({
   React.useEffect(() => {
     getEventLists();
   }, []);
+
+  React.useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    setReminders(result?.data?.REMINDERS);
+    let newSchema = orientationPopupSchema;
+    newSchema = getOptions(newSchema, {
+      key: "reminders",
+      arr: result?.data?.REMINDERS,
+      title: "title",
+      value: "value",
+    });
+    setSchema(newSchema);
+  }, [formData]);
 
   React.useEffect(() => {
     setFormData({
@@ -383,7 +441,7 @@ export default function Orientation({
               center: "title",
               right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
             }}
-            initialView="dayGridMonth"
+            initialView="timeGridWeek"
             editable={true}
             selectable={true}
             selectMirror={true}
@@ -466,14 +524,21 @@ export default function Orientation({
                 liveValidate
                 {...{
                   validator,
-                  schema: orientationPopupSchema ? orientationPopupSchema : {},
+                  schema: schema ? schema : {},
                   formData,
                   uiSchema,
                   onChange,
                   onSubmit,
                 }}
               >
-                <HStack justifyContent="space-between" space={2} py="5">
+                <HStack
+                  justifyContent="space-between"
+                  space={2}
+                  py="5"
+                  borderTopWidth="1px"
+                  bg="white"
+                  borderTopColor="appliedColor"
+                >
                   <AdminTypo.Secondarybutton
                     onPress={() => {
                       setModalVisible(false);

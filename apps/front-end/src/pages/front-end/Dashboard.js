@@ -61,11 +61,43 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       setFacilitator(fa_data);
     }
   }, []);
+
+  const isDocumentUpload = (key = "") => {
+    let isAllow = 0;
+    if (key === "" || key === "experience") {
+      const expData = facilitator?.experience?.filter(
+        (e) => e?.reference?.document_id
+      );
+      if (expData?.length > 0) {
+        isAllow++;
+      }
+    }
+    if (key === "" || key === "vo_experience") {
+      const expData = facilitator?.vo_experience?.filter(
+        (e) => e?.reference?.document_id
+      );
+      if (expData?.length > 0) {
+        isAllow++;
+      }
+    }
+
+    if (key === "" || key === "qualifications") {
+      const expData =
+        facilitator?.qualifications?.qualification_reference_document_id;
+      if (expData) {
+        isAllow++;
+      }
+    }
+
+    return isAllow === 0;
+  };
+
   return (
     <Layout
       _appBar={{
         profile_url: facilitator?.documents?.[0]?.name,
         exceptIconsShow: ["backBtn", "userInfo"],
+        facilitator
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -401,7 +433,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             <Stack>
               <VStack p="5" pt={1}>
                 {!form_step_number ||
-                (form_step_number && parseInt(form_step_number) < 10) ? (
+                  (form_step_number && parseInt(form_step_number) < 10) ? (
                   <Pressable onPress={(e) => navigate("/form")}>
                     <HStack
                       borderWidth="1"
@@ -468,15 +500,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Secondarybutton>
             </Stack>
           )}
-          {[
-            "lead",
-            "applied",
-            "",
-            "screened",
-            "application_screened",
-            "shortlisted_for_orientation",
-            "potential_prerak",
-          ].includes(facilitator.status) && (
+          {isDocumentUpload() && (
             <Stack bg="bgPinkColor.300" space="6" p={4}>
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("UPLOAD_YOUR_DOCUMENTS")}
@@ -499,50 +523,57 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.H4>
                 </VStack>
               </HStack>
-              <HStack space="2">
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack width="99%">
-                  <FrontEndTypo.H3 bold>
-                    {t("WORK_EXPERIENCE_PROOF")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("THIS_CAN_BE_LETTER_OF")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-              <HStack space="2">
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack width="99%">
-                  <FrontEndTypo.H3 bold>
-                    {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-              <HStack>
-                <FrontEndTypo.Secondarybutton
-                  width="100%"
-                  endIcon={
-                    <IconByName
-                      isDisabled
-                      name="Upload2FillIcon"
-                      _icon={{ size: "25px" }}
-                    />
-                  }
-                >
-                  {t("UPLOAD_NOW")}
-                </FrontEndTypo.Secondarybutton>
-              </HStack>
+              {isDocumentUpload("experience") && (
+                <HStack space="2">
+                  <IconByName
+                    isDisabled
+                    name="CheckboxCircleLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <VStack width="99%">
+                    <FrontEndTypo.H3 bold>
+                      {t("WORK_EXPERIENCE_PROOF")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
+                      {t("THIS_CAN_BE_LETTER_OF")}
+                    </FrontEndTypo.H4>
+                  </VStack>
+                </HStack>
+              )}
+              {isDocumentUpload("vo_experience") && (
+                <HStack space="2">
+                  <IconByName
+                    isDisabled
+                    name="CheckboxCircleLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <VStack width="99%">
+                    <FrontEndTypo.H3 bold>
+                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
+                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
+                    </FrontEndTypo.H4>
+                  </VStack>
+                </HStack>
+              )}
+              {isDocumentUpload("qualifications") && (
+                <HStack>
+                  <FrontEndTypo.Secondarybutton
+                    width="100%"
+                    endIcon={
+                      <IconByName
+                        isDisabled
+                        name="Upload2FillIcon"
+                        _icon={{ size: "25px" }}
+                      />
+                    }
+                    onPress={(e) => navigate("/profile")}
+                  >
+                    {t("UPLOAD_NOW")}
+                  </FrontEndTypo.Secondarybutton>
+                </HStack>
+              )}
             </Stack>
           )}
         </VStack>

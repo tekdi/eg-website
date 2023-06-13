@@ -61,7 +61,7 @@ import { useLocation } from "react-router-dom";
 
 // App
 
-export default function AgformUpdate({ userTokenInfo }) {
+export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -136,6 +136,7 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const showPosition = (position) => {
     let lati = position.coords.latitude;
+    console.log("lati", lati);
     let longi = position.coords.longitude;
 
     setFormData({
@@ -662,6 +663,7 @@ export default function AgformUpdate({ userTokenInfo }) {
           onlyIconsShow: ["backBtn", "userInfo"],
         }}
         _page={{ _scollView: { bg: "white" } }}
+        _footer={{ menues: footerLinks }}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Center>
@@ -727,6 +729,7 @@ export default function AgformUpdate({ userTokenInfo }) {
           onlyIconsShow: ["backBtn", "userInfo"],
         }}
         _page={{ _scollView: { bg: "white" } }}
+        _footer={{ menues: footerLinks }}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <H1 color="red.1000">{t("Add_AGS_PROFILE")}</H1>
@@ -796,6 +799,7 @@ export default function AgformUpdate({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {/* <Steper
