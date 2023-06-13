@@ -204,7 +204,7 @@ export default function SwiperFile({ onClick }) {
         <PrerakDuties
           title={t("PRERAK_HELP_GIRLS_ATTEND_EXAMS")}
           imgUrl={`/images/facilitator-duties/img5.png`}
-          processedButton={t("PRERAK_PROCEED_BTN")} 
+          processedButton={t("PRERAK_PROCEED_BTN")}
           onPress={(e) => setPage("6")}
           page={page}
           setPage={setPage}
