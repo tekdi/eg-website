@@ -209,6 +209,9 @@ export default function BenificiaryProfileView(props) {
 
                   <IconByName
                     name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/aadhaardetails`);
+                    }}
                     color="textMaroonColor.400"
                   />
                 </HStack>
