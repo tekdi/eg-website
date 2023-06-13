@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, Suspense } from "react";
 import {
   capture,
   IconByName,
@@ -23,6 +23,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import Form from "@rjsf/core";
 import orientationPopupSchema from "./orientationPopupSchema";
 import validator from "@rjsf/validator-ajv8";
+
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -34,6 +35,7 @@ import {
   CustomR,
   AddButton,
   BaseInputTemplate,
+  HFieldTemplate,
 } from "../../../component/BaseInput";
 import {
   Button,
@@ -57,14 +59,10 @@ export default function Orientation({
   getFormData,
   userIds,
   onShowScreen,
-  setIsOpen,
-  onClick,
 }) {
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const formRef = React.useRef();
   const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [showModal, setShowModal] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
@@ -72,16 +70,26 @@ export default function Orientation({
   const navigator = useNavigate();
 
   const SelectButton = () => (
-    <VStack>
-      <Button onPress={() => onShowScreen(true)}>
-        <Text>Select preraks</Text>
-      </Button>
-      <Box alignItems="center" alignContent="center">
-        <AdminTypo.H3 color="textGreyColor.800" bold>
-          {userIds !== undefined ? Object.values(userIds).length : ""}
-        </AdminTypo.H3>
-      </Box>
-    </VStack>
+    <HStack space={"10"}>
+      <HStack flex="0.5">
+        <IconByName name="UserLineIcon" isDisabled />
+        <AdminTypo.H6 color="textGreyColor.100">
+          {t("SELECT_CANDIDATE")} *
+        </AdminTypo.H6>
+      </HStack>
+      <VStack flex="0.8">
+        <Box>
+          <AdminTypo.Secondarybutton onPress={() => onShowScreen(true)}>
+            {t("SELECT_PRERAK")}
+          </AdminTypo.Secondarybutton>
+        </Box>
+        <Box alignItems="center" alignContent="center">
+          <AdminTypo.H3 color="textGreyColor.800" bold>
+            {userIds !== undefined ? Object.values(userIds).length : ""}
+          </AdminTypo.H3>
+        </Box>
+      </VStack>
+    </HStack>
   );
 
   const TimePickerComponent = ({ value, onChange }) => (
@@ -135,6 +143,9 @@ export default function Orientation({
     },
     reminders: {
       "ui:widget": "checkboxes",
+      "ui:options": {
+        inline: true,
+      },
     },
     start_time: {
       "ui:widget": TimePickerComponent,
@@ -150,11 +161,14 @@ export default function Orientation({
       height: "100%",
     },
   };
-  const onChange = async (data) => {
-    setErrors();
+  const onChange = async (data, id) => {
+    setErrors({});
     const newData = data.formData;
+    // formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
+    //   setErrors(errors);
+    // });
     setFormData({ ...formData, ...newData });
-    if (newData?.start_date > newData?.end_date) {
+    if (moment(newData?.start_date).isAfter(newData?.end_date)) {
       const newErrors = {
         attendees: {
           __errors: ["The end date should be later than the start date."],
@@ -163,7 +177,6 @@ export default function Orientation({
       setErrors(newErrors);
     }
   };
-
   const handleEventClick = async (info) => {
     navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
   };
@@ -217,8 +230,8 @@ export default function Orientation({
       if (apiResponse?.success === true) {
         setModalVisible(false);
         setFormData({});
-        getFormData("");
         setLoading(true);
+        clearForm();
         const getCalanderData = await eventService.getEventList();
         setEventList(getCalanderData);
         if (getCalanderData) {
@@ -333,7 +346,6 @@ export default function Orientation({
               mb="3"
               shadow="BlueOutlineShadow"
               onPress={() => {
-                clearForm();
                 setModalVisible(!modalVisible);
               }}
             >
@@ -436,48 +448,52 @@ export default function Orientation({
           </Modal.Header>
 
           <Modal.Body p="3" pb="10" bg="white">
-            <Form
-              ref={formRef}
-              widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
-              templates={{
-                ButtonTemplates: { AddButton },
-                FieldTemplate,
-                ObjectFieldTemplate,
-                TitleFieldTemplate,
-                DescriptionFieldTemplate,
-                BaseInputTemplate,
-              }}
-              extraErrors={errors}
-              showErrorList={false}
-              noHtml5Validate={true}
-              {...{
-                validator,
-                schema: orientationPopupSchema ? orientationPopupSchema : {},
-                formData,
-                uiSchema,
-                onChange,
-                onSubmit,
-              }}
-            >
-              <HStack justifyContent="space-between" space={2} py="5">
-                <AdminTypo.Secondarybutton
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                  shadow="BlueOutlineShadow"
-                >
-                  {t("CANCEL")}
-                </AdminTypo.Secondarybutton>
-                <AdminTypo.PrimaryButton
-                  onPress={() => {
-                    formRef?.current?.submit();
-                  }}
-                  shadow="BlueFillShadow"
-                >
-                  {t("SEND_INVITES")}
-                </AdminTypo.PrimaryButton>
-              </HStack>
-            </Form>
+            <Suspense fallback={<div>Loading... </div>}>
+              <Form
+                ref={formRef}
+                widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
+                templates={{
+                  ButtonTemplates: { AddButton },
+                  FieldTemplate: HFieldTemplate,
+                  ObjectFieldTemplate,
+                  TitleFieldTemplate,
+                  DescriptionFieldTemplate,
+                  BaseInputTemplate,
+                }}
+                extraErrors={errors}
+                showErrorList={false}
+                noHtml5Validate={true}
+                liveValidate
+                {...{
+                  validator,
+                  schema: orientationPopupSchema ? orientationPopupSchema : {},
+                  formData,
+                  uiSchema,
+                  onChange,
+                  onSubmit,
+                }}
+              >
+                <HStack justifyContent="space-between" space={2} py="5">
+                  <AdminTypo.Secondarybutton
+                    onPress={() => {
+                      setModalVisible(false);
+                      clearForm();
+                    }}
+                    shadow="BlueOutlineShadow"
+                  >
+                    {t("CANCEL")}
+                  </AdminTypo.Secondarybutton>
+                  <AdminTypo.PrimaryButton
+                    onPress={() => {
+                      formRef?.current?.submit();
+                    }}
+                    shadow="BlueFillShadow"
+                  >
+                    {t("SEND_INVITES")}
+                  </AdminTypo.PrimaryButton>
+                </HStack>
+              </Form>
+            </Suspense>
           </Modal.Body>
         </Modal.Content>
       </Modal>

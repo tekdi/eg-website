@@ -22,54 +22,54 @@ import Chip from "component/Chip";
 
 const dropoutReasons = [
   {
-    label: "Family issue",
+    label: "PRERAK_FAMILY_ISSUE",
     value: "Family issue",
   },
   {
-    label: "Community Issue",
+    label: "PRERAK_COMMUNITY_ISSUE",
     value: "Community Issue",
   },
   {
-    label: "Getting Married",
+    label: "PRERAK_GETTING_MARRIED",
     value: "Getting Married",
   },
   {
-    label: "Personal Reasons",
+    label: "PRERAK_PERSONAL_REASONS",
     value: "Personal Reasons",
   },
   {
-    label: "Moving away",
+    label: "PRERAK_MOVING_AWAY",
     value: "Moving away",
   },
   {
-    label: "Other",
+    label: "OTHER",
     value: "Other",
   },
 ];
 
 const reactivateReasons = [
   {
-    label: "Career Aspirations",
+    label: "CAREER_ASPIRATIONS",
     value: "Career Aspirations",
   },
   {
-    label: "Convinced by Prerak",
+    label: "PRERAK_CONVINCED_BY_PRERAK",
     value: "Convinced by Prerak",
   },
   {
-    label: "Moved back",
+    label: "PRERAK_MOVED_BACK",
     value: "Moved back",
   },
   {
-    label: "Issue Resolved",
+    label: "PRERAK_ISSUE_RESOLVED",
     value: "Issue Resolved",
   },
   {
-    label: "Changed Mind",
+    label: "PRERAK_CHANGED_MIND",
     value: "Changed Mind",
   },
   {
-    label: "Other",
+    label: "OTHER",
     value: "Other",
   },
 ];
