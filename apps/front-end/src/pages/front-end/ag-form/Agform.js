@@ -84,11 +84,11 @@ export default function Agform({ userTokenInfo }) {
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
-    navigate('/')
+    navigate("/");
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => { };
+  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     facilitator_id: {
@@ -127,15 +127,6 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const showPosition = (position) => {
-    console.log(
-      "Latitude: " +
-      position.coords.latitude +
-      "/n Longitude: " +
-      position.coords.longitude
-    );
-  };
-
   const createAg = async () => {
     let url = await AgRegistryService.createAg(formData);
 
@@ -165,8 +156,8 @@ export default function Agform({ userTokenInfo }) {
               data?.error?.constructor?.name === "String"
                 ? [data?.error]
                 : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
@@ -256,7 +247,7 @@ export default function Agform({ userTokenInfo }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => { };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {
