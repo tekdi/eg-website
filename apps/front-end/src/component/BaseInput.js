@@ -19,6 +19,7 @@ import {
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
@@ -418,5 +419,58 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
     </FormControl>
+  );
+};
+
+export const HFieldTemplate = ({
+  id,
+  style,
+  label,
+  help,
+  required,
+  description,
+  errors,
+  children,
+  schema,
+  ...props
+}) => {
+  const { type } = schema;
+  const { t } = useTranslation();
+  return (
+    <HStack
+      style={style}
+      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      alignItems="start"
+      pl="3"
+    >
+      {(label || schema?.label) && typeof type === "string" && (
+        <Box flex="0.5">
+          {(id === "root" || schema?.label) && (
+            <label htmlFor={id}>
+              <HStack space="1" alignItems="center">
+                <IconByName
+                  name={schema?.icons}
+                  color="textGreyColor.800"
+                  isDisabled
+                  pr="2"
+                />
+                <AdminTypo.H6 color="textGreyColor.100">
+                  {t(schema?.label ? schema?.label : label)}
+                </AdminTypo.H6>
+                <AdminTypo.H6 color="textGreyColor.100">
+                  {required ? "*" : null}
+                </AdminTypo.H6>
+              </HStack>
+            </label>
+          )}
+          {description?.props?.description !== "" && description}
+        </Box>
+      )}
+      <Box flex="0.7">
+        {children}
+        {errors}
+        {help}
+      </Box>
+    </HStack>
   );
 };

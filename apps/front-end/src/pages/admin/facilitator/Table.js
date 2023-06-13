@@ -56,7 +56,7 @@ const customStyles = {
 };
 const columns = (e) => [
   {
-    name: t("FIRST_NAME"),
+    name: t("NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         {row?.documents?.[0]?.name ? (
@@ -85,7 +85,7 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("REGION"),
+    name: t("DISTRICT"),
 
     selector: (row) => (row?.district ? row?.district : "-"),
   },
