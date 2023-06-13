@@ -1,20 +1,16 @@
 import React, { useRef, useState, Suspense } from "react";
 import {
-  capture,
   IconByName,
   AdminLayout as Layout,
   BoxBlue,
-  H1,
-  t,
   AdminTypo,
-  filtersByObject,
-  facilitatorRegistryService,
   eventService,
   Loading,
   enumRegistryService,
+  getOptions,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Calendar as Cal } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Fullcalendar from "@fullcalendar/react";
@@ -28,9 +24,7 @@ import validator from "@rjsf/validator-ajv8";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
-  FieldTemplate,
   ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
   select,
   RadioBtn,
   CustomR,
@@ -39,28 +33,19 @@ import {
   HFieldTemplate,
 } from "../../../component/BaseInput";
 import {
-  Button,
   HStack,
-  Input,
-  FormControl,
-  CheckIcon,
   VStack,
   Box,
   Modal,
-  Text,
   CheckCircleIcon,
-  TextArea,
   Image,
   Pressable,
 } from "native-base";
 import moment from "moment";
+import OrientationScreen from "./OrientationScreen";
 
-export default function Orientation({
-  footerLinks,
-  getFormData,
-  userIds,
-  onShowScreen,
-}) {
+export default function Orientation({ footerLinks }) {
+  const { t } = useTranslation();
   const formRef = React.useRef();
   const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -71,6 +56,8 @@ export default function Orientation({
   const [errors, setErrors] = useState({});
   const [reminders, setReminders] = useState();
   const navigator = useNavigate();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [userIds, setUserIds] = React.useState({});
 
   const SelectButton = () => (
     <HStack space={"10"}>
@@ -81,7 +68,7 @@ export default function Orientation({
         </AdminTypo.H6>
       </HStack>
       <HStack flex="0.7" alignItems="center">
-        <AdminTypo.Secondarybutton onPress={() => onShowScreen(true)}>
+        <AdminTypo.Secondarybutton onPress={() => setIsOpen(true)}>
           {t("SELECT_PRERAK")}
         </AdminTypo.Secondarybutton>
         <AdminTypo.H3 color="textGreyColor.800" bold pl="3">
@@ -90,52 +77,6 @@ export default function Orientation({
       </HStack>
     </HStack>
   );
-
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${t(e?.[title])}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    if (newProperties?.type === "array") {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            items: {
-              ...(properties?.items ? properties?.items : {}),
-              ...(_.isEmpty(arr) ? {} : enumObj),
-            },
-          },
-        },
-      };
-    } else {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            ...(_.isEmpty(arr) ? {} : enumObj),
-          },
-        },
-      };
-    }
-  };
 
   const TimePickerComponent = ({ value, onChange }) => (
     <VStack>
@@ -159,7 +100,7 @@ export default function Orientation({
     let newSchema = orientationPopupSchema;
     newSchema = getOptions(newSchema, {
       key: "reminders",
-      arr: result?.data?.REMINDERS,
+      arr: result?.data?.REMINDERS.map((e) => ({ ...e, title: t(e.title) })),
       title: "title",
       value: "value",
     });
@@ -240,6 +181,7 @@ export default function Orientation({
   };
 
   const clearForm = () => {
+    setUserIds({});
     setFormData({
       attendees: [],
       type: "",
@@ -282,7 +224,6 @@ export default function Orientation({
       };
       setErrors(newErrors);
     } else {
-      getFormData(newFormData);
       setFormData(newFormData);
       const apiResponse = await eventService.createNewEvent(newFormData);
       if (apiResponse?.success === true) {
@@ -313,40 +254,42 @@ export default function Orientation({
       }}
       _sidebar={footerLinks}
     >
-      {loading && <Loading />}
-
-      <VStack paddingLeft="5" paddingTop="5" space="xl">
-        <Box display="flex" flexDirection="row" minWidth="2xl">
-          <HStack alignItems="Center">
-            <IconByName name="Home4LineIcon" fontSize="24px" />
-            <AdminTypo.H1 color="textGreyColor.800" bold>
-              {t("HOME")}
-            </AdminTypo.H1>
-          </HStack>
-        </Box>
-        <HStack display="flex" flexDirection="row" space="xl">
-          <BoxBlue justifyContent="center">
-            <VStack alignItems={"Center"}>
-              <Pressable
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
-                <Image
-                  source={{
-                    uri: "/orientation.svg",
-                  }}
-                  alt="Prerak Orientation"
-                  size={"sm"}
-                  resizeMode="contain"
-                />
-                <AdminTypo.H6 bold pt="4">
-                  {t("ORIENTATION")}
-                </AdminTypo.H6>
-              </Pressable>
-            </VStack>
-          </BoxBlue>
-          {/* <BoxBlue justifyContent="center">
+      {loading ? (
+        <Loading />
+      ) : (
+        <Box>
+          <VStack paddingLeft="5" paddingTop="5" space="xl">
+            <Box display="flex" flexDirection="row" minWidth="2xl">
+              <HStack alignItems="Center">
+                <IconByName name="Home4LineIcon" fontSize="24px" />
+                <AdminTypo.H1 color="textGreyColor.800" bold>
+                  {t("HOME")}
+                </AdminTypo.H1>
+              </HStack>
+            </Box>
+            <HStack display="flex" flexDirection="row" space="xl">
+              <BoxBlue justifyContent="center">
+                <VStack alignItems={"Center"}>
+                  <Pressable
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    <Image
+                      source={{
+                        uri: "/orientation.svg",
+                      }}
+                      alt="Prerak Orientation"
+                      size={"sm"}
+                      resizeMode="contain"
+                    />
+                    <AdminTypo.H6 bold pt="4">
+                      {t("ORIENTATION")}
+                    </AdminTypo.H6>
+                  </Pressable>
+                </VStack>
+              </BoxBlue>
+              {/* <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
                 source={{
@@ -391,177 +334,183 @@ export default function Orientation({
               </AdminTypo.H6>
             </VStack>
           </BoxBlue> */}
-        </HStack>
-        <AdminTypo.H3 bold py="3">
-          {t("YOUR_CALENDAR")}
-        </AdminTypo.H3>
-      </VStack>
-      <HStack space="2xl" justifyContent="space-between" px="3">
-        <Box>
-          <VStack mb="3" alignContent="center">
-            <AdminTypo.Secondarybutton
-              alignContent="center"
-              mb="3"
-              shadow="BlueOutlineShadow"
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              {t("SCHEDULE_EVENT")}
-            </AdminTypo.Secondarybutton>
-            <Cal />
-            <VStack space="4" mt="4">
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="blue.500" />
-                <AdminTypo.H6 bold>{t("INTERVIEW")}</AdminTypo.H6>
-              </HStack>
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="green.500" />
-                <AdminTypo.H6 bold>{t("ORIENTATION_DAYS")}</AdminTypo.H6>
-              </HStack>
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="yellow.500" />
-                <AdminTypo.H6 bold>{t("TRAINING_DAYS")}</AdminTypo.H6>
-              </HStack>
-              <HStack alignItems="Center" space="md">
-                <CheckCircleIcon size="4" color="purple.500" />
-                <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
-              </HStack>
-            </VStack>
+            </HStack>
+            <AdminTypo.H3 bold py="3">
+              {t("YOUR_CALENDAR")}
+            </AdminTypo.H3>
           </VStack>
-        </Box>
-        <Box width="50%" justifyContent={"Center"} flex={"1"}>
-          <Fullcalendar
-            ref={calendarRef}
-            key={eventList}
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            timeZone="Asia/Kolkata"
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
-            }}
-            initialView="timeGridWeek"
-            editable={true}
-            selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            events={eventList?.events?.map((item) => {
-              return {
-                allDay: false,
-                title: item?.name !== null ? item?.name : item?.type,
-                start: moment(item?.start_date).format("YYYY-MM-DD")
-                  ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
-                      item?.start_time
-                    }`
-                  : "",
-                end: moment(item?.end_date).format("YYYY-MM-DD")
-                  ? `${moment(item?.end_date).format("YYYY-MM-DD")} ${
-                      item?.end_time
-                    }`
-                  : "",
-                type: item?.type ? item?.type : "",
-                name: item?.name ? item?.name : "",
-                start_date:
-                  item?.start_date !== "Invalid date"
-                    ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
-                end_date:
-                  item?.end_date !== "Invalid date"
-                    ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
-                mastertrainer: item?.mastertrainer ? item?.mastertrainer : "",
-                attendances: item?.attendances ? item?.attendances : "",
-                start_time: item?.start_time ? item?.start_time : "",
-                end_time: item?.end_time ? item?.end_time : "",
-                reminders: item?.reminders ? item?.reminders : "",
-                location: item?.location ? item?.location : "",
-                location_type: item?.location_type ? item?.location_type : "",
-                event_id: item?.id ? item?.id : "",
-              };
-            })}
-            eventTimeFormat={{
-              hour: "numeric",
-              minute: "2-digit",
-              meridiem: "short",
-            }}
-            eventClick={handleEventClick}
-          />
-        </Box>
-      </HStack>
-      <Modal
-        isOpen={modalVisible}
-        onClose={() => setModalVisible(false)}
-        avoidKeyboard
-        size="xl"
-        // height={"450px"}
-        overflowY={"scroll"}
-      >
-        <Modal.Content {...styles.modalxxl}>
-          <Modal.CloseButton />
-          <Modal.Header p="5" borderBottomWidth="0" bg="white">
-            <AdminTypo.H1 textAlign="center" bold>
-              {t("SCHEDULE_EVENT")}
-            </AdminTypo.H1>
-          </Modal.Header>
-
-          <Modal.Body p="3" pb="10" bg="white">
-            <Suspense fallback={<div>Loading... </div>}>
-              <Form
-                ref={formRef}
-                widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
-                templates={{
-                  ButtonTemplates: { AddButton },
-                  FieldTemplate: HFieldTemplate,
-                  ObjectFieldTemplate,
-                  TitleFieldTemplate,
-                  DescriptionFieldTemplate,
-                  BaseInputTemplate,
-                }}
-                extraErrors={errors}
-                showErrorList={false}
-                noHtml5Validate={true}
-                liveValidate
-                {...{
-                  validator,
-                  schema: schema ? schema : {},
-                  formData,
-                  uiSchema,
-                  onChange,
-                  onSubmit,
+          <HStack space="2xl" justifyContent="space-between" px="5" pb="10">
+            <VStack alignContent="center">
+              <AdminTypo.Secondarybutton
+                alignContent="center"
+                mb="3"
+                shadow="BlueOutlineShadow"
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  clearForm();
                 }}
               >
-                <HStack
-                  justifyContent="space-between"
-                  space={2}
-                  py="5"
-                  borderTopWidth="1px"
-                  bg="white"
-                  borderTopColor="appliedColor"
-                >
-                  <AdminTypo.Secondarybutton
-                    onPress={() => {
-                      setModalVisible(false);
-                      clearForm();
-                    }}
-                    shadow="BlueOutlineShadow"
-                  >
-                    {t("CANCEL")}
-                  </AdminTypo.Secondarybutton>
-                  <AdminTypo.PrimaryButton
-                    onPress={() => {
-                      formRef?.current?.submit();
-                    }}
-                    shadow="BlueFillShadow"
-                  >
-                    {t("SEND_INVITES")}
-                  </AdminTypo.PrimaryButton>
+                {t("SCHEDULE_EVENT")}
+              </AdminTypo.Secondarybutton>
+              <Cal />
+              <VStack space="4" mt="4">
+                <HStack alignItems="Center" space="md">
+                  <CheckCircleIcon size="4" color="blue.500" />
+                  <AdminTypo.H6 bold>{t("INTERVIEW")}</AdminTypo.H6>
                 </HStack>
-              </Form>
-            </Suspense>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+                <HStack alignItems="Center" space="md">
+                  <CheckCircleIcon size="4" color="green.500" />
+                  <AdminTypo.H6 bold>{t("ORIENTATION_DAYS")}</AdminTypo.H6>
+                </HStack>
+                <HStack alignItems="Center" space="md">
+                  <CheckCircleIcon size="4" color="yellow.500" />
+                  <AdminTypo.H6 bold>{t("TRAINING_DAYS")}</AdminTypo.H6>
+                </HStack>
+                <HStack alignItems="Center" space="md">
+                  <CheckCircleIcon size="4" color="purple.500" />
+                  <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
+                </HStack>
+              </VStack>
+            </VStack>
+            <Box width="50%" justifyContent={"Center"} flex={"1"}>
+              <Fullcalendar
+                ref={calendarRef}
+                key={eventList}
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                timeZone="Asia/Kolkata"
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
+                }}
+                initialView="timeGridWeek"
+                editable={true}
+                selectable={true}
+                selectMirror={true}
+                dayMaxEvents={true}
+                events={eventList?.events?.map((item) => {
+                  return {
+                    allDay: false,
+                    title: item?.name !== null ? item?.name : item?.type,
+                    start: moment(item?.start_date).format("YYYY-MM-DD")
+                      ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
+                          item?.start_time
+                        }`
+                      : "",
+                    end: moment(item?.end_date).format("YYYY-MM-DD")
+                      ? `${moment(item?.end_date).format("YYYY-MM-DD")} ${
+                          item?.end_time
+                        }`
+                      : "",
+                    type: item?.type ? item?.type : "",
+                    name: item?.name ? item?.name : "",
+                    start_date:
+                      item?.start_date !== "Invalid date"
+                        ? moment(item?.start_date).format("YYYY-MM-DD HH:mm:ss")
+                        : "",
+                    end_date:
+                      item?.end_date !== "Invalid date"
+                        ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
+                        : "",
+                    mastertrainer: item?.mastertrainer
+                      ? item?.mastertrainer
+                      : "",
+                    attendances: item?.attendances ? item?.attendances : "",
+                    start_time: item?.start_time ? item?.start_time : "",
+                    end_time: item?.end_time ? item?.end_time : "",
+                    reminders: item?.reminders ? item?.reminders : "",
+                    location: item?.location ? item?.location : "",
+                    location_type: item?.location_type
+                      ? item?.location_type
+                      : "",
+                    event_id: item?.id ? item?.id : "",
+                  };
+                })}
+                eventTimeFormat={{
+                  hour: "numeric",
+                  minute: "2-digit",
+                  meridiem: "short",
+                }}
+                eventClick={handleEventClick}
+              />
+            </Box>
+          </HStack>
+          <Modal
+            isOpen={modalVisible}
+            onClose={() => setModalVisible(false)}
+            avoidKeyboard
+            size="xl"
+            // height={"450px"}
+            overflowY={"scroll"}
+          >
+            <Modal.Content {...styles.modalxxl}>
+              <Modal.CloseButton />
+              <Modal.Header p="5" borderBottomWidth="0" bg="white">
+                <AdminTypo.H1 textAlign="center" bold>
+                  {t("SCHEDULE_EVENT")}
+                </AdminTypo.H1>
+              </Modal.Header>
+
+              <Modal.Body p="3" pb="10" bg="white">
+                <Suspense fallback={<div>Loading... </div>}>
+                  <Form
+                    ref={formRef}
+                    widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
+                    templates={{
+                      ButtonTemplates: { AddButton },
+                      FieldTemplate: HFieldTemplate,
+                      ObjectFieldTemplate,
+                      TitleFieldTemplate,
+                      DescriptionFieldTemplate,
+                      BaseInputTemplate,
+                    }}
+                    extraErrors={errors}
+                    showErrorList={false}
+                    noHtml5Validate={true}
+                    liveValidate
+                    {...{
+                      validator,
+                      schema: schema ? schema : {},
+                      formData,
+                      uiSchema,
+                      onChange,
+                      onSubmit,
+                    }}
+                  >
+                    <HStack
+                      justifyContent="space-between"
+                      space={2}
+                      py="5"
+                      borderTopWidth="1px"
+                      bg="white"
+                      borderTopColor="appliedColor"
+                    >
+                      <AdminTypo.Secondarybutton
+                        onPress={() => {
+                          setModalVisible(false);
+                          clearForm();
+                        }}
+                        shadow="BlueOutlineShadow"
+                      >
+                        {t("CANCEL")}
+                      </AdminTypo.Secondarybutton>
+                      <AdminTypo.PrimaryButton
+                        onPress={() => {
+                          formRef?.current?.submit();
+                        }}
+                        shadow="BlueFillShadow"
+                      >
+                        {t("SEND_INVITES")}
+                      </AdminTypo.PrimaryButton>
+                    </HStack>
+                  </Form>
+                </Suspense>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+          <OrientationScreen {...{ isOpen, setIsOpen, userIds, setUserIds }} />
+        </Box>
+      )}
     </Layout>
   );
 }

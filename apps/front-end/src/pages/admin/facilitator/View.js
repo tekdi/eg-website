@@ -323,10 +323,10 @@ export default function FacilitatorView({ footerLinks }) {
               </HStack>
             </VStack>
             <HStack flex="0.4" pl="5" justifyContent="center">
-              {data?.documents?.[0]?.name ? (
+              {data?.profile_photo_1?.name ? (
                 <ImageView
                   source={{
-                    uri: data?.documents?.[0]?.name,
+                    uri: data?.profile_photo_1?.name,
                   }}
                   // alt="Alternate Text"
                   width={"190px"}
