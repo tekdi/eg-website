@@ -432,12 +432,12 @@ export default function Attendence() {
                 <AdminTypo.H6 color="textGreyColor.800" bold>
                   {event?.name ? event?.name : event?.type}
                 </AdminTypo.H6>
-                <AdminTypo.Secondarybutton
+                {/* <AdminTypo.Secondarybutton
                   // onPress={() => setShowEditModal(true)}
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
-                </AdminTypo.Secondarybutton>
+                </AdminTypo.Secondarybutton> */}
               </HStack>
 
               <HStack space={"3"} fontSize={"14px"}>

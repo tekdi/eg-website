@@ -287,8 +287,11 @@ export default function BenificiaryBasicDetails() {
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
+                <HStack alignItems="Center">
+                  <FrontEndTypo.H3  color="textGreyColor.50"
+                    fontWeight="400"
+                    flex="0.3"
+                    pb="2">
                     {t("MOTHER")}
                   </FrontEndTypo.H3>
 
