@@ -1,4 +1,4 @@
-import { IconByName, chunk, t, H2 } from "@shiksha/common-lib";
+import { IconByName, chunk, H2 } from "@shiksha/common-lib";
 import {
   Box,
   Pressable,
@@ -9,6 +9,7 @@ import {
   HStack,
 } from "native-base";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function CustomRadio({
   options,
@@ -17,6 +18,7 @@ export default function CustomRadio({
   schema,
   required,
 }) {
+  const { t } = useTranslation();
   const { _hstack, icons, _pressable, grid, label, format } = schema
     ? schema
     : {};

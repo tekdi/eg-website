@@ -216,8 +216,12 @@ export default function BenificiaryEducation() {
                   {t("REMARKS")}
                 </FrontEndTypo.H3>
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4" overflow="hidden"
-                      textOverflow="ellipsis">
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  flex="0.4"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
                   {benificiary?.core_beneficiaries?.career_aspiration_details
                     ? benificiary?.core_beneficiaries?.career_aspiration_details
                     : "-"}
