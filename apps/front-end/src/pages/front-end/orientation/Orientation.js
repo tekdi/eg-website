@@ -71,24 +71,20 @@ export default function Orientation({
 
   const SelectButton = () => (
     <HStack space={"10"}>
-      <HStack flex="0.5">
+      <HStack flex="0.9">
         <IconByName name="UserLineIcon" isDisabled />
         <AdminTypo.H6 color="textGreyColor.100">
           {t("SELECT_CANDIDATE")} *
         </AdminTypo.H6>
       </HStack>
-      <VStack flex="0.8">
-        <Box>
+      <HStack flex="0.7" alignItems="center">
           <AdminTypo.Secondarybutton onPress={() => onShowScreen(true)}>
             {t("SELECT_PRERAK")}
           </AdminTypo.Secondarybutton>
-        </Box>
-        <Box alignItems="center" alignContent="center">
-          <AdminTypo.H3 color="textGreyColor.800" bold>
+          <AdminTypo.H3 color="textGreyColor.800" bold pl="3">
             {userIds !== undefined ? Object.values(userIds).length : ""}
           </AdminTypo.H3>
-        </Box>
-      </VStack>
+      </HStack>
     </HStack>
   );
 
@@ -473,7 +469,9 @@ export default function Orientation({
                   onSubmit,
                 }}
               >
-                <HStack justifyContent="space-between" space={2} py="5">
+                <HStack justifyContent="space-between" space={2} py="5"  borderTopWidth="1px"
+            bg="white"
+            borderTopColor="appliedColor">
                   <AdminTypo.Secondarybutton
                     onPress={() => {
                       setModalVisible(false);
