@@ -68,8 +68,8 @@ const List = ({ data }) => {
   );
 };
 const select2 = [
-  { label: "asc", value: "asc" },
-  { label: "desc", value: "desc" },
+  { label: "SORT_ASC", value: "asc" },
+  { label: "SORT_DESC", value: "desc" },
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
@@ -152,7 +152,13 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack bg="gray.200">
-        <VStack>
+        <Pressable
+          onPress={(e) => {
+            ["potential_prerak"].includes(facilitator.status) && (
+
+              navigate(`/beneficiary`))
+          }}
+        >
           <HStack
             p="5"
             space="5"
@@ -164,6 +170,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               isDisabled
               name="UserFollowLineIcon"
               _icon={{ size: "30px" }}
+              onPress={(e) => {
+                console.log(e)
+                navigate("/beneficiary");
+              }}
             />
             <VStack flex="0.8">
               <FrontEndTypo.H3
@@ -185,7 +195,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.H4>
             </VStack>
           </HStack>
-        </VStack>
+        </Pressable>
       </VStack>
       <HStack justifyContent="space-between" alignItems="Center" m="4">
         <Box my="3">
@@ -199,7 +209,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             overflowX="hidden"
             width="50%"
             selectedValue={status}
-            placeholder="Status:All"
+            placeholder={t("STATUS_ALL")}
             onValueChange={(nextValue) => {
               setStatus(nextValue);
               setStatusValue(nextValue);
@@ -230,7 +240,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             overflowX="hidden"
             width="42%"
             selectedValue={sort}
-            placeholder="Sort By"
+            placeholder={t("SORT_BY")}
             onValueChange={(nextValue) => {
               setSort(nextValue);
               setSortValue(nextValue);
@@ -243,7 +253,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             {select2.map((option, index) => (
               <Select.Item
                 key={index}
-                label={option.label}
+                label={t(option.label)}
                 value={option.value}
               />
             ))}

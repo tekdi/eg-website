@@ -34,7 +34,7 @@ export default function AdharKyc() {
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
-
+  console.log(location)
   React.useEffect(async () => {
     if (!page) {
       aadhaarInit();
@@ -100,8 +100,11 @@ export default function AdharKyc() {
   const handalBack = () => {
     if (page === "otp") {
       setPage();
+
     } else {
-      navigate(-1);
+      navigate(-1, {
+        state: { aadhar_no: location?.state }
+      });
     }
   };
 
@@ -131,9 +134,8 @@ export default function AdharKyc() {
         <Layout
           _appBar={{
             onlyIconsShow: ["backBtn", "userInfo"],
-            name: `${user?.first_name}${
-              user?.last_name ? " user.last_name" : ""
-            }`,
+            name: `${user?.first_name} ${user?.last_name ? user.last_name : ""
+              }`,
             profile_url: user?.documents[0]?.name,
             _box: { bg: "white", shadow: "appBarShadow" },
             _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },

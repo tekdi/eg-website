@@ -66,6 +66,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       _appBar={{
         profile_url: facilitator?.documents?.[0]?.name,
         exceptIconsShow: ["backBtn", "userInfo"],
+        facilitator
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -401,7 +402,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             <Stack>
               <VStack p="5" pt={1}>
                 {!form_step_number ||
-                (form_step_number && parseInt(form_step_number) < 10) ? (
+                  (form_step_number && parseInt(form_step_number) < 10) ? (
                   <Pressable onPress={(e) => navigate("/form")}>
                     <HStack
                       borderWidth="1"
@@ -477,74 +478,74 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "shortlisted_for_orientation",
             "potential_prerak",
           ].includes(facilitator.status) && (
-            <Stack bg="bgPinkColor.300" space="6" p={4}>
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t("UPLOAD_YOUR_DOCUMENTS")}
-              </FrontEndTypo.H2>
-              <FrontEndTypo.H3>
-                {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
-              </FrontEndTypo.H3>
-              <HStack space="2">
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack width="99%">
-                  <FrontEndTypo.H3 bold>
-                    {t("QUALIFICATION_PROOF")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-              <HStack space="2">
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack width="99%">
-                  <FrontEndTypo.H3 bold>
-                    {t("WORK_EXPERIENCE_PROOF")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("THIS_CAN_BE_LETTER_OF")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-              <HStack space="2">
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack width="99%">
-                  <FrontEndTypo.H3 bold>
-                    {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-              <HStack>
-                <FrontEndTypo.Secondarybutton
-                  width="100%"
-                  endIcon={
-                    <IconByName
-                      isDisabled
-                      name="Upload2FillIcon"
-                      _icon={{ size: "25px" }}
-                    />
-                  }
-                >
-                  {t("UPLOAD_NOW")}
-                </FrontEndTypo.Secondarybutton>
-              </HStack>
-            </Stack>
-          )}
+              <Stack bg="bgPinkColor.300" space="6" p={4}>
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {t("UPLOAD_YOUR_DOCUMENTS")}
+                </FrontEndTypo.H2>
+                <FrontEndTypo.H3>
+                  {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
+                </FrontEndTypo.H3>
+                <HStack space="2">
+                  <IconByName
+                    isDisabled
+                    name="CheckboxCircleLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <VStack width="99%">
+                    <FrontEndTypo.H3 bold>
+                      {t("QUALIFICATION_PROOF")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
+                      {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
+                    </FrontEndTypo.H4>
+                  </VStack>
+                </HStack>
+                <HStack space="2">
+                  <IconByName
+                    isDisabled
+                    name="CheckboxCircleLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <VStack width="99%">
+                    <FrontEndTypo.H3 bold>
+                      {t("WORK_EXPERIENCE_PROOF")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
+                      {t("THIS_CAN_BE_LETTER_OF")}
+                    </FrontEndTypo.H4>
+                  </VStack>
+                </HStack>
+                <HStack space="2">
+                  <IconByName
+                    isDisabled
+                    name="CheckboxCircleLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <VStack width="99%">
+                    <FrontEndTypo.H3 bold>
+                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
+                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
+                    </FrontEndTypo.H4>
+                  </VStack>
+                </HStack>
+                <HStack>
+                  <FrontEndTypo.Secondarybutton
+                    width="100%"
+                    endIcon={
+                      <IconByName
+                        isDisabled
+                        name="Upload2FillIcon"
+                        _icon={{ size: "25px" }}
+                      />
+                    }
+                  >
+                    {t("UPLOAD_NOW")}
+                  </FrontEndTypo.Secondarybutton>
+                </HStack>
+              </Stack>
+            )}
         </VStack>
       </VStack>
     </Layout>
