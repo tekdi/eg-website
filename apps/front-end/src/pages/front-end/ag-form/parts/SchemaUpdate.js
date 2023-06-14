@@ -102,7 +102,7 @@ export default {
       ],
       properties: {
         type_of_learner: {
-          title: "TYPE_OF_STUDENT",
+          title: "TYPE_OF_LEARNER",
           type: "string",
           format: "select",
         },
