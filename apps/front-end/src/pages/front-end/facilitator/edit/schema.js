@@ -173,6 +173,7 @@ export default {
     },
     qualification_details: {
       step_name: "QUALIFICATION_DETAILS",
+      title: "YOUR_HIGHEST_QUALIFICATION",
       type: "object",
       properties: {
         qualification_master_id: {
@@ -181,12 +182,13 @@ export default {
           format: "CustomR",
           grid: 2,
         },
-        type_of_document: {
-          type: "string",
-          title: "TYPE_OF_DOCUMENT",
-        },
+        // type_of_document: {
+        //   type: "string",
+        //   title: "TYPE_OF_DOCUMENT",
+        // },
         qualification_reference_document_id: {
-          label: "UPLOAD_YOUR_DOCUMENT",
+          label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
+          document_type: "highest_qualification_document",
           type: ["string", "number"],
           format: "FileUpload",
         },

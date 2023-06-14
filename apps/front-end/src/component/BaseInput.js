@@ -181,22 +181,23 @@ export const FieldTemplate = ({
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-
-      {schema?.format !== 'hidden' && (label || schema?.label) && typeof type === "string" && (
-        <Box>
-          {(id === "root" || schema?.label) && (
-            <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
-                <H2 color="textMaroonColor.400">
-                  {t(schema?.label ? schema?.label : label)}
-                </H2>
-                <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
-              </HStack>
-            </label>
-          )}
-          {description?.props?.description !== "" && description}
-        </Box>
-      )}
+      {schema?.format !== "hidden" &&
+        (label || schema?.label) &&
+        typeof type === "string" && (
+          <Box>
+            {(id === "root" || schema?.label) && (
+              <label htmlFor={id}>
+                <HStack space="1" alignItems="center">
+                  <H2 color="textMaroonColor.400">
+                    {t(schema?.label ? schema?.label : label)}
+                  </H2>
+                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                </HStack>
+              </label>
+            )}
+            {description?.props?.description !== "" && description}
+          </Box>
+        )}
       <Box>
         {children}
         {errors}
@@ -324,17 +325,17 @@ export const select = ({ options, value, onChange, required, schema }) => {
           style={{
             ...(value
               ? {
-                top: "0",
-                opacity: 1,
-                zIndex: 5,
-                transition: "all 0.3s ease",
-              }
+                  top: "0",
+                  opacity: 1,
+                  zIndex: 5,
+                  transition: "all 0.3s ease",
+                }
               : {
-                top: "0.5rem",
-                zIndex: -2,
-                opacity: 0,
-                transition: "all 0.2s ease-in-out",
-              }),
+                  top: "0.5rem",
+                  zIndex: -2,
+                  opacity: 0,
+                  transition: "all 0.2s ease-in-out",
+                }),
           }}
         >
           <Text fontSize="12" fontWeight="400">
@@ -391,17 +392,17 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
           style={{
             ...(value
               ? {
-                top: "0",
-                opacity: 1,
-                zIndex: 5,
-                transition: "all 0.3s ease",
-              }
+                  top: "0",
+                  opacity: 1,
+                  zIndex: 5,
+                  transition: "all 0.3s ease",
+                }
               : {
-                top: "0.5rem",
-                zIndex: -2,
-                opacity: 0,
-                transition: "all 0.2s ease-in-out",
-              }),
+                  top: "0.5rem",
+                  zIndex: -2,
+                  opacity: 0,
+                  transition: "all 0.2s ease-in-out",
+                }),
           }}
         >
           <Text fontSize="14" fontWeight="400">

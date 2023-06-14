@@ -598,6 +598,7 @@
   "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT": "Upload the Payment receipt For Enrollment",
   "UPLOAD_YOUR_DOCUMENT": "Upload Your Document",
   "UPLOAD_YOUR_DOCUMENTS": "Upload Your Documents",
+  "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT": "Upload Your Highest Qualification Document",
   "USER_CONFIRM_PASSWORD": "Confirm Password",
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION": "Confirm password is not matched with Password",
   "USER_CONFIRM_PASSWORD_IS_REQUIRED": "Confirm Password Is Required",
@@ -649,8 +650,8 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "LEAD":"Lead",
-  "STATUS_ALL":"Status:All",
-  "SORT_ASC":"asc",
-  "SORT_DESC":"desc"
+  "LEAD": "Lead",
+  "STATUS_ALL": "Status:All",
+  "SORT_ASC": "asc",
+  "SORT_DESC": "desc"
 }
