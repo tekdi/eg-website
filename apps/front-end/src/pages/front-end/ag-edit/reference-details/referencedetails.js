@@ -95,11 +95,11 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   React.useEffect(async () => {
-    let rfirst_name = formData?.references[0]?.first_name;
-    let rmiddle_name = formData?.references[0]?.middle_name;
-    let rlast_name = formData?.references[0]?.last_name;
-    let rrelation = formData?.references[0]?.relation;
-    let rcontact_number = formData?.references[0]?.contact_number;
+    let rfirst_name = formData?.references?.[0]?.first_name;
+    let rmiddle_name = formData?.references?.[0]?.middle_name;
+    let rlast_name = formData?.references?.[0]?.last_name;
+    let rrelation = formData?.references?.[0]?.relation;
+    let rcontact_number = formData?.references?.[0]?.contact_number;
 
     setFormData({
       ...formData,
@@ -188,15 +188,15 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-  console.log("form", formData);
 
   const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
+
+    if (data?.referencefullname?.contact_number) {
+      if (data?.referencefullname?.contact_number.toString()?.length !== 10) {
+        errors.referencefullname.contact_number.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
+      if (!(data?.referencefullname?.contact_number > 6666666666 && data?.referencefullname?.contact_number < 9999999999)) {
+        errors.referencefullname.contact_number.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
     if (data?.dob) {
@@ -247,19 +247,22 @@ export default function agFormEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_mobile") {
+    if (id === "root_contact_number") {
+      console.log("data new")
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
+
+        const newErrors = {
+          mobile: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+
       }
     }
+    setFormData(newData);
+
   };
 
   const onError = (data) => {
@@ -271,12 +274,28 @@ export default function agFormEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(
-      formData?.referencefullname,
-      userId
-    );
-    console.log("page3.....", updateDetails);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    console.log(formData?.referencefullname?.contact_number.toString())
+
+    if (formData?.referencefullname?.contact_number.toString()?.length !== 10) {
+      const newErrors = {
+        contact_number: {
+          __errors: [
+            t("PLEASE_ENTER_VALID_NUMBER"),
+          ],
+        },
+      };
+      setErrors(newErrors);
+    }
+    else {
+      const updateDetails = await AgRegistryService.updateAg(
+        formData?.referencefullname,
+        userId
+      );
+      console.log("page3.....", updateDetails);
+      navigate(`/beneficiary/${userId}/basicdetails`);
+    }
+
+
   };
 
   return (
