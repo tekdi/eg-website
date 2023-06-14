@@ -14,7 +14,7 @@ export default {
       properties: {
         type_of_learner: {
           type: "string",
-          label: "Type of Student",
+          label: "TYPE_OF_LEARNER",
         },
         last_standard_of_education: {
           type: "string",

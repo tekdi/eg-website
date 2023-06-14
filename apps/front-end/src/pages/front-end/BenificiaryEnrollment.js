@@ -7,12 +7,14 @@ import {
   benificiaryRegistoryService,
   t,
   Layout,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
+  const [subject, setSubject] = React.useState();
 
   const navigate = useNavigate();
 
@@ -23,6 +25,15 @@ export default function BenificiaryEnrollment() {
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
+  };
+
+  React.useEffect(() => {
+    subjects();
+  }, []);
+
+  const subjects = async () => {
+    const result = await enumRegistryService.getSubjects();
+    setSubject(result);
   };
 
   return (
@@ -53,9 +64,9 @@ export default function BenificiaryEnrollment() {
             </HStack>
             <Box>
               <Progress
-                value={arrList(benificiary?.core_beneficiaries, [
+                value={arrList(benificiary?.program_beneficiaries, [
                   "type_of_enrollement",
-                  "enrollement_status",
+                  "enrollment_status",
                   "enrolled_for_board",
                   "enrollment_number",
                   "subjects",
@@ -76,8 +87,8 @@ export default function BenificiaryEnrollment() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.type_of_enrollement
-                    ? benificiary?.core_beneficiaries?.type_of_enrollement
+                  {benificiary?.program_beneficiaries?.type_of_enrollement
+                    ? benificiary?.program_beneficiaries?.type_of_enrollement
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -93,8 +104,8 @@ export default function BenificiaryEnrollment() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.enrollement_status
-                    ? benificiary?.core_beneficiaries?.enrollement_status
+                  {benificiary?.program_beneficiaries?.enrollment_status
+                    ? benificiary?.program_beneficiaries?.enrollment_status
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -110,8 +121,8 @@ export default function BenificiaryEnrollment() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.enrolled_for_board
-                    ? benificiary?.core_beneficiaries?.enrolled_for_board
+                  {benificiary?.program_beneficiaries?.enrolled_for_board
+                    ? benificiary?.program_beneficiaries?.enrolled_for_board
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -127,8 +138,8 @@ export default function BenificiaryEnrollment() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.enrollment_number
-                    ? benificiary?.core_beneficiaries?.enrollment_number
+                  {benificiary?.program_beneficiaries?.enrollment_number
+                    ? benificiary?.program_beneficiaries?.enrollment_number
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -137,13 +148,25 @@ export default function BenificiaryEnrollment() {
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
                   {t("SELECTED_SUBJECTS")}
                 </FrontEndTypo.H3>
-
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.program_beneficiaries?.subjects &&
-                    JSON.parse(
-                      benificiary?.program_beneficiaries?.subjects
-                    ).map((e) => {
-                      return e + "\n";
+                  {subject?.data
+                    ?.filter((obj) => {
+                      const idString = obj?.id?.toString();
+                      return (
+                        benificiary?.program_beneficiaries?.subjects.includes(
+                          idString
+                        ) && idString !== "undefined"
+                      );
+                    })
+                    .map((e) => {
+                      {
+                        return (
+                          <React.Fragment>
+                            {e?.name}
+                            {"\n"}
+                          </React.Fragment>
+                        );
+                      }
                     })}
                 </FrontEndTypo.H3>
               </HStack>
