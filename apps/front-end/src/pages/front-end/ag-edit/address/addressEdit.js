@@ -277,13 +277,11 @@ export default function agFormEdit({ ip }) {
   };
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
@@ -515,7 +513,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -524,7 +521,6 @@ export default function agFormEdit({ ip }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
