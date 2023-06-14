@@ -118,6 +118,7 @@ const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
         </Box>
         {startScan && (
           <QrReader
+            key={selected + torch}
             facingMode={selected ? "user" : "environment"}
             delay={2000}
             onError={handleError}
