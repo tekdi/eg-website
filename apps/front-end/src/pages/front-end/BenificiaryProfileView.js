@@ -47,9 +47,7 @@ export default function BenificiaryProfileView(props) {
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
   };
 
-  React.useEffect(() => {
-    benificiaryDetails();
-  }, []);
+
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
@@ -63,7 +61,9 @@ export default function BenificiaryProfileView(props) {
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
+
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+
     if (result) {
       setReasonValue("");
       setIsOpenDropOut(false);
@@ -83,7 +83,9 @@ export default function BenificiaryProfileView(props) {
       setIsOpenReactive(false);
     }
   };
-
+  React.useEffect(() => {
+    benificiaryDetails();
+  }, [reactivateReasonValue, reasonValue]);
   return (
     <Layout
       _appBar={{
@@ -255,57 +257,15 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
-          {/* <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("CAMP_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  size="sm"
-                />
-              </HStack>
-            </VStack>
-          </Box> */}
 
-          {/* <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  size="sm"
-                />
-              </HStack>
-            </VStack>
-          </Box>
-
-          </Box> */}
           {benificiary?.program_beneficiaries?.status === "identified" ||
-          benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
-          benificiary?.program_beneficiaries?.status === "enrolled" ||
-          benificiary?.program_beneficiaries?.status === "approved_ip" ||
-          benificiary?.program_beneficiaries?.status === "registered_in_camp" ||
-          benificiary?.program_beneficiaries?.status === "pragati_syc" ||
-          benificiary?.program_beneficiaries?.status === "activate" ||
-          benificiary?.program_beneficiaries?.status === null ? (
+            benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
+            benificiary?.program_beneficiaries?.status === "enrolled" ||
+            benificiary?.program_beneficiaries?.status === "approved_ip" ||
+            benificiary?.program_beneficiaries?.status === "registered_in_camp" ||
+            benificiary?.program_beneficiaries?.status === "pragati_syc" ||
+            benificiary?.program_beneficiaries?.status === "activate" ||
+            benificiary?.program_beneficiaries?.status === null ? (
             <FrontEndTypo.Secondarybutton
               onPress={(e) => setIsOpenDropOut(true)}
               leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
@@ -317,7 +277,7 @@ export default function BenificiaryProfileView(props) {
           )}
 
           {benificiary?.program_beneficiaries?.status === "rejected" ||
-          benificiary?.program_beneficiaries?.status === "dropout" ? (
+            benificiary?.program_beneficiaries?.status === "dropout" ? (
             <FrontEndTypo.Secondarybutton
               onPress={(e) => setIsOpenReactive(true)}
             >
