@@ -129,7 +129,7 @@ const columns = (e) => [
   },
 ];
 
-export default function Attendence() {
+export default function Attendence({footerLinks}) {
   const { id } = useParams();
   const [Height] = useWindowSize();
   const location = useLocation();
@@ -383,6 +383,18 @@ export default function Attendence() {
     setPage(page);
   };
   return (
+    <Layout
+    _appBar={{
+      isShowNotificationButton: true,
+    }}
+    _subHeader={{
+      bg: "white",
+      pt: "30px",
+      pb: "0px",
+    }}
+    _sidebar={footerLinks}
+  >
+   
     <ScrollView
       maxH={Height - refAppBar?.clientHeight}
       minH={Height - refAppBar?.clientHeight}
@@ -431,11 +443,11 @@ export default function Attendence() {
             </HStack> */}
           </HStack>
           <Box
-            h={"113px"}
-            bgColor="#CAE9FF"
-            mt={"30px"}
-            shadow={" 0px 4px 4px rgba(0, 0, 0, 0.25)"}
+            bgColor="blueText.300"
+            shadow="BlueBoxShadow"
             borderRadius={"10px"}
+            py="3"
+            mt="8"
           >
             <VStack m={"15px"}>
               <HStack justifyContent={"space-between"}>
@@ -450,25 +462,26 @@ export default function Attendence() {
                 </AdminTypo.Secondarybutton> */}
               </HStack>
 
-              <HStack space={"3"} fontSize={"14px"}>
+              <HStack space={"3"} alignItems="center" pt="4">
                 <IconByName
                   isDisabled
                   name="TimeLineIcon"
-                  color="gray"
+                  color="textGreyColor.800"
                   _icon={{ size: "15" }}
                 />
-                <AdminTypo.H5 color="textGreyColor.800">
+                <AdminTypo.H6 color="textGreyColor.800">
                   {event?.start_date
                     ? moment(event?.start_date).format("Do MMM")
                     : ""}{" "}
                   {event?.start_time ? event?.start_time : ""}
                   {/* 16th April, 11:00 to 12:00 */}
-                </AdminTypo.H5>
+                </AdminTypo.H6>
                 <IconByName
                   isDisabled
                   name="MapPinLineIcon"
-                  color="gray"
+                  color="textGreyColor.800"
                   _icon={{ size: "15" }}
+                  pl="8"
                 />
                 <AdminTypo.H6 color="textGreyColor.800">
                   {event?.location}
@@ -476,20 +489,19 @@ export default function Attendence() {
                 <IconByName
                   isDisabled
                   name="UserLineIcon"
-                  color="gray"
+                  color="textGreyColor.800"
                   _icon={{ size: "15" }}
+                  pl="8"
                 />
                 <AdminTypo.H6 color="textGreyColor.800">
-                  Master Trainer -
+                 {t("MASTER_TRAINER")} -
                 </AdminTypo.H6>
                 <Box
-                  bgColor={"#FFFFFF"}
-                  height={"29px"}
+                  bgColor="white"
                   alignItems={"center"}
                   borderRadius={"10px"}
-                  p={"3px"}
                 >
-                  <Badge alignSelf="center">
+                  <Badge alignSelf="center" bg="white" borderRadius="5px">
                     {event?.master_trainer ? event?.master_trainer : ""}
                   </Badge>
                 </Box>
@@ -505,9 +517,9 @@ export default function Attendence() {
                   color="gray"
                   _icon={{ size: "35" }}
                 />
-                <AdminTypo.H1 color="textGreyColor.800" bold>
-                  Candidates {users?.length}
-                </AdminTypo.H1>
+                <AdminTypo.H3 color="textGreyColor.800" bold>
+                  {t("CANDIDATES")} {users?.length}
+                </AdminTypo.H3>
               </HStack>
               <HStack>
                 <AdminTypo.Secondarybutton
@@ -529,26 +541,22 @@ export default function Attendence() {
               </HStack>
             </HStack>
           </Stack>
-
+         
           <Modal
             isOpen={showEditModal}
             onClose={() => setShowEditModal(false)}
-            safeAreaTop={true}
-            // size={"xxl"}
             size="xl"
+
           >
             <Modal.Content
-              rounded="2xl"
-              bg="translate"
-              style={{ height: 1000 }}
+             
             >
               <Modal.CloseButton />
-              <Modal.Header p="1" borderBottomWidth="0" bg="white">
-                <AdminTypo.H1 textAlign="center" color="textGreyColor.500">
+              
+              <Modal.Body p="1" pb="0" bg="white">
+              <AdminTypo.H2 textAlign="center" pt="2" color="textGreyColor.500">
                   {t("EDIT_DETAILS")}
-                </AdminTypo.H1>
-              </Modal.Header>
-              <Modal.Body p="1" pb="10" bg="white">
+                </AdminTypo.H2>
                 <VStack space="5">
                   <HStack
                     space="5"
@@ -556,7 +564,7 @@ export default function Attendence() {
                     borderBottomColor="gray.300"
                     pb="5"
                   ></HStack>
-                  <HStack space="5">
+                  <HStack space="5" pl="2" alignItems="center">
                     {rowData?.profile_url ? (
                       <Avatar
                         source={{
@@ -570,30 +578,32 @@ export default function Attendence() {
                       <IconByName
                         isDisabled
                         name="AccountCircleLineIcon"
-                        color="gray.300"
-                        _icon={{ size: "35" }}
+                        color="textGreyColor.800"
+                        _icon={{ size: "40" }}
                       />
                     )}
-                    <AdminTypo.H6 bold color="textGreyColor.800">
+                    <AdminTypo.H4  color="textGreyColor.800">
                       {rowData?.user?.first_name +
                         " " +
                         rowData?.user?.last_name}
-                    </AdminTypo.H6>
+                    </AdminTypo.H4>
                   </HStack>
 
                   <HStack alignItems="center" space={2}>
-                    <VStack p="3" space="5">
-                      <HStack alignItems="center" space={"2"}>
+                    <VStack p="3" space="5"  width="100%">
+                      <HStack alignItems="center" space={"2"} pb="3"  borderBottomWidth="1px"
+            bg="white"
+            borderBottomColor="appliedColor">
                         <IconByName
                           isDisabled
                           name="VidiconLine"
-                          color="gray.400"
-                          _icon={{ size: "25" }}
+                          color="textGreyColor.800"
+                          _icon={{ size: "20" }} px="2"
                         />
 
-                        <AdminTypo.H5 color="textGreyColor.100">
+                        <AdminTypo.H6 color="textGreyColor.100" pr="6">
                           {t("EVENT_TYPE")}
-                        </AdminTypo.H5>
+                        </AdminTypo.H6>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Input
                             value={event?.name ? event?.name : event?.type}
@@ -605,17 +615,19 @@ export default function Attendence() {
                           />
                         </HStack>
                       </HStack>
-                      <HStack alignItems="center" space={"2"}>
+                      <HStack alignItems="center" space={"2"}  pb="3"  borderBottomWidth="1px"
+            bg="white"
+            borderBottomColor="appliedColor">
                         <IconByName
                           isDisabled
                           name="MapPinLineIcon"
-                          color="gray.400"
-                          _icon={{ size: "25" }}
+                          color="textGreyColor.800"
+                          _icon={{ size: "20" }} px="2"
                         />
 
-                        <AdminTypo.H5 color="textGreyColor.100">
+                        <AdminTypo.H6 color="textGreyColor.100">
                           {t("MARK_ATTENDANCE")}
-                        </AdminTypo.H5>
+                        </AdminTypo.H6>
                         <HStack alignItems="center" space={"2"} p="1">
                           <Radio.Group
                             flexDirection={"row"}
@@ -636,10 +648,11 @@ export default function Attendence() {
                               color="textGreyColor.800"
                               fontSize="10px"
                             >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Present
-                              </AdminTypo.H6>
+                             <AdminTypo.H6 color="textGreyColor.800" pl="2">
+                                {t("PRESENT")}
+                              </AdminTypo.H6> 
                             </Radio>
+                            
                             <Radio
                               value="absent"
                               my={1}
@@ -647,37 +660,39 @@ export default function Attendence() {
                               color="textGreyColor.800"
                               fontSize="sm"
                             >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Absent
+                              <AdminTypo.H6 color="textGreyColor.800" pl="2">
+                                {t("ABSENT")}
                               </AdminTypo.H6>
                             </Radio>
                           </Radio.Group>
                         </HStack>
                       </HStack>
 
-                      <HStack alignItems="center" space={"2"}>
+                      <HStack alignItems="center" space={"2"} pb="3"  borderBottomWidth="1px"
+            bg="white"
+            borderBottomColor="appliedColor">
                         <IconByName
                           isDisabled
                           name="CheckboxCircleLineIcon"
-                          color="gray.400"
-                          _icon={{ size: "25" }}
+                          color="textGreyColor.800"
+                          _icon={{ size: "20" }} px="2"
                         />
-                        <AdminTypo.H5 color="textGreyColor.100">
+                        <AdminTypo.H6 color="textGreyColor.100">
                           {t("COMPLETE_AADHAR_KYC")}
-                        </AdminTypo.H5>
+                        </AdminTypo.H6>
                         <HStack alignItems="center" space={"2"} p="1">
                           {ids?.user?.aadhar_verified !== null ? (
                             <AdminTypo.H3 style={{ color: "green" }}>
-                              Yes (
+                              {t("YES")} (
                               {ids?.user?.aadhaar_verification_mode !== null
                                 ? ids?.user?.aadhaar_verification_mode
                                 : ""}
                               )
                             </AdminTypo.H3>
                           ) : (
-                            <AdminTypo.H3 style={{ color: "red" }}>
-                              No
-                            </AdminTypo.H3>
+                            <AdminTypo.H5 style={{ color: "red" }}>
+                              {t("NO")}
+                            </AdminTypo.H5>
                             // <FrontEndTypo.Primarybutton
                             //   // width="30%"
                             //   children="Aadhar_eKYC"
@@ -688,8 +703,7 @@ export default function Attendence() {
                           )}
                         </HStack>
                       </HStack>
-
-                      <HStack alignItems="center" space={5}>
+                      <VStack  space={5} >
                         <Form
                           schema={schema}
                           ref={formRef}
@@ -701,9 +715,14 @@ export default function Attendence() {
                         >
                           <HStack
                             alignItems="center"
-                            space={5}
-                            mt={"20px"}
+                            space={3}
+                            mt="5"
+                            pt="4"  borderTopWidth="1px"
+            bg="white"
+            borderTopColor="appliedColor"
+                            
                             justifyContent={"space-between"}
+                            
                           >
                             <AdminTypo.Secondarybutton
                               shadow="BlueOutlineShadow"
@@ -722,7 +741,7 @@ export default function Attendence() {
                             </AdminTypo.PrimaryButton>
                           </HStack>
                         </Form>
-                      </HStack>
+                      </VStack>
                     </VStack>
                   </HStack>
                 </VStack>
@@ -737,9 +756,6 @@ export default function Attendence() {
             size={"full"}
           >
             <Modal.Content
-              rounded="2xl"
-              size="full"
-              bg="translate"
               {...stylesheet.modalxxl}
             >
               <Modal.CloseButton />
@@ -757,17 +773,17 @@ export default function Attendence() {
                 <HStack justifyContent={"space-between"}>
                   <HStack space={"10"} ml="15px">
                     <AdminTypo.H6 color="textGreyColor.550" bold>
-                      Present
+                      {t("PRESENT")}
                     </AdminTypo.H6>
                     {users.filter((e) => e.status === "present").length}
                     <AdminTypo.H6 color="textGreyColor.550" bold>
-                      Absent
+                      {t("ABSENT")}
                     </AdminTypo.H6>
                     {users.filter((e) => e.status !== "present").length}
-                    Candidates name {userData?.user?.first_name}
+                   {t("CANDIDATES_NAME")} {userData?.user?.first_name}
                   </HStack>
                   <HStack>
-                    <AdminTypo.H6>Candidates - {users.length} </AdminTypo.H6>
+                    <AdminTypo.H6>{t("CANDIDATES")} - {users.length} </AdminTypo.H6>
                   </HStack>
                 </HStack>
                 <Stack>
@@ -778,8 +794,10 @@ export default function Attendence() {
                 {cameraUrl?.url ? (
                   <img src={cameraUrl?.url} alt="Image" />
                 ) : (
+
                   <React.Suspense fallback={<Loading />}>
-                    <Camera
+
+                    <Camera  
                       {...{
                         cameraModal,
                         setCameraModal,
@@ -797,10 +815,13 @@ export default function Attendence() {
                         },
                       }}
                     />
+
                   </React.Suspense>
+
                 )}
               </Modal.Body>
-              <Modal.Footer justifyContent="space-between" alignItems="center">
+              <Modal.Footer>
+                <HStack  width="100%" justifyContent="space-between"> 
                 {error && (
                   <AdminTypo.H4 style={{ color: "red" }}>{error}</AdminTypo.H4>
                 )}
@@ -818,7 +839,6 @@ export default function Attendence() {
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.Secondarybutton
                   isDisabled={userData?.index + 1 === users.length}
-                  variant="secondary"
                   ml="4"
                   px="5"
                   onPress={() => {
@@ -827,6 +847,7 @@ export default function Attendence() {
                 >
                   {t("NEXT")}
                 </AdminTypo.Secondarybutton>
+                </HStack>
               </Modal.Footer>
             </Modal.Content>
           </Modal>
@@ -836,7 +857,7 @@ export default function Attendence() {
               {
                 name: t(""),
                 selector: (row) => (
-                  <Button
+                  <Button  variant="ghost" 
                     onPress={() => {
                       setShowEditModal(true);
                       setRowData(row);
@@ -869,6 +890,7 @@ export default function Attendence() {
           />
         </VStack>
       </Box>
-    </ScrollView>
+      </ScrollView>
+      </Layout>
   );
 }
