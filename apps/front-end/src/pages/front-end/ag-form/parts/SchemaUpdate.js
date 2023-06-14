@@ -99,7 +99,7 @@ export default {
       ],
       properties: {
         type_of_learner: {
-          label: "TYPE_OF_STUDENT",
+          label: "TYPE_OF_LEARNER",
           type: "string",
           format: "select",
         },
