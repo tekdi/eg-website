@@ -22,7 +22,7 @@ export default function BenificiaryEducation() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/profile`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   const benificiaryDetails = async () => {

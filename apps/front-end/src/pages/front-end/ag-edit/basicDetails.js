@@ -9,7 +9,6 @@ export default function basicDetails() {
   const [facilitator, setFacilitator] = React.useState({});
   const [ip, setIp] = React.useState({});
   const { id } = useParams();
-  console.log(id);
 
   return (
     <VStack>

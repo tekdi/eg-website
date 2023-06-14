@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, VStack } from "native-base";
+import { FormControl, Pressable, VStack } from "native-base";
 import {
   FrontEndTypo,
   t,
@@ -18,6 +18,7 @@ export default function AdharOTP({
   setError,
   handalBack,
   setOtpFailedPopup,
+  sendData,
 }) {
   const [data, setData] = React.useState({
     otpNumber: "",
@@ -95,6 +96,7 @@ export default function AdharOTP({
               setData({ ...data, otpNumber: value });
             }}
           />
+          <Pressable onPress={(e) => sendData()}>{t("RESEND")}</Pressable>
         </FormControl>
         <VStack space={2}>
           <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">

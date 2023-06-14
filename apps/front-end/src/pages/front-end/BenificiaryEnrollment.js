@@ -7,6 +7,7 @@ import {
   benificiaryRegistoryService,
   t,
   Layout,
+  ImageView,
   enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
+  const [source, setsource] = React.useState();
   const [subject, setSubject] = React.useState();
 
   const navigate = useNavigate();
@@ -24,6 +26,10 @@ export default function BenificiaryEnrollment() {
 
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
+    setsource({
+      document_id:
+        result?.result?.program_beneficiaries?.payment_receipt_document_id,
+    });
     setbenificiary(result?.result);
   };
 
@@ -206,10 +212,12 @@ export default function BenificiaryEnrollment() {
                   colorScheme="info"
                 />
               </Box>
-              <Box
-                paddingTop="10"
+
+              <ImageView
+                source={source}
                 width="full"
                 height="172px"
+                borderRadius="5px"
                 borderWidth="1px"
                 borderColor="worksheetBoxText.100"
                 alignSelf="Center"
