@@ -532,7 +532,9 @@ export default function Attendence() {
 
           <Modal
             isOpen={showEditModal}
-            onClose={() => setShowEditModal(false)}
+            onClose={() => {
+              setShowEditModal(false), setFormData({});
+            }}
             safeAreaTop={true}
             // size={"xxl"}
             size="xl"
@@ -709,6 +711,7 @@ export default function Attendence() {
                               shadow="BlueOutlineShadow"
                               onPress={() => {
                                 setShowEditModal(false);
+                                setFormData({});
                               }}
                             >
                               {t("CANCEL")}
