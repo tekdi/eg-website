@@ -190,76 +190,78 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               >
                 {t("ADD_MORE_AG")}
               </FrontEndTypo.H3>
-              <FrontEndTypo.H4
-                wordWrap="break-word"
-                whiteSpace="nowrap"
-                overflow="hidden"
-              >
-                {t("ENROLL_15_OR_MORE")}
-              </FrontEndTypo.H4>
             </VStack>
           </HStack>
         </Pressable>
       </VStack>
-      <HStack justifyContent="space-between" alignItems="Center" p="4">
-        <Select
-          bg="white"
-          borderWidth="1px"
-          borderColor="textMaroonColor.400"
-          color="textMaroonColor.400"
-          bold
-          borderRadius="30px"
-          shadow="RedOutlineShadow"
-          overflowX="hidden"
-          selectedValue={status}
-          placeholder={t("STATUS_ALL")}
-          onValueChange={(nextValue) => {
-            setStatus(nextValue);
-            setStatusValue(nextValue);
-          }}
-          _selectedItem={{
-            bg: "cyan.600",
-          }}
-          accessibilityLabel="Select a position for Menu"
-        >
-          <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-          {selectStatus?.map((option, index) => (
-            <Select.Item
-              key={index}
-              label={t(option.title)}
-              value={option.value}
-            />
-          ))}
-        </Select>
-        <Select
-          size="sm"
-          bg="white"
-          borderWidth="1px"
-          borderColor="textMaroonColor.400"
-          color="textMaroonColor.400"
-          bold
-          borderRadius="30px"
-          shadow="RedOutlineShadow"
-          overflowX="hidden"
-          selectedValue={sort}
-          placeholder={t("SORT_BY")}
-          onValueChange={(nextValue) => {
-            setSort(nextValue);
-            setSortValue(nextValue);
-          }}
-          _selectedItem={{
-            bg: "secondary.700",
-          }}
-          accessibilityLabel="Select a position for Menu"
-        >
-          {select2.map((option, index) => (
-            <Select.Item
-              key={index}
-              label={t(option.label)}
-              value={option.value}
-            />
-          ))}
-        </Select>
+      <HStack
+        justifyContent="space-between"
+        space="2"
+        alignItems="Center"
+        p="4"
+      >
+        <Box flex="1">
+          <Select
+            bg="white"
+            borderWidth="1px"
+            borderColor="textMaroonColor.400"
+            color="textMaroonColor.400"
+            bold
+            borderRadius="30px"
+            shadow="RedOutlineShadow"
+            overflowX="hidden"
+            selectedValue={status}
+            placeholder={t("STATUS_ALL")}
+            onValueChange={(nextValue) => {
+              setStatus(nextValue);
+              setStatusValue(nextValue);
+            }}
+            _selectedItem={{
+              bg: "cyan.600",
+            }}
+            accessibilityLabel="Select a position for Menu"
+          >
+            <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
+            {selectStatus?.map((option, index) => (
+              <Select.Item
+                key={index}
+                label={t(option.title)}
+                value={option.value}
+              />
+            ))}
+          </Select>
+        </Box>
+        <Box flex="1">
+          <Select
+            size="sm"
+            bg="white"
+            borderWidth="1px"
+            borderColor="textMaroonColor.400"
+            color="textMaroonColor.400"
+            bold
+            borderRadius="30px"
+            shadow="RedOutlineShadow"
+            overflowX="hidden"
+            selectedValue={sort}
+            placeholder={t("SORT_BY")}
+            onValueChange={(nextValue) => {
+              setSort(nextValue);
+              setSortValue(nextValue);
+            }}
+            _selectedItem={{
+              bg: "secondary.700",
+            }}
+            accessibilityLabel="Select a position for Menu"
+          >
+            {select2.map((option, index) => (
+              <Select.Item
+                key={index}
+                label={t(option.label)}
+                value={option.value}
+              />
+            ))}
+          </Select>
+        </Box>
       </HStack>
       <List data={data} />
     </Layout>
