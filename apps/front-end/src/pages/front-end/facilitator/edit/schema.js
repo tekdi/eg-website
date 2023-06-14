@@ -5,7 +5,7 @@ export default {
       title: "FULL_NAME",
       step_name: "BASIC_DETAILS",
       type: "object",
-      required: ["first_name"],
+      required: ["first_name", "last_name", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -40,7 +40,7 @@ export default {
           label: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
           format: "RadioBtn",
-          enumNames: ["Yes", "No, I use a Family member's"],
+          enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
           enum: ["yes", "no"],
         },
         device_type: {
@@ -49,8 +49,6 @@ export default {
           format: "CustomR",
           grid: 2,
           icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
-          enumNames: ["Android", "IPhone"],
-          enum: ["android", "iphone"],
         },
         alternative_mobile_number: {
           type: "number",
@@ -110,19 +108,19 @@ export default {
           grid: 3,
           icons: [
             {
-              name: "UserFollowLineIcon",
+              name: "Female",
               _icon: { size: "30" },
             },
             {
-              name: "UserLineIcon",
+              name: "Male",
               _icon: { size: "30" },
             },
             {
-              name: "UserStarLineIcon",
+              name: "Other",
               _icon: { size: "30" },
             },
           ],
-          enumNames: ["Female", "Male", "Other"],
+          enumNames: ["FEMALE", "MALE", "OTHER"],
           enum: ["female", "male", "other"],
         },
         marital_status: {
@@ -175,6 +173,7 @@ export default {
     },
     qualification_details: {
       step_name: "QUALIFICATION_DETAILS",
+      title: "YOUR_HIGHEST_QUALIFICATION",
       type: "object",
       properties: {
         qualification_master_id: {
@@ -183,12 +182,13 @@ export default {
           format: "CustomR",
           grid: 2,
         },
-        type_of_document: {
-          type: "string",
-          title: "TYPE_OF_DOCUMENT",
-        },
+        // type_of_document: {
+        //   type: "string",
+        //   title: "TYPE_OF_DOCUMENT",
+        // },
         qualification_reference_document_id: {
-          label: "UPLOAD_YOUR_DOCUMENT",
+          label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
+          document_type: "highest_qualification_document",
           type: ["string", "number"],
           format: "FileUpload",
         },

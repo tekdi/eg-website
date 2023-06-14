@@ -358,6 +358,7 @@
   "NAME_OF_THE_PERSON_WHO_TOOK_THE_INTERVIEW": "Name of the person who took the Interview",
   "NAME_OF_YOUR_EMPLOYER": "For eg. Name of your Employer or your senior ",
   "NAME_SENIOR": "Name of your Employer or your senior",
+  "NA": "N/A",
   "NEED_HELP": "Need Help ?",
   "NEIGHBOUR": "Neighbour",
   "NEVER_ENROLLED": "Never Enrolled",
@@ -597,6 +598,7 @@
   "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT": "Upload the Payment receipt For Enrollment",
   "UPLOAD_YOUR_DOCUMENT": "Upload Your Document",
   "UPLOAD_YOUR_DOCUMENTS": "Upload Your Documents",
+  "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT": "Upload Your Highest Qualification Document",
   "USER_CONFIRM_PASSWORD": "Confirm Password",
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION": "Confirm password is not matched with Password",
   "USER_CONFIRM_PASSWORD_IS_REQUIRED": "Confirm Password Is Required",
@@ -647,5 +649,9 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your job availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "LEAD": "Lead",
+  "STATUS_ALL": "Status:All",
+  "SORT_ASC": "asc",
+  "SORT_DESC": "desc"
 }

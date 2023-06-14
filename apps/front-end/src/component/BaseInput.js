@@ -175,26 +175,29 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
+  // console.log(schema, t(schema?.label ? schema?.label : label), label, schema?.label)
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-      {(label || schema?.label) && typeof type === "string" && (
-        <Box>
-          {(id === "root" || schema?.label) && (
-            <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
-                <H2 color="textMaroonColor.400">
-                  {t(schema?.label ? schema?.label : label)}
-                </H2>
-                <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
-              </HStack>
-            </label>
-          )}
-          {description?.props?.description !== "" && description}
-        </Box>
-      )}
+      {schema?.format !== "hidden" &&
+        (label || schema?.label) &&
+        typeof type === "string" && (
+          <Box>
+            {(id === "root" || schema?.label) && (
+              <label htmlFor={id}>
+                <HStack space="1" alignItems="center">
+                  <H2 color="textMaroonColor.400">
+                    {t(schema?.label ? schema?.label : label)}
+                  </H2>
+                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                </HStack>
+              </label>
+            )}
+            {description?.props?.description !== "" && description}
+          </Box>
+        )}
       <Box>
         {children}
         {errors}
@@ -279,7 +282,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
             >
-              {item?.label}
+              {t(item?.label)}
             </Radio>
           ))}
         </Stack>
