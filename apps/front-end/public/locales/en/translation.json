@@ -268,7 +268,7 @@
   "FATHER": "Father",
   "FATHER_FULL_NAME": "Father's Full Name",
   "FEMALE": "Female",
-  "FILE_SIZE": "file size must be less then 25MB",
+  "FILE_SIZE": "file size must be less then 10MB",
   "FILTER": "Filter",
   "FILTERS": "Filters",
   "FINISH": "Finish",

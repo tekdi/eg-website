@@ -35,7 +35,7 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
+    if (file.size <= 1048576 * 10) {
       uploadProfile(file);
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
@@ -65,7 +65,7 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
         ) : (
           <Box>
             <input
-              accept="image/*"
+              accept="image/*,application/pdf"
               type="file"
               style={{ display: "none" }}
               ref={uplodInputRef}

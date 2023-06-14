@@ -151,6 +151,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     setQualifications(qData);
   }, [page]);
 
+  // update schema
   React.useEffect(async () => {
     let newSchema = schema;
 

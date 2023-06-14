@@ -1,6 +1,5 @@
 import React from "react";
-import { useState } from "react";
-import { HStack, VStack, Box, Progress, Divider, Center } from "native-base";
+import { HStack, VStack, Box, Progress, Divider } from "native-base";
 import {
   arrList,
   FrontEndTypo,
@@ -10,8 +9,6 @@ import {
   Layout,
   ImageView,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 export default function FacilitatorQualification({
@@ -145,8 +142,10 @@ export default function FacilitatorQualification({
                     flex="0.4"
                   >
                     <ImageView
-                      text={qualification?.document_reference?.name}
-                      source={{ uri: qualification?.document_reference?.id }}
+                      text={t("LINK")}
+                      source={{
+                        document_id: qualification?.document_reference?.id,
+                      }}
                     />
                   </FrontEndTypo.H3>
                 </HStack>

@@ -127,6 +127,7 @@ export default {
           label: "MARITAL_STATUS",
           type: "string",
           format: "CustomR",
+          grid: 2,
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
