@@ -35,21 +35,6 @@ export default function BenificiaryEnrollment() {
     const result = await enumRegistryService.getSubjects();
     setSubject(result);
   };
-  // console.log(
-  //   "123456789",
-  //   subject,
-  //   benificiary?.program_beneficiaries?.subjects
-  // );
-  // console.log(
-  //   "ertdudhfj",
-  //   JSON.parse(benificiary?.program_beneficiaries?.subjects)
-  // );
-
-  const arr = subject?.data?.filter((e) => {
-    if (benificiary?.program_beneficiaries?.subjects?.includes(e?.id)) {
-      return e;
-    }
-  });
 
   return (
     <Layout _appBar={{ name: t("ENROLLMENT_DETAILS") }}>
@@ -79,9 +64,9 @@ export default function BenificiaryEnrollment() {
             </HStack>
             <Box>
               <Progress
-                value={arrList(benificiary?.core_beneficiaries, [
+                value={arrList(benificiary?.program_beneficiaries, [
                   "type_of_enrollement",
-                  "enrollement_status",
+                  "enrollment_status",
                   "enrolled_for_board",
                   "enrollment_number",
                   "subjects",
@@ -176,10 +161,10 @@ export default function BenificiaryEnrollment() {
                     .map((e) => {
                       {
                         return (
-                          <>
+                          <React.Fragment>
                             {e?.name}
                             {"\n"}
-                          </>
+                          </React.Fragment>
                         );
                       }
                     })}
