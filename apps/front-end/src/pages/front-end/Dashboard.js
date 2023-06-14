@@ -429,7 +429,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             </Stack>
           )}
-          {["lead", "applied", ""].includes(facilitator.status) && (
+          {/* {["lead", "applied", ""].includes(facilitator.status) && (
             <Stack>
               <VStack p="5" pt={1}>
                 {!form_step_number ||
@@ -455,8 +455,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   _text={{ textAlign: "center", textTransform: "capitalize" }}
                   justifyContent="center"
                 /> */}
-              </VStack>
-              {/* <VStack>
+          {/* </VStack> */}
+          {/* <VStack>
                 <Pressable
                   alignItems={"center"}
                   onPress={(e) => navigate("/beneficiary")}
@@ -475,8 +475,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Pressable>
                
               </VStack> */}
-            </Stack>
-          )}
+          {/* </Stack> */}
+          {/* )} */}
           {facilitator?.aadhar_verified !== "yes" && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
