@@ -306,23 +306,23 @@ export default function BenificiaryProfileView(props) {
           benificiary?.program_beneficiaries?.status === "pragati_syc" ||
           benificiary?.program_beneficiaries?.status === "activate" ||
           benificiary?.program_beneficiaries?.status === null ? (
-            <FrontEndTypo.Disablebutton
+            <FrontEndTypo.Secondarybutton
               onPress={(e) => setIsOpenDropOut(true)}
               leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
             >
               {t("MARK_AS_DROPOUT")}
-            </FrontEndTypo.Disablebutton>
+            </FrontEndTypo.Secondarybutton>
           ) : (
             <React.Fragment></React.Fragment>
           )}
 
           {benificiary?.program_beneficiaries?.status === "rejected" ||
           benificiary?.program_beneficiaries?.status === "dropout" ? (
-            <FrontEndTypo.Disablebutton
+            <FrontEndTypo.Secondarybutton
               onPress={(e) => setIsOpenReactive(true)}
             >
               {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-            </FrontEndTypo.Disablebutton>
+            </FrontEndTypo.Secondarybutton>
           ) : (
             <React.Fragment></React.Fragment>
           )}
