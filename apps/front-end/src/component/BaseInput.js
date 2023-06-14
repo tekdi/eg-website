@@ -406,7 +406,6 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
           }}
         >
           <Text fontSize="14" fontWeight="400">
-            {t(label)}
             {required && <Text color={"danger.500"}>*</Text>}
             {value && (
               <Text

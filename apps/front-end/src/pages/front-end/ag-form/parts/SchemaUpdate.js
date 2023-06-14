@@ -21,6 +21,7 @@ export default {
           format: "CustomR",
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
+          grid: "2",
         },
       },
     },
@@ -45,21 +46,21 @@ export default {
         },
         state: {
           type: "string",
-          label: "STATE",
+          title: "STATE",
           format: "select",
         },
         district: {
-          label: "DISTRICT",
+          title: "DISTRICT",
           type: "string",
           format: "select",
         },
         block: {
-          label: "BLOCK",
+          title: "BLOCK",
           type: "string",
           format: "select",
         },
         village: {
-          label: "VILLAGE_WARD",
+          title: "VILLAGE_WARD",
           type: "string",
           format: "select",
         },
@@ -79,11 +80,13 @@ export default {
           label: "MARITAL_STATUS",
           type: "string",
           format: "CustomR",
+          grid: "2",
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
           format: "CustomR",
+          grid: "2",
         },
       },
     },
@@ -99,27 +102,27 @@ export default {
       ],
       properties: {
         type_of_learner: {
-          label: "TYPE_OF_STUDENT",
+          title: "TYPE_OF_STUDENT",
           type: "string",
           format: "select",
         },
         last_standard_of_education_year: {
-          label: "SCHOOL_DROPOUT_YEAR",
+          title: "SCHOOL_DROPOUT_YEAR",
           type: "string",
           format: "select",
         },
         last_standard_of_education: {
-          label: "SCHOOL_DROPOUT_CLASS",
+          title: "SCHOOL_DROPOUT_CLASS",
           type: "string",
           format: "select",
         },
         previous_school_type: {
           type: "string",
-          label: "PREVIOUS_SCHOOL_TYPE",
+          title: "PREVIOUS_SCHOOL_TYPE",
           format: "select",
         },
         reason_of_leaving_education: {
-          label: "SCHOOL_DROPOUT_REASON",
+          title: "SCHOOL_DROPOUT_REASON",
           type: "string",
           format: "select",
         },
@@ -127,6 +130,7 @@ export default {
           label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
           type: "string",
           format: "CustomR",
+          grid: "1",
         },
       },
     },
@@ -135,12 +139,12 @@ export default {
       required: ["learning_motivation", "type_of_support_needed"],
       properties: {
         learning_motivation: {
-          label: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
+          title: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
           type: "string",
           format: "select",
         },
         type_of_support_needed: {
-          label: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
+          title: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
           type: "string",
           format: "select",
         },

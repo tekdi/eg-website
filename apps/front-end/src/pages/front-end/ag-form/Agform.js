@@ -88,7 +88,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => { };
+  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     facilitator_id: {
@@ -131,7 +131,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     let url = await AgRegistryService.createAg(formData);
 
     if (url?.data) {
-      navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
+      navigate(`/beneficiary/${url?.data?.user?.id}/2`);
     }
   };
 
@@ -172,6 +172,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       hash: localStorage.getItem("hash"),
     });
 
+    console.log("newSchema", newSchema);
+
     setverifyOtpData(otpData);
     if (status === true) {
       const data = await formSubmitCreate(formData);
@@ -183,8 +185,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               data?.error?.constructor?.name === "String"
                 ? [data?.error]
                 : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
@@ -280,7 +282,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => { };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {

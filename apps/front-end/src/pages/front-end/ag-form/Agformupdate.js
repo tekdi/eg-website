@@ -41,7 +41,7 @@ import {
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -80,12 +80,42 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
 
-  const location = useLocation();
+  // const location = useLocation();
+
+  const id = useParams();
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    setuserId(location?.state?.id);
+  React.useEffect(async () => {
+    setuserId(id?.id);
+    const qData = await benificiaryRegistoryService.getOne(id?.id);
+    setFormData({
+      ...formData,
+      device_ownership: qData?.result?.core_beneficiaries?.device_ownership,
+      device_type: qData?.result?.core_beneficiaries?.device_type,
+      state: qData?.result?.state,
+      district: qData?.result?.district,
+      address: qData?.result?.address,
+      block: qData?.result?.block,
+      village: qData?.result?.village,
+      grampanchayat: qData?.result?.grampanchayat,
+      marital_status: qData?.result?.extended_users?.marital_status,
+      social_category: qData?.result?.extended_users?.social_category,
+      type_of_learner: qData?.result?.core_beneficiaries?.type_of_learner,
+      last_standard_of_education_year:
+        qData?.result?.core_beneficiaries?.last_standard_of_education_year,
+      last_standard_of_education:
+        qData?.result?.core_beneficiaries?.last_standard_of_education,
+      previous_school_type:
+        qData?.result?.core_beneficiaries?.previous_school_type,
+      reason_of_leaving_education:
+        qData?.result?.core_beneficiaries?.reason_of_leaving_education,
+      learning_level: qData?.result?.program_beneficiaries?.learning_level,
+      learning_motivation:
+        qData?.result?.program_beneficiaries?.learning_motivation,
+      type_of_support_needed:
+        qData?.result?.program_beneficiaries?.type_of_support_needed,
+    });
   }, []);
 
   const onPressBackButton = async () => {
@@ -136,7 +166,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const showPosition = (position) => {
     let lati = position.coords.latitude;
-    console.log("lati", lati);
     let longi = position.coords.longitude;
 
     setFormData({
@@ -680,7 +709,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       if (uploadDoc) {
-        navigate("/beneficiary/3", { state: { id: userId } });
+        navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
       }
     }
   };
@@ -727,7 +756,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             variant={"secondary"}
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
-              navigate("/beneficiary/3", { state: { id: userId } });
+              navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
             }}
           >
             {t("SKIP")}
@@ -806,7 +835,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
               variant={"secondary"}
               leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
               onPress={(e) => {
-                navigate("/beneficiary/3", { state: { id: userId } });
+                navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
               }}
             >
               {t("SKIP")}

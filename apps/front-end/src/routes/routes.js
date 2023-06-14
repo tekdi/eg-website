@@ -83,9 +83,9 @@ export default [
   },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
-  { path: "/beneficiary/2", component: AgformUpdate },
-  { path: "/beneficiary/3", component: Agadhaar },
-  { path: "/beneficiary/4", component: Agduplicate },
+  { path: "/beneficiary/:id/2", component: AgformUpdate },
+  { path: "/beneficiary/:id/3", component: Agadhaar },
+  { path: "/beneficiary/:id/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
