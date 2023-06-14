@@ -31,7 +31,7 @@ import {
 } from "@shiksha/common-lib";
 
 import moment from "moment";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -65,12 +65,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
   const [beneficiaryData, setBeneficiaryData] = React.useState({});
-  const location = useLocation();
+  const id = useParams();
   const navigate = useNavigate();
-  console.log(location);
 
   React.useEffect(async () => {
-    setuserId(location?.state?.id);
+    setuserId(id?.id);
     if (userId) {
       let data = await benificiaryRegistoryService.getOne(userId);
 
@@ -225,7 +224,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     };
     const adhaar = await AgRegistryService.updateAg(adddata, userId);
     navigate(`/aadhaar-kyc/${userId}`, {
-      state: { aadhar_no: formData?.aadhar_no },
+      state: { aadhar_no: formData?.aadhar_no, pathname: "/beneficiary/list" },
     });
   };
 
@@ -262,7 +261,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton: (e) => {
-          navigate("/beneficiary/2", { state: { id: userId, page: "5" } });
+          navigate(`/beneficiary/${userId}/2`, {
+            state: { id: userId, page: "5" },
+          });
         },
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
@@ -318,7 +319,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 mt="5"
                 type="submit"
                 onPress={() =>
-                  navigate("/beneficiary/4", { state: { id: userId } })
+                  navigate(`/beneficiary/${userId}/4`, {
+                    state: { id: userId },
+                  })
                 }
               >
                 {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}

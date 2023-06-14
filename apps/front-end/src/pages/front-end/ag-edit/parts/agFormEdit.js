@@ -97,7 +97,6 @@ export default function agFormEdit({ ip, id }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
 
     if (page === "2") {
-      console.log("page2", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "edit_contact",
@@ -114,11 +113,9 @@ export default function agFormEdit({ ip, id }) {
       });
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page3.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "edit_address" });
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page4.....", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "personal",
@@ -127,7 +124,6 @@ export default function agFormEdit({ ip, id }) {
       });
     } else if (page === "5") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page5.....", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "edit_family",
@@ -151,7 +147,6 @@ export default function agFormEdit({ ip, id }) {
         formData?.fatherdetails,
         userId
       );
-      console.log("page7.....", updateDetails);
     }
   }, [page]);
 
@@ -332,13 +327,11 @@ export default function agFormEdit({ ip, id }) {
   };
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
@@ -434,7 +427,6 @@ export default function agFormEdit({ ip, id }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
@@ -466,7 +458,6 @@ export default function agFormEdit({ ip, id }) {
       }
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      console.log("uploadDoc", uploadDoc);
     }
   };
 

@@ -311,7 +311,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const onError = (data) => {
-    console.log(data, "sandy");
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -319,7 +318,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const submit = async (data) => {
-    console.log("formdata", formData?.mobile);
     if (formData?.mobile == formData?.alternative_mobile_number) {
       const newErrors = {
         alternative_mobile_number: {

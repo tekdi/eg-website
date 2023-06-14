@@ -131,7 +131,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     let url = await AgRegistryService.createAg(formData);
 
     if (url?.data) {
-      navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
+      navigate(`/beneficiary/${url?.data?.user?.id}/2`);
     }
   };
 
@@ -171,6 +171,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       ...formData,
       hash: localStorage.getItem("hash"),
     });
+
+    console.log("newSchema", newSchema);
 
     setverifyOtpData(otpData);
     if (status === true) {
