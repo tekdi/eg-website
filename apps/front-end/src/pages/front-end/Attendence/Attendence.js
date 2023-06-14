@@ -168,6 +168,7 @@ export default function Attendence() {
   const onSwitchToggle = async (value) => {
     setsingleUser(value);
     getLocation();
+    setCameraUrl();
     if (value?.status !== "present") {
       setCameraModal(true);
       setUserData({ ...value, index: showIndexes(users, value, "C") });
@@ -193,8 +194,13 @@ export default function Attendence() {
       page_type: "documents_checklist",
       documents_status: data?.documents_status,
     });
-    if (apiResponse) {
+    if (apiResponse?.status === 200) {
       setShowEditModal(false);
+    }
+    if (apiResponse?.status === 200) {
+      const eventResult = await eventService.getEventListById({ id: id });
+      setUsers(eventResult?.event?.attendances);
+      setEvent(eventResult?.event);
     }
   };
 
@@ -363,7 +369,7 @@ export default function Attendence() {
   const updateUserData = async () => {
     if (cameraFile?.key) {
       const apiResponse = await eventService.updateAttendance({
-        id: singleUser?.id,
+        id: userData?.id,
         status: "present",
         lat: locationData?.latitude,
         long: locationData?.longitude,
@@ -382,38 +388,136 @@ export default function Attendence() {
   const handlePageChange = (page) => {
     setPage(page);
   };
+
+  if (userData?.id) {
+    return (
+      <Box>
+        {
+          <React.Suspense fallback={<Loading />}>
+            <Camera
+              headerComponent={
+                <Box alignContent="center" alignItems="center">
+                  <VStack backgroundColor="white">
+                    <AdminTypo.H6 color="textGreyColor.900" bold>
+                      {t("MARK_ATTENDANCE_ORIENTATION")}
+                    </AdminTypo.H6>
+                    <HStack justifyContent={"space-between"}>
+                      <HStack space={"10"} ml="15px">
+                        <AdminTypo.H6 color="textGreyColor.550" bold>
+                          Present
+                        </AdminTypo.H6>
+                        {users.filter((e) => e.status === "present").length}
+                        <AdminTypo.H6 color="textGreyColor.550" bold>
+                          Absent
+                        </AdminTypo.H6>
+                        {users.filter((e) => e.status !== "present").length}
+                        Candidates name {userData?.user?.first_name}
+                      </HStack>
+                      <HStack>
+                        <AdminTypo.H6>
+                          Candidates - {users.length}{" "}
+                        </AdminTypo.H6>
+                      </HStack>
+                    </HStack>
+                    <Stack>
+                      <AdminTypo.H6 my="15px" color="textGreyColor.100">
+                        {t("ATTENDANCE_CAMERA_SUBTITLE")}
+                      </AdminTypo.H6>
+                    </Stack>
+                  </VStack>
+                </Box>
+              }
+              footerComponent={
+                <HStack space={3}>
+                  {error && (
+                    <AdminTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </AdminTypo.H4>
+                  )}
+                  <AdminTypo.Secondarybutton
+                    shadow="BlueOutlineShadow"
+                    onPress={() => {
+                      updateUserData();
+                      cameraFile ? setUserData() : error;
+                      // setCameraModal(false);
+                      setcameraFile("");
+                      setCameraUrl();
+                    }}
+                  >
+                    {t("FINISH")}
+                  </AdminTypo.Secondarybutton>
+                  <AdminTypo.Secondarybutton
+                    isDisabled={userData?.index + 1 === users.length}
+                    variant="secondary"
+                    ml="4"
+                    px="5"
+                    onPress={() => {
+                      cameraFile ? uploadAttendencePicture() : error;
+                    }}
+                  >
+                    {t("NEXT")}
+                  </AdminTypo.Secondarybutton>
+                </HStack>
+              }
+              {...{
+                cameraModal,
+                setCameraModal: async (item) => {
+                  setUserData();
+                  setCameraModal(item);
+                },
+                cameraUrl,
+                setCameraUrl: async (url, file) => {
+                  if (file) {
+                    setError("");
+                    let formData = new FormData();
+                    formData.append("file", file);
+                    const uploadDoc = await uploadRegistryService.uploadPicture(
+                      formData
+                    );
+                    if (uploadDoc) {
+                      setcameraFile(uploadDoc);
+                    }
+                    setCameraUrl({ url, file });
+                  } else {
+                    setUserData();
+                  }
+                },
+              }}
+            />
+          </React.Suspense>
+        }
+      </Box>
+    );
+  }
+
   return (
-    <ScrollView
-      maxH={Height - refAppBar?.clientHeight}
-      minH={Height - refAppBar?.clientHeight}
-    >
-      <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
-        <VStack>
-          <HStack justifyContent={"space-between"}>
-            <HStack>
-              <IconByName
-                isDisabled
-                name="Home4LineIcon"
-                color="gray.300"
-                _icon={{ size: "35" }}
-              />
-              <AdminTypo.H2
-                pl="3"
-                onPress={() => {
-                  navigate("/admin");
-                }}
-              >
-                {t("HOME")}
-              </AdminTypo.H2>
-              <IconByName
-                isDisabled
-                name="ArrowRightSLineIcon"
-                color="gray.300"
-                _icon={{ size: "35" }}
-              />
-              <AdminTypo.H2>{t("PRERAK_ORIENTATION")}</AdminTypo.H2>
-            </HStack>
-            {/* <HStack>
+    <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
+      <VStack>
+        <HStack justifyContent={"space-between"}>
+          <HStack>
+            <IconByName
+              isDisabled
+              name="Home4LineIcon"
+              color="gray.300"
+              _icon={{ size: "35" }}
+            />
+            <AdminTypo.H2
+              pl="3"
+              onPress={() => {
+                navigate("/admin");
+              }}
+            >
+              {t("HOME")}
+            </AdminTypo.H2>
+            <IconByName
+              isDisabled
+              name="ArrowRightSLineIcon"
+              color="gray.300"
+              _icon={{ size: "35" }}
+            />
+            <AdminTypo.H2>{t("PRERAK_ORIENTATION")}</AdminTypo.H2>
+          </HStack>
+          {/* <HStack>
               <AdminTypo.Secondarybutton
                 shadow="BlueOutlineShadow"
                 // onPress={() => setModal(true)}
@@ -429,449 +533,340 @@ export default function Attendence() {
                 {t("SCHEDULE_EVENT")}{" "}
               </AdminTypo.Secondarybutton>
             </HStack> */}
-          </HStack>
-          <Box
-            h={"113px"}
-            bgColor="#CAE9FF"
-            mt={"30px"}
-            shadow={" 0px 4px 4px rgba(0, 0, 0, 0.25)"}
-            borderRadius={"10px"}
-          >
-            <VStack m={"15px"}>
-              <HStack justifyContent={"space-between"}>
-                <AdminTypo.H6 color="textGreyColor.800" bold>
-                  {event?.name ? event?.name : event?.type}
-                </AdminTypo.H6>
-                {/* <AdminTypo.Secondarybutton
+        </HStack>
+        <Box
+          h={"113px"}
+          bgColor="#CAE9FF"
+          mt={"30px"}
+          shadow={" 0px 4px 4px rgba(0, 0, 0, 0.25)"}
+          borderRadius={"10px"}
+        >
+          <VStack m={"15px"}>
+            <HStack justifyContent={"space-between"}>
+              <AdminTypo.H6 color="textGreyColor.800" bold>
+                {event?.name ? event?.name : event?.type}
+              </AdminTypo.H6>
+              {/* <AdminTypo.Secondarybutton
                   // onPress={() => setShowEditModal(true)}
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
                 </AdminTypo.Secondarybutton> */}
-              </HStack>
+            </HStack>
 
-              <HStack space={"3"} fontSize={"14px"}>
-                <IconByName
-                  isDisabled
-                  name="TimeLineIcon"
-                  color="gray"
-                  _icon={{ size: "15" }}
-                />
-                <AdminTypo.H5 color="textGreyColor.800">
-                  {event?.start_date
-                    ? moment(event?.start_date).format("Do MMM")
-                    : ""}{" "}
-                  {event?.start_time ? event?.start_time : ""}
-                  {/* 16th April, 11:00 to 12:00 */}
-                </AdminTypo.H5>
-                <IconByName
-                  isDisabled
-                  name="MapPinLineIcon"
-                  color="gray"
-                  _icon={{ size: "15" }}
-                />
-                <AdminTypo.H6 color="textGreyColor.800">
-                  {event?.location}
-                </AdminTypo.H6>
-                <IconByName
-                  isDisabled
-                  name="UserLineIcon"
-                  color="gray"
-                  _icon={{ size: "15" }}
-                />
-                <AdminTypo.H6 color="textGreyColor.800">
-                  Master Trainer -
-                </AdminTypo.H6>
-                <Box
-                  bgColor={"#FFFFFF"}
-                  height={"29px"}
-                  alignItems={"center"}
-                  borderRadius={"10px"}
-                  p={"3px"}
-                >
-                  <Badge alignSelf="center">
-                    {event?.master_trainer ? event?.master_trainer : ""}
-                  </Badge>
-                </Box>
-              </HStack>
-            </VStack>
-          </Box>
-          <Stack mt={"20px"} space={"3"} py="2">
-            <HStack space={"4"}>
-              <HStack>
-                <IconByName
-                  isDisabled
-                  name="UserLineIcon"
-                  color="gray"
-                  _icon={{ size: "35" }}
-                />
-                <AdminTypo.H1 color="textGreyColor.800" bold>
-                  Candidates {users?.length}
-                </AdminTypo.H1>
-              </HStack>
-              <HStack>
-                <AdminTypo.Secondarybutton
-                  shadow="BlueOutlineShadow"
-                  onPress={(e) => {
-                    setCameraModal(true);
-                    setUserData(users?.[0] ? { ...users?.[0], index: 0 } : {});
-                  }}
-                  endIcon={
+            <HStack space={"3"} fontSize={"14px"}>
+              <IconByName
+                isDisabled
+                name="TimeLineIcon"
+                color="gray"
+                _icon={{ size: "15" }}
+              />
+              <AdminTypo.H5 color="textGreyColor.800">
+                {event?.start_date
+                  ? moment(event?.start_date).format("Do MMM")
+                  : ""}{" "}
+                {event?.start_time ? event?.start_time : ""}
+                {/* 16th April, 11:00 to 12:00 */}
+              </AdminTypo.H5>
+              <IconByName
+                isDisabled
+                name="MapPinLineIcon"
+                color="gray"
+                _icon={{ size: "15" }}
+              />
+              <AdminTypo.H6 color="textGreyColor.800">
+                {event?.location}
+              </AdminTypo.H6>
+              <IconByName
+                isDisabled
+                name="UserLineIcon"
+                color="gray"
+                _icon={{ size: "15" }}
+              />
+              <AdminTypo.H6 color="textGreyColor.800">
+                Master Trainer -
+              </AdminTypo.H6>
+              <Box
+                bgColor={"#FFFFFF"}
+                height={"29px"}
+                alignItems={"center"}
+                borderRadius={"10px"}
+                p={"3px"}
+              >
+                <Badge alignSelf="center">
+                  {event?.master_trainer ? event?.master_trainer : ""}
+                </Badge>
+              </Box>
+            </HStack>
+          </VStack>
+        </Box>
+        <Stack mt={"20px"} space={"3"} py="2">
+          <HStack space={"4"}>
+            <HStack>
+              <IconByName
+                isDisabled
+                name="UserLineIcon"
+                color="gray"
+                _icon={{ size: "35" }}
+              />
+              <AdminTypo.H1 color="textGreyColor.800" bold>
+                Candidates {users?.length}
+              </AdminTypo.H1>
+            </HStack>
+            <HStack>
+              <AdminTypo.Secondarybutton
+                shadow="BlueOutlineShadow"
+                onPress={(e) => {
+                  setCameraModal(true);
+                  setUserData(users?.[0] ? { ...users?.[0], index: 0 } : {});
+                  setCameraUrl();
+                }}
+                endIcon={
+                  <IconByName
+                    isDisabled
+                    name="AddFillIcon"
+                    _icon={{ size: "15" }}
+                  />
+                }
+              >
+                {t("MARK_ATTENDANCE_ALL")}
+              </AdminTypo.Secondarybutton>
+            </HStack>
+          </HStack>
+        </Stack>
+
+        <Modal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false), setFormData({});
+          }}
+          safeAreaTop={true}
+          // size={"xxl"}
+          size="xl"
+        >
+          <Modal.Content rounded="2xl" bg="translate" style={{ height: 1000 }}>
+            <Modal.CloseButton />
+            <Modal.Header p="1" borderBottomWidth="0" bg="white">
+              <AdminTypo.H1 textAlign="center" color="textGreyColor.500">
+                {t("EDIT_DETAILS")}
+              </AdminTypo.H1>
+            </Modal.Header>
+            <Modal.Body p="1" pb="10" bg="white">
+              <VStack space="5">
+                <HStack
+                  space="5"
+                  borderBottomWidth={1}
+                  borderBottomColor="gray.300"
+                  pb="5"
+                ></HStack>
+                <HStack space="5">
+                  {rowData?.profile_url ? (
+                    <Avatar
+                      source={{
+                        uri: rowData?.profile_url,
+                      }}
+                      // alt="Alternate Text"
+                      width={"35px"}
+                      height={"35px"}
+                    />
+                  ) : (
                     <IconByName
                       isDisabled
-                      name="AddFillIcon"
-                      _icon={{ size: "15" }}
+                      name="AccountCircleLineIcon"
+                      color="gray.300"
+                      _icon={{ size: "35" }}
                     />
-                  }
-                >
-                  {t("MARK_ATTENDANCE_ALL")}
-                </AdminTypo.Secondarybutton>
-              </HStack>
-            </HStack>
-          </Stack>
+                  )}
+                  <AdminTypo.H6 bold color="textGreyColor.800">
+                    {rowData?.user?.first_name + " " + rowData?.user?.last_name}
+                  </AdminTypo.H6>
+                </HStack>
 
-          <Modal
-            isOpen={showEditModal}
-            onClose={() => {
-              setShowEditModal(false), setFormData({});
-            }}
-            safeAreaTop={true}
-            // size={"xxl"}
-            size="xl"
-          >
-            <Modal.Content
-              rounded="2xl"
-              bg="translate"
-              style={{ height: 1000 }}
-            >
-              <Modal.CloseButton />
-              <Modal.Header p="1" borderBottomWidth="0" bg="white">
-                <AdminTypo.H1 textAlign="center" color="textGreyColor.500">
-                  {t("EDIT_DETAILS")}
-                </AdminTypo.H1>
-              </Modal.Header>
-              <Modal.Body p="1" pb="10" bg="white">
-                <VStack space="5">
-                  <HStack
-                    space="5"
-                    borderBottomWidth={1}
-                    borderBottomColor="gray.300"
-                    pb="5"
-                  ></HStack>
-                  <HStack space="5">
-                    {rowData?.profile_url ? (
-                      <Avatar
-                        source={{
-                          uri: rowData?.profile_url,
-                        }}
-                        // alt="Alternate Text"
-                        width={"35px"}
-                        height={"35px"}
-                      />
-                    ) : (
+                <HStack alignItems="center" space={2}>
+                  <VStack p="3" space="5">
+                    <HStack alignItems="center" space={"2"}>
                       <IconByName
                         isDisabled
-                        name="AccountCircleLineIcon"
-                        color="gray.300"
-                        _icon={{ size: "35" }}
+                        name="VidiconLine"
+                        color="gray.400"
+                        _icon={{ size: "25" }}
                       />
-                    )}
-                    <AdminTypo.H6 bold color="textGreyColor.800">
-                      {rowData?.user?.first_name +
-                        " " +
-                        rowData?.user?.last_name}
-                    </AdminTypo.H6>
-                  </HStack>
 
-                  <HStack alignItems="center" space={2}>
-                    <VStack p="3" space="5">
-                      <HStack alignItems="center" space={"2"}>
-                        <IconByName
+                      <AdminTypo.H5 color="textGreyColor.100">
+                        {t("EVENT_TYPE")}
+                      </AdminTypo.H5>
+                      <HStack alignItems="center" space={"2"} p="1">
+                        <Input
+                          value={event?.name ? event?.name : event?.type}
+                          variant="outline"
+                          placeholder={event?.name ? event?.name : event?.type}
                           isDisabled
-                          name="VidiconLine"
-                          color="gray.400"
-                          _icon={{ size: "25" }}
                         />
-
-                        <AdminTypo.H5 color="textGreyColor.100">
-                          {t("EVENT_TYPE")}
-                        </AdminTypo.H5>
-                        <HStack alignItems="center" space={"2"} p="1">
-                          <Input
-                            value={event?.name ? event?.name : event?.type}
-                            variant="outline"
-                            placeholder={
-                              event?.name ? event?.name : event?.type
-                            }
-                            isDisabled
-                          />
-                        </HStack>
                       </HStack>
-                      <HStack alignItems="center" space={"2"}>
-                        <IconByName
-                          isDisabled
-                          name="MapPinLineIcon"
-                          color="gray.400"
-                          _icon={{ size: "25" }}
-                        />
+                    </HStack>
+                    <HStack alignItems="center" space={"2"}>
+                      <IconByName
+                        isDisabled
+                        name="MapPinLineIcon"
+                        color="gray.400"
+                        _icon={{ size: "25" }}
+                      />
 
-                        <AdminTypo.H5 color="textGreyColor.100">
-                          {t("MARK_ATTENDANCE")}
-                        </AdminTypo.H5>
-                        <HStack alignItems="center" space={"2"} p="1">
-                          <Radio.Group
-                            flexDirection={"row"}
+                      <AdminTypo.H5 color="textGreyColor.100">
+                        {t("MARK_ATTENDANCE")}
+                      </AdminTypo.H5>
+                      <HStack alignItems="center" space={"2"} p="1">
+                        <Radio.Group
+                          flexDirection={"row"}
+                          fontSize="10px"
+                          gap={"2"}
+                          name="myRadioGroup"
+                          accessibilityLabel="favorite number"
+                          value={
+                            ids?.status !== "present" ? "absent" : "present"
+                          }
+                          onChange={(nextValue) => {
+                            setAttendance(nextValue);
+                          }}
+                        >
+                          <Radio
+                            value="present"
+                            my={1}
+                            color="textGreyColor.800"
                             fontSize="10px"
-                            gap={"2"}
-                            name="myRadioGroup"
-                            accessibilityLabel="favorite number"
-                            value={
-                              ids?.status !== "present" ? "absent" : "present"
-                            }
-                            onChange={(nextValue) => {
-                              setAttendance(nextValue);
+                          >
+                            <AdminTypo.H6 color="textGreyColor.800">
+                              Present
+                            </AdminTypo.H6>
+                          </Radio>
+                          <Radio
+                            value="absent"
+                            my={1}
+                            ml="2"
+                            color="textGreyColor.800"
+                            fontSize="sm"
+                          >
+                            <AdminTypo.H6 color="textGreyColor.800">
+                              Absent
+                            </AdminTypo.H6>
+                          </Radio>
+                        </Radio.Group>
+                      </HStack>
+                    </HStack>
+
+                    <HStack alignItems="center" space={"2"}>
+                      <IconByName
+                        isDisabled
+                        name="CheckboxCircleLineIcon"
+                        color="gray.400"
+                        _icon={{ size: "25" }}
+                      />
+                      <AdminTypo.H5 color="textGreyColor.100">
+                        {t("COMPLETE_AADHAR_KYC")}
+                      </AdminTypo.H5>
+                      <HStack alignItems="center" space={"2"} p="1">
+                        {ids?.user?.aadhar_verified !== null ? (
+                          <AdminTypo.H3 style={{ color: "green" }}>
+                            Yes (
+                            {ids?.user?.aadhaar_verification_mode !== null
+                              ? ids?.user?.aadhaar_verification_mode
+                              : ""}
+                            )
+                          </AdminTypo.H3>
+                        ) : (
+                          <AdminTypo.H3 style={{ color: "red" }}>
+                            No
+                          </AdminTypo.H3>
+                          // <FrontEndTypo.Primarybutton
+                          //   // width="30%"
+                          //   children="Aadhar_eKYC"
+                          //   onPress={() => {
+                          //     navigate(`/aadhaar-kyc/${ids?.user_id}`);
+                          //   }}
+                          // />
+                        )}
+                      </HStack>
+                    </HStack>
+                    <HStack alignItems="center" space={5}>
+                      <Form
+                        schema={schema}
+                        ref={formRef}
+                        uiSchema={uiSchema}
+                        formData={formData}
+                        validator={validator}
+                        onChange={handleFormChange}
+                        onSubmit={onSubmit}
+                      >
+                        <HStack
+                          alignItems="center"
+                          space={5}
+                          mt={"20px"}
+                          justifyContent={"space-between"}
+                        >
+                          <AdminTypo.Secondarybutton
+                            shadow="BlueOutlineShadow"
+                            onPress={() => {
+                              setShowEditModal(false);
+                              setFormData({});
                             }}
                           >
-                            <Radio
-                              value="present"
-                              my={1}
-                              color="textGreyColor.800"
-                              fontSize="10px"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Present
-                              </AdminTypo.H6>
-                            </Radio>
-                            <Radio
-                              value="absent"
-                              my={1}
-                              ml="2"
-                              color="textGreyColor.800"
-                              fontSize="sm"
-                            >
-                              <AdminTypo.H6 color="textGreyColor.800">
-                                Absent
-                              </AdminTypo.H6>
-                            </Radio>
-                          </Radio.Group>
-                        </HStack>
-                      </HStack>
-
-                      <HStack alignItems="center" space={"2"}>
-                        <IconByName
-                          isDisabled
-                          name="CheckboxCircleLineIcon"
-                          color="gray.400"
-                          _icon={{ size: "25" }}
-                        />
-                        <AdminTypo.H5 color="textGreyColor.100">
-                          {t("COMPLETE_AADHAR_KYC")}
-                        </AdminTypo.H5>
-                        <HStack alignItems="center" space={"2"} p="1">
-                          {ids?.user?.aadhar_verified !== null ? (
-                            <AdminTypo.H3 style={{ color: "green" }}>
-                              Yes (
-                              {ids?.user?.aadhaar_verification_mode !== null
-                                ? ids?.user?.aadhaar_verification_mode
-                                : ""}
-                              )
-                            </AdminTypo.H3>
-                          ) : (
-                            <AdminTypo.H3 style={{ color: "red" }}>
-                              No
-                            </AdminTypo.H3>
-                            // <FrontEndTypo.Primarybutton
-                            //   // width="30%"
-                            //   children="Aadhar_eKYC"
-                            //   onPress={() => {
-                            //     navigate(`/aadhaar-kyc/${ids?.user_id}`);
-                            //   }}
-                            // />
-                          )}
-                        </HStack>
-                      </HStack>
-
-                      <HStack alignItems="center" space={5}>
-                        <Form
-                          schema={schema}
-                          ref={formRef}
-                          uiSchema={uiSchema}
-                          formData={formData}
-                          validator={validator}
-                          onChange={handleFormChange}
-                          onSubmit={onSubmit}
-                        >
-                          <HStack
-                            alignItems="center"
-                            space={5}
-                            mt={"20px"}
-                            justifyContent={"space-between"}
+                            {t("CANCEL")}
+                          </AdminTypo.Secondarybutton>
+                          <AdminTypo.PrimaryButton
+                            px="8"
+                            shadow="BlueFillShadow"
+                            onPress={() => onSubmit(formData)}
                           >
-                            <AdminTypo.Secondarybutton
-                              shadow="BlueOutlineShadow"
-                              onPress={() => {
-                                setShowEditModal(false);
-                                setFormData({});
-                              }}
-                            >
-                              {t("CANCEL")}
-                            </AdminTypo.Secondarybutton>
-                            <AdminTypo.PrimaryButton
-                              px="8"
-                              shadow="BlueFillShadow"
-                              onPress={() => onSubmit(formData)}
-                            >
-                              {t("SAVE")}
-                            </AdminTypo.PrimaryButton>
-                          </HStack>
-                        </Form>
-                      </HStack>
-                    </VStack>
-                  </HStack>
-                </VStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-
-          <Modal
-            isOpen={userData?.id}
-            onClose={() => setUserData()}
-            safeAreaTop={true}
-            size={"full"}
-          >
-            <Modal.Content
-              rounded="2xl"
-              size="full"
-              bg="translate"
-              {...stylesheet.modalxxl}
-            >
-              <Modal.CloseButton />
-              <Modal.Header
-                p="5"
-                borderBottomWidth="0"
-                bg="white"
-                textAlign={"left"}
-              >
-                <AdminTypo.H6 color="textGreyColor.900" bold>
-                  {t("MARK_ATTENDANCE_ORIENTATION")}
-                </AdminTypo.H6>
-              </Modal.Header>
-              <Modal.Body p="3" pb="10" bg="white">
-                <HStack justifyContent={"space-between"}>
-                  <HStack space={"10"} ml="15px">
-                    <AdminTypo.H6 color="textGreyColor.550" bold>
-                      Present
-                    </AdminTypo.H6>
-                    {users.filter((e) => e.status === "present").length}
-                    <AdminTypo.H6 color="textGreyColor.550" bold>
-                      Absent
-                    </AdminTypo.H6>
-                    {users.filter((e) => e.status !== "present").length}
-                    Candidates name {userData?.user?.first_name}
-                  </HStack>
-                  <HStack>
-                    <AdminTypo.H6>Candidates - {users.length} </AdminTypo.H6>
-                  </HStack>
+                            {t("SAVE")}
+                          </AdminTypo.PrimaryButton>
+                        </HStack>
+                      </Form>
+                    </HStack>
+                  </VStack>
                 </HStack>
-                <Stack>
-                  <AdminTypo.H6 my="15px" color="textGreyColor.100">
-                    {t("ATTENDANCE_CAMERA_SUBTITLE")}
-                  </AdminTypo.H6>
-                </Stack>
-                {cameraUrl?.url ? (
-                  <img src={cameraUrl?.url} alt="Image" />
-                ) : (
-                  <React.Suspense fallback={<Loading />}>
-                    <Camera
-                      {...{
-                        cameraModal,
-                        setCameraModal,
-                        cameraUrl,
-                        setCameraUrl: async (url, file) => {
-                          setError("");
-                          let formData = new FormData();
-                          formData.append("file", file);
-                          const uploadDoc =
-                            await uploadRegistryService.uploadPicture(formData);
-                          if (uploadDoc) {
-                            setcameraFile(uploadDoc);
-                          }
-                          setCameraUrl({ url, file });
-                        },
-                      }}
-                    />
-                  </React.Suspense>
-                )}
-              </Modal.Body>
-              <Modal.Footer justifyContent="space-between" alignItems="center">
-                {error && (
-                  <AdminTypo.H4 style={{ color: "red" }}>{error}</AdminTypo.H4>
-                )}
-                <AdminTypo.Secondarybutton
-                  shadow="BlueOutlineShadow"
+              </VStack>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+
+        <DataTable
+          columns={[
+            ...scheduleCandidates(),
+            {
+              name: t(""),
+              selector: (row) => (
+                <Button
                   onPress={() => {
-                    updateUserData();
-                    cameraFile ? setUserData() : error;
-                    // setCameraModal(false);
-                    setcameraFile("");
-                    setCameraUrl();
+                    setShowEditModal(true);
+                    setRowData(row);
+                    setids(row);
                   }}
                 >
-                  {t("FINISH")}
-                </AdminTypo.Secondarybutton>
-                <AdminTypo.Secondarybutton
-                  isDisabled={userData?.index + 1 === users.length}
-                  variant="secondary"
-                  ml="4"
-                  px="5"
-                  onPress={() => {
-                    cameraFile ? uploadAttendencePicture() : error;
-                  }}
-                >
-                  {t("NEXT")}
-                </AdminTypo.Secondarybutton>
-              </Modal.Footer>
-            </Modal.Content>
-          </Modal>
-          <DataTable
-            columns={[
-              ...scheduleCandidates(),
-              {
-                name: t(""),
-                selector: (row) => (
-                  <Button
-                    onPress={() => {
-                      setShowEditModal(true);
-                      setRowData(row);
-                      setids(row);
-                    }}
-                  >
-                    <IconByName
-                      isDisabled
-                      name="EditBoxLineIcon"
-                      color="gray"
-                      _icon={{ size: "15" }}
-                    />
-                  </Button>
-                ),
-              },
-            ]}
-            key={users}
-            data={users}
-            subHeader
-            persistTableHead
-            // progressPending={loading}
-            customStyles={customStyles}
-            pagination
-            paginationServer
-            paginationTotalRows={paginationTotalRows}
-            onChangePage={handlePageChange}
-            onRowClicked={handleCandidateSelectRow}
-            onChangeRowsPerPage={(e) => setLimit(e)}
-            // onChangePage={(e) => setPage(e)}
-          />
-        </VStack>
-      </Box>
-    </ScrollView>
+                  <IconByName
+                    isDisabled
+                    name="EditBoxLineIcon"
+                    color="gray"
+                    _icon={{ size: "15" }}
+                  />
+                </Button>
+              ),
+            },
+          ]}
+          key={users}
+          data={users}
+          subHeader
+          persistTableHead
+          // progressPending={loading}
+          customStyles={customStyles}
+          pagination
+          paginationServer
+          paginationTotalRows={paginationTotalRows}
+          onChangePage={handlePageChange}
+          onRowClicked={handleCandidateSelectRow}
+          onChangeRowsPerPage={(e) => setLimit(e)}
+          // onChangePage={(e) => setPage(e)}
+        />
+      </VStack>
+    </Box>
   );
 }
