@@ -50,7 +50,7 @@ const List = ({ data }) => {
                 </HStack>
                 <ChipStatus status={"screened"} pt="3">
                   <FrontEndTypo.H3 bold>
-                    {item?.program_beneficiaries?.status || "nothing"}
+                    {item?.program_beneficiaries?.status || t("UNIDENTIFIED")}
                   </FrontEndTypo.H3>
                 </ChipStatus>
               </HStack>

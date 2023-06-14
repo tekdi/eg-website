@@ -167,7 +167,7 @@ export default {
                 type: "string",
                 format: "CustomR",
                 grid: 3,
-                enumNames: ["1", "2", "3", "4", "+5"],
+                enumNames: ["1", "2", "3", "4", "5+"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {

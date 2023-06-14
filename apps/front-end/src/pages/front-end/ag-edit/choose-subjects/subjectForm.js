@@ -83,7 +83,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   }
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/profile`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -328,7 +328,9 @@ export default function App({ facilitator, id, ip, onClick }) {
       const form_data = new FormData();
       const item = {
         file: file,
-        document_type: "profile",
+        document_type: "payment_receipt",
+        document_sub_type: "payment_receipt",
+
         user_id: userId,
       };
       for (let key in item) {
@@ -344,7 +346,7 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   const editSubmit = async () => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/profile`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   return (
