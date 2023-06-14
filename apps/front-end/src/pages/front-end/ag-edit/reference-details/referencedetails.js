@@ -188,18 +188,22 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/agmobi
   const customValidate = (data, errors, c) => {
-
     if (data?.referencefullname?.contact_number) {
       if (data?.referencefullname?.contact_number.toString()?.length !== 10) {
-        errors.referencefullname.contact_number.addError(t("MINIMUM_LENGTH_IS_10"));
+        errors.referencefullname.contact_number.addError(
+          t("MINIMUM_LENGTH_IS_10")
+        );
       }
-      if (!(data?.referencefullname?.contact_number > 6666666666 && data?.referencefullname?.contact_number < 9999999999)) {
-        errors.referencefullname.contact_number.addError(t("PLEASE_ENTER_VALID_NUMBER"));
+      if (
+        !(
+          data?.referencefullname?.contact_number > 6666666666 &&
+          data?.referencefullname?.contact_number < 9999999999
+        )
+      ) {
+        errors.referencefullname.contact_number.addError(
+          t("PLEASE_ENTER_VALID_NUMBER")
+        );
       }
     }
     if (data?.dob) {
@@ -251,7 +255,7 @@ export default function agFormEdit({ ip }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_contact_number") {
-      console.log("data new")
+      console.log("data new");
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
 
@@ -261,11 +265,9 @@ export default function agFormEdit({ ip }) {
           },
         };
         setErrors(newErrors);
-
       }
     }
     setFormData(newData);
-
   };
 
   const onError = (data) => {
@@ -277,19 +279,16 @@ export default function agFormEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    console.log(formData?.referencefullname?.contact_number.toString())
+    console.log(formData?.referencefullname?.contact_number.toString());
 
     if (formData?.referencefullname?.contact_number.toString()?.length !== 10) {
       const newErrors = {
         contact_number: {
-          __errors: [
-            t("PLEASE_ENTER_VALID_NUMBER"),
-          ],
+          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
         },
       };
       setErrors(newErrors);
-    }
-    else {
+    } else {
       const updateDetails = await AgRegistryService.updateAg(
         formData?.referencefullname,
         userId
@@ -297,8 +296,6 @@ export default function agFormEdit({ ip }) {
       console.log("page3.....", updateDetails);
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
-
-
   };
 
   return (
