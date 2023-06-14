@@ -8,16 +8,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import {
-  Button,
-  HStack,
-  Input,
-  VStack,
-  Modal,
-  Image,
-  Box,
-  Text,
-} from "native-base";
+import { HStack, VStack, Modal, Image, Text, ScrollView } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -131,10 +122,6 @@ const filters = (data, filter) => {
     return true;
   });
 };
-function getBaseUrl() {
-  var re = new RegExp(/^.*\//);
-  return re.exec(window.location.href);
-}
 
 // Table component
 function Table({
@@ -179,7 +166,8 @@ function Table({
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
-      adminlimit
+      adminlimit,
+      status
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
@@ -206,10 +194,10 @@ function Table({
     // setLimit(result?.limit);
     setLoading(false);
   };
-  console.log("status", status);
+
   return (
     <VStack>
-      <HStack my="1" justifyContent="space-between">
+      <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
           <Image
             source={{
@@ -313,35 +301,39 @@ function Table({
           </Modal>
         </HStack>
       </HStack>
-      <HStack position={"relative"} top={10} zIndex={1}>
-        <Text
-          cursor={"pointer"}
-          mx={3}
-          onPress={() => {
-            filterByStatus("ALL");
-          }}
-        >
-          {t("BENEFICIARY_ALL")} {status == "ALL" && `(${paginationTotalRows})`}
-        </Text>
-        {facilitaorStatus?.map((item) => {
-          return (
-            <Text
-              cursor={"pointer"}
-              mx={3}
-              onPress={() => {
-                filterByStatus(item?.value);
-              }}
-            >
-              {t(item?.title)}
-              {status == t(item?.value) && `(${paginationTotalRows})`}
-            </Text>
-          );
-        })}
-        {/* <Text mx={5}>{t("Applied")}</Text>
+      <ScrollView horizontal={true} mb="2">
+        <HStack pb="2">
+          <Text
+            cursor={"pointer"}
+            mx={3}
+            onPress={() => {
+              filterByStatus("ALL");
+            }}
+          >
+            {t("BENEFICIARY_ALL")}
+            {status == "ALL" && `(${paginationTotalRows})`}
+          </Text>
+          {facilitaorStatus?.map((item) => {
+            return (
+              <Text
+                color={status == t(item?.value) ? "blueText.400" : ""}
+                bold={status == t(item?.value) ? true : false}
+                cursor={"pointer"}
+                mx={3}
+                onPress={() => {
+                  filterByStatus(item?.value);
+                }}
+              >
+                {t(item?.title)}
+                {status == t(item?.value) && `(${paginationTotalRows})`}
+              </Text>
+            );
+          })}
+          {/* <Text mx={5}>{t("Applied")}</Text>
         <Text mx={5}>{t("Screened")}</Text>
         <Text mx={5}>{t("ALL")}</Text> */}
-      </HStack>
-
+        </HStack>
+      </ScrollView>
       <DataTable
         customStyles={customStyles}
         columns={[
@@ -361,7 +353,6 @@ function Table({
           },
         ]}
         data={data}
-        subHeader
         persistTableHead
         progressPending={loading}
         pagination
