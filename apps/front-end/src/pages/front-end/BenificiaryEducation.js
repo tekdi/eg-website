@@ -29,6 +29,7 @@ export default function BenificiaryEducation() {
     const result = await benificiaryRegistoryService.getOne(userId);
 
     setbenificiary(result?.result);
+    console.log("result?.result", result?.result);
   };
 
   return (
@@ -137,7 +138,7 @@ export default function BenificiaryEducation() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                   {benificiary?.core_beneficiaries?.previous_school_type
-                    ? benificiary?.core_beneficiaries?.previous_school_type
+                    ? t(benificiary?.core_beneficiaries?.previous_school_type)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -153,8 +154,10 @@ export default function BenificiaryEducation() {
                   flex="0.4"
                 >
                   {benificiary?.core_beneficiaries?.reason_of_leaving_education
-                    ? benificiary?.core_beneficiaries
-                        ?.reason_of_leaving_education
+                    ? t(
+                        benificiary?.core_beneficiaries
+                          ?.reason_of_leaving_education
+                      )
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -206,7 +209,7 @@ export default function BenificiaryEducation() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                   {benificiary?.core_beneficiaries?.career_aspiration
-                    ? benificiary?.core_beneficiaries?.career_aspiration
+                    ? t(benificiary?.core_beneficiaries?.career_aspiration)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>

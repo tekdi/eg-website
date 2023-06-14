@@ -150,7 +150,18 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const customValidate = (data, errors, c) => {
+    console.log("data?.aadhar_token", data?.aadhar_token);
+    if (!data?.aadhar_token) {
+      console.log("reached");
+
+      errors?.aadhar_token?.addError(
+        `${t(
+          "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
+        )}`
+      );
+    }
     if (data?.aadhar_token) {
+      console.log("reached");
       if (
         data?.aadhar_token &&
         !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
