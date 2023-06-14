@@ -31,7 +31,7 @@ import {
 } from "@shiksha/common-lib";
 
 import moment from "moment";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -64,24 +64,22 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [isExistflag, setisExistflag] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
-  const [beneficiaryData, setBeneficiaryData] = React.useState({})
-  const location = useLocation();
+  const [beneficiaryData, setBeneficiaryData] = React.useState({});
+  const id = useParams();
   const navigate = useNavigate();
-  console.log(location)
 
   React.useEffect(async () => {
-    setuserId(location?.state?.id);
+    setuserId(id?.id);
     if (userId) {
-      let data = await benificiaryRegistoryService.getOne(userId)
+      let data = await benificiaryRegistoryService.getOne(userId);
 
       setFormData({
         aadhar_no: data?.result?.aadhar_no,
         aadhar_token: data?.result?.aadhar_no,
         edit_page_type: "add_ag_duplication",
-        is_duplicate: "no"
-      })
+        is_duplicate: "no",
+      });
     }
-
   }, [userId]);
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -219,7 +217,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const addAdhaar = async () => {
-
     let adddata = {
       edit_page_type: "add_ag_duplication",
       aadhar_no: formData?.aadhar_token,
@@ -227,7 +224,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     };
     const adhaar = await AgRegistryService.updateAg(adddata, userId);
     navigate(`/aadhaar-kyc/${userId}`, {
-      state: { aadhar_no: formData?.aadhar_no },
+      state: { aadhar_no: formData?.aadhar_no, pathname: "/beneficiary/list" },
     });
   };
 
@@ -264,7 +261,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton: (e) => {
-          navigate("/beneficiary/2", { state: { id: userId, page: "5" } });
+          navigate(`/beneficiary/${userId}/2`, {
+            state: { id: userId, page: "5" },
+          });
         },
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
@@ -320,7 +319,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 mt="5"
                 type="submit"
                 onPress={() =>
-                  navigate("/beneficiary/4", { state: { id: userId } })
+                  navigate(`/beneficiary/${userId}/4`, {
+                    state: { id: userId },
+                  })
                 }
               >
                 {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}

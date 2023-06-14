@@ -29,6 +29,7 @@
   "AADHAR_KYC_VERIFICATION_FAILED": "Aadhaar KYC Verification Failed",
   "AADHAR_NUMBER_KYC": "Aadhar Number KYC",
   "AADHAR_UPLOAD_CLEAR": "Clear",
+  "ABSENT": "Absent",
   "ACCEPT": "Accept",
   "ACTION": "Action",
   "ADD": "Add",
@@ -126,6 +127,8 @@
   "CANCEL": "Cancel",
   "CANCEL_AND_GO_BACK": "Cancel and Go Back",
   "CANDIDATE": "Candidate",
+  "CANDIDATES": "Candidates",
+  "CANDIDATES_NAME": "Candidates Name",
   "CAPTCHA_CODE": "Captcha code",
   "CAREER_ASPIRATION": "Career Aspiration",
   "CAREER_ASPIRATION_FURTHER_STUDIES": "Further studies",
@@ -433,6 +436,7 @@
   "PRERAK_REGISTER_GIRLS_FOR_EXAMS": "Register Girls for Exams",
   "PRERAK_TRAINING": "Prerak Training",
   "PREVIOUS_SCHOOL_TYPE": "Previous School Type",
+  "PRESENT": "Present",
   "PREVIOUS_SCHOOL_TYPE_GOVERNMENT_SCHOOL": "Government School",
   "PREVIOUS_SCHOOL_TYPE_NEVER_STUDIED": "Never Studied",
   "PREVIOUS_SCHOOL_TYPE_OPEN_SCHOOL": "Open School",
@@ -658,5 +662,7 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "UNIDENTIFIED":"unidentified"
 }
+
