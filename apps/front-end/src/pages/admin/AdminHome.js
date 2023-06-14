@@ -42,6 +42,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [adminpage, setadminPage] = React.useState(1);
   const [admindata, setadminData] = React.useState();
   const [totalCount, settotalCount] = React.useState();
+  const [status, setadminstatus] = React.useState();
 
   let finalData;
 
@@ -128,9 +129,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
-      adminlimit
+      adminlimit,
+      status
     );
-    console.log("result.data", result?.data?.data);
     setadminData(result?.data?.data);
     settotalCount(result?.data?.totalCount);
 
@@ -251,6 +252,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               totalCount={totalCount}
               setadminLimit={setadminLimit}
               setadminPage={setadminPage}
+              setadminstatus={setadminstatus}
               facilitator={userTokenInfo?.authUser}
             />
           </Box>
