@@ -1,8 +1,15 @@
 import Dashboard from "pages/front-end/Dashboard";
 import Home from "pages/front-end/Home";
-import basicDetails from "../pages/front-end/AGDetails/basicDetails";
-import educationDetails from "../pages/front-end/AGDetails/education-details-further-studies/educationDetails";
-import chooseSubjects from "../pages/front-end/AGDetails/choose-subjects/subjectDetails";
+import basicDetails from "../pages/front-end/ag-edit/basicDetails";
+import educationDetails from "../pages/front-end/ag-edit/education-details-further-studies/educationDetails";
+import contactDetailsEdit from "../pages/front-end/ag-edit/contact-details/contactDetailsEdit";
+import addressEdit from "../pages/front-end/ag-edit/address/addressEdit";
+import personaldetails from "../pages/front-end/ag-edit/personal-details/personaldetails";
+import referencedetails from "../pages/front-end/ag-edit/reference-details/referencedetails";
+import familydetails from "../pages/front-end/ag-edit/family-details/familydetails";
+import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
+import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
+import subjectDetails from "../pages/front-end/ag-edit/choose-subjects/subjectDetails";
 import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
@@ -13,11 +20,16 @@ import CountScreenView from "../pages/front-end/CountScreenView";
 import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
 import Agadhaar from "pages/front-end/ag-form/Agadhaar";
 import Success from "pages/front-end/Success";
-import Profile from "pages/front-end/PrerakProfileDetailsView";
+import Profile from "pages/front-end/facilitator/Profile";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
+import BenificiaryAadhaarDetails from "pages/front-end/BenificiaryAadhaarDetails";
+import EditForm from "../pages/front-end/facilitator/edit/Form";
+import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
+import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
+import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
 
 export default [
   { path: "/form", component: Home },
@@ -26,9 +38,44 @@ export default [
     component: Home,
   },
   { path: "/dashboard", component: Dashboard },
-  { path: "/ag/:id", component: basicDetails },
-  { path: "/ag/education/:id", component: educationDetails },
-  { path: "/ag/subjects/:id", component: chooseSubjects },
+  { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
+  {
+    path: "/beneficiary/edit/:id/contact-info",
+    component: contactDetailsEdit,
+  },
+  {
+    path: "/beneficiary/edit/:id/address",
+    component: addressEdit,
+  },
+  {
+    path: "/beneficiary/edit/:id/personal-details",
+    component: personaldetails,
+  },
+
+  {
+    path: "/beneficiary/edit/:id/family-details",
+    component: familydetails,
+  },
+
+  {
+    path: "/beneficiary/edit/:id/upload-photo",
+    component: uploadphoto,
+  },
+
+  { path: "/beneficiary/edit/:id/education", component: educationDetails },
+  {
+    path: "/beneficiary/edit/:id/future-education",
+    component: futureStudy,
+  },
+
+  {
+    path: "/beneficiary/edit/:id/enrollment-details",
+    component: subjectDetails,
+  },
+  {
+    path: "/beneficiary/edit/:id/reference-details",
+    component: referencedetails,
+  },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
   { path: "/beneficiary/2", component: AgformUpdate },
@@ -37,7 +84,6 @@ export default [
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
-  { path: "/profile", component: Profile },
   { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   { path: "/beneficiary/:id", component: BenificiaryProfileView },
   {
@@ -47,6 +93,10 @@ export default [
   { path: "/table", component: CountScreenView },
   {
     path: "/aadhaar-kyc/:id",
+    component: AdharKyc,
+  },
+  {
+    path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
   },
   {
@@ -60,6 +110,22 @@ export default [
   {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
+  },
+  {
+    path: "/beneficiary/:id/aadhaardetails",
+    component: BenificiaryAadhaarDetails,
+  },
+  { path: "/profile", component: Profile },
+  { path: "/profile/edit/array-form/:type", component: ArrayForm },
+  { path: "/profile/edit/:step", component: EditForm },
+  { path: "/profile/edit/:step/:photoNo", component: EditForm },
+  {
+    path: "/facilitatorbasicdetail",
+    component: FacilitatorBasicDetails,
+  },
+  {
+    path: "/facilitatorqualification",
+    component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
 ];

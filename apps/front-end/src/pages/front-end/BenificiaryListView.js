@@ -7,20 +7,14 @@ import {
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
-import {
-  HStack,
-  VStack,
-  Box,
-  Select,
-  Pressable,
-} from "native-base";
+import { HStack, VStack, Box, Select, Pressable } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
   return (
-    <VStack space="4" p="5" alignContent="center" bg="bgGreyColor.200">
+    <VStack space="4" p="4" alignContent="center">
       {data && data.length <= 0 ? (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
       ) : (
@@ -55,7 +49,9 @@ const List = ({ data }) => {
                   </VStack>
                 </HStack>
                 <ChipStatus status={"screened"} pt="3">
-                  {item?.program_beneficiaries?.[0]?.status || "nothing"}
+                  <FrontEndTypo.H3 bold>
+                    {item?.program_beneficiaries?.status || "nothing"}
+                  </FrontEndTypo.H3>
                 </ChipStatus>
               </HStack>
               <VStack bg="white" pl="2">
@@ -74,8 +70,8 @@ const List = ({ data }) => {
   );
 };
 const select2 = [
-  { label: "asc", value: "asc" },
-  { label: "desc", value: "desc" },
+  { label: "SORT_ASC", value: "asc" },
+  { label: "SORT_DESC", value: "desc" },
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
@@ -154,15 +150,23 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
         setSearch: (value) => {
           setSearchBenficiary(value);
         },
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="gray.200">
-        <VStack>
+      <VStack>
+        <Pressable
+          onPress={(e) => {
+            ["potential_prerak"].includes(facilitator.status) &&
+              navigate(`/beneficiary`);
+          }}
+        >
           <HStack
             p="5"
             space="5"
-            borderBottomWidth="1"
+            // borderBottomWidth="1"
             {...styles.inforBox}
             alignItems="Center"
           >
@@ -170,6 +174,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               isDisabled
               name="UserFollowLineIcon"
               _icon={{ size: "30px" }}
+              onPress={(e) => {
+                console.log(e);
+                navigate("/beneficiary");
+              }}
             />
             <VStack flex="0.8">
               <FrontEndTypo.H3
@@ -191,72 +199,67 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.H4>
             </VStack>
           </HStack>
-        </VStack>
+        </Pressable>
       </VStack>
-      <HStack justifyContent="space-between" alignItems="Center" m="4">
-        <Box my="3">
-          <Select
-            borderWidth="1px"
-            borderColor="textMaroonColor.400"
-            color="textMaroonColor.400"
-            bold
-            borderRadius="30px"
-            shadow="RedOutlineShadow"
-            overflowX="hidden"
-            width="50%"
-            selectedValue={status}
-            placeholder="Status:All"
-            onValueChange={(nextValue) => {
-              setStatus(nextValue);
-              setStatusValue(nextValue);
-            }}
-            _selectedItem={{
-              bg: "cyan.600",
-            }}
-            accessibilityLabel="Select a position for Menu"
-          >
-            <FrontEndTypo.H5>
-              <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-              {selectStatus?.map((option, index) => (
-                <Select.Item
-                  key={index}
-                  label={`${t(option.title)}`}
-                  value={option.value}
-                />
-              ))}
-            </FrontEndTypo.H5>
-          </Select>
-        </Box>
-        <Box>
-          <Select
-            borderWidth="1px"
-            borderColor="textMaroonColor.400"
-            color="textMaroonColor.400"
-            bold
-            borderRadius="30px"
-            shadow="RedOutlineShadow"
-            overflowX="hidden"
-            width="42%"
-            selectedValue={sort}
-            placeholder="Sort By"
-            onValueChange={(nextValue) => {
-              setSort(nextValue);
-              setSortValue(nextValue);
-            }}
-            _selectedItem={{
-              bg: "secondary.700",
-            }}
-            accessibilityLabel="Select a position for Menu"
-          >
-            {select2.map((option, index) => (
-              <Select.Item
-                key={index}
-                label={option.label}
-                value={option.value}
-              />
-            ))}
-          </Select>
-        </Box>
+      <HStack justifyContent="space-between" alignItems="Center" p="4">
+        <Select
+          bg="white"
+          borderWidth="1px"
+          borderColor="textMaroonColor.400"
+          color="textMaroonColor.400"
+          bold
+          borderRadius="30px"
+          shadow="RedOutlineShadow"
+          overflowX="hidden"
+          selectedValue={status}
+          placeholder={t("STATUS_ALL")}
+          onValueChange={(nextValue) => {
+            setStatus(nextValue);
+            setStatusValue(nextValue);
+          }}
+          _selectedItem={{
+            bg: "cyan.600",
+          }}
+          accessibilityLabel="Select a position for Menu"
+        >
+          <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
+          {selectStatus?.map((option, index) => (
+            <Select.Item
+              key={index}
+              label={t(option.title)}
+              value={option.value}
+            />
+          ))}
+        </Select>
+        <Select
+          size="sm"
+          bg="white"
+          borderWidth="1px"
+          borderColor="textMaroonColor.400"
+          color="textMaroonColor.400"
+          bold
+          borderRadius="30px"
+          shadow="RedOutlineShadow"
+          overflowX="hidden"
+          selectedValue={sort}
+          placeholder={t("SORT_BY")}
+          onValueChange={(nextValue) => {
+            setSort(nextValue);
+            setSortValue(nextValue);
+          }}
+          _selectedItem={{
+            bg: "secondary.700",
+          }}
+          accessibilityLabel="Select a position for Menu"
+        >
+          {select2.map((option, index) => (
+            <Select.Item
+              key={index}
+              label={t(option.label)}
+              value={option.value}
+            />
+          ))}
+        </Select>
       </HStack>
       <List data={data} />
     </Layout>

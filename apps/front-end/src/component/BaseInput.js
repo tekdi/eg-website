@@ -15,19 +15,24 @@ import {
 import {
   BodySmall,
   H2,
-  t,
   FloatingInput,
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
+import { useTranslation } from "react-i18next";
+import FileUpload from "./formCustomeInputs/FileUpload";
+
+export { CustomOTPBox, FileUpload };
 
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
 }
 
 export function AddButton({ icon, iconType, ...btnProps }) {
+  const { t } = useTranslation();
   return (
     <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
       <HStack>
@@ -38,6 +43,7 @@ export function AddButton({ icon, iconType, ...btnProps }) {
 }
 
 export function RemoveButton({ icon, iconType, ...btnProps }) {
+  const { t } = useTranslation();
   return (
     <Button variant={"outline"} {...btnProps} onPress={btnProps?.onClick}>
       <HStack>
@@ -48,6 +54,7 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
 }
 
 export const TitleFieldTemplate = ({ id, required, title }) => {
+  const { t } = useTranslation();
   return (
     <VStack>
       <H2 id={id}>
@@ -59,6 +66,7 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
 };
 
 export const DescriptionFieldTemplate = ({ description, id }) => {
+  const { t } = useTranslation();
   return (
     <VStack pb="3">
       <BodySmall id={id} color="textMaroonColor.400">
@@ -71,6 +79,7 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
 export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   const [isShow, setIsShow] = React.useState("");
   const { title } = schema;
+  const { t } = useTranslation();
   let addBtn = "";
 
   return (
@@ -165,21 +174,30 @@ export const FieldTemplate = ({
   ...props
 }) => {
   const { type } = schema;
+  const { t } = useTranslation();
+  // console.log(schema, t(schema?.label ? schema?.label : label), label, schema?.label)
   return (
-    <VStack style={style} space={id === "root" && label ? "10" : "0"}>
-      {label && typeof type === "string" && type !== "string" && (
-        <Box>
-          {id === "root" && (
-            <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
-                <H2 color="textMaroonColor.400">{t(label)}</H2>
-                <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
-              </HStack>
-            </label>
-          )}
-          {description?.props?.description !== "" && description}
-        </Box>
-      )}
+    <VStack
+      style={style}
+      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+    >
+      {schema?.format !== "hidden" &&
+        (label || schema?.label) &&
+        typeof type === "string" && (
+          <Box>
+            {(id === "root" || schema?.label) && (
+              <label htmlFor={id}>
+                <HStack space="1" alignItems="center">
+                  <H2 color="textMaroonColor.400">
+                    {t(schema?.label ? schema?.label : label)}
+                  </H2>
+                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                </HStack>
+              </label>
+            )}
+            {description?.props?.description !== "" && description}
+          </Box>
+        )}
       <Box>
         {children}
         {errors}
@@ -189,6 +207,7 @@ export const FieldTemplate = ({
   );
 };
 export const ObjectFieldTemplate = (props) => {
+  const { t } = useTranslation();
   return (
     <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
@@ -225,10 +244,11 @@ export const CustomR = ({
 
 export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
-  const { label } = schema ? schema : {};
+  const { label, format } = schema ? schema : {};
+  const { t } = useTranslation();
   return (
     <FormControl gap="4">
-      {label && (
+      {label && !format && (
         <FormControl.Label>
           <H2 color="textMaroonColor.400">{t(label)}</H2>
           {required && <H2 color="textMaroonColor.400">*</H2>}
@@ -245,7 +265,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
         <Stack
           direction={{
             base: "column",
-            md: "row",
+            sm: "row",
           }}
           alignItems={{
             base: "flex-start",
@@ -262,7 +282,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
             >
-              {item?.label}
+              {t(item?.label)}
             </Radio>
           ))}
         </Stack>
@@ -287,10 +307,12 @@ export const Aadhaar = (props) => {
 
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label } = schema ? schema : {};
+  const { label, title } = schema ? schema : {};
+  const { t } = useTranslation();
+
   return (
     <FormControl gap="4">
-      {label && (
+      {(label || (!label && title)) && (
         <FormControl.Label
           rounded="sm"
           position="absolute"
@@ -317,7 +339,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           }}
         >
           <Text fontSize="12" fontWeight="400">
-            {t(label)}
+            {t(label ? label : title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
             ) : (
@@ -330,8 +352,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
       )}
       <Select
         selectedValue={value}
-        accessibilityLabel={t(label)}
-        placeholder={t(label)}
+        accessibilityLabel={t(label ? label : title)}
+        placeholder={t(label ? label : title)}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
@@ -351,10 +373,10 @@ export const select = ({ options, value, onChange, required, schema }) => {
   );
 };
 
-export { CustomOTPBox };
 export const readOnly = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label } = schema ? schema : {};
+  const { t } = useTranslation();
   return (
     <FormControl gap="4">
       {label && (
@@ -400,5 +422,58 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
     </FormControl>
+  );
+};
+
+export const HFieldTemplate = ({
+  id,
+  style,
+  label,
+  help,
+  required,
+  description,
+  errors,
+  children,
+  schema,
+  ...props
+}) => {
+  const { type } = schema;
+  const { t } = useTranslation();
+  return (
+    <HStack
+      style={style}
+      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      alignItems="start"
+      pl="3"
+    >
+      {(label || schema?.label) && typeof type === "string" && (
+        <Box flex="0.5">
+          {(id === "root" || schema?.label) && (
+            <label htmlFor={id}>
+              <HStack space="1" alignItems="center">
+                <IconByName
+                  name={schema?.icons}
+                  color="textGreyColor.800"
+                  isDisabled
+                  pr="2"
+                />
+                <AdminTypo.H6 color="textGreyColor.100">
+                  {t(schema?.label ? schema?.label : label)}
+                </AdminTypo.H6>
+                <AdminTypo.H6 color="textGreyColor.100">
+                  {required ? "*" : null}
+                </AdminTypo.H6>
+              </HStack>
+            </label>
+          )}
+          {description?.props?.description !== "" && description}
+        </Box>
+      )}
+      <Box flex="0.7">
+        {children}
+        {errors}
+        {help}
+      </Box>
+    </HStack>
   );
 };

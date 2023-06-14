@@ -19,11 +19,12 @@ import {
   IconByName,
 } from "@shiksha/common-lib";
 import AdharOTP from "./AadhaarOTP";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
 
 export default function AdharKyc() {
+  const location = useLocation();
   const [page, setPage] = React.useState();
   const [error, setError] = React.useState();
   const [data, setData] = React.useState({});
@@ -31,12 +32,22 @@ export default function AdharKyc() {
   const [captchaImg, setCaptchaImg] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
-  const { id } = useParams();
+  const { id, type } = useParams();
   const navigate = useNavigate();
-
+  console.log(location)
   React.useEffect(async () => {
-    aadhaarInit();
-  }, []);
+    if (!page) {
+      aadhaarInit();
+    }
+    setLoading(false);
+  }, [page]);
+
+  React.useEffect(() => {
+    const typeData = type?.toLowerCase();
+    if (typeData === "qr") {
+      setPage(typeData);
+    }
+  }, [type]);
 
   const getCaptcha = async (id) => {
     const res = await aadhaarService.initiate({ id });
@@ -89,8 +100,11 @@ export default function AdharKyc() {
   const handalBack = () => {
     if (page === "otp") {
       setPage();
+
     } else {
-      navigate(-1);
+      navigate(-1, {
+        state: { aadhar_no: location?.state }
+      });
     }
   };
 
@@ -101,7 +115,7 @@ export default function AdharKyc() {
   return (
     <Box>
       {page === "qr" ? (
-        <QrScannerKyc {...{ setOtpFailedPopup }} />
+        <QrScannerKyc {...{ setOtpFailedPopup, setPage, setError, id }} />
       ) : page === "upload" ? (
         <ManualUpload {...{ setLoading, setPage, setOtpFailedPopup }} />
       ) : page === "otp" && data?.aadhaarNumber ? (
@@ -121,7 +135,7 @@ export default function AdharKyc() {
           _appBar={{
             onlyIconsShow: ["backBtn", "userInfo"],
             name: `${user?.first_name}${
-              user?.last_name ? " user.last_name" : ""
+              user?.last_name ? " " + user.last_name : ""
             }`,
             profile_url: user?.documents[0]?.name,
             _box: { bg: "white", shadow: "appBarShadow" },
@@ -161,8 +175,12 @@ export default function AdharKyc() {
               <FrontEndTypo.Primarybutton
                 mt={20}
                 onPress={(e) => {
-                  navigate(-1);
-                  navigate(0);
+                  if (location?.state) {
+                    navigate(location?.state);
+                  } else {
+                    navigate(-1);
+                    navigate(0);
+                  }
                 }}
               >
                 {t("CONTINUE")}
@@ -362,14 +380,14 @@ export default function AdharKyc() {
           >
             {t("RETRY_AADHAR_NUMER_KYC")}
           </FrontEndTypo.Secondarybutton>
-          {/* <FrontEndTypo.Secondarybutton
+          <FrontEndTypo.Secondarybutton
             onPress={() => {
               setPage("qr");
               setOtpFailedPopup(false);
             }}
           >
             {t("RETRY_AADHAR_QR_KYC")}
-          </FrontEndTypo.Secondarybutton> */}
+          </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Secondarybutton
             onPress={() => {
               setPage("upload");

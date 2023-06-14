@@ -36,6 +36,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -78,7 +79,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/edit/${userId}`);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -99,15 +100,13 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   React.useEffect(async () => {
-    let father_first_name = formData?.core_beneficiaries[0]?.father_first_name;
-    let father_middle_name =
-      formData?.core_beneficiaries[0]?.father_middle_name;
-    let father_last_name = formData?.core_beneficiaries[0]?.father_last_name;
+    let father_first_name = formData?.core_beneficiaries?.father_first_name;
+    let father_middle_name = formData?.core_beneficiaries?.father_middle_name;
+    let father_last_name = formData?.core_beneficiaries?.father_last_name;
 
-    let mother_first_name = formData?.core_beneficiaries[0]?.mother_first_name;
-    let mother_last_name = formData?.core_beneficiaries[0]?.mother_last_name;
-    let mother_middle_name =
-      formData?.core_beneficiaries[0]?.mother_middle_name;
+    let mother_first_name = formData?.core_beneficiaries?.mother_first_name;
+    let mother_last_name = formData?.core_beneficiaries?.mother_last_name;
+    let mother_middle_name = formData?.core_beneficiaries?.mother_middle_name;
 
     setFormData({
       ...formData,
@@ -349,6 +348,8 @@ export default function agFormEdit({ ip }) {
     }
   };
 
+  console.log("formData", formData);
+
   const onError = (data) => {
     console.log(data);
     if (data[0]) {
@@ -360,6 +361,7 @@ export default function agFormEdit({ ip }) {
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
+    navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (
@@ -412,14 +414,13 @@ export default function agFormEdit({ ip }) {
               transformErrors,
             }}
           >
-            <Button
-              mt="3"
-              variant={"primary"}
+            <FrontEndTypo.Primarybutton
+              mt="5"
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Save" : submitBtn}
-            </Button>
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />

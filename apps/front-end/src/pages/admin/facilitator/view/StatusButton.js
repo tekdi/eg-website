@@ -39,6 +39,11 @@ const styles = {
 };
 const statusList = [
   {
+    status: "screened",
+    btnStatus: "success",
+    name: "SCREEN_APPLICATION",
+  },
+  {
     status: "rejected",
     btnStatus: "error",
     name: "REJECT_APPLICATION",
@@ -162,17 +167,8 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      <AdminTypo.StatusButton
+      {/* <AdminTypo.StatusButton
         status="success"
-        variant={"statusBtnAdmin"}
-        colorScheme="success"
-        leftIcon={
-          <IconByName
-            name="CheckboxCircleLineIcon"
-            _icon={{ color: "#00D790" }}
-            size="20px"
-          ></IconByName>
-        }
         onPress={() => {
           setShowModal("screened");
           setReason();
@@ -180,8 +176,8 @@ export default function StatusButton({ data, setData }) {
         isDisabled={!disabledBtn.includes("screened")}
       >
         {t("SCREEN_APPLICATION")}
-      </AdminTypo.StatusButton>
-      <Modal
+      </AdminTypo.StatusButton> */}
+      {/* <Modal
         size={"xl"}
         isOpen={showModal === "screened"}
         onClose={() => setShowModal()}
@@ -209,7 +205,7 @@ export default function StatusButton({ data, setData }) {
             </VStack>
           </Modal.Header>
           <Modal.Body p="5" bg="white">
-            <HStack space={5}>
+            <VStack space={5}>
               <HStack alignItems="center" space={2}>
                 <IconByName isDisabled name="TimeLineIcon" />
                 <AdminTypo.H1 color="textGreyColor.800">
@@ -298,7 +294,7 @@ export default function StatusButton({ data, setData }) {
                 </VStack>
                 <HStack flex={0.3}></HStack>
               </HStack>
-            </HStack>
+            </VStack>
           </Modal.Body>
           <Modal.Footer>
             <HStack width="100%" justifyContent="space-between">
@@ -311,7 +307,7 @@ export default function StatusButton({ data, setData }) {
             </HStack>
           </Modal.Footer>
         </Modal.Content>
-      </Modal>
+      </Modal> */}
       {statusList.map(({ name, ...item }) => (
         <AdminTypo.StatusButton
           key={name}

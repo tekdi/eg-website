@@ -37,6 +37,7 @@ import {
   CustomOTPBox,
   benificiaryRegistoryService,
   enumRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -86,7 +87,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   }, []);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    navigate(`/beneficiary/${userId}/educationdetails`);
   };
   const ref = React.createRef(null);
 
@@ -222,9 +223,9 @@ export default function AgformUpdate({ userTokenInfo }) {
     const qData = await benificiaryRegistoryService.getOne(userId);
     console.log("qData", qData?.result);
     let career_aspiration =
-      qData?.result?.core_beneficiaries[0]?.career_aspiration;
+      qData?.result?.core_beneficiaries?.career_aspiration;
     let career_aspiration_details =
-      qData?.result?.core_beneficiaries[0]?.career_aspiration_details;
+      qData?.result?.core_beneficiaries?.career_aspiration_details;
 
     setFormData({
       ...formData,
@@ -301,7 +302,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page1", updateDetails);
     if (updateDetails) {
-      navigate(`/beneficiary/edit/enrollment-details/${userId}`);
+      navigate(`/beneficiary/${userId}/educationdetails`);
     }
   };
 
@@ -310,6 +311,7 @@ export default function AgformUpdate({ userTokenInfo }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
+        name: t("FURTHER_STUDIES"),
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -354,14 +356,13 @@ export default function AgformUpdate({ userTokenInfo }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => EditEducation()}
             >
-              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-            </Button>
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />

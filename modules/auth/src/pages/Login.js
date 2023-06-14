@@ -98,7 +98,7 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/login.png",
+            uri: "/images/auth/login.png",
           }}
           alt=""
           width="240"
@@ -217,7 +217,12 @@ export default function Login() {
             </VStack>
             {/* <Caption>{t("TEXT_MESSAGE_MOBILE_NUMBER")}</Caption> */}
             {/* <BodyLarge>{t("RESEND_MY_USERNAME")}</BodyLarge> */}
-            <FrontEndTypo.Primarybutton flex={1} p="4" onPress={handleLogin}>
+            <FrontEndTypo.Primarybutton
+              flex={1}
+              p="4"
+              my="5"
+              onPress={handleLogin}
+            >
               {t("LOGIN")}
             </FrontEndTypo.Primarybutton>
           </form>

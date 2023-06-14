@@ -20,20 +20,6 @@ export default {
           type: "string",
           default: "beneficiary",
         },
-        email_id: {
-          format: "hidden",
-          type: "string",
-          default: "joey@gmail.com",
-        },
-        role_fields: {
-          properties: {
-            facilitator_id: {
-              format: "hidden",
-              type: "string",
-              default: localStorage.getItem("id"),
-            },
-          },
-        },
       },
     },
     2: {

@@ -4,13 +4,22 @@ import SplashScreen from "./splash/SplashScreen";
 import PrerakDuties from "./splash/PrerakDuties";
 import Success from "./Success";
 import { facilitatorRegistryService } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 function Home({ userTokenInfo }) {
+  const location = useLocation();
+  const [locationState, setLocationState] = React.useState("");
+  console.log(location.state, locationState, "location data spalsh");
   const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
   const [ip, setIp] = React.useState({});
   const { id } = useParams();
+  React.useEffect(() => {
+    if (locationState === "SplashScreen") {
+      setPage("SplashScreen");
+    }
+    console.log(page, "lets see here");
+  }, [locationState, page]);
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -28,10 +37,15 @@ function Home({ userTokenInfo }) {
     } else {
       const data = await facilitatorRegistryService.getOrganization({ id });
       localStorage.setItem("profile_url", data?.documents?.[0]?.name);
+
       setIp(data);
     }
   }, []);
 
+  if (locationState === "SplashScreen") {
+    console.log("yes");
+    setPage("SplashScreen");
+  }
   return page === "success" ? (
     <Success {...{ facilitator }} />
   ) : page === "SplashScreen" ? (
@@ -40,6 +54,7 @@ function Home({ userTokenInfo }) {
       onClick={() => setPage("Form")}
       onClickPrerakDuties={() => setPage("Prerak_Duties")}
       onPreferedLanguage={() => setPage("Prerak_Duties")}
+      isBackButton={locationState || ""}
     />
   ) : page === "Prerak_Duties" ? (
     <PrerakDuties page={page} onClick={() => setPage("Form")} />

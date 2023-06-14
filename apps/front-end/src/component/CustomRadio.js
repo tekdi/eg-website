@@ -1,4 +1,4 @@
-import { IconByName, chunk, t, H2 } from "@shiksha/common-lib";
+import { IconByName, chunk, H2 } from "@shiksha/common-lib";
 import {
   Box,
   Pressable,
@@ -9,6 +9,7 @@ import {
   HStack,
 } from "native-base";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function CustomRadio({
   options,
@@ -17,7 +18,10 @@ export default function CustomRadio({
   schema,
   required,
 }) {
-  const { _hstack, icons, _pressable, grid, label } = schema ? schema : {};
+  const { t } = useTranslation();
+  const { _hstack, icons, _pressable, grid, label, format } = schema
+    ? schema
+    : {};
   const { enumOptions } = options ? options : {};
   let items = [enumOptions];
   if (grid && enumOptions?.constructor.name === "Array") {
@@ -26,7 +30,7 @@ export default function CustomRadio({
 
   return (
     <FormControl gap="6">
-      {label && (
+      {label && !format && (
         <FormControl.Label>
           <H2 color="textMaroonColor.400">{t(label)}</H2>
           {required && <H2 color="textMaroonColor.400">*</H2>}

@@ -298,7 +298,7 @@ export default function ManualUpload({
                 setIsFront(true);
               }}
             >
-              {t("CLEAR")}
+              {t("AADHAR_UPLOAD_CLEAR")}
             </FrontEndTypo.Secondarybutton>
           </VStack>
         )}
