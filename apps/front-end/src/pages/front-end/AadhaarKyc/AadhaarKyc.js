@@ -34,7 +34,7 @@ export default function AdharKyc() {
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
-  console.log(location)
+  console.log(location);
   React.useEffect(async () => {
     if (!page) {
       aadhaarInit();
@@ -100,10 +100,9 @@ export default function AdharKyc() {
   const handalBack = () => {
     if (page === "otp") {
       setPage();
-
     } else {
       navigate(-1, {
-        state: { aadhar_no: location?.state }
+        state: { aadhar_no: location?.state },
       });
     }
   };

@@ -308,11 +308,10 @@ export default function agFormEdit({ ip }) {
     }
 
     setFormData(newData);
-
   };
 
   const onError = (data) => {
-    console.log(data, "sandy")
+    console.log(data, "sandy");
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
