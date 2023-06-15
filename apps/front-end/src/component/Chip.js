@@ -40,7 +40,7 @@ export function ChipStatus({ status, ...props }) {
         setColor("shortlistedColor");
         break;
       case "potential_prerak":
-        setNewStatus(t("POTENTIAL_PRERAK"));
+        setNewStatus(t("PRERAK_MOBILIZER"));
         setColor("potentialColor");
         break;
       case "selected_for_training":
@@ -72,9 +72,11 @@ export function ChipStatus({ status, ...props }) {
   return (
     <Chip
       px="4"
+      py="2"
+      width="100px"
       bg={color}
       label={newStatus}
-      _text={{ textTransform: "capitalize" }}
+      _text={{ textTransform: "capitalize", fontSize:"10px", fontWeight:"500", textAlign:"center" }}
       rounded="sm"
       {...props}
     />

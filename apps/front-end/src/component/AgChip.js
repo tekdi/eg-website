@@ -40,7 +40,7 @@ export function ChipStatus({ status, ...props }) {
         setColor("blueText.350");
         break;
       case "potential_prerak":
-        setNewStatus(t("POTENTIAL_PRERAK"));
+        setNewStatus(t("PRERAK_MOBILIZER"));
         setColor("progressBarColor.300");
         break;
       case "selected_for_training":

@@ -57,7 +57,7 @@ const statusList = [
   {
     status: "potential_prerak",
     btnStatus: "success",
-    name: "POTENTIAL_PRERAK",
+    name: "PRERAK_MOBILIZER",
   },
   {
     status: "selected_for_training",

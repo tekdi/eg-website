@@ -104,7 +104,7 @@ const columns = (e) => [
     attr: "qualification",
   },
   {
-    name: t("REGION"),
+    name: t("DISTRICT"),
     selector: (row) => (row?.district ? row?.district : ""),
     sortable: false,
     attr: "city",
@@ -395,8 +395,7 @@ export default function Attendence({ footerLinks }) {
           <React.Suspense fallback={<Loading />}>
             <Camera
               headerComponent={
-                <Box alignContent="center" alignItems="center">
-                  <VStack backgroundColor="white">
+                  <VStack backgroundColor="white" width="98%">
                     <AdminTypo.H6 color="textGreyColor.900" bold>
                       {t("MARK_ATTENDANCE_ORIENTATION")}
                     </AdminTypo.H6>
@@ -424,7 +423,6 @@ export default function Attendence({ footerLinks }) {
                       </AdminTypo.H6>
                     </Stack>
                   </VStack>
-                </Box>
               }
               footerComponent={
                 <HStack space={3} width="100%" justifyContent="space-between">
