@@ -337,7 +337,7 @@ export default function agFormEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("CONTACT_1"),
+        name: t("CONTACT_DETAILS"),
         lang,
         setLang,
       }}

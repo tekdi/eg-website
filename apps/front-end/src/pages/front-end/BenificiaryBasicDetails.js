@@ -359,7 +359,7 @@ export default function BenificiaryBasicDetails() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
                   {benificiary?.extended_users?.social_category
-                    ? benificiary?.extended_users?.social_category
+                    ? t(benificiary?.extended_users?.social_category)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -371,7 +371,7 @@ export default function BenificiaryBasicDetails() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
                   {benificiary?.extended_users?.marital_status
-                    ? benificiary?.extended_users?.marital_status
+                    ? t(benificiary?.extended_users?.marital_status)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>

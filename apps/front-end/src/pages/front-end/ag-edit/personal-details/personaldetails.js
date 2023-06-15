@@ -238,14 +238,14 @@ export default function agFormEdit({ ip }) {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
         title: "title",
-        value: "value",
+        value: "title",
       });
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
         arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
         title: "title",
-        value: "value",
+        value: "title",
       });
       setSchema(newSchema);
     }

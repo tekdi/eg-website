@@ -29,7 +29,6 @@ export default function BenificiaryEducation() {
     const result = await benificiaryRegistoryService.getOne(userId);
 
     setbenificiary(result?.result);
-    console.log("result?.result", result?.result);
   };
 
   return (
