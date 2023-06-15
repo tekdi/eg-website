@@ -30,6 +30,7 @@ export default function AdharKyc() {
   const [data, setData] = React.useState({});
   const [user, setUser] = React.useState();
   const [captchaImg, setCaptchaImg] = React.useState("");
+  const [refreshCaptcha, setRefreshCaptcha] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
@@ -289,7 +290,7 @@ export default function AdharKyc() {
                   <Image
                     width="180"
                     height={50}
-                    key={captchaImg}
+                    key={captchaImg + refreshCaptcha}
                     src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
                     alt="captcha image"
                   />

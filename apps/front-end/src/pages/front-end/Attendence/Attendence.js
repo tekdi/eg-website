@@ -168,6 +168,7 @@ export default function Attendence({ footerLinks }) {
   const onSwitchToggle = async (value) => {
     setsingleUser(value);
     getLocation();
+    setCameraUrl();
     if (value?.status !== "present") {
       setCameraModal(true);
       setUserData({ ...value, index: showIndexes(users, value, "C") });
@@ -193,8 +194,13 @@ export default function Attendence({ footerLinks }) {
       page_type: "documents_checklist",
       documents_status: data?.documents_status,
     });
-    if (apiResponse) {
+    if (apiResponse?.status === 200) {
       setShowEditModal(false);
+    }
+    if (apiResponse?.status === 200) {
+      const eventResult = await eventService.getEventListById({ id: id });
+      setUsers(eventResult?.event?.attendances);
+      setEvent(eventResult?.event);
     }
   };
 
@@ -363,7 +369,7 @@ export default function Attendence({ footerLinks }) {
   const updateUserData = async () => {
     if (cameraFile?.key) {
       const apiResponse = await eventService.updateAttendance({
-        id: singleUser?.id,
+        id: userData?.id,
         status: "present",
         lat: locationData?.latitude,
         long: locationData?.longitude,
@@ -382,6 +388,107 @@ export default function Attendence({ footerLinks }) {
   const handlePageChange = (page) => {
     setPage(page);
   };
+  if (userData?.id) {
+    return (
+      <Box>
+        {
+          <React.Suspense fallback={<Loading />}>
+            <Camera
+              headerComponent={
+                <Box alignContent="center" alignItems="center">
+                  <VStack backgroundColor="white">
+                    <AdminTypo.H6 color="textGreyColor.900" bold>
+                      {t("MARK_ATTENDANCE_ORIENTATION")}
+                    </AdminTypo.H6>
+                    <HStack justifyContent={"space-between"}>
+                      <HStack space={"10"} ml="15px">
+                        <AdminTypo.H6 color="textGreyColor.550" bold>
+                          {t("PRESENT")}
+                        </AdminTypo.H6>
+                        {users.filter((e) => e.status === "present").length}
+                        <AdminTypo.H6 color="textGreyColor.550" bold>
+                          {t("ABSENT")}
+                        </AdminTypo.H6>
+                        {users.filter((e) => e.status !== "present").length}
+                        {t("CANDIDATES_NAME")} {userData?.user?.first_name}
+                      </HStack>
+                      <HStack>
+                        <AdminTypo.H6>
+                          {t("CANDIDATES")} - {users.length}{" "}
+                        </AdminTypo.H6>
+                      </HStack>
+                    </HStack>
+                    <Stack>
+                      <AdminTypo.H6 my="15px" color="textGreyColor.100">
+                        {t("ATTENDANCE_CAMERA_SUBTITLE")}
+                      </AdminTypo.H6>
+                    </Stack>
+                  </VStack>
+                </Box>
+              }
+              footerComponent={
+                <HStack space={3} width="100%" justifyContent="space-between">
+                  {error && (
+                    <AdminTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </AdminTypo.H4>
+                  )}
+                  <AdminTypo.Secondarybutton
+                    shadow="BlueOutlineShadow"
+                    onPress={() => {
+                      updateUserData();
+                      cameraFile ? setUserData() : error;
+                      // setCameraModal(false);
+                      setcameraFile("");
+                      setCameraUrl();
+                    }}
+                  >
+                    {t("FINISH")}
+                  </AdminTypo.Secondarybutton>
+                  <AdminTypo.Secondarybutton
+                    isDisabled={userData?.index + 1 === users.length}
+                    variant="secondary"
+                    ml="4"
+                    px="5"
+                    onPress={() => {
+                      cameraFile ? uploadAttendencePicture() : error;
+                    }}
+                  >
+                    {t("NEXT")}
+                  </AdminTypo.Secondarybutton>
+                </HStack>
+              }
+              {...{
+                cameraModal,
+                setCameraModal: async (item) => {
+                  setUserData();
+                  setCameraModal(item);
+                },
+                cameraUrl,
+                setCameraUrl: async (url, file) => {
+                  if (file) {
+                    setError("");
+                    let formData = new FormData();
+                    formData.append("file", file);
+                    const uploadDoc = await uploadRegistryService.uploadPicture(
+                      formData
+                    );
+                    if (uploadDoc) {
+                      setcameraFile(uploadDoc);
+                    }
+                    setCameraUrl({ url, file });
+                  } else {
+                    setUserData();
+                  }
+                },
+              }}
+            />
+          </React.Suspense>
+        }
+      </Box>
+    );
+  }
+
   return (
     <Layout
       _appBar={{
@@ -545,7 +652,9 @@ export default function Attendence({ footerLinks }) {
 
             <Modal
               isOpen={showEditModal}
-              onClose={() => setShowEditModal(false)}
+              onClose={() => {
+                setShowEditModal(false), setFormData({});
+              }}
               size="xl"
             >
               <Modal.Content>
@@ -746,6 +855,7 @@ export default function Attendence({ footerLinks }) {
                               <AdminTypo.Secondarybutton
                                 shadow="BlueOutlineShadow"
                                 onPress={() => {
+                                  setFormData({});
                                   setShowEditModal(false);
                                 }}
                               >
@@ -768,108 +878,6 @@ export default function Attendence({ footerLinks }) {
               </Modal.Content>
             </Modal>
 
-            <Modal
-              isOpen={userData?.id}
-              onClose={() => setUserData()}
-              safeAreaTop={true}
-              size={"full"}
-            >
-              <Modal.Content {...stylesheet.modalxxl}>
-                <Modal.CloseButton />
-                <Modal.Header
-                  p="5"
-                  borderBottomWidth="0"
-                  bg="white"
-                  textAlign={"left"}
-                >
-                  <AdminTypo.H6 color="textGreyColor.900" bold>
-                    {t("MARK_ATTENDANCE_ORIENTATION")}
-                  </AdminTypo.H6>
-                </Modal.Header>
-                <Modal.Body p="3" pb="10" bg="white">
-                  <HStack justifyContent={"space-between"}>
-                    <HStack space={"10"} ml="15px">
-                      <AdminTypo.H6 color="textGreyColor.550" bold>
-                        {t("PRESENT")}
-                      </AdminTypo.H6>
-                      {users.filter((e) => e.status === "present").length}
-                      <AdminTypo.H6 color="textGreyColor.550" bold>
-                        {t("ABSENT")}
-                      </AdminTypo.H6>
-                      {users.filter((e) => e.status !== "present").length}
-                      {t("CANDIDATES_NAME")} {userData?.user?.first_name}
-                    </HStack>
-                    <HStack>
-                      <AdminTypo.H6>
-                        {t("CANDIDATES")} - {users.length}{" "}
-                      </AdminTypo.H6>
-                    </HStack>
-                  </HStack>
-                  <Stack>
-                    <AdminTypo.H6 my="15px" color="textGreyColor.100">
-                      {t("ATTENDANCE_CAMERA_SUBTITLE")}
-                    </AdminTypo.H6>
-                  </Stack>
-                  {cameraUrl?.url ? (
-                    <img src={cameraUrl?.url} alt="Image" />
-                  ) : (
-                    <React.Suspense fallback={<Loading />}>
-                      <Camera
-                        {...{
-                          cameraModal,
-                          setCameraModal,
-                          cameraUrl,
-                          setCameraUrl: async (url, file) => {
-                            setError("");
-                            let formData = new FormData();
-                            formData.append("file", file);
-                            const uploadDoc =
-                              await uploadRegistryService.uploadPicture(
-                                formData
-                              );
-                            if (uploadDoc) {
-                              setcameraFile(uploadDoc);
-                            }
-                            setCameraUrl({ url, file });
-                          },
-                        }}
-                      />
-                    </React.Suspense>
-                  )}
-                </Modal.Body>
-                <Modal.Footer>
-                  <HStack width="100%" justifyContent="space-between">
-                    {error && (
-                      <AdminTypo.H4 style={{ color: "red" }}>
-                        {error}
-                      </AdminTypo.H4>
-                    )}
-                    <AdminTypo.Secondarybutton
-                      shadow="BlueOutlineShadow"
-                      onPress={() => {
-                        updateUserData();
-                        cameraFile ? setUserData() : error;
-                        // setCameraModal(false);
-                        setcameraFile("");
-                        setCameraUrl();
-                      }}
-                    >
-                      {t("FINISH")}
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.Secondarybutton
-                      isDisabled={userData?.index + 1 === users.length}
-                      ml="4"
-                      px="5"
-                      onPress={() => {
-                        cameraFile ? uploadAttendencePicture() : error;
-                      }}
-                    >
-                      {t("NEXT")}
-                    </AdminTypo.Secondarybutton>
-                  </HStack>
-                </Modal.Footer>
-              </Modal.Content>
-            </Modal>
             <DataTable
               columns={[
                 ...scheduleCandidates(),
@@ -877,7 +885,6 @@ export default function Attendence({ footerLinks }) {
                   name: t(""),
                   selector: (row) => (
                     <Button
-                      variant="ghost"
                       onPress={() => {
                         setShowEditModal(true);
                         setRowData(row);
