@@ -16,7 +16,7 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import { ChipStatus } from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import {
   Box,
   Button,
@@ -268,9 +268,14 @@ export default function Attendence({ footerLinks }) {
     {
       name: t("ADHAR_KYC"),
       selector: (row, index) => (
-        <ChipStatus
-          key={index}
-          status={row?.user?.aadhar_verified !== "yes" ? "no" : "yes"}
+        <Chip
+          bg={
+            row?.user?.aadhar_verified !== "yes"
+              ? "dangerColor"
+              : "potentialColor"
+          }
+          label={row?.user?.aadhar_verified !== "yes" ? t("NO") : t("YES")}
+          rounded={"sm"}
         />
       ),
       sortable: false,

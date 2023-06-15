@@ -63,14 +63,6 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("RUSTICATE"));
         setColor("rejectedColor");
         break;
-      case "yes":
-        setNewStatus(t("YES"));
-        setColor("potentialColor");
-        break;
-      case "no":
-        setNewStatus(t("NO"));
-        setColor("dangerColor");
-        break;
       default:
         setNewStatus(t("APPLIED"));
         setColor("appliedColor");
