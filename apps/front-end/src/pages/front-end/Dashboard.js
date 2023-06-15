@@ -315,7 +315,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
                   {t("ITS_TIME_TO_START_MOBILIZING")}
                 </FrontEndTypo.H2>
-                <Alert mx={"3"} status="info" colorScheme="info" my="4">
+                {/* <Alert mx={"3"} status="info" colorScheme="info" my="4">
                   <VStack space={"2"} flexShrink={"1"}>
                     <HStack
                       flexShrink={"1"}
@@ -329,7 +329,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       </HStack>
                     </HStack>
                   </VStack>
-                </Alert>
+                </Alert> */}
               </Stack>
             </Stack>
           )}
