@@ -50,7 +50,7 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">
                 {benificiary?.first_name ? benificiary?.first_name : "-"}
                 &nbsp;
-                {benificiary?.middle_name ? benificiary?.middle_name : "-"}
+                {benificiary?.middle_name?.trim() === "" ? "-" : benificiary?.middle_name}
                 &nbsp;
                 {benificiary?.last_name ? benificiary?.last_name : "-"}
               </FrontEndTypo.H1>

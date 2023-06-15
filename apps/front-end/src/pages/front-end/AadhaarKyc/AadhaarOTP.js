@@ -19,6 +19,7 @@ export default function AdharOTP({
   handalBack,
   setOtpFailedPopup,
   sendData,
+  setAttempt,
 }) {
   const [data, setData] = React.useState({
     otpNumber: "",
@@ -38,7 +39,6 @@ export default function AdharOTP({
       aadhaarNumber,
     };
     const res = await aadhaarService.complete(bodyData);
-    console.log(res);
     if (res.status === "complete") {
       authRegistryService.aadhaarKyc({
         id,
@@ -49,6 +49,7 @@ export default function AdharOTP({
       });
       setPage && setPage("aadhaarSuccess");
     } else {
+      setAttempt("addhar-number");
       setError({
         ...error,
         top: res.error,
@@ -115,7 +116,7 @@ export default function AdharOTP({
         <FormControl>
           <CustomOTPBox
             isHideResendOtp
-            otpCount="5"
+            otpCount="4"
             placeholder="6YE3ZH"
             required
             isInvalid={error?.securityCode}

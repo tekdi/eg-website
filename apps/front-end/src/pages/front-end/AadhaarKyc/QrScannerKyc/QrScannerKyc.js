@@ -9,7 +9,7 @@ import React from "react";
 import { QrReader } from "react-qr-reader";
 import { useTranslation } from "react-i18next";
 
-const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
+const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
   const [selected, setSelected] = React.useState(false);
   const [startScan, setStartScan] = React.useState(true);
   const [loadingScan, setLoadingScan] = React.useState(false);
@@ -29,13 +29,13 @@ const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
       const result = await authRegistryService.aadhaarQr({
         qr_data: scanData.text,
       });
-      console.log(result);
       if (result?.error) {
         setError({
           top: `QR code ${result?.error}`,
         });
         setPage();
         setOtpFailedPopup(false);
+        setAttempt("addhar-qr");
       } else {
         setError();
         const aadhaarResult = await authRegistryService.aadhaarKyc({
@@ -118,13 +118,13 @@ const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
         </Box>
         {startScan && (
           <QrReader
-            key={selected + torch}
-            facingMode={selected ? "user" : "environment"}
+            constraints={{
+              facingMode: selected ? "environment" : "user",
+              torch,
+            }}
             delay={2000}
             onError={handleError}
             onResult={handleScan}
-            advanced={[{ torch: torch }]}
-            torch={torch}
             videoContainerStyle={{
               height: cameraHeight,
               width: cameraWidth,
