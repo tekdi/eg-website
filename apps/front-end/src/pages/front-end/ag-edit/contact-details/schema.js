@@ -58,6 +58,11 @@ export default {
           format: "email",
           title: "EMAIL_ID",
         },
+        edit_page_type: {
+          type: "string",
+          default: "edit_education",
+          format: "hidden",
+        },
       },
     },
   },
