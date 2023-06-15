@@ -372,9 +372,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   // Type Of Student
 
-  // React.useEffect(async () => {
-  //    }, [page]);
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;

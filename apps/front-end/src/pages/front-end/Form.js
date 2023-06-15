@@ -523,6 +523,15 @@ export default function App({ facilitator, ip, onClick }) {
           setErrors(newErrors);
         }
       }
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+      }
     }
     if (id === "root_aadhar_token") {
       if (data?.aadhar_token?.toString()?.length === 12) {
@@ -596,6 +605,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
+    console.log("sad");
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -912,7 +922,10 @@ export default function App({ facilitator, ip, onClick }) {
               type="submit"
               p="4"
               mt="10"
-              onPress={() => formRef?.current?.submit()}
+              onPress={(e) => {
+                console.log(formRef?.current);
+                formRef?.current?.submit();
+              }}
             >
               {pages[pages?.length - 1] === page ? t("SUBMIT") : submitBtn}
             </FrontEndTypo.Primarybutton>

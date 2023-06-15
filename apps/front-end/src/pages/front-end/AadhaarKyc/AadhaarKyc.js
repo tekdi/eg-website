@@ -30,11 +30,11 @@ export default function AdharKyc() {
   const [data, setData] = React.useState({});
   const [user, setUser] = React.useState();
   const [captchaImg, setCaptchaImg] = React.useState("");
+  const [refreshCaptcha, setRefreshCaptcha] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
-  console.log(location);
   React.useEffect(async () => {
     if (!page) {
       aadhaarInit();
@@ -52,7 +52,7 @@ export default function AdharKyc() {
   const getCaptcha = async (id) => {
     const res = await aadhaarService.initiate({ id });
     setCaptchaImg(res?.captchaImage);
-    setData({ ...data, captchaCode: "" });
+    setData({ ...data, id, captchaCode: "" });
   };
   const aadhaarInit = async (id) => {
     setLoading(true);
@@ -127,6 +127,7 @@ export default function AdharKyc() {
             setError,
             handalBack,
             setOtpFailedPopup,
+            sendData,
           }}
         />
       ) : (
@@ -255,15 +256,27 @@ export default function AdharKyc() {
                     {t("ENTER_SECURITY_CODE")}
                   </FrontEndTypo.H3>
                 </FormControl.Label>
-                <Box p="4" shadow="appBar">
+                <HStack p="4" shadow="appBar">
                   <Image
                     width="180"
                     height={50}
-                    key={captchaImg}
+                    key={captchaImg + refreshCaptcha}
                     src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
                     alt="captcha image"
                   />
-                </Box>
+                  <IconByName
+                    onPress={(e) =>
+                      setRefreshCaptcha(
+                        refreshCaptcha === "1"
+                          ? "1"
+                          : refreshCaptcha === "2"
+                          ? "1"
+                          : "2"
+                      )
+                    }
+                    name="RefreshLineIcon"
+                  />
+                </HStack>
                 <FloatingInput
                   placeholder="6YE3ZH"
                   required

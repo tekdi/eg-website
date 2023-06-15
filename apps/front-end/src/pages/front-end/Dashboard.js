@@ -95,7 +95,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   return (
     <Layout
       _appBar={{
-        profile_url: facilitator?.documents?.[0]?.name,
+        profile_url: facilitator?.profile_photo_1?.name,
         exceptIconsShow: ["backBtn", "userInfo"],
         facilitator,
       }}
@@ -197,6 +197,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H4>
                   {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
                 </FrontEndTypo.H4>
+              </VStack>
+            </HStack>
+          )}
+          {["rusticate", "quit", "rejected"].includes(facilitator.status) && (
+            <HStack
+              // {...styles.inforBox}
+              bg="red.600"
+              p="5"
+              borderBottomWidth="1"
+              borderBottomColor={"gray.300"}
+              shadows="BlueOutlineShadow"
+            >
+              <IconByName
+                flex="0.1"
+                isDisabled
+                name="Forbid2LineIcon"
+                color="white"
+                _icon={{ size: "25px" }}
+              />
+              <VStack flex="0.9">
+                <FrontEndTypo.H3 bold color="white">
+                  {t(facilitator?.status?.toUpperCase())}
+                </FrontEndTypo.H3>
               </VStack>
             </HStack>
           )}
