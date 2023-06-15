@@ -24,7 +24,6 @@ import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
-import FloatingInput from './components/FloatingInput'
 import * as AdminTypo from './components/admin_component'
 import * as FrontEndTypo from './components/frontend_component'
 import CheatSheet from './components/CheatSheet'
@@ -65,7 +64,6 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
-  FloatingInput,
   CheatSheet,
   CustomOTPBox,
   eventService,
@@ -79,3 +77,4 @@ export * from './components/helper'
 export * from './services/Telemetry'
 export * from './components/calender'
 export * from './components/layout/HeaderTags/index'
+export * from './components/inputs'
