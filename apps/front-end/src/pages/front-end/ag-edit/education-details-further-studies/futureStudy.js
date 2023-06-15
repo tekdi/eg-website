@@ -186,7 +186,7 @@ export default function AgformUpdate({ userTokenInfo }) {
         key: "career_aspiration",
         arr: Data,
         title: "title",
-        value: "title",
+        value: "value",
       });
     }
 

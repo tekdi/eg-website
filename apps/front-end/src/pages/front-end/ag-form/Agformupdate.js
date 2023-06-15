@@ -295,7 +295,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         key: "type_of_learner",
         arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
         title: "title",
-        value: "title",
+        value: "value",
       });
 
       newSchema = getOptions(newSchema, {
@@ -316,21 +316,21 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         key: "previous_school_type",
         arr: ListOfEnum?.data?.PREVIOUS_SCHOOL_TYPE,
         title: t("title"),
-        value: "title",
+        value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "learning_level",
         arr: ListOfEnum?.data?.BENEFICIARY_LEARNING_LEVEL,
         title: t("title"),
-        value: "title",
+        value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
         arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
         title: "title",
-        value: "title",
+        value: "value",
       });
       setSchema(newSchema);
     }
@@ -340,14 +340,14 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
         title: "title",
-        value: "title",
+        value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
         arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
         title: "title",
-        value: "title",
+        value: "value",
       });
       setSchema(newSchema);
     }
@@ -357,23 +357,20 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         key: "learning_motivation",
         arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
         title: "title",
-        value: "title",
+        value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "type_of_support_needed",
         arr: ListOfEnum?.data?.TYPE_OF_SUPPORT_NEEDED,
         title: "title",
-        value: "title",
+        value: "value",
       });
       setSchema(newSchema);
     }
   }, [page]);
 
   // Type Of Student
-
-  // React.useEffect(async () => {
-  //    }, [page]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
