@@ -1,6 +1,5 @@
 import React from "react";
 import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
 import {
@@ -12,24 +11,11 @@ import {
   FrontEndTypo,
   enumRegistryService,
   getOptions,
+  validation,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  CustomR,
-  RadioBtn,
-  Aadhaar,
-  BaseInputTemplate,
-  ArrayFieldTemplate,
-  CustomOTPBox,
-  select,
-  FileUpload,
-} from "component/BaseInput";
+import { templates, widgets, validator } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 
@@ -302,48 +288,47 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
+  const customValidate = (data, errors, c, asd) => {
+    if (step === "contact_details") {
+      if (data?.mobile) {
+        validation(
+          data?.mobile,
+          "mobile",
+          errors,
+          `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          "mobile"
+        );
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+      if (data?.alternative_mobile_number) {
+        validation(
+          data?.alternative_mobile_number,
+          "alternative_mobile_number",
+          errors,
+          `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          "mobile"
         );
       }
     }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-      }
-    }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
-        errors?.[key]?.addError(
+
+    if (step === "basic_details") {
+      ["first_name", "last_name"].forEach((key) => {
+        validation(
+          data?.[key]?.replaceAll(" ", ""),
+          key,
+          errors,
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
-      }
-
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+      });
+      if (data?.dob) {
+        validation(
+          data?.dob,
+          "dob",
+          errors,
+          `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
+          "age-18"
         );
       }
-    });
-
+    }
     return errors;
   };
 
@@ -359,6 +344,24 @@ export default function App({ userTokenInfo, footerLinks }) {
         }
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
+      } else if (error.name === "format") {
+        const { format } = error?.params ? error?.params : {};
+        let message = "REQUIRED_MESSAGE";
+        if (format === "email") {
+          message = "PLEASE_ENTER_VALID_EMAIL";
+        } else if (format === "string") {
+          message = "PLEASE_ENTER_VALID_STREING";
+        } else if (format === "number") {
+          message = "PLEASE_ENTER_VALID_NUMBER";
+        }
+
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t(message)} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t(message)}`;
+        }
       }
       return error;
     });
@@ -627,27 +630,12 @@ export default function App({ userTokenInfo, footerLinks }) {
         ) : (
           <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
-            widgets={{
-              RadioBtn,
-              CustomR,
-              Aadhaar,
-              select,
-              CustomOTPBox,
-              FileUpload,
-            }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-              ArrayFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -680,8 +668,6 @@ export default function App({ userTokenInfo, footerLinks }) {
               {t("SAVE_AND_PROFILE")}
             </FrontEndTypo.Secondarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>

@@ -165,8 +165,9 @@ export default function ManualUpload({
                   style={{ widt: "auto", maxWidth: "480px", height: "196px" }}
                 />
               ) : (
-                <VStack alignItems="center">
+                <VStack alignItems="center" space="4">
                   <IconByName
+                    isDisabled
                     name="Upload2FillIcon"
                     textAlign="center"
                     color="textGreyColor.100"
