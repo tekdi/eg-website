@@ -159,7 +159,7 @@ export default function BenificiaryEnrollment() {
                     ?.filter((obj) => {
                       const idString = obj?.id?.toString();
                       return (
-                        benificiary?.program_beneficiaries?.subjects.includes(
+                        benificiary?.program_beneficiaries?.subjects?.includes(
                           idString
                         ) && idString !== "undefined"
                       );

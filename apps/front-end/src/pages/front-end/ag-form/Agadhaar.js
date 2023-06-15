@@ -150,6 +150,13 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const customValidate = (data, errors, c) => {
+    if (!data?.aadhar_token) {
+      errors?.aadhar_token?.addError(
+        `${t(
+          "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
+        )}`
+      );
+    }
     if (data?.aadhar_token) {
       if (
         data?.aadhar_token &&
@@ -213,7 +220,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       ...formData,
       duplicate_reason: value,
     });
-    console.log("e", value);
   };
 
   const addAdhaar = async () => {
