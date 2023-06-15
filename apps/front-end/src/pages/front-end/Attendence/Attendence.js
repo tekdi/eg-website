@@ -652,7 +652,9 @@ export default function Attendence({ footerLinks }) {
 
             <Modal
               isOpen={showEditModal}
-              onClose={() => setShowEditModal(false)}
+              onClose={() => {
+                setShowEditModal(false), setFormData({});
+              }}
               size="xl"
             >
               <Modal.Content>
@@ -853,6 +855,7 @@ export default function Attendence({ footerLinks }) {
                               <AdminTypo.Secondarybutton
                                 shadow="BlueOutlineShadow"
                                 onPress={() => {
+                                  setFormData({});
                                   setShowEditModal(false);
                                 }}
                               >
