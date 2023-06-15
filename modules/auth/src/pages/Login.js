@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   HStack,
-  Button,
-  Box,
   FormControl,
   Input,
   VStack,
@@ -10,7 +8,6 @@ import {
   IconButton,
   CloseIcon,
   Image,
-  Center,
 } from "native-base";
 import {
   useWindowSize,
@@ -18,12 +15,9 @@ import {
   t,
   login,
   logout,
-  H1,
   Layout,
   BodyMedium,
-  H2,
   FrontEndTypo,
-  FloatingInput,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
