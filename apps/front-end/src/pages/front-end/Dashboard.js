@@ -176,7 +176,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack>
             </HStack>
           )}
-          {facilitator.status === "potential_prerak" && (
+          {facilitator.status === "prereak_mobilizer" && (
             <HStack
               {...styles.inforBox}
               p="5"
@@ -408,7 +408,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </VStack>
           </HStack> */}
           {/* potential prerak */}
-          {["potential_prerak"].includes(facilitator.status) && (
+          {["prereak_mobilizer"].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
                 background="#FCEEE2"

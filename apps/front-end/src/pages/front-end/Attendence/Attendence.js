@@ -413,7 +413,7 @@ export default function Attendence({ footerLinks }) {
                     </HStack>
                     <HStack>
                       <AdminTypo.H6>
-                        {t("CANDIDATES")} - {users.length}{" "}
+                      {t("CANDIDATES")} - {users?.length ? users?.length : 0}
                       </AdminTypo.H6>
                     </HStack>
                   </HStack>
