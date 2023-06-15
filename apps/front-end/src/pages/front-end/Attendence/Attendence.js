@@ -268,7 +268,10 @@ export default function Attendence({ footerLinks }) {
     {
       name: t("ADHAR_KYC"),
       selector: (row, index) => (
-        <ChipStatus key={index} status={row?.aadhar_verified} />
+        <ChipStatus
+          key={index}
+          status={row?.user?.aadhar_verified !== "yes" ? "no" : "yes"}
+        />
       ),
       sortable: false,
       attr: "adhar_kyc",
