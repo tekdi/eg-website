@@ -43,12 +43,22 @@ export default function FacilitatorBasicDetails({
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
           <VStack space="4" alignItems="center">
-            {facilitator?.profile_photo_1 ? (
-              <ImageView
-                w="120"
-                h="120"
-                source={{ document_id: facilitator?.profile_photo_1?.id }}
-              />
+            {facilitator?.profile_photo_1?.id ? (
+              <VStack position="relative" p="4">
+                <IconByName
+                  right="0"
+                  top="0"
+                  p="2"
+                  position="absolute"
+                  name="PencilLineIcon"
+                  onPress={(e) => navigate(`/profile/edit/upload/1`)}
+                />
+                <ImageView
+                  w="120"
+                  h="120"
+                  source={{ document_id: facilitator?.profile_photo_1?.id }}
+                />
+              </VStack>
             ) : (
               <IconByName
                 isDisabled
@@ -59,16 +69,20 @@ export default function FacilitatorBasicDetails({
               />
             )}
             <HStack alignItems="center" space="6">
-              {[1, 2, 3].map((photo) => (
-                <ImageView
-                  key={photo}
-                  w="60"
-                  h="60"
-                  source={{
-                    document_id: facilitator?.[`profile_photo_${photo}`]?.id,
-                  }}
-                />
-              ))}
+              {[1, 2, 3].map(
+                (photo) =>
+                  facilitator?.[`profile_photo_${photo}`]?.id && (
+                    <ImageView
+                      key={photo}
+                      w="60"
+                      h="60"
+                      source={{
+                        document_id:
+                          facilitator?.[`profile_photo_${photo}`]?.id,
+                      }}
+                    />
+                  )
+              )}
             </HStack>
           </VStack>
           <VStack>
