@@ -76,7 +76,12 @@ export function ChipStatus({ status, ...props }) {
       width="100px"
       bg={color}
       label={newStatus}
-      _text={{ textTransform: "capitalize", fontSize:"10px", fontWeight:"500", textAlign:"center" }}
+      _text={{
+        textTransform: "capitalize",
+        fontSize: "10px",
+        fontWeight: "500",
+        textAlign: "center",
+      }}
       rounded="sm"
       {...props}
     />

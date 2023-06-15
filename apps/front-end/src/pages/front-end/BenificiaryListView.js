@@ -4,10 +4,11 @@ import {
   IconByName,
   Layout,
   benificiaryRegistoryService,
-  FrontEndTypo,SelectStyle
+  FrontEndTypo,
+  SelectStyle,
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
-import { HStack, VStack, Box, Select, Pressable,CheckIcon } from "native-base";
+import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -48,12 +49,11 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box>                
+                <Box>
                   <ChipStatus status={"screened"}>
-                   {item?.program_beneficiaries?.status || t("UNIDENTIFIED")}
-                </ChipStatus>
+                    {item?.program_beneficiaries?.status || t("UNIDENTIFIED")}
+                  </ChipStatus>
                 </Box>
-
               </HStack>
               <VStack bg="white" pl="2">
                 <HStack color="blueText.450" alignItems="center">
@@ -90,7 +90,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
   const [searchBenficiary, setSearchBenficiary] = React.useState("");
- 
 
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -201,7 +200,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
         space="2"
         alignItems="Center"
         p="4"
-       
       >
         <Box flex="2">
           <SelectStyle
@@ -214,7 +212,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             }}
             _selectedItem={{
               bg: "cyan.600",
-              endIcon: <IconByName name="ArrowDownSLineIcon" />
+              endIcon: <IconByName name="ArrowDownSLineIcon" />,
             }}
             accessibilityLabel="Select a position for Menu"
           >
@@ -227,8 +225,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               />
             ))}
           </SelectStyle>
-          </Box>
-          <Box flex="2" >
+        </Box>
+        <Box flex="2">
           <SelectStyle
             overflowX="hidden"
             selectedValue={sort}
@@ -250,7 +248,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               />
             ))}
           </SelectStyle>
-          </Box>
+        </Box>
       </HStack>
       <List data={data} />
     </Layout>
