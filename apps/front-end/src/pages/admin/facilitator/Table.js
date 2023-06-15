@@ -128,6 +128,7 @@ function Table({
   facilitator,
   setadminPage,
   setadminLimit,
+  setadminstatus,
   admindata,
   formData,
   totalCount,
@@ -135,7 +136,8 @@ function Table({
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState();
   const [page, setPage] = React.useState();
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState();
+  const [paginationTotalRows, setPaginationTotalRows] =
+    React.useState(totalCount);
   // const [filterObj, setFilterObj] = React.useState();
   const [modal, setModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -150,6 +152,10 @@ function Table({
     setLoading(false);
     setPaginationTotalRows(totalCount);
   }, [admindata]);
+
+  React.useEffect(async () => {
+    setPaginationTotalRows(totalCount);
+  }, [totalCount]);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -171,13 +177,13 @@ function Table({
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
-    // setLimit(result?.limit);
     setLoading(false);
   }, [page, limit]);
 
   const filterByStatus = async (value) => {
     setLoading(true);
     setstatus(value);
+    setadminstatus(value);
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;

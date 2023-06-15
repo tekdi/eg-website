@@ -7,16 +7,26 @@ import {
   benificiaryRegistoryService,
   t,
   Layout,
+  ImageView,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function BenificiaryAadhaarDetails() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
+  let aadharFront;
+  let aadharBack;
+  benificiary?.documents.forEach((element) => {
+    if (element?.document_sub_type == "aadhaar_front") {
+      aadharFront = element?.id;
+    }
+    if (element?.document_sub_type == "aadhaar_back") {
+      aadharBack = element?.id;
+    }
+  });
 
   const navigate = useNavigate();
-  const aadhar_verified = "Pending";
-
+  const aadhar_verified = benificiary?.aadhar_verified;
   React.useEffect(() => {
     agDetails();
   }, [id]);
@@ -43,11 +53,19 @@ export default function BenificiaryAadhaarDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("AADHAAR_DETAILS")}
               </FrontEndTypo.H3>
+              <IconByName
+                name="EditBoxLineIcon"
+                _icon={{ size: "20" }}
+                color="iconColor.100"
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/enrollment-details`);
+                }}
+              />
             </HStack>
             <Box>
               <Progress
                 value={arrList(benificiary, [
-                  "aadhar_token",
+                  "aadhar_no",
                   "aadhar_verified",
                   "aadhaar_verification_mode",
                 ])}
@@ -67,7 +85,7 @@ export default function BenificiaryAadhaarDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.aadhar_token ? benificiary?.aadhar_token : "-"}
+                  {benificiary?.aadhar_no ? benificiary?.aadhar_no : "-"}
                 </FrontEndTypo.H3>
               </HStack>
 
@@ -116,7 +134,7 @@ export default function BenificiaryAadhaarDetails() {
             bg="white"
             borderColor="appliedColor"
           >
-            {aadhar_verified === "Pending" ? (
+            {aadhar_verified === "no" || aadhar_verified === null ? (
               <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                 {t("COMPLETE_AADHAAR_VERIFICATION")}
               </FrontEndTypo.H2>
@@ -128,6 +146,34 @@ export default function BenificiaryAadhaarDetails() {
                 <FrontEndTypo.H3 color="textGreyColor.100" py="5">
                   {t("REVERIFY_TO_MATCH_THE_AADHAAR_YOU_USED_FOR_ENROLLMENT")}
                 </FrontEndTypo.H3>
+
+                <FrontEndTypo.H2 pb="5">{t("FRONT_VIEW")}</FrontEndTypo.H2>
+                {aadharFront ? (
+                  <ImageView
+                    source={{ document_id: aadharFront }}
+                    alt="aadhaar_front"
+                    width="full"
+                    height="172px"
+                    borderRadius="5px"
+                    borderWidth="1px"
+                    borderColor="worksheetBoxText.100"
+                    alignSelf="Center"
+                  />
+                ) : null}
+
+                <FrontEndTypo.H2 py="5">{t("BACK_VIEW")}</FrontEndTypo.H2>
+                {aadharBack ? (
+                  <ImageView
+                    source={{ document_id: aadharBack }}
+                    alt="aadhaar_back"
+                    width="full"
+                    height="172px"
+                    borderRadius="5px"
+                    borderWidth="1px"
+                    borderColor="worksheetBoxText.100"
+                    alignSelf="Center"
+                  />
+                ) : null}
               </VStack>
             )}
 
@@ -147,30 +193,6 @@ export default function BenificiaryAadhaarDetails() {
             >
               {t("SCAN_QR_CODE")}
             </FrontEndTypo.Secondarybutton>
-          </VStack>
-          <VStack py="5">
-            <FrontEndTypo.H2 pb="5">{t("FRONT_VIEW")}</FrontEndTypo.H2>
-            <Image
-              borderWidth="1px"
-              borderColor="textGreyColor.50"
-              alignSelf={"center"}
-              source={{
-                uri: "/Aadhar.png",
-              }}
-              width="full"
-              height="178"
-            />
-            <FrontEndTypo.H2 py="5">{t("BACK_VIEW")}</FrontEndTypo.H2>
-            <Image
-              borderWidth="1px"
-              borderColor="textGreyColor.50"
-              alignSelf={"center"}
-              source={{
-                uri: "/AadhaarBack.png",
-              }}
-              width="full"
-              height="178"
-            />
           </VStack>
         </VStack>
       </VStack>
