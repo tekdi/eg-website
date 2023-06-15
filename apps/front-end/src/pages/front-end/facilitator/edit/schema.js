@@ -8,11 +8,11 @@ export default {
       required: ["first_name", "last_name", "dob"],
       properties: {
         first_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "FIRST_NAME",
         },
         middle_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "MIDDLE_NAME",
         },
         last_name: {
@@ -21,7 +21,7 @@ export default {
         },
         dob: {
           label: "DATE_OF_BIRTH",
-          type: "string",
+          type: ["string", "null"],
           format: "date",
         },
       },
@@ -33,27 +33,29 @@ export default {
       required: ["mobile"],
       properties: {
         mobile: {
-          type: "number",
+          type: ["number", "null"],
           title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
         device_ownership: {
           label: "DO_YOU_OWN_A_MOBILE_PHONE",
-          type: "string",
+          type: ["string", "null"],
           format: "RadioBtn",
           enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
           enum: ["yes", "no"],
         },
         device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
           grid: 2,
           icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
         },
         alternative_mobile_number: {
-          type: "number",
+          type: ["number", "null"],
           title: "ALTERNATIVE_NUMBER",
           label: "ALTERNATIVE_NUMBER",
+          format: "MobileNumber",
         },
         email_id: {
           type: ["string", "null"],
@@ -71,22 +73,22 @@ export default {
       properties: {
         state: {
           title: "STATE",
-          type: "string",
+          type: ["string", "null"],
           format: "select",
         },
         district: {
           title: "DISTRICT",
-          type: "string",
+          type: ["string", "null"],
           format: "select",
         },
         block: {
           title: "BLOCK",
-          type: "string",
+          type: ["string", "null"],
           format: "select",
         },
         village: {
           title: "VILLAGE_WARD",
-          type: "string",
+          type: ["string", "null"],
           format: "select",
         },
         grampanchayat: {
@@ -103,7 +105,7 @@ export default {
       properties: {
         gender: {
           title: "GENDER",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
           grid: 3,
           icons: [
@@ -125,13 +127,13 @@ export default {
         },
         marital_status: {
           label: "MARITAL_STATUS",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
           grid: 2,
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
           grid: 2,
         },
@@ -144,16 +146,17 @@ export default {
       required: ["name"],
       properties: {
         name: {
-          type: "string",
+          type: ["string", "null"],
           title: "NAME",
           help: "NAME_OF_YOUR_EMPLOYER",
         },
         designation: {
-          type: "string",
+          type: ["string", "null"],
           title: "DESIGNATION",
         },
         contact_number: {
-          type: "number",
+          type: ["number", "null"],
+          format: "MobileNumber",
           title: "CONTACT_NUMBER",
         },
       },
@@ -164,7 +167,7 @@ export default {
       properties: {
         availability: {
           label: "YOUR_WORK_AVAILABILITY_WILL_BE",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
           grid: 2,
           enum: ["part_time", "full_time"],
@@ -179,18 +182,18 @@ export default {
       properties: {
         qualification_master_id: {
           label: "YOUR_HIGHEST_QUALIFICATION",
-          type: ["string", "number"],
+          type: ["string", "number", "null"],
           format: "CustomR",
           grid: 2,
         },
         // type_of_document: {
-        //   type: "string",
+        //   type: ["string", "null"],
         //   title: "TYPE_OF_DOCUMENT",
         // },
         qualification_reference_document_id: {
           label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
           document_type: "highest_qualification_document",
-          type: ["string", "number"],
+          type: ["string", "number", "null"],
           format: "FileUpload",
         },
         qualification_ids: {

@@ -16,6 +16,7 @@ import {
   BodySmall,
   H2,
   FloatingInput,
+  MobileNumber,
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
@@ -24,8 +25,7 @@ import {
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
-
-export { CustomOTPBox, FileUpload };
+import { customizeValidator } from "@rjsf/validator-ajv8";
 
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
@@ -476,3 +476,30 @@ export const HFieldTemplate = ({
     </HStack>
   );
 };
+
+const validator = customizeValidator({
+  customFormats: {
+    MobileNumber: /^[6-9]\d{8}9$/,
+  },
+});
+
+const widgets = {
+  RadioBtn,
+  CustomR,
+  Aadhaar,
+  select,
+  CustomOTPBox,
+  FileUpload,
+  MobileNumber,
+};
+
+const templates = {
+  FieldTemplate,
+  ArrayFieldTitleTemplate,
+  ObjectFieldTemplate,
+  TitleFieldTemplate,
+  DescriptionFieldTemplate,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
+};
+export { widgets, templates, CustomOTPBox, FileUpload, validator };
