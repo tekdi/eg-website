@@ -159,7 +159,7 @@ export default function BenificiaryAadhaarDetails() {
             ) : (
               <VStack>
                 <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
-                  {t("HAVE_YOU_UPDATED_AADHAAR_CARD?")}
+                  {t("HAVE_YOU_UPDATED_AADHAAR_CARD")}
                 </FrontEndTypo.H2>
                 <FrontEndTypo.H3 color="textGreyColor.100" py="5">
                   {t("REVERIFY_TO_MATCH_THE_AADHAAR_YOU_USED_FOR_ENROLLMENT")}
