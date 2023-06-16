@@ -536,8 +536,10 @@ const DEFAULT_THEME = {
       900: '#BDB3E7'
     },
     badgeColor: {
+      50:  '#FFF0B2',
       400: '#FDE68A',
-      450: '#FFEFAF'
+      450: '#FFEFAF',
+      600: '#8F7200'
     },
     progressBarColor: {
       200: '#10B981',
@@ -565,14 +567,18 @@ const DEFAULT_THEME = {
       900: '#1E1E1E'
     },
     textMaroonColor: {
+      50:  'FDCAB5',
       100: '#FFACAF',
-      400: '#790000'
+      400: '#790000',
+      500: '#A93505'
     },
     blueText: {
+      200: 'D6E8FF',
       300: '#d4eaf9',
       350: '#CAE9FF',
       400: '#084B82',
-      450: '#3F8BF1'
+      450: '#3F8BF1',
+      700: '#004AAD'
     },
     bgPinkColor: {
       300: '#F9E9DB'
@@ -639,7 +645,11 @@ const DEFAULT_THEME = {
     textRed: {
       300: '#FF2815'
     },
-    dividerColor: '#EEEEEE'
+    dividerColor: '#EEEEEE',
+    textGreen:{
+      300:'#BCF6DB',
+      700: '#0F6C41'
+    }
   }
 }
 
