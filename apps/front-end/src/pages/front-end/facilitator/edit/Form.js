@@ -28,6 +28,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [cameraFile, setCameraFile] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState();
+  const [facilitator, setFacilitator] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
@@ -43,6 +44,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const { id } = userTokenInfo?.authUser;
       if (id) {
         const result = await facilitatorRegistryService.getOne({ id });
+        setFacilitator(result);
         const ListOfEnum = await enumRegistryService.listOfEnum();
         if (!ListOfEnum?.error) {
           setEnumObj(ListOfEnum?.data);
@@ -222,14 +224,14 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
-        arr: enumObj?.BENEFICIARY_SOCIAL_STATUS,
+        arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: enumObj?.BENEFICIARY_MARITAL_STATUS,
+        arr: enumObj?.FACILITATOR_MARITAL_STATUS,
         title: "title",
         value: "value",
       });
@@ -291,18 +293,30 @@ export default function App({ userTokenInfo, footerLinks }) {
   const customValidate = (data, errors, c, asd) => {
     if (step === "contact_details") {
       if (data?.mobile) {
-        validation(
-          data?.mobile,
-          "mobile",
+        validation({
+          data: data?.mobile,
+          key: "mobile",
           errors,
-          `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
-          "mobile"
-        );
+          message: `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          type: "mobile",
+        });
       }
       if (data?.alternative_mobile_number) {
+        validation({
+          data: data?.alternative_mobile_number,
+          key: "alternative_mobile_number",
+          errors,
+          message: `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          type: "mobile",
+        });
+      }
+    }
+
+    if (step === "reference_details") {
+      if (data?.contact_number) {
         validation(
-          data?.alternative_mobile_number,
-          "alternative_mobile_number",
+          data?.contact_number,
+          "contact_number",
           errors,
           `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
           "mobile"
@@ -312,21 +326,23 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     if (step === "basic_details") {
       ["first_name", "last_name"].forEach((key) => {
-        validation(
-          data?.[key]?.replaceAll(" ", ""),
+        validation({
+          data: data?.[key]?.replaceAll(" ", ""),
           key,
           errors,
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
+          message: `${t("REQUIRED_MESSAGE")} ${t(
+            schema?.properties?.[key]?.title
+          )}`,
+        });
       });
       if (data?.dob) {
-        validation(
-          data?.dob,
-          "dob",
+        validation({
+          data: data?.dob,
+          key: "dob",
           errors,
-          `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
-          "age-18"
-        );
+          message: `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
+          type: "age-18",
+        });
       }
     }
     return errors;
@@ -460,7 +476,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
+      if (
+        data?.mobile?.toString()?.length === 10 &&
+        facilitator?.mobile !== data?.mobile
+      ) {
         const result = await userExist({ mobile: data?.mobile });
         if (result.isUserExist) {
           const newErrors = {
@@ -470,6 +489,20 @@ export default function App({ userTokenInfo, footerLinks }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+    if (id === "root_alternative_mobile_number") {
+      if (data?.alternative_mobile_number === data?.mobile) {
+        const newErrors = {
+          alternative_mobile_number: {
+            __errors: [
+              t(
+                "ALTERNATIVE_MOBILE_NUMBER_SHOULD_NOT_BE_SAME_AS_MOBILE_NUMBER"
+              ),
+            ],
+          },
+        };
+        setErrors(newErrors);
       }
     }
     if (id === "root_aadhar_token") {

@@ -111,7 +111,9 @@ export default function BenificiaryEnrollment() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                   {benificiary?.program_beneficiaries?.enrollment_status
-                    ? benificiary?.program_beneficiaries?.enrollment_status
+                    ? t(
+                        benificiary?.program_beneficiaries?.enrollment_status.toUpperCase()
+                      )
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>

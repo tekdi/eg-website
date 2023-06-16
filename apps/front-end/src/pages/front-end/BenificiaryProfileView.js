@@ -47,8 +47,6 @@ export default function BenificiaryProfileView(props) {
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
   };
 
-
-
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
 
@@ -274,7 +272,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
           <Box
-            bg="boxBackgroundColour.100"
+            bg="textMaroonColor.400"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
@@ -343,14 +341,14 @@ export default function BenificiaryProfileView(props) {
               </VStack>
             </VStack>
             <VStack space="5" pt="5">
-              <FrontEndTypo.Disablebutton
+              <FrontEndTypo.Primarybutton
                 flex={1}
                 onPress={() => {
                   dropoutApiCall();
                 }}
               >
                 {t("MARK_AS_DROPOUT")}
-              </FrontEndTypo.Disablebutton>
+              </FrontEndTypo.Primarybutton>
             </VStack>
           </VStack>
         </Actionsheet.Content>
@@ -377,7 +375,7 @@ export default function BenificiaryProfileView(props) {
             {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
           </FrontEndTypo.H2>
           <VStack space="5">
-            <VStack space="2" bg="gray.100" p="1" rounded="lg">
+            <VStack space="2" bg="textMaroonColor.100" p="1" rounded="lg">
               <VStack alignItems="center" space="1" flex="1">
                 <React.Suspense fallback={<HStack>Loading...</HStack>}>
                   <CustomRadio
@@ -398,14 +396,14 @@ export default function BenificiaryProfileView(props) {
               </VStack>
             </VStack>
             <VStack space="3">
-              <FrontEndTypo.Disablebutton
+              <FrontEndTypo.Primarybutton
                 flex={1}
                 onPress={() => {
                   reactivateApiCall();
                 }}
               >
                 {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </FrontEndTypo.Disablebutton>
+              </FrontEndTypo.Primarybutton>
             </VStack>
           </VStack>
         </Actionsheet.Content>

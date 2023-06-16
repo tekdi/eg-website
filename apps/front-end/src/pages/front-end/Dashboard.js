@@ -289,7 +289,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </VStack>
           </HStack> */}
           {/* potential prerak */}
-          {["potential_prerak"].includes(facilitator.status) && (
+          {["prereak_mobilizer"].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
                 background="#FCEEE2"
@@ -508,7 +508,7 @@ const InfoBox = ({ status }) => {
         </HStack>
       );
       break;
-    case "potential_prerak":
+    case "prereak_mobilizer":
       infoBox = (
         <HStack
           {...styles.inforBox}
