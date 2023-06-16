@@ -20,13 +20,6 @@ export default {
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
-        device_ownership: {
-          type: "string",
-          label: "MARK_OWNERSHIP",
-          format: "RadioBtn",
-          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
-          enum: ["self", "family_member", "neighbour", "other"],
-        },
         device_type: {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
@@ -34,16 +27,17 @@ export default {
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },
-        alternative_mobile_number: {
-          type: "number",
-          title: "ALTERNATIVE_NUMBER",
-        },
-        alternative_device_ownership: {
+        device_ownership: {
           type: "string",
           label: "MARK_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
+        },
+
+        alternative_mobile_number: {
+          type: "number",
+          title: "ALTERNATIVE_NUMBER",
         },
         alternative_device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
@@ -51,6 +45,13 @@ export default {
           type: "string",
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
+        },
+        alternative_device_ownership: {
+          type: "string",
+          label: "MARK_OWNERSHIP",
+          format: "RadioBtn",
+          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
+          enum: ["self", "family_member", "neighbour", "other"],
         },
 
         email_id: {

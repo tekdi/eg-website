@@ -295,7 +295,7 @@ export default function agFormEdit({ ip, id }) {
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 30);
-      let maxYear = moment().subtract("years", 18);
+      let maxYear = moment().subtract("years", 14);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
@@ -356,23 +356,28 @@ export default function agFormEdit({ ip, id }) {
     }
     ["first_name", "last_name", "middle_name"].forEach((key) => {
       if (
-        key === "first_name" && data?.first_name?.replaceAll(" ", "") === "") {
+        key === "first_name" &&
+        data?.first_name?.replaceAll(" ", "") === ""
+      ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
 
-      if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+      // if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+      //   errors?.[key]?.addError(
+      //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+      //   );
+      // }
+      if (
+        key === "middle_name" &&
+        data?.middle_name?.includes(" ") &&
+        data?.middle_name?.trim() === ""
+      ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-      if (key === "middle_name" && data?.middle_name?.includes(" ") && data?.middle_name?.trim() === "") {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-
 
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
