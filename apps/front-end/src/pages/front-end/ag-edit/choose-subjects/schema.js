@@ -5,14 +5,14 @@ export default {
     1: {
       title: "ENROLLMENT_DETAILS",
       type: "object",
+      required: [
+        "enrollment_status",
+        "enrolled_for_board",
+        "enrollment_number",
+        "subjects",
+      ],
+
       properties: {
-        type_of_enrollement: {
-          label: "TYPE_OF_ENROLLMENT",
-          type: "string",
-          format: "select",
-          enumNames: ["New", "Old"],
-          enum: ["new", "old"],
-        },
         enrollment_status: {
           type: "string",
           label: "ENROLLMENT_STATUS",
@@ -20,18 +20,18 @@ export default {
         },
         enrolled_for_board: {
           type: "string",
-          title: "BOARD_OF_ENROLLMENT",
+          label: "BOARD_OF_ENROLLMENT",
           format: "radio",
           enumNames: ["RSOS", "NIOS"], //title
           enum: ["rsos", "nios"], //values
         },
         enrollment_number: {
           type: "number",
-          title: "ENROLLMENT_NUMBER",
+          label: "ENROLLMENT_NUMBER",
         },
         subjects: {
           type: "array",
-          title: "A multiple-choice list",
+          label: "SELECT_SUBJECTS",
 
           items: {
             type: "number",
