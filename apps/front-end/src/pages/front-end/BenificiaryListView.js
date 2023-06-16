@@ -15,10 +15,11 @@ const List = ({ data }) => {
   const navigate = useNavigate();
   return (
     <VStack space="4" p="4" alignContent="center">
-      {data && data.length <= 0 ? (
+      {(data && data?.length > 0) || data?.constructor?.name !== "Array" ? (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
       ) : (
         data &&
+        data?.constructor?.name === "Array" &&
         data?.map((item) => (
           <Pressable
             onPress={async () => {
@@ -102,11 +103,11 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   }, [reqBodyData]);
   const aglist = async (reqBodyData) => {
     let reqBody = {
-      page: reqBodyData.page,
-      limit: reqBodyData.limit,
-      status: reqBodyData.statusValue,
-      sortType: reqBodyData.sortValue,
-      search: reqBodyData.searchBenficiary,
+      page: reqBodyData?.page,
+      limit: reqBodyData?.limit,
+      status: reqBodyData?.statusValue,
+      sortType: reqBodyData?.sortValue,
+      search: reqBodyData?.searchBenficiary,
     };
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
