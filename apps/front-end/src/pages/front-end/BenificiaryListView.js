@@ -166,7 +166,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       <VStack>
         <Pressable
           onPress={(e) => {
-            ["prereak_mobilizer"].includes(facilitator.status) &&
+            ["pragati_mobilizer"].includes(facilitator.status) &&
               navigate(`/beneficiary`);
           }}
         >
