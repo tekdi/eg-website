@@ -223,7 +223,6 @@ export default function App({ facilitator, id, ip, onClick }) {
     let subjects = qData?.result?.program_beneficiaries?.subjects;
     let subjectData = JSON.parse(subjects);
     const stringsArray = subjectData.map((number) => number.toString());
-    console.log("enrolled_for_board", enrolled_for_board);
     setFormData({
       ...formData,
       enrolled_for_board: enrolled_for_board,
@@ -380,8 +379,6 @@ export default function App({ facilitator, id, ip, onClick }) {
       validation();
     }
   };
-
-  console.log("formdata", formData);
 
   return (
     <Layout
