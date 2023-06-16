@@ -84,7 +84,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
-    navigate(-1);
   };
   const ref = React.createRef(null);
 
@@ -93,6 +92,14 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const uiSchema = {
     facilitator_id: {
       "ui:widget": "hidden",
+    },
+    dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+      },
     },
   };
 
