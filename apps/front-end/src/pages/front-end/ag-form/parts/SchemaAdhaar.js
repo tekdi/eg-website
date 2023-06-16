@@ -3,23 +3,19 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "AADHAAR_NUMBER",
+      title: "LEARNER_AADHAAR_NUMBER",
       type: "object",
-      required: ["aadhar_token"],
+      required: ["aadhar_no"],
       properties: {
-        aadhar_token: {
+        aadhar_no: {
           type: "string",
-          title: "AADHAAR_NUMBER",
+          title: "LEARNER_AADHAAR_NUMBER",
+          format: "Aadhaar",
         },
         edit_page_type: {
           type: "string",
           format: "hidden",
           default: "add_ag_duplication",
-        },
-        aadhar_no: {
-          type: "string",
-          format: "hidden",
-          default: "",
         },
       },
     },
