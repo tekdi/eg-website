@@ -42,6 +42,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  Aadhaar,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -75,7 +76,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
       setFormData({
         aadhar_no: data?.result?.aadhar_no,
-        aadhar_token: data?.result?.aadhar_no,
+        aadhar_no: data?.result?.aadhar_no,
         edit_page_type: "add_ag_duplication",
         is_duplicate: "no",
       });
@@ -150,19 +151,19 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const customValidate = (data, errors, c) => {
-    if (!data?.aadhar_token) {
-      errors?.aadhar_token?.addError(
+    if (!data?.aadhar_no) {
+      errors?.aadhar_no?.addError(
         `${t(
           "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
         )}`
       );
     }
-    if (data?.aadhar_token) {
+    if (data?.aadhar_no) {
       if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        data?.aadhar_no &&
+        !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
-        errors?.aadhar_token?.addError(
+        errors?.aadhar_no?.addError(
           `${t(
             "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
           )}`
@@ -195,9 +196,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({ aadhar_no: data?.aadhar_token });
+    if (id === "root_aadhar_no") {
+      if (data?.aadhar_no?.toString()?.length === 12) {
+        const result = await userExist({ aadhar_no: data?.aadhar_no });
         if (result.isUserExist) {
           setisExistflag(true);
         } else {
@@ -225,7 +226,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const addAdhaar = async () => {
     let adddata = {
       edit_page_type: "add_ag_duplication",
-      aadhar_no: formData?.aadhar_token,
+      aadhar_no: formData?.aadhar_no,
       is_duplicate: "no",
     };
     const adhaar = await AgRegistryService.updateAg(adddata, userId);
@@ -238,16 +239,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (!isExistflag) {
       setFormData({
         ...formData,
-        aadhar_no: formData?.aadhar_token,
+        aadhar_no: formData?.aadhar_no,
         is_duplicate: "no",
       });
     }
-  }, [formData?.aadhar_token]);
+  }, [formData?.aadhar_no]);
   const onSubmit = () => {
     if (isExistflag) {
       setFormData({
         ...formData,
-        aadhar_no: formData?.aadhar_token,
+        aadhar_no: formData?.aadhar_no,
         is_duplicate: "yes",
       });
       setModalVisible(!modalVisible);
@@ -296,7 +297,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, Aadhaar }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -320,7 +321,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               transformErrors,
             }}
           >
-            {errors?.aadhar_token ? (
+            {errors?.aadhar_no ? (
               <FrontEndTypo.Primarybutton
                 mt="5"
                 type="submit"

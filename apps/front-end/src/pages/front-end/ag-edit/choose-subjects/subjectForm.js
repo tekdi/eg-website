@@ -83,7 +83,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   }
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/profile/${userId}`);
+    navigate(`/beneficiary/${userId}/enrollmentdetails`);
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
@@ -212,24 +212,23 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
 
     const qData = await benificiaryRegistoryService.getOne(userId);
-    let enrolled_for_board =
-      qData?.result?.program_beneficiaries?.enrolled_for_board;
+    let enrolled_for_board = qData?.result?.program_beneficiaries
+      ?.enrolled_for_board
+      ? qData?.result?.program_beneficiaries?.enrolled_for_board
+      : "";
     let enrollment_status =
       qData?.result?.program_beneficiaries?.enrollment_status;
-    let type_of_enrollement =
-      qData?.result?.program_beneficiaries?.type_of_enrollement;
     let enrollment_number =
       qData?.result?.program_beneficiaries?.enrollment_number;
     let subjects = qData?.result?.program_beneficiaries?.subjects;
     let subjectData = JSON.parse(subjects);
-
+    const stringsArray = subjectData.map((number) => number.toString());
     setFormData({
       ...formData,
       enrolled_for_board: enrolled_for_board,
       enrollment_status: enrollment_status,
-      type_of_enrollement: type_of_enrollement,
       enrollment_number: enrollment_number,
-      subjects: subjectData,
+      subjects: stringsArray,
       facilitator_id: localStorage.getItem("id"),
     });
   }, []);
@@ -290,37 +289,60 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
 
   React.useEffect(async () => {
-    let boardData = formData?.enrolled_for_board;
-
-    let filters = {
-      board: boardData,
-    };
-
-    let subjects = await enumRegistryService.getSubjects(filters);
-    let newSchema = schema;
-    newSchema = getOptions(newSchema, {
-      key: "subjects",
-      arr: subjects?.data,
-      title: "name",
-      value: "id",
-    });
-    setSchema(newSchema);
-  }, [formData?.enrolled_for_board]);
-
-  React.useEffect(async () => {
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let newSchema = schema;
-    newSchema = getOptions(newSchema, {
-      key: "enrollment_status",
-      arr: list,
-      title: "title",
-      value: "title",
-    });
 
-    setSchema(newSchema);
-  }, [formData?.enrollment_number]);
+    if (formData?.enrolled_for_board) {
+      let boardData = formData?.enrolled_for_board;
+      let filters = {
+        board: boardData,
+      };
+      let subjects = await enumRegistryService.getSubjects(filters);
+      let newSchema = schema;
+      newSchema = getOptions(newSchema, {
+        key: "subjects",
+        arr: subjects?.data,
+        title: "name",
+        value: "id",
+      });
+      newSchema = getOptions(newSchema, {
+        key: "enrollment_status",
+        arr: list,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    } else if (!formData?.enrolled_for_board) {
+      newSchema = getOptions(newSchema, {
+        key: "enrollment_status",
+        arr: list,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
+  }, [formData]);
 
+  const validation = () => {
+    if (formData?.edit_page_type) {
+      const newErrors = {
+        enrollment_status: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+        enrolled_for_board: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+        enrollment_number: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+        subjects: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    }
+  };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
     if (file.size <= 1048576 * 2) {
@@ -345,8 +367,17 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
 
   const editSubmit = async () => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/profile/${userId}`);
+    if (
+      formData?.enrollment_status &&
+      formData?.enrolled_for_board &&
+      formData?.enrollment_number &&
+      formData?.subjects
+    ) {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      navigate(`/beneficiary/profile/${userId}`);
+    } else {
+      validation();
+    }
   };
 
   return (
@@ -398,6 +429,7 @@ export default function App({ facilitator, id, ip, onClick }) {
               formData,
               onChange,
               onError,
+              onSubmit: { editSubmit },
               transformErrors,
             }}
           >

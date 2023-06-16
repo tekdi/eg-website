@@ -436,32 +436,15 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+    ["grampanchayat"].forEach((key) => {
       if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
+        key === "grampanchayat" &&
+        data?.grampanchayat?.replaceAll(" ", "") === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
     });
 
     return errors;

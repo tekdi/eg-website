@@ -8,13 +8,6 @@ export default {
       type: "object",
       required: ["device_ownership", "device_type"],
       properties: {
-        device_ownership: {
-          type: "string",
-          label: "DEVICE_OWNERSHIP",
-          format: "RadioBtn",
-          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
-          enum: ["self", "family_member", "neighbour", "other"],
-        },
         device_type: {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
@@ -23,12 +16,19 @@ export default {
           enum: ["smartphone", "basic"],
           grid: "2",
         },
+        device_ownership: {
+          type: "string",
+          label: "DEVICE_OWNERSHIP",
+          format: "RadioBtn",
+          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
+          enum: ["self", "family_member", "neighbour", "other"],
+        },
       },
     },
     2: {
       title: "COMPLETE_ADDRESS",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         lat: {
           type: "number",
@@ -99,6 +99,8 @@ export default {
         "last_standard_of_education_year",
         "last_standard_of_education",
         "reason_of_leaving_education",
+        "previous_school_type",
+        "learning_level",
       ],
       properties: {
         type_of_learner: {
