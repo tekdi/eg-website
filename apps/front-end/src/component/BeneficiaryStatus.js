@@ -28,40 +28,15 @@ export function ChipStatus({ status, ...props }) {
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
-      case "screened":
-        setColor("PrerakScreenedColor");
-        setTextColor("textGreen.700");
-        setNewStatus(t("SCREENED"));
-        break;
       case "rejected":
         setNewStatus(t("REJECTED"));
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
-      case "shortlisted":
-        setNewStatus(t("SHORTLISTED"));
-        setTextColor("blueText.700");
-        setColor("blueText.350");
-        break;
-      case "selected_for_training":
-        setNewStatus(t("SELECTED_FOR_TRAINING"));
-        setTextColor("textGreen.700");
-        setColor("progressBarColor.300");
-        break;
-      case "selected_for_onboarding":
-        setNewStatus(t("SELECTED_FOR_ONBOARDING"));
-        setTextColor("textGreen.700");
-        setColor("progressBarColor.300");
-        break;
       case "dropped_out":
         setNewStatus(t("DROPPED_OUT"));
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
-        break;
-      case "under_review":
-        setNewStatus(t("UNDER_REVIEW"));
-        setTextColor("badgeColor.600");
-        setColor("badgeColor.450");
         break;
         case "duplicated":
           setNewStatus(t("DUPLICATED"));
