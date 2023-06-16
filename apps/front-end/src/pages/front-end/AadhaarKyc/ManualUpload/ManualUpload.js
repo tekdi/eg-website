@@ -1,11 +1,8 @@
 import React from "react";
-import WestIcon from "@mui/icons-material/West";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Button,
-  FormControl,
-  Text,
   Image,
   VStack,
   HStack,
@@ -30,6 +27,7 @@ export default function ManualUpload({
 }) {
   const { id } = useParams();
   const [image, setImage] = React.useState();
+  const [error, setError] = React.useState();
 
   const [isFront, setIsFront] = React.useState(true);
   const [modal, setModal] = React.useState(false);
@@ -50,7 +48,7 @@ export default function ManualUpload({
         setImage((prev) => ({ ...prev, back: data, back_file: file }));
       }
     } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
+      setError({ top: t("FILE_SIZE") });
     }
     setModal(false);
   };
@@ -79,17 +77,28 @@ export default function ManualUpload({
         form_data_back.append(key, item_back[key]);
       }
 
+      // try {
       const result = await Promise.all([
         uploadRegistryService.uploadFile(form_data),
         uploadRegistryService.uploadFile(form_data_back),
-        authRegistryService.aadhaarKyc({
+      ]);
+      if (result?.[0]?.error || result?.[1]?.error) {
+        setError({
+          top: result?.[0]?.error ? result?.[0]?.error : result?.[1]?.error,
+        });
+      } else {
+        const resultUser = await authRegistryService.aadhaarKyc({
           id,
           aadhar_verified: "yes",
           aadhaar_verification_mode: "upload",
-        }),
-      ]);
+        });
+        if (resultUser?.error) {
+          setPage("aadhaarSuccess");
+        } else {
+          setPage("aadhaarSuccess");
+        }
+      }
       setLoading(false);
-      setPage("aadhaarSuccess");
       return result;
     }
   };
@@ -103,15 +112,13 @@ export default function ManualUpload({
   };
 
   if (cameraModal) {
-    const handleSetCameraUrl = async (url) => {
+    const handleSetCameraUrl = async (url, file) => {
       setCameraUrl(url);
-
       if (isFront) {
-        setImage((prev) => ({ ...prev, front: url }));
+        setImage((prev) => ({ ...prev, front: url, front_file: file }));
       } else {
-        setImage((prev) => ({ ...prev, back: url }));
+        setImage((prev) => ({ ...prev, back: url, back_file: file }));
       }
-
       setCameraModal(false);
       setModal(false);
     };
@@ -135,6 +142,11 @@ export default function ManualUpload({
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box px="4">
+        {error?.top && (
+          <FrontEndTypo.Prompts m="5" status="danger" flex="1">
+            {error?.top}
+          </FrontEndTypo.Prompts>
+        )}
         {!submitted ? (
           <VStack space="10">
             <VStack>
@@ -165,8 +177,9 @@ export default function ManualUpload({
                   style={{ widt: "auto", maxWidth: "480px", height: "196px" }}
                 />
               ) : (
-                <VStack alignItems="center">
+                <VStack alignItems="center" space="4">
                   <IconByName
+                    isDisabled
                     name="Upload2FillIcon"
                     textAlign="center"
                     color="textGreyColor.100"
@@ -296,6 +309,7 @@ export default function ManualUpload({
                 setImage();
                 setSubmitted(false);
                 setIsFront(true);
+                setError();
               }}
             >
               {t("AADHAR_UPLOAD_CLEAR")}

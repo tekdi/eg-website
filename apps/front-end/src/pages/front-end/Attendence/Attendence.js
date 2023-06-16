@@ -16,7 +16,7 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import { ChipStatus } from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import {
   Box,
   Button,
@@ -104,7 +104,7 @@ const columns = (e) => [
     attr: "qualification",
   },
   {
-    name: t("REGION"),
+    name: t("DISTRICT"),
     selector: (row) => (row?.district ? row?.district : ""),
     sortable: false,
     attr: "city",
@@ -268,7 +268,15 @@ export default function Attendence({ footerLinks }) {
     {
       name: t("ADHAR_KYC"),
       selector: (row, index) => (
-        <ChipStatus key={index} status={row?.aadhar_verified} />
+        <Chip
+          bg={
+            row?.user?.aadhar_verified !== "yes"
+              ? "dangerColor"
+              : "potentialColor"
+          }
+          label={row?.user?.aadhar_verified !== "yes" ? t("NO") : t("YES")}
+          rounded={"sm"}
+        />
       ),
       sortable: false,
       attr: "adhar_kyc",
@@ -395,36 +403,34 @@ export default function Attendence({ footerLinks }) {
           <React.Suspense fallback={<Loading />}>
             <Camera
               headerComponent={
-                <Box alignContent="center" alignItems="center">
-                  <VStack backgroundColor="white">
-                    <AdminTypo.H6 color="textGreyColor.900" bold>
-                      {t("MARK_ATTENDANCE_ORIENTATION")}
-                    </AdminTypo.H6>
-                    <HStack justifyContent={"space-between"}>
-                      <HStack space={"10"} ml="15px">
-                        <AdminTypo.H6 color="textGreyColor.550" bold>
-                          {t("PRESENT")}
-                        </AdminTypo.H6>
-                        {users.filter((e) => e.status === "present").length}
-                        <AdminTypo.H6 color="textGreyColor.550" bold>
-                          {t("ABSENT")}
-                        </AdminTypo.H6>
-                        {users.filter((e) => e.status !== "present").length}
-                        {t("CANDIDATES_NAME")} {userData?.user?.first_name}
-                      </HStack>
-                      <HStack>
-                        <AdminTypo.H6>
-                          {t("CANDIDATES")} - {users.length}{" "}
-                        </AdminTypo.H6>
-                      </HStack>
-                    </HStack>
-                    <Stack>
-                      <AdminTypo.H6 my="15px" color="textGreyColor.100">
-                        {t("ATTENDANCE_CAMERA_SUBTITLE")}
+                <VStack backgroundColor="white" width="98%">
+                  <AdminTypo.H6 color="textGreyColor.900" bold>
+                    {t("MARK_ATTENDANCE_ORIENTATION")}
+                  </AdminTypo.H6>
+                  <HStack justifyContent={"space-between"}>
+                    <HStack space={"10"} ml="15px">
+                      <AdminTypo.H6 color="textGreyColor.550" bold>
+                        {t("PRESENT")}
                       </AdminTypo.H6>
-                    </Stack>
-                  </VStack>
-                </Box>
+                      {users.filter((e) => e.status === "present").length}
+                      <AdminTypo.H6 color="textGreyColor.550" bold>
+                        {t("ABSENT")}
+                      </AdminTypo.H6>
+                      {users.filter((e) => e.status !== "present").length}
+                      {t("CANDIDATES_NAME")} {userData?.user?.first_name}
+                    </HStack>
+                    <HStack>
+                      <AdminTypo.H6>
+                      {t("CANDIDATES")} - {users?.length ? users?.length : 0}
+                      </AdminTypo.H6>
+                    </HStack>
+                  </HStack>
+                  <Stack>
+                    <AdminTypo.H6 my="15px" color="textGreyColor.100">
+                      {t("ATTENDANCE_CAMERA_SUBTITLE")}
+                    </AdminTypo.H6>
+                  </Stack>
+                </VStack>
               }
               footerComponent={
                 <HStack space={3} width="100%" justifyContent="space-between">

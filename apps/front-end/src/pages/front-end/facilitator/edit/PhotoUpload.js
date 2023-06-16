@@ -74,7 +74,6 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
   };
 
   const onPressBackButton = () => {
-    console.log(page);
     if (page === 1) {
       navigate(`/profile/edit/qualification_details`);
     } else {
@@ -123,32 +122,22 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
               gap="4"
               p="4"
             >
-              <VStack alignItems="center" py="20">
+              <VStack alignItems="center" py={file?.id ? "0" : "20"} space="2">
                 {file?.id ? (
                   <ImageView
-                    w={"120"}
-                    h="200"
+                    w={"150"}
+                    h="250"
                     borderRadius="0"
                     source={{
                       document_id: file?.id,
                     }}
                   />
                 ) : (
-                  <Box>
-                    <Image
-                      w={"120"}
-                      h="200"
-                      source={{ uri: "/profile1.svg" }}
-                    />
-                    <IconByName
-                      name="Upload2FillIcon"
-                      textAlign="center"
-                      color="textGreyColor.100"
-                    />
-                  </Box>
+                  <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
                 )}
+                <IconByName name="Upload2FillIcon" isDisabled />
                 <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                  {t("UPLOAD_PHOTO")}
+                  {t(page)} {t("ADD_FRONT_VIEW")}
                 </FrontEndTypo.H2>
               </VStack>
             </Pressable>

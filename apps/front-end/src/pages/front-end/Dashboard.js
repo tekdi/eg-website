@@ -31,28 +31,28 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+// styles
+const styles = {
+  inforBox: {
+    style: {
+      background:
+        "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
+    },
+  },
+  AddAnAgShadowBox: {
+    style: {
+      boxShadow: "2px 3px 0px #790000",
+      border: "1px solid #790000",
+      borderRadius: "10px",
+      padding: "50px",
+    },
+  },
+};
+
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [facilitator, setFacilitator] = React.useState({});
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
-
-  // styles
-  const styles = {
-    inforBox: {
-      style: {
-        background:
-          "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
-      },
-    },
-    AddAnAgShadowBox: {
-      style: {
-        boxShadow: "2px 3px 0px #790000",
-        border: "1px solid #790000",
-        borderRadius: "10px",
-        padding: "50px",
-      },
-    },
-  };
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -103,126 +103,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
-          {facilitator.status === "lead" ||
-            facilitator.status === "applied" ||
-            (facilitator.status === "" && (
-              <HStack
-                {...styles.inforBox}
-                p="5"
-                borderBottomWidth="1"
-                borderBottomColor={"gray.300"}
-                shadows="BlueOutlineShadow"
-              >
-                <IconByName
-                  flex="0.1"
-                  isDisabled
-                  name="UserLineIcon"
-                  _icon={{ size: "25px" }}
-                />
-                <VStack flex="0.9">
-                  <FrontEndTypo.H3 bold>
-                    {t("YOUR_APPLICATION_IS_UNDER_REVIEW")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>{t("MEANWHILE_PROFILE")}</FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-            ))}
-          {facilitator.status === "application_screened" ||
-            (facilitator.status === "screened" && (
-              <HStack
-                {...styles.inforBox}
-                p="5"
-                borderBottomWidth="1"
-                borderBottomColor={"gray.300"}
-                shadows="BlueOutlineShadow"
-              >
-                <IconByName
-                  flex="0.1"
-                  isDisabled
-                  name="UserLineIcon"
-                  _icon={{ size: "25px" }}
-                />
-                <VStack flex="0.9">
-                  <FrontEndTypo.H3 bold>
-                    {t("SELECTED_FOR_INTERVIEW")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
-            ))}
-          {facilitator.status === "shortlisted_for_orientation" && (
-            <HStack
-              {...styles.inforBox}
-              p="5"
-              borderBottomWidth="1"
-              borderBottomColor={"gray.300"}
-              shadows="BlueOutlineShadow"
-            >
-              <IconByName
-                flex="0.1"
-                isDisabled
-                name="UserLineIcon"
-                _icon={{ size: "25px" }}
-              />
-              <VStack flex="0.9">
-                <FrontEndTypo.H3 bold>
-                  {t("SHORTLISTED_FOR_ORIENTATION")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4>
-                  {t("CONGRATULATIONS_YOURE_SHORTLISTED_FOR_THE_ORIENTATION")}
-                </FrontEndTypo.H4>
-              </VStack>
-            </HStack>
-          )}
-          {facilitator.status === "potential_prerak" && (
-            <HStack
-              {...styles.inforBox}
-              p="5"
-              borderBottomWidth="1"
-              borderBottomColor={"gray.300"}
-              shadows="BlueOutlineShadow"
-            >
-              <IconByName
-                flex="0.1"
-                isDisabled
-                name="UserLineIcon"
-                _icon={{ size: "25px" }}
-              />
-              <VStack flex="0.9">
-                <FrontEndTypo.H3 bold>
-                  {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4>
-                  {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
-                </FrontEndTypo.H4>
-              </VStack>
-            </HStack>
-          )}
-          {["rusticate", "quit", "rejected"].includes(facilitator.status) && (
-            <HStack
-              // {...styles.inforBox}
-              bg="red.600"
-              p="5"
-              borderBottomWidth="1"
-              borderBottomColor={"gray.300"}
-              shadows="BlueOutlineShadow"
-            >
-              <IconByName
-                flex="0.1"
-                isDisabled
-                name="Forbid2LineIcon"
-                color="white"
-                _icon={{ size: "25px" }}
-              />
-              <VStack flex="0.9">
-                <FrontEndTypo.H3 bold color="white">
-                  {t(facilitator?.status?.toUpperCase())}
-                </FrontEndTypo.H3>
-              </VStack>
-            </HStack>
-          )}
+          <InfoBox status={facilitator?.status} />
           <Stack>
             <HStack py="6" flex="1" px="4">
               <Image
@@ -408,7 +289,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </VStack>
           </HStack> */}
           {/* potential prerak */}
-          {["potential_prerak"].includes(facilitator.status) && (
+          {["prereak_mobilizer"].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
                 background="#FCEEE2"
@@ -434,7 +315,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
                   {t("ITS_TIME_TO_START_MOBILIZING")}
                 </FrontEndTypo.H2>
-                <Alert mx={"3"} status="info" colorScheme="info" my="4">
+                {/* <Alert mx={"3"} status="info" colorScheme="info" my="4">
                   <VStack space={"2"} flexShrink={"1"}>
                     <HStack
                       flexShrink={"1"}
@@ -448,58 +329,23 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       </HStack>
                     </HStack>
                   </VStack>
-                </Alert>
+                </Alert> */}
               </Stack>
             </Stack>
           )}
-          {/* {["lead", "applied", ""].includes(facilitator.status) && (
+          {["lead", "applied", ""].includes(facilitator.status) && (
             <Stack>
               <VStack p="5" pt={1}>
-                {!form_step_number ||
-                (form_step_number && parseInt(form_step_number) < 10) ? (
-                  <Pressable onPress={(e) => navigate("/form")}>
-                    <HStack
-                      borderWidth="1"
-                      p="3"
-                      rounded="full"
-                      justifyContent="center"
-                    >
-                      <FrontEndTypo.H2>{t("COMPLETE_FORM")}</FrontEndTypo.H2>
-                    </HStack>
-                  </Pressable>
-                ) : (
-                  <React.Fragment />
-                )}
-                {/* <ChipStatus
-                  status={facilitator?.status}
+                <FrontEndTypo.Primarybutton
+                  onPress={(e) => navigate("/profile/edit/basic_details")}
+                  bold
                   flex="1"
-                  py="5"
-                  rounded="full"
-                  _text={{ textAlign: "center", textTransform: "capitalize" }}
-                  justifyContent="center"
-                /> */}
-          {/* </VStack> */}
-          {/* <VStack>
-                <Pressable
-                  alignItems={"center"}
-                  onPress={(e) => navigate("/beneficiary")}
                 >
-                  <HStack
-                    borderWidth="1"
-                    p="3"
-                    rounded="full"
-                    justifyContent="center"
-                    width={"300px"}
-                  >
-                    <FrontEndTypo.H2>
-                      {t("CREATE_BENEFICIARIES")}
-                    </FrontEndTypo.H2>
-                  </HStack>
-                </Pressable>
-               
-              </VStack> */}
-          {/* </Stack> */}
-          {/* )} */}
+                  {t("COMPLETE_FORM")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
+            </Stack>
+          )}
           {facilitator?.aadhar_verified !== "yes" && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
@@ -604,3 +450,142 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+const InfoBox = ({ status }) => {
+  let infoBox;
+
+  switch (status) {
+    case "application_screened":
+    case "screened":
+      infoBox = (
+        <HStack
+          {...styles.inforBox}
+          p="5"
+          borderBottomWidth="1"
+          borderBottomColor={"gray.300"}
+          shadows="BlueOutlineShadow"
+        >
+          <IconByName
+            flex="0.1"
+            isDisabled
+            name="UserLineIcon"
+            _icon={{ size: "25px" }}
+          />
+          <VStack flex="0.9">
+            <FrontEndTypo.H3 bold>
+              {t("SELECTED_FOR_INTERVIEW")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H4>
+              {t("CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW")}
+            </FrontEndTypo.H4>
+          </VStack>
+        </HStack>
+      );
+      break;
+    case "shortlisted_for_orientation":
+      infoBox = (
+        <HStack
+          {...styles.inforBox}
+          p="5"
+          borderBottomWidth="1"
+          borderBottomColor={"gray.300"}
+          shadows="BlueOutlineShadow"
+        >
+          <IconByName
+            flex="0.1"
+            isDisabled
+            name="UserLineIcon"
+            _icon={{ size: "25px" }}
+          />
+          <VStack flex="0.9">
+            <FrontEndTypo.H3 bold>
+              {t("SHORTLISTED_FOR_ORIENTATION")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H4>
+              {t("CONGRATULATIONS_YOURE_SHORTLISTED_FOR_THE_ORIENTATION")}
+            </FrontEndTypo.H4>
+          </VStack>
+        </HStack>
+      );
+      break;
+    case "prereak_mobilizer":
+      infoBox = (
+        <HStack
+          {...styles.inforBox}
+          p="5"
+          borderBottomWidth="1"
+          borderBottomColor={"gray.300"}
+          shadows="BlueOutlineShadow"
+        >
+          <IconByName
+            flex="0.1"
+            isDisabled
+            name="UserLineIcon"
+            _icon={{ size: "25px" }}
+          />
+          <VStack flex="0.9">
+            <FrontEndTypo.H3 bold>
+              {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H4>
+              {t("YOU_ARE_NOW_A_PRAGATI_MOBILIZER")}
+            </FrontEndTypo.H4>
+          </VStack>
+        </HStack>
+      );
+      break;
+    case "rusticate":
+    case "quit":
+    case "rejected":
+      infoBox = (
+        <HStack
+          // {...styles.inforBox}
+          bg="red.600"
+          p="5"
+          borderBottomWidth="1"
+          borderBottomColor={"gray.300"}
+          shadows="BlueOutlineShadow"
+        >
+          <IconByName
+            flex="0.1"
+            isDisabled
+            name="Forbid2LineIcon"
+            color="white"
+            _icon={{ size: "25px" }}
+          />
+          <VStack flex="0.9">
+            <FrontEndTypo.H3 bold color="white">
+              {t(status?.toUpperCase())}
+            </FrontEndTypo.H3>
+          </VStack>
+        </HStack>
+      );
+      break;
+    default:
+      infoBox = (
+        <HStack
+          {...styles.inforBox}
+          p="5"
+          borderBottomWidth="1"
+          borderBottomColor={"gray.300"}
+          shadows="BlueOutlineShadow"
+        >
+          <IconByName
+            flex="0.1"
+            isDisabled
+            name="UserLineIcon"
+            _icon={{ size: "25px" }}
+          />
+          <VStack flex="0.9">
+            <FrontEndTypo.H3 bold>
+              {t("YOUR_APPLICATION_IS_UNDER_REVIEW")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H4>{t("MEANWHILE_PROFILE")}</FrontEndTypo.H4>
+          </VStack>
+        </HStack>
+      );
+      break;
+  }
+
+  return infoBox;
+};

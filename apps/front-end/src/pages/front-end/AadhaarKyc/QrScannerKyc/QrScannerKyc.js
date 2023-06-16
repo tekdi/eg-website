@@ -4,12 +4,12 @@ import {
   FrontEndTypo,
   authRegistryService,
 } from "@shiksha/common-lib";
-import { Box, VStack, HStack } from "native-base";
+import { Box, VStack, HStack, Center } from "native-base";
 import React from "react";
-import { QrReader } from "react-qr-reader";
+import QrReader from "react-qr-reader";
 import { useTranslation } from "react-i18next";
 
-const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
+const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
   const [selected, setSelected] = React.useState(false);
   const [startScan, setStartScan] = React.useState(true);
   const [loadingScan, setLoadingScan] = React.useState(false);
@@ -27,15 +27,15 @@ const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
     if (scanData && scanData !== "") {
       setData(scanData);
       const result = await authRegistryService.aadhaarQr({
-        qr_data: scanData.text,
+        qr_data: scanData?.text ? scanData?.text : scanData,
       });
-      console.log(result);
       if (result?.error) {
         setError({
           top: `QR code ${result?.error}`,
         });
         setPage();
         setOtpFailedPopup(false);
+        setAttempt("addhar-qr");
       } else {
         setError();
         const aadhaarResult = await authRegistryService.aadhaarKyc({
@@ -75,8 +75,15 @@ const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
             ? bottomElement?.current?.clientHeight
             : 0));
       if (isMounted) {
-        setCameraWidth(topElement?.current?.clientWidth);
-        setCameraHeight(newHeight);
+        const w = topElement?.current?.clientWidth;
+        const h = newHeight;
+        if (w < h) {
+          setCameraWidth(w);
+          setCameraHeight(w);
+        } else {
+          setCameraWidth(h);
+          setCameraHeight(h);
+        }
       }
     }
 
@@ -117,24 +124,24 @@ const App = ({ setOtpFailedPopup, setPage, setError, id }) => {
           </HStack>
         </Box>
         {startScan && (
-          <QrReader
-            key={selected + torch}
-            facingMode={selected ? "user" : "environment"}
-            delay={2000}
-            onError={handleError}
-            onResult={handleScan}
-            advanced={[{ torch: torch }]}
-            torch={torch}
-            videoContainerStyle={{
-              height: cameraHeight,
-              width: cameraWidth,
-              padding: 0,
-            }}
-            videoStyle={{
-              height: cameraHeight,
-              width: cameraWidth,
-            }}
-          />
+          <Center>
+            <QrReader
+              key={cameraHeight + cameraWidth}
+              facingMode={selected ? "environment" : "user"}
+              torch={torch}
+              constraints={{
+                facingMode: selected ? "environment" : "user",
+                torch,
+              }}
+              style={{
+                height: cameraHeight,
+                width: cameraWidth,
+              }}
+              delay={2000}
+              onError={handleError}
+              onScan={handleScan}
+            />
+          </Center>
         )}
 
         <Box py="30px" px="20px" ref={bottomElement}>

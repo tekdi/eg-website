@@ -18,7 +18,7 @@ import {
   Loading,
   IconByName,
 } from "@shiksha/common-lib";
-import AdharOTP from "./AadhaarOTP";
+import AadhaarOTP from "./AadhaarOTP";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
@@ -35,6 +35,13 @@ export default function AdharKyc() {
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
+  const attemptCount = 1;
+  const attemptAadhaarNumber = localStorage.getItem("addhar-number")
+    ? localStorage.getItem("addhar-number")
+    : 0;
+  const attemptAadhaarQR = localStorage.getItem("addhar-qr")
+    ? localStorage.getItem("addhar-qr")
+    : 0;
   React.useEffect(async () => {
     if (!page) {
       aadhaarInit();
@@ -44,7 +51,7 @@ export default function AdharKyc() {
 
   React.useEffect(() => {
     const typeData = type?.toLowerCase();
-    if (typeData === "qr") {
+    if (["qr", "aadhaar-number", "upload"].includes(typeData)) {
       setPage(typeData);
     }
   }, [type]);
@@ -54,8 +61,10 @@ export default function AdharKyc() {
     setCaptchaImg(res?.captchaImage);
     setData({ ...data, id, captchaCode: "" });
   };
+
   const aadhaarInit = async (id) => {
     setLoading(true);
+    setError();
     const res = await aadhaarService.okyc();
     if (res.id) {
       getCaptcha(res.id);
@@ -64,6 +73,7 @@ export default function AdharKyc() {
     }
     setLoading(false);
   };
+
   const getUser = async () => {
     const result = await facilitatorRegistryService.getOne({ id });
     if (result?.id) {
@@ -87,6 +97,8 @@ export default function AdharKyc() {
       });
     } else if (res?.code === "otp_sent") {
       setPage("otp");
+    } else if (res?.code === "send_otp_failed") {
+      setAttempt("addhar-number");
     } else {
       setError({
         ...error,
@@ -107,6 +119,23 @@ export default function AdharKyc() {
     }
   };
 
+  const setAttempt = (type) => {
+    const attemptCount = localStorage.getItem(type)
+      ? localStorage.getItem(type)
+      : 0;
+    localStorage.setItem(type, parseInt(attemptCount) + 1);
+  };
+
+  if (attemptAadhaarNumber < attemptCount || attemptAadhaarQR < attemptCount) {
+    if (
+      (attemptAadhaarNumber < attemptCount && page === "qr") ||
+      (attemptAadhaarQR < attemptCount && page === "upload")
+    ) {
+      setPage();
+      setOtpFailedPopup(true);
+    }
+  }
+
   if (loading) {
     return <Loading />;
   }
@@ -114,11 +143,13 @@ export default function AdharKyc() {
   return (
     <Box>
       {page === "qr" ? (
-        <QrScannerKyc {...{ setOtpFailedPopup, setPage, setError, id }} />
+        <QrScannerKyc
+          {...{ setOtpFailedPopup, setPage, setError, id, setAttempt }}
+        />
       ) : page === "upload" ? (
         <ManualUpload {...{ setLoading, setPage, setOtpFailedPopup }} />
       ) : page === "otp" && data?.aadhaarNumber ? (
-        <AdharOTP
+        <AadhaarOTP
           {...data}
           {...{
             setPage,
@@ -128,6 +159,7 @@ export default function AdharKyc() {
             handalBack,
             setOtpFailedPopup,
             sendData,
+            setAttempt,
           }}
         />
       ) : (
@@ -186,7 +218,7 @@ export default function AdharKyc() {
                 {t("CONTINUE")}
               </FrontEndTypo.Primarybutton>
             </Box>
-          ) : (
+          ) : page === "aadhaar-number" ? (
             <VStack p="4" space={4}>
               {error?.top && (
                 <FrontEndTypo.Prompts m="5" status="danger" flex="1">
@@ -265,15 +297,7 @@ export default function AdharKyc() {
                     alt="captcha image"
                   />
                   <IconByName
-                    onPress={(e) =>
-                      setRefreshCaptcha(
-                        refreshCaptcha === "1"
-                          ? "1"
-                          : refreshCaptcha === "2"
-                          ? "1"
-                          : "2"
-                      )
-                    }
+                    onPress={(e) => aadhaarInit()}
                     name="RefreshLineIcon"
                   />
                 </HStack>
@@ -358,6 +382,29 @@ export default function AdharKyc() {
                 {t("CONTINUE")}
               </FrontEndTypo.Secondarybutton>
             </VStack>
+          ) : (
+            <Box>
+              {error?.top && (
+                <FrontEndTypo.Prompts m="5" status="danger" flex="1">
+                  {error?.top}
+                </FrontEndTypo.Prompts>
+              )}
+              <Loading
+                customComponent={
+                  <AadhaarOptions
+                    {...{
+                      setData,
+                      setOtpFailedPopup,
+                      setError,
+                      aadhaarInit,
+                      setPage,
+                      navigate,
+                      id,
+                    }}
+                  />
+                }
+              />
+            </Box>
           )}
         </Layout>
       )}
@@ -380,49 +427,75 @@ export default function AdharKyc() {
             />
           </HStack>
         </Actionsheet.Content>
-        <VStack bg="white" width={"100%"} space="5" p="5">
-          <FrontEndTypo.Secondarybutton
-            onPress={() => {
-              setData();
-              setOtpFailedPopup(false);
-              setError();
-              aadhaarInit();
-              setPage();
-            }}
-          >
-            {t("RETRY_AADHAR_NUMER_KYC")}
-          </FrontEndTypo.Secondarybutton>
-          <FrontEndTypo.Secondarybutton
-            onPress={() => {
-              setPage("qr");
-              setOtpFailedPopup(false);
-            }}
-          >
-            {t("RETRY_AADHAR_QR_KYC")}
-          </FrontEndTypo.Secondarybutton>
-          <FrontEndTypo.Secondarybutton
-            onPress={() => {
-              setPage("upload");
-              setOtpFailedPopup(false);
-            }}
-          >
-            {t("RETRY_AADHAR_UPLOAD_KYC")}
-          </FrontEndTypo.Secondarybutton>
-          <FrontEndTypo.Primarybutton
-            onPress={() => {
-              navigate(-1);
-            }}
-          >
-            {t("GO_BACK")}
-          </FrontEndTypo.Primarybutton>
-
-          <HStack alignItems="center" mb="3" color="red.600">
-            <FrontEndTypo.H4 pl="2" color="red.600">
-              {t("MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD")}
-            </FrontEndTypo.H4>
-          </HStack>
-        </VStack>
+        <AadhaarOptions
+          {...{
+            setData,
+            setOtpFailedPopup,
+            setError,
+            aadhaarInit,
+            setPage,
+            navigate,
+            id,
+          }}
+        />
       </Actionsheet>
     </Box>
   );
 }
+
+const AadhaarOptions = ({
+  setData,
+  setOtpFailedPopup,
+  setError,
+  aadhaarInit,
+  setPage,
+  navigate,
+  id,
+}) => {
+  return (
+    <VStack bg="white" width={"100%"} space="5" p="5">
+      <FrontEndTypo.Secondarybutton
+        onPress={() => {
+          setData();
+          setOtpFailedPopup(false);
+          setError();
+          aadhaarInit();
+          setPage("aadhaar-number");
+          navigate(`/aadhaar-kyc/${id}/aadhaar-number`);
+        }}
+      >
+        {t("RETRY_AADHAR_NUMER_KYC")}
+      </FrontEndTypo.Secondarybutton>
+      <FrontEndTypo.Secondarybutton
+        isDisabled={localStorage.getItem("addhar-number") < attemptCount}
+        onPress={() => {
+          setPage("qr");
+          setOtpFailedPopup(false);
+          navigate(`/aadhaar-kyc/${id}/QR`);
+        }}
+      >
+        {t("RETRY_AADHAR_QR_KYC")}
+      </FrontEndTypo.Secondarybutton>
+      <FrontEndTypo.Secondarybutton
+        isDisabled={
+          localStorage.getItem("addhar-number") < attemptCount ||
+          localStorage.getItem("addhar-qr") < attemptCount
+        }
+        onPress={() => {
+          setPage("upload");
+          setOtpFailedPopup(false);
+          navigate(`/aadhaar-kyc/${id}/upload`);
+        }}
+      >
+        {t("RETRY_AADHAR_UPLOAD_KYC")}
+      </FrontEndTypo.Secondarybutton>
+      <FrontEndTypo.Primarybutton
+        onPress={() => {
+          navigate(-1);
+        }}
+      >
+        {t("GO_BACK")}
+      </FrontEndTypo.Primarybutton>
+    </VStack>
+  );
+};

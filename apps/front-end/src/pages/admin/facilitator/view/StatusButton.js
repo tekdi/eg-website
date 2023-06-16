@@ -55,9 +55,9 @@ const statusList = [
     name: "SHORTLIST_FOR_ORIENTATION",
   },
   {
-    status: "potential_prerak",
+    status: "prereak_mobilizer",
     btnStatus: "success",
-    name: "POTENTIAL_PRERAK",
+    name: "PRERAK_MOBILIZER",
   },
   {
     status: "selected_for_training",
@@ -124,9 +124,9 @@ export default function StatusButton({ data, setData }) {
         setDisabledBtn(["screened", "quit", "rusticate"]);
         break;
       case "shortlisted_for_orientation":
-        setDisabledBtn(["potential_prerak", "rejected", "quit", "rusticate"]);
+        setDisabledBtn(["prereak_mobilizer", "rejected", "quit", "rusticate"]);
         break;
-      case "potential_prerak":
+      case "prereak_mobilizer":
         setDisabledBtn([
           "selected_for_training",
           "rejected",

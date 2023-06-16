@@ -50,7 +50,7 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">
                 {benificiary?.first_name ? benificiary?.first_name : "-"}
                 &nbsp;
-                {benificiary?.middle_name ? benificiary?.middle_name : "-"}
+                {benificiary?.middle_name?.trim() === "" ? "-" : benificiary?.middle_name}
                 &nbsp;
                 {benificiary?.last_name ? benificiary?.last_name : "-"}
               </FrontEndTypo.H1>
@@ -264,20 +264,19 @@ export default function BenificiaryBasicDetails() {
               <VStack space="2" paddingTop="5">
                 <HStack
                   alignItems="Center"
-                  space="xl"
                   borderBottomWidth="1px"
                   borderBottomColor="appliedColor"
                 >
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
-                    flex="0.3"
+                    flex="0.4"
                     pb="2"
                   >
                     {t("FATHER")}
                   </FrontEndTypo.H3>
 
-                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
                     {benificiary?.core_beneficiaries?.father_first_name
                       ? benificiary?.core_beneficiaries.father_first_name
                       : "-"}{" "}
@@ -293,13 +292,13 @@ export default function BenificiaryBasicDetails() {
                   <FrontEndTypo.H3
                     color="textGreyColor.50"
                     fontWeight="400"
-                    flex="0.3"
+                    flex="0.4"
                     pb="2"
                   >
                     {t("MOTHER")}
                   </FrontEndTypo.H3>
 
-                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
                     {benificiary?.core_beneficiaries?.mother_first_name
                       ? benificiary?.core_beneficiaries.mother_first_name
                       : "-"}{" "}
