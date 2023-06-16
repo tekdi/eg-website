@@ -157,16 +157,13 @@ export default function BenificiaryEnrollment() {
                   {t("SELECTED_SUBJECTS")}
                 </FrontEndTypo.H3>
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {subject?.map((e) => {
-                    {
-                      return (
-                        <React.Fragment>
-                          {e?.name}
-                          {"\n"}
-                        </React.Fragment>
-                      );
-                    }
-                  })}
+                  <VStack>
+                    {subject?.map((e) => {
+                      {
+                        return <React.Fragment>{e?.name}</React.Fragment>;
+                      }
+                    })}
+                  </VStack>
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
