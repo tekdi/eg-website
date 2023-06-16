@@ -10,6 +10,7 @@ import {
   Select,
   Stack,
   Text,
+  TextArea,
   VStack,
 } from "native-base";
 import {
@@ -175,15 +176,14 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
-  // console.log(schema, t(schema?.label ? schema?.label : label), label, schema?.label)
+  // console.log(label, type, id);
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-      {schema?.format !== "hidden" &&
-        (label || schema?.label) &&
-        typeof type === "string" && (
+      {(!schema?.format || schema?.format !== "hidden") &&
+        (label || schema?.label) && (
           <Box>
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
@@ -238,6 +238,7 @@ export const CustomR = ({
       value={value}
       required={required}
       onChange={(value) => onChange(value)}
+      {...props}
     />
   );
 };
@@ -477,6 +478,75 @@ export const HFieldTemplate = ({
   );
 };
 
+const textarea = ({
+  schema,
+  options,
+  value,
+  onChange,
+  required,
+  isInvalid,
+}) => {
+  const [isFocus, setIsfocus] = React.useState(false);
+  const { label, title, help, rows } = schema ? schema : {};
+  const { t } = useTranslation();
+  return (
+    <FormControl isInvalid={isInvalid ? isInvalid : false}>
+      {title && (
+        <FormControl.Label
+          rounded="sm"
+          position="absolute"
+          left="1rem"
+          bg="white"
+          px="1"
+          m="0"
+          height={"1px"}
+          alignItems="center"
+          style={{
+            ...(isFocus || value
+              ? {
+                  top: "0",
+                  opacity: 1,
+                  zIndex: 5,
+                  transition: "all 0.3s ease",
+                }
+              : {
+                  top: "0.5rem",
+                  zIndex: -2,
+                  opacity: 0,
+                  transition: "all 0.2s ease-in-out",
+                }),
+          }}
+        >
+          <Text fontSize="12" fontWeight="400">
+            {t(title)}
+            {required ? (
+              <Text color={"danger.500"}>*</Text>
+            ) : (
+              <Text fontWeight="300" color={"#9E9E9E"}>
+                ({t("OPTIONAL")})
+              </Text>
+            )}
+          </Text>
+        </FormControl.Label>
+      )}
+      <TextArea
+        totalLines={rows ? rows : 3}
+        key={title}
+        onFocus={(e) => setIsfocus(true)}
+        onBlur={(e) => setIsfocus(false)}
+        onChange={(e) => onChange(e.target.value)}
+        value={value}
+        placeholder={t(label ? label : schema?.label)}
+      />
+      {help && isInvalid ? (
+        <FormControl.ErrorMessage>{t(help)}</FormControl.ErrorMessage>
+      ) : (
+        help && <FormControl.HelperText>{t(help)}</FormControl.HelperText>
+      )}
+    </FormControl>
+  );
+};
+
 const validator = customizeValidator({
   customFormats: {
     MobileNumber: /^[6-9]\d{8}9$/,
@@ -488,6 +558,7 @@ const widgets = {
   CustomR,
   Aadhaar,
   select,
+  textarea,
   CustomOTPBox,
   FileUpload,
   MobileNumber,

@@ -17,6 +17,7 @@ export default function CustomRadio({
   onChange,
   schema,
   required,
+  ...props
 }) {
   const { t } = useTranslation();
   const { _hstack, icons, _pressable, grid, label, format } = schema

@@ -35,6 +35,7 @@ export default function AdharKyc() {
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
+  const attemptCount = 1;
   const attemptAadhaarNumber = localStorage.getItem("addhar-number")
     ? localStorage.getItem("addhar-number")
     : 0;
@@ -63,6 +64,7 @@ export default function AdharKyc() {
 
   const aadhaarInit = async (id) => {
     setLoading(true);
+    setError();
     const res = await aadhaarService.okyc();
     if (res.id) {
       getCaptcha(res.id);
@@ -124,10 +126,10 @@ export default function AdharKyc() {
     localStorage.setItem(type, parseInt(attemptCount) + 1);
   };
 
-  if (attemptAadhaarNumber < 3 || attemptAadhaarQR < 3) {
+  if (attemptAadhaarNumber < attemptCount || attemptAadhaarQR < attemptCount) {
     if (
-      (attemptAadhaarNumber < 3 && page === "qr") ||
-      (attemptAadhaarQR < 3 && page === "upload")
+      (attemptAadhaarNumber < attemptCount && page === "qr") ||
+      (attemptAadhaarQR < attemptCount && page === "upload")
     ) {
       setPage();
       setOtpFailedPopup(true);
@@ -465,7 +467,7 @@ const AadhaarOptions = ({
         {t("RETRY_AADHAR_NUMER_KYC")}
       </FrontEndTypo.Secondarybutton>
       <FrontEndTypo.Secondarybutton
-        isDisabled={localStorage.getItem("addhar-number") < 3}
+        isDisabled={localStorage.getItem("addhar-number") < attemptCount}
         onPress={() => {
           setPage("qr");
           setOtpFailedPopup(false);
@@ -476,8 +478,8 @@ const AadhaarOptions = ({
       </FrontEndTypo.Secondarybutton>
       <FrontEndTypo.Secondarybutton
         isDisabled={
-          localStorage.getItem("addhar-number") < 3 ||
-          localStorage.getItem("addhar-qr") < 3
+          localStorage.getItem("addhar-number") < attemptCount ||
+          localStorage.getItem("addhar-qr") < attemptCount
         }
         onPress={() => {
           setPage("upload");
