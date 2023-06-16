@@ -82,7 +82,7 @@ export default function OrientationScreen({
       attr: "qualification",
     },
     {
-      name: t("REGION"),
+      name: t("DISTRICT"),
       selector: (row) => (row?.district ? row?.district : ""),
       sortable: false,
       attr: "city",
