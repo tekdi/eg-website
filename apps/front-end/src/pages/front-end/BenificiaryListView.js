@@ -5,9 +5,10 @@ import {
   Layout,
   benificiaryRegistoryService,
   FrontEndTypo,
+  SelectStyle,
 } from "@shiksha/common-lib";
 import Chip, { ChipStatus } from "component/Chip";
-import { HStack, VStack, Box, Select, Pressable } from "native-base";
+import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -49,11 +50,11 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <ChipStatus status={"screened"} pt="3">
-                  <FrontEndTypo.H3 bold>
+                <Box>
+                  <ChipStatus status={"screened"}>
                     {item?.program_beneficiaries?.status || t("UNIDENTIFIED")}
-                  </FrontEndTypo.H3>
-                </ChipStatus>
+                  </ChipStatus>
+                </Box>
               </HStack>
               <VStack bg="white" pl="2">
                 <HStack color="blueText.450" alignItems="center">
@@ -160,7 +161,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       <VStack>
         <Pressable
           onPress={(e) => {
-            ["potential_prerak"].includes(facilitator.status) &&
+            ["prereak_mobilizer"].includes(facilitator.status) &&
               navigate(`/beneficiary`);
           }}
         >
@@ -201,15 +202,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
         alignItems="Center"
         p="4"
       >
-        <Box flex="1">
-          <Select
-            bg="white"
-            borderWidth="1px"
-            borderColor="textMaroonColor.400"
-            color="textMaroonColor.400"
-            bold
-            borderRadius="30px"
-            shadow="RedOutlineShadow"
+        <Box flex="2">
+          <SelectStyle
             overflowX="hidden"
             selectedValue={status}
             placeholder={t("STATUS_ALL")}
@@ -219,6 +213,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             }}
             _selectedItem={{
               bg: "cyan.600",
+              endIcon: <IconByName name="ArrowDownSLineIcon" />,
             }}
             accessibilityLabel="Select a position for Menu"
           >
@@ -230,18 +225,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                 value={option.value}
               />
             ))}
-          </Select>
+          </SelectStyle>
         </Box>
-        <Box flex="1">
-          <Select
-            size="sm"
-            bg="white"
-            borderWidth="1px"
-            borderColor="textMaroonColor.400"
-            color="textMaroonColor.400"
-            bold
-            borderRadius="30px"
-            shadow="RedOutlineShadow"
+        <Box flex="2">
+          <SelectStyle
             overflowX="hidden"
             selectedValue={sort}
             placeholder={t("SORT_BY")}
@@ -261,7 +248,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                 value={option.value}
               />
             ))}
-          </Select>
+          </SelectStyle>
         </Box>
       </HStack>
       <List data={data} />
