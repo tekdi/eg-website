@@ -31,11 +31,11 @@ const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
       });
       if (result?.error) {
         setError({
-          top: `QR code ${result?.error}`,
+          top: t(`QR_CODE_INVALID`),
         });
         setPage();
         setOtpFailedPopup(false);
-        setAttempt("addhar-qr");
+        setAttempt("qr");
       } else {
         setError();
         const aadhaarResult = await authRegistryService.aadhaarKyc({
@@ -127,10 +127,10 @@ const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
           <Center>
             <QrReader
               key={cameraHeight + cameraWidth}
-              facingMode={selected ? "environment" : "user"}
+              facingMode={selected ? "user" : "environment"}
               torch={torch}
               constraints={{
-                facingMode: selected ? "environment" : "user",
+                facingMode: selected ? "user" : "environment",
                 torch,
               }}
               style={{

@@ -10,7 +10,6 @@ import {
 } from "native-base";
 import {
   FrontEndTypo,
-  t,
   Layout,
   aadhaarService,
   FloatingInput,
@@ -22,6 +21,7 @@ import AadhaarOTP from "./AadhaarOTP";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
+import { useTranslation } from "react-i18next";
 
 export default function AdharKyc() {
   const location = useLocation();
@@ -36,17 +36,20 @@ export default function AdharKyc() {
   const { id, type } = useParams();
   const navigate = useNavigate();
   const attemptCount = 1;
-  const attemptAadhaarNumber = localStorage.getItem("addhar-number")
-    ? localStorage.getItem("addhar-number")
-    : 0;
-  const attemptAadhaarQR = localStorage.getItem("addhar-qr")
-    ? localStorage.getItem("addhar-qr")
-    : 0;
+  const [isQRDisabled, setIsQRDisabled] = React.useState(false);
+  const [isAadharDisabled, setIsAadharDisabled] = React.useState(false);
+  const { t } = useTranslation();
+
   React.useEffect(async () => {
-    if (!page) {
+    if (page === "aadhaar-number") {
       aadhaarInit();
     }
     setLoading(false);
+    setIsQRDisabled(
+      localStorage.getItem("addhar-number") < attemptCount ||
+        localStorage.getItem("addhar-qr") < attemptCount
+    );
+    setIsAadharDisabled(localStorage.getItem("addhar-number") < attemptCount);
   }, [page]);
 
   React.useEffect(() => {
@@ -126,10 +129,10 @@ export default function AdharKyc() {
     localStorage.setItem(type, parseInt(attemptCount) + 1);
   };
 
-  if (attemptAadhaarNumber < attemptCount || attemptAadhaarQR < attemptCount) {
+  if (isQRDisabled || isAadharDisabled) {
     if (
-      (attemptAadhaarNumber < attemptCount && page === "qr") ||
-      (attemptAadhaarQR < attemptCount && page === "upload")
+      (isQRDisabled && page === "qr") ||
+      (isAadharDisabled && page === "upload")
     ) {
       setPage();
       setOtpFailedPopup(true);
@@ -210,8 +213,7 @@ export default function AdharKyc() {
                   if (location?.state) {
                     navigate(location?.state);
                   } else {
-                    navigate(-1);
-                    navigate(0);
+                    navigate("/beneficiary/list");
                   }
                 }}
               >
@@ -243,6 +245,7 @@ export default function AdharKyc() {
                   onChange={(value) => {
                     if (value?.length >= 12) {
                       if (
+                        value?.length <= 12 &&
                         value &&
                         !`${value}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
                       ) {
@@ -384,24 +387,28 @@ export default function AdharKyc() {
             </VStack>
           ) : (
             <Box>
-              {error?.top && (
-                <FrontEndTypo.Prompts m="5" status="danger" flex="1">
-                  {error?.top}
-                </FrontEndTypo.Prompts>
-              )}
               <Loading
                 customComponent={
-                  <AadhaarOptions
-                    {...{
-                      setData,
-                      setOtpFailedPopup,
-                      setError,
-                      aadhaarInit,
-                      setPage,
-                      navigate,
-                      id,
-                    }}
-                  />
+                  <VStack w="100%">
+                    {error?.top && (
+                      <FrontEndTypo.Prompts m="5" status="danger" flex="1">
+                        {error?.top}
+                      </FrontEndTypo.Prompts>
+                    )}
+                    <AadhaarOptions
+                      {...{
+                        setData,
+                        setOtpFailedPopup,
+                        setError,
+                        aadhaarInit,
+                        setPage,
+                        navigate,
+                        isQRDisabled,
+                        isAadharDisabled,
+                        id,
+                      }}
+                    />
+                  </VStack>
                 }
               />
             </Box>
@@ -435,7 +442,8 @@ export default function AdharKyc() {
             aadhaarInit,
             setPage,
             navigate,
-            attemptCount,
+            isQRDisabled,
+            isAadharDisabled,
             id,
           }}
         />
@@ -451,9 +459,12 @@ const AadhaarOptions = ({
   aadhaarInit,
   setPage,
   navigate,
-  attemptCount,
+  isQRDisabled,
+  isAadharDisabled,
   id,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <VStack bg="white" width={"100%"} space="5" p="5">
       <FrontEndTypo.Secondarybutton
@@ -469,7 +480,7 @@ const AadhaarOptions = ({
         {t("RETRY_AADHAR_NUMER_KYC")}
       </FrontEndTypo.Secondarybutton>
       <FrontEndTypo.Secondarybutton
-        isDisabled={localStorage.getItem("addhar-number") < attemptCount}
+        isDisabled={isAadharDisabled}
         onPress={() => {
           setPage("qr");
           setOtpFailedPopup(false);
@@ -479,10 +490,7 @@ const AadhaarOptions = ({
         {t("RETRY_AADHAR_QR_KYC")}
       </FrontEndTypo.Secondarybutton>
       <FrontEndTypo.Secondarybutton
-        isDisabled={
-          localStorage.getItem("addhar-number") < attemptCount ||
-          localStorage.getItem("addhar-qr") < attemptCount
-        }
+        isDisabled={isQRDisabled}
         onPress={() => {
           setPage("upload");
           setOtpFailedPopup(false);

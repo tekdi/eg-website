@@ -49,7 +49,7 @@ export default function AdharOTP({
       });
       setPage && setPage("aadhaarSuccess");
     } else {
-      setAttempt("addhar-number");
+      setAttempt("number");
       setError({
         ...error,
         top: res.error,
@@ -104,14 +104,15 @@ export default function AdharOTP({
             {t("ENTER_SECURITY_CODE")}
           </FrontEndTypo.H3>
           <FrontEndTypo.Prompts status={"info"}>
-            You can set the pass code as your birth year e.g. 1999 last 4 digits
-            of your Aadhaar **** **** 8976
+            Create a 4 digit share code Please enter a 4 digit number. You need
+            not remember this code. Your Aadhaar data will be locked with this
+            code and only Test ID Verification App can access your data.
           </FrontEndTypo.Prompts>
-          <FrontEndTypo.H4 color="gray.500">
+          {/* <FrontEndTypo.H4 color="gray.500">
             {t(
               "SET_A_4_DIGIT_PASSCODE_TO_SECURELY_SHARE_YOUR_AADHAAR_ZIP_FILE"
             )}
-          </FrontEndTypo.H4>
+          </FrontEndTypo.H4> */}
         </VStack>
         <FormControl>
           <CustomOTPBox
