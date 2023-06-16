@@ -162,6 +162,7 @@ export default function Orientation({ footerLinks }) {
   };
   const onChange = async (data, id) => {
     setErrors({});
+    formRef?.current?.validateForm();
     const newData = data.formData;
     // formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
     //   setErrors(errors);
@@ -347,7 +348,7 @@ export default function Orientation({ footerLinks }) {
                 shadow="BlueOutlineShadow"
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  clearForm();
+                  // clearForm();
                 }}
               >
                 {t("SCHEDULE_EVENT")}
@@ -437,7 +438,9 @@ export default function Orientation({ footerLinks }) {
           </HStack>
           <Modal
             isOpen={modalVisible}
-            onClose={() => setModalVisible(false)}
+            onClose={() => {
+              setModalVisible(false), clearForm();
+            }}
             avoidKeyboard
             size="xl"
             // height={"450px"}
@@ -467,7 +470,7 @@ export default function Orientation({ footerLinks }) {
                     extraErrors={errors}
                     showErrorList={false}
                     noHtml5Validate={true}
-                    liveValidate
+                    // liveValidate
                     {...{
                       validator,
                       schema: schema ? schema : {},
