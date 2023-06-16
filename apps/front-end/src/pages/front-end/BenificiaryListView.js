@@ -15,7 +15,7 @@ const List = ({ data }) => {
   const navigate = useNavigate();
   return (
     <VStack space="4" p="4" alignContent="center">
-      {(data && data?.length > 0) || data?.constructor?.name !== "Array" ? (
+      {(data && data?.length <= 0) || data?.constructor?.name !== "Array" ? (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
       ) : (
         data &&
@@ -95,12 +95,15 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     const data = await benificiaryRegistoryService.getStatusList();
     setSelectStatus(data);
   }, []);
+
   React.useEffect(() => {
     setReqBodyData({ page, limit, statusValue, sortValue, searchBenficiary });
   }, [page, limit, statusValue, sortValue, searchBenficiary]);
+
   React.useEffect(() => {
     aglist(reqBodyData);
   }, [reqBodyData]);
+
   const aglist = async (reqBodyData) => {
     let reqBody = {
       page: reqBodyData?.page,
@@ -112,6 +115,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
     );
+
     if (!result?.error) {
       setData(result);
     } else {
@@ -143,6 +147,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       setFacilitator(fa_data);
     }
   }, []);
+
   return (
     <Layout
       _appBar={{
