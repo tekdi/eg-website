@@ -11,23 +11,10 @@ import {
   FrontEndTypo,
   getOptions,
   enumRegistryService,
+  validation,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  CustomR,
-  RadioBtn,
-  Aadhaar,
-  BaseInputTemplate,
-  ArrayFieldTemplate,
-  CustomOTPBox,
-  select,
-  FileUpload,
-} from "component/BaseInput";
+import { widgets, templates } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import ItemComponent from "./ItemComponent.js";
 
@@ -173,6 +160,21 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   const customValidate = (item, errors, c) => {
+    if (["experience", "vo_experience"].includes(type)) {
+      if (schema?.properties?.reference_details?.properties?.contact_number) {
+        if (item?.reference_details?.contact_number) {
+          const result = validation({
+            data: item?.reference_details?.contact_number,
+            type: "mobile",
+          });
+          if (result) {
+            errors?.reference_details?.contact_number?.addError(
+              `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`
+            );
+          }
+        }
+      }
+    }
     ["role_title", "organization", "description"].forEach((key) => {
       if (item?.[key]) {
         if (
@@ -204,6 +206,24 @@ export default function App({ userTokenInfo, footerLinks }) {
         }
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
+      } else if (["format", "type"].includes(error.name)) {
+        const { format, type } = error?.params ? error?.params : {};
+        let message = "REQUIRED_MESSAGE";
+        if (["format", "type"].includes("email")) {
+          message = "PLEASE_ENTER_VALID_EMAIL";
+        } else if (["format", "type"].includes("string")) {
+          message = "PLEASE_ENTER_VALID_STREING";
+        } else if (["format", "type"].includes("number")) {
+          message = "PLEASE_ENTER_VALID_NUMBER";
+        }
+
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t(message)} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t(message)}`;
+        }
       }
       return error;
     });
@@ -235,6 +255,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       setLoading(false);
       setSchema(newSchema);
     }
+
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -266,7 +287,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const onEdit = (item) => {
     setFormData({
       ...item,
-      reference_details: item?.reference,
+      reference_details: item?.reference ? item?.reference : {},
       arr_id: item?.id,
     });
     setAddMore(true);
@@ -373,27 +394,12 @@ export default function App({ userTokenInfo, footerLinks }) {
             <Form
               key={lang}
               ref={formRef}
-              widgets={{
-                RadioBtn,
-                CustomR,
-                Aadhaar,
-                select,
-                CustomOTPBox,
-                FileUpload,
-              }}
-              templates={{
-                FieldTemplate,
-                ArrayFieldTitleTemplate,
-                ObjectFieldTemplate,
-                TitleFieldTemplate,
-                DescriptionFieldTemplate,
-                BaseInputTemplate,
-                ArrayFieldTemplate,
-              }}
               extraErrors={errors}
               showErrorList={false}
               noHtml5Validate={true}
               {...{
+                widgets,
+                templates,
                 validator,
                 schema: schema ? schema : {},
                 formData,
