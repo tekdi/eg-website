@@ -7,6 +7,7 @@ import {
   benificiaryRegistoryService,
   t,
   Layout,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,6 +15,9 @@ export default function BenificiaryEducation() {
   const params = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [userId, setUserId] = React.useState(params?.id);
+  const [previous_school_type, setprevious_school_type] = React.useState();
+  const [filteredreason, setfilteredreason] = React.useState();
+  const [filteredcareer, setfilteredcareer] = React.useState();
 
   const navigate = useNavigate();
 
@@ -30,6 +34,36 @@ export default function BenificiaryEducation() {
 
     setbenificiary(result?.result);
   };
+
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    const schooltypedata = data?.data?.PREVIOUS_SCHOOL_TYPE;
+    const reasondata = data?.data?.REASON_OF_LEAVING_EDUCATION;
+    const careerdata = data?.data?.CAREER_ASPIRATION;
+
+    const previous_school_type =
+      benificiary?.core_beneficiaries?.previous_school_type;
+    const reason_of_leaving_education =
+      benificiary?.core_beneficiaries?.reason_of_leaving_education;
+    const career_aspiration =
+      benificiary?.core_beneficiaries?.career_aspiration;
+    const filteredTitles = schooltypedata
+      .filter((item) => item.value === previous_school_type)
+      .map((item) => item.title)
+      .join(", ");
+    const filteredreason = reasondata
+      .filter((item) => item.value === reason_of_leaving_education)
+      .map((item) => item.title)
+      .join(", ");
+    const filteredcareer = careerdata
+      .filter((item) => item.value === career_aspiration)
+      .map((item) => item.title)
+      .join(", ");
+
+    setprevious_school_type(filteredTitles);
+    setfilteredreason(filteredreason);
+    setfilteredcareer(filteredcareer);
+  }, [benificiary]);
 
   return (
     <Layout _appBar={{ name: t("EDUCATION_DETAILS"), onPressBackButton }}>
@@ -137,7 +171,7 @@ export default function BenificiaryEducation() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                   {benificiary?.core_beneficiaries?.previous_school_type
-                    ? t(benificiary?.core_beneficiaries?.previous_school_type)
+                    ? t(previous_school_type)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -153,10 +187,7 @@ export default function BenificiaryEducation() {
                   flex="0.4"
                 >
                   {benificiary?.core_beneficiaries?.reason_of_leaving_education
-                    ? t(
-                        benificiary?.core_beneficiaries
-                          ?.reason_of_leaving_education
-                      )
+                    ? t(filteredreason)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -208,7 +239,7 @@ export default function BenificiaryEducation() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                   {benificiary?.core_beneficiaries?.career_aspiration
-                    ? t(benificiary?.core_beneficiaries?.career_aspiration)
+                    ? t(filteredcareer)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>

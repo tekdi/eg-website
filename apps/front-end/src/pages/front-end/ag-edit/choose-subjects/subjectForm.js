@@ -315,7 +315,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       key: "enrollment_status",
       arr: list,
       title: "title",
-      value: "title",
+      value: "value",
     });
 
     setSchema(newSchema);
