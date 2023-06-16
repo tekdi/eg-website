@@ -364,11 +364,11 @@ export default function agFormEdit({ ip, id }) {
         );
       }
 
-      if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+      // if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+      //   errors?.[key]?.addError(
+      //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+      //   );
+      // }
       if (
         key === "middle_name" &&
         data?.middle_name?.includes(" ") &&
