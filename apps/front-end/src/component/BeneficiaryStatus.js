@@ -39,20 +39,12 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("SHORTLISTED"));
         setColor("blueText.350");
         break;
-      case "prerak_mobilizer":
-        setNewStatus(t("PRERAK_MOBILIZER"));
-        setColor("progressBarColor.300");
-        break;
       case "selected_for_training":
         setNewStatus(t("SELECTED_FOR_TRAINING"));
         setColor("progressBarColor.300");
         break;
       case "selected_for_onboarding":
         setNewStatus(t("SELECTED_FOR_ONBOARDING"));
-        setColor("progressBarColor.300");
-        break;
-      case "prerak":
-        setNewStatus(t("PRERAK"));
         setColor("progressBarColor.300");
         break;
       case "dropped_out":

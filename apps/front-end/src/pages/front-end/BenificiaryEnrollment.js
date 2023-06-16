@@ -156,7 +156,8 @@ export default function BenificiaryEnrollment() {
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
                   {t("SELECTED_SUBJECTS")}
                 </FrontEndTypo.H3>
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                <VStack>
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">ekta
                   {subject?.data
                     ?.filter((obj) => {
                       const idString = obj?.id?.toString();
@@ -177,6 +178,7 @@ export default function BenificiaryEnrollment() {
                       }
                     })}
                 </FrontEndTypo.H3>
+                </VStack>
               </HStack>
             </VStack>
           </VStack>
