@@ -272,7 +272,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
           <Box
-            bg="textMaroonColor.400"
+            bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
