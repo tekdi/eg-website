@@ -436,8 +436,11 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
-    ["address"].forEach((key) => {
-      if (key === "address" && data?.address?.replaceAll(" ", "") === "") {
+    ["grampanchayat"].forEach((key) => {
+      if (
+        key === "grampanchayat" &&
+        data?.grampanchayat?.replaceAll(" ", "") === ""
+      ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );

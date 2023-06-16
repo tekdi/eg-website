@@ -263,8 +263,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
+      let minYear = moment().subtract("years", 30);
+      let maxYear = moment().subtract("years", 14);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
@@ -384,6 +384,17 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           },
         };
         setErrors(newErrors);
+      }
+
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+        setotpbtn(false);
       }
     }
   };
