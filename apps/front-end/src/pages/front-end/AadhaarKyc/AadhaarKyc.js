@@ -435,6 +435,7 @@ export default function AdharKyc() {
             aadhaarInit,
             setPage,
             navigate,
+            attemptCount,
             id,
           }}
         />
@@ -450,6 +451,7 @@ const AadhaarOptions = ({
   aadhaarInit,
   setPage,
   navigate,
+  attemptCount,
   id,
 }) => {
   return (

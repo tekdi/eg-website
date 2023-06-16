@@ -84,6 +84,46 @@ export default function BenificiaryProfileView(props) {
   React.useEffect(() => {
     benificiaryDetails();
   }, [reactivateReasonValue, reasonValue]);
+
+  function renderDropoutButton() {
+    const status = benificiary?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case null:
+        return (
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => setIsOpenDropOut(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("MARK_AS_DROPOUT")}
+          </FrontEndTypo.Secondarybutton>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
+  }
+  function renderReactivateButton() {
+    const status = benificiary?.program_beneficiaries?.status
+    switch (status) {
+      case "rejected":
+      case "dropout":
+        return (
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => setIsOpenReactive(true)}
+          >
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+          </FrontEndTypo.Secondarybutton>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
+  }
   return (
     <Layout
       _appBar={{
@@ -232,7 +272,7 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
           <Box
-            bg="textMaroonColor.400"
+            bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
@@ -254,35 +294,8 @@ export default function BenificiaryProfileView(props) {
               </HStack>
             </VStack>
           </Box>
-
-          {benificiary?.program_beneficiaries?.status === "identified" ||
-          benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
-          benificiary?.program_beneficiaries?.status === "enrolled" ||
-          benificiary?.program_beneficiaries?.status === "approved_ip" ||
-          benificiary?.program_beneficiaries?.status === "registered_in_camp" ||
-          benificiary?.program_beneficiaries?.status === "pragati_syc" ||
-          benificiary?.program_beneficiaries?.status === "activate" ||
-          benificiary?.program_beneficiaries?.status === null ? (
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => setIsOpenDropOut(true)}
-              leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
-            >
-              {t("MARK_AS_DROPOUT")}
-            </FrontEndTypo.Secondarybutton>
-          ) : (
-            <React.Fragment></React.Fragment>
-          )}
-
-          {benificiary?.program_beneficiaries?.status === "rejected" ||
-          benificiary?.program_beneficiaries?.status === "dropout" ? (
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => setIsOpenReactive(true)}
-            >
-              {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-            </FrontEndTypo.Secondarybutton>
-          ) : (
-            <React.Fragment></React.Fragment>
-          )}
+          {renderDropoutButton()}
+          {renderReactivateButton()}
         </VStack>
       </VStack>
       <Actionsheet
