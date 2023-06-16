@@ -394,6 +394,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           const { otp, ...fData } = e;
           return fData;
         });
+        setotpbtn(false);
       }
     }
   };
