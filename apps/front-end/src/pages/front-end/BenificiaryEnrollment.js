@@ -157,7 +157,7 @@ export default function BenificiaryEnrollment() {
                   {t("SELECTED_SUBJECTS")}
                 </FrontEndTypo.H3>
                 <VStack>
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">ekta
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
                   {subject?.data
                     ?.filter((obj) => {
                       const idString = obj?.id?.toString();
