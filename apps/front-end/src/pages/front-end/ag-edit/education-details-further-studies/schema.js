@@ -10,6 +10,8 @@ export default {
         "last_standard_of_education",
         "last_standard_of_education_year",
         "reason_of_leaving_education",
+        "previous_school_type",
+        "learning_level",
       ],
       properties: {
         type_of_learner: {

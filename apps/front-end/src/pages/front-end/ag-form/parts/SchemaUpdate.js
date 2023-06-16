@@ -28,7 +28,7 @@ export default {
     2: {
       title: "COMPLETE_ADDRESS",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["state", "district", "block", "village", "address"],
       properties: {
         lat: {
           type: "number",
@@ -99,6 +99,8 @@ export default {
         "last_standard_of_education_year",
         "last_standard_of_education",
         "reason_of_leaving_education",
+        "previous_school_type",
+        "learning_level",
       ],
       properties: {
         type_of_learner: {
