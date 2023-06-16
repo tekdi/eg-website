@@ -18,7 +18,7 @@ export default {
         dob: {
           type: "string",
           format: "date",
-          title: "DATE_OF_BIRTH",
+          label: "DATE_OF_BIRTH",
         },
         role: {
           format: "hidden",
