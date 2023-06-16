@@ -47,8 +47,6 @@ export default function BenificiaryProfileView(props) {
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
   };
 
-
-
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
 
@@ -107,7 +105,7 @@ export default function BenificiaryProfileView(props) {
               {benificiary?.first_name}
               {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
-            <Box>{benificiary?.status || "unidentified"}</Box>
+            <Box>{benificiary?.status || "identified"}</Box>
           </VStack>
           <Box
             bg="boxBackgroundColour.100"
@@ -257,15 +255,14 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
-
           {benificiary?.program_beneficiaries?.status === "identified" ||
-            benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
-            benificiary?.program_beneficiaries?.status === "enrolled" ||
-            benificiary?.program_beneficiaries?.status === "approved_ip" ||
-            benificiary?.program_beneficiaries?.status === "registered_in_camp" ||
-            benificiary?.program_beneficiaries?.status === "pragati_syc" ||
-            benificiary?.program_beneficiaries?.status === "activate" ||
-            benificiary?.program_beneficiaries?.status === null ? (
+          benificiary?.program_beneficiaries?.status === "ready_to_enroll" ||
+          benificiary?.program_beneficiaries?.status === "enrolled" ||
+          benificiary?.program_beneficiaries?.status === "approved_ip" ||
+          benificiary?.program_beneficiaries?.status === "registered_in_camp" ||
+          benificiary?.program_beneficiaries?.status === "pragati_syc" ||
+          benificiary?.program_beneficiaries?.status === "activate" ||
+          benificiary?.program_beneficiaries?.status === null ? (
             <FrontEndTypo.Secondarybutton
               onPress={(e) => setIsOpenDropOut(true)}
               leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
@@ -277,7 +274,7 @@ export default function BenificiaryProfileView(props) {
           )}
 
           {benificiary?.program_beneficiaries?.status === "rejected" ||
-            benificiary?.program_beneficiaries?.status === "dropout" ? (
+          benificiary?.program_beneficiaries?.status === "dropout" ? (
             <FrontEndTypo.Secondarybutton
               onPress={(e) => setIsOpenReactive(true)}
             >

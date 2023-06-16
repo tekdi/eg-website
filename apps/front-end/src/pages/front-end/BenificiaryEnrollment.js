@@ -26,20 +26,20 @@ export default function BenificiaryEnrollment() {
 
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
+    setbenificiary(result?.result);
     setsource({
       document_id:
         result?.result?.program_beneficiaries?.payment_receipt_document_id,
     });
-    setbenificiary(result?.result);
-  };
-
-  React.useEffect(() => {
-    subjects();
-  }, []);
-
-  const subjects = async () => {
-    const result = await enumRegistryService.getSubjects();
-    setSubject(result);
+    const subjectResult = await enumRegistryService.getSubjects();
+    const sub = JSON.parse(result?.result?.program_beneficiaries?.subjects);
+    if (sub?.length > 0) {
+      const filterData = subjectResult?.data?.filter((e) => {
+        const subData = sub?.find((item) => `${item}` === `${e?.id}`);
+        return subData ? true : false;
+      });
+      setSubject(filterData);
+    }
   };
 
   return (
@@ -155,25 +155,16 @@ export default function BenificiaryEnrollment() {
                   {t("SELECTED_SUBJECTS")}
                 </FrontEndTypo.H3>
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {subject?.data
-                    ?.filter((obj) => {
-                      const idString = obj?.id?.toString();
+                  {subject?.map((e) => {
+                    {
                       return (
-                        benificiary?.program_beneficiaries?.subjects?.includes(
-                          idString
-                        ) && idString !== "undefined"
+                        <React.Fragment>
+                          {e?.name}
+                          {"\n"}
+                        </React.Fragment>
                       );
-                    })
-                    .map((e) => {
-                      {
-                        return (
-                          <React.Fragment>
-                            {e?.name}
-                            {"\n"}
-                          </React.Fragment>
-                        );
-                      }
-                    })}
+                    }
+                  })}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
