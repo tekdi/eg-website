@@ -385,6 +385,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         };
         setErrors(newErrors);
       }
+
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+      }
     }
   };
 
