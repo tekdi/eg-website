@@ -54,13 +54,11 @@ export default {
         alternative_mobile_number: {
           type: ["number", "null"],
           title: "ALTERNATIVE_NUMBER",
-          label: "ALTERNATIVE_NUMBER",
           format: "MobileNumber",
         },
         email_id: {
           type: ["string", "null"],
           format: "email",
-          label: "EMAIL_ID",
           title: "EMAIL_ID",
         },
       },
@@ -99,12 +97,11 @@ export default {
     },
     personal_details: {
       step_name: "PERSONAL_DETAILS",
-      title: "PERSONAL_DETAILS",
       type: "object",
       required: ["aadhar_token"],
       properties: {
         gender: {
-          title: "GENDER",
+          label: "GENDER",
           type: ["string", "null"],
           format: "CustomR",
           grid: 3,
@@ -143,7 +140,7 @@ export default {
       title: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
-      required: ["name"],
+      required: ["name", "contact_number"],
       properties: {
         name: {
           type: ["string", "null"],
