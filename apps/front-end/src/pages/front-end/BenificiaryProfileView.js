@@ -109,7 +109,7 @@ export default function BenificiaryProfileView(props) {
     }
   }
   function renderReactivateButton() {
-    const status = benificiary?.program_beneficiaries?.status
+    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "rejected":
       case "dropout":
@@ -145,7 +145,12 @@ export default function BenificiaryProfileView(props) {
               {benificiary?.first_name}
               {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
-            <Box>{benificiary?.status || "identified"}</Box>
+
+            <Chip
+              bg={benificiary?.status ? "appliedColor" : "appliedColor"}
+              label={benificiary?.status ? benificiary?.status : "identified"}
+              rounded={"sm"}
+            />
           </VStack>
           <Box
             bg="boxBackgroundColour.100"
