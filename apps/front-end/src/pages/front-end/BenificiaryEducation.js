@@ -287,7 +287,7 @@ export default function BenificiaryEducation() {
                 borderBottomColor="appliedColor"
               >
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
-                  {t("LEARNING_MOTIVATION")}
+                  {t("MOTIVATION_TO_PASS_10TH")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
