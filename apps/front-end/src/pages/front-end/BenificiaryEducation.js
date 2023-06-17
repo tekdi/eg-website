@@ -8,6 +8,7 @@ import {
   t,
   Layout,
   enumRegistryService,
+  translateEnumOption
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,7 +19,6 @@ export default function BenificiaryEducation() {
   const [previous_school_type, setprevious_school_type] = React.useState();
   const [filteredreason, setfilteredreason] = React.useState();
   const [filteredcareer, setfilteredcareer] = React.useState();
-
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -37,34 +37,13 @@ export default function BenificiaryEducation() {
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
-    const schooltypedata = data?.data?.PREVIOUS_SCHOOL_TYPE;
-    const reasondata = data?.data?.REASON_OF_LEAVING_EDUCATION;
-    const careerdata = data?.data?.CAREER_ASPIRATION;
-
-    const previous_school_type =
-      benificiary?.core_beneficiaries?.previous_school_type;
-    const reason_of_leaving_education =
-      benificiary?.core_beneficiaries?.reason_of_leaving_education;
-    const career_aspiration =
-      benificiary?.core_beneficiaries?.career_aspiration;
-    const filteredTitles = schooltypedata
-      .filter((item) => item.value === previous_school_type)
-      .map((item) => item.title)
-      .join(", ");
-    const filteredreason = reasondata
-      .filter((item) => item.value === reason_of_leaving_education)
-      .map((item) => item.title)
-      .join(", ");
-    const filteredcareer = careerdata
-      .filter((item) => item.value === career_aspiration)
-      .map((item) => item.title)
-      .join(", ");
-
+    const filteredTitles = await translateEnumOption("PREVIOUS_SCHOOL_TYPE", benificiary?.core_beneficiaries?.previous_school_type, data?.data)
+    const filteredreason = await translateEnumOption("REASON_OF_LEAVING_EDUCATION", benificiary?.core_beneficiaries?.reason_of_leaving_education, data?.data)
+    const filteredcareer = await translateEnumOption("CAREER_ASPIRATION", benificiary?.core_beneficiaries?.career_aspiration, data?.data)
     setprevious_school_type(filteredTitles);
     setfilteredreason(filteredreason);
     setfilteredcareer(filteredcareer);
   }, [benificiary]);
-
   return (
     <Layout _appBar={{ name: t("EDUCATION_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200">
@@ -126,7 +105,7 @@ export default function BenificiaryEducation() {
                 >
                   {benificiary?.core_beneficiaries?.last_standard_of_education
                     ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education
+                      ?.last_standard_of_education
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -154,7 +133,7 @@ export default function BenificiaryEducation() {
                   {benificiary?.core_beneficiaries
                     ?.last_standard_of_education_year
                     ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education_year
+                      ?.last_standard_of_education_year
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
