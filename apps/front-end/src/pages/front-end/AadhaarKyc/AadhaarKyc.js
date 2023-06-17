@@ -22,23 +22,24 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
 import { useTranslation } from "react-i18next";
+import AadhaarSuccess from "./AadhaarSuccess";
 
-export default function AdharKyc() {
+export default function AdharKyc({ footerLinks }) {
   const location = useLocation();
   const [page, setPage] = React.useState();
   const [error, setError] = React.useState();
   const [data, setData] = React.useState({});
   const [user, setUser] = React.useState();
   const [captchaImg, setCaptchaImg] = React.useState("");
-  const [refreshCaptcha, setRefreshCaptcha] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
-  const attemptCount = 1;
+  const attemptCount = 0;
   const [isQRDisabled, setIsQRDisabled] = React.useState(false);
   const [isAadharDisabled, setIsAadharDisabled] = React.useState(false);
   const { t } = useTranslation();
+  const [aadhaarCompare, setAadhaarCompare] = React.useState();
 
   React.useEffect(async () => {
     if (page === "aadhaar-number") {
@@ -50,12 +51,15 @@ export default function AdharKyc() {
         localStorage.getItem("addhar-qr") < attemptCount
     );
     setIsAadharDisabled(localStorage.getItem("addhar-number") < attemptCount);
+    getUser();
   }, [page]);
 
   React.useEffect(() => {
     const typeData = type?.toLowerCase();
     if (["qr", "aadhaar-number", "upload"].includes(typeData)) {
       setPage(typeData);
+    } else {
+      setPage();
     }
   }, [type]);
 
@@ -72,7 +76,6 @@ export default function AdharKyc() {
     if (res.id) {
       getCaptcha(res.id);
       setData({ ...data, id: res.id });
-      getUser();
     }
     setLoading(false);
   };
@@ -99,10 +102,12 @@ export default function AdharKyc() {
         captchaCode: res.error,
       });
     } else if (res?.code === "otp_sent") {
+      setAttempt("addhar-number");
       setPage("otp");
     } else if (res?.code === "send_otp_failed") {
       setAttempt("addhar-number");
     } else {
+      setAttempt("addhar-number");
       setError({
         ...error,
         top: res.error,
@@ -131,8 +136,8 @@ export default function AdharKyc() {
 
   if (isQRDisabled || isAadharDisabled) {
     if (
-      (isQRDisabled && page === "qr") ||
-      (isAadharDisabled && page === "upload")
+      (isAadharDisabled && page === "qr") ||
+      (isQRDisabled && page === "upload")
     ) {
       setPage();
       setOtpFailedPopup(true);
@@ -147,10 +152,20 @@ export default function AdharKyc() {
     <Box>
       {page === "qr" ? (
         <QrScannerKyc
-          {...{ setOtpFailedPopup, setPage, setError, id, setAttempt }}
+          {...{
+            setOtpFailedPopup,
+            setPage,
+            setError,
+            id,
+            setAttempt,
+            setAadhaarCompare,
+            user,
+          }}
         />
       ) : page === "upload" ? (
-        <ManualUpload {...{ setLoading, setPage, setOtpFailedPopup }} />
+        <ManualUpload
+          {...{ setLoading, setPage, setOtpFailedPopup, footerLinks }}
+        />
       ) : page === "otp" && data?.aadhaarNumber ? (
         <AadhaarOTP
           {...data}
@@ -163,6 +178,9 @@ export default function AdharKyc() {
             setOtpFailedPopup,
             sendData,
             setAttempt,
+            footerLinks,
+            setAadhaarCompare,
+            user,
           }}
         />
       ) : (
@@ -172,54 +190,16 @@ export default function AdharKyc() {
             name: `${user?.first_name}${
               user?.last_name ? " " + user.last_name : ""
             }`,
-            profile_url: user?.documents[0]?.name,
+            profile_url: user?.profile_photo_1?.id,
             _box: { bg: "white", shadow: "appBarShadow" },
             _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
             onPressBackButton: handalBack,
           }}
+          _footer={{ menues: footerLinks }}
+          _page={{ _scollView: { bg: "formBg.500" } }}
         >
           {page === "aadhaarSuccess" ? (
-            <Box px="4">
-              <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
-                {t("OFFLINE_AADHAAR_VERIFICATION")}
-                (OKYC)
-              </FrontEndTypo.H1>
-              <Alert
-                status="success"
-                colorScheme="success"
-                textAlign="center"
-                my="4"
-              >
-                <VStack space={2} flexShrink={1}>
-                  <HStack
-                    flexShrink={1}
-                    space={2}
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <HStack flexShrink={1} space={2} alignItems="center">
-                      <Alert.Icon />
-                      <FrontEndTypo.H4>
-                        {t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}
-                      </FrontEndTypo.H4>
-                    </HStack>
-                  </HStack>
-                </VStack>
-              </Alert>
-
-              <FrontEndTypo.Primarybutton
-                mt={20}
-                onPress={(e) => {
-                  if (location?.state) {
-                    navigate(location?.state);
-                  } else {
-                    navigate("/beneficiary/list");
-                  }
-                }}
-              >
-                {t("CONTINUE")}
-              </FrontEndTypo.Primarybutton>
-            </Box>
+            <AadhaarSuccess user={user} aadhaarCompare={aadhaarCompare} />
           ) : page === "aadhaar-number" ? (
             <VStack p="4" space={4}>
               {error?.top && (
@@ -295,7 +275,7 @@ export default function AdharKyc() {
                   <Image
                     width="180"
                     height={50}
-                    key={captchaImg + refreshCaptcha}
+                    key={captchaImg}
                     src={`data:image/jpeg;charset=utf-8;base64,${captchaImg}`}
                     alt="captcha image"
                   />

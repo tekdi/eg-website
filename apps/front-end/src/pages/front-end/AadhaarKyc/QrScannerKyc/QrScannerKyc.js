@@ -1,15 +1,24 @@
 import {
   useWindowSize,
   IconByName,
-  FrontEndTypo,
   authRegistryService,
+  checkAadhaar,
 } from "@shiksha/common-lib";
 import { Box, VStack, HStack, Center } from "native-base";
 import React from "react";
 import QrReader from "react-qr-reader";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
 
-const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
+const App = ({
+  setOtpFailedPopup,
+  setPage,
+  setError,
+  id,
+  setAttempt,
+  setAadhaarCompare,
+  user,
+}) => {
   const [selected, setSelected] = React.useState(false);
   const [startScan, setStartScan] = React.useState(true);
   const [loadingScan, setLoadingScan] = React.useState(false);
@@ -35,29 +44,39 @@ const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
         });
         setPage();
         setOtpFailedPopup(false);
-        setAttempt("qr");
+        setAttempt("addhar-qr");
       } else {
         setError();
-        const aadhaarResult = await authRegistryService.aadhaarKyc({
-          id,
-          aadhar_verified: "yes",
-          aadhaar_verification_mode: "qr",
-        });
-        if (aadhaarResult?.error) {
-          setError({
-            top: `QR code ${aadhaarResult?.error}`,
+        setAttempt("addhar-qr");
+        const resultCheck = checkAadhaar(user, result?.data?.aadhaar);
+        setAadhaarCompare(resultCheck);
+        if (resultCheck?.isVerified) {
+          const aadhaarResult = await authRegistryService.aadhaarKyc({
+            id,
+            aadhar_verified: "yes",
+            aadhaar_verification_mode: "qr",
           });
-          setPage();
-          setOtpFailedPopup(false);
+          if (aadhaarResult?.error) {
+            setError({
+              top: `QR code ${aadhaarResult?.error}`,
+            });
+            setPage();
+            setOtpFailedPopup(false);
+          } else {
+            setPage("aadhaarSuccess");
+            setOtpFailedPopup(false);
+            setStartScan(false);
+          }
         } else {
           setPage("aadhaarSuccess");
-          setOtpFailedPopup(false);
+          setStartScan(false);
         }
       }
       setStartScan(false);
       setLoadingScan(false);
     }
   };
+
   const handleError = (err) => {
     console.error(err);
   };
@@ -77,13 +96,8 @@ const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
       if (isMounted) {
         const w = topElement?.current?.clientWidth;
         const h = newHeight;
-        if (w < h) {
-          setCameraWidth(w);
-          setCameraHeight(w);
-        } else {
-          setCameraWidth(h);
-          setCameraHeight(h);
-        }
+        setCameraWidth(w);
+        setCameraHeight(h);
       }
     }
 
@@ -93,6 +107,7 @@ const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
       isMounted = false;
     };
   });
+
   return (
     <Box alignItems={"center"}>
       <Box position="fixed" {...{ width, height }} bg="gray.900">
@@ -124,24 +139,28 @@ const App = ({ setOtpFailedPopup, setPage, setError, id, setAttempt }) => {
           </HStack>
         </Box>
         {startScan && (
-          <Center>
-            <QrReader
-              key={cameraHeight + cameraWidth}
-              facingMode={selected ? "user" : "environment"}
-              torch={torch}
-              constraints={{
-                facingMode: selected ? "user" : "environment",
-                torch,
-              }}
-              style={{
-                height: cameraHeight,
-                width: cameraWidth,
-              }}
-              delay={2000}
-              onError={handleError}
-              onScan={handleScan}
-            />
-          </Center>
+          <VStack>
+            <Center>
+              <QrReader
+                key={cameraHeight + cameraWidth}
+                facingMode={selected ? "user" : "environment"}
+                torch={torch}
+                constraints={{
+                  facingMode: selected ? "user" : "environment",
+                  torch,
+                }}
+                style={{
+                  height: cameraHeight,
+                  width: cameraWidth,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                delay={2000}
+                onError={handleError}
+                onScan={handleScan}
+              />
+            </Center>
+          </VStack>
         )}
 
         <Box py="30px" px="20px" ref={bottomElement}>
