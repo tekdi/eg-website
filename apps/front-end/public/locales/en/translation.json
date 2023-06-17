@@ -177,6 +177,7 @@
   "DESCRIPTION": "Description",
   "DESIGNATION": "Designation",
   "DEVICE_OWNERSHIP": "Device Ownership",
+  "DELETE_EVENT":"Delete Event",
   "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "Did the interview take place Successfully",
   "DIPLOMA": "Diploma",
   "DISCLAIMER_MESSAGE": "I understand that my Aadhaar details shall not be used or stored for any other purpose.",

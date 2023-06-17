@@ -143,7 +143,7 @@ export default function Attendence({ footerLinks }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const [rowData, setRowData] = React.useState();
   const [showEditModal, setShowEditModal] = React.useState(false);
-
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [locationData, setlocationData] = useState("");
   const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
@@ -177,6 +177,14 @@ export default function Attendence({ footerLinks }) {
 
   const handleFormChange = ({ formData }) => {
     setFormData(formData);
+  };
+
+  const deleteCurrentEventById = async () => {
+    const result = await eventService.deleteCurrentEvent({ id: id });
+    if (result?.status === 200) {
+      setShowDeleteModal(false);
+      navigate("/admin");
+    }
   };
 
   const uiSchema = {
@@ -421,7 +429,7 @@ export default function Attendence({ footerLinks }) {
                     </HStack>
                     <HStack>
                       <AdminTypo.H6>
-                      {t("CANDIDATES")} - {users?.length ? users?.length : 0}
+                        {t("CANDIDATES")} - {users?.length ? users?.length : 0}
                       </AdminTypo.H6>
                     </HStack>
                   </HStack>
@@ -572,6 +580,12 @@ export default function Attendence({ footerLinks }) {
                 >
                   {t("EDIT_DETAILS")}
                 </AdminTypo.Secondarybutton> */}
+                  <AdminTypo.Secondarybutton
+                    onPress={() => setShowDeleteModal(true)}
+                    shadow="BlueOutlineShadow"
+                  >
+                    {t("DELETE_EVENT")}
+                  </AdminTypo.Secondarybutton>
                 </HStack>
 
                 <HStack space={"3"} alignItems="center" pt="4">
@@ -655,6 +669,54 @@ export default function Attendence({ footerLinks }) {
                 </HStack>
               </HStack>
             </Stack>
+
+            <Modal
+              isOpen={showDeleteModal}
+              onClose={() => setShowDeleteModal(false)}
+              size="sm"
+            >
+              <Modal.Content>
+                <Modal.CloseButton />
+                <Modal.Body p="1" bg="white">
+                  <AdminTypo.H2
+                    textAlign="center"
+                    pt="2"
+                    color="textGreyColor.500"
+                  >
+                    {t("DELETE_EVENT")}
+                  </AdminTypo.H2>
+
+                  <VStack space={5}>
+                    <HStack
+                      alignItems="center"
+                      space={4}
+                      mt="5"
+                      pt="4"
+                      borderTopWidth="1px"
+                      bg="white"
+                      borderTopColor="appliedColor"
+                      justifyContent="center"
+                    >
+                      <AdminTypo.Secondarybutton
+                        shadow="BlueOutlineShadow"
+                        onPress={() => {
+                          setShowDeleteModal(false);
+                        }}
+                      >
+                        {t("NO")}
+                      </AdminTypo.Secondarybutton>
+                      <AdminTypo.PrimaryButton
+                        px="8"
+                        shadow="BlueFillShadow"
+                        onPress={() => deleteCurrentEventById()}
+                      >
+                        {t("YES")}
+                      </AdminTypo.PrimaryButton>
+                    </HStack>
+                  </VStack>
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
 
             <Modal
               isOpen={showEditModal}
