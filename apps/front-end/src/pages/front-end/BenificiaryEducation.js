@@ -260,6 +260,38 @@ export default function BenificiaryEducation() {
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("MOTIVATION_TO_PASS_10TH")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  {benificiary?.program_beneficiaries?.learning_motivation
+                    ? benificiary?.program_beneficiaries?.learning_motivation
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("SUPPORT_FROM_PRAGATI")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  {benificiary?.program_beneficiaries?.type_of_support_needed
+                    ? benificiary?.program_beneficiaries?.type_of_support_needed
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
+              <HStack alignItems="Center" justifyContent="space-between">
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
@@ -276,39 +308,6 @@ export default function BenificiaryEducation() {
                 >
                   {benificiary?.core_beneficiaries?.career_aspiration_details
                     ? benificiary?.core_beneficiaries?.career_aspiration_details
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                alignItems="Center"
-                justifyContent="space-between"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
-                  {t("MOTIVATION_TO_PASS_10TH")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.program_beneficiaries?.learning_motivation
-                    ? benificiary?.program_beneficiaries?.learning_motivation
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
-                  {t("SUPPORT_FROM_PRAGATI")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="0.4"
-                >
-                  {benificiary?.program_beneficiaries?.type_of_support_needed
-                    ? benificiary?.program_beneficiaries?.type_of_support_needed
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
