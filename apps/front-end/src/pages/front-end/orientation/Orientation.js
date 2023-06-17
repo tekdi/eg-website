@@ -185,16 +185,16 @@ export default function Orientation({ footerLinks }) {
     setUserIds({});
     setFormData({
       attendees: [],
-      type: "",
-      name: "",
-      master_trainer: "",
-      start_date: "",
-      end_date: "",
-      start_time: "",
-      end_time: "",
+      type: null,
+      name: null,
+      master_trainer: null,
+      start_date: null,
+      end_date: null,
+      start_time: null,
+      end_time: null,
       reminders: [],
-      location: "",
-      location_type: "",
+      location: null,
+      location_type: null,
     });
   };
 
@@ -204,16 +204,6 @@ export default function Orientation({ footerLinks }) {
       newFormData = {
         ...newFormData,
         ["type"]: newFormData?.type,
-      };
-    }
-
-    if (orientationPopupSchema?.properties?.name) {
-      newFormData = {
-        ...newFormData,
-        ["name"]:
-          newFormData?.type +
-          " " +
-          moment(newFormData?.start_date).format("DD-MM-YYYY"),
       };
     }
 
@@ -273,7 +263,7 @@ export default function Orientation({ footerLinks }) {
                 <VStack alignItems={"Center"}>
                   <Pressable
                     onPress={() => {
-                      setModalVisible(true);
+                      setModalVisible(!modalVisible);
                     }}
                   >
                     <Image
@@ -384,7 +374,7 @@ export default function Orientation({ footerLinks }) {
                   center: "title",
                   right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
                 }}
-                initialView="timeGridWeek"
+                initialView="timeGridDay"
                 editable={true}
                 selectable={true}
                 selectMirror={true}
@@ -392,7 +382,10 @@ export default function Orientation({ footerLinks }) {
                 events={eventList?.events?.map((item) => {
                   return {
                     allDay: false,
-                    title: item?.name !== null ? item?.name : item?.type,
+                    title:
+                      item?.name !== null
+                        ? `${item?.name + " " + item?.master_trainer}`
+                        : item?.type,
                     start: moment(item?.start_date).format("YYYY-MM-DD")
                       ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
                           item?.start_time
@@ -413,8 +406,8 @@ export default function Orientation({ footerLinks }) {
                       item?.end_date !== "Invalid date"
                         ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                         : "",
-                    mastertrainer: item?.mastertrainer
-                      ? item?.mastertrainer
+                    master_trainer: item?.master_trainer
+                      ? item?.master_trainer
                       : "",
                     attendances: item?.attendances ? item?.attendances : "",
                     start_time: item?.start_time ? item?.start_time : "",
