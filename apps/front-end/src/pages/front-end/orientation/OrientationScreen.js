@@ -161,11 +161,12 @@ export default function OrientationScreen({
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const result = await facilitatorRegistryService.getFacilitatorByStatus({
-        limit: limit,
-        page: page,
-        status: "shortlisted_for_orientation",
-      });
+      const result =
+        await facilitatorRegistryService.getFacilitatorByStatusInOrientation({
+          limit: limit,
+          page: page,
+          status: "shortlisted_for_orientation",
+        });
       setData(result?.data?.data);
       setPaginationTotalRows(result?.totalCount);
       setLoading(false);
