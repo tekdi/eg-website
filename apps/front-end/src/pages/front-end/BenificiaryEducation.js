@@ -185,7 +185,6 @@ export default function BenificiaryEducation() {
               </HStack>
             </VStack>
           </VStack>
-
           <VStack
             px="5"
             py="4"
@@ -195,14 +194,9 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack
-              justifyContent="space-between"
-              alignItems="Center"
-              borderBottomWidth="1px"
-              borderBottomColor="appliedColor"
-            >
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("FURTHUR_STUDIES")}
+            <HStack justifyContent="space-between" alignItems="Center">
+              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
+                {t("CAREER_ASPIRATIONS")}
               </FrontEndTypo.H3>
               <IconByName
                 name="EditBoxLineIcon"
@@ -213,19 +207,31 @@ export default function BenificiaryEducation() {
                 }}
               />
             </HStack>
-            <Box>
+            <Box paddingTop="2">
               <Progress
                 value={arrList(benificiary?.core_beneficiaries, [
-                  "career_aspiration",
-                  "career_aspiration_details",
+                  "last_standard_of_education",
+                  "last_standard_of_education_year",
+                  "previous_school_type",
+                  "reason_of_leaving_education",
                 ])}
                 size="xs"
                 colorScheme="info"
               />
             </Box>
-            <VStack space="2" pt="5">
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+            <VStack space="2" paddingTop="5">
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("CAREER_ASPIRATIONS")}
                 </FrontEndTypo.H3>
 
@@ -245,19 +251,61 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
               </HStack>
 
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("REMARKS")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
+                  fontWeight="400"
                   flex="0.4"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
                 >
                   {benificiary?.core_beneficiaries?.career_aspiration_details
                     ? benificiary?.core_beneficiaries?.career_aspiration_details
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("LEARNING_MOTIVATION")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  {benificiary?.program_beneficiaries?.learning_motivation
+                    ? benificiary?.program_beneficiaries?.learning_motivation
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <HStack alignItems="Center" justifyContent="space-between">
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
+                  {t("SUPPORT_FROM_PRAGATI")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  {benificiary?.program_beneficiaries?.type_of_support_needed
+                    ? benificiary?.program_beneficiaries?.type_of_support_needed
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>

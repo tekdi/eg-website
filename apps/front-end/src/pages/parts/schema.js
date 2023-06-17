@@ -112,9 +112,9 @@ export default {
       title: "ID_VERIFICATION",
       description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
       type: "object",
-      required: ["aadhar_number"],
+      required: ["aadhar_no"],
       properties: {
-        aadhar_number: {
+        aadhar_no: {
           title: "AADHAAR_NUMBER",
           type: "number",
           format: "Aadhaar",

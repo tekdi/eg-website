@@ -161,11 +161,12 @@ export default function OrientationScreen({
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const result = await facilitatorRegistryService.getFacilitatorByStatus({
-        limit: limit,
-        page: page,
-        status: "shortlisted_for_orientation",
-      });
+      const result =
+        await facilitatorRegistryService.getFacilitatorByStatusInOrientation({
+          limit: limit,
+          page: page,
+          status: "shortlisted_for_orientation",
+        });
       setData(result?.data?.data);
       setPaginationTotalRows(result?.totalCount);
       setLoading(false);
@@ -186,7 +187,13 @@ export default function OrientationScreen({
     setPage(page);
   };
   return (
-    <Modal isOpen={isOpen} onClose={(e) => setIsOpen(false)} safeAreaTop={true}>
+    <Modal
+      isOpen={isOpen}
+      onClose={(e) => {
+        setIsOpen(false), setUserIds({});
+      }}
+      safeAreaTop={true}
+    >
       <Modal.Content {...stylesheet.modalxxl}>
         <Modal.CloseButton />
         <Modal.Header p="5" borderBottomWidth="0">
@@ -221,7 +228,9 @@ export default function OrientationScreen({
             px="5"
             py="1"
             shadow="BlueOutlineShadow"
-            onPress={(e) => setIsOpen(false)}
+            onPress={(e) => {
+              setIsOpen(false), setUserIds({});
+            }}
           >
             {t("CANCEL")}
           </AdminTypo.Secondarybutton>
