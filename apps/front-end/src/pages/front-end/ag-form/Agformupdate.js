@@ -416,7 +416,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 5999999999 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -664,7 +664,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 10) {
       const data = await getBase64(file);
       setCameraUrl(data);
       setcameraFile(file);
