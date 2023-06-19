@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "FURTHER_STUDIES",
+      // title: "FURTHER_STUDIES",
       type: "object",
       required: ["career_aspiration"],
       properties: {
