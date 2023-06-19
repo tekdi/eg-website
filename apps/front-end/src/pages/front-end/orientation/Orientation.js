@@ -178,7 +178,7 @@ export default function Orientation({ footerLinks }) {
     if (moment.utc(newData?.start_date) < moment.utc(nowDate)) {
       const newErrors = {
         start_date: {
-          __errors: [t("BACK_DATES_NOT_ALLOWED_START_DATE")],
+          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_START_DATE")],
         },
       };
       setErrors(newErrors);
@@ -187,7 +187,7 @@ export default function Orientation({ footerLinks }) {
     if (moment.utc(newData?.end_date) < moment.utc(nowDate)) {
       const newErrors = {
         end_date: {
-          __errors: [t("BACK_DATES_NOT_ALLOWED_END_DATE")],
+          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_END_DATE")],
         },
       };
       setErrors(newErrors);
@@ -269,7 +269,7 @@ export default function Orientation({ footerLinks }) {
         }
       }
     } else {
-      alert(t("CORRECT_DATA"));
+      alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
     }
   };
 
