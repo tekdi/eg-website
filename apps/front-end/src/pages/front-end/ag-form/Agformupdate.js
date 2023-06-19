@@ -664,12 +664,10 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    let max_file_upload_size = 1048576 * 10;
-    if (file.size <= max_file_upload_size) {
-      const data = await getBase64(file);
+    let data = await benificiaryRegistoryService.fileUploadFunction(file);
+    if (data) {
       setCameraUrl(data);
       setcameraFile(file);
-      setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
