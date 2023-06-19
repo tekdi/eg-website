@@ -58,6 +58,7 @@ export default function Orientation({ footerLinks }) {
   const navigator = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const [userIds, setUserIds] = React.useState({});
+  const nowDate = new Date();
 
   const SelectButton = () => (
     <HStack space={"10"}>
@@ -173,6 +174,24 @@ export default function Orientation({ footerLinks }) {
       };
       setErrors(newErrors);
     }
+
+    if (moment.utc(newData?.start_date) < moment.utc(nowDate)) {
+      const newErrors = {
+        start_date: {
+          __errors: [t("BACK_DATES_NOT_ALLOWED_START_DATE")],
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (moment.utc(newData?.end_date) < moment.utc(nowDate)) {
+      const newErrors = {
+        end_date: {
+          __errors: [t("BACK_DATES_NOT_ALLOWED_END_DATE")],
+        },
+      };
+      setErrors(newErrors);
+    }
   };
   const handleEventClick = async (info) => {
     navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
@@ -224,29 +243,33 @@ export default function Orientation({ footerLinks }) {
       };
     }
 
-    if (newFormData?.attendees?.length === 0) {
-      const newErrors = {
-        attendees: {
-          __errors: [t("SELECT_CANDIDATES")],
-        },
-      };
-      setErrors(newErrors);
-    } else {
-      setFormData(newFormData);
-      const apiResponse = await eventService.createNewEvent(newFormData);
-      if (apiResponse?.success === true) {
-        setModalVisible(false);
-        setFormData({});
-        setLoading(true);
-        clearForm();
-        const getCalanderData = await eventService.getEventList();
-        setEventList(getCalanderData);
-        if (getCalanderData) {
-          setLoading(false);
-        }
+    if (Object.keys(errors).length === 0) {
+      if (newFormData?.attendees?.length === 0) {
+        const newErrors = {
+          attendees: {
+            __errors: [t("SELECT_CANDIDATES")],
+          },
+        };
+        setErrors(newErrors);
       } else {
-        setFormData({});
+        setFormData(newFormData);
+        const apiResponse = await eventService.createNewEvent(newFormData);
+        if (apiResponse?.success === true) {
+          setModalVisible(false);
+          setFormData({});
+          setLoading(true);
+          clearForm();
+          const getCalanderData = await eventService.getEventList();
+          setEventList(getCalanderData);
+          if (getCalanderData) {
+            setLoading(false);
+          }
+        } else {
+          setFormData({});
+        }
       }
+    } else {
+      alert(t("CORRECT_DATA"));
     }
   };
 
