@@ -178,7 +178,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     ["role_title", "organization", "description"].forEach((key) => {
       if (item?.[key]) {
         if (
-          !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
+          // !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
           item?.[key]?.replaceAll(" ", "") === ""
         ) {
           errors?.[key]?.addError(
