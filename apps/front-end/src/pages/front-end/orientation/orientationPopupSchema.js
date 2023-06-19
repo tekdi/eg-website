@@ -3,6 +3,7 @@ export default {
   required: [
     "type",
     "attendees",
+    "name",
     "master_trainer",
     "start_date",
     "start_time",

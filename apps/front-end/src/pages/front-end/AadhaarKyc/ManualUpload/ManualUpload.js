@@ -24,6 +24,7 @@ export default function ManualUpload({
   setLoading,
   setPage,
   setOtpFailedPopup,
+  footerLinks,
 }) {
   const { id } = useParams();
   const [image, setImage] = React.useState();
@@ -140,6 +141,7 @@ export default function ManualUpload({
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box px="4">
         {error?.top && (
