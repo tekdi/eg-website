@@ -95,7 +95,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       device_type: qData?.result?.core_beneficiaries?.device_type,
       state: qData?.result?.state,
       district: qData?.result?.district,
-      address: qData?.result?.address,
+      address: qData?.result?.address ? qData?.result?.address : "",
       block: qData?.result?.block,
       village: qData?.result?.village,
       grampanchayat: qData?.result?.grampanchayat,
@@ -416,7 +416,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 5999999999 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
