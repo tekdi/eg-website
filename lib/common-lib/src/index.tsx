@@ -31,6 +31,7 @@ import CustomOTPBox from './components/CustomOTPBox'
 import * as eventService from './services/EventService'
 import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
+import GetEnumValue from './components/GetEnumValue'
 
 // export
 export {
@@ -68,7 +69,8 @@ export {
   CustomOTPBox,
   eventService,
   aadhaarService,
-  Alert
+  Alert,
+  GetEnumValue
 }
 
 export * from './services/RestClient'
@@ -78,3 +80,4 @@ export * from './services/Telemetry'
 export * from './components/calender'
 export * from './components/layout/HeaderTags/index'
 export * from './components/inputs'
+
