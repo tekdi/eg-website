@@ -36,6 +36,7 @@ export default {
         mobile: {
           type: "string",
           title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
       },
     },
