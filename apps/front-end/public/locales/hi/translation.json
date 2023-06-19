@@ -105,7 +105,7 @@
   "BENEFICIARY_SOCIAL_STATUS_OTHERS": "अन्य",
   "BENEFICIARY_SOCIAL_STATUS_SC": "एस.सी.",
   "BENEFICIARY_SOCIAL_STATUS_ST": "एस.टी.",
-  "BENEFICIARY_STATUS_APPROVED_IP": "स्वीकृत आई पी",
+  "BENEFICIARY_STATUS_APPROVED_IP": "स्वीकृत IP",
   "BENEFICIARY_STATUS_DROPOUT": "ड्रॉपआउट",
   "BENEFICIARY_STATUS_ENROLLED": "नामांकित",
   "BENEFICIARY_STATUS_IDENTIFIED": "पहचान की गई",
@@ -387,7 +387,7 @@
   "MOTHER_FULL_NAME": "माता का पूरा नाम",
   "MOTIVATION_TO_PASS_10TH": "10वी पढ़ने की प्रेरणा",
   "MY_CAMP": "मेरा शिविर",
-  "MY_IP": "मेरा आईपी",
+  "MY_IP": "मेरा IP",
   "MY_PRERAKS": "मेरे प्रेरक",
   "NA": "NA",
   "NAME": "नाम",
@@ -722,7 +722,7 @@
   "YOUR_APPLICATION_IS_UNDER_REVIEW": "आपका आवेदन समीक्षाधीन है",
   "YOUR_CALENDAR": "आपका कैलेंडर",
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
-  "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका आईपी जल्द ही विवरण साझा करेगा",
+  "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
 }
