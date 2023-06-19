@@ -344,12 +344,12 @@ export default function App({ facilitator, ip, onClick }) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
-    if (data?.aadhar_token) {
+    if (data?.aadhar_no) {
       if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        data?.aadhar_no &&
+        !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
-        errors?.aadhar_token?.addError(
+        errors?.aadhar_no?.addError(
           `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
         );
       }
@@ -523,15 +523,24 @@ export default function App({ facilitator, ip, onClick }) {
           setErrors(newErrors);
         }
       }
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+      }
     }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
+    if (id === "root_aadhar_no") {
+      if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({
-          aadhar_token: data?.aadhar_token,
+          aadhar_no: data?.aadhar_no,
         });
         if (result.isUserExist) {
           const newErrors = {
-            aadhar_token: {
+            aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
             },
           };
@@ -596,6 +605,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
+    console.log("sad");
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -912,7 +922,10 @@ export default function App({ facilitator, ip, onClick }) {
               type="submit"
               p="4"
               mt="10"
-              onPress={() => formRef?.current?.submit()}
+              onPress={(e) => {
+                console.log(formRef?.current);
+                formRef?.current?.submit();
+              }}
             >
               {pages[pages?.length - 1] === page ? t("SUBMIT") : submitBtn}
             </FrontEndTypo.Primarybutton>

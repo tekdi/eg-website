@@ -96,8 +96,8 @@ export default function agFormEdit({ ip }) {
 
   React.useEffect(async () => {
     let device_ownership = formData?.core_beneficiaries?.device_ownership;
-    /*   let mark_as_whatsapp_number =
-        formData?.core_beneficiaries?.mark_as_whatsapp_number; */
+    let mark_as_whatsapp_number =
+      formData?.core_beneficiaries?.mark_as_whatsapp_number;
     let alternative_device_ownership =
       formData?.core_beneficiaries?.alternative_device_ownership;
     let alternative_device_type =
@@ -308,11 +308,9 @@ export default function agFormEdit({ ip }) {
     }
 
     setFormData(newData);
-
   };
 
   const onError = (data) => {
-    console.log(data, "sandy")
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -320,7 +318,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const submit = async (data) => {
-    console.log("formdata", formData?.mobile);
     if (formData?.mobile == formData?.alternative_mobile_number) {
       const newErrors = {
         alternative_mobile_number: {
@@ -340,7 +337,7 @@ export default function agFormEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("CONTACT_1"),
+        name: t("CONTACT_DETAILS"),
         lang,
         setLang,
       }}

@@ -125,7 +125,7 @@ export default function Orientation({ footerLinks }) {
       "ui:widget": SelectButton,
     },
     start_date: {
-      "ui:widget": "alt-date",
+      "ui:widget": "alt-datetime",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
@@ -133,7 +133,7 @@ export default function Orientation({ footerLinks }) {
       },
     },
     end_date: {
-      "ui:widget": "alt-date",
+      "ui:widget": "alt-datetime",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
@@ -147,10 +147,10 @@ export default function Orientation({ footerLinks }) {
       },
     },
     start_time: {
-      "ui:widget": TimePickerComponent,
+      "ui:widget": "hidden",
     },
     end_time: {
-      "ui:widget": TimePickerComponent,
+      "ui:widget": "hidden",
     },
   };
   const styles = {
@@ -162,10 +162,8 @@ export default function Orientation({ footerLinks }) {
   };
   const onChange = async (data, id) => {
     setErrors({});
+    // formRef?.current?.validateForm();
     const newData = data.formData;
-    // formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
-    //   setErrors(errors);
-    // });
     setFormData({ ...formData, ...newData });
     if (moment(newData?.start_date).isAfter(newData?.end_date)) {
       const newErrors = {
@@ -184,16 +182,16 @@ export default function Orientation({ footerLinks }) {
     setUserIds({});
     setFormData({
       attendees: [],
-      type: "",
-      name: "",
-      master_trainer: "",
-      start_date: "",
-      end_date: "",
-      start_time: "",
-      end_time: "",
+      type: null,
+      name: null,
+      master_trainer: null,
+      start_date: null,
+      end_date: null,
+      start_time: null,
+      end_time: null,
       reminders: [],
-      location: "",
-      location_type: "",
+      location: null,
+      location_type: null,
     });
   };
 
@@ -206,13 +204,23 @@ export default function Orientation({ footerLinks }) {
       };
     }
 
-    if (orientationPopupSchema?.properties?.name) {
+    if (orientationPopupSchema?.properties?.start_time) {
       newFormData = {
         ...newFormData,
-        ["name"]:
-          newFormData?.type +
-          " " +
-          moment(newFormData?.start_date).format("DD-MM-YYYY"),
+        ["start_time"]: moment
+          .utc(newFormData?.start_date)
+          .format("h:mm A")
+          .toString(),
+      };
+    }
+
+    if (orientationPopupSchema?.properties?.end_time) {
+      newFormData = {
+        ...newFormData,
+        ["end_time"]: moment
+          .utc(newFormData?.end_date)
+          .format("h:mm A")
+          .toString(),
       };
     }
 
@@ -272,7 +280,7 @@ export default function Orientation({ footerLinks }) {
                 <VStack alignItems={"Center"}>
                   <Pressable
                     onPress={() => {
-                      setModalVisible(true);
+                      setModalVisible(!modalVisible);
                     }}
                   >
                     <Image
@@ -347,7 +355,6 @@ export default function Orientation({ footerLinks }) {
                 shadow="BlueOutlineShadow"
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  clearForm();
                 }}
               >
                 {t("SCHEDULE_EVENT")}
@@ -383,7 +390,7 @@ export default function Orientation({ footerLinks }) {
                   center: "title",
                   right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
                 }}
-                initialView="timeGridWeek"
+                initialView="timeGridDay"
                 editable={true}
                 selectable={true}
                 selectMirror={true}
@@ -391,7 +398,10 @@ export default function Orientation({ footerLinks }) {
                 events={eventList?.events?.map((item) => {
                   return {
                     allDay: false,
-                    title: item?.name !== null ? item?.name : item?.type,
+                    title:
+                      item?.name !== null
+                        ? `${item?.name + " " + item?.master_trainer}`
+                        : item?.type,
                     start: moment(item?.start_date).format("YYYY-MM-DD")
                       ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
                           item?.start_time
@@ -412,8 +422,8 @@ export default function Orientation({ footerLinks }) {
                       item?.end_date !== "Invalid date"
                         ? moment(item?.end_date).format("YYYY-MM-DD HH:mm:ss")
                         : "",
-                    mastertrainer: item?.mastertrainer
-                      ? item?.mastertrainer
+                    master_trainer: item?.master_trainer
+                      ? item?.master_trainer
                       : "",
                     attendances: item?.attendances ? item?.attendances : "",
                     start_time: item?.start_time ? item?.start_time : "",
@@ -437,7 +447,9 @@ export default function Orientation({ footerLinks }) {
           </HStack>
           <Modal
             isOpen={modalVisible}
-            onClose={() => setModalVisible(false)}
+            onClose={() => {
+              setModalVisible(false), clearForm();
+            }}
             avoidKeyboard
             size="xl"
             // height={"450px"}
@@ -467,7 +479,7 @@ export default function Orientation({ footerLinks }) {
                     extraErrors={errors}
                     showErrorList={false}
                     noHtml5Validate={true}
-                    liveValidate
+                    // liveValidate
                     {...{
                       validator,
                       schema: schema ? schema : {},

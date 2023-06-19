@@ -31,7 +31,7 @@ import {
 } from "@shiksha/common-lib";
 
 import moment from "moment";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -42,6 +42,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  Aadhaar,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -64,24 +65,22 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [isExistflag, setisExistflag] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
-  const [beneficiaryData, setBeneficiaryData] = React.useState({})
-  const location = useLocation();
+  const [beneficiaryData, setBeneficiaryData] = React.useState({});
+  const id = useParams();
   const navigate = useNavigate();
-  console.log(location)
 
   React.useEffect(async () => {
-    setuserId(location?.state?.id);
+    setuserId(id?.id);
     if (userId) {
-      let data = await benificiaryRegistoryService.getOne(userId)
+      let data = await benificiaryRegistoryService.getOne(userId);
 
       setFormData({
         aadhar_no: data?.result?.aadhar_no,
-        aadhar_token: data?.result?.aadhar_no,
+        aadhar_no: data?.result?.aadhar_no,
         edit_page_type: "add_ag_duplication",
-        is_duplicate: "no"
-      })
+        is_duplicate: "no",
+      });
     }
-
   }, [userId]);
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -152,12 +151,19 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const customValidate = (data, errors, c) => {
-    if (data?.aadhar_token) {
+    if (!data?.aadhar_no) {
+      errors?.aadhar_no?.addError(
+        `${t(
+          "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
+        )}`
+      );
+    }
+    if (data?.aadhar_no) {
       if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        data?.aadhar_no &&
+        !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
-        errors?.aadhar_token?.addError(
+        errors?.aadhar_no?.addError(
           `${t(
             "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
           )}`
@@ -190,9 +196,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({ aadhar_no: data?.aadhar_token });
+    if (id === "root_aadhar_no") {
+      if (data?.aadhar_no?.toString()?.length === 12) {
+        const result = await userExist({ aadhar_no: data?.aadhar_no });
         if (result.isUserExist) {
           setisExistflag(true);
         } else {
@@ -215,19 +221,17 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       ...formData,
       duplicate_reason: value,
     });
-    console.log("e", value);
   };
 
   const addAdhaar = async () => {
-
     let adddata = {
       edit_page_type: "add_ag_duplication",
-      aadhar_no: formData?.aadhar_token,
+      aadhar_no: formData?.aadhar_no,
       is_duplicate: "no",
     };
     const adhaar = await AgRegistryService.updateAg(adddata, userId);
     navigate(`/aadhaar-kyc/${userId}`, {
-      state: { aadhar_no: formData?.aadhar_no },
+      state: { aadhar_no: formData?.aadhar_no, pathname: "/beneficiary/list" },
     });
   };
 
@@ -235,16 +239,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (!isExistflag) {
       setFormData({
         ...formData,
-        aadhar_no: formData?.aadhar_token,
+        aadhar_no: formData?.aadhar_no,
         is_duplicate: "no",
       });
     }
-  }, [formData?.aadhar_token]);
+  }, [formData?.aadhar_no]);
   const onSubmit = () => {
     if (isExistflag) {
       setFormData({
         ...formData,
-        aadhar_no: formData?.aadhar_token,
+        aadhar_no: formData?.aadhar_no,
         is_duplicate: "yes",
       });
       setModalVisible(!modalVisible);
@@ -264,7 +268,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton: (e) => {
-          navigate("/beneficiary/2", { state: { id: userId, page: "5" } });
+          navigate(`/beneficiary/${userId}/2`, {
+            state: { id: userId, page: "5" },
+          });
         },
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
@@ -291,7 +297,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, Aadhaar }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -315,12 +321,14 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               transformErrors,
             }}
           >
-            {errors?.aadhar_token ? (
+            {errors?.aadhar_no ? (
               <FrontEndTypo.Primarybutton
                 mt="5"
                 type="submit"
                 onPress={() =>
-                  navigate("/beneficiary/4", { state: { id: userId } })
+                  navigate(`/beneficiary/${userId}/4`, {
+                    state: { id: userId },
+                  })
                 }
               >
                 {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}

@@ -112,9 +112,9 @@ export default {
       title: "ID_VERIFICATION",
       description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
       type: "object",
-      required: ["aadhar_token"],
+      required: ["aadhar_no"],
       properties: {
-        aadhar_token: {
+        aadhar_no: {
           title: "AADHAAR_NUMBER",
           type: "number",
           format: "Aadhaar",
@@ -167,7 +167,7 @@ export default {
                 type: "string",
                 format: "CustomR",
                 grid: 3,
-                enumNames: ["1", "2", "3", "4", "+5"],
+                enumNames: ["1", "2", "3", "4", "5+"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {

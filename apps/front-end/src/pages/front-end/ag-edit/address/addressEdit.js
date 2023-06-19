@@ -277,13 +277,11 @@ export default function agFormEdit({ ip }) {
   };
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
@@ -314,17 +312,11 @@ export default function agFormEdit({ ip }) {
         errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+    ["grampanchayat"].forEach((key) => {
       if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
+        key === "grampanchayat" &&
+        data?.grampanchayat?.replaceAll(" ", "") === ""
       ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
@@ -515,7 +507,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -524,7 +515,6 @@ export default function agFormEdit({ ip }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 

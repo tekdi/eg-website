@@ -5,7 +5,7 @@ export default {
     1: {
       title: "IDENTIFY_BENEFICIARY",
       type: "object",
-      required: ["first_name", "last_name"],
+      required: ["first_name", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -14,6 +14,11 @@ export default {
         last_name: {
           type: "string",
           title: "LAST_NAME",
+        },
+        dob: {
+          type: "string",
+          format: "date",
+          label: "DATE_OF_BIRTH",
         },
         role: {
           format: "hidden",
@@ -31,6 +36,7 @@ export default {
         mobile: {
           type: "string",
           title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
       },
     },

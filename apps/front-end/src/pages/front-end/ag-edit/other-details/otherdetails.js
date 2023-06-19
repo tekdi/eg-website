@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "./futureStudySchema.js";
+import schema1 from "./otherdetailsSchema.js";
 import {
   Alert,
   Box,
@@ -52,7 +52,7 @@ import {
   RadioBtn,
   CustomR,
   select,
-} from "../../../../component/BaseInput";
+} from "../../../../component/BaseInput.js";
 
 import { useLocation } from "react-router-dom";
 
@@ -115,7 +115,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
-    //console.log("pagecalled");
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
@@ -178,13 +177,19 @@ export default function AgformUpdate({ userTokenInfo }) {
   // Type Of Student
 
   React.useEffect(async () => {
-    const career_aspiration = await enumRegistryService.listOfEnum();
-    const Data = career_aspiration?.data?.CAREER_ASPIRATION;
+    const ListOfEnum = await enumRegistryService.listOfEnum();
     let newSchema = schema;
-    if (schema["properties"]["career_aspiration"]) {
+    if (schema["properties"]["learning_motivation"]) {
       newSchema = getOptions(newSchema, {
-        key: "career_aspiration",
-        arr: Data,
+        key: "learning_motivation",
+        arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "type_of_support_needed",
+        arr: ListOfEnum?.data?.TYPE_OF_SUPPORT_NEEDED,
         title: "title",
         value: "value",
       });
@@ -209,15 +214,15 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
-    let career_aspiration =
-      qData?.result?.core_beneficiaries?.career_aspiration;
-    let career_aspiration_details =
-      qData?.result?.core_beneficiaries?.career_aspiration_details;
+    let learning_motivation =
+      qData?.result?.program_beneficiaries?.learning_motivation;
+    let type_of_support_needed =
+      qData?.result?.program_beneficiaries?.type_of_support_needed;
 
     setFormData({
       ...formData,
-      career_aspiration_details: career_aspiration_details,
-      career_aspiration: career_aspiration,
+      type_of_support_needed: type_of_support_needed,
+      learning_motivation: learning_motivation,
     });
   }, []);
 
@@ -297,7 +302,7 @@ export default function AgformUpdate({ userTokenInfo }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("FURTHER_STUDIES"),
+        name: t("OTHER_DETAILS"),
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },

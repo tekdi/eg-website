@@ -41,7 +41,7 @@ import {
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -80,12 +80,42 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
 
-  const location = useLocation();
+  // const location = useLocation();
+
+  const id = useParams();
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    setuserId(location?.state?.id);
+  React.useEffect(async () => {
+    setuserId(id?.id);
+    const qData = await benificiaryRegistoryService.getOne(id?.id);
+    setFormData({
+      ...formData,
+      device_ownership: qData?.result?.core_beneficiaries?.device_ownership,
+      device_type: qData?.result?.core_beneficiaries?.device_type,
+      state: qData?.result?.state,
+      district: qData?.result?.district,
+      address: qData?.result?.address,
+      block: qData?.result?.block,
+      village: qData?.result?.village,
+      grampanchayat: qData?.result?.grampanchayat,
+      marital_status: qData?.result?.extended_users?.marital_status,
+      social_category: qData?.result?.extended_users?.social_category,
+      type_of_learner: qData?.result?.core_beneficiaries?.type_of_learner,
+      last_standard_of_education_year:
+        qData?.result?.core_beneficiaries?.last_standard_of_education_year,
+      last_standard_of_education:
+        qData?.result?.core_beneficiaries?.last_standard_of_education,
+      previous_school_type:
+        qData?.result?.core_beneficiaries?.previous_school_type,
+      reason_of_leaving_education:
+        qData?.result?.core_beneficiaries?.reason_of_leaving_education,
+      learning_level: qData?.result?.program_beneficiaries?.learning_level,
+      learning_motivation:
+        qData?.result?.program_beneficiaries?.learning_motivation,
+      type_of_support_needed:
+        qData?.result?.program_beneficiaries?.type_of_support_needed,
+    });
   }, []);
 
   const onPressBackButton = async () => {
@@ -136,7 +166,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const showPosition = (position) => {
     let lati = position.coords.latitude;
-    console.log("lati", lati);
     let longi = position.coords.longitude;
 
     setFormData({
@@ -184,6 +213,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_education" });
+    } else if (page === "5") {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      setFormData({ ...formData, edit_page_type: "add_other_details" });
     } else if (page === "upload") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
     }
@@ -281,6 +313,20 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
 
       newSchema = getOptions(newSchema, {
+        key: "previous_school_type",
+        arr: ListOfEnum?.data?.PREVIOUS_SCHOOL_TYPE,
+        title: t("title"),
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "learning_level",
+        arr: ListOfEnum?.data?.BENEFICIARY_LEARNING_LEVEL,
+        title: t("title"),
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
         arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
         title: "title",
@@ -305,12 +351,26 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
+
+    if (schema["properties"]["learning_motivation"]) {
+      newSchema = getOptions(newSchema, {
+        key: "learning_motivation",
+        arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
+        title: "title",
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "type_of_support_needed",
+        arr: ListOfEnum?.data?.TYPE_OF_SUPPORT_NEEDED,
+        title: "title",
+        value: "value",
+      });
+      setSchema(newSchema);
+    }
   }, [page]);
 
   // Type Of Student
-
-  // React.useEffect(async () => {
-  //    }, [page]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -376,32 +436,15 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+    ["grampanchayat"].forEach((key) => {
       if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
+        key === "grampanchayat" &&
+        data?.grampanchayat?.replaceAll(" ", "") === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-            errors[keyex][index]?.[key]?.addError(
-              `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-            );
-          }
-        });
-      });
     });
 
     return errors;
@@ -646,7 +689,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       if (uploadDoc) {
-        navigate("/beneficiary/3", { state: { id: userId } });
+        navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
       }
     }
   };
@@ -693,7 +736,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             variant={"secondary"}
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
-              navigate("/beneficiary/3", { state: { id: userId } });
+              navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
             }}
           >
             {t("SKIP")}
@@ -723,7 +766,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     return (
       <Layout
         _appBar={{
-          onPressBackButton: (e) => setPage("4"),
+          onPressBackButton: (e) => setPage("5"),
           lang,
           setLang,
           onlyIconsShow: ["backBtn", "userInfo"],
@@ -772,7 +815,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
               variant={"secondary"}
               leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
               onPress={(e) => {
-                navigate("/beneficiary/3", { state: { id: userId } });
+                navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
               }}
             >
               {t("SKIP")}

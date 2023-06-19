@@ -11,6 +11,7 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import ProfilePhoto from "./ProfilePhoto";
 
 export default function FacilitatorBasicDetails({
   userTokenInfo,
@@ -42,35 +43,7 @@ export default function FacilitatorBasicDetails({
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
-          <VStack space="4" alignItems="center">
-            {facilitator?.profile_photo_1 ? (
-              <ImageView
-                w="120"
-                h="120"
-                source={{ document_id: facilitator?.profile_photo_1?.id }}
-              />
-            ) : (
-              <IconByName
-                isDisabled
-                name="AccountCircleLineIcon"
-                color="iconColor.350"
-                _icon={{ size: "120" }}
-                justifySelf="Center"
-              />
-            )}
-            <HStack alignItems="center" space="6">
-              {[1, 2, 3].map((photo) => (
-                <ImageView
-                  key={photo}
-                  w="60"
-                  h="60"
-                  source={{
-                    document_id: facilitator?.[`profile_photo_${photo}`]?.id,
-                  }}
-                />
-              ))}
-            </HStack>
-          </VStack>
+          <ProfilePhoto facilitator={facilitator} />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">

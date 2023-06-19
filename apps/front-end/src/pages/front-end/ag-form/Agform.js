@@ -52,6 +52,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  MobileNumber,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -82,17 +83,27 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
   const navigate = useNavigate();
 
-  const onPressBackButton = async () => {
+  const onPressBackButton = async (e) => {
     const data = await nextPreviewStep("p");
-    navigate(-1);
+    if (data) {
+      navigate(-1);
+    }
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => { };
+  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     facilitator_id: {
       "ui:widget": "hidden",
+    },
+    dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+      },
     },
   };
 
@@ -131,7 +142,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     let url = await AgRegistryService.createAg(formData);
 
     if (url?.data) {
-      navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
+      navigate(`/beneficiary/${url?.data?.user?.id}/2`);
     }
   };
 
@@ -172,6 +183,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       hash: localStorage.getItem("hash"),
     });
 
+    console.log("newSchema", newSchema);
+
     setverifyOtpData(otpData);
     if (status === true) {
       const data = await formSubmitCreate(formData);
@@ -183,8 +196,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               data?.error?.constructor?.name === "String"
                 ? [data?.error]
                 : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
@@ -254,8 +267,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
+      let minYear = moment().subtract("years", 30);
+      let maxYear = moment().subtract("years", 14);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
@@ -280,7 +293,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => { };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {
@@ -375,6 +388,17 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           },
         };
         setErrors(newErrors);
+      }
+
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+        setotpbtn(false);
       }
     }
   };
@@ -479,7 +503,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,

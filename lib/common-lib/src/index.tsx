@@ -24,7 +24,6 @@ import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
 import ImageView from './components/ImageView'
-import FloatingInput from './components/FloatingInput'
 import * as AdminTypo from './components/admin_component'
 import * as FrontEndTypo from './components/frontend_component'
 import CheatSheet from './components/CheatSheet'
@@ -32,6 +31,7 @@ import CustomOTPBox from './components/CustomOTPBox'
 import * as eventService from './services/EventService'
 import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
+import GetEnumValue from './components/GetEnumValue'
 
 // export
 export {
@@ -65,12 +65,12 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
-  FloatingInput,
   CheatSheet,
   CustomOTPBox,
   eventService,
   aadhaarService,
-  Alert
+  Alert,
+  GetEnumValue
 }
 
 export * from './services/RestClient'
@@ -79,3 +79,5 @@ export * from './components/helper'
 export * from './services/Telemetry'
 export * from './components/calender'
 export * from './components/layout/HeaderTags/index'
+export * from './components/inputs'
+

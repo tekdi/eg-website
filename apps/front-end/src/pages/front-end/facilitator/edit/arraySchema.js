@@ -23,14 +23,14 @@ export default {
           title: "DESCRIPTION",
           type: ["string", "null"],
           format: "textarea",
-          rows: 5,
+          rows: 3,
         },
         experience_in_years: {
           label: "EXPERIENCE_IN_YEARS",
           type: "string",
           format: "CustomR",
           grid: 3,
-          enumNames: ["1", "2", "3", "4", "+5"],
+          enumNames: ["1", "2", "3", "4", "5+"],
           enum: ["1", "2", "3", "4", "5"],
         },
         related_to_teaching: {
@@ -51,16 +51,17 @@ export default {
               help: "NAME_OF_YOUR_EMPLOYER",
             },
             contact_number: {
-              type: "number",
+              type: ["number", "null"],
               title: "CONTACT_NUMBER",
+              format: "MobileNumber",
             },
             type_of_document: {
-              type: "string",
+              type: ["string", "null"],
               title: "TYPE_OF_DOCUMENT",
             },
             document_id: {
               title: "UPLOAD_YOUR_DOCUMENT",
-              type: ["string", "number"],
+              type: ["string", "number", "null"],
               format: "FileUpload",
             },
           },

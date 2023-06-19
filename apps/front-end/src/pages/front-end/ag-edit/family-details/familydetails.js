@@ -100,13 +100,25 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   React.useEffect(async () => {
-    let father_first_name = formData?.core_beneficiaries?.father_first_name;
-    let father_middle_name = formData?.core_beneficiaries?.father_middle_name;
-    let father_last_name = formData?.core_beneficiaries?.father_last_name;
+    let father_first_name = formData?.core_beneficiaries?.father_first_name
+      ? formData?.core_beneficiaries?.father_first_name
+      : "";
+    let father_middle_name = formData?.core_beneficiaries?.father_middle_name
+      ? formData?.core_beneficiaries?.father_middle_name
+      : "";
+    let father_last_name = formData?.core_beneficiaries?.father_last_name
+      ? formData?.core_beneficiaries?.father_last_name
+      : "";
 
-    let mother_first_name = formData?.core_beneficiaries?.mother_first_name;
-    let mother_last_name = formData?.core_beneficiaries?.mother_last_name;
-    let mother_middle_name = formData?.core_beneficiaries?.mother_middle_name;
+    let mother_first_name = formData?.core_beneficiaries?.mother_first_name
+      ? formData?.core_beneficiaries?.mother_first_name
+      : "";
+    let mother_last_name = formData?.core_beneficiaries?.mother_last_name
+      ? formData?.core_beneficiaries?.mother_last_name
+      : "";
+    let mother_middle_name = formData?.core_beneficiaries?.mother_middle_name
+      ? formData?.core_beneficiaries?.mother_middle_name
+      : "";
 
     setFormData({
       ...formData,
@@ -254,20 +266,17 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        console.log(e);
         const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
@@ -277,32 +286,39 @@ export default function agFormEdit({ ip }) {
   };
 
   const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-      }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-      }
-    }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+    ["father_first_name", "mother_first_name"].forEach((key) => {
       if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
+        key === "father_first_name" &&
+        data?.father_details?.father_first_name?.replaceAll(" ", "") === ""
       ) {
-        errors?.[key]?.addError(
+        errors?.father_details?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
+      if (
+        data?.father_details?.[key] &&
+        !data?.father_details?.[key]?.match(/^[a-zA-Z ]*$/g)
+      ) {
+        errors?.father_details?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (
+        key === "mother_first_name" &&
+        data?.mother_details?.mother_first_name?.replaceAll(" ", "") === ""
+      ) {
+        errors?.mother_details?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (
+        data?.mother_details?.[key] &&
+        !data?.mother_details?.[key]?.match(/^[a-zA-Z ]*$/g)
+      ) {
+        errors?.mother_details?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
@@ -348,10 +364,7 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-  console.log("formData", formData);
-
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -360,7 +373,6 @@ export default function agFormEdit({ ip }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
@@ -368,7 +380,7 @@ export default function agFormEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: `${ip?.name}`.trim(),
+        name: t("FAMILY_DETAILS"),
         lang,
         setLang,
       }}

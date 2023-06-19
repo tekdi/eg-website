@@ -180,6 +180,10 @@ function Table({
     setLoading(false);
   }, [page, limit]);
 
+  const exportPrerakCSV = async () => {
+    const result = await facilitatorRegistryService.exportFacilitatorsCsv();
+  };
+
   const filterByStatus = async (value) => {
     setLoading(true);
     setstatus(value);
@@ -230,13 +234,28 @@ function Table({
           placeholder="search"
           variant="outline"
         /> */}
-        <HStack>
+        <HStack space={2}>
           {/* <Button
             variant={"primary"}
             onPress={(e) => navigate("/admin/facilitator-onbording")}
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
+          <AdminTypo.Secondarybutton
+            onPress={() => {
+              exportPrerakCSV();
+            }}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("EXPORT")}
+          </AdminTypo.Secondarybutton>
           <AdminTypo.Secondarybutton
             onPress={() => setModal(true)}
             rightIcon={
