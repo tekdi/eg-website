@@ -325,7 +325,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
 
     if (step === "basic_details") {
-      ["first_name", "last_name"].forEach((key) => {
+      ["first_name"].forEach((key) => {
         validation({
           data: data?.[key]?.replaceAll(" ", ""),
           key,
@@ -365,7 +365,8 @@ export default function App({ userTokenInfo, footerLinks }) {
         let message = "REQUIRED_MESSAGE";
         if (format === "email") {
           message = "PLEASE_ENTER_VALID_EMAIL";
-        } else if (format === "string") {
+        }
+        if (format === "string") {
           message = "PLEASE_ENTER_VALID_STREING";
         } else if (format === "number") {
           message = "PLEASE_ENTER_VALID_NUMBER";
@@ -595,12 +596,12 @@ export default function App({ userTokenInfo, footerLinks }) {
       };
     }
 
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-      };
-    }
+    // if (schema?.properties?.last_name && newFormData?.last_name) {
+    //   newFormData = {
+    //     ...newFormData,
+    //     ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+    //   };
+    // }
     if (_.isEmpty(errors)) {
       // if (["reference_details"].includes(step)) {
       //   const result = await Promise.all(
