@@ -62,13 +62,13 @@ export default function Orientation({ footerLinks }) {
 
   const SelectButton = () => (
     <HStack space={"10"}>
-      <HStack flex="0.9">
+      <HStack wdith="60%" flex="0.5">
         <IconByName name="UserLineIcon" isDisabled />
         <AdminTypo.H6 color="textGreyColor.100">
           {t("SELECT_CANDIDATE")} *
         </AdminTypo.H6>
       </HStack>
-      <HStack flex="0.7" alignItems="center">
+      <HStack alignItems="center" flex="0.4">
         <AdminTypo.Secondarybutton onPress={() => setIsOpen(true)}>
           {t("SELECT_PRERAK")}
         </AdminTypo.Secondarybutton>
@@ -289,17 +289,17 @@ export default function Orientation({ footerLinks }) {
         <Loading />
       ) : (
         <Box>
-          <VStack paddingLeft="5" paddingTop="5" space="xl">
-            <Box display="flex" flexDirection="row" minWidth="2xl">
-              <HStack alignItems="Center">
+          <VStack>
+            <Box>
+              <HStack alignItems="Center" py="4">
                 <IconByName name="Home4LineIcon" fontSize="24px" />
                 <AdminTypo.H1 color="textGreyColor.800" bold>
                   {t("HOME")}
                 </AdminTypo.H1>
               </HStack>
             </Box>
-            <HStack display="flex" flexDirection="row" space="xl">
-              <BoxBlue justifyContent="center">
+            <HStack>
+              <BoxBlue justifyContent="center" pl="3">
                 <VStack alignItems={"Center"}>
                   <Pressable
                     onPress={() => {
@@ -366,11 +366,11 @@ export default function Orientation({ footerLinks }) {
             </VStack>
           </BoxBlue> */}
             </HStack>
-            <AdminTypo.H3 bold py="3">
+            <AdminTypo.H3 bold pt="8" pb="3">
               {t("YOUR_CALENDAR")}
             </AdminTypo.H3>
           </VStack>
-          <HStack space="2xl" justifyContent="space-between" px="5" pb="10">
+          <HStack space="2xl" justifyContent="space-between" px="2" pb="10" direction={["column", "column", "row"]}>
             <VStack alignContent="center">
               <AdminTypo.Secondarybutton
                 alignContent="center"
@@ -402,7 +402,7 @@ export default function Orientation({ footerLinks }) {
                 </HStack>
               </VStack>
             </VStack>
-            <Box width="50%" justifyContent={"Center"} flex={"1"}>
+            <Box >
               <Fullcalendar
                 ref={calendarRef}
                 key={eventList}
@@ -474,7 +474,6 @@ export default function Orientation({ footerLinks }) {
               setModalVisible(false), clearForm();
             }}
             avoidKeyboard
-            size="xl"
             // height={"450px"}
             overflowY={"scroll"}
           >
@@ -486,7 +485,7 @@ export default function Orientation({ footerLinks }) {
                 </AdminTypo.H1>
               </Modal.Header>
 
-              <Modal.Body p="3" pb="10" bg="white">
+              <Modal.Body p="1" pb="10" bg="white">
                 <Suspense fallback={<div>Loading... </div>}>
                   <Form
                     ref={formRef}
