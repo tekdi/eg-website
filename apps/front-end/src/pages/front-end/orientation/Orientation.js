@@ -125,7 +125,7 @@ export default function Orientation({ footerLinks }) {
       "ui:widget": SelectButton,
     },
     start_date: {
-      "ui:widget": "alt-date",
+      "ui:widget": "alt-datetime",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
@@ -133,7 +133,7 @@ export default function Orientation({ footerLinks }) {
       },
     },
     end_date: {
-      "ui:widget": "alt-date",
+      "ui:widget": "alt-datetime",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
@@ -147,10 +147,10 @@ export default function Orientation({ footerLinks }) {
       },
     },
     start_time: {
-      "ui:widget": TimePickerComponent,
+      "ui:widget": "hidden",
     },
     end_time: {
-      "ui:widget": TimePickerComponent,
+      "ui:widget": "hidden",
     },
   };
   const styles = {
@@ -162,11 +162,8 @@ export default function Orientation({ footerLinks }) {
   };
   const onChange = async (data, id) => {
     setErrors({});
-    formRef?.current?.validateForm();
+    // formRef?.current?.validateForm();
     const newData = data.formData;
-    // formRef?.current?.validate(formData, orientationPopupSchema, (errors) => {
-    //   setErrors(errors);
-    // });
     setFormData({ ...formData, ...newData });
     if (moment(newData?.start_date).isAfter(newData?.end_date)) {
       const newErrors = {
@@ -204,6 +201,26 @@ export default function Orientation({ footerLinks }) {
       newFormData = {
         ...newFormData,
         ["type"]: newFormData?.type,
+      };
+    }
+
+    if (orientationPopupSchema?.properties?.start_time) {
+      newFormData = {
+        ...newFormData,
+        ["start_time"]: moment
+          .utc(newFormData?.start_date)
+          .format("h:mm A")
+          .toString(),
+      };
+    }
+
+    if (orientationPopupSchema?.properties?.end_time) {
+      newFormData = {
+        ...newFormData,
+        ["end_time"]: moment
+          .utc(newFormData?.end_date)
+          .format("h:mm A")
+          .toString(),
       };
     }
 
@@ -338,7 +355,6 @@ export default function Orientation({ footerLinks }) {
                 shadow="BlueOutlineShadow"
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  // clearForm();
                 }}
               >
                 {t("SCHEDULE_EVENT")}
