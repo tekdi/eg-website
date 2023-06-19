@@ -403,12 +403,12 @@ export default function Attendence({ footerLinks }) {
           <React.Suspense fallback={<Loading />}>
             <Camera
               headerComponent={
-                <VStack backgroundColor="white" width="98%">
-                  <AdminTypo.H6 color="textGreyColor.900" bold>
+                <VStack bg="white" width="94%">
+                  <AdminTypo.H6 color="textGreyColor.900" bold pl="2" pt="3">
                     {t("MARK_ATTENDANCE_ORIENTATION")}
                   </AdminTypo.H6>
                   <HStack justifyContent={"space-between"}>
-                    <HStack space={"10"} ml="15px">
+                    <HStack space={"2"} ml="15px" direction={["column", "column", "row"]}>
                       <AdminTypo.H6 color="textGreyColor.550" bold>
                         {t("PRESENT")}
                       </AdminTypo.H6>
@@ -418,15 +418,16 @@ export default function Attendence({ footerLinks }) {
                       </AdminTypo.H6>
                       {users.filter((e) => e.status !== "present").length}
                       {t("CANDIDATES_NAME")} {userData?.user?.first_name}
-                    </HStack>
-                    <HStack>
                       <AdminTypo.H6>
                       {t("CANDIDATES")} - {users?.length ? users?.length : 0}
                       </AdminTypo.H6>
                     </HStack>
+                    <HStack>
+                    
+                    </HStack>
                   </HStack>
                   <Stack>
-                    <AdminTypo.H6 my="15px" color="textGreyColor.100">
+                    <AdminTypo.H6 my="15px" color="textGreyColor.100" pl="2">
                       {t("ATTENDANCE_CAMERA_SUBTITLE")}
                     </AdminTypo.H6>
                   </Stack>
@@ -560,6 +561,7 @@ export default function Attendence({ footerLinks }) {
               borderRadius={"10px"}
               py="3"
               mt="8"
+              
             >
               <VStack m={"15px"}>
                 <HStack justifyContent={"space-between"}>
@@ -574,7 +576,7 @@ export default function Attendence({ footerLinks }) {
                 </AdminTypo.Secondarybutton> */}
                 </HStack>
 
-                <HStack space={"3"} alignItems="center" pt="4">
+                <HStack space={"3"} pt="4" direction={["column", "column", "row"]} >
                   <IconByName
                     isDisabled
                     name="TimeLineIcon"
@@ -593,7 +595,6 @@ export default function Attendence({ footerLinks }) {
                     name="MapPinLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
-                    pl="8"
                   />
                   <AdminTypo.H6 color="textGreyColor.800">
                     {event?.location}
@@ -603,7 +604,6 @@ export default function Attendence({ footerLinks }) {
                     name="UserLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
-                    pl="8"
                   />
                   <AdminTypo.H6 color="textGreyColor.800">
                     {t("MASTER_TRAINER")} -
@@ -621,7 +621,7 @@ export default function Attendence({ footerLinks }) {
               </VStack>
             </Box>
             <Stack mt={"20px"} space={"3"} py="2">
-              <HStack space={"4"}>
+              <HStack space={"4"} direction={["column", "column", "row"]} >
                 <HStack>
                   <IconByName
                     isDisabled
@@ -727,10 +727,11 @@ export default function Attendence({ footerLinks }) {
                           <AdminTypo.H6 color="textGreyColor.100" pr="6">
                             {t("EVENT_TYPE")}
                           </AdminTypo.H6>
-                          <HStack alignItems="center" space={"2"} p="1">
+                          <HStack alignItems="center" space={"2"}>
                             <Input
                               value={event?.name ? event?.name : event?.type}
                               variant="outline"
+                              width="70%"
                               placeholder={
                                 event?.name ? event?.name : event?.type
                               }
