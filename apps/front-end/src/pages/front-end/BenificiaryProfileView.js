@@ -19,7 +19,7 @@ import {
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 
-import Chip from "component/Chip";
+import { ChipStatus } from "component/BeneficiaryStatus";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -146,9 +146,8 @@ export default function BenificiaryProfileView(props) {
               {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
 
-            <Chip
-              bg={benificiary?.status ? "appliedColor" : "appliedColor"}
-              label={benificiary?.status ? benificiary?.status : "identified"}
+            <ChipStatus
+              status={benificiary?.program_beneficiaries?.status}
               rounded={"sm"}
             />
           </VStack>
