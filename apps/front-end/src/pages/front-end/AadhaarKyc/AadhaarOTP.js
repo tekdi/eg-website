@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, Pressable, VStack } from "native-base";
+import { Button, FormControl, Pressable, VStack } from "native-base";
 import {
   FrontEndTypo,
   t,
@@ -7,6 +7,7 @@ import {
   aadhaarService,
   CustomOTPBox,
   authRegistryService,
+  checkAadhaar,
 } from "@shiksha/common-lib";
 
 export default function AdharOTP({
@@ -20,11 +21,19 @@ export default function AdharOTP({
   setOtpFailedPopup,
   sendData,
   setAttempt,
+  footerLinks,
+  setAadhaarCompare,
+  user,
 }) {
   const [data, setData] = React.useState({
     otpNumber: "",
     securityCode: "",
   });
+
+  const generateCode = () => {
+    setData({ ...data, securityCode: Math.floor(1000 + Math.random() * 9000) });
+  };
+
   const handleSubmit = async () => {
     setError();
     if (!id || !aadhaarNumber || !data.otpNumber || !data.securityCode) {
@@ -40,6 +49,9 @@ export default function AdharOTP({
     };
     const res = await aadhaarService.complete(bodyData);
     if (res.status === "complete") {
+      const result = checkAadhaar(user, res?.aadhaar);
+      console.log(result);
+      setAadhaarCompare(result);
       authRegistryService.aadhaarKyc({
         id,
         aadhar_no: aadhaarNumber,
@@ -49,7 +61,7 @@ export default function AdharOTP({
       });
       setPage && setPage("aadhaarSuccess");
     } else {
-      setAttempt("addhar-number");
+      setAttempt("number");
       setError({
         ...error,
         top: res.error,
@@ -68,6 +80,7 @@ export default function AdharOTP({
         onPressBackButton: handalBack,
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       {error?.top && (
         <FrontEndTypo.Prompts m="5" status="danger" flex="1">
@@ -79,61 +92,71 @@ export default function AdharOTP({
           {t("OFFLINE_AADHAAR_VERIFICATION")}
           (OKYC)
         </FrontEndTypo.H1>
-        <FormControl>
-          <CustomOTPBox
-            isHideResendOtp
-            placeholder="000000"
-            required
-            isInvalid={error?.otpNumber}
-            schema={{
-              title: "ENTER_6_DIGIT_OTP",
-              help: error?.otpNumber && error.otpNumber,
-            }}
-            value={data?.otpNumber ? data?.otpNumber : ""}
-            borderColor="gray.500"
-            p="4"
-            maxWidth={120}
-            onChange={(value) => {
-              setData({ ...data, otpNumber: value });
-            }}
-          />
-          <Pressable onPress={(e) => sendData()}>{t("RESEND")}</Pressable>
-        </FormControl>
+        <VStack>
+          <FormControl>
+            <CustomOTPBox
+              isHideResendOtp
+              placeholder="000000"
+              required
+              isInvalid={error?.otpNumber}
+              schema={{
+                title: "ENTER_6_DIGIT_OTP",
+                help: error?.otpNumber && error.otpNumber,
+              }}
+              value={data?.otpNumber ? data?.otpNumber : ""}
+              borderColor="gray.500"
+              p="4"
+              maxWidth={120}
+              onChange={(value) => {
+                setData({ ...data, otpNumber: value });
+              }}
+            />
+          </FormControl>
+          <Pressable onPress={(e) => sendData()}>
+            <FrontEndTypo.H3 mt="4" color="textMaroonColor.400">
+              {t("RESEND")}
+            </FrontEndTypo.H3>
+          </Pressable>
+        </VStack>
         <VStack space={2}>
           <FrontEndTypo.H3 color="textMaroonColor.400" bold mt="5">
-            {t("ENTER_SECURITY_CODE")}
+            {t("CREATE_4_DIGIT_SHARE_CODE")}
           </FrontEndTypo.H3>
           <FrontEndTypo.Prompts status={"info"}>
-            You can set the pass code as your birth year e.g. 1999 last 4 digits
-            of your Aadhaar **** **** 8976
+            {t("PLEASE_ENTER_A_4_DIGIT_NUMBER")}
           </FrontEndTypo.Prompts>
           <FrontEndTypo.H4 color="gray.500">
-            {t(
-              "SET_A_4_DIGIT_PASSCODE_TO_SECURELY_SHARE_YOUR_AADHAAR_ZIP_FILE"
-            )}
+            {t("YOUR_AADHAAR_OKYC_MESSAGE")}
           </FrontEndTypo.H4>
+          <Button
+            onPress={generateCode}
+            p="2"
+            variant="link"
+            _text={{ color: "textMaroonColor.400" }}
+          >
+            {t("AUTO_GENERATE")}
+          </Button>
+          <FormControl>
+            <CustomOTPBox
+              isHideResendOtp
+              otpCount="4"
+              placeholder="6YE3ZH"
+              required
+              isInvalid={error?.securityCode}
+              schema={{
+                title: "ENTER_SECURITY_CODE",
+                help: error?.securityCode && error.securityCode,
+              }}
+              value={data?.securityCode ? data?.securityCode : ""}
+              borderColor="gray.500"
+              p="4"
+              maxWidth={120}
+              onChange={(value) => {
+                setData({ ...data, securityCode: value });
+              }}
+            />
+          </FormControl>
         </VStack>
-        <FormControl>
-          <CustomOTPBox
-            isHideResendOtp
-            otpCount="4"
-            placeholder="6YE3ZH"
-            required
-            isInvalid={error?.securityCode}
-            schema={{
-              title: "ENTER_SECURITY_CODE",
-              help: error?.securityCode && error.securityCode,
-            }}
-            value={data?.securityCode ? data?.securityCode : ""}
-            borderColor="gray.500"
-            p="4"
-            maxWidth={120}
-            onChange={(value) => {
-              setData({ ...data, securityCode: value });
-            }}
-          />
-        </FormControl>
-
         <FrontEndTypo.Secondarybutton
           bg={!data.otpNumber || !data.securityCode ? "gray.300" : "gray.500"}
           isDisabled={!data?.otpNumber || !data?.securityCode}
