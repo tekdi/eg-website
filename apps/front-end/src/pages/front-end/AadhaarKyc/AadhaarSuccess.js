@@ -1,0 +1,133 @@
+import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
+import { Alert, HStack, VStack, Image } from "native-base";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
+export default function AadhaarSuccess({ user, aadhaarCompare }) {
+  const [data, setData] = React.useState([]);
+  const [isVerified, setIsVerified] = React.useState(true);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    setData(aadhaarCompare?.data);
+    setIsVerified(aadhaarCompare?.isVerified);
+  }, []);
+
+  return (
+    <VStack px="4" space="4">
+      <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
+        {t("OFFLINE_AADHAAR_VERIFICATION")}
+        (OKYC)
+      </FrontEndTypo.H1>
+      <VStack space={"2"} bg="white" shadow="FooterShadow" borderRadius="10">
+        {data?.map((item, index) =>
+          item.name === "PHOTO" ? (
+            <HStack
+              p="3"
+              space={5}
+              alignItems="center"
+              justifyContent={item?.aadhaar ? "center" : "center"}
+            >
+              <VStack alignItems="center" space="1">
+                <FrontEndTypo.H3 flex="1">
+                  {t("PROFILE_DETAILS")}
+                </FrontEndTypo.H3>
+                {item?.user ? (
+                  <ImageView
+                    w="120"
+                    h="120"
+                    source={{ document_id: item?.user }}
+                    alt="user photo"
+                  />
+                ) : (
+                  <IconByName
+                    isDisabled
+                    name="AccountCircleLineIcon"
+                    color="iconColor.350"
+                    _icon={{ size: "120" }}
+                    justifySelf="Center"
+                  />
+                )}
+              </VStack>
+              {item?.aadhaar && (
+                <VStack alignItems="center" space="1">
+                  <FrontEndTypo.H3 flex="1">
+                    {t("AADHAAR_DETAILS")}
+                  </FrontEndTypo.H3>
+                  <Image
+                    rounded={"full"}
+                    w="120"
+                    h="120"
+                    source={{
+                      uri: `data:image/jpeg;charset=utf-8;base64,${item?.aadhaar}`,
+                    }}
+                    alt="aadhaar photo"
+                  />
+                </VStack>
+              )}
+            </HStack>
+          ) : (
+            <VStack>
+              {index === 1 && (
+                <HStack key={index - 1} px="4" flex="1" py="2">
+                  <FrontEndTypo.H3 flex="1">{t("TITLE")} </FrontEndTypo.H3>
+                  <FrontEndTypo.H3 flex="1">
+                    {t("PROFILE_DETAILS")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H3 flex="1">
+                    {t("AADHAAR_DETAILS")}
+                  </FrontEndTypo.H3>
+                </HStack>
+              )}
+              <HStack
+                key={index}
+                px="4"
+                flex="1"
+                py="2"
+                bg={item?.isVerified === false ? "red.300" : ""}
+              >
+                <FrontEndTypo.H3 flex="1">{t(item?.name)} </FrontEndTypo.H3>
+                <FrontEndTypo.H3 flex="1">{item?.aadhaar} </FrontEndTypo.H3>
+                <FrontEndTypo.H3 flex="1">{item?.user} </FrontEndTypo.H3>
+              </HStack>
+            </VStack>
+          )
+        )}
+      </VStack>
+      <Alert
+        status={isVerified ? "success" : "error"}
+        // colorScheme="success"
+        // textAlign="center"
+        my="4"
+      >
+        <VStack space={2} flexShrink={1}>
+          <HStack
+            flexShrink={1}
+            space={2}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <HStack flexShrink={1} space={2} alignItems="center">
+              <Alert.Icon />
+              <FrontEndTypo.H4>
+                {t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}
+              </FrontEndTypo.H4>
+            </HStack>
+          </HStack>
+        </VStack>
+      </Alert>
+      <FrontEndTypo.Primarybutton
+        onPress={(e) => {
+          if (location?.state) {
+            navigate(location?.state);
+          } else {
+            navigate("/beneficiary/list");
+          }
+        }}
+      >
+        {t("CONTINUE")}
+      </FrontEndTypo.Primarybutton>
+    </VStack>
+  );
+}

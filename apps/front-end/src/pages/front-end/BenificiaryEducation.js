@@ -8,6 +8,7 @@ import {
   t,
   Layout,
   enumRegistryService,
+  translateEnumOption
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,7 +19,6 @@ export default function BenificiaryEducation() {
   const [previous_school_type, setprevious_school_type] = React.useState();
   const [filteredreason, setfilteredreason] = React.useState();
   const [filteredcareer, setfilteredcareer] = React.useState();
-
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -37,34 +37,13 @@ export default function BenificiaryEducation() {
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
-    const schooltypedata = data?.data?.PREVIOUS_SCHOOL_TYPE;
-    const reasondata = data?.data?.REASON_OF_LEAVING_EDUCATION;
-    const careerdata = data?.data?.CAREER_ASPIRATION;
-
-    const previous_school_type =
-      benificiary?.core_beneficiaries?.previous_school_type;
-    const reason_of_leaving_education =
-      benificiary?.core_beneficiaries?.reason_of_leaving_education;
-    const career_aspiration =
-      benificiary?.core_beneficiaries?.career_aspiration;
-    const filteredTitles = schooltypedata
-      .filter((item) => item.value === previous_school_type)
-      .map((item) => item.title)
-      .join(", ");
-    const filteredreason = reasondata
-      .filter((item) => item.value === reason_of_leaving_education)
-      .map((item) => item.title)
-      .join(", ");
-    const filteredcareer = careerdata
-      .filter((item) => item.value === career_aspiration)
-      .map((item) => item.title)
-      .join(", ");
-
+    const filteredTitles = await translateEnumOption("PREVIOUS_SCHOOL_TYPE", benificiary?.core_beneficiaries?.previous_school_type, data?.data)
+    const filteredreason = await translateEnumOption("REASON_OF_LEAVING_EDUCATION", benificiary?.core_beneficiaries?.reason_of_leaving_education, data?.data)
+    const filteredcareer = await translateEnumOption("CAREER_ASPIRATION", benificiary?.core_beneficiaries?.career_aspiration, data?.data)
     setprevious_school_type(filteredTitles);
     setfilteredreason(filteredreason);
     setfilteredcareer(filteredcareer);
   }, [benificiary]);
-
   return (
     <Layout _appBar={{ name: t("EDUCATION_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200">
@@ -126,7 +105,7 @@ export default function BenificiaryEducation() {
                 >
                   {benificiary?.core_beneficiaries?.last_standard_of_education
                     ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education
+                      ?.last_standard_of_education
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -154,7 +133,7 @@ export default function BenificiaryEducation() {
                   {benificiary?.core_beneficiaries
                     ?.last_standard_of_education_year
                     ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education_year
+                      ?.last_standard_of_education_year
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -193,7 +172,6 @@ export default function BenificiaryEducation() {
               </HStack>
             </VStack>
           </VStack>
-
           <VStack
             px="5"
             py="4"
@@ -203,14 +181,9 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack
-              justifyContent="space-between"
-              alignItems="Center"
-              borderBottomWidth="1px"
-              borderBottomColor="appliedColor"
-            >
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("FURTHUR_STUDIES")}
+            <HStack justifyContent="space-between" alignItems="Center">
+              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
+                {t("CAREER_ASPIRATIONS")}
               </FrontEndTypo.H3>
               <IconByName
                 name="EditBoxLineIcon"
@@ -221,39 +194,96 @@ export default function BenificiaryEducation() {
                 }}
               />
             </HStack>
-            <Box>
+            <Box paddingTop="2">
               <Progress
                 value={arrList(benificiary?.core_beneficiaries, [
-                  "career_aspiration",
-                  "career_aspiration_details",
+                  "last_standard_of_education",
+                  "last_standard_of_education_year",
+                  "previous_school_type",
+                  "reason_of_leaving_education",
                 ])}
                 size="xs"
                 colorScheme="info"
               />
             </Box>
-            <VStack space="2" pt="5">
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+            <VStack space="2" paddingTop="5">
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("CAREER_ASPIRATIONS")}
                 </FrontEndTypo.H3>
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
                   {benificiary?.core_beneficiaries?.career_aspiration
                     ? t(filteredcareer)
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
 
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("MOTIVATION_TO_PASS_10TH")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  {benificiary?.program_beneficiaries?.learning_motivation
+                    ? benificiary?.program_beneficiaries?.learning_motivation
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("SUPPORT_FROM_PRAGATI")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  {benificiary?.program_beneficiaries?.type_of_support_needed
+                    ? benificiary?.program_beneficiaries?.type_of_support_needed
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
               <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("REMARKS")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
+                  fontWeight="400"
                   flex="0.4"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
                 >
                   {benificiary?.core_beneficiaries?.career_aspiration_details
                     ? benificiary?.core_beneficiaries?.career_aspiration_details

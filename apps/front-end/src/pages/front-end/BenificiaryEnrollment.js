@@ -88,23 +88,6 @@ export default function BenificiaryEnrollment() {
               borderBottomColor="appliedColor"
             >
               <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
-                {t("TYPE_OF_ENROLLMENT")}
-              </FrontEndTypo.H3>
-
-              <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                {benificiary?.program_beneficiaries?.type_of_enrollement
-                  ? benificiary?.program_beneficiaries?.type_of_enrollement
-                  : "-"}
-              </FrontEndTypo.H3>
-            </HStack>
-
-            <HStack
-              alignItems="Center"
-              justifyContent="space-between"
-              borderBottomWidth="1px"
-              borderBottomColor="appliedColor"
-            >
-              <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
                 {t("ENROLLMENT_STATUS")}
               </FrontEndTypo.H3>
 

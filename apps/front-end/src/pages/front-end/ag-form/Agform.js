@@ -52,6 +52,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  MobileNumber,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -82,8 +83,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
   const navigate = useNavigate();
 
-  const onPressBackButton = async () => {
+  const onPressBackButton = async (e) => {
     const data = await nextPreviewStep("p");
+    if (data) {
+      navigate(-1);
+    }
   };
   const ref = React.createRef(null);
 
@@ -499,7 +503,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,

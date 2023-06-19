@@ -573,4 +573,11 @@ const templates = {
   BaseInputTemplate,
   ArrayFieldTemplate,
 };
-export { widgets, templates, CustomOTPBox, FileUpload, validator };
+export {
+  widgets,
+  templates,
+  CustomOTPBox,
+  FileUpload,
+  validator,
+  MobileNumber,
+};
