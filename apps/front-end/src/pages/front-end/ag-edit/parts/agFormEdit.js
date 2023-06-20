@@ -93,9 +93,10 @@ export default function agFormEdit({ ip, id }) {
     const qData = getdata?.result;
     setFormData({
       ...formData,
-      middle_name: qData?.middle_name ? qData?.middle_name : "",
+      middle_name: qData?.middle_name == "null" ? "" : qData?.middle_name,
       first_name: qData?.first_name,
-      last_name: qData?.last_name,
+      last_name: qData?.last_name == "null" ? "" : qData?.last_name,
+      dob: qData?.dob && qData?.dob,
     });
   }, []);
 
