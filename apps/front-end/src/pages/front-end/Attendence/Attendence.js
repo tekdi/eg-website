@@ -143,7 +143,7 @@ export default function Attendence({ footerLinks }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const [rowData, setRowData] = React.useState();
   const [showEditModal, setShowEditModal] = React.useState(false);
-
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [locationData, setlocationData] = useState("");
   const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
@@ -177,6 +177,14 @@ export default function Attendence({ footerLinks }) {
 
   const handleFormChange = ({ formData }) => {
     setFormData(formData);
+  };
+
+  const deleteCurrentEventById = async () => {
+    const result = await eventService.deleteCurrentEvent({ id: id });
+    if (result?.events) {
+      navigate("/admin");
+      setShowDeleteModal(false);
+    }
   };
 
   const uiSchema = {
@@ -408,7 +416,11 @@ export default function Attendence({ footerLinks }) {
                     {t("MARK_ATTENDANCE_ORIENTATION")}
                   </AdminTypo.H6>
                   <HStack justifyContent={"space-between"}>
-                    <HStack space={"2"} ml="15px" direction={["column", "column", "row"]}>
+                    <HStack
+                      space={"2"}
+                      ml="15px"
+                      direction={["column", "column", "row"]}
+                    >
                       <AdminTypo.H6 color="textGreyColor.550" bold>
                         {t("PRESENT")}
                       </AdminTypo.H6>
@@ -419,12 +431,10 @@ export default function Attendence({ footerLinks }) {
                       {users.filter((e) => e.status !== "present").length}
                       {t("CANDIDATES_NAME")} {userData?.user?.first_name}
                       <AdminTypo.H6>
-                      {t("CANDIDATES")} - {users?.length ? users?.length : 0}
+                        {t("CANDIDATES")} - {users?.length ? users?.length : 0}
                       </AdminTypo.H6>
                     </HStack>
-                    <HStack>
-                    
-                    </HStack>
+                    <HStack></HStack>
                   </HStack>
                   <Stack>
                     <AdminTypo.H6 my="15px" color="textGreyColor.100" pl="2">
@@ -561,7 +571,6 @@ export default function Attendence({ footerLinks }) {
               borderRadius={"10px"}
               py="3"
               mt="8"
-              
             >
               <VStack m={"15px"}>
                 <HStack justifyContent={"space-between"}>
@@ -574,9 +583,19 @@ export default function Attendence({ footerLinks }) {
                 >
                   {t("EDIT_DETAILS")}
                 </AdminTypo.Secondarybutton> */}
+                  <AdminTypo.Secondarybutton
+                    onPress={() => setShowDeleteModal(true)}
+                    shadow="BlueOutlineShadow"
+                  >
+                    {t("DELETE_EVENT")}
+                  </AdminTypo.Secondarybutton>
                 </HStack>
 
-                <HStack space={"3"} pt="4" direction={["column", "column", "row"]} >
+                <HStack
+                  space={"3"}
+                  pt="4"
+                  direction={["column", "column", "row"]}
+                >
                   <IconByName
                     isDisabled
                     name="TimeLineIcon"
@@ -621,7 +640,7 @@ export default function Attendence({ footerLinks }) {
               </VStack>
             </Box>
             <Stack mt={"20px"} space={"3"} py="2">
-              <HStack space={"4"} direction={["column", "column", "row"]} >
+              <HStack space={"4"} direction={["column", "column", "row"]}>
                 <HStack>
                   <IconByName
                     isDisabled
@@ -655,6 +674,54 @@ export default function Attendence({ footerLinks }) {
                 </HStack>
               </HStack>
             </Stack>
+
+            <Modal
+              isOpen={showDeleteModal}
+              onClose={() => setShowDeleteModal(false)}
+              size="sm"
+            >
+              <Modal.Content>
+                <Modal.CloseButton />
+                <Modal.Body p="1" bg="white">
+                  <AdminTypo.H2
+                    textAlign="center"
+                    pt="2"
+                    color="textGreyColor.500"
+                  >
+                    {t("DELETE_EVENT")}
+                  </AdminTypo.H2>
+
+                  <VStack space={5}>
+                    <HStack
+                      alignItems="center"
+                      space={4}
+                      mt="5"
+                      pt="4"
+                      borderTopWidth="1px"
+                      bg="white"
+                      borderTopColor="appliedColor"
+                      justifyContent="center"
+                    >
+                      <AdminTypo.Secondarybutton
+                        shadow="BlueOutlineShadow"
+                        onPress={() => {
+                          setShowDeleteModal(false);
+                        }}
+                      >
+                        {t("NO")}
+                      </AdminTypo.Secondarybutton>
+                      <AdminTypo.PrimaryButton
+                        px="8"
+                        shadow="BlueFillShadow"
+                        onPress={() => deleteCurrentEventById()}
+                      >
+                        {t("YES")}
+                      </AdminTypo.PrimaryButton>
+                    </HStack>
+                  </VStack>
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
 
             <Modal
               isOpen={showEditModal}
