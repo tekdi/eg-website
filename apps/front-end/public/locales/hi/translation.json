@@ -129,7 +129,7 @@
   "CANDIDATES": "उम्मीदवार",
   "CANDIDATES_NAME": "उम्मीदवार का नाम",
   "CAPTCHA_CODE": "कैप्चा कोड",
-  "CAREER_ASPIRATION": "उच्च शिक्षा",
+  "CAREER_ASPIRATION": "करियर की आकांक्षाएं",
   "CAREER_ASPIRATION_FURTHER_STUDIES": "आगे का अध्ययन",
   "CAREER_ASPIRATION_SKILL_TRAINING": "कौशल प्रशिक्षण",
   "CAREER_ASPIRATION_SMALL_BUSINESS": "लघु व्यवसाय",
@@ -196,7 +196,6 @@
   "DO_YOU_OWN_A_MOBILE_PHONE": "क्या आपके पास स्वयं का मोबाइल फोन है?",
   "DOCUMENT": "दस्तावेज़",
   "DOCUMENT_CHECKLIST": "दस्तावेजों की जांच सूची",
-  "DOCUMENTS_COMPLETED": "दस्तावेज़ पुरा होना",
   "DOCUMENT_VERIFICATION": "दस्तावेज़ सत्यापन",
   "DOCUMENTS_CHECKLIST": "दस्तावेज़ सूची",
   "DOCUMENTS_COMPLETED": "दस्तावेज़ पुरा होना",
@@ -233,7 +232,6 @@
   "ENROLLED": "नामांकित",
   "ENROLLMENT_BOARD": "नामांकन बोर्ड",
   "ENROLLMENT_DETAILS": " नामांकन विवरण",
-  "ENROLLMENT_PENDING": "नामांकन लंबित",
   "ENROLLMENT_NUMBER": "एनरोलमेंट नम्बर",
   "ENROLLMENT_PENDING": "नामांकन लंबित",
   "ENROLLMENT_STATUS": "एनरोलमेंट स्थिति",
@@ -603,7 +601,7 @@
   "STREET_ADDRESS": "विस्तृत अवासिय पता",
   "SUBMIT": "प्रस्तुत करें",
   "SUPPORT_FOR_EXPLAINING_THE_IMPORTANCE_OF_EDUCATION_TO_THE_FAMILY_MEMBERS": "घर वालों को पढाई का महत्व समझाने में",
-  "SUPPORT_FROM_PRAGATI": "प्रगति से मदद",
+  "SUPPORT_FROM_PRAGATI": "प्रगति शिविर से मदद",
   "SUPPORT_IN_BOOKS_AND_AIDS": "किताबें व सहायक सामग्री में मदद",
   "SUPPORT_IN_BUILDING_CONFIDENCE": "आत्मविश्वास बढ़ाने में सहयोग",
   "SUPPORT_IN_EXAM_PREPARATION": "परीक्षा तैयारी में मदद",
@@ -730,5 +728,6 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "LEARNER_ASPIRATION":"शिक्षार्थियों की आकांक्षाएं"
 }

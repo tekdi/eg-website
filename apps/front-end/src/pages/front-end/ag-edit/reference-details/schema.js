@@ -5,10 +5,10 @@ export default {
     1: {
       title: "REFERENCE_DETAILS",
       type: "object",
-      // required: ["first_name"],
       properties: {
         referencefullname: {
           title: "REFERENCE_FULL_NAME",
+          required: ["first_name", "contact_number", "relation"],
           type: "object",
           properties: {
             first_name: {
@@ -16,11 +16,11 @@ export default {
               title: "FIRST_NAME",
             },
             middle_name: {
-              type: "string",
+              type: ["string", "null"],
               title: "MIDDLE_NAME",
             },
             last_name: {
-              type: "string",
+              type: ["string", "null"],
               title: "LAST_NAME",
             },
             relation: {
