@@ -182,6 +182,7 @@
   "DESCRIPTION": "विवरण",
   "DESIGNATION": "पद",
   "DEVICE_OWNERSHIP": "क्या आपके पास स्वयं का स्मार्टफोन है",
+  "DELETE_EVENT":"ईवेंट हटाएं",
   "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "क्या इंटरव्यू सफल रहा",
   "DIPLOMA": "डिप्लोमा",
   "DISCLAIMER_MESSAGE": "मैं समझता हूं कि मेरे आधार विवरण का उपयोग या किसी अन्य उद्देश्य के लिए संग्रहीत नहीं किया जाएगा.",

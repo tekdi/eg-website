@@ -12,15 +12,15 @@ export default {
           title: "FIRST_NAME",
         },
         middle_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "MIDDLE_NAME",
         },
         last_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "LAST_NAME",
         },
         dob: {
-          type: "string",
+          type: ["string", "null"],
           format: "date",
           title: "DATE_OF_BIRTH",
         },
