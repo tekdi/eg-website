@@ -731,5 +731,11 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "REQUIRED_MESSAGE_ENROLLMENT_STATUS": "कृपया एक वैध पंजीकरण स्थिति दर्ज करें।",
+  "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "कृपया एक पंजीकरण बोर्ड चुनें।",
+  "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "कृपया एक वैध पंजीकरण संख्या दर्ज करें। ",
+  "REQUIRED_MESSAGE_SUBJECTS": "कृपया विषय चुनें।",
+  "REQUIRED_MESSAGE_SUBJECTS_SELECTTION": "कृपया 7 विषयों तक चुनें।",
+  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "कृपया भुगतान रसीद अपलोड करें।"
 }

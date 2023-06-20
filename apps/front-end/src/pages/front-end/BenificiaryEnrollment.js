@@ -45,7 +45,6 @@ export default function BenificiaryEnrollment() {
       setSubject(filterData);
     }
   };
-
   return (
     <Layout _appBar={{ name: t("ENROLLMENT_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200" px="5" pt="3">
