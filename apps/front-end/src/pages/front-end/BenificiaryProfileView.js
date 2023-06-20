@@ -15,6 +15,7 @@ import {
   benificiaryRegistoryService,
   enumRegistryService,
   t,
+  ImageView,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
@@ -135,12 +136,24 @@ export default function BenificiaryProfileView(props) {
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-          <VStack alignItems="Center">
-            <IconByName
-              name="AccountCircleLineIcon"
-              color="textGreyColor.200"
-              _icon={{ size: "80" }}
-            />
+          <VStack alignItems="Center" pt="20px">
+            {benificiary?.profile_photo_1 ? (
+              <ImageView
+                source={{
+                  uri: benificiary?.profile_photo_1,
+                }}
+                // alt="Alternate Text"
+                width={"190px"}
+                height={"190px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "190px" }}
+              />
+            )}
             <FrontEndTypo.H2 bold color="textMaroonColor.400">
               {benificiary?.first_name}
               {benificiary?.last_name && ` ${benificiary?.last_name}`}
