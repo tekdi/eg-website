@@ -7,9 +7,11 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
+  ImageView,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import ProfilePhoto from "./ProfilePhoto";
 
 export default function FacilitatorBasicDetails({
   userTokenInfo,
@@ -31,25 +33,23 @@ export default function FacilitatorBasicDetails({
     const result = await facilitatorRegistryService.getOne({ id });
     setfacilitator(result);
   };
-  console.log("facilitator", facilitator);
+
   return (
-    <Layout _appBar={{ name: t("BASIC_DETAILS") }}>
+    <Layout
+      _appBar={{
+        name: t("BASIC_DETAILS"),
+        onPressBackButton: (e) => navigate(`/profile`),
+      }}
+    >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
-        <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-          <Center>
-            <IconByName
-              name="AccountCircleLineIcon"
-              color="iconColor.350"
-              _icon={{ size: "60" }}
-              justifySelf="Center"
-            />
-          </Center>
+        <VStack p="4" space="24px">
+          <ProfilePhoto facilitator={facilitator} />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
-                {facilitator?.first_name ? facilitator?.first_name : "-"}
-                {facilitator?.middle_name ? facilitator?.middle_name : "-"}
-                {facilitator?.last_name ? facilitator?.last_name : "-"}
+                {`${facilitator?.first_name ? facilitator?.first_name : ""} ${
+                  facilitator?.middle_name ? facilitator?.middle_name : ""
+                } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
               </FrontEndTypo.H1>
               <IconByName
                 name="PencilLineIcon"
@@ -224,7 +224,15 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.address ? facilitator?.address : "-"}
+                    {[
+                      facilitator?.state,
+                      facilitator?.district,
+                      facilitator?.block,
+                      facilitator?.village,
+                      facilitator?.grampanchayat,
+                    ]
+                      .filter((e) => e)
+                      .join(", ")}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>

@@ -5,12 +5,18 @@ export default {
     1: {
       title: "EDUCATIONAL_DETAILS",
       type: "object",
-      required: ["laststandard"],
-
+      required: [
+        "type_of_learner",
+        "last_standard_of_education",
+        "last_standard_of_education_year",
+        "reason_of_leaving_education",
+        "previous_school_type",
+        "learning_level",
+      ],
       properties: {
         type_of_learner: {
           type: "string",
-          label: "Type of Student",
+          label: "TYPE_OF_LEARNER",
         },
         last_standard_of_education: {
           type: "string",
@@ -20,13 +26,22 @@ export default {
           type: "string",
           title: "LAST_YEAR_OF_EDUCATION",
         },
+        previous_school_type: {
+          type: "string",
+          title: "PREVIOUS_SCHOOL_TYPE",
+        },
         reason_of_leaving_education: {
           type: "string",
           title: "REASON_FOR_LEAVING_STUDIES",
         },
+        learning_level: {
+          label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+          type: "string",
+          format: "CustomR",
+        },
         edit_page_type: {
           type: "string",
-          default: "add_education",
+          default: "edit_education",
           format: "hidden",
         },
       },

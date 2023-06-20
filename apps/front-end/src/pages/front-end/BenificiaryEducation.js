@@ -7,6 +7,8 @@ import {
   benificiaryRegistoryService,
   t,
   Layout,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,7 +16,7 @@ export default function BenificiaryEducation() {
   const params = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [userId, setUserId] = React.useState(params?.id);
-
+  const [enumOptions, setEnumOptions] = React.useState({});
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -22,7 +24,7 @@ export default function BenificiaryEducation() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/profile`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   const benificiaryDetails = async () => {
@@ -31,6 +33,10 @@ export default function BenificiaryEducation() {
     setbenificiary(result?.result);
   };
 
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, [benificiary]);
   return (
     <Layout _appBar={{ name: t("EDUCATION_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200">
@@ -136,9 +142,18 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.previous_school_type
-                    ? benificiary?.core_beneficiaries?.previous_school_type
-                    : "-"}
+                  {benificiary?.core_beneficiaries?.previous_school_type ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"PREVIOUS_SCHOOL_TYPE"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries?.previous_school_type
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
 
@@ -152,15 +167,24 @@ export default function BenificiaryEducation() {
                   fontWeight="400"
                   flex="0.4"
                 >
-                  {benificiary?.core_beneficiaries?.reason_of_leaving_education
-                    ? benificiary?.core_beneficiaries
-                        ?.reason_of_leaving_education
-                    : "-"}
+                  {benificiary?.core_beneficiaries
+                    ?.reason_of_leaving_education ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"REASON_OF_LEAVING_EDUCATION"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries
+                          ?.reason_of_leaving_education
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
           </VStack>
-
           <VStack
             px="5"
             py="4"
@@ -170,14 +194,9 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack
-              justifyContent="space-between"
-              alignItems="Center"
-              borderBottomWidth="1px"
-              borderBottomColor="appliedColor"
-            >
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("FURTHUR_STUDIES")}
+            <HStack justifyContent="space-between" alignItems="Center">
+              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
+                {t("CAREER_ASPIRATIONS")}
               </FrontEndTypo.H3>
               <IconByName
                 name="EditBoxLineIcon"
@@ -188,36 +207,102 @@ export default function BenificiaryEducation() {
                 }}
               />
             </HStack>
-            <Box>
+            <Box paddingTop="2">
               <Progress
                 value={arrList(benificiary?.core_beneficiaries, [
-                  "career_aspiration",
-                  "career_aspiration_details",
+                  "last_standard_of_education",
+                  "last_standard_of_education_year",
+                  "previous_school_type",
+                  "reason_of_leaving_education",
                 ])}
                 size="xs"
                 colorScheme="info"
               />
             </Box>
-            <VStack space="2" pt="5">
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+            <VStack space="2" paddingTop="5">
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("CAREER_ASPIRATIONS")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.career_aspiration
-                    ? benificiary?.core_beneficiaries?.career_aspiration
+                  {benificiary?.core_beneficiaries?.career_aspiration ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"CAREER_ASPIRATION"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries?.career_aspiration
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("MOTIVATION_TO_PASS_10TH")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  {benificiary?.program_beneficiaries?.learning_motivation
+                    ? benificiary?.program_beneficiaries?.learning_motivation
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
 
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                  {t("SUPPORT_FROM_PRAGATI")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  {benificiary?.program_beneficiaries?.type_of_support_needed
+                    ? benificiary?.program_beneficiaries?.type_of_support_needed
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
               <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("REMARKS")}
                 </FrontEndTypo.H3>
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4" overflow="hidden"
-                      textOverflow="ellipsis">
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
                   {benificiary?.core_beneficiaries?.career_aspiration_details
                     ? benificiary?.core_beneficiaries?.career_aspiration_details
                     : "-"}

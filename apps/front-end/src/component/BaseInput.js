@@ -10,21 +10,23 @@ import {
   Select,
   Stack,
   Text,
+  TextArea,
   VStack,
 } from "native-base";
 import {
   BodySmall,
   H2,
   FloatingInput,
+  MobileNumber,
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
-
-export { CustomOTPBox, FileUpload };
+import { customizeValidator } from "@rjsf/validator-ajv8";
 
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
@@ -174,26 +176,28 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
+  // console.log(label, type, id);
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-      {(label || schema?.label) && typeof type === "string" && (
-        <Box>
-          {(id === "root" || schema?.label) && (
-            <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
-                <H2 color="textMaroonColor.400">
-                  {t(schema?.label ? schema?.label : label)}
-                </H2>
-                <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
-              </HStack>
-            </label>
-          )}
-          {description?.props?.description !== "" && description}
-        </Box>
-      )}
+      {(!schema?.format || schema?.format !== "hidden") &&
+        (label || schema?.label) && (
+          <Box>
+            {(id === "root" || schema?.label) && (
+              <label htmlFor={id}>
+                <HStack space="1" alignItems="center">
+                  <H2 color="textMaroonColor.400">
+                    {t(schema?.label ? schema?.label : label)}
+                  </H2>
+                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                </HStack>
+              </label>
+            )}
+            {description?.props?.description !== "" && description}
+          </Box>
+        )}
       <Box>
         {children}
         {errors}
@@ -234,6 +238,7 @@ export const CustomR = ({
       value={value}
       required={required}
       onChange={(value) => onChange(value)}
+      {...props}
     />
   );
 };
@@ -278,7 +283,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
             >
-              {item?.label}
+              {t(item?.label)}
             </Radio>
           ))}
         </Stack>
@@ -402,7 +407,6 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
           }}
         >
           <Text fontSize="14" fontWeight="400">
-            {t(label)}
             {required && <Text color={"danger.500"}>*</Text>}
             {value && (
               <Text
@@ -419,4 +423,161 @@ export const readOnly = ({ options, value, onChange, required, schema }) => {
       )}
     </FormControl>
   );
+};
+
+export const HFieldTemplate = ({
+  id,
+  style,
+  label,
+  help,
+  required,
+  description,
+  errors,
+  children,
+  schema,
+  ...props
+}) => {
+  const { type } = schema;
+  const { t } = useTranslation();
+  return (
+    <HStack
+      style={style}
+      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      alignItems="start"
+      pl="3"
+    >
+      {(label || schema?.label) && typeof type === "string" && (
+        <Box  w={["67%", "100%", "60%"]}>
+          {(id === "root" || schema?.label) && (
+            <label htmlFor={id}>
+              <HStack space="1" alignItems="center">
+                <IconByName
+                  name={schema?.icons}
+                  color="textGreyColor.800"
+                  isDisabled
+                  pr="2"
+                />
+                <AdminTypo.H6 color="textGreyColor.100">
+                  {t(schema?.label ? schema?.label : label)}
+                </AdminTypo.H6>
+                <AdminTypo.H6 color="textGreyColor.100">
+                  {required ? "*" : null}
+                </AdminTypo.H6>
+              </HStack>
+            </label>
+          )}
+          {description?.props?.description !== "" && description}
+        </Box>
+      )}
+      <Box  w={["70%", "100%", "60%"]}>
+        {children}
+        {errors}
+        {help}
+      </Box>
+    </HStack>
+  );
+};
+
+const textarea = ({
+  schema,
+  options,
+  value,
+  onChange,
+  required,
+  isInvalid,
+}) => {
+  const [isFocus, setIsfocus] = React.useState(false);
+  const { label, title, help, rows } = schema ? schema : {};
+  const { t } = useTranslation();
+  return (
+    <FormControl isInvalid={isInvalid ? isInvalid : false}>
+      {title && (
+        <FormControl.Label
+          rounded="sm"
+          position="absolute"
+          left="1rem"
+          bg="white"
+          px="1"
+          m="0"
+          height={"1px"}
+          alignItems="center"
+          style={{
+            ...(isFocus || value
+              ? {
+                  top: "0",
+                  opacity: 1,
+                  zIndex: 5,
+                  transition: "all 0.3s ease",
+                }
+              : {
+                  top: "0.5rem",
+                  zIndex: -2,
+                  opacity: 0,
+                  transition: "all 0.2s ease-in-out",
+                }),
+          }}
+        >
+          <Text fontSize="12" fontWeight="400">
+            {t(title)}
+            {required ? (
+              <Text color={"danger.500"}>*</Text>
+            ) : (
+              <Text fontWeight="300" color={"#9E9E9E"}>
+                ({t("OPTIONAL")})
+              </Text>
+            )}
+          </Text>
+        </FormControl.Label>
+      )}
+      <TextArea
+        totalLines={rows ? rows : 3}
+        key={title}
+        onFocus={(e) => setIsfocus(true)}
+        onBlur={(e) => setIsfocus(false)}
+        onChange={(e) => onChange(e.target.value)}
+        value={value}
+        placeholder={t(label ? label : schema?.label)}
+      />
+      {help && isInvalid ? (
+        <FormControl.ErrorMessage>{t(help)}</FormControl.ErrorMessage>
+      ) : (
+        help && <FormControl.HelperText>{t(help)}</FormControl.HelperText>
+      )}
+    </FormControl>
+  );
+};
+
+const validator = customizeValidator({
+  customFormats: {
+    MobileNumber: /^[6-9]\d{8}9$/,
+  },
+});
+
+const widgets = {
+  RadioBtn,
+  CustomR,
+  Aadhaar,
+  select,
+  textarea,
+  CustomOTPBox,
+  FileUpload,
+  MobileNumber,
+};
+
+const templates = {
+  FieldTemplate,
+  ArrayFieldTitleTemplate,
+  ObjectFieldTemplate,
+  TitleFieldTemplate,
+  DescriptionFieldTemplate,
+  BaseInputTemplate,
+  ArrayFieldTemplate,
+};
+export {
+  widgets,
+  templates,
+  CustomOTPBox,
+  FileUpload,
+  validator,
+  MobileNumber,
 };

@@ -9,6 +9,8 @@ import referencedetails from "../pages/front-end/ag-edit/reference-details/refer
 import familydetails from "../pages/front-end/ag-edit/family-details/familydetails";
 import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
 import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
+import otherdetails from "../pages/front-end/ag-edit/other-details/otherdetails";
+
 import subjectDetails from "../pages/front-end/ag-edit/choose-subjects/subjectDetails";
 import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
@@ -25,6 +27,7 @@ import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
+import BenificiaryAadhaarDetails from "pages/front-end/BenificiaryAadhaarDetails";
 import EditForm from "../pages/front-end/facilitator/edit/Form";
 import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
 import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
@@ -66,7 +69,10 @@ export default [
     path: "/beneficiary/edit/:id/future-education",
     component: futureStudy,
   },
-
+  {
+    path: "/beneficiary/edit/:id/otherdetails",
+    component: otherdetails,
+  },
   {
     path: "/beneficiary/edit/:id/enrollment-details",
     component: subjectDetails,
@@ -77,9 +83,9 @@ export default [
   },
   //add a new route /ag/:ID(param), component:basic details
   { path: "/beneficiary", component: Agform },
-  { path: "/beneficiary/2", component: AgformUpdate },
-  { path: "/beneficiary/3", component: Agadhaar },
-  { path: "/beneficiary/4", component: Agduplicate },
+  { path: "/beneficiary/:id/2", component: AgformUpdate },
+  { path: "/beneficiary/:id/3", component: Agadhaar },
+  { path: "/beneficiary/:id/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
@@ -109,6 +115,10 @@ export default [
   {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
+  },
+  {
+    path: "/beneficiary/:id/aadhaardetails",
+    component: BenificiaryAadhaarDetails,
   },
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },

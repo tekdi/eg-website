@@ -5,20 +5,22 @@ import {
   Layout,
   benificiaryRegistoryService,
   FrontEndTypo,
+  SelectStyle,
 } from "@shiksha/common-lib";
-import Chip, { ChipStatus } from "component/Chip";
-import { HStack, VStack, Box, Select, Pressable } from "native-base";
+import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { ChipStatus } from "component/BeneficiaryStatus";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
   return (
-    <VStack space="4" p="5" alignContent="center" bg="bgGreyColor.200">
-      {data && data.length <= 0 ? (
+    <VStack space="4" p="4" alignContent="center">
+      {(data && data?.length <= 0) || data?.constructor?.name !== "Array" ? (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
       ) : (
         data &&
+        data?.constructor?.name === "Array" &&
         data?.map((item) => (
           <Pressable
             onPress={async () => {
@@ -48,9 +50,12 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <ChipStatus status={"screened"} pt="3">
-                  <FrontEndTypo.H3 bold>{item?.program_beneficiaries?.[0]?.status || "nothing"}</FrontEndTypo.H3>
-                </ChipStatus>
+                <Box>
+                  <ChipStatus
+                    status={item?.program_beneficiaries?.status}
+                    rounded={"sm"}
+                  />
+                </Box>
               </HStack>
               <VStack bg="white" pl="2">
                 <HStack color="blueText.450" alignItems="center">
@@ -68,8 +73,8 @@ const List = ({ data }) => {
   );
 };
 const select2 = [
-  { label: "asc", value: "asc" },
-  { label: "desc", value: "desc" },
+  { label: "SORT_ASC", value: "asc" },
+  { label: "SORT_DESC", value: "desc" },
 ];
 
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
@@ -92,23 +97,27 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     const data = await benificiaryRegistoryService.getStatusList();
     setSelectStatus(data);
   }, []);
+
   React.useEffect(() => {
     setReqBodyData({ page, limit, statusValue, sortValue, searchBenficiary });
   }, [page, limit, statusValue, sortValue, searchBenficiary]);
+
   React.useEffect(() => {
     aglist(reqBodyData);
   }, [reqBodyData]);
+
   const aglist = async (reqBodyData) => {
     let reqBody = {
-      page: reqBodyData.page,
-      limit: reqBodyData.limit,
-      status: reqBodyData.statusValue,
-      sortType: reqBodyData.sortValue,
-      search: reqBodyData.searchBenficiary,
+      page: reqBodyData?.page,
+      limit: reqBodyData?.limit,
+      status: reqBodyData?.statusValue,
+      sortType: reqBodyData?.sortValue,
+      search: reqBodyData?.searchBenficiary,
     };
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
     );
+
     if (!result?.error) {
       setData(result);
     } else {
@@ -140,6 +149,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       setFacilitator(fa_data);
     }
   }, []);
+
   return (
     <Layout
       _appBar={{
@@ -148,15 +158,23 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
         setSearch: (value) => {
           setSearchBenficiary(value);
         },
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="gray.200">
-        <VStack>
+      <VStack>
+        <Pressable
+          onPress={(e) => {
+            ["pragati_mobilizer"].includes(facilitator.status) &&
+              navigate(`/beneficiary`);
+          }}
+        >
           <HStack
             p="5"
             space="5"
-            borderBottomWidth="1"
+            // borderBottomWidth="1"
             {...styles.inforBox}
             alignItems="Center"
           >
@@ -164,6 +182,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               isDisabled
               name="UserFollowLineIcon"
               _icon={{ size: "30px" }}
+              onPress={(e) => {
+                console.log(e);
+                navigate("/beneficiary");
+              }}
             />
             <VStack flex="0.8">
               <FrontEndTypo.H3
@@ -176,63 +198,46 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               >
                 {t("ADD_MORE_AG")}
               </FrontEndTypo.H3>
-              <FrontEndTypo.H4
-                wordWrap="break-word"
-                whiteSpace="nowrap"
-                overflow="hidden"
-              >
-                {t("ENROLL_15_OR_MORE")}
-              </FrontEndTypo.H4>
             </VStack>
           </HStack>
-        </VStack>
+        </Pressable>
       </VStack>
-      <HStack justifyContent="space-between" alignItems="Center" m="4">
-        <Box my="3">
-          <Select
-            borderWidth="1px"
-            borderColor="textMaroonColor.400"
-            color="textMaroonColor.400"
-            bold
-            borderRadius="30px"
-            shadow="RedOutlineShadow"
+      <HStack
+        justifyContent="space-between"
+        space="2"
+        alignItems="Center"
+        p="4"
+      >
+        <Box flex="2">
+          <SelectStyle
             overflowX="hidden"
-            width="50%"
             selectedValue={status}
-            placeholder="Status:All"
+            placeholder={t("STATUS_ALL")}
             onValueChange={(nextValue) => {
               setStatus(nextValue);
               setStatusValue(nextValue);
             }}
             _selectedItem={{
               bg: "cyan.600",
+              endIcon: <IconByName name="ArrowDownSLineIcon" />,
             }}
             accessibilityLabel="Select a position for Menu"
           >
-            <FrontEndTypo.H5>
-              <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-              {selectStatus?.map((option, index) => (
-                <Select.Item
-                  key={index}
-                  label={`${t(option.title)}`}
-                  value={option.value}
-                />
-              ))}
-            </FrontEndTypo.H5>
-          </Select>
+            <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
+            {selectStatus?.map((option, index) => (
+              <Select.Item
+                key={index}
+                label={t(option.title)}
+                value={option.value}
+              />
+            ))}
+          </SelectStyle>
         </Box>
-        <Box>
-          <Select
-            borderWidth="1px"
-            borderColor="textMaroonColor.400"
-            color="textMaroonColor.400"
-            bold
-            borderRadius="30px"
-            shadow="RedOutlineShadow"
+        <Box flex="2">
+          <SelectStyle
             overflowX="hidden"
-            width="42%"
             selectedValue={sort}
-            placeholder="Sort By"
+            placeholder={t("SORT_BY")}
             onValueChange={(nextValue) => {
               setSort(nextValue);
               setSortValue(nextValue);
@@ -245,11 +250,11 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             {select2.map((option, index) => (
               <Select.Item
                 key={index}
-                label={option.label}
+                label={t(option.label)}
                 value={option.value}
               />
             ))}
-          </Select>
+          </SelectStyle>
         </Box>
       </HStack>
       <List data={data} />

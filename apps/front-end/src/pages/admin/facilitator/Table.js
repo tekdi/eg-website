@@ -8,16 +8,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import {
-  Button,
-  HStack,
-  Input,
-  VStack,
-  Modal,
-  Image,
-  Box,
-  Text,
-} from "native-base";
+import { HStack, VStack, Modal, Image, Text, ScrollView } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -56,7 +47,7 @@ const customStyles = {
 };
 const columns = (e) => [
   {
-    name: t("FIRST_NAME"),
+    name: t("NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         {row?.documents?.[0]?.name ? (
@@ -85,7 +76,7 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("REGION"),
+    name: t("DISTRICT"),
 
     selector: (row) => (row?.district ? row?.district : "-"),
   },
@@ -131,16 +122,13 @@ const filters = (data, filter) => {
     return true;
   });
 };
-function getBaseUrl() {
-  var re = new RegExp(/^.*\//);
-  return re.exec(window.location.href);
-}
 
 // Table component
 function Table({
   facilitator,
   setadminPage,
   setadminLimit,
+  setadminstatus,
   admindata,
   formData,
   totalCount,
@@ -148,11 +136,13 @@ function Table({
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState();
   const [page, setPage] = React.useState();
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState();
+  const [paginationTotalRows, setPaginationTotalRows] =
+    React.useState(totalCount);
   // const [filterObj, setFilterObj] = React.useState();
   const [modal, setModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setfacilitaorStatus] = React.useState();
+  const [status, setstatus] = React.useState("ALL");
 
   const navigate = useNavigate();
 
@@ -162,6 +152,10 @@ function Table({
     setLoading(false);
     setPaginationTotalRows(totalCount);
   }, [admindata]);
+
+  React.useEffect(async () => {
+    setPaginationTotalRows(totalCount);
+  }, [totalCount]);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -178,17 +172,22 @@ function Table({
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
-      adminlimit
+      adminlimit,
+      status
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
-    // setLimit(result?.limit);
     setLoading(false);
   }, [page, limit]);
 
+  const exportPrerakCSV = async () => {
+    const result = await facilitatorRegistryService.exportFacilitatorsCsv();
+  };
+
   const filterByStatus = async (value) => {
     setLoading(true);
-
+    setstatus(value);
+    setadminstatus(value);
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
@@ -208,7 +207,7 @@ function Table({
 
   return (
     <VStack>
-      <HStack my="1" justifyContent="space-between">
+      <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
           <Image
             source={{
@@ -235,13 +234,28 @@ function Table({
           placeholder="search"
           variant="outline"
         /> */}
-        <HStack>
+        <HStack space={2}>
           {/* <Button
             variant={"primary"}
             onPress={(e) => navigate("/admin/facilitator-onbording")}
           >
             {t("REGISTER_PRERAK")}
           </Button> */}
+          <AdminTypo.Secondarybutton
+            onPress={() => {
+              exportPrerakCSV();
+            }}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("EXPORT")}
+          </AdminTypo.Secondarybutton>
           <AdminTypo.Secondarybutton
             onPress={() => setModal(true)}
             rightIcon={
@@ -312,34 +326,39 @@ function Table({
           </Modal>
         </HStack>
       </HStack>
-      <HStack position={"relative"} top={10} zIndex={1}>
-        <Text
-          cursor={"pointer"}
-          mx={3}
-          onPress={() => {
-            filterByStatus("ALL");
-          }}
-        >
-          {t("BENEFICIARY_ALL")}
-        </Text>
-        {facilitaorStatus?.map((item) => {
-          return (
-            <Text
-              cursor={"pointer"}
-              mx={3}
-              onPress={() => {
-                filterByStatus(item?.value);
-              }}
-            >
-              {t(item?.title)}
-            </Text>
-          );
-        })}
-        {/* <Text mx={5}>{t("Applied")}</Text>
+      <ScrollView horizontal={true} mb="2">
+        <HStack pb="2">
+          <Text
+            cursor={"pointer"}
+            mx={3}
+            onPress={() => {
+              filterByStatus("ALL");
+            }}
+          >
+            {t("BENEFICIARY_ALL")}
+            {status == "ALL" && `(${paginationTotalRows})`}
+          </Text>
+          {facilitaorStatus?.map((item) => {
+            return (
+              <Text
+                color={status == t(item?.value) ? "blueText.400" : ""}
+                bold={status == t(item?.value) ? true : false}
+                cursor={"pointer"}
+                mx={3}
+                onPress={() => {
+                  filterByStatus(item?.value);
+                }}
+              >
+                {t(item?.title)}
+                {status == t(item?.value) && `(${paginationTotalRows})`}
+              </Text>
+            );
+          })}
+          {/* <Text mx={5}>{t("Applied")}</Text>
         <Text mx={5}>{t("Screened")}</Text>
         <Text mx={5}>{t("ALL")}</Text> */}
-      </HStack>
-
+        </HStack>
+      </ScrollView>
       <DataTable
         customStyles={customStyles}
         columns={[
@@ -359,7 +378,6 @@ function Table({
           },
         ]}
         data={data}
-        subHeader
         persistTableHead
         progressPending={loading}
         pagination

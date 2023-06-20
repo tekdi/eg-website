@@ -39,6 +39,11 @@ const styles = {
 };
 const statusList = [
   {
+    status: "screened",
+    btnStatus: "success",
+    name: "SCREEN_APPLICATION",
+  },
+  {
     status: "rejected",
     btnStatus: "error",
     name: "REJECT_APPLICATION",
@@ -50,9 +55,9 @@ const statusList = [
     name: "SHORTLIST_FOR_ORIENTATION",
   },
   {
-    status: "potential_prerak",
+    status: "pragati_mobilizer",
     btnStatus: "success",
-    name: "POTENTIAL_PRERAK",
+    name: "PRAGATI_MOBILIZER",
   },
   {
     status: "selected_for_training",
@@ -119,9 +124,9 @@ export default function StatusButton({ data, setData }) {
         setDisabledBtn(["screened", "quit", "rusticate"]);
         break;
       case "shortlisted_for_orientation":
-        setDisabledBtn(["potential_prerak", "rejected", "quit", "rusticate"]);
+        setDisabledBtn(["pragati_mobilizer", "rejected", "quit", "rusticate"]);
         break;
-      case "potential_prerak":
+      case "pragati_mobilizer":
         setDisabledBtn([
           "selected_for_training",
           "rejected",
@@ -162,7 +167,7 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      <AdminTypo.StatusButton
+      {/* <AdminTypo.StatusButton
         status="success"
         onPress={() => {
           setShowModal("screened");
@@ -171,8 +176,8 @@ export default function StatusButton({ data, setData }) {
         isDisabled={!disabledBtn.includes("screened")}
       >
         {t("SCREEN_APPLICATION")}
-      </AdminTypo.StatusButton>
-      <Modal
+      </AdminTypo.StatusButton> */}
+      {/* <Modal
         size={"xl"}
         isOpen={showModal === "screened"}
         onClose={() => setShowModal()}
@@ -200,7 +205,7 @@ export default function StatusButton({ data, setData }) {
             </VStack>
           </Modal.Header>
           <Modal.Body p="5" bg="white">
-            <HStack space={5}>
+            <VStack space={5}>
               <HStack alignItems="center" space={2}>
                 <IconByName isDisabled name="TimeLineIcon" />
                 <AdminTypo.H1 color="textGreyColor.800">
@@ -289,7 +294,7 @@ export default function StatusButton({ data, setData }) {
                 </VStack>
                 <HStack flex={0.3}></HStack>
               </HStack>
-            </HStack>
+            </VStack>
           </Modal.Body>
           <Modal.Footer>
             <HStack width="100%" justifyContent="space-between">
@@ -302,7 +307,7 @@ export default function StatusButton({ data, setData }) {
             </HStack>
           </Modal.Footer>
         </Modal.Content>
-      </Modal>
+      </Modal> */}
       {statusList.map(({ name, ...item }) => (
         <AdminTypo.StatusButton
           key={name}

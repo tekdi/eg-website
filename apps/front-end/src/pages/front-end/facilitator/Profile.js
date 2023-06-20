@@ -13,6 +13,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   return (
     <Layout
       _appBar={{
+        onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}
@@ -172,6 +173,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="textMaroonColor.400"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${facilitator?.id}/aadhaardetails`);
+                  }}
                 />
               </HStack>
               <Box paddingTop="2">

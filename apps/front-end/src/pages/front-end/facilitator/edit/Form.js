@@ -1,55 +1,26 @@
 import React from "react";
 import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import {
-  Alert,
-  Box,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Pressable,
-  VStack,
-} from "native-base";
+import { Alert, Box, HStack } from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
-  uploadRegistryService,
-  Camera,
   Layout,
-  H1,
-  IconByName,
-  H2,
-  getBase64,
   BodyMedium,
   filterObject,
   FrontEndTypo,
   enumRegistryService,
   getOptions,
+  validation,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  CustomR,
-  RadioBtn,
-  Aadhaar,
-  BaseInputTemplate,
-  ArrayFieldTemplate,
-  CustomOTPBox,
-  select,
-  FileUpload,
-} from "component/BaseInput";
+import { templates, widgets, validator } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 
 // App
-export default function App({ userTokenInfo }) {
+export default function App({ userTokenInfo, footerLinks }) {
   const { step } = useParams();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -57,6 +28,7 @@ export default function App({ userTokenInfo }) {
   const [cameraFile, setCameraFile] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState();
+  const [facilitator, setFacilitator] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
@@ -65,40 +37,51 @@ export default function App({ userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [qualifications, setQualifications] = React.useState([]);
+  const [enumObj, setEnumObj] = React.useState();
 
-  const getData = async () => {
-    const { id } = userTokenInfo?.authUser;
-    if (id) {
-      const result = await facilitatorRegistryService.getOne({ id });
-      if (step === "qualification_details") {
-        const dataF = result?.qualifications;
-        const arr = result?.program_faciltators?.qualification_ids;
-        let arrData = arr
-          ? JSON.parse(arr)
-              ?.filter((e) =>
-                qualifications.find(
-                  (item) => item.id == e && item.type === "teaching"
+  React.useEffect(() => {
+    const getData = async () => {
+      const { id } = userTokenInfo?.authUser;
+      if (id) {
+        const result = await facilitatorRegistryService.getOne({ id });
+        setFacilitator(result);
+        const ListOfEnum = await enumRegistryService.listOfEnum();
+        if (!ListOfEnum?.error) {
+          setEnumObj(ListOfEnum?.data);
+        }
+        if (step === "qualification_details") {
+          const dataF = result?.qualifications;
+          const arr = result?.program_faciltators?.qualification_ids;
+          let arrData = arr
+            ? JSON.parse(arr)
+                ?.filter((e) =>
+                  qualifications.find(
+                    (item) => item.id == e && item.type === "teaching"
+                  )
                 )
-              )
-              ?.map((e) => `${e}`)
-          : [];
-        const newData = {
-          ...dataF,
-          qualification_ids: arrData,
-          qualification_master_id: `${
-            dataF?.qualification_master_id ? dataF?.qualification_master_id : ""
-          }`,
-          type_of_document: dataF?.document_reference?.doument_type,
-        };
-        setFormData(newData);
-      } else if (step === "reference_details") {
-        const newData = result?.references;
-        setFormData(newData);
-      } else {
-        setFormData(result);
+                ?.map((e) => `${e}`)
+            : [];
+          const newData = {
+            ...dataF,
+            qualification_ids: arrData,
+            qualification_master_id: `${
+              dataF?.qualification_master_id
+                ? dataF?.qualification_master_id
+                : ""
+            }`,
+            type_of_document: dataF?.document_reference?.doument_type,
+          };
+          setFormData(newData);
+        } else if (step === "reference_details") {
+          const newData = result?.references;
+          setFormData(newData);
+        } else {
+          setFormData(result);
+        }
       }
-    }
-  };
+    };
+    getData();
+  }, [qualifications]);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -137,7 +120,7 @@ export default function App({ userTokenInfo }) {
         } else if (nextIndex !== undefined) {
           navigate(`/profile/edit/${nextIndex}`);
         } else {
-          navigate(`/profile`);
+          navigate(`/facilitatorbasicdetail`);
         }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
@@ -152,16 +135,20 @@ export default function App({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
+    const qData = await facilitatorRegistryService.getQualificationAll();
+    setQualifications(qData);
+  }, [page]);
+
+  // update schema
+  React.useEffect(async () => {
     let newSchema = schema;
 
     if (schema?.properties?.qualification_master_id) {
       setLoading(true);
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      setQualifications(qData);
-      if (schema["properties"]["qualification_master_id"]) {
+      if (schema["properties"]?.["qualification_master_id"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_master_id",
-          arr: qData,
+          arr: qualifications,
           title: "name",
           value: "id",
           filters: { type: "qualification" },
@@ -186,34 +173,29 @@ export default function App({ userTokenInfo }) {
           }
         }
       }
-
-      if (schema?.properties?.document_id) {
-        setLoading(true);
-        if (schema["properties"]["document_id"]) {
-          newSchema = getOptions(newSchema, {
-            key: "state",
-            extra: { userId: formData?.id },
-          });
-        }
-        setSchema(newSchema);
-        setLoading(false);
+      if (schema["properties"]?.["qualification_reference_document_id"]) {
+        const { id } = userTokenInfo?.authUser;
+        newSchema = getOptions(newSchema, {
+          key: "qualification_reference_document_id",
+          extra: {
+            userId: id,
+            document_type: formData?.type_of_document,
+          },
+        });
       }
 
-      if (schema["properties"]["qualification_ids"]) {
+      if (schema["properties"]?.["qualification_ids"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_ids",
-          arr: qData,
+          arr: qualifications,
           title: "name",
           value: "id",
           filters: { type: "teaching" },
         });
       }
-      setSchema(newSchema);
-      setLoading(false);
     }
 
     if (schema?.properties?.state) {
-      setLoading(true);
       const qData = await geolocationRegistryService.getStates();
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
@@ -229,8 +211,6 @@ export default function App({ userTokenInfo }) {
         district: formData?.district,
         block: formData?.block,
       });
-      setSchema(newSchema);
-      setLoading(false);
     }
 
     if (schema?.properties?.device_ownership) {
@@ -240,34 +220,42 @@ export default function App({ userTokenInfo }) {
         setAlert();
       }
     }
-    const ListOfEnum = await enumRegistryService.listOfEnum();
+
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
-        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
+        arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
         title: "title",
         value: "value",
       });
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        arr: enumObj?.FACILITATOR_MARITAL_STATUS,
         title: "title",
         value: "value",
       });
-      setSchema(newSchema);
     }
 
-    if (schema["properties"]?.["qualification_reference_document_id"]) {
-      setLoading(true);
+    if (schema["properties"]?.["device_type"]) {
       newSchema = getOptions(newSchema, {
-        key: "qualification_reference_document_id",
-        extra: { userId: formData?.id },
+        key: "device_type",
+        arr: enumObj?.MOBILE_TYPE,
+        title: "title",
+        value: "value",
       });
-      setSchema(newSchema);
-      setLoading(false);
     }
-  }, [page]);
+
+    if (schema["properties"]?.["document_id"]) {
+      const { id } = userTokenInfo?.authUser;
+      newSchema = getOptions(newSchema, {
+        key: "document_id",
+        extra: { userId: id },
+      });
+    }
+    setLoading(false);
+    setSchema(newSchema);
+  }, [page, formData]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -280,7 +268,6 @@ export default function App({ userTokenInfo }) {
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
       setYearsRange([minYear.year(), maxYear.year()]);
-      getData();
     }
   }, [step]);
 
@@ -289,7 +276,7 @@ export default function App({ userTokenInfo }) {
   };
 
   const formSubmitUpdate = async (data, overide) => {
-    const { id } = formData;
+    const { id } = userTokenInfo?.authUser;
     if (id) {
       setLoading(true);
       const result = await facilitatorRegistryService.profileStapeUpdate({
@@ -303,70 +290,61 @@ export default function App({ userTokenInfo }) {
     }
   };
 
-  const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
+  const customValidate = (data, errors, c, asd) => {
+    if (step === "contact_details") {
+      if (data?.mobile) {
+        validation({
+          data: data?.mobile,
+          key: "mobile",
+          errors,
+          message: `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          type: "mobile",
+        });
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
-      }
-    }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
+      if (data?.alternative_mobile_number) {
+        validation({
+          data: data?.alternative_mobile_number,
+          key: "alternative_mobile_number",
+          errors,
+          message: `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          type: "mobile",
+        });
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+    if (step === "reference_details") {
+      if (data?.contact_number) {
+        validation(
+          data?.contact_number,
+          "contact_number",
+          errors,
+          `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          "mobile"
         );
       }
-    });
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key]) {
-            if (
-              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
-              item?.[key]?.replaceAll(" ", "") === ""
-            ) {
-              errors[keyex][index]?.[key]?.addError(
-                `${t("REQUIRED_MESSAGE")} ${t(
-                  schema?.properties?.[key]?.title
-                )}`
-              );
-            } else if (key === "description" && item?.[key].length > 200) {
-              errors[keyex][index]?.[key]?.addError(
-                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
-              );
-            }
-          }
+    }
+
+    if (step === "basic_details") {
+      ["first_name", "last_name"].forEach((key) => {
+        validation({
+          data: data?.[key]?.replaceAll(" ", ""),
+          key,
+          errors,
+          message: `${t("REQUIRED_MESSAGE")} ${t(
+            schema?.properties?.[key]?.title
+          )}`,
         });
       });
-    });
-
+      if (data?.dob) {
+        validation({
+          data: data?.dob,
+          key: "dob",
+          errors,
+          message: `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
+          type: "age-18",
+        });
+      }
+    }
     return errors;
   };
 
@@ -382,6 +360,24 @@ export default function App({ userTokenInfo }) {
         }
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
+      } else if (error.name === "format") {
+        const { format } = error?.params ? error?.params : {};
+        let message = "REQUIRED_MESSAGE";
+        if (format === "email") {
+          message = "PLEASE_ENTER_VALID_EMAIL";
+        } else if (format === "string") {
+          message = "PLEASE_ENTER_VALID_STREING";
+        } else if (format === "number") {
+          message = "PLEASE_ENTER_VALID_NUMBER";
+        }
+
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t(message)} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t(message)}`;
+        }
       }
       return error;
     });
@@ -480,7 +476,10 @@ export default function App({ userTokenInfo }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
+      if (
+        data?.mobile?.toString()?.length === 10 &&
+        facilitator?.mobile !== data?.mobile
+      ) {
         const result = await userExist({ mobile: data?.mobile });
         if (result.isUserExist) {
           const newErrors = {
@@ -490,6 +489,20 @@ export default function App({ userTokenInfo }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+    if (id === "root_alternative_mobile_number") {
+      if (data?.alternative_mobile_number === data?.mobile) {
+        const newErrors = {
+          alternative_mobile_number: {
+            __errors: [
+              t(
+                "ALTERNATIVE_MOBILE_NUMBER_SHOULD_NOT_BE_SAME_AS_MOBILE_NUMBER"
+              ),
+            ],
+          },
+        };
+        setErrors(newErrors);
       }
     }
     if (id === "root_aadhar_token") {
@@ -557,12 +570,13 @@ export default function App({ userTokenInfo }) {
 
     if (id === "root_type_of_document") {
       let newSchema = schema;
+      const user = userTokenInfo?.authUser;
       if (schema["properties"]["qualification_reference_document_id"]) {
         setLoading(true);
         newSchema = getOptions(schema, {
           key: "qualification_reference_document_id",
           extra: {
-            userId: formData?.id,
+            userId: user?.id,
             document_type: data.type_of_document,
           },
         });
@@ -636,6 +650,7 @@ export default function App({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (
@@ -648,27 +663,12 @@ export default function App({ userTokenInfo }) {
         ) : (
           <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
-            widgets={{
-              RadioBtn,
-              CustomR,
-              Aadhaar,
-              select,
-              CustomOTPBox,
-              FileUpload,
-            }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-              ArrayFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -701,8 +701,6 @@ export default function App({ userTokenInfo }) {
               {t("SAVE_AND_PROFILE")}
             </FrontEndTypo.Secondarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>

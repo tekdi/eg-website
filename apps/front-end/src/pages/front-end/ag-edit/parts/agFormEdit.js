@@ -94,32 +94,9 @@ export default function agFormEdit({ ip, id }) {
   }, []);
 
   React.useEffect(async () => {
-    let device_ownership = formData?.core_beneficiaries[0]?.device_ownership;
-    let mark_as_whatsapp_number =
-      formData?.core_beneficiaries[0]?.mark_as_whatsapp_number;
-    let alternative_device_ownership =
-      formData?.core_beneficiaries[0]?.alternative_device_ownership;
-    let alternative_device_type =
-      formData?.core_beneficiaries[0]?.alternative_device_type;
-    let device_type = formData?.core_beneficiaries[0]?.device_type;
-
-    let father_first_name = formData?.core_beneficiaries[0]?.father_first_name;
-    let father_middle_name =
-      formData?.core_beneficiaries[0]?.father_middle_name;
-    let father_last_name = formData?.core_beneficiaries[0]?.father_last_name;
-
-    let mother_first_name = formData?.core_beneficiaries[0]?.mother_first_name;
-    let mother_last_name = formData?.core_beneficiaries[0]?.mother_last_name;
-    let mother_middle_name =
-      formData?.core_beneficiaries[0]?.mother_middle_name;
-
-    let marital_status = formData?.extended_users[0]?.marital_status;
-    let social_category = formData?.extended_users[0]?.social_category;
-
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
 
     if (page === "2") {
-      console.log("page2", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "edit_contact",
@@ -136,11 +113,9 @@ export default function agFormEdit({ ip, id }) {
       });
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page3.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "edit_address" });
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page4.....", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "personal",
@@ -149,7 +124,6 @@ export default function agFormEdit({ ip, id }) {
       });
     } else if (page === "5") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page5.....", updateDetails);
       setFormData({
         ...formData,
         edit_page_type: "edit_family",
@@ -173,7 +147,6 @@ export default function agFormEdit({ ip, id }) {
         formData?.fatherdetails,
         userId
       );
-      console.log("page7.....", updateDetails);
     }
   }, [page]);
 
@@ -322,7 +295,7 @@ export default function agFormEdit({ ip, id }) {
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 30);
-      let maxYear = moment().subtract("years", 18);
+      let maxYear = moment().subtract("years", 14);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
@@ -354,13 +327,11 @@ export default function agFormEdit({ ip, id }) {
   };
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
@@ -377,24 +348,31 @@ export default function agFormEdit({ ip, id }) {
   };
 
   const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-      }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
       if (years < 18) {
         errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+    ["first_name", "last_name", "middle_name"].forEach((key) => {
       if (
         key === "first_name" &&
         data?.first_name?.replaceAll(" ", "") === ""
+      ) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      // if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+      //   errors?.[key]?.addError(
+      //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+      //   );
+      // }
+      if (
+        key === "middle_name" &&
+        data?.middle_name?.includes(" ") &&
+        data?.middle_name?.trim() === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -428,87 +406,6 @@ export default function agFormEdit({ ip, id }) {
     });
   };
 
-  const setDistric = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-      });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setVilage = async ({ block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -527,68 +424,6 @@ export default function agFormEdit({ ip, id }) {
         }
       }
     }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({
-          aadhar_token: data?.aadhar_token,
-        });
-        if (result.isUserExist) {
-          const newErrors = {
-            aadhar_token: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
-
-    if (id === "root_qualification") {
-      if (schema?.properties?.qualification) {
-        let valueIndex = "";
-        schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
-          if (e.match("12")) {
-            valueIndex = schema?.properties?.qualification?.enum[index];
-          }
-        });
-        if (valueIndex !== "" && data.qualification == valueIndex) {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
-
-    if (id === "root_device_ownership") {
-      if (schema?.properties?.device_ownership) {
-        if (data?.device_ownership == "no") {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
-
-    if (id === "root_state") {
-      await setDistric({
-        schemaData: schema,
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-      });
-    }
-
-    if (id === "root_district") {
-      await setBlock({
-        district: data?.district,
-        block: data?.block,
-        schemaData: schema,
-      });
-    }
-
-    if (id === "root_block") {
-      await setVilage({ block: data?.block, schemaData: schema });
-    }
   };
 
   const onError = (data) => {
@@ -601,7 +436,6 @@ export default function agFormEdit({ ip, id }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
@@ -633,7 +467,6 @@ export default function agFormEdit({ ip, id }) {
       }
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      console.log("uploadDoc", uploadDoc);
     }
   };
 
@@ -869,7 +702,7 @@ export default function agFormEdit({ ip, id }) {
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
-              {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (

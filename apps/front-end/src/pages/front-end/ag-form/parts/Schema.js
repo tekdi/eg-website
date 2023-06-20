@@ -5,7 +5,7 @@ export default {
     1: {
       title: "IDENTIFY_BENEFICIARY",
       type: "object",
-      required: ["first_name", "last_name"],
+      required: ["first_name", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -15,19 +15,15 @@ export default {
           type: "string",
           title: "LAST_NAME",
         },
+        dob: {
+          type: "string",
+          format: "date",
+          label: "DATE_OF_BIRTH",
+        },
         role: {
           format: "hidden",
           type: "string",
           default: "beneficiary",
-        },
-        role_fields: {
-          properties: {
-            facilitator_id: {
-              format: "hidden",
-              type: "string",
-              default: localStorage.getItem("id"),
-            },
-          },
         },
       },
     },
@@ -40,6 +36,7 @@ export default {
         mobile: {
           type: "string",
           title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
       },
     },

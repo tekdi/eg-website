@@ -13,66 +13,13 @@ import {
   IconByName,
   Layout,
   benificiaryRegistoryService,
+  enumRegistryService,
   t,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 
-import Chip from "component/Chip";
-
-const dropoutReasons = [
-  {
-    label: "PRERAK_FAMILY_ISSUE",
-    value: "Family issue",
-  },
-  {
-    label: "PRERAK_COMMUNITY_ISSUE",
-    value: "Community Issue",
-  },
-  {
-    label: "PRERAK_GETTING_MARRIED",
-    value: "Getting Married",
-  },
-  {
-    label: "PRERAK_PERSONAL_REASONS",
-    value: "Personal Reasons",
-  },
-  {
-    label: "PRERAK_MOVING_AWAY",
-    value: "Moving away",
-  },
-  {
-    label: "OTHER",
-    value: "Other",
-  },
-];
-
-const reactivateReasons = [
-  {
-    label: "CAREER_ASPIRATIONS",
-    value: "Career Aspirations",
-  },
-  {
-    label: "PRERAK_CONVINCED_BY_PRERAK",
-    value: "Convinced by Prerak",
-  },
-  {
-    label: "PRERAK_MOVED_BACK",
-    value: "Moved back",
-  },
-  {
-    label: "PRERAK_ISSUE_RESOLVED",
-    value: "Issue Resolved",
-  },
-  {
-    label: "PRERAK_CHANGED_MIND",
-    value: "Changed Mind",
-  },
-  {
-    label: "OTHER",
-    value: "Other",
-  },
-];
+import { ChipStatus } from "component/BeneficiaryStatus";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -80,13 +27,25 @@ export default function BenificiaryProfileView(props) {
 
   const [reactivatemodalVisible, setreactivateModalVisible] =
     React.useState(false);
+  const { id } = useParams();
+  const [benificiary, setBenificiary] = React.useState({});
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
+    React.useState();
+  const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
+    React.useState();
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    benificiaryDetails();
+    enumAPicall();
   }, []);
+
+  const enumAPicall = async () => {
+    const result = await enumRegistryService.listOfEnum();
+    setBenificiaryDropoutReasons(result?.data?.DROPOUT_REASONS);
+    setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
+  };
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
@@ -94,24 +53,24 @@ export default function BenificiaryProfileView(props) {
     setBenificiary(result?.result);
   };
 
-  const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState({});
   const dropoutApiCall = async () => {
     let bodyData = {
-      id: id,
+      id: benificiary?.program_beneficiaries?.id.toString(),
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
+
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+
     if (result) {
       setReasonValue("");
-      setModalVisible(false);
+      setIsOpenDropOut(false);
     }
   };
 
   const reactivateApiCall = async () => {
     let bodyData = {
-      id: id,
+      id: benificiary?.program_beneficiaries?.id.toString(),
       status: "activate",
       reason_for_status_update: reactivateReasonValue,
     };
@@ -119,9 +78,52 @@ export default function BenificiaryProfileView(props) {
     if (result) {
       setReactivateReasonValue("");
       setreactivateModalVisible(false);
+      setIsOpenReactive(false);
     }
   };
+  React.useEffect(() => {
+    benificiaryDetails();
+  }, [reactivateReasonValue, reasonValue]);
 
+  function renderDropoutButton() {
+    const status = benificiary?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case null:
+        return (
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => setIsOpenDropOut(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("MARK_AS_DROPOUT")}
+          </FrontEndTypo.Secondarybutton>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
+  }
+  function renderReactivateButton() {
+    const status = benificiary?.program_beneficiaries?.status;
+    switch (status) {
+      case "rejected":
+      case "dropout":
+        return (
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => setIsOpenReactive(true)}
+          >
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+          </FrontEndTypo.Secondarybutton>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
+  }
   return (
     <Layout
       _appBar={{
@@ -143,7 +145,11 @@ export default function BenificiaryProfileView(props) {
               {benificiary?.first_name}
               {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
-            <Box>{benificiary?.status || "unidentified"}</Box>
+
+            <ChipStatus
+              status={benificiary?.program_beneficiaries?.status}
+              rounded={"sm"}
+            />
           </VStack>
           <Box
             bg="boxBackgroundColour.100"
@@ -191,6 +197,9 @@ export default function BenificiaryProfileView(props) {
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/edit/${id}/address`);
+                    }}
                   />
                 </HStack>
                 <Divider
@@ -209,6 +218,9 @@ export default function BenificiaryProfileView(props) {
 
                   <IconByName
                     name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/aadhaardetails`);
+                    }}
                     color="textMaroonColor.400"
                   />
                 </HStack>
@@ -286,57 +298,8 @@ export default function BenificiaryProfileView(props) {
               </HStack>
             </VStack>
           </Box>
-
-          {/* <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("CAMP_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  size="sm"
-                />
-              </HStack>
-            </VStack>
-          </Box> */}
-
-          {/* <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  size="sm"
-                />
-              </HStack>
-            </VStack>
-          </Box> */}
-          <FrontEndTypo.Disablebutton
-            onPress={(e) => setIsOpenDropOut(true)}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
-          >
-            {t("MARK_AS_DROPOUT")}
-          </FrontEndTypo.Disablebutton>
-          <FrontEndTypo.Disablebutton onPress={(e) => setIsOpenReactive(true)}>
-            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-          </FrontEndTypo.Disablebutton>
+          {renderDropoutButton()}
+          {renderReactivateButton()}
         </VStack>
       </VStack>
       <Actionsheet
@@ -363,25 +326,33 @@ export default function BenificiaryProfileView(props) {
           <VStack space="5">
             <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
               <VStack alignItems="center" space="1" flex="1">
-                <CustomRadio
-                  options={{ enumOptions: dropoutReasons }}
-                  schema={{ grid: 2 }}
-                  value={reasonValue}
-                  onChange={(e) => {
-                    setReasonValue(e);
-                  }}
-                />
+                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryDropoutReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reasonValue}
+                    onChange={(e) => {
+                      setReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
               </VStack>
             </VStack>
             <VStack space="5" pt="5">
-              <FrontEndTypo.Disablebutton
+              <FrontEndTypo.Primarybutton
                 flex={1}
                 onPress={() => {
                   dropoutApiCall();
                 }}
               >
                 {t("MARK_AS_DROPOUT")}
-              </FrontEndTypo.Disablebutton>
+              </FrontEndTypo.Primarybutton>
             </VStack>
           </VStack>
         </Actionsheet.Content>
@@ -408,27 +379,35 @@ export default function BenificiaryProfileView(props) {
             {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
           </FrontEndTypo.H2>
           <VStack space="5">
-            <VStack space="2" bg="gray.100" p="1" rounded="lg">
+            <VStack space="2" bg="textMaroonColor.100" p="1" rounded="lg">
               <VStack alignItems="center" space="1" flex="1">
-                <CustomRadio
-                  options={{ enumOptions: reactivateReasons }}
-                  schema={{ grid: 2 }}
-                  value={reactivateReasonValue}
-                  onChange={(e) => {
-                    setReactivateReasonValue(e);
-                  }}
-                />
+                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryReactivateReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reactivateReasonValue}
+                    onChange={(e) => {
+                      setReactivateReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
               </VStack>
             </VStack>
             <VStack space="3">
-              <FrontEndTypo.Disablebutton
+              <FrontEndTypo.Primarybutton
                 flex={1}
                 onPress={() => {
                   reactivateApiCall();
                 }}
               >
                 {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </FrontEndTypo.Disablebutton>
+              </FrontEndTypo.Primarybutton>
             </VStack>
           </VStack>
         </Actionsheet.Content>

@@ -60,19 +60,19 @@ export default {
           grid: 3,
           icons: [
             {
-              name: "UserFollowLineIcon",
+              name: "Female",
               _icon: { size: "30" },
             },
             {
-              name: "UserLineIcon",
+              name: "Male",
               _icon: { size: "30" },
             },
             {
-              name: "UserStarLineIcon",
+              name: "Other",
               _icon: { size: "30" },
             },
           ],
-          enumNames: ["Female", "Male", "Other"],
+          enumNames: ["FEMALE", "MALE", "OTHER"],
           enum: ["female", "male", "other"],
         },
       },
@@ -112,9 +112,9 @@ export default {
       title: "ID_VERIFICATION",
       description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
       type: "object",
-      required: ["aadhar_token"],
+      required: ["aadhar_no"],
       properties: {
-        aadhar_token: {
+        aadhar_no: {
           title: "AADHAAR_NUMBER",
           type: "number",
           format: "Aadhaar",
@@ -167,14 +167,14 @@ export default {
                 type: "string",
                 format: "CustomR",
                 grid: 3,
-                enumNames: ["1", "2", "3", "4", "+5"],
+                enumNames: ["1", "2", "3", "4", "5+"],
                 enum: ["1", "2", "3", "4", "5"],
               },
               related_to_teaching: {
                 label: "IS_THE_JOB_RELATED_TO_TEACHING",
                 type: ["string", "null"],
                 format: "RadioBtn",
-                enumNames: ["Yes", "No"],
+                enumNames: ["YES", "NO"],
                 enum: ["yes", "no"],
               },
             },
@@ -241,13 +241,13 @@ export default {
           format: "CustomR",
           grid: 2,
           enum: ["part_time", "full_time"],
-          enumNames: ["Part time", "Full time"],
+          enumNames: ["PART_TIME", "FULL_TIME"],
         },
         device_ownership: {
           label: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
           format: "RadioBtn",
-          enumNames: ["Yes", "No, I use a Family member's"],
+          enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
           enum: ["yes", "no"],
         },
         device_type: {
@@ -256,7 +256,7 @@ export default {
           format: "CustomR",
           grid: 2,
           icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
-          enumNames: ["Android", "IPhone"],
+          enumNames: ["ANDROID", "IPHONE"],
           enum: ["android", "iphone"],
         },
         sourcing_channel: {
@@ -266,12 +266,12 @@ export default {
           grid: 2,
 
           enumNames: [
-            "Prerak Referral",
-            "NGO Referral",
-            "Advertisements",
-            "Dropouts",
-            "Old Prerak",
-            "Other",
+            "PRERAK_REFERRAL",
+            "NGO_REFERRAL",
+            "ADVERTISEMENTS",
+            "DROPOUTS",
+            "OLD_PRERAK",
+            "OTHER",
           ],
           enum: [
             "prerak_referral",

@@ -82,10 +82,6 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    console.log("hello", userId);
-  }, []);
-
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/educationdetails`);
   };
@@ -105,7 +101,6 @@ export default function AgformUpdate({ userTokenInfo }) {
         navigate("/beneficiary", { state: { id: userId } });
       } else {
         nextIndex = pages[index - 1];
-        console.log("reached here");
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
@@ -124,23 +119,17 @@ export default function AgformUpdate({ userTokenInfo }) {
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page2", updateDetails);
       setFormData({ ...formData, edit_page_type: "add_address" });
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page3.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "personal" });
     } else if (page === "4") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page4.....", updateDetails);
       setFormData({ ...formData, edit_page_type: "add_education" });
     } else if (page === "upload") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      console.log("page5.....", updateDetails);
     }
   }, [page]);
-
-  console.log("page", page);
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -191,7 +180,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   React.useEffect(async () => {
     const career_aspiration = await enumRegistryService.listOfEnum();
     const Data = career_aspiration?.data?.CAREER_ASPIRATION;
-    console.log("career_aspiration", Data);
     let newSchema = schema;
     if (schema["properties"]["career_aspiration"]) {
       newSchema = getOptions(newSchema, {
@@ -221,7 +209,6 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
-    console.log("qData", qData?.result);
     let career_aspiration =
       qData?.result?.core_beneficiaries?.career_aspiration;
     let career_aspiration_details =
@@ -300,7 +287,6 @@ export default function AgformUpdate({ userTokenInfo }) {
 
   const EditEducation = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page1", updateDetails);
     if (updateDetails) {
       navigate(`/beneficiary/${userId}/educationdetails`);
     }

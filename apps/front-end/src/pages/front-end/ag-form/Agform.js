@@ -52,13 +52,14 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  MobileNumber,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
 
 // App
 
-export default function Agform({ userTokenInfo }) {
+export default function Agform({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -82,9 +83,11 @@ export default function Agform({ userTokenInfo }) {
 
   const navigate = useNavigate();
 
-  const onPressBackButton = async () => {
+  const onPressBackButton = async (e) => {
     const data = await nextPreviewStep("p");
-    navigate("/");
+    if (data) {
+      navigate(-1);
+    }
   };
   const ref = React.createRef(null);
 
@@ -93,6 +96,14 @@ export default function Agform({ userTokenInfo }) {
   const uiSchema = {
     facilitator_id: {
       "ui:widget": "hidden",
+    },
+    dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+      },
     },
   };
 
@@ -131,19 +142,48 @@ export default function Agform({ userTokenInfo }) {
     let url = await AgRegistryService.createAg(formData);
 
     if (url?.data) {
-      navigate("/beneficiary/2", { state: { id: url?.data?.user?.id } });
+      navigate(`/beneficiary/${url?.data?.user?.id}/2`);
     }
   };
 
   const otpfunction = async () => {
     if (formData?.mobile.length < 10) {
-      errors?.mobile?.addError(t("MINIMUM_LENGTH_IS_10"));
+      const data = await formSubmitCreate(formData);
+
+      const newErrors = {
+        mobile: {
+          __errors:
+            data?.error?.constructor?.name === "String"
+              ? [data?.error]
+              : data?.error?.constructor?.name === "Array"
+              ? data?.error
+              : [t("MINIMUM_LENGTH_IS_10")],
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (!(formData?.mobile > 6666666666 && formData?.mobile < 9999999999)) {
+      const data = await formSubmitCreate(formData);
+      const newErrors = {
+        mobile: {
+          __errors:
+            data?.error?.constructor?.name === "String"
+              ? [data?.error]
+              : data?.error?.constructor?.name === "Array"
+              ? data?.error
+              : [t("PLEASE_ENTER_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
     }
 
     const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
       ...formData,
       hash: localStorage.getItem("hash"),
     });
+
+    console.log("newSchema", newSchema);
 
     setverifyOtpData(otpData);
     if (status === true) {
@@ -176,7 +216,6 @@ export default function Agform({ userTokenInfo }) {
       setotpbtn(true);
     }
   };
-
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -228,11 +267,18 @@ export default function Agform({ userTokenInfo }) {
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
+      let minYear = moment().subtract("years", 30);
+      let maxYear = moment().subtract("years", 14);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
+
+    setFormData({
+      ...formData,
+      role_fields: {
+        facilitator_id: localStorage.getItem("id"),
+      },
+    });
   }, []);
 
   // const userExist = async (filters) => {
@@ -343,6 +389,17 @@ export default function Agform({ userTokenInfo }) {
         };
         setErrors(newErrors);
       }
+
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+        setotpbtn(false);
+      }
     }
   };
 
@@ -423,6 +480,7 @@ export default function Agform({ userTokenInfo }) {
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
         {/* <Steper
@@ -445,7 +503,7 @@ export default function Agform({ userTokenInfo }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -481,7 +539,7 @@ export default function Agform({ userTokenInfo }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
-                mt="-10"
+                mt="0"
                 variant={"primary"}
                 type="submit"
                 onPress={() => formRef?.current?.submit()}

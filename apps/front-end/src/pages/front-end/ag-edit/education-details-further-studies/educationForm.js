@@ -14,7 +14,6 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
@@ -48,52 +47,12 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
+  RadioBtn,
+  CustomR,
+  select,
+  readOnly,
 } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
-
-const CustomR = ({ options, value, onChange, required }) => {
-  return (
-    <CustomRadio
-      items={options?.enumOptions}
-      value={value}
-      required={required}
-      onChange={(value) => onChange(value)}
-    />
-  );
-};
-
-const RadioBtn = ({ options, value, onChange, required }) => {
-  const items = options?.enumOptions;
-  return (
-    <Radio.Group
-      name="exampleGroup"
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      value={value}
-      onChange={(value) => onChange(value)}
-    >
-      <Stack
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        alignItems={{
-          base: "flex-start",
-          md: "center",
-        }}
-        space={4}
-        w="75%"
-        maxW="300px"
-      >
-        {items.map((item) => (
-          <Radio key={item?.value} value={item?.value} size="lg">
-            {item?.label}
-          </Radio>
-        ))}
-      </Stack>
-    </Radio.Group>
-  );
-};
 
 // App
 export default function App({ facilitator, ip, onClick, id }) {
@@ -121,7 +80,6 @@ export default function App({ facilitator, ip, onClick, id }) {
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
-    console.log("qData", qData?.result);
     let last_standard_of_education =
       qData?.result?.core_beneficiaries?.last_standard_of_education;
     let last_standard_of_education_year =
@@ -129,6 +87,9 @@ export default function App({ facilitator, ip, onClick, id }) {
     let reason_of_leaving_education =
       qData?.result?.core_beneficiaries?.reason_of_leaving_education;
     let type_of_learner = qData?.result?.core_beneficiaries?.type_of_learner;
+    let previous_school_type =
+      qData?.result?.core_beneficiaries?.previous_school_type;
+    let learning_level = qData?.result?.program_beneficiaries?.learning_level;
 
     setFormData({
       ...formData,
@@ -136,6 +97,8 @@ export default function App({ facilitator, ip, onClick, id }) {
       reason_of_leaving_education: reason_of_leaving_education,
       last_standard_of_education_year: last_standard_of_education_year,
       last_standard_of_education: last_standard_of_education,
+      previous_school_type: previous_school_type,
+      learning_level: learning_level,
     });
   }, []);
 
@@ -143,7 +106,6 @@ export default function App({ facilitator, ip, onClick, id }) {
     const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
     let newSchema = schema;
-    console.log("schema", schema);
     if (schema["properties"]["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
@@ -169,6 +131,20 @@ export default function App({ facilitator, ip, onClick, id }) {
       newSchema = getOptions(newSchema, {
         key: "reason_of_leaving_education",
         arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
+        title: t("title"),
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "previous_school_type",
+        arr: ListOfEnum?.data?.PREVIOUS_SCHOOL_TYPE,
+        title: t("title"),
+        value: "value",
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "learning_level",
+        arr: ListOfEnum?.data?.BENEFICIARY_LEARNING_LEVEL,
         title: t("title"),
         value: "value",
       });
@@ -272,7 +248,6 @@ export default function App({ facilitator, ip, onClick, id }) {
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
-      console.log(newSteps);
       setPages(newSteps);
       setSubmitBtn(t("NEXT"));
     }
@@ -423,7 +398,6 @@ export default function App({ facilitator, ip, onClick, id }) {
 
   const EditEducation = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page1", updateDetails);
     if (updateDetails) {
       navigate(`/beneficiary/${userId}/educationdetails`);
     }
@@ -456,6 +430,7 @@ export default function App({ facilitator, ip, onClick, id }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
+            widgets={{ select, CustomR }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,

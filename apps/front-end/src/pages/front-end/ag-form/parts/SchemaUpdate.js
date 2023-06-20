@@ -8,6 +8,14 @@ export default {
       type: "object",
       required: ["device_ownership", "device_type"],
       properties: {
+        device_type: {
+          type: "string",
+          label: "TYPE_OF_MOBILE_PHONE",
+          format: "CustomR",
+          enumNames: ["SMARTPHONE", "BASIC"],
+          enum: ["smartphone", "basic"],
+          grid: "2",
+        },
         device_ownership: {
           type: "string",
           label: "DEVICE_OWNERSHIP",
@@ -15,28 +23,21 @@ export default {
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
-        device_type: {
-          type: "string",
-          label: "TYPE_OF_MOBILE_PHONE",
-          format: "CustomR",
-          enumNames: ["SMARTPHONE", "BASIC"],
-          enum: ["smartphone", "basic"],
-        },
       },
     },
     2: {
       title: "COMPLETE_ADDRESS",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         lat: {
           type: "number",
-          label: "Latitude",
+          label: "LATITUDE",
           format: "readOnly",
         },
         long: {
           type: "number",
-          label: "Latitude",
+          label: "LONGITUDE",
           format: "readOnly",
         },
         address: {
@@ -45,21 +46,21 @@ export default {
         },
         state: {
           type: "string",
-          label: "STATE",
+          title: "STATE",
           format: "select",
         },
         district: {
-          label: "DISTRICT",
+          title: "DISTRICT",
           type: "string",
           format: "select",
         },
         block: {
-          label: "BLOCK",
+          title: "BLOCK",
           type: "string",
           format: "select",
         },
         village: {
-          label: "VILLAGE_WARD",
+          title: "VILLAGE_WARD",
           type: "string",
           format: "select",
         },
@@ -79,11 +80,13 @@ export default {
           label: "MARITAL_STATUS",
           type: "string",
           format: "CustomR",
+          grid: "2",
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
           format: "CustomR",
+          grid: "2",
         },
       },
     },
@@ -96,33 +99,57 @@ export default {
         "last_standard_of_education_year",
         "last_standard_of_education",
         "reason_of_leaving_education",
+        "previous_school_type",
+        "learning_level",
       ],
       properties: {
         type_of_learner: {
-          label: "TYPE_OF_STUDENT",
+          title: "TYPE_OF_LEARNER",
           type: "string",
           format: "select",
         },
         last_standard_of_education_year: {
-          label: "SCHOOL_DROPOUT_YEAR",
+          title: "SCHOOL_DROPOUT_YEAR",
           type: "string",
           format: "select",
         },
         last_standard_of_education: {
-          label: "SCHOOL_DROPOUT_CLASS",
+          title: "SCHOOL_DROPOUT_CLASS",
           type: "string",
+          format: "select",
+        },
+        previous_school_type: {
+          type: "string",
+          title: "PREVIOUS_SCHOOL_TYPE",
           format: "select",
         },
         reason_of_leaving_education: {
-          label: "SCHOOL_DROPOUT_REASON",
+          title: "SCHOOL_DROPOUT_REASON",
           type: "string",
           format: "select",
         },
-        // Why_does_AG_want_to_complete: {
-        //   label: "Why does AG want to complete 10th grade?",
-        //   type: "string",
-        //   format: "select",
-        // },
+        learning_level: {
+          label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+          type: "string",
+          format: "CustomR",
+          grid: "1",
+        },
+      },
+    },
+    5: {
+      type: "object",
+      required: ["learning_motivation", "type_of_support_needed"],
+      properties: {
+        learning_motivation: {
+          title: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
+          type: "string",
+          format: "select",
+        },
+        type_of_support_needed: {
+          title: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
+          type: "string",
+          format: "select",
+        },
       },
     },
   },
