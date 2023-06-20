@@ -379,6 +379,8 @@
   "MIDDLE_NAME": "बीच का नाम",
   "MIGRATION_RELATED_TO_EMPLOYMENT": "रोजगार से संबंधित प्रवास के कारण",
   "MINIMUM_AGE_18_YEAR_OLD": "न्यूनतम आयु अठारह वर्ष",
+  "MINIMUM_AGE_14_YEAR_OLD": "न्यूनतम आयु चौदह वर्ष",
+  "MAXIMUM_AGE_29_YEAR_OLD":"अधिकतम आयु उनतीस वर्ष",
   "MINIMUM_LENGTH_IS_10": "न्यूनतम  दस अंक दर्ज करे ",
   "MOBILE_NO": "मोबाइल नंबर",
   "MOBILE_NUMBER": "मोबाइल नंबर",

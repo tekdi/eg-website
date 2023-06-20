@@ -354,12 +354,15 @@ export default function agFormEdit({ ip, id }) {
   };
 
   const customValidate = (data, errors, c) => {
-    // if (data?.dob) {
-    //   const years = moment().diff(data?.dob, "years");
-    //   if (years < 18) {
-    //     errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-    //   }
-    // }
+    if (data?.dob) {
+      const years = moment().diff(data?.dob, "years");
+      if (years < 14) {
+        errors?.dob?.addError(t("MINIMUM_AGE_14_YEAR_OLD"));
+      }
+      if (years > 29) {
+        errors?.dob?.addError(t("MAXIMUM_AGE_29_YEAR_OLD"));
+      }
+    }
     ["first_name", "last_name", "middle_name"].forEach((key) => {
       if (
         key === "first_name" &&
