@@ -367,7 +367,6 @@ export default function App({ facilitator, id, ip, onClick }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
   };
 
   const onError = (data) => {
@@ -546,7 +545,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         ) : (
           <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && formData?.enrollment_status ? (
           <Form
             key={lang + schema}
             ref={formRef}

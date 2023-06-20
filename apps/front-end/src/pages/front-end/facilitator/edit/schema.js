@@ -5,7 +5,7 @@ export default {
       title: "FULL_NAME",
       step_name: "BASIC_DETAILS",
       type: "object",
-      required: ["first_name", "last_name", "dob"],
+      required: ["first_name", "dob"],
       properties: {
         first_name: {
           type: ["string", "null"],

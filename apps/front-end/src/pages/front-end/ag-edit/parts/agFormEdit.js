@@ -89,8 +89,15 @@ export default function agFormEdit({ ip, id }) {
   };
 
   React.useEffect(async () => {
-    const qData = await benificiaryRegistoryService.getOne(id);
-    setFormData(qData.result);
+    const getdata = await benificiaryRegistoryService.getOne(id);
+    const qData = getdata?.result;
+    setFormData({
+      ...formData,
+      middle_name: qData?.middle_name == "null" ? "" : qData?.middle_name,
+      first_name: qData?.first_name,
+      last_name: qData?.last_name == "null" ? "" : qData?.last_name,
+      dob: qData?.dob && qData?.dob,
+    });
   }, []);
 
   React.useEffect(async () => {
@@ -372,15 +379,15 @@ export default function agFormEdit({ ip, id }) {
       //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
       //   );
       // }
-      if (
-        key === "middle_name" &&
-        data?.middle_name?.includes(" ") &&
-        data?.middle_name?.trim() === ""
-      ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+      // if (
+      //   key === "middle_name" &&
+      //   data?.middle_name?.includes(" ") &&
+      //   data?.middle_name?.trim() === ""
+      // ) {
+      //   errors?.[key]?.addError(
+      //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+      //   );
+      // }
 
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(

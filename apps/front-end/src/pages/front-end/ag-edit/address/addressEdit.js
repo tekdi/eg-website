@@ -53,6 +53,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  select,
 } from "../../../../component/BaseInput.js";
 
 // App
@@ -545,7 +546,7 @@ export default function agFormEdit({ ip }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR }}
+            widgets={{ RadioBtn, CustomR, select }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
