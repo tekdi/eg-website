@@ -88,6 +88,13 @@ export default function App({ userTokenInfo, footerLinks }) {
             }),
           });
         }
+
+        if (newSchema["properties"]?.["role_title"]) {
+          newSchema = getOptions(newSchema, {
+            key: "role_title",
+            extra: { title: stepLabel },
+          });
+        }
         setSchema({ ...newSchema, title: stepLabel });
         const refPro =
           newSchema?.properties["reference_details"]?.["properties"];
