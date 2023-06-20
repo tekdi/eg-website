@@ -545,7 +545,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         ) : (
           <React.Fragment />
         )}
-        {page && page !== "" && formData?.enrollment_status ? (
+        {page && page !== "" ? (
           <Form
             key={lang + schema}
             ref={formRef}
