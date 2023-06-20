@@ -28,7 +28,6 @@ export default function BenificiaryProfilePhoto() {
     if (file.size <= 1048576 * 25) {
       if (page < 4) {
         const result = await uploadProfile(file, `profile_photo_${page}`);
-        setCameraFile([...(cameraFile ? cameraFile : []), result]);
         const data = result?.data?.insert_documents?.returning?.[0];
         setFile(data);
       }

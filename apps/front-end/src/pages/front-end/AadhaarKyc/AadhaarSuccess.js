@@ -70,7 +70,7 @@ export default function AadhaarSuccess({ user, aadhaarCompare }) {
           ) : (
             <VStack>
               {index === 1 && (
-                <HStack key={index - 1} px="4" flex="1" py="2">
+                <HStack key={index - 1} px="4" flex="1" py="2" space={2}>
                   <FrontEndTypo.H3 flex="1">{t("TITLE")} </FrontEndTypo.H3>
                   <FrontEndTypo.H3 flex="1">
                     {t("PROFILE_DETAILS")}
@@ -86,21 +86,17 @@ export default function AadhaarSuccess({ user, aadhaarCompare }) {
                 flex="1"
                 py="2"
                 bg={item?.isVerified === false ? "red.300" : ""}
+                space={2}
               >
                 <FrontEndTypo.H3 flex="1">{t(item?.name)} </FrontEndTypo.H3>
-                <FrontEndTypo.H3 flex="1">{item?.aadhaar} </FrontEndTypo.H3>
                 <FrontEndTypo.H3 flex="1">{item?.user} </FrontEndTypo.H3>
+                <FrontEndTypo.H3 flex="1">{item?.aadhaar} </FrontEndTypo.H3>
               </HStack>
             </VStack>
           )
         )}
       </VStack>
-      <Alert
-        status={isVerified ? "success" : "error"}
-        // colorScheme="success"
-        // textAlign="center"
-        my="4"
-      >
+      <Alert status={isVerified ? "success" : "error"} my="4">
         <VStack space={2} flexShrink={1}>
           <HStack
             flexShrink={1}
