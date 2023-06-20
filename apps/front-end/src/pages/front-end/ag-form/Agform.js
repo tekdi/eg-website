@@ -327,8 +327,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
+      if (years < 14) {
+        errors?.dob?.addError(t("MINIMUM_AGE_14_YEAR_OLD"));
+      }
+      if (years > 29) {
+        errors?.dob?.addError(t("MAXIMUM_AGE_29_YEAR_OLD"));
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
