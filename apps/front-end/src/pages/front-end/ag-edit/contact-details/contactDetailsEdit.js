@@ -103,6 +103,7 @@ export default function agFormEdit({ ip }) {
     let alternative_device_type =
       formData?.core_beneficiaries?.alternative_device_type;
     let device_type = formData?.core_beneficiaries?.device_type;
+    let email_id = formData?.email_id == "null" ? "" : formData?.email_id;
 
     setFormData({
       ...formData,
@@ -112,6 +113,7 @@ export default function agFormEdit({ ip }) {
       mark_as_whatsapp_number: mark_as_whatsapp_number,
       alternative_device_ownership: alternative_device_ownership,
       alternative_device_type: alternative_device_type,
+      email_id: email_id,
     });
   }, [formData?.id]);
 
