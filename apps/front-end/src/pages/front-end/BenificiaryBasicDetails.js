@@ -219,7 +219,17 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.address == "null" ? "-" : benificiary?.address}
+                  {/* {benificiary?.address == "null" ? "-" : benificiary?.address} */}
+                  {[
+                    benificiary?.address == "null" ? "" : benificiary?.address,
+                    benificiary?.state,
+                    benificiary?.district,
+                    benificiary?.block,
+                    benificiary?.village,
+                    benificiary?.grampanchayat,
+                  ]
+                    .filter((e) => e)
+                    .join(", ")}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
@@ -279,15 +289,19 @@ export default function BenificiaryBasicDetails() {
                   </FrontEndTypo.H3>
 
                   <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                    {benificiary?.core_beneficiaries?.father_first_name
-                      ? benificiary?.core_beneficiaries.father_first_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.father_middle_name
-                      ? benificiary?.core_beneficiaries.father_middle_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.father_last_name
-                      ? benificiary?.core_beneficiaries.father_last_name
-                      : "-"}
+                    {`${
+                      benificiary?.core_beneficiaries?.father_first_name
+                        ? benificiary?.core_beneficiaries?.father_first_name
+                        : ""
+                    } ${
+                      benificiary?.core_beneficiaries?.father_middle_name
+                        ? benificiary?.core_beneficiaries?.father_middle_name
+                        : ""
+                    } ${
+                      benificiary?.core_beneficiaries?.father_last_name
+                        ? benificiary?.core_beneficiaries?.father_last_name
+                        : ""
+                    }`}
                   </FrontEndTypo.H3>
                 </HStack>
                 <HStack alignItems="Center">
@@ -301,15 +315,19 @@ export default function BenificiaryBasicDetails() {
                   </FrontEndTypo.H3>
 
                   <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                    {benificiary?.core_beneficiaries?.mother_first_name
-                      ? benificiary?.core_beneficiaries.mother_first_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.mother_middle_name
-                      ? benificiary?.core_beneficiaries.mother_middle_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.mother_last_name
-                      ? benificiary?.core_beneficiaries.mother_last_name
-                      : "-"}
+                    {`${
+                      benificiary?.core_beneficiaries?.mother_first_name
+                        ? benificiary?.core_beneficiaries?.mother_first_name
+                        : ""
+                    } ${
+                      benificiary?.core_beneficiaries?.mother_middle_name
+                        ? benificiary?.core_beneficiaries?.mother_middle_name
+                        : ""
+                    } ${
+                      benificiary?.core_beneficiaries?.mother_last_name
+                        ? benificiary?.core_beneficiaries?.mother_last_name
+                        : ""
+                    }`}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
@@ -425,15 +443,19 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.references[0]?.first_name
-                    ? benificiary?.references[0]?.first_name
-                    : "-"}{" "}
-                  {benificiary?.references[0]?.middle_name
-                    ? benificiary?.references[0]?.middle_name
-                    : "-"}{" "}
-                  {benificiary?.references[0]?.last_name
-                    ? benificiary?.references[0]?.last_name
-                    : "-"}
+                  {`${
+                    benificiary?.references[0]?.first_name
+                      ? benificiary?.references[0]?.first_name
+                      : ""
+                  } ${
+                    benificiary?.references[0]?.middle_name
+                      ? benificiary?.references[0]?.middle_name
+                      : ""
+                  } ${
+                    benificiary?.references[0]?.last_name
+                      ? benificiary?.references[0]?.last_name
+                      : ""
+                  }`}
                 </FrontEndTypo.H3>
               </HStack>
 
