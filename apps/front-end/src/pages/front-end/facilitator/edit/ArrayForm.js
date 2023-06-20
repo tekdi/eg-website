@@ -40,7 +40,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       ? "REFERENCE_DETAILS"
       : type === "experience"
       ? "JOB_EXPERIENCE"
-      : "VOLUNTEER_EXPERIENCE";
+      : "ADD_VOLUNTEER_EXPERIENCE";
 
   const nextPreviewStep = async (p = "n") => {
     setAlert();
@@ -86,6 +86,13 @@ export default function App({ userTokenInfo, footerLinks }) {
                 userId: id,
               },
             }),
+          });
+        }
+
+        if (newSchema["properties"]?.["role_title"]) {
+          newSchema = getOptions(newSchema, {
+            key: "role_title",
+            extra: { title: stepLabel },
           });
         }
         setSchema({ ...newSchema, title: stepLabel });
@@ -358,7 +365,7 @@ export default function App({ userTokenInfo, footerLinks }) {
               })}
             <Button variant={"link"} colorScheme="info" onPress={onAdd}>
               <FrontEndTypo.H3 color="blueText.400" underline bold>
-                {`${t("ADD")} ${t(stepLabel)}`}
+                {`${t(stepLabel)}`}
               </FrontEndTypo.H3>
             </Button>
             <FrontEndTypo.Primarybutton
