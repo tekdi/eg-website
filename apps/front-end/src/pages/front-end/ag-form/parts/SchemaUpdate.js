@@ -23,6 +23,11 @@ export default {
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
+        edit_page_type: {
+          type: "string",
+          format: "hidden",
+          default: "add_contact",
+        },
       },
     },
     2: {
