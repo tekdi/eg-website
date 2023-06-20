@@ -111,7 +111,9 @@ export default function AadhaarSuccess({ user, aadhaarCompare }) {
             <HStack flexShrink={1} space={2} alignItems="center">
               <Alert.Icon />
               <FrontEndTypo.H4>
-                {t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}
+                {isVerified
+                  ? t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")
+                  : t("YOUR_AADHAAR_VERIFICATION_IS_FAILED")}
               </FrontEndTypo.H4>
             </HStack>
           </HStack>

@@ -12,6 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import ProfilePhoto from "./facilitator/ProfilePhoto";
 
 export default function BenificiaryBasicDetails() {
   const { id } = useParams();
@@ -25,7 +26,6 @@ export default function BenificiaryBasicDetails() {
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
-
     setBenificiary(result?.result);
   };
 
@@ -37,14 +37,12 @@ export default function BenificiaryBasicDetails() {
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
-          <Center>
-            <IconByName
-              name="AccountCircleLineIcon"
-              color="iconColor.350"
-              _icon={{ size: "60" }}
-              justifySelf="Center"
-            />
-          </Center>
+          <ProfilePhoto
+            editLink={`/beneficiary/${benificiary?.id}/upload/1`}
+            profile_photo_1={benificiary?.profile_photo_1}
+            profile_photo_2={benificiary?.profile_photo_2}
+            profile_photo_3={benificiary?.profile_photo_3}
+          />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">

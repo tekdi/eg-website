@@ -25,6 +25,7 @@ export default function ManualUpload({
   setPage,
   setOtpFailedPopup,
   footerLinks,
+  setAadhaarCompare,
 }) {
   const { id } = useParams();
   const [image, setImage] = React.useState();
@@ -96,6 +97,7 @@ export default function ManualUpload({
         if (resultUser?.error) {
           setPage("aadhaarSuccess");
         } else {
+          setAadhaarCompare({ isVerified: true });
           setPage("aadhaarSuccess");
         }
       }
