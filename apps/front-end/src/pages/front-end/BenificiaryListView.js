@@ -7,10 +7,10 @@ import {
   FrontEndTypo,
   SelectStyle,
 } from "@shiksha/common-lib";
-import Chip, { ChipStatus } from "component/Chip";
 import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { ChipStatus } from "component/BeneficiaryStatus";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
@@ -51,9 +51,10 @@ const List = ({ data }) => {
                   </VStack>
                 </HStack>
                 <Box>
-                  <ChipStatus status={"screened"}>
-                    {item?.program_beneficiaries?.status || t("UNIDENTIFIED")}
-                  </ChipStatus>
+                  <ChipStatus
+                    status={item?.program_beneficiaries?.status}
+                    rounded={"sm"}
+                  />
                 </Box>
               </HStack>
               <VStack bg="white" pl="2">
