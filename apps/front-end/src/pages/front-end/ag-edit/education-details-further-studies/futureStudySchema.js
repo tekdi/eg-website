@@ -9,7 +9,7 @@ export default {
       properties: {
         career_aspiration: {
           type: "string",
-          label: "CAREER_ASPIRATION",
+          label: "LEARNER_ASPIRATION",
           format: "select",
         },
 
