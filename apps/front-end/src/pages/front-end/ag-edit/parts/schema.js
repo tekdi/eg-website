@@ -5,7 +5,7 @@ export default {
     1: {
       title: "FULL_NAME",
       type: "object",
-      required: ["first_name", "dob"],
+      required: ["first_name"],
       properties: {
         first_name: {
           type: "string",

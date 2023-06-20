@@ -148,7 +148,7 @@ export default function BenificiaryBasicDetails() {
                   fontWeight="400"
                   flex="0.3"
                 >
-                  {t("FAMILY")}
+                  {t("ALTERNATIVE_NUMBER")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
