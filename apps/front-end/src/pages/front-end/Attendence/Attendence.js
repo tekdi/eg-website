@@ -181,9 +181,9 @@ export default function Attendence({ footerLinks }) {
 
   const deleteCurrentEventById = async () => {
     const result = await eventService.deleteCurrentEvent({ id: id });
-    if (result?.status === 200) {
-      setShowDeleteModal(false);
+    if (result?.events) {
       navigate("/admin");
+      setShowDeleteModal(false);
     }
   };
 
@@ -416,7 +416,11 @@ export default function Attendence({ footerLinks }) {
                     {t("MARK_ATTENDANCE_ORIENTATION")}
                   </AdminTypo.H6>
                   <HStack justifyContent={"space-between"}>
-                    <HStack space={"2"} ml="15px" direction={["column", "column", "row"]}>
+                    <HStack
+                      space={"2"}
+                      ml="15px"
+                      direction={["column", "column", "row"]}
+                    >
                       <AdminTypo.H6 color="textGreyColor.550" bold>
                         {t("PRESENT")}
                       </AdminTypo.H6>
@@ -430,9 +434,7 @@ export default function Attendence({ footerLinks }) {
                         {t("CANDIDATES")} - {users?.length ? users?.length : 0}
                       </AdminTypo.H6>
                     </HStack>
-                    <HStack>
-                    
-                    </HStack>
+                    <HStack></HStack>
                   </HStack>
                   <Stack>
                     <AdminTypo.H6 my="15px" color="textGreyColor.100" pl="2">
@@ -569,7 +571,6 @@ export default function Attendence({ footerLinks }) {
               borderRadius={"10px"}
               py="3"
               mt="8"
-              
             >
               <VStack m={"15px"}>
                 <HStack justifyContent={"space-between"}>
@@ -590,7 +591,11 @@ export default function Attendence({ footerLinks }) {
                   </AdminTypo.Secondarybutton>
                 </HStack>
 
-                <HStack space={"3"} pt="4" direction={["column", "column", "row"]} >
+                <HStack
+                  space={"3"}
+                  pt="4"
+                  direction={["column", "column", "row"]}
+                >
                   <IconByName
                     isDisabled
                     name="TimeLineIcon"
@@ -635,7 +640,7 @@ export default function Attendence({ footerLinks }) {
               </VStack>
             </Box>
             <Stack mt={"20px"} space={"3"} py="2">
-              <HStack space={"4"} direction={["column", "column", "row"]} >
+              <HStack space={"4"} direction={["column", "column", "row"]}>
                 <HStack>
                   <IconByName
                     isDisabled
