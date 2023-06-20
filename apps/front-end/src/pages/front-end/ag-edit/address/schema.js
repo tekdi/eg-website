@@ -5,18 +5,11 @@ export default {
     1: {
       title: "ADDRESS",
       type: "object",
-      required: [
-        "state",
-        "district",
-        "block",
-        "village",
-        "address",
-        "grampanchayat",
-      ],
+      required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         address: {
           title: "STREET_ADDRESS",
-          type: "string",
+          type: ["string", "null"],
         },
         state: {
           title: "STATE",
