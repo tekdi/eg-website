@@ -137,10 +137,10 @@ export default function BenificiaryProfileView(props) {
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <VStack alignItems="Center" pt="20px">
-            {benificiary?.documents?.[0]?.name ? (
+            {benificiary?.profile_photo_1 ? (
               <ImageView
                 source={{
-                  uri: benificiary?.documents?.[0]?.name,
+                  uri: benificiary?.profile_photo_1,
                 }}
                 // alt="Alternate Text"
                 width={"190px"}
