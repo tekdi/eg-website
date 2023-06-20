@@ -52,6 +52,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
+  MobileNumber,
 } from "../../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import Success from "../Success.js";
@@ -85,13 +86,12 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const onPressBackButton = async (e) => {
     const data = await nextPreviewStep("p");
     if (data) {
-      navigate(-1)
+      navigate(-1);
     }
-
   };
   const ref = React.createRef(null);
 
-  const updateData = (data, deleteData = false) => { };
+  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     facilitator_id: {
@@ -156,8 +156,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
             data?.error?.constructor?.name === "String"
               ? [data?.error]
               : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MINIMUM_LENGTH_IS_10")],
+              ? data?.error
+              : [t("MINIMUM_LENGTH_IS_10")],
         },
       };
       setErrors(newErrors);
@@ -171,8 +171,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
             data?.error?.constructor?.name === "String"
               ? [data?.error]
               : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("PLEASE_ENTER_VALID_NUMBER")],
+              ? data?.error
+              : [t("PLEASE_ENTER_VALID_NUMBER")],
         },
       };
       setErrors(newErrors);
@@ -196,8 +196,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               data?.error?.constructor?.name === "String"
                 ? [data?.error]
                 : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
@@ -293,7 +293,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const formSubmitCreate = async (formData) => { };
+  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {
@@ -327,8 +327,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
+      if (years < 14) {
+        errors?.dob?.addError(t("MINIMUM_AGE_14_YEAR_OLD"));
+      }
+      if (years > 29) {
+        errors?.dob?.addError(t("MAXIMUM_AGE_29_YEAR_OLD"));
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
@@ -503,7 +506,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,

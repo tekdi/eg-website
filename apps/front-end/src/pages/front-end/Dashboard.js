@@ -4,7 +4,6 @@ import {
   H2,
   IconByName,
   Layout,
-  t,
   ButtonStyle,
   SelectStyle,
   RedOutlineButton,
@@ -29,6 +28,7 @@ import {
   Container,
 } from "native-base";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 // styles
@@ -50,9 +50,9 @@ const styles = {
 };
 
 export default function Dashboard({ userTokenInfo, footerLinks }) {
+  const { t } = useTranslation();
   const [facilitator, setFacilitator] = React.useState({});
   const navigate = useNavigate();
-  const { form_step_number } = facilitator;
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -353,7 +353,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.H2>
               <FrontEndTypo.Primarybutton
                 onPress={(e) =>
-                  navigate(`/aadhaar-kyc/${facilitator?.id}`, { state: "/" })
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/aadhaar-number`, {
+                    state: "/",
+                  })
                 }
                 width="100%"
               >
@@ -362,7 +364,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <FrontEndTypo.Secondarybutton
                 width="100%"
                 onPress={(e) =>
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, { state: "/" })
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, {
+                    state: "/",
+                  })
                 }
               >
                 {t("SCAN_QR_CODE")}
@@ -453,6 +457,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
 const InfoBox = ({ status }) => {
   let infoBox;
+  const { t } = useTranslation();
 
   switch (status) {
     case "application_screened":
