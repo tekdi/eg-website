@@ -75,6 +75,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState(id);
+  const [uploadPayment, setUploadPayment] = React.useState(true);
 
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
@@ -158,7 +159,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
     };
     enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
+    const newProperties = schema?.["properties"]?.[key];
     let properties = {};
     if (newProperties) {
       if (newProperties.enum) delete newProperties.enum;
@@ -212,6 +213,41 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
 
     const qData = await benificiaryRegistoryService.getOne(userId);
+    if (
+      qData?.result?.program_beneficiaries?.enrollment_status === "not_enrolled"
+    ) {
+      const propertiesMain = schema1.properties;
+      setUploadPayment(false);
+      const constantSchema = propertiesMain[1];
+      const { enrolled_for_board, enrollment_number, subjects, ...properties } =
+        constantSchema?.properties;
+      const required = constantSchema?.required.filter(
+        (item) =>
+          !["enrolled_for_board", "enrollment_number", "subjects"].includes(
+            item
+          )
+      );
+      console.log(required, constantSchema, properties);
+
+      setSchema({ ...constantSchema, properties, required });
+    } else if (
+      qData?.result?.program_beneficiaries?.enrollment_status ===
+        "applied_but_pending" ||
+      qData?.result?.program_beneficiaries?.enrollment_status === "rejected"
+    ) {
+      setUploadPayment(false);
+      const propertiesMain = schema1.properties;
+      const constantSchema = propertiesMain[1];
+      const { enrollment_number, subjects, ...properties } =
+        constantSchema?.properties;
+      const required = constantSchema?.required.filter(
+        (item) => !["enrollment_number", "subjects"].includes(item)
+      );
+      console.log(required, constantSchema, properties);
+
+      setSchema({ ...constantSchema, properties, required });
+    }
+
     let enrolled_for_board = qData?.result?.program_beneficiaries
       ?.enrolled_for_board
       ? qData?.result?.program_beneficiaries?.enrolled_for_board
@@ -225,8 +261,8 @@ export default function App({ facilitator, id, ip, onClick }) {
     const stringsArray = subjectData.map((number) => number.toString());
     setFormData({
       ...formData,
-      enrolled_for_board: enrolled_for_board,
       enrollment_status: enrollment_status,
+      enrolled_for_board: enrolled_for_board,
       enrollment_number: enrollment_number,
       subjects: stringsArray,
       facilitator_id: localStorage.getItem("id"),
@@ -275,10 +311,57 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
+    if (id === "root_enrollment_status") {
+      const properties = schema1.properties;
+      const constantSchema = properties[1];
+      if (data?.enrollment_status === "not_enrolled") {
+        const {
+          enrolled_for_board,
+          enrollment_number,
+          subjects,
+          ...properties
+        } = constantSchema?.properties;
+        const required = constantSchema?.required.filter(
+          (item) =>
+            !["enrolled_for_board", "enrollment_number", "subjects"].includes(
+              item
+            )
+        );
+        const newData = {
+          enrollment_status: formData?.enrollment_status,
+          subjects: [],
+          facilitator_id: localStorage.getItem("id"),
+        };
+        setFormData(newData);
+        setSchema({ ...constantSchema, properties, required });
+        setUploadPayment(false);
+      } else if (
+        data?.enrollment_status === "applied_but_pending" ||
+        data?.enrollment_status === "rejected"
+      ) {
+        const { enrollment_number, subjects, ...properties } =
+          constantSchema?.properties;
+        const required = constantSchema?.required.filter(
+          (item) => !["enrollment_number", "subjects"].includes(item)
+        );
+        const newData = {
+          enrollment_status: e.formData?.enrollment_status,
+          enrolled_for_board: e.formData?.enrolled_for_board,
+          subjects: [],
+          facilitator_id: localStorage.getItem("id"),
+        };
+        setSchema({ ...constantSchema, properties, required });
+        setFormData(newData);
+        setUploadPayment(false);
+      } else {
+        setSchema(constantSchema);
+        setUploadPayment(true);
+      }
+    }
+
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
   };
 
   const onError = (data) => {
@@ -292,20 +375,27 @@ export default function App({ facilitator, id, ip, onClick }) {
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let newSchema = schema;
-
     if (formData?.enrolled_for_board) {
       let boardData = formData?.enrolled_for_board;
       let filters = {
         board: boardData,
       };
-      let subjects = await enumRegistryService.getSubjects(filters);
+      //add condition if no
+
       let newSchema = schema;
-      newSchema = getOptions(newSchema, {
-        key: "subjects",
-        arr: subjects?.data,
-        title: "name",
-        value: "id",
-      });
+      if (
+        formData?.enrollment_status === "enrolled" ||
+        formData?.enrollment_status === "other"
+      ) {
+        let subjects = await enumRegistryService.getSubjects(filters);
+        newSchema = getOptions(newSchema, {
+          key: "subjects",
+          arr: subjects?.data,
+          title: "name",
+          value: "id",
+        });
+      }
+
       newSchema = getOptions(newSchema, {
         key: "enrollment_status",
         arr: list,
@@ -323,7 +413,6 @@ export default function App({ facilitator, id, ip, onClick }) {
       setSchema(newSchema);
     }
   }, [formData]);
-
   const validation = () => {
     if (formData?.edit_page_type) {
       const newErrors = {
@@ -337,6 +426,9 @@ export default function App({ facilitator, id, ip, onClick }) {
           __errors: [t("REQUIRED_MESSAGE")],
         },
         subjects: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+        payment_receipt_document_id: {
           __errors: [t("REQUIRED_MESSAGE")],
         },
       };
@@ -366,17 +458,50 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
+  //
   const editSubmit = async () => {
-    if (
-      formData?.enrollment_status &&
-      formData?.enrolled_for_board &&
-      formData?.enrollment_number &&
-      formData?.subjects
+    if (formData?.enrollment_status === "enrolled") {
+      if (
+        formData?.enrollment_status &&
+        formData?.enrolled_for_board &&
+        formData?.enrollment_number &&
+        formData?.payment_receipt_document_id &&
+        formData?.subjects.length > 0
+      ) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
+    } else if (
+      formData?.enrollment_status === "applied_but_pending" ||
+      formData?.enrollment_status === "rejected"
     ) {
+      if (formData?.enrollment_status && formData?.enrolled_for_board) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
+    } else if (formData?.enrollment_status === "not_enrolled") {
+      if (formData?.enrollment_status) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
+    } else {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       navigate(`/beneficiary/profile/${userId}`);
-    } else {
-      validation();
     }
   };
 
@@ -386,7 +511,6 @@ export default function App({ facilitator, id, ip, onClick }) {
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
         name: t("ENROLLMENT_DETAILS"),
-
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -406,7 +530,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         ) : (
           <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && formData?.enrollment_status ? (
           <Form
             key={lang + schema}
             ref={formRef}
@@ -433,24 +557,28 @@ export default function App({ facilitator, id, ip, onClick }) {
               transformErrors,
             }}
           >
-            <HStack>
-              <Button
-                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-                variant={"secondary"}
-                onPress={(e) => {
-                  uplodInputRef?.current?.click();
-                }}
-              >
-                {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
-              </Button>
-              <input
-                accept="image/*"
-                type="file"
-                style={{ display: "none" }}
-                ref={uplodInputRef}
-                onChange={handleFileInputChange}
-              />
-            </HStack>
+            {uploadPayment ? (
+              <HStack>
+                <Button
+                  leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
+                  variant={"secondary"}
+                  onPress={(e) => {
+                    uplodInputRef?.current?.click();
+                  }}
+                >
+                  {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
+                </Button>
+                <input
+                  accept="image/*"
+                  type="file"
+                  style={{ display: "none" }}
+                  ref={uplodInputRef}
+                  onChange={handleFileInputChange}
+                />
+              </HStack>
+            ) : (
+              <React.Fragment></React.Fragment>
+            )}
             <Button
               mt="3"
               variant={"primary"}
