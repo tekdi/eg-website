@@ -178,7 +178,7 @@ function Table({
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
     setLoading(false);
-  }, [page, limit]);
+  }, [page, limit, formData]);
 
   const exportPrerakCSV = async () => {
     const result = await facilitatorRegistryService.exportFacilitatorsCsv();

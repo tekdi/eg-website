@@ -287,7 +287,10 @@ export default function agFormEdit({ ip }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length > 10) {
+      if (
+        data?.mobile &&
+        !data?.mobile?.toString()?.match(/^([+]\d{2})?\d{10}$/)
+      ) {
         const newErrors = {
           mobile: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
@@ -297,7 +300,12 @@ export default function agFormEdit({ ip }) {
       }
     }
     if (id === "root_alternative_mobile_number") {
-      if (data?.alternative_mobile_number?.toString()?.length > 10) {
+      if (
+        data?.alternative_mobile_number &&
+        !data?.alternative_mobile_number
+          ?.toString()
+          ?.match(/^([+]\d{2})?\d{10}$/)
+      ) {
         const newErrors = {
           alternative_mobile_number: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
@@ -327,11 +335,16 @@ export default function agFormEdit({ ip }) {
         },
       };
       setErrors(newErrors);
-    } else if (formData?.mobile != formData?.alternative_mobile_number) {
+    } else if (
+      formData?.mobile != formData?.alternative_mobile_number &&
+      !errors
+    ) {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };
+
+  console.log("errors", errors);
 
   return (
     <Layout
