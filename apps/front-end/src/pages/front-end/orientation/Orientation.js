@@ -166,13 +166,17 @@ export default function Orientation({ footerLinks }) {
     // formRef?.current?.validateForm();
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
-    if (moment(newData?.start_date).isAfter(newData?.end_date)) {
-      const newErrors = {
-        attendees: {
-          __errors: ["The end date should be later than the start date."],
-        },
-      };
-      setErrors(newErrors);
+    if (newData?.end_date) {
+      if (
+        moment.utc(newData?.start_date).isAfter(moment.utc(newData?.end_date))
+      ) {
+        const newErrors = {
+          end_date: {
+            __errors: [t("EVENT_CREATE_END_DATE_GREATERE_THAN_START_DATE")],
+          },
+        };
+        setErrors(newErrors);
+      }
     }
 
     if (moment.utc(newData?.start_date) < moment.utc(nowDate)) {
@@ -370,7 +374,13 @@ export default function Orientation({ footerLinks }) {
               {t("YOUR_CALENDAR")}
             </AdminTypo.H3>
           </VStack>
-          <HStack space="2xl" justifyContent="space-between" px="2" pb="10" direction={["column", "column", "row"]}>
+          <HStack
+            space="2xl"
+            justifyContent="space-between"
+            px="2"
+            pb="10"
+            direction={["column", "column", "row"]}
+          >
             <VStack alignContent="center">
               <AdminTypo.Secondarybutton
                 alignContent="center"
@@ -402,7 +412,7 @@ export default function Orientation({ footerLinks }) {
                 </HStack>
               </VStack>
             </VStack>
-            <Box >
+            <Box>
               <Fullcalendar
                 ref={calendarRef}
                 key={eventList}

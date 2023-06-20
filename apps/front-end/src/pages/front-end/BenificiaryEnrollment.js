@@ -24,6 +24,10 @@ export default function BenificiaryEnrollment() {
     agDetails();
   }, [id]);
 
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/profile/${id}`);
+  };
+
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
@@ -41,9 +45,8 @@ export default function BenificiaryEnrollment() {
       setSubject(filterData);
     }
   };
-
   return (
-    <Layout _appBar={{ name: t("ENROLLMENT_DETAILS") }}>
+    <Layout _appBar={{ name: t("ENROLLMENT_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200" px="5" pt="3">
         <VStack
           px="5"

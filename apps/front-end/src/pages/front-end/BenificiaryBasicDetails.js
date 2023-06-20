@@ -50,11 +50,11 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">
                 {benificiary?.first_name ? benificiary?.first_name : "-"}
                 &nbsp;
-                {benificiary?.middle_name?.trim() === ""
+                {benificiary?.middle_name?.trim() === "null"
                   ? ""
                   : benificiary?.middle_name}
                 &nbsp;
-                {benificiary?.last_name ? benificiary?.last_name : "-"}
+                {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
               </FrontEndTypo.H1>
               <IconByName
                 name="PencilLineIcon"
@@ -148,7 +148,7 @@ export default function BenificiaryBasicDetails() {
                   fontWeight="400"
                   flex="0.3"
                 >
-                  {t("FAMILY")}
+                  {t("ALTERNATIVE_NUMBER")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
@@ -219,7 +219,7 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.address ? benificiary?.address : "-"}
+                  {benificiary?.address == "null" ? "-" : benificiary?.address}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
