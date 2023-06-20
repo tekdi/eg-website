@@ -85,6 +85,7 @@
   "AVAILABLE": "Available",
   "BACHELORS": "Bachelors",
   "BACK_VIEW": "Back View",
+  "EVENT_CREATE_END_DATE_GREATERE_THAN_START_DATE":"End date should be greater than the start date.",
   "BANK_PASSBOOK": "Bank Passbook",
   "BASIC": "Basic",
   "BASIC_DETAILS": "Basic Details",

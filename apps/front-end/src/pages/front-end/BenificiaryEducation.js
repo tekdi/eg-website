@@ -262,9 +262,18 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.program_beneficiaries?.learning_motivation
-                    ? benificiary?.program_beneficiaries?.learning_motivation
-                    : "-"}
+                  {benificiary?.program_beneficiaries?.learning_motivation ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"LEARNING_MOTIVATION"}
+                      enumOptionValue={
+                        benificiary?.program_beneficiaries?.learning_motivation
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
 
@@ -283,9 +292,20 @@ export default function BenificiaryEducation() {
                   fontWeight="400"
                   flex="0.4"
                 >
-                  {benificiary?.program_beneficiaries?.type_of_support_needed
-                    ? benificiary?.program_beneficiaries?.type_of_support_needed
-                    : "-"}
+                  {benificiary?.program_beneficiaries
+                    ?.type_of_support_needed ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"TYPE_OF_SUPPORT_NEEDED"}
+                      enumOptionValue={
+                        benificiary?.program_beneficiaries
+                          ?.type_of_support_needed
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
               <HStack alignItems="Center" justifyContent="space-between">
