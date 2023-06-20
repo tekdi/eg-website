@@ -14,7 +14,7 @@
   "AADHAAR_VERIFICATION": "आधार सत्यापन",
   "AADHAAR_VERIFICATION_SUCCESSFUL": "आधार सत्यापन सफल",
   "AADHAR_CARD": "आधार कार्ड",
-  "AADHAR_KYC_VERIFICATION_FAILED": " आधार KYC सत्यापन विफल",
+  "AADHAR_KYC_VERIFICATION_FAILED": "आधार KYC सत्यापन विफल",
   "AADHAR_NUMBER_KYC": "आधार संख्या KYC",
   "AADHAR_UPLOAD_CLEAR": "हटाएं",
   "ABSENT": "अनुपस्थित",
@@ -726,6 +726,7 @@
   "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": "उपलब्ध शिविर स्थापित करने के लिए आपको कम से कम 15 शिक्षार्थी शिक्षार्थियों को नामांकित करने की आवश्यकता होगी",
   "YOUR_AADHAAR_OKYC_MESSAGE": "आपका आधार डेटा इस कोड से लॉक हो जाएगा और केवल टेस्ट ID सत्यापन ऐप ही आपके डेटा तक पहुंच सकता है।",
   "YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL": "आपका आधार संस्करण सफल है",
+  "YOUR_AADHAAR_VERIFICATION_IS_FAILED": "आपका आधार संस्करण विफल",
   "YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY": "आपका आवेदन सफलतापूर्वक जमा हो गया है!",
   "YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY!": "आपका आवेदन सफलतापूर्वक जमा हो गया है!",
   "YOUR_APPLICATION_IS_UNDER_REVIEW": "आपका आवेदन समीक्षाधीन है",
@@ -733,5 +734,11 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "REQUIRED_MESSAGE_ENROLLMENT_STATUS": "कृपया एक वैध पंजीकरण स्थिति दर्ज करें।",
+  "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "कृपया एक पंजीकरण बोर्ड चुनें।",
+  "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "कृपया एक वैध पंजीकरण संख्या दर्ज करें। ",
+  "REQUIRED_MESSAGE_SUBJECTS": "कृपया विषय चुनें।",
+  "REQUIRED_MESSAGE_SUBJECTS_SELECTTION": "कृपया 7 विषयों तक चुनें।",
+  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "कृपया भुगतान रसीद अपलोड करें।"
 }

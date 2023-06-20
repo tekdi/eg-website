@@ -733,5 +733,11 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "REQUIRED_MESSAGE_ENROLLMENT_STATUS": "Please enter a valid Enrollment Status",
+  "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "Please select a Enrollment Board",
+  "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "Please enter a valid Enrollment Number",
+  "REQUIRED_MESSAGE_SUBJECTS": "Please select subjects",
+  "REQUIRED_MESSAGE_SUBJECTS_SELECTTION": "Please select upto 7 subjects",
+  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "Please upload the payment receipt"
 }
