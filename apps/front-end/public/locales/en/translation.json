@@ -87,6 +87,7 @@
   "BACK_VIEW": "Back View",
   "EVENT_CREATE_BACK_DATES_NOT_ALLOWED_START_DATE":"BackDates are not Allowed for Start Date",
   "EVENT_CREATE_BACK_DATES_NOT_ALLOWED_END_DATE":"BackDates are not Allowed for End Date",
+  "EVENT_CREATE_END_DATE_GREATERE_THAN_START_DATE":"End date should be greater than the start date.",
   "BANK_PASSBOOK": "Bank Passbook",
   "BASIC": "Basic",
   "BASIC_DETAILS": "Basic Details",
