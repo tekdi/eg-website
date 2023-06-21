@@ -679,7 +679,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       const form_data = new FormData();
       const item = {
         file: cameraFile,
-        document_type: "profile",
+        document_type: "profile_photo_1",
         user_id: userId,
       };
       for (let key in item) {
