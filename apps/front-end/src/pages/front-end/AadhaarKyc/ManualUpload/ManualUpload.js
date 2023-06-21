@@ -90,7 +90,7 @@ export default function ManualUpload({
       } else {
         const resultUser = await authRegistryService.aadhaarKyc({
           id,
-          aadhar_verified: "InProgress",
+          aadhar_verified: "in_progress",
           aadhaar_verification_mode: "upload",
         });
         if (resultUser?.error) {
