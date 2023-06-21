@@ -8,6 +8,8 @@ import {
   t,
   Layout,
   ImageView,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +21,7 @@ export default function FacilitatorQualification({
   const [qualifications, setQualifications] = React.useState();
   const [qualification, setQualification] = React.useState();
   const navigate = useNavigate();
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   React.useEffect(() => {
     facilitatorDetails();
@@ -45,6 +48,13 @@ export default function FacilitatorQualification({
     const arr = qua.filter((item) => ids.includes(item.id));
     setQualifications(arr);
   };
+
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, [facilitator]);
+
+  console.log(facilitator);
 
   return (
     <Layout
@@ -112,9 +122,18 @@ export default function FacilitatorQualification({
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {qualification?.qualification_master?.name
-                      ? qualification?.qualification_master?.name
-                      : "-"}
+                    {qualification?.qualification_master?.name ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"QUALIFICATION"}
+                        enumOptionValue={
+                          qualification?.qualification_master?.name
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -175,6 +194,14 @@ export default function FacilitatorQualification({
                     flex="0.4"
                   >
                     {qualifications?.map((e) => e.name).join(", ")}
+                    {/* {qualifications?.map((e) => {
+                      <GetEnumValue
+                        t={t}
+                        enumType={"QUALIFICATION"}
+                        enumOptionValue={e.name}
+                        enumApiData={enumOptions}
+                      />;
+                    })} */}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
