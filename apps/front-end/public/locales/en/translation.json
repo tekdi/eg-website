@@ -738,5 +738,6 @@
   "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "Please enter a valid Enrollment Number",
   "REQUIRED_MESSAGE_SUBJECTS": "Please select subjects",
   "REQUIRED_MESSAGE_SUBJECTS_SELECTTION": "Please select upto 7 subjects",
-  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "Please upload the payment receipt"
+  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "Please upload the payment receipt",
+  "PAYMENT_RECEIPT":"Payment Receipt"
 }

@@ -738,5 +738,7 @@
   "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "कृपया एक वैध पंजीकरण संख्या दर्ज करें। ",
   "REQUIRED_MESSAGE_SUBJECTS": "कृपया विषय चुनें।",
   "REQUIRED_MESSAGE_SUBJECTS_SELECTTION": "कृपया 7 विषयों तक चुनें।",
-  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "कृपया भुगतान रसीद अपलोड करें।"
+  "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "कृपया भुगतान रसीद अपलोड करें।",
+  "PAYMENT_RECEIPT":"पेमेंट रसीद"
+
 }

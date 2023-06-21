@@ -323,10 +323,10 @@ export default function FacilitatorView({ footerLinks }) {
               </HStack>
             </VStack>
             <HStack flex="0.4" pl="5" justifyContent="center">
-              {data?.profile_photo_1?.name ? (
+              {data?.profile_photo_3?.name ? (
                 <ImageView
                   source={{
-                    uri: data?.profile_photo_1?.name,
+                    uri: data?.profile_photo_3?.name,
                   }}
                   // alt="Alternate Text"
                   width={"190px"}
@@ -409,7 +409,7 @@ export default function FacilitatorView({ footerLinks }) {
                       type={showPassword ? "text" : "password"}
                       InputRightElement={
                         <IconByName
-                          name="EyeOffLineIcon"
+                          name={showPassword ? "EyeLineIcon" : "EyeOffLineIcon"}
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
                           onPress={() => {
                             togglePasswordVisibility();
@@ -453,7 +453,9 @@ export default function FacilitatorView({ footerLinks }) {
                       type={confirmPassword ? "text" : "password"}
                       InputRightElement={
                         <IconByName
-                          name="EyeOffLineIcon"
+                          name={
+                            confirmPassword ? "EyeLineIcon" : "EyeOffLineIcon"
+                          }
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
                           onPress={() => {
                             toggleConfirmPasswordVisibility();
