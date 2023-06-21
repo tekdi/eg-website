@@ -14,7 +14,7 @@ export default {
         },
 
         career_aspiration_details: {
-          type: "string",
+          type: ["string", "null"],
           title: "TELL_IN_DETAIL",
         },
 

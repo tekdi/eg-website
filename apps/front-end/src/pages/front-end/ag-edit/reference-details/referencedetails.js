@@ -105,8 +105,8 @@ export default function agFormEdit({ ip }) {
       ...formData,
       referencefullname: {
         first_name: rfirst_name,
-        middle_name: rmiddle_name,
-        last_name: rlast_name,
+        middle_name: rmiddle_name == "null" ? "" : rmiddle_name,
+        last_name: rlast_name == "null" ? "" : rlast_name,
         relation: rrelation,
         contact_number: rcontact_number,
       },

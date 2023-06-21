@@ -95,7 +95,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       device_type: qData?.result?.core_beneficiaries?.device_type,
       state: qData?.result?.state,
       district: qData?.result?.district,
-      address: qData?.result?.address ? qData?.result?.address : "",
+      address: qData?.result?.address == "null" ? "" : qData?.result?.address,
       block: qData?.result?.block,
       village: qData?.result?.village,
       grampanchayat: qData?.result?.grampanchayat,
