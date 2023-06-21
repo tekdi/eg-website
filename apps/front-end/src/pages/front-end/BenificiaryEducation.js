@@ -196,7 +196,7 @@ export default function BenificiaryEducation() {
           >
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
-                {t("CAREER_ASPIRATIONS")}
+                {t("LEARNER_ASPIRATION")}
               </FrontEndTypo.H3>
               <IconByName
                 name="EditBoxLineIcon"
@@ -220,37 +220,6 @@ export default function BenificiaryEducation() {
               />
             </Box>
             <VStack space="2" paddingTop="5">
-              <HStack
-                alignItems="Center"
-                justifyContent="space-between"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="0.3"
-                  pb="2"
-                >
-                  {t("CAREER_ASPIRATIONS")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.core_beneficiaries?.career_aspiration ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"CAREER_ASPIRATION"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries?.career_aspiration
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
               <HStack
                 alignItems="Center"
                 justifyContent="space-between"
@@ -308,6 +277,37 @@ export default function BenificiaryEducation() {
                   )}
                 </FrontEndTypo.H3>
               </HStack>
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
+                  {t("CAREER_ASPIRATION")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                  {benificiary?.core_beneficiaries?.career_aspiration ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"CAREER_ASPIRATION"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries?.career_aspiration
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
+                </FrontEndTypo.H3>
+              </HStack>
+
               <HStack alignItems="Center" justifyContent="space-between">
                 <FrontEndTypo.H3
                   color="textGreyColor.50"

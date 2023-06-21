@@ -206,13 +206,8 @@ export default function agFormEdit({ ip }) {
         );
       }
     }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-      }
-    }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
+
+    ["relation", "first_name"].forEach((key) => {
       if (
         key === "first_name" &&
         data?.first_name?.replaceAll(" ", "") === ""
@@ -223,6 +218,12 @@ export default function agFormEdit({ ip }) {
       }
 
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (key === "relation" && data?.relation?.replaceAll(" ", "") === "") {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
