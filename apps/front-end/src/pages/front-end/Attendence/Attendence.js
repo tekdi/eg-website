@@ -142,7 +142,6 @@ export default function Attendence({ footerLinks }) {
   const [filterObj, setFilterObj] = React.useState();
   const [refAppBar, setRefAppBar] = React.useState();
   const [rowData, setRowData] = React.useState();
-  const [showEditModal, setShowEditModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [locationData, setlocationData] = useState("");
   const [attendance, setAttendance] = React.useState("");
@@ -153,9 +152,6 @@ export default function Attendence({ footerLinks }) {
   const uplodInputRef = React.useRef();
   const formRef = React.useRef();
   const [error, setError] = useState("");
-
-  const [ids, setids] = useState("");
-  const [singleUser, setsingleUser] = useState("");
   const [formData, setFormData] = useState({});
 
   const [userData, setUserData] = useState({});
@@ -166,7 +162,6 @@ export default function Attendence({ footerLinks }) {
   }, []);
 
   const onSwitchToggle = async (value) => {
-    setsingleUser(value);
     getLocation();
     setCameraUrl();
     if (value?.status !== "present") {
@@ -175,8 +170,9 @@ export default function Attendence({ footerLinks }) {
     }
   };
 
-  const handleFormChange = ({ formData }) => {
-    setFormData(formData);
+  const handleFormChange = (props) => {
+    const data = props?.formData;
+    setFormData({ ...formData, ...data });
   };
 
   const deleteCurrentEventById = async () => {
@@ -198,12 +194,12 @@ export default function Attendence({ footerLinks }) {
 
   const onSubmit = async (data) => {
     const apiResponse = await eventService.editAttendanceDocumentList({
-      id: ids?.user_id,
+      id: formData?.user_id,
       page_type: "documents_checklist",
       documents_status: data?.documents_status,
     });
     if (apiResponse?.status === 200) {
-      setShowEditModal(false);
+      setFormData();
     }
     if (apiResponse?.status === 200) {
       const eventResult = await eventService.getEventListById({ id: id });
@@ -296,7 +292,6 @@ export default function Attendence({ footerLinks }) {
     //   attr: "city",
     // },
   ];
-
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
@@ -364,10 +359,6 @@ export default function Attendence({ footerLinks }) {
       setCameraUrl();
       setUserData({ ...users[coruntIndex + 1], index: coruntIndex + 1 });
     }
-  };
-  const handleCandidateSelectRow = (state) => {
-    setRowData(state);
-    // setShowEditModal(true);
   };
   const showIndexes = (users, userData, state) => {
     const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
@@ -578,7 +569,6 @@ export default function Attendence({ footerLinks }) {
                     {event?.name ? event?.name : event?.type}
                   </AdminTypo.H6>
                   {/* <AdminTypo.Secondarybutton
-                  // onPress={() => setShowEditModal(true)}
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
@@ -724,9 +714,9 @@ export default function Attendence({ footerLinks }) {
             </Modal>
 
             <Modal
-              isOpen={showEditModal}
+              isOpen={formData?.id}
               onClose={() => {
-                setShowEditModal(false), setFormData({});
+                setFormData();
               }}
               size="xl"
             >
@@ -749,10 +739,10 @@ export default function Attendence({ footerLinks }) {
                       pb="5"
                     ></HStack>
                     <HStack space="5" pl="2" alignItems="center">
-                      {rowData?.profile_url ? (
+                      {formData?.profile_url ? (
                         <Avatar
                           source={{
-                            uri: rowData?.profile_url,
+                            uri: formData?.profile_url,
                           }}
                           // alt="Alternate Text"
                           width={"35px"}
@@ -767,9 +757,9 @@ export default function Attendence({ footerLinks }) {
                         />
                       )}
                       <AdminTypo.H4 color="textGreyColor.800">
-                        {rowData?.user?.first_name +
+                        {formData?.user?.first_name +
                           " " +
-                          rowData?.user?.last_name}
+                          formData?.user?.last_name}
                       </AdminTypo.H4>
                     </HStack>
 
@@ -833,7 +823,9 @@ export default function Attendence({ footerLinks }) {
                               name="myRadioGroup"
                               accessibilityLabel="favorite number"
                               value={
-                                ids?.status !== "present" ? "absent" : "present"
+                                formData?.status !== "present"
+                                  ? "absent"
+                                  : "present"
                               }
                               onChange={(nextValue) => {
                                 setAttendance(nextValue);
@@ -884,11 +876,12 @@ export default function Attendence({ footerLinks }) {
                             {t("COMPLETE_AADHAR_KYC")}
                           </AdminTypo.H6>
                           <HStack alignItems="center" space={"2"} p="1">
-                            {ids?.user?.aadhar_verified !== null ? (
+                            {formData?.user?.aadhar_verified !== null ? (
                               <AdminTypo.H3 style={{ color: "green" }}>
                                 {t("YES")} (
-                                {ids?.user?.aadhaar_verification_mode !== null
-                                  ? ids?.user?.aadhaar_verification_mode
+                                {formData?.user?.aadhaar_verification_mode !==
+                                null
+                                  ? formData?.user?.aadhaar_verification_mode
                                   : ""}
                                 )
                               </AdminTypo.H3>
@@ -911,7 +904,7 @@ export default function Attendence({ footerLinks }) {
                             schema={schema}
                             ref={formRef}
                             uiSchema={uiSchema}
-                            formData={formData}
+                            formData={formData ? formData : {}}
                             validator={validator}
                             onChange={handleFormChange}
                             onSubmit={onSubmit}
@@ -929,8 +922,7 @@ export default function Attendence({ footerLinks }) {
                               <AdminTypo.Secondarybutton
                                 shadow="BlueOutlineShadow"
                                 onPress={() => {
-                                  setFormData({});
-                                  setShowEditModal(false);
+                                  setFormData();
                                 }}
                               >
                                 {t("CANCEL")}
@@ -960,9 +952,12 @@ export default function Attendence({ footerLinks }) {
                   selector: (row) => (
                     <Button
                       onPress={() => {
-                        setShowEditModal(true);
-                        setRowData(row);
-                        setids(row);
+                        setFormData({
+                          ...row,
+                          documents_status: JSON.parse(
+                            row?.user?.program_faciltators[0]?.documents_status
+                          ),
+                        });
                       }}
                     >
                       <IconByName
@@ -985,7 +980,6 @@ export default function Attendence({ footerLinks }) {
               paginationServer
               paginationTotalRows={paginationTotalRows}
               onChangePage={handlePageChange}
-              onRowClicked={handleCandidateSelectRow}
               onChangeRowsPerPage={(e) => setLimit(e)}
               // onChangePage={(e) => setPage(e)}
             />
