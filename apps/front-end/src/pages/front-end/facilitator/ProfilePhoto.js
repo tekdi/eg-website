@@ -3,7 +3,12 @@ import { HStack, VStack } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ProfilePhoto({ facilitator }) {
+export default function ProfilePhoto({
+  profile_photo_1,
+  profile_photo_2,
+  profile_photo_3,
+  editLink,
+}) {
   const navigate = useNavigate();
   return (
     <VStack alignItems="center">
@@ -14,13 +19,15 @@ export default function ProfilePhoto({ facilitator }) {
           p="2"
           position="absolute"
           name="PencilLineIcon"
-          onPress={(e) => navigate(`/profile/edit/upload/1`)}
+          onPress={(e) =>
+            navigate(editLink ? editLink : `/profile/edit/upload/1`)
+          }
         />
-        {facilitator?.profile_photo_1?.id ? (
+        {profile_photo_1?.id ? (
           <ImageView
             w="120"
             h="120"
-            source={{ document_id: facilitator?.profile_photo_1?.id }}
+            source={{ document_id: profile_photo_1?.id }}
           />
         ) : (
           <IconByName
@@ -34,15 +41,15 @@ export default function ProfilePhoto({ facilitator }) {
       </VStack>
 
       <HStack alignItems="center" space="6">
-        {[1, 2, 3].map(
+        {[profile_photo_1, profile_photo_2, profile_photo_3].map(
           (photo) =>
-            facilitator?.[`profile_photo_${photo}`]?.id && (
+            photo?.id && (
               <ImageView
                 key={photo}
                 w="60"
                 h="60"
                 source={{
-                  document_id: facilitator?.[`profile_photo_${photo}`]?.id,
+                  document_id: photo?.id,
                 }}
               />
             )

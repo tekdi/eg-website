@@ -43,7 +43,11 @@ export default function FacilitatorBasicDetails({
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
-          <ProfilePhoto facilitator={facilitator} />
+          <ProfilePhoto
+            profile_photo_1={facilitator?.profile_photo_1}
+            profile_photo_2={facilitator?.profile_photo_2}
+            profile_photo_3={facilitator?.profile_photo_3}
+          />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
