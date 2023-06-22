@@ -9,12 +9,12 @@ export default {
       properties: {
         career_aspiration: {
           type: "string",
-          label: "CAREER_ASPIRATION",
+          label: "LEARNER_ASPIRATION",
           format: "select",
         },
 
         career_aspiration_details: {
-          type: "string",
+          type: ["string", "null"],
           title: "TELL_IN_DETAIL",
         },
 

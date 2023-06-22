@@ -125,6 +125,7 @@ export default function BenificiaryProfileView(props) {
         return <React.Fragment></React.Fragment>;
     }
   }
+  console.log(benificiary, benificiary?.profile_photo_1?.id);
   return (
     <Layout
       _appBar={{
@@ -137,10 +138,10 @@ export default function BenificiaryProfileView(props) {
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <VStack alignItems="Center" pt="20px">
-            {benificiary?.profile_photo_1 ? (
+            {benificiary?.profile_photo_1?.id ? (
               <ImageView
                 source={{
-                  uri: benificiary?.profile_photo_1,
+                  document_id: benificiary?.profile_photo_1?.id,
                 }}
                 // alt="Alternate Text"
                 width={"190px"}

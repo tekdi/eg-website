@@ -164,7 +164,13 @@ export default function AdharKyc({ footerLinks }) {
         />
       ) : page === "upload" ? (
         <ManualUpload
-          {...{ setLoading, setPage, setOtpFailedPopup, footerLinks }}
+          {...{
+            setLoading,
+            setPage,
+            setOtpFailedPopup,
+            footerLinks,
+            setAadhaarCompare,
+          }}
         />
       ) : page === "otp" && data?.aadhaarNumber ? (
         <AadhaarOTP
