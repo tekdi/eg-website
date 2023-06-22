@@ -8,6 +8,8 @@ import {
   t,
   Layout,
   ImageView,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +25,7 @@ export default function FacilitatorBasicDetails({
     ...facilitator?.extended_users,
     gender: facilitator?.gender,
   };
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   React.useEffect(() => {
     facilitatorDetails();
@@ -34,6 +37,11 @@ export default function FacilitatorBasicDetails({
     setfacilitator(result);
   };
 
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, [facilitator]);
+
   return (
     <Layout
       _appBar={{
@@ -43,7 +51,11 @@ export default function FacilitatorBasicDetails({
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
-          <ProfilePhoto facilitator={facilitator} />
+          <ProfilePhoto
+            profile_photo_1={facilitator?.profile_photo_1}
+            profile_photo_2={facilitator?.profile_photo_2}
+            profile_photo_3={facilitator?.profile_photo_3}
+          />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
@@ -289,7 +301,16 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.gender ? facilitator?.gender : "-"}
+                    {facilitator?.gender ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"GENDER"}
+                        enumOptionValue={facilitator?.gender}
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -311,9 +332,18 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.extended_users?.social_category
-                      ? facilitator?.extended_users?.social_category
-                      : "-"}
+                    {facilitator?.extended_users?.social_category ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"FACILITATOR_SOCIAL_STATUS"}
+                        enumOptionValue={
+                          facilitator?.extended_users?.social_category
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -335,9 +365,18 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.extended_users?.marital_status
-                      ? facilitator?.extended_users?.marital_status
-                      : "-"}
+                    {facilitator?.extended_users?.marital_status ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"FACILITATOR_MARITAL_STATUS"}
+                        enumOptionValue={
+                          facilitator?.extended_users?.marital_status
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>

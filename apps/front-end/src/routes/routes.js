@@ -32,6 +32,7 @@ import EditForm from "../pages/front-end/facilitator/edit/Form";
 import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
 import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
 import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
+import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
 
 export default [
   { path: "/form", component: Home },
@@ -119,6 +120,10 @@ export default [
   {
     path: "/beneficiary/:id/aadhaardetails",
     component: BenificiaryAadhaarDetails,
+  },
+  {
+    path: "/beneficiary/:id/upload/:photoNo",
+    component: BenificiaryProfilePhoto,
   },
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },

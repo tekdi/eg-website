@@ -9,6 +9,7 @@ import {
   Layout,
   ImageView,
   enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -17,12 +18,17 @@ export default function BenificiaryEnrollment() {
   const [benificiary, setbenificiary] = React.useState();
   const [source, setsource] = React.useState();
   const [subject, setSubject] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   const navigate = useNavigate();
 
   React.useEffect(() => {
     agDetails();
   }, [id]);
+
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/profile/${id}`);
+  };
 
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
@@ -42,8 +48,13 @@ export default function BenificiaryEnrollment() {
     }
   };
 
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, [benificiary]);
+
   return (
-    <Layout _appBar={{ name: t("ENROLLMENT_DETAILS") }}>
+    <Layout _appBar={{ name: t("ENROLLMENT_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200" px="5" pt="3">
         <VStack
           px="5"
@@ -92,11 +103,18 @@ export default function BenificiaryEnrollment() {
               </FrontEndTypo.H3>
 
               <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                {benificiary?.program_beneficiaries?.enrollment_status
-                  ? t(
-                      benificiary?.program_beneficiaries?.enrollment_status.toUpperCase()
-                    )
-                  : "-"}
+                {benificiary?.program_beneficiaries?.enrollment_status ? (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"ENROLLEMENT_STATUS"}
+                    enumOptionValue={
+                      benificiary?.program_beneficiaries?.enrollment_status
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ) : (
+                  "-"
+                )}
               </FrontEndTypo.H3>
             </HStack>
 
@@ -111,9 +129,18 @@ export default function BenificiaryEnrollment() {
               </FrontEndTypo.H3>
 
               <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                {benificiary?.program_beneficiaries?.enrolled_for_board
-                  ? benificiary?.program_beneficiaries?.enrolled_for_board
-                  : "-"}
+                {benificiary?.program_beneficiaries?.enrolled_for_board ? (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"ENROLLED_FOR_BOARD"}
+                    enumOptionValue={
+                      benificiary?.program_beneficiaries?.enrolled_for_board
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ) : (
+                  "-"
+                )}
               </FrontEndTypo.H3>
             </HStack>
 

@@ -18,10 +18,15 @@ export default {
         },
         device_ownership: {
           type: "string",
-          label: "DEVICE_OWNERSHIP",
+          label: "MARK_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
+        },
+        edit_page_type: {
+          type: "string",
+          format: "hidden",
+          default: "add_contact",
         },
       },
     },
@@ -42,7 +47,7 @@ export default {
         },
         address: {
           title: "STREET_ADDRESS",
-          type: "string",
+          type: ["string", "null"],
         },
         state: {
           type: "string",
@@ -137,6 +142,7 @@ export default {
       },
     },
     5: {
+      title: "ASPIRATION_MAPPING",
       type: "object",
       required: ["learning_motivation", "type_of_support_needed"],
       properties: {

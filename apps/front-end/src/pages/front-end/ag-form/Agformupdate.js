@@ -95,7 +95,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       device_type: qData?.result?.core_beneficiaries?.device_type,
       state: qData?.result?.state,
       district: qData?.result?.district,
-      address: qData?.result?.address,
+      address: qData?.result?.address == "null" ? "" : qData?.result?.address,
       block: qData?.result?.block,
       village: qData?.result?.village,
       grampanchayat: qData?.result?.grampanchayat,
@@ -416,7 +416,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -664,11 +664,10 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
-      const data = await getBase64(file);
+    let data = await benificiaryRegistoryService.validateFileMaxSize(file);
+    if (data) {
       setCameraUrl(data);
       setcameraFile(file);
-      setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
@@ -680,7 +679,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       const form_data = new FormData();
       const item = {
         file: cameraFile,
-        document_type: "profile",
+        document_type: "profile_photo_1",
         user_id: userId,
       };
       for (let key in item) {

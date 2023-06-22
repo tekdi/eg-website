@@ -12,7 +12,7 @@ export default {
       ],
       properties: {
         role_title: {
-          title: "JOB_TITLE",
+          title: "VOLUNTEER_TITLE",
           type: "string",
         },
         organization: {
