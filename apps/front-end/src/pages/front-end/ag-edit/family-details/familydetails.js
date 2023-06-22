@@ -124,13 +124,15 @@ export default function agFormEdit({ ip }) {
       ...formData,
       father_details: {
         father_first_name: father_first_name,
-        father_last_name: father_last_name,
-        father_middle_name: father_middle_name,
+        father_middle_name:
+          father_middle_name == "null" ? "" : father_middle_name,
+        father_last_name: father_last_name == "null" ? "" : father_last_name,
       },
       mother_details: {
         mother_first_name: mother_first_name,
-        mother_middle_name: mother_middle_name,
-        mother_last_name: mother_last_name,
+        mother_middle_name:
+          mother_middle_name == "null" ? "" : mother_middle_name,
+        mother_last_name: mother_last_name == "null" ? "" : mother_last_name,
       },
       edit_page_type: "edit_family",
     });

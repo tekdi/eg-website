@@ -293,19 +293,24 @@ export default function BenificiaryBasicDetails() {
                       ? benificiary?.core_beneficiaries?.father_first_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.father_middle_name
+                    benificiary?.core_beneficiaries?.father_middle_name !=
+                    "null"
                       ? benificiary?.core_beneficiaries?.father_middle_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.father_last_name
+                    benificiary?.core_beneficiaries?.father_last_name != "null"
                       ? benificiary?.core_beneficiaries?.father_last_name
                       : ""
                   }`}
                 </FrontEndTypo.H3>
               </HStack>
-
-              <HStack alignItems="Center" space="2xl">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
+              <HStack alignItems="Center">
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.4"
+                  pb="2"
+                >
                   {t("MOTHER")}
                 </FrontEndTypo.H3>
 
@@ -466,11 +471,11 @@ export default function BenificiaryBasicDetails() {
                       ? benificiary?.references[0]?.first_name
                       : ""
                   } ${
-                    benificiary?.references[0]?.middle_name
+                    benificiary?.references[0]?.middle_name != "null"
                       ? benificiary?.references[0]?.middle_name
                       : ""
                   } ${
-                    benificiary?.references[0]?.last_name
+                    benificiary?.references[0]?.last_name != "null"
                       ? benificiary?.references[0]?.last_name
                       : ""
                   }`}
