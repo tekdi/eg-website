@@ -91,15 +91,23 @@ export default function agFormEdit({ ip }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  // React.useEffect(() => {
-  //   getImage();
-  // }, [page, credentials]);
-
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
+    const finalData = qData.result;
     setFormData(qData.result);
+    setFormData({
+      ...formData,
+      address: finalData?.address == "null" ? "" : finalData?.address,
+      state: finalData?.state,
+      district: finalData?.district,
+      block: finalData?.block,
+      village: finalData?.village,
+      grampanchayat: finalData?.grampanchayat,
+    });
   }, []);
+
+  console.log("formdata", formData);
 
   const uiSchema = {
     dob: {

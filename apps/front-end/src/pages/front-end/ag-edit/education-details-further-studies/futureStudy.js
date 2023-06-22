@@ -210,7 +210,8 @@ export default function AgformUpdate({ userTokenInfo }) {
 
     setFormData({
       ...formData,
-      career_aspiration_details: career_aspiration_details,
+      career_aspiration_details:
+        career_aspiration_details == "null" ? "" : career_aspiration_details,
       career_aspiration: career_aspiration,
       aspiration_mapping: {
         learning_motivation: learning_motivation,
@@ -283,7 +284,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     }
   };
 
-  const EditEducation = async (data) => {
+  const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     if (updateDetails) {
       navigate(`/beneficiary/${userId}/educationdetails`);
@@ -338,12 +339,13 @@ export default function AgformUpdate({ userTokenInfo }) {
               onChange,
               onError,
               transformErrors,
+              onSubmit,
             }}
           >
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
-              onPress={() => EditEducation()}
+              onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>

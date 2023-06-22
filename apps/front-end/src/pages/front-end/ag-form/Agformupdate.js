@@ -95,7 +95,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       device_type: qData?.result?.core_beneficiaries?.device_type,
       state: qData?.result?.state,
       district: qData?.result?.district,
-      address: qData?.result?.address ? qData?.result?.address : "",
+      address: qData?.result?.address == "null" ? "" : qData?.result?.address,
       block: qData?.result?.block,
       village: qData?.result?.village,
       grampanchayat: qData?.result?.grampanchayat,
@@ -679,7 +679,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       const form_data = new FormData();
       const item = {
         file: cameraFile,
-        document_type: "profile",
+        document_type: "profile_photo_1",
         user_id: userId,
       };
       for (let key in item) {
