@@ -8,7 +8,15 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { HStack, VStack, Modal, Image, Text, ScrollView } from "native-base";
+import {
+  HStack,
+  VStack,
+  Modal,
+  Image,
+  Text,
+  ScrollView,
+  Input,
+} from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -129,6 +137,9 @@ function Table({
   setadminPage,
   setadminLimit,
   setadminstatus,
+  adminstatus,
+  adminsearchValue,
+  setadminsearchValue,
   admindata,
   formData,
   totalCount,
@@ -168,12 +179,14 @@ function Table({
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
+    let searchValue = adminsearchValue;
 
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
       adminlimit,
-      status
+      status,
+      searchValue
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
@@ -191,13 +204,35 @@ function Table({
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
-    let status = value;
+    let adminstatus = value;
+    let searchValue = adminsearchValue;
 
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
       adminlimit,
-      status
+      adminstatus,
+      searchValue
+    );
+    setData(result.data?.data);
+    setPaginationTotalRows(result?.data?.totalCount);
+    // setLimit(result?.limit);
+    setLoading(false);
+  };
+
+  const searchName = async (e) => {
+    let searchValue = e?.nativeEvent?.text;
+    setadminsearchValue(searchValue);
+    let _formData = formData;
+    let adminpage = page;
+    let adminlimit = limit;
+    let status = adminstatus;
+    const result = await facilitatorRegistryService.filter(
+      _formData,
+      adminpage,
+      adminlimit,
+      status,
+      searchValue
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
@@ -227,13 +262,16 @@ function Table({
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
+        <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
           }
           placeholder="search"
           variant="outline"
-        /> */}
+          onChange={(e) => {
+            searchName(e);
+          }}
+        />
         <HStack space={2}>
           {/* <Button
             variant={"primary"}
