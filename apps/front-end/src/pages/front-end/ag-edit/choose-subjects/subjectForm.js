@@ -85,7 +85,6 @@ export default function App({ facilitator, id, ip, onClick }) {
     borderRadius: "12px",
     borderColor: "gray",
   };
-
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
@@ -274,6 +273,8 @@ export default function App({ facilitator, id, ip, onClick }) {
       qData?.result?.program_beneficiaries?.enrollment_number;
     let subjects = qData?.result?.program_beneficiaries?.subjects;
     let subjectData = subjects ? JSON.parse(subjects) : [];
+    let payment_receipt_document_id =
+      qData?.result?.program_beneficiaries?.payment_receipt_document_id;
     setSource({
       document_id:
         qData?.result?.program_beneficiaries?.payment_receipt_document_id,
@@ -296,8 +297,9 @@ export default function App({ facilitator, id, ip, onClick }) {
           ? enrollment_number
           : "",
       subjects:
-        enrollment_status === "other" ? "" : stringsArray ? stringsArray : "",
+        enrollment_status === "other" ? [] : stringsArray ? stringsArray : [],
       facilitator_id: localStorage.getItem("id"),
+      payment_receipt_document_id: payment_receipt_document_id,
     });
   }, []);
 
@@ -464,11 +466,11 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         };
-      } else if (formData?.subjects.length <= 1) {
+      } else if (formData?.subjects.length < 1) {
         newErrors.subjects = {
           __errors: [t("REQUIRED_MESSAGE_SUBJECTS")],
         };
-      } else if (formData?.subjects.length >= 9) {
+      } else if (formData?.subjects.length >= 8) {
         newErrors.subjects = {
           __errors: [t("REQUIRED_MESSAGE_SUBJECTS_SELECTTION")],
         };
@@ -504,7 +506,6 @@ export default function App({ facilitator, id, ip, onClick }) {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
-
   const editSubmit = async () => {
     if (formData?.enrollment_status === "enrolled") {
       if (
