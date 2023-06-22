@@ -304,7 +304,13 @@ export default function BenificiaryBasicDetails() {
                   }`}
                 </FrontEndTypo.H3>
               </HStack>
-              <HStack alignItems="Center">
+
+              <HStack
+                alignItems="Center"
+                space="xl"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
@@ -320,11 +326,12 @@ export default function BenificiaryBasicDetails() {
                       ? benificiary?.core_beneficiaries?.mother_first_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.mother_middle_name
+                    benificiary?.core_beneficiaries?.mother_middle_name !=
+                    "null"
                       ? benificiary?.core_beneficiaries?.mother_middle_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.mother_last_name
+                    benificiary?.core_beneficiaries?.mother_last_name != "null"
                       ? benificiary?.core_beneficiaries?.mother_last_name
                       : ""
                   }`}
