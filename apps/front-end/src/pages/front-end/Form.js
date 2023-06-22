@@ -73,7 +73,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [verifyOtpData, setverifyOtpData] = React.useState();
   const [loading, setLoading] = React.useState(false);
-  const [otpbtn, setotpbtn] = React.useState(false);
+  const [otpButton, setOtpButton] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 10) {
@@ -532,7 +532,7 @@ export default function App({ facilitator, ip, onClick }) {
           const { otp, ...fData } = e;
           return fData;
         });
-        setotpbtn(false);
+        setOtpButton(false);
       }
     }
     if (id === "root_aadhar_no") {
@@ -671,7 +671,7 @@ export default function App({ facilitator, ip, onClick }) {
           setErrors(newErrors);
         } else {
           setSchema(newSchema);
-          setotpbtn(true);
+          setOtpButton(true);
         }
       } else if (page <= 1) {
         success = true;
@@ -930,7 +930,7 @@ export default function App({ facilitator, ip, onClick }) {
                   formRef?.current?.submit();
                 }}
               >
-                {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")}
+                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
