@@ -105,8 +105,8 @@ export default function agFormEdit({ ip }) {
       ...formData,
       referencefullname: {
         first_name: rfirst_name,
-        middle_name: rmiddle_name,
-        last_name: rlast_name,
+        middle_name: rmiddle_name == "null" ? "" : rmiddle_name,
+        last_name: rlast_name == "null" ? "" : rlast_name,
         relation: rrelation,
         contact_number: rcontact_number,
       },
@@ -210,21 +210,24 @@ export default function agFormEdit({ ip }) {
     ["relation", "first_name"].forEach((key) => {
       if (
         key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
+        data?.referencefullname?.first_name?.replaceAll(" ", "") === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
+      if (
+        data?.referencefullname?.[key] &&
+        !data?.referencefullname?.[key]?.match(/^[a-zA-Z ]*$/g)
+      ) {
+        errors?.[`referencefullname`]?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
 
       if (key === "relation" && data?.relation?.replaceAll(" ", "") === "") {
-        errors?.[key]?.addError(
+        errors?.[`referencefullname`]?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
@@ -232,7 +235,6 @@ export default function agFormEdit({ ip }) {
 
     return errors;
   };
-
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
       if (error.name === "required") {
@@ -256,7 +258,6 @@ export default function agFormEdit({ ip }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_contact_number") {
-      console.log("data new");
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
 
@@ -272,7 +273,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -280,8 +280,6 @@ export default function agFormEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    console.log(formData?.referencefullname?.contact_number.toString());
-
     if (formData?.referencefullname?.contact_number.toString()?.length !== 10) {
       const newErrors = {
         contact_number: {
@@ -294,7 +292,6 @@ export default function agFormEdit({ ip }) {
         formData?.referencefullname,
         userId
       );
-      console.log("page3.....", updateDetails);
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };

@@ -13,6 +13,7 @@ import {
   authRegistryService,
   ImageView,
   AdminTypo,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -73,6 +74,7 @@ export default function FacilitatorView({ footerLinks }) {
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
+  const [qualifications, setQualifications] = React.useState([]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -84,8 +86,22 @@ export default function FacilitatorView({ footerLinks }) {
   const navigate = useNavigate();
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.getOne({ id });
-    setData(result);
+    const profileDetails = async () => {
+      const result = await facilitatorRegistryService.getOne({ id });
+      setData(result);
+      const qualificationList =
+        await facilitatorRegistryService.getQualificationAll();
+      const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
+      if (qual?.length > 0) {
+        const filterData = qualificationList?.filter((e) => {
+          const qualData = qual?.find((item) => `${item}` === `${e?.id}`);
+          return qualData ? true : false;
+        });
+
+        setQualifications(filterData);
+      }
+    };
+    await profileDetails();
   }, []);
 
   const showData = (item) => (item ? item : "-");
@@ -555,11 +571,11 @@ export default function FacilitatorView({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("BASIC_DETAILS")}
                   </AdminTypo.H5>
-                  <IconByName
+                  {/* <IconByName
                     color="editIcon.300"
                     size="30px"
                     name="EditBoxLineIcon"
-                  ></IconByName>
+                  /> */}
                 </HStack>
 
                 <HStack>
@@ -662,11 +678,11 @@ export default function FacilitatorView({ footerLinks }) {
                         <AdminTypo.H5 color="textGreyColor" bold>
                           {t("EDUCATION")}{" "}
                         </AdminTypo.H5>
-                        <IconByName
+                        {/* <IconByName
                           color="editIcon.300"
                           size="30px"
                           name="EditBoxLineIcon"
-                        ></IconByName>
+                        /> */}
                       </HStack>
                       <HStack>
                         <AdminTypo.H5 color="textGreyColor.550">
@@ -687,9 +703,7 @@ export default function FacilitatorView({ footerLinks }) {
                         </AdminTypo.H5>
                         {
                           <AdminTypo.H5 color="textGreyColor.800" bold>
-                            {/* qualification get api get list of qualification =>take id which is 
-                              an array   */}
-                            {data?.program_faciltators?.qualification_ids}
+                            {qualifications?.map((e) => e?.name).join(", ")}
                           </AdminTypo.H5>
                         }
                       </HStack>
@@ -742,11 +756,11 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H5 color="textGreyColor" bold>
                       {t("OTHER_DETAILS")}
                     </AdminTypo.H5>
-                    <IconByName
+                    {/* <IconByName
                       color="editIcon.300"
                       size="22px"
                       name="EditBoxLineIcon"
-                    ></IconByName>
+                    /> */}
                   </HStack>
                   <HStack>
                     <AdminTypo.H5 color="textGreyColor.550">

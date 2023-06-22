@@ -47,7 +47,7 @@ export default {
         },
         address: {
           title: "STREET_ADDRESS",
-          type: "string",
+          type: ["string", "null"],
         },
         state: {
           type: "string",
