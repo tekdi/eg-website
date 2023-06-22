@@ -383,9 +383,6 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {/* {benificiary?.extended_users?.social_category
-                    ? t(benificiary?.extended_users?.social_category)
-                    : "-"} */}
                   {benificiary?.extended_users?.social_category ? (
                     <GetEnumValue
                       t={t}
