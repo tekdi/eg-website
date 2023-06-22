@@ -206,14 +206,14 @@ export default function Orientation({ footerLinks }) {
     setFormData({
       attendees: [],
       type: null,
-      name: null,
-      master_trainer: null,
+      name: "",
+      master_trainer: "",
       start_date: null,
       end_date: null,
       start_time: null,
       end_time: null,
       reminders: [],
-      location: null,
+      location: "",
       location_type: null,
     });
   };
@@ -396,20 +396,22 @@ export default function Orientation({ footerLinks }) {
               <VStack space="4" mt="4">
                 <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="blue.500" />
-                  <AdminTypo.H6 bold>{t("INTERVIEW")}</AdminTypo.H6>
+                  <AdminTypo.H6 bold>Prerak Orientation</AdminTypo.H6>
                 </HStack>
                 <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="green.500" />
-                  <AdminTypo.H6 bold>{t("ORIENTATION_DAYS")}</AdminTypo.H6>
+                  <AdminTypo.H6 bold>Prerak FLN Training</AdminTypo.H6>
                 </HStack>
                 <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="yellow.500" />
-                  <AdminTypo.H6 bold>{t("TRAINING_DAYS")}</AdminTypo.H6>
+                  <AdminTypo.H6 bold>
+                    Prerak Camp Execution Training
+                  </AdminTypo.H6>
                 </HStack>
-                <HStack alignItems="Center" space="md">
+                {/* <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="purple.500" />
                   <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
-                </HStack>
+                </HStack> */}
               </VStack>
             </VStack>
             <Box>
@@ -467,6 +469,12 @@ export default function Orientation({ footerLinks }) {
                       ? item?.location_type
                       : "",
                     event_id: item?.id ? item?.id : "",
+                    backgroundColor:
+                      item?.type === "Prerak Orientation"
+                        ? "#3B82F6"
+                        : item?.type === "Prerak FLN Training"
+                        ? "#5DC65F"
+                        : "#EAB431",
                   };
                 })}
                 eventTimeFormat={{
