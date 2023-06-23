@@ -178,7 +178,7 @@ export default {
       type: "object",
       properties: {
         qualification_master_id: {
-          label: "YOUR_HIGHEST_QUALIFICATION",
+          //label: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string", "number", "null"],
           format: "CustomR",
           grid: 2,
