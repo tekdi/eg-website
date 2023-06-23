@@ -408,7 +408,7 @@ export default function App({ facilitator, ip, onClick, id }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("EDUCATIONAL_DETAILS"),
+        name: t("EDUCATION_DETAILS"),
         lang,
         setLang,
       }}
