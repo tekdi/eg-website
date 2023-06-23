@@ -180,7 +180,9 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.email_id ? benificiary?.email_id : "-"}
+                  {benificiary?.email_id !== "null"
+                    ? benificiary?.email_id
+                    : "-"}
                 </FrontEndTypo.H3>
 
                 <IconByName

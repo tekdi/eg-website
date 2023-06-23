@@ -589,6 +589,35 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
+
+    if (id === "root_grampanchayat") {
+      if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
+        const newErrors = {
+          grampanchayat: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    console.log("data", data);
+
+    if (id === "root_address") {
+      if (
+        !data?.address?.match(
+          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+        ) &&
+        data?.address !== null
+      ) {
+        const newErrors = {
+          address: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
   };
 
   const onError = (data) => {
