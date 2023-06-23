@@ -1,18 +1,15 @@
 import React from "react";
-import moment from "moment";
-import { Button, HStack, Modal, Radio, Input, VStack, Box } from "native-base";
+import { HStack, Modal, Radio, Input, VStack, Box } from "native-base";
 import {
   H1,
-  H3,
-  H2,
-  IconByName,
   facilitatorRegistryService,
-  t,
   AdminTypo,
+  enumRegistryService,
 } from "@shiksha/common-lib";
-import Chip from "component/Chip";
+import { useTranslation } from "react-i18next";
 
 const CRadio = ({ items, onChange }) => {
+  const { t } = useTranslation();
   return (
     <Radio.Group
       defaultValue="1"
@@ -22,7 +19,7 @@ const CRadio = ({ items, onChange }) => {
       <HStack alignItems="center" space={3} flexWrap="wrap">
         {items.map((item, key) => (
           <Radio key={key} value={item?.value} size="sm">
-            {item?.label}
+            {t(item?.title)}
           </Radio>
         ))}
       </HStack>
@@ -97,6 +94,8 @@ export default function StatusButton({ data, setData }) {
   const [reason, setReason] = React.useState();
   const [disabledBtn, setDisabledBtn] = React.useState([]);
   const [color, setColor] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
+  const { t } = useTranslation();
 
   const update = async (status) => {
     if (data?.program_faciltator_id && status) {
@@ -109,6 +108,10 @@ export default function StatusButton({ data, setData }) {
       setData({ ...data, status: status, status_reason: reason });
     }
   };
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data);
+  }, []);
 
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
@@ -351,18 +354,15 @@ export default function StatusButton({ data, setData }) {
                   </AdminTypo.H6>
                   <CRadio
                     onChange={(e) => setReason(e)}
-                    items={[
-                      {
-                        label: "Incomplete Form",
-                        value: "Incomplete Form",
-                      },
-                      { label: "Not Qualified", value: "Not Qualified" },
-                      {
-                        label: "Less experienced",
-                        value: "Less experienced",
-                      },
-                      { label: "Other", value: "Other" },
-                    ]}
+                    items={
+                      enumOptions[
+                        showModal.status === "quit"
+                          ? "FACILITATOR_REASONS_FOR_QUIT"
+                          : "rusticate"
+                          ? "FACILITATOR_REASONS_FOR_RUSTICATE"
+                          : "rejected"
+                      ]
+                    }
                   />
                   {reason &&
                   ![

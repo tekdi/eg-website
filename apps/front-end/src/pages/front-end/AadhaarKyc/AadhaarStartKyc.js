@@ -18,7 +18,7 @@ const AadhaarStartKyc = () => {
       <Box className="adharVerifyStart" w="full" minH="100vh">
         <Box className="content" p="4" flexGrow="1" w="full">
           {/* <Text textAlign="center" fontSize="lg" px="20px">
-          {t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY!")}
+          {t("YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY")}
         </Text>
 
         <Text textAlign="center" color="black:alpha.70">
