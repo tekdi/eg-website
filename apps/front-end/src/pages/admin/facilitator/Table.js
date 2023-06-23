@@ -134,7 +134,7 @@ function Table({
   totalCount,
 }) {
   const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState();
+  const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState();
   const [paginationTotalRows, setPaginationTotalRows] =
     React.useState(totalCount);
@@ -178,7 +178,7 @@ function Table({
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
     setLoading(false);
-  }, [page, limit]);
+  }, [page, limit, formData]);
 
   const exportPrerakCSV = async () => {
     const result = await facilitatorRegistryService.exportFacilitatorsCsv();
@@ -381,7 +381,7 @@ function Table({
         persistTableHead
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[15, 25, 50, 100]}
+        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {

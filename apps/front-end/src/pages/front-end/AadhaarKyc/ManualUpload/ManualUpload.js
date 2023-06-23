@@ -25,6 +25,7 @@ export default function ManualUpload({
   setPage,
   setOtpFailedPopup,
   footerLinks,
+  setAadhaarCompare,
 }) {
   const { id } = useParams();
   const [image, setImage] = React.useState();
@@ -90,12 +91,13 @@ export default function ManualUpload({
       } else {
         const resultUser = await authRegistryService.aadhaarKyc({
           id,
-          aadhar_verified: "yes",
+          aadhar_verified: "in_progress",
           aadhaar_verification_mode: "upload",
         });
         if (resultUser?.error) {
           setPage("aadhaarSuccess");
         } else {
+          setAadhaarCompare({ isVerified: true });
           setPage("aadhaarSuccess");
         }
       }
