@@ -317,6 +317,20 @@ export default function agFormEdit({ ip }) {
       }
     }
 
+    if (id === "root_email_id") {
+      if (
+        data?.email_id &&
+        !data?.email_id?.toString()?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+      ) {
+        const newErrors = {
+          email_id: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     setFormData(newData);
   };
 
