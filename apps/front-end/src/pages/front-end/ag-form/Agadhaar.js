@@ -269,7 +269,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       _appBar={{
         onPressBackButton: (e) => {
           navigate(`/beneficiary/${userId}/2`, {
-            state: { id: userId, page: "5" },
+            state: { id: userId, route: true },
           });
         },
         onlyIconsShow: ["backBtn", "userInfo"],
