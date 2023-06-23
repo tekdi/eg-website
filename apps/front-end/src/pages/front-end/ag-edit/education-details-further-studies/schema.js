@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "EDUCATIONAL_DETAILS",
+      title: "EDUCATION_DETAILS",
       type: "object",
       required: [
         "type_of_learner",
