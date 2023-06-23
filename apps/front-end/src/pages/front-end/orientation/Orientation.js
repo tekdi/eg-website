@@ -8,6 +8,7 @@ import {
   Loading,
   enumRegistryService,
   getOptions,
+  COLORS,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -32,6 +33,7 @@ import {
   BaseInputTemplate,
   HFieldTemplate,
 } from "../../../component/BaseInput";
+
 import {
   HStack,
   VStack,
@@ -471,10 +473,10 @@ export default function Orientation({ footerLinks }) {
                     event_id: item?.id ? item?.id : "",
                     backgroundColor:
                       item?.type === "Prerak Orientation"
-                        ? "#3B82F6"
+                        ? COLORS.blue
                         : item?.type === "Prerak FLN Training"
-                        ? "#5DC65F"
-                        : "#EAB431",
+                        ? COLORS.green
+                        : COLORS.yellow,
                   };
                 })}
                 eventTimeFormat={{
