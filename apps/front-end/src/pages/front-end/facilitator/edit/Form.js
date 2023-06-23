@@ -231,7 +231,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: enumObj?.FACILITATOR_MARITAL_STATUS,
+        arr: enumObj?.MARITAL_STATUS,
         title: "title",
         value: "value",
       });

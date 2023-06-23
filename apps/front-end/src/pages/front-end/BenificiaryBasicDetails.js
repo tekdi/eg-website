@@ -408,7 +408,7 @@ export default function BenificiaryBasicDetails() {
                   {benificiary?.extended_users?.marital_status ? (
                     <GetEnumValue
                       t={t}
-                      enumType={"BENEFICIARY_MARITAL_STATUS"}
+                      enumType={"MARITAL_STATUS"}
                       enumOptionValue={
                         benificiary?.extended_users?.marital_status
                       }
