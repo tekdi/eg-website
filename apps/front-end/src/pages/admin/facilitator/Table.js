@@ -136,10 +136,10 @@ function Table({
   facilitator,
   setadminPage,
   setadminLimit,
-  setadminstatus,
-  adminstatus,
-  adminsearchValue,
-  setadminsearchValue,
+  setadminStatus,
+  adminStatus,
+  adminSearchValue,
+  setadminSearchValue,
   admindata,
   formData,
   totalCount,
@@ -179,7 +179,7 @@ function Table({
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
-    let searchValue = adminsearchValue;
+    let searchValue = adminSearchValue;
 
     const result = await facilitatorRegistryService.filter(
       _formData,
@@ -200,18 +200,18 @@ function Table({
   const filterByStatus = async (value) => {
     setLoading(true);
     setstatus(value);
-    setadminstatus(value);
+    setadminStatus(value);
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
-    let adminstatus = value;
-    let searchValue = adminsearchValue;
+    let adminStatus = value;
+    let searchValue = adminSearchValue;
 
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
       adminlimit,
-      adminstatus,
+      adminStatus,
       searchValue
     );
     setData(result.data?.data);
@@ -222,11 +222,11 @@ function Table({
 
   const searchName = async (e) => {
     let searchValue = e?.nativeEvent?.text;
-    setadminsearchValue(searchValue);
+    setadminSearchValue(searchValue);
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
-    let status = adminstatus;
+    let status = adminStatus;
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,

@@ -42,8 +42,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [adminpage, setadminPage] = React.useState(1);
   const [admindata, setadminData] = React.useState();
   const [totalCount, settotalCount] = React.useState();
-  const [adminstatus, setadminstatus] = React.useState();
-  const [adminsearchValue, setadminsearchValue] = React.useState();
+  const [adminStatus, setadminStatus] = React.useState();
+  const [adminSearchValue, setadminSearchValue] = React.useState();
 
   let finalData;
 
@@ -127,12 +127,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const onChange = async (formData) => {
     const _formData = formData?.formData;
-    let searchValue = adminsearchValue;
+    let searchValue = adminSearchValue;
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
       adminlimit,
-      adminstatus,
+      adminStatus,
       searchValue
     );
     setadminData(result?.data?.data);
@@ -254,10 +254,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               totalCount={totalCount}
               setadminLimit={setadminLimit}
               setadminPage={setadminPage}
-              setadminstatus={setadminstatus}
-              adminstatus={adminstatus}
-              setadminsearchValue={setadminsearchValue}
-              adminsearchValue={adminsearchValue}
+              setadminStatus={setadminStatus}
+              adminStatus={adminStatus}
+              setadminSearchValue={setadminSearchValue}
+              adminSearchValue={adminSearchValue}
               facilitator={userTokenInfo?.authUser}
             />
           </Box>
