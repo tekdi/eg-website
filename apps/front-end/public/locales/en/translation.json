@@ -741,4 +741,6 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "PAYMENT_RECEIPT":"Payment Receipt"}
+  "PAYMENT_RECEIPT":"Payment Receipt",
+"SELECT_MESSAGE_NEVER_ENROLLED":"Please select a different field as the beneficiary has never enrolled."
+}

@@ -497,19 +497,17 @@ export default function App({ facilitator, id, ip, onClick }) {
         form_data.append(key, item[key]);
       }
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      console.log(uploadDoc.fileUrl);
       const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
       setFormData({ ...formData, ["payment_receipt_document_id"]: id });
+      // uri: uploadDoc?.fileUrl,  using this is giving a grey screen as image hence I restored it back
       setSource({
-        uri: uploadDoc?.fileUrl,
+        document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
   const editSubmit = async () => {
-    console.log(formData);
-
     if (formData?.enrollment_status === "enrolled") {
       if (
         formData?.enrollment_status &&
@@ -519,8 +517,6 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.subjects.length < 8 &&
         formData?.subjects.length > 1
       ) {
-        console.log(formData);
-
         const updateDetails = await AgRegistryService.updateAg(
           formData,
           userId
@@ -553,8 +549,6 @@ export default function App({ facilitator, id, ip, onClick }) {
         validation();
       }
     } else {
-      console.log(formData);
-
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       navigate(`/beneficiary/profile/${userId}`);
     }
