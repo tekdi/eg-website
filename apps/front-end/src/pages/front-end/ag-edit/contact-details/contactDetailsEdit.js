@@ -324,7 +324,7 @@ export default function agFormEdit({ ip }) {
       ) {
         const newErrors = {
           email_id: {
-            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+            __errors: [t("PLEASE_ENTER_VALID_EMAIL")],
           },
         };
         setErrors(newErrors);
