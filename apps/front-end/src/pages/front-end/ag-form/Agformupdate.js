@@ -767,14 +767,15 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   if (page === "upload") {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
+    const onPressBackButton = async () => {
+      setagroute(false);
+      setPage(newSteps[4]);
+      setSchema(properties[newSteps[4]]);
+    };
     return (
       <Layout
         _appBar={{
-          onPressBackButton: (e) => {
-            setagroute(false);
-            setPage(newSteps[4]);
-            setSchema(properties[newSteps[4]]);
-          },
+          onPressBackButton,
           lang,
           setLang,
           onlyIconsShow: ["backBtn", "userInfo"],
