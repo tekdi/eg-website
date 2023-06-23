@@ -22,7 +22,7 @@ export default {
         dob: {
           type: ["string", "null"],
           format: "date",
-          title: "DATE_OF_BIRTH",
+          title: "DATE_OF_BIRTH_AS_PER_AADHAAR",
         },
         edit_page_type: {
           type: "string",
