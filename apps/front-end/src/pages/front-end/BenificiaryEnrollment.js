@@ -52,7 +52,6 @@ export default function BenificiaryEnrollment() {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
   }, [benificiary]);
-
   return (
     <Layout _appBar={{ name: t("ENROLLMENT_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200" px="5" pt="3">
@@ -127,9 +126,9 @@ export default function BenificiaryEnrollment() {
               <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
                 {t("ENROLLMENT_BOARD")}
               </FrontEndTypo.H3>
-
               <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                {benificiary?.program_beneficiaries?.enrolled_for_board ? (
+                {benificiary?.program_beneficiaries?.enrolled_for_board !==
+                "null" ? (
                   <GetEnumValue
                     t={t}
                     enumType={"ENROLLED_FOR_BOARD"}

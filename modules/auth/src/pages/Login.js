@@ -19,7 +19,7 @@ import {
   BodyMedium,
   FrontEndTypo,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const styles = {
   box: {
@@ -34,6 +34,7 @@ export default function Login() {
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validate = () => {
     let arr = {};
@@ -72,11 +73,10 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
-
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["helpBtn"],
+        onlyIconsShow: location?.state ? ["backBtn", "helpBtn"] : ["helpBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}

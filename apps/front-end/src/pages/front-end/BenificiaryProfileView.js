@@ -125,7 +125,6 @@ export default function BenificiaryProfileView(props) {
         return <React.Fragment></React.Fragment>;
     }
   }
-  console.log(benificiary, benificiary?.profile_photo_1?.id);
   return (
     <Layout
       _appBar={{

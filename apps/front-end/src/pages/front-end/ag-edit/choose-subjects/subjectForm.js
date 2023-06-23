@@ -458,7 +458,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_status = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_STATUS")],
         };
-      } else if (!formData?.enrolled_for_board) {
+      } else if (formData?.enrolled_for_board === "null") {
         newErrors.enrolled_for_board = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLED_FOR_BOARD")],
         };
@@ -497,25 +497,30 @@ export default function App({ facilitator, id, ip, onClick }) {
         form_data.append(key, item[key]);
       }
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
+      console.log(uploadDoc.fileUrl);
       const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
       setFormData({ ...formData, ["payment_receipt_document_id"]: id });
       setSource({
-        document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
+        uri: uploadDoc?.fileUrl,
       });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
   const editSubmit = async () => {
+    console.log(formData);
+
     if (formData?.enrollment_status === "enrolled") {
       if (
         formData?.enrollment_status &&
-        formData?.enrolled_for_board &&
+        formData?.enrolled_for_board !== "null" &&
         formData?.enrollment_number &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
         formData?.subjects.length > 1
       ) {
+        console.log(formData);
+
         const updateDetails = await AgRegistryService.updateAg(
           formData,
           userId
@@ -548,6 +553,8 @@ export default function App({ facilitator, id, ip, onClick }) {
         validation();
       }
     } else {
+      console.log(formData);
+
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       navigate(`/beneficiary/profile/${userId}`);
     }
@@ -613,8 +620,8 @@ export default function App({ facilitator, id, ip, onClick }) {
 
                 <HStack justifyContent="space-between" alignItems="Center">
                   <Button
-                    padding={"10%"}
-                    marginLeft={"10%"}
+                    padding={"9vh"}
+                    marginLeft={"9vh"}
                     style={buttonStyle}
                     variant={"secondary"}
                     leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
