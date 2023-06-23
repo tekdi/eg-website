@@ -79,8 +79,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
-
-  // const location = useLocation();
+  const location = useLocation();
+  const [agroute, setagroute] = React.useState(location?.state?.route);
 
   const id = useParams();
 
@@ -376,7 +376,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      setPage(newSteps[0]);
+      // setPage(newSteps[0]);
+      setPage(agroute ? "upload" : newSteps[0]);
+
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
@@ -708,7 +710,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       const form_data = new FormData();
       const item = {
         file: cameraFile,
-        document_type: "profile_photo_1",
+        document_type: "profile_photo",
+        document_sub_type: "profile_photo_1",
         user_id: userId,
       };
       for (let key in item) {
@@ -791,10 +794,17 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   }
 
   if (page === "upload") {
+    const properties = schema1.properties;
+    const newSteps = Object.keys(properties);
+    const onPressBackButton = async () => {
+      setagroute(false);
+      setPage(newSteps[4]);
+      setSchema(properties[newSteps[4]]);
+    };
     return (
       <Layout
         _appBar={{
-          onPressBackButton: (e) => setPage("5"),
+          onPressBackButton,
           lang,
           setLang,
           onlyIconsShow: ["backBtn", "userInfo"],
