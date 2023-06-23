@@ -536,9 +536,19 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.availability
+                    {/* {facilitator?.availability
                       ? facilitator?.availability
-                      : "-"}
+                      : "-"} */}
+                    {facilitator?.availability ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"FACILITATOR_AVAILABILITY"}
+                        enumOptionValue={facilitator?.availability}
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
