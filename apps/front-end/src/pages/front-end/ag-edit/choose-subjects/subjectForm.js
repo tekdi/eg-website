@@ -510,7 +510,9 @@ export default function App({ facilitator, id, ip, onClick }) {
           formData,
           userId
         );
-        navigate(`/beneficiary/profile/${userId}`);
+        navigate(`/beneficiary/edit/${userId}/enrollment-receipt`);
+        // navigate(`/beneficiary/profile/${userId}`);
+        // console("hi");
       } else {
         validation();
       }
