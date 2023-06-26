@@ -19,11 +19,6 @@ export default {
       type: "string",
       label: "Event Type",
       format: "select",
-      // enum: [
-      //   "Prerak Orientation",
-      //   "Prerak FLN Training",
-      //   "Prerak Camp Execution Training",
-      // ],
     },
     name: {
       icons: "UserFollowLineIcon",
