@@ -1,33 +1,20 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { ImageView, dateOfBirth } from "@shiksha/common-lib";
+import { dateOfBirth, validation } from "@shiksha/common-lib";
 import enrollmentSchema from "./EnrollmentSchema.js";
-import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+import { Alert, Box, Button, HStack } from "native-base";
 
 import {
   facilitatorRegistryService,
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  enumRegistryService,
-  uploadRegistryService,
-  AgRegistryService,
-  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -38,7 +25,7 @@ import {
   select,
 } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
-import { useId } from "react";
+import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ facilitator, id, ip, onClick }) {
@@ -54,11 +41,9 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState(id);
-  const [uploadPayment, setUploadPayment] = React.useState(true);
-  const [source, setSource] = React.useState();
-  const [age, setAge] = React.useState("");
-
+  let age;
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/enrollmentdetails`);
@@ -83,12 +68,13 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
-  let uiSchema = {
+  const [uiSchema, setUiSchema] = React.useState({
     enrollment_date: {
       "ui:widget": "alt-date",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [2022, 2030],
       },
     },
     enrollment_dob: {
@@ -96,9 +82,10 @@ export default function App({ facilitator, id, ip, onClick }) {
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
+        yearsRange: [1980, 2030],
       },
     },
-  };
+  });
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -256,26 +243,33 @@ export default function App({ facilitator, id, ip, onClick }) {
     if (moment.utc(data?.enrollment_date) > moment()) {
       const newErrors = {
         enrollment_date: {
-          __errors: [t("Future dates not allowed")],
+          __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
         },
       };
       setErrors(newErrors);
     }
-
-    if (
-      data?.enrollment_aadhaar_no &&
-      !`${data?.enrollment_aadhaar_no}`?.match(
-        /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/
-      )
-    ) {
-      const newErrors = {
-        enrollment_aadhaar_no: {
-          __errors: [t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")],
-        },
-      };
-      setErrors(newErrors);
+    if (id === "root_enrollment_aadhaar_no") {
+      if (data?.enrollment_aadhaar_no) {
+        const newErrors = validation({
+          data: data?.enrollment_aadhaar_no,
+          key: "enrollment_aadhaar_no",
+          errors: {
+            enrollment_aadhaar_no: {
+              addError: (e) => {
+                setErrors({
+                  ...errors,
+                  enrollment_aadhaar_no: {
+                    __errors: [e],
+                  },
+                });
+              },
+            },
+          },
+          message: `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`,
+          type: "aadhaar",
+        });
+      }
     }
-
     if (
       data?.enrollment_first_name &&
       !`${data?.enrollment_first_name}`?.match(/^[a-zA-Z ]*$/g)
@@ -314,15 +308,12 @@ export default function App({ facilitator, id, ip, onClick }) {
 
     if (data?.enrollment_dob) {
       const dob = moment.utc(data?.enrollment_dob).format("DD-MM-YYYY");
-
-      const age = await dateOfBirth(dob);
-      uiSchema = {
+      age = await dateOfBirth(dob);
+      setUiSchema({
         ...uiSchema,
         enrollment_dob: { ...uiSchema?.enrollment_dob, "ui:help": age },
-      };
+      });
     }
-    age;
-    console.log(uiSchema, "uiSchema");
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -334,17 +325,17 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
-  const validation = () => {
-    const newErrors = {};
-    if (formData?.edit_page_type) {
-      if (!formData?.enrollment_number) {
-        newErrors.enrollment_number = {
-          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
-        };
-      }
-    }
-    setErrors(newErrors);
-  };
+  // const validation = () => {
+  //   const newErrors = {};
+  //   if (formData?.edit_page_type) {
+  //     if (!formData?.enrollment_number) {
+  //       newErrors.enrollment_number = {
+  //         __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
+  //       };
+  //     }
+  //   }
+  //   setErrors(newErrors);
+  // };
 
   //
   const editSubmit = async () => {
