@@ -47,13 +47,15 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (addMore) {
       setAddMore();
     } else if (p === "p") {
-      if (type === "vo_experience") {
-        navigate(`/profile/edit/work_availability_details`);
-      } else if (type === "experience") {
-        navigate(`/profile/edit/array-form/vo_experience`);
-      } else {
-        navigate(`/profile/edit/reference_details`);
-      }
+      navigate("/profile");
+
+      // if (type === "vo_experience") {
+      //   navigate(`/profile/edit/work_availability_details`);
+      // } else if (type === "experience") {
+      //   navigate(`/profile/edit/array-form/vo_experience`);
+      // } else {
+      //   navigate(`/profile/edit/reference_details`);
+      // }
     } else if (type === "reference_details") {
       navigate(`/profile/edit/work_availability_details`);
     } else if (type === "vo_experience") {

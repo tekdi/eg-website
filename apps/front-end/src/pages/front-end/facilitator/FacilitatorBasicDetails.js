@@ -368,7 +368,7 @@ export default function FacilitatorBasicDetails({
                     {facilitator?.extended_users?.marital_status ? (
                       <GetEnumValue
                         t={t}
-                        enumType={"FACILITATOR_MARITAL_STATUS"}
+                        enumType={"MARITAL_STATUS"}
                         enumOptionValue={
                           facilitator?.extended_users?.marital_status
                         }
