@@ -361,8 +361,8 @@ export default function StatusButton({ data, setData }) {
                           : showModal.status === "rusticate"
                           ? "FACILITATOR_REASONS_FOR_RUSTICATE"
                           : showModal.status === "rejected"
-                          ? "FACILITATOR_REASONS_FOR_QUIT"
-                          : [""]
+                          ? "FACILITATOR_REASONS_FOR_REJECTED"
+                          : []
                       ]
                     }
                   />
