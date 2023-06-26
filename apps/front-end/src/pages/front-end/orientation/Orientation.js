@@ -8,7 +8,7 @@ import {
   Loading,
   enumRegistryService,
   getOptions,
-  COLORS,
+  EVENTS_COLORS,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -99,11 +99,19 @@ export default function Orientation({ footerLinks }) {
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
-    setReminders(result?.data?.REMINDERS);
     let newSchema = orientationPopupSchema;
     newSchema = getOptions(newSchema, {
       key: "reminders",
       arr: result?.data?.REMINDERS.map((e) => ({ ...e, title: t(e.title) })),
+      title: "title",
+      value: "value",
+    });
+    newSchema = getOptions(newSchema, {
+      key: "type",
+      arr: result?.data?.FACILITATOR_EVENT_TYPE.map((e) => ({
+        ...e,
+        title: t(e.title),
+      })),
       title: "title",
       value: "value",
     });
@@ -398,16 +406,20 @@ export default function Orientation({ footerLinks }) {
               <VStack space="4" mt="4">
                 <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="blue.500" />
-                  <AdminTypo.H6 bold>Prerak Orientation</AdminTypo.H6>
+                  <AdminTypo.H6 bold>
+                    {t("FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION")}
+                  </AdminTypo.H6>
                 </HStack>
                 <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="green.500" />
-                  <AdminTypo.H6 bold>Prerak FLN Training</AdminTypo.H6>
+                  <AdminTypo.H6 bold>
+                    {t("FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING")}
+                  </AdminTypo.H6>
                 </HStack>
                 <HStack alignItems="Center" space="md">
                   <CheckCircleIcon size="4" color="yellow.500" />
                   <AdminTypo.H6 bold>
-                    Prerak Camp Execution Training
+                    {t("FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING")}
                   </AdminTypo.H6>
                 </HStack>
                 {/* <HStack alignItems="Center" space="md">
@@ -472,11 +484,11 @@ export default function Orientation({ footerLinks }) {
                       : "",
                     event_id: item?.id ? item?.id : "",
                     backgroundColor:
-                      item?.type === "Prerak Orientation"
-                        ? COLORS.blue
-                        : item?.type === "Prerak FLN Training"
-                        ? COLORS.green
-                        : COLORS.yellow,
+                      item?.type === "prerak_orientation"
+                        ? EVENTS_COLORS.blue
+                        : item?.type === "prerak_fln_training"
+                        ? EVENTS_COLORS.green
+                        : EVENTS_COLORS.yellow,
                   };
                 })}
                 eventTimeFormat={{
