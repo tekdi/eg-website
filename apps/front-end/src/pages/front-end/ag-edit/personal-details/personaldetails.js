@@ -243,7 +243,7 @@ export default function agFormEdit({ ip }) {
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        arr: ListOfEnum?.data?.MARITAL_STATUS,
         title: "title",
         value: "value",
       });

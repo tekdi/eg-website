@@ -447,7 +447,7 @@ export const HFieldTemplate = ({
       pl="3"
     >
       {(label || schema?.label) && typeof type === "string" && (
-        <Box  w={["67%", "100%", "60%"]}>
+        <Box w={["67%", "100%", "60%"]}>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
               <HStack space="1" alignItems="center">
@@ -469,7 +469,7 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box  w={["70%", "100%", "60%"]}>
+      <Box w={["70%", "100%", "60%"]}>
         {children}
         {errors}
         {help}
