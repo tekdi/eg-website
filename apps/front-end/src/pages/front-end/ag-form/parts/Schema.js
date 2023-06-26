@@ -12,13 +12,13 @@ export default {
           title: "FIRST_NAME",
         },
         last_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "LAST_NAME",
         },
         dob: {
           type: "string",
           format: "date",
-          label: "DATE_OF_BIRTH",
+          label: "DATE_OF_BIRTH_AS_PER_AADHAAR",
         },
         role: {
           format: "hidden",
@@ -29,7 +29,7 @@ export default {
     },
     2: {
       title: "CONTACT_INFORMATION",
-      description: "PLEASE_WHATSAPP_NUMBER",
+      description: "LEARNERS_WHATSAPP_NUMBER",
       type: "object",
       required: ["mobile"],
       properties: {

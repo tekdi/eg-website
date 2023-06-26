@@ -91,15 +91,23 @@ export default function agFormEdit({ ip }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  // React.useEffect(() => {
-  //   getImage();
-  // }, [page, credentials]);
-
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
+    const finalData = qData.result;
     setFormData(qData.result);
+    setFormData({
+      ...formData,
+      address: finalData?.address == "null" ? "" : finalData?.address,
+      state: finalData?.state,
+      district: finalData?.district,
+      block: finalData?.block,
+      village: finalData?.village,
+      grampanchayat: finalData?.grampanchayat,
+    });
   }, []);
+
+  console.log("formdata", formData);
 
   const uiSchema = {
     dob: {
@@ -430,50 +438,6 @@ export default function agFormEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
-        const result = await userExist({
-          aadhar_token: data?.aadhar_token,
-        });
-        if (result.isUserExist) {
-          const newErrors = {
-            aadhar_token: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
-
-    if (id === "root_qualification") {
-      if (schema?.properties?.qualification) {
-        let valueIndex = "";
-        schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
-          if (e.match("12")) {
-            valueIndex = schema?.properties?.qualification?.enum[index];
-          }
-        });
-        if (valueIndex !== "" && data.qualification == valueIndex) {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
 
     if (id === "root_device_ownership") {
       if (schema?.properties?.device_ownership) {
@@ -504,6 +468,33 @@ export default function agFormEdit({ ip }) {
 
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
+    }
+
+    if (id === "root_grampanchayat") {
+      if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
+        const newErrors = {
+          grampanchayat: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    if (id === "root_address") {
+      if (
+        !data?.address?.match(
+          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+        ) &&
+        data?.address !== null
+      ) {
+        const newErrors = {
+          address: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
     }
   };
 

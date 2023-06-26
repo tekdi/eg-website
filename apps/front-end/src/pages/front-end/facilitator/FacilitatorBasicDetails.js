@@ -8,6 +8,8 @@ import {
   t,
   Layout,
   ImageView,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +25,7 @@ export default function FacilitatorBasicDetails({
     ...facilitator?.extended_users,
     gender: facilitator?.gender,
   };
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   React.useEffect(() => {
     facilitatorDetails();
@@ -33,6 +36,11 @@ export default function FacilitatorBasicDetails({
     const result = await facilitatorRegistryService.getOne({ id });
     setfacilitator(result);
   };
+
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, [facilitator]);
 
   return (
     <Layout
@@ -293,7 +301,16 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.gender ? facilitator?.gender : "-"}
+                    {facilitator?.gender ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"GENDER"}
+                        enumOptionValue={facilitator?.gender}
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -315,9 +332,18 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.extended_users?.social_category
-                      ? facilitator?.extended_users?.social_category
-                      : "-"}
+                    {facilitator?.extended_users?.social_category ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"FACILITATOR_SOCIAL_STATUS"}
+                        enumOptionValue={
+                          facilitator?.extended_users?.social_category
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
                 <Divider
@@ -339,9 +365,18 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.extended_users?.marital_status
-                      ? facilitator?.extended_users?.marital_status
-                      : "-"}
+                    {facilitator?.extended_users?.marital_status ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"MARITAL_STATUS"}
+                        enumOptionValue={
+                          facilitator?.extended_users?.marital_status
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
@@ -501,9 +536,19 @@ export default function FacilitatorBasicDetails({
                     fontWeight="400"
                     flex="0.3"
                   >
-                    {facilitator?.availability
+                    {/* {facilitator?.availability
                       ? facilitator?.availability
-                      : "-"}
+                      : "-"} */}
+                    {facilitator?.availability ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"FACILITATOR_AVAILABILITY"}
+                        enumOptionValue={facilitator?.availability}
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>

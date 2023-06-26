@@ -88,6 +88,44 @@ export default function BenificiaryEducation() {
                   flex="0.3"
                   pb="2"
                 >
+                  {t("TYPE_OF_LEARNER")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="0.4"
+                >
+                  {/* {benificiary?.core_beneficiaries?.last_standard_of_education
+                    ? benificiary?.core_beneficiaries
+                        ?.last_standard_of_education
+                    : "-"} */}
+                  {benificiary?.core_beneficiaries?.type_of_learner ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"TYPE_OF_LEARNER"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries?.type_of_learner
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
+                </FrontEndTypo.H3>
+              </HStack>
+              <HStack
+                alignItems="Center"
+                justifyContent="space-between"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.3"
+                  pb="2"
+                >
                   {t("LAST_STANDARD_OF_EDUCATION")}
                 </FrontEndTypo.H3>
 
@@ -96,10 +134,20 @@ export default function BenificiaryEducation() {
                   fontWeight="400"
                   flex="0.4"
                 >
-                  {benificiary?.core_beneficiaries?.last_standard_of_education
-                    ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education
-                    : "-"}
+                  {benificiary?.core_beneficiaries
+                    ?.last_standard_of_education ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"LAST_STANDARD_OF_EDUCATION"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries
+                          ?.last_standard_of_education
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
 

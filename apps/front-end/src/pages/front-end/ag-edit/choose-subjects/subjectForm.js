@@ -245,6 +245,16 @@ export default function App({ facilitator, id, ip, onClick }) {
       );
 
       setSchema({ ...constantSchema, properties, required });
+    } else if (
+      qData?.result?.program_beneficiaries?.enrollment_status === "other"
+    ) {
+      const propertiesMain = schema1.properties;
+      setUploadPayment(true);
+      const constantSchema = propertiesMain[1];
+      const { ...properties } = constantSchema?.properties;
+      const required = ["enrollment_status"];
+
+      setSchema({ ...constantSchema, properties, required });
     }
 
     let enrolled_for_board = qData?.result?.program_beneficiaries
@@ -262,14 +272,24 @@ export default function App({ facilitator, id, ip, onClick }) {
         qData?.result?.program_beneficiaries?.payment_receipt_document_id,
     });
     const stringsArray = subjectData?.map((number) => number?.toString());
-    console.log(stringsArray, "ss");
 
     setFormData({
       ...formData,
       enrollment_status: enrollment_status ? enrollment_status : "",
-      enrolled_for_board: enrolled_for_board ? enrolled_for_board : "",
-      enrollment_number: enrollment_number ? enrollment_number : "",
-      subjects: stringsArray ? stringsArray : "",
+      enrolled_for_board:
+        enrollment_status === "other"
+          ? ""
+          : enrolled_for_board
+          ? enrolled_for_board
+          : "",
+      enrollment_number:
+        enrollment_status === "other"
+          ? ""
+          : enrollment_number
+          ? enrollment_number
+          : "",
+      subjects:
+        enrollment_status === "other" ? "" : stringsArray ? stringsArray : "",
       facilitator_id: localStorage.getItem("id"),
     });
   }, []);
@@ -349,6 +369,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         const required = constantSchema?.required.filter(
           (item) => !["enrollment_number", "subjects"].includes(item)
         );
+        //const required =["enrollment_status"]
         const newData = {
           enrollment_status: e.formData?.enrollment_status,
           enrolled_for_board: e.formData?.enrolled_for_board,
@@ -474,6 +495,8 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   //
   const editSubmit = async () => {
+    console.log(formData);
+
     if (formData?.enrollment_status === "enrolled") {
       if (
         formData?.enrollment_status &&
