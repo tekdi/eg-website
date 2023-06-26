@@ -49,30 +49,30 @@ export function ChipStatus({ status, ...props }) {
         setColor("textMaroonColor.50");
         break;
       case "pragati_syc":
-          setNewStatus(t("BENEFICIARY_STATUS_PRAGATI_SYC"));
-          setTextColor("textMaroonColor.500");
-          setColor("textMaroonColor.50");
-          break;
+        setNewStatus(t("BENEFICIARY_STATUS_PRAGATI_SYC"));
+        setTextColor("textMaroonColor.500");
+        setColor("textMaroonColor.50");
+        break;
       case "enrolled":
         setNewStatus(t("ENROLLED"));
         setTextColor("blueText.700");
         setColor("blueText.200");
         break;
       case "activate":
-          setNewStatus(t("BENEFICIARY_STATUS_ACTIVATE"));
-          setTextColor("textGreen.700");
-          setColor("textGreen.300");
-          break;
+        setNewStatus(t("BENEFICIARY_STATUS_ACTIVATE"));
+        setTextColor("textGreen.700");
+        setColor("textGreen.300");
+        break;
       case "registered_in_camp":
-            setNewStatus(t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP"));
-            setTextColor("textGreen.700");
-            setColor("textGreen.300");
-            break;
+        setNewStatus(t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP"));
+        setTextColor("textGreen.700");
+        setColor("textGreen.300");
+        break;
       case "approved_ip":
-            setNewStatus(t("BENEFICIARY_STATUS_APPROVED_IP"));
-            setTextColor("textGreen.700");
-            setColor("textGreen.300");
-            break;
+        setNewStatus(t("BENEFICIARY_STATUS_APPROVED_IP"));
+        setTextColor("textGreen.700");
+        setColor("textGreen.300");
+        break;
       default:
         setNewStatus(t("IDENTIFIED"));
         setTextColor("textGreyColor.800");
