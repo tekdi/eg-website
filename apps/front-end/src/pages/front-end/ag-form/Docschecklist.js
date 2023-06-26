@@ -59,8 +59,9 @@ const Docschecklist = () => {
   return (
     <Layout
       _appBar={{
-        name: `${benificiary?.first_name} ${benificiary?.last_name && benificiary?.last_name
-          }`,
+        name: `${benificiary?.first_name} ${
+          benificiary?.last_name && benificiary?.last_name
+        }`,
         lang,
         setLang,
         onPressBackButton: (e) => {
@@ -440,7 +441,6 @@ const Docschecklist = () => {
           type="submit"
           onPress={() => {
             navigate(-1);
-
           }}
         >
           {t("SAVE")}

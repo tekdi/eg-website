@@ -536,7 +536,7 @@ const DEFAULT_THEME = {
       900: '#BDB3E7'
     },
     badgeColor: {
-      50:  '#FFF0B2',
+      50: '#FFF0B2',
       400: '#FDE68A',
       450: '#FFEFAF',
       600: '#8F7200'
@@ -567,7 +567,7 @@ const DEFAULT_THEME = {
       900: '#1E1E1E'
     },
     textMaroonColor: {
-      50:  'FDCAB5',
+      50: 'FDCAB5',
       100: '#FFACAF',
       400: '#790000',
       500: '#A93505'
@@ -646,8 +646,8 @@ const DEFAULT_THEME = {
       300: '#FF2815'
     },
     dividerColor: '#EEEEEE',
-    textGreen:{
-      300:'#BCF6DB',
+    textGreen: {
+      300: '#BCF6DB',
       700: '#0F6C41'
     }
   }
