@@ -453,7 +453,7 @@ const AadhaarOptions = ({
 
   return (
     <VStack bg="white" width={"100%"} space="5" p="5">
-      <FrontEndTypo.Secondarybutton
+      {/* <FrontEndTypo.Secondarybutton
         onPress={() => {
           setData();
           setOtpFailedPopup(false);
@@ -463,7 +463,7 @@ const AadhaarOptions = ({
           navigate(`/aadhaar-kyc/${id}/aadhaar-number`);
         }}
       >
-        {t("RETRY_AADHAR_NUMER_KYC")}
+        {t("TRY_AADHAR_NUMER_KYC")}
       </FrontEndTypo.Secondarybutton>
       <FrontEndTypo.Secondarybutton
         isDisabled={isAadharDisabled}
@@ -473,8 +473,8 @@ const AadhaarOptions = ({
           navigate(`/aadhaar-kyc/${id}/QR`);
         }}
       >
-        {t("RETRY_AADHAR_QR_KYC")}
-      </FrontEndTypo.Secondarybutton>
+        {t("TRY_AADHAR_QR_KYC")}
+      </FrontEndTypo.Secondarybutton> */}
       <FrontEndTypo.Secondarybutton
         isDisabled={isQRDisabled}
         onPress={() => {
@@ -483,7 +483,7 @@ const AadhaarOptions = ({
           navigate(`/aadhaar-kyc/${id}/upload`);
         }}
       >
-        {t("RETRY_AADHAR_UPLOAD_KYC")}
+        {t("TRY_AADHAR_UPLOAD_KYC")}
       </FrontEndTypo.Secondarybutton>
       <FrontEndTypo.Primarybutton
         onPress={() => {

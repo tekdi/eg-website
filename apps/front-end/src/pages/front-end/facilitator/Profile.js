@@ -1,14 +1,30 @@
 import React from "react";
 import { useState } from "react";
 import { HStack, VStack, Box, Progress, Divider } from "native-base";
-import { IconByName, arrList, Layout, FrontEndTypo } from "@shiksha/common-lib";
+import {
+  IconByName,
+  arrList,
+  Layout,
+  FrontEndTypo,
+  facilitatorRegistryService,
+} from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
-  const [facilitator, Setfacilitator] = useState(userTokenInfo?.authUser);
+  const { id } = userTokenInfo?.authUser;
+  const [facilitator, setFacilitator] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  React.useEffect(() => {
+    facilitatorDetails();
+  }, []);
+
+  const facilitatorDetails = async () => {
+    const result = await facilitatorRegistryService.getOne({ id });
+    setFacilitator(result);
+  };
 
   return (
     <Layout
