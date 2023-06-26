@@ -358,12 +358,15 @@ export default function StatusButton({ data, setData }) {
                       enumOptions[
                         showModal.status === "quit"
                           ? "FACILITATOR_REASONS_FOR_QUIT"
-                          : "rusticate"
+                          : showModal.status === "rusticate"
                           ? "FACILITATOR_REASONS_FOR_RUSTICATE"
-                          : "rejected"
+                          : showModal.status === "rejected"
+                          ? "FACILITATOR_REASONS_FOR_REJECTED"
+                          : []
                       ]
                     }
                   />
+                  {console.log(showModal.status)}
                   {reason &&
                   ![
                     "Incomplete Form",

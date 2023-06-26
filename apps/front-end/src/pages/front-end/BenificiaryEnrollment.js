@@ -129,7 +129,8 @@ export default function BenificiaryEnrollment() {
               </FrontEndTypo.H3>
 
               <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                {benificiary?.program_beneficiaries?.enrolled_for_board ? (
+                {benificiary?.program_beneficiaries?.enrolled_for_board !==
+                "null" ? (
                   <GetEnumValue
                     t={t}
                     enumType={"ENROLLED_FOR_BOARD"}
