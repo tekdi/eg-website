@@ -8,7 +8,6 @@ import {
   IconButton,
   CloseIcon,
   Image,
-
 } from "native-base";
 import {
   useWindowSize,
