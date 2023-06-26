@@ -98,7 +98,10 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       address: qData?.result?.address == "null" ? "" : qData?.result?.address,
       block: qData?.result?.block,
       village: qData?.result?.village,
-      grampanchayat: qData?.result?.grampanchayat,
+      grampanchayat:
+        qData?.result?.grampanchayat == "null"
+          ? ""
+          : qData?.result?.grampanchayat,
       marital_status: qData?.result?.extended_users?.marital_status,
       social_category: qData?.result?.extended_users?.social_category,
       type_of_learner: qData?.result?.core_beneficiaries?.type_of_learner,
@@ -345,7 +348,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        arr: ListOfEnum?.data?.MARITAL_STATUS,
         title: "title",
         value: "value",
       });
@@ -590,6 +593,35 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
+    }
+
+    if (id === "root_grampanchayat") {
+      if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
+        const newErrors = {
+          grampanchayat: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    console.log("data", data);
+
+    if (id === "root_address") {
+      if (
+        !data?.address?.match(
+          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+        ) &&
+        data?.address !== null
+      ) {
+        const newErrors = {
+          address: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
     }
   };
 
