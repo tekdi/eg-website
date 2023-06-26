@@ -483,12 +483,12 @@ export default function Orientation({ footerLinks }) {
                       ? item?.location_type
                       : "",
                     event_id: item?.id ? item?.id : "",
-                    backgroundColor:
-                      item?.type === "prerak_orientation"
-                        ? EVENTS_COLORS.blue
-                        : item?.type === "prerak_fln_training"
-                        ? EVENTS_COLORS.green
-                        : EVENTS_COLORS.yellow,
+                    borderColor: EVENTS_COLORS?.[item?.type]
+                      ? EVENTS_COLORS[item?.type]
+                      : "#808080",
+                    backgroundColor: EVENTS_COLORS?.[item?.type]
+                      ? EVENTS_COLORS[item?.type]
+                      : "#808080",
                   };
                 })}
                 eventTimeFormat={{
