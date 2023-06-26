@@ -82,7 +82,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     };
     getData();
   }, [qualifications]);
-
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {
@@ -217,13 +216,21 @@ export default function App({ userTokenInfo, footerLinks }) {
         block: formData?.block,
       });
     }
-
+    console.log(enumObj);
     if (schema?.properties?.device_ownership) {
       if (formData?.device_ownership == "no") {
         setAlert(t("YOU_NOT_ELIGIBLE"));
       } else {
         setAlert();
       }
+    }
+    if (schema?.properties?.designation) {
+      newSchema = getOptions(newSchema, {
+        key: "designation",
+        arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
+        title: "title",
+        value: "value",
+      });
     }
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
@@ -475,6 +482,8 @@ export default function App({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
   const onChange = async (e, id) => {
+    console.log(schema);
+
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };

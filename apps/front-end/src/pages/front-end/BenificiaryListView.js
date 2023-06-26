@@ -6,6 +6,7 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   SelectStyle,
+  ImageView,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
@@ -14,7 +15,6 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
-  console.log(data);
   return (
     <VStack space="4" p="4" alignContent="center">
       {(data && data?.length <= 0) || data?.constructor?.name !== "Array" ? (
@@ -37,10 +37,23 @@ const List = ({ data }) => {
             >
               <HStack justifyContent="space-between">
                 <HStack alignItems="Center" justifyContent="space-between">
-                  <IconByName
-                    name="AccountCircleLineIcon"
-                    _icon={{ size: "40px", color: "textGreyColor.900" }}
-                  />
+                  {item?.profile_photo_1?.[0]?.id ? (
+                    <ImageView
+                      source={{
+                        document_id: item?.profile_photo_1?.[0]?.id,
+                      }}
+                      // alt="Alternate Text"
+                      width={"45px"}
+                      height={"45px"}
+                    />
+                  ) : (
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="gray.300"
+                      _icon={{ size: "50px" }}
+                    />
+                  )}
                   <VStack>
                     <FrontEndTypo.H3 bold color="textGreyColor.800">
                       {item?.first_name}
@@ -184,7 +197,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               name="UserFollowLineIcon"
               _icon={{ size: "30px" }}
               onPress={(e) => {
-                console.log(e);
                 navigate("/beneficiary");
               }}
             />
