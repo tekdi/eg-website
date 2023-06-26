@@ -71,7 +71,7 @@ export default {
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
-          type: "string",
+          type: ["string", "null"],
         },
       },
     },
