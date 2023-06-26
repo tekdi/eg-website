@@ -115,13 +115,18 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        if (nextIndex === "work_availability_details") {
-          navigate(`/profile/edit/array-form/experience`);
-        } else if (nextIndex !== undefined) {
-          navigate(`/profile/edit/${nextIndex}`);
+        if (nextIndex === "qualification_details") {
+          navigate("/profile");
         } else {
-          navigate(`/facilitatorbasicdetail`);
+          navigate("/facilitatorbasicdetail");
         }
+        // if (nextIndex === "work_availability_details") {
+        //   navigate(`/profile/edit/array-form/experience`);
+        // } else if (nextIndex !== undefined) {
+        //   navigate(`/profile/edit/${nextIndex}`);
+        // } else {
+        //   navigate(`/facilitatorbasicdetail`);
+        // }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else if (nextIndex !== undefined) {
@@ -313,13 +318,13 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     if (step === "reference_details") {
       if (data?.contact_number) {
-        validation(
-          data?.contact_number,
-          "contact_number",
+        validation({
+          data: data?.contact_number,
+          key: "contact_number",
           errors,
-          `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
-          "mobile"
-        );
+          message: `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
+          type: "mobile",
+        });
       }
     }
 
