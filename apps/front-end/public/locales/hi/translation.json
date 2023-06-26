@@ -248,11 +248,9 @@
   "EXPERIENCE_IN_YEARS": "अनुभव (वर्षों में)",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": " शिक्षार्थी के अपने दावे की व्याख्या करें",
   "EXPORT": "निर्यात",
-  "FACILITATOR_MARITAL_STATUS_DIVORCED": "तलाकशुदा",
-  "FACILITATOR_MARITAL_STATUS_MARRIED": "शादीशुदा",
-  "FACILITATOR_MARITAL_STATUS_OTHER": "अन्य",
-  "FACILITATOR_MARITAL_STATUS_SEPARATED": "अलग रहते हैं",
-  "FACILITATOR_MARITAL_STATUS_SINGLE": "सिंगल",
+    "MARITAL_STATUS_MARRIED": "शादीशुदा",
+  "MARITAL_STATUS_SINGLE": "अविवाहित (तलाकशुदा, विधवा, अलग, आदि.)",
+  "MARITAL_STATUS_UNMARRIED": "अकेला",
   "FACILITATOR_REASONS_FOR_QUIT": "छोड़ने का कारण",
   "FACILITATOR_REASONS_FOR_QUIT_DIFFICULT_JOB": "मुश्किल काम",
   "FACILITATOR_REASONS_FOR_QUIT_DO_NOT_WANT_TO_DO_JOB": "नौकरी नहीं करना चाहते",
@@ -738,5 +736,7 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "NAME_CANNOT_BE_EMPTY":"संदर्भ नाम खाली नहीं हो सकता है"
+
 }

@@ -14,6 +14,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
+  console.log(data);
   return (
     <VStack space="4" p="4" alignContent="center">
       {(data && data?.length <= 0) || data?.constructor?.name !== "Array" ? (

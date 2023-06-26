@@ -243,9 +243,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
     enumObj = {
       ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
+      ["enumNames"]: arrData?.map((e) => `${e?.[title]}`),
     };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
+    enumObj = { ...enumObj, ["enum"]: arrData?.map((e) => `${e?.[value]}`) };
     const newProperties = schema["properties"][key];
     let properties = {};
     if (newProperties) {
@@ -290,7 +290,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     const lastYear = await benificiaryRegistoryService.lastYear();
 
     let newSchema = schema;
-    if (schema["properties"]["type_of_learner"]) {
+    console.log(schema);
+    if (schema?.["properties"]?.["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
         arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
@@ -334,7 +335,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
-
+    console.log(ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS, ListOfEnum?.data);
     if (schema["properties"]["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
@@ -345,7 +346,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: ListOfEnum?.data?.BENEFICIARY_MARITAL_STATUS,
+        arr: ListOfEnum?.data?.MARITAL_STATUS,
         title: "title",
         value: "value",
       });

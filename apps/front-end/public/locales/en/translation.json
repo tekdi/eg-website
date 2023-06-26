@@ -40,7 +40,7 @@
   "ADD_PROFILE_PHOTO": "Add Your Profile Photo",
   "ADD_REMINDER": "Add Reminder",
   "ADD_RSOS_NIOS_NO": "Add RSOS/NIOS Number.",
-  "ADD_VOLUNTEER_EXPERIENCE": "Add volunteer experience",
+  "ADD_VOLUNTEER_EXPERIENCE": "Add volunteer's title",
   "ADD_YOUR_ADDRESS": "Add your address",
   "ADD_YOUR_PERSONAL_DETAILS": "Add your personal Details",
   "ADDRESS": "Address",
@@ -248,11 +248,9 @@
   "EXPERIENCE_IN_YEARS": "Experience in years",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "Explain your claim of the AG Learner",
   "EXPORT": "Export",
-  "FACILITATOR_MARITAL_STATUS_DIVORCED": "Divorced",
-  "FACILITATOR_MARITAL_STATUS_MARRIED": "Married",
-  "FACILITATOR_MARITAL_STATUS_OTHER": "Other",
-  "FACILITATOR_MARITAL_STATUS_SEPARATED": "Separated",
-  "FACILITATOR_MARITAL_STATUS_SINGLE": "Single",
+  "MARITAL_STATUS_MARRIED": "Married",
+  "MARITAL_STATUS_SINGLE": "Single (Divorced, widow, separated, etc.)",
+  "MARITAL_STATUS_UNMARRIED": "Unmarried",
   "FACILITATOR_REASONS_FOR_QUIT": "Reason for Quit",
   "FACILITATOR_REASONS_FOR_QUIT_DIFFICULT_JOB": "Difficult job",
   "FACILITATOR_REASONS_FOR_QUIT_DO_NOT_WANT_TO_DO_JOB": "Do not want to do job",
@@ -740,5 +738,6 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "NAME_CANNOT_BE_EMPTY":"Reference Name Cannot Be Empty"
 }

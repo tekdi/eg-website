@@ -220,7 +220,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         setAlert();
       }
     }
-
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
@@ -231,7 +230,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
       newSchema = getOptions(newSchema, {
         key: "marital_status",
-        arr: enumObj?.FACILITATOR_MARITAL_STATUS,
+        arr: enumObj?.MARITAL_STATUS,
         title: "title",
         value: "value",
       });
@@ -470,7 +469,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
     return newSchema;
   };
-
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -490,6 +488,27 @@ export default function App({ userTokenInfo, footerLinks }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+    setFormData(newData);
+    if (id === "root_contact_number") {
+      if (data?.contact_number?.toString()?.length < 10) {
+        const newErrors = {
+          contact_number: {
+            __errors: [t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    if (id === "root_name") {
+      if (!data?.name?.length) {
+        const newErrors = {
+          name: {
+            __errors: [t("NAME_CANNOT_BE_EMPTY")],
+          },
+        };
+        setErrors(newErrors);
       }
     }
     if (id === "root_alternative_mobile_number") {
