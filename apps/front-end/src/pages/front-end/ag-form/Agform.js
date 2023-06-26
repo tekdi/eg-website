@@ -163,7 +163,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       setErrors(newErrors);
     }
 
-    if (!(formData?.mobile > 6666666666 && formData?.mobile < 9999999999)) {
+    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
       const data = await formSubmitCreate(formData);
       const newErrors = {
         mobile: {
@@ -311,7 +311,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -327,8 +327,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
+      if (years < 14) {
+        errors?.dob?.addError(t("MINIMUM_AGE_14_YEAR_OLD"));
+      }
+      if (years > 29) {
+        errors?.dob?.addError(t("MAXIMUM_AGE_29_YEAR_OLD"));
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {

@@ -17,11 +17,11 @@ export default {
               title: "FIRST_NAME",
             },
             father_middle_name: {
-              type: "string",
+              type: ["string", "null"],
               title: "MIDDLE_NAME",
             },
             father_last_name: {
-              type: "string",
+              type: ["string", "null"],
               title: "LAST_NAME",
             },
           },
@@ -37,11 +37,11 @@ export default {
               title: "FIRST_NAME",
             },
             mother_middle_name: {
-              type: "string",
+              type: ["string", "null"],
               title: "MIDDLE_NAME",
             },
             mother_last_name: {
-              type: "string",
+              type: ["string", "null"],
               title: "LAST_NAME",
             },
           },

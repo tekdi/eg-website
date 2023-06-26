@@ -103,6 +103,7 @@ export default function agFormEdit({ ip }) {
     let alternative_device_type =
       formData?.core_beneficiaries?.alternative_device_type;
     let device_type = formData?.core_beneficiaries?.device_type;
+    let email_id = formData?.email_id == "null" ? "" : formData?.email_id;
 
     setFormData({
       ...formData,
@@ -112,6 +113,7 @@ export default function agFormEdit({ ip }) {
       mark_as_whatsapp_number: mark_as_whatsapp_number,
       alternative_device_ownership: alternative_device_ownership,
       alternative_device_type: alternative_device_type,
+      email_id: email_id,
     });
   }, [formData?.id]);
 
@@ -287,7 +289,10 @@ export default function agFormEdit({ ip }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length > 10) {
+      if (
+        data?.mobile &&
+        !data?.mobile?.toString()?.match(/^([+]\d{2})?\d{10}$/)
+      ) {
         const newErrors = {
           mobile: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
@@ -297,10 +302,29 @@ export default function agFormEdit({ ip }) {
       }
     }
     if (id === "root_alternative_mobile_number") {
-      if (data?.alternative_mobile_number?.toString()?.length > 10) {
+      if (
+        data?.alternative_mobile_number &&
+        !data?.alternative_mobile_number
+          ?.toString()
+          ?.match(/^([+]\d{2})?\d{10}$/)
+      ) {
         const newErrors = {
           alternative_mobile_number: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    if (id === "root_email_id") {
+      if (
+        data?.email_id &&
+        !data?.email_id?.toString()?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+      ) {
+        const newErrors = {
+          email_id: {
+            __errors: [t("PLEASE_ENTER_VALID_EMAIL")],
           },
         };
         setErrors(newErrors);
@@ -327,11 +351,16 @@ export default function agFormEdit({ ip }) {
         },
       };
       setErrors(newErrors);
-    } else if (formData?.mobile != formData?.alternative_mobile_number) {
+    } else if (
+      formData?.mobile != formData?.alternative_mobile_number &&
+      !errors
+    ) {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };
+
+  console.log("errors", errors);
 
   return (
     <Layout

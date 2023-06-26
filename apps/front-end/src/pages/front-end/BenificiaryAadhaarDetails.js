@@ -134,7 +134,7 @@ export default function BenificiaryAadhaarDetails() {
             bg="white"
             borderColor="appliedColor"
           >
-            {aadhar_verified === "no" || aadhar_verified === null ? (
+            {benificiary?.aadhaar_verification_mode !== "upload" ? (
               <VStack>
                 <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                   {t("COMPLETE_AADHAAR_VERIFICATION")}

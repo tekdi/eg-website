@@ -8,14 +8,18 @@ import {
   benificiaryRegistoryService,
   t,
   Layout,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import ProfilePhoto from "./facilitator/ProfilePhoto";
 
 export default function BenificiaryBasicDetails() {
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   const navigate = useNavigate();
 
@@ -25,7 +29,6 @@ export default function BenificiaryBasicDetails() {
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
-
     setBenificiary(result?.result);
   };
 
@@ -33,28 +36,31 @@ export default function BenificiaryBasicDetails() {
     navigate(`/beneficiary/profile/${id}`);
   };
 
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, [benificiary]);
+
   return (
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
-          <Center>
-            <IconByName
-              name="AccountCircleLineIcon"
-              color="iconColor.350"
-              _icon={{ size: "60" }}
-              justifySelf="Center"
-            />
-          </Center>
+          <ProfilePhoto
+            editLink={`/beneficiary/${benificiary?.id}/upload/1`}
+            profile_photo_1={benificiary?.profile_photo_1}
+            profile_photo_2={benificiary?.profile_photo_2}
+            profile_photo_3={benificiary?.profile_photo_3}
+          />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">
                 {benificiary?.first_name ? benificiary?.first_name : "-"}
                 &nbsp;
-                {benificiary?.middle_name?.trim() === ""
+                {benificiary?.middle_name?.trim() === "null"
                   ? ""
                   : benificiary?.middle_name}
                 &nbsp;
-                {benificiary?.last_name ? benificiary?.last_name : "-"}
+                {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
               </FrontEndTypo.H1>
               <IconByName
                 name="PencilLineIcon"
@@ -148,7 +154,7 @@ export default function BenificiaryBasicDetails() {
                   fontWeight="400"
                   flex="0.3"
                 >
-                  {t("FAMILY")}
+                  {t("ALTERNATIVE_NUMBER")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
@@ -219,7 +225,16 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.address ? benificiary?.address : "-"}
+                  {[
+                    benificiary?.address == "null" ? "" : benificiary?.address,
+                    benificiary?.state,
+                    benificiary?.district,
+                    benificiary?.block,
+                    benificiary?.village,
+                    benificiary?.grampanchayat,
+                  ]
+                    .filter((e) => e)
+                    .join(", ")}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
@@ -235,7 +250,7 @@ export default function BenificiaryBasicDetails() {
             borderColor="appliedColor"
           >
             <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
+              <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("FAMILY_DETAILS")}
               </FrontEndTypo.H3>
               <IconByName
@@ -247,72 +262,79 @@ export default function BenificiaryBasicDetails() {
                 }}
               />
             </HStack>
+            <Box>
+              <Progress
+                value={arrList(benificiary?.core_beneficiaries, [
+                  "father_first_name",
+                  "father_middle_name",
+                  "father_last_name",
+                  "mother_first_name",
+                  "mother_middle_name",
+                  "mother_last_name",
+                ])}
+                size="xs"
+                colorScheme="info"
+              />
+            </Box>
+            <VStack space="2" pt="5">
+              <HStack
+                alignItems="Center"
+                space="xl"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
+                  {t("FATHER")}
+                </FrontEndTypo.H3>
 
-            <VStack space="2">
-              <Box pt="2">
-                <Progress
-                  value={arrList(benificiary?.core_beneficiaries, [
-                    "father_first_name",
-                    "father_middle_name",
-                    "father_last_name",
-                    "mother_first_name",
-                    "mother_middle_name",
-                    "mother_last_name",
-                  ])}
-                  size="xs"
-                  colorScheme="info"
-                />
-              </Box>
-              <VStack space="2" paddingTop="5">
-                <HStack
-                  alignItems="Center"
-                  borderBottomWidth="1px"
-                  borderBottomColor="appliedColor"
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
+                  {`${
+                    benificiary?.core_beneficiaries?.father_first_name
+                      ? benificiary?.core_beneficiaries?.father_first_name
+                      : ""
+                  } ${
+                    benificiary?.core_beneficiaries?.father_middle_name
+                      ? benificiary?.core_beneficiaries?.father_middle_name
+                      : ""
+                  } ${
+                    benificiary?.core_beneficiaries?.father_last_name
+                      ? benificiary?.core_beneficiaries?.father_last_name
+                      : ""
+                  }`}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <HStack
+                alignItems="Center"
+                space="xl"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="0.4"
+                  pb="2"
                 >
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.4"
-                    pb="2"
-                  >
-                    {t("FATHER")}
-                  </FrontEndTypo.H3>
+                  {t("MOTHER")}
+                </FrontEndTypo.H3>
 
-                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                    {benificiary?.core_beneficiaries?.father_first_name
-                      ? benificiary?.core_beneficiaries.father_first_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.father_middle_name
-                      ? benificiary?.core_beneficiaries.father_middle_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.father_last_name
-                      ? benificiary?.core_beneficiaries.father_last_name
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-                <HStack alignItems="Center">
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="0.4"
-                    pb="2"
-                  >
-                    {t("MOTHER")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                    {benificiary?.core_beneficiaries?.mother_first_name
-                      ? benificiary?.core_beneficiaries.mother_first_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.mother_middle_name
-                      ? benificiary?.core_beneficiaries.mother_middle_name
-                      : "-"}{" "}
-                    {benificiary?.core_beneficiaries?.mother_last_name
-                      ? benificiary?.core_beneficiaries.mother_last_name
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-              </VStack>
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
+                  {`${
+                    benificiary?.core_beneficiaries?.mother_first_name
+                      ? benificiary?.core_beneficiaries?.mother_first_name
+                      : ""
+                  } ${
+                    benificiary?.core_beneficiaries?.mother_middle_name
+                      ? benificiary?.core_beneficiaries?.mother_middle_name
+                      : ""
+                  } ${
+                    benificiary?.core_beneficiaries?.mother_last_name
+                      ? benificiary?.core_beneficiaries?.mother_last_name
+                      : ""
+                  }`}
+                </FrontEndTypo.H3>
+              </HStack>
             </VStack>
           </VStack>
           <VStack
@@ -325,7 +347,7 @@ export default function BenificiaryBasicDetails() {
             borderColor="appliedColor"
           >
             <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800">
+              <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("PERSONAL_DETAILS")}
               </FrontEndTypo.H3>
               <IconByName
@@ -359,9 +381,18 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.extended_users?.social_category
-                    ? t(benificiary?.extended_users?.social_category)
-                    : "-"}
+                  {benificiary?.extended_users?.social_category ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"BENEFICIARY_SOCIAL_STATUS"}
+                      enumOptionValue={
+                        benificiary?.extended_users?.social_category
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
 
@@ -371,9 +402,21 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.extended_users?.marital_status
+                  {/* {benificiary?.extended_users?.marital_status
                     ? t(benificiary?.extended_users?.marital_status)
-                    : "-"}
+                    : "-"} */}
+                  {benificiary?.extended_users?.marital_status ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"BENEFICIARY_MARITAL_STATUS"}
+                      enumOptionValue={
+                        benificiary?.extended_users?.marital_status
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  )}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
@@ -425,15 +468,19 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.references[0]?.first_name
-                    ? benificiary?.references[0]?.first_name
-                    : "-"}{" "}
-                  {benificiary?.references[0]?.middle_name
-                    ? benificiary?.references[0]?.middle_name
-                    : "-"}{" "}
-                  {benificiary?.references[0]?.last_name
-                    ? benificiary?.references[0]?.last_name
-                    : "-"}
+                  {`${
+                    benificiary?.references[0]?.first_name
+                      ? benificiary?.references[0]?.first_name
+                      : ""
+                  } ${
+                    benificiary?.references[0]?.middle_name != "null"
+                      ? benificiary?.references[0]?.middle_name
+                      : ""
+                  } ${
+                    benificiary?.references[0]?.last_name != "null"
+                      ? benificiary?.references[0]?.last_name
+                      : ""
+                  }`}
                 </FrontEndTypo.H3>
               </HStack>
 

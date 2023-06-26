@@ -396,7 +396,7 @@ export default function App({ facilitator, ip, onClick, id }) {
     }
   };
 
-  const EditEducation = async (data) => {
+  const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     if (updateDetails) {
       navigate(`/beneficiary/${userId}/educationdetails`);
@@ -408,7 +408,7 @@ export default function App({ facilitator, ip, onClick, id }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("EDUCATIONAL_DETAILS"),
+        name: t("EDUCATION_DETAILS"),
         lang,
         setLang,
       }}
@@ -449,13 +449,14 @@ export default function App({ facilitator, ip, onClick, id }) {
               onChange,
               onError,
               transformErrors,
+              onSubmit,
             }}
           >
             <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => EditEducation()}
+              onPress={() => formRef?.current?.submit()}
             >
               {t("SAVE")}
             </FrontEndTypo.Primarybutton>

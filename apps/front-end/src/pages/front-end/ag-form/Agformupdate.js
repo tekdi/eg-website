@@ -79,8 +79,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
-
-  // const location = useLocation();
+  const location = useLocation();
+  const [agroute, setagroute] = React.useState(location?.state?.route);
 
   const id = useParams();
 
@@ -95,7 +95,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       device_type: qData?.result?.core_beneficiaries?.device_type,
       state: qData?.result?.state,
       district: qData?.result?.district,
-      address: qData?.result?.address,
+      address: qData?.result?.address == "null" ? "" : qData?.result?.address,
       block: qData?.result?.block,
       village: qData?.result?.village,
       grampanchayat: qData?.result?.grampanchayat,
@@ -376,7 +376,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      setPage(newSteps[0]);
+      // setPage(newSteps[0]);
+      setPage(agroute ? "upload" : newSteps[0]);
+
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
@@ -416,7 +418,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -664,11 +666,10 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
-      const data = await getBase64(file);
+    let data = await benificiaryRegistoryService.validateFileMaxSize(file);
+    if (data) {
       setCameraUrl(data);
       setcameraFile(file);
-      setFormData({ ...formData, ["profile_url"]: data });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
@@ -680,7 +681,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       const form_data = new FormData();
       const item = {
         file: cameraFile,
-        document_type: "profile",
+        document_type: "profile_photo",
+        document_sub_type: "profile_photo_1",
         user_id: userId,
       };
       for (let key in item) {
@@ -763,10 +765,17 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   }
 
   if (page === "upload") {
+    const properties = schema1.properties;
+    const newSteps = Object.keys(properties);
+    const onPressBackButton = async () => {
+      setagroute(false);
+      setPage(newSteps[4]);
+      setSchema(properties[newSteps[4]]);
+    };
     return (
       <Layout
         _appBar={{
-          onPressBackButton: (e) => setPage("5"),
+          onPressBackButton,
           lang,
           setLang,
           onlyIconsShow: ["backBtn", "userInfo"],

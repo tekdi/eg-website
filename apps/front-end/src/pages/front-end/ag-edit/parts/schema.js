@@ -5,24 +5,24 @@ export default {
     1: {
       title: "FULL_NAME",
       type: "object",
-      required: ["first_name", "dob"],
+      required: ["first_name"],
       properties: {
         first_name: {
           type: "string",
           title: "FIRST_NAME",
         },
         middle_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "MIDDLE_NAME",
         },
         last_name: {
-          type: "string",
+          type: ["string", "null"],
           title: "LAST_NAME",
         },
         dob: {
-          type: "string",
+          type: ["string", "null"],
           format: "date",
-          title: "DATE_OF_BIRTH",
+          title: "DATE_OF_BIRTH_AS_PER_AADHAAR",
         },
         edit_page_type: {
           type: "string",
