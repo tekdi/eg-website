@@ -8,6 +8,7 @@ import {
   IconButton,
   CloseIcon,
   Image,
+
 } from "native-base";
 import {
   useWindowSize,
@@ -92,11 +93,11 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/images/auth/login.png",
+            uri: "/splash1.png",
           }}
           alt=""
-          width="240"
-          height="144"
+          resizeMode="contain"
+          size={200}
         />
         <VStack space={5} p="5">
           <Alert status="info" colorScheme="info" textAlign="center">
