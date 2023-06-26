@@ -402,33 +402,35 @@ export default function Attendence({ footerLinks }) {
           <React.Suspense fallback={<Loading />}>
             <Camera
               headerComponent={
-                <VStack bg="white" width="94%">
-                  <AdminTypo.H6 color="textGreyColor.900" bold pl="2" pt="3">
+                <VStack bg="black" width="94%" pl="4">
+                  <AdminTypo.H6 color="white" bold>
                     {t("MARK_ATTENDANCE_ORIENTATION")}
                   </AdminTypo.H6>
-                  <HStack justifyContent={"space-between"}>
-                    <HStack
-                      space={"2"}
-                      ml="15px"
-                      direction={["column", "column", "row"]}
-                    >
-                      <AdminTypo.H6 color="textGreyColor.550" bold>
-                        {t("PRESENT")}
-                      </AdminTypo.H6>
+                  <HStack direction={["row", "row", "row"]}>
+                    <AdminTypo.H6 color="white" bold flex="0.3">
+                      {t("PRESENT")} :
                       {users.filter((e) => e.status === "present").length}
-                      <AdminTypo.H6 color="textGreyColor.550" bold>
-                        {t("ABSENT")}
-                      </AdminTypo.H6>
+                    </AdminTypo.H6>
+                    <AdminTypo.H6 color="white" bold flex="0.3">
+                      {t("ABSENT")} :
                       {users.filter((e) => e.status !== "present").length}
+                    </AdminTypo.H6>
+                  </HStack>
+                  <HStack direction={["row", "row", "row"]}>
+                    <AdminTypo.H6 color="white">
                       {t("CANDIDATES_NAME")} {userData?.user?.first_name}
-                      <AdminTypo.H6>
-                        {t("CANDIDATES")} - {users?.length ? users?.length : 0}
-                      </AdminTypo.H6>
-                    </HStack>
-                    <HStack></HStack>
+                    </AdminTypo.H6>
+                  </HStack>
+                  <HStack>
+                    <AdminTypo.H6
+                      color="white"
+                      direction={["row", "row", "row"]}
+                    >
+                      {t("CANDIDATES")} - {users?.length ? users?.length : 0}
+                    </AdminTypo.H6>
                   </HStack>
                   <Stack>
-                    <AdminTypo.H6 my="15px" color="textGreyColor.100" pl="2">
+                    <AdminTypo.H6 my="2" color="white">
                       {t("ATTENDANCE_CAMERA_SUBTITLE")}
                     </AdminTypo.H6>
                   </Stack>
@@ -573,12 +575,14 @@ export default function Attendence({ footerLinks }) {
                 >
                   {t("EDIT_DETAILS")}
                 </AdminTypo.Secondarybutton> */}
-                  <AdminTypo.Secondarybutton
-                    onPress={() => setShowDeleteModal(true)}
-                    shadow="BlueOutlineShadow"
-                  >
-                    {t("DELETE_EVENT")}
-                  </AdminTypo.Secondarybutton>
+                  <Box>
+                    <AdminTypo.Secondarybutton
+                      onPress={() => setShowDeleteModal(true)}
+                      shadow="BlueOutlineShadow"
+                    >
+                      {t("DELETE_EVENT")}
+                    </AdminTypo.Secondarybutton>
+                  </Box>
                 </HStack>
 
                 <HStack
