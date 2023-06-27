@@ -16,7 +16,8 @@
   "AADHAR_CARD": "Aadhaar Card",
   "AADHAR_KYC_VERIFICATION_FAILED": "Aadhaar KYC Verification Failed",
   "AADHAR_NUMBER_KYC": "Aadhar Number KYC",
-  "AADHAR_UPLOAD_CLEAR": "Clear and upload new one",
+  "AADHAR_UPLOAD_CLEAR": "Clear",
+  "AADHAR_UPLOAD_KYC": "Aadhaar upload KYC",
   "ABSENT": "Absent",
   "ACCEPT": "Accept",
   "ACTION": "Action",
@@ -666,6 +667,9 @@
   "TRANSFER_CERTIFICATE": "Transfer certificate",
   "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "Transfer Certificate With CBO Sign",
   "TRY_OTHER": "Try Other",
+  "TRY_AADHAR_NUMER_KYC": "Try Aadhaar Number KYC",
+  "TRY_AADHAR_QR_KYC": "Try Aadhaar QR KYC",
+  "TRY_AADHAR_UPLOAD_KYC": "Try Aadhaar upload KYC",
   "TYPE": "Type",
   "TYPE_OF_DEVICE": "Type of Device",
   "TYPE_OF_DOCUMENT": "Type of document",
@@ -762,5 +766,4 @@
   "FACILITATOR_REFERENCE_DESIGNATIONE_PRI":"PRI",
   "FACILITATOR_REFERENCE_DESIGNATIONE_ANM":"ANM",
   "FACILITATOR_REFERENCE_DESIGNATIONE_OTHERS":"Others"
- 
 }

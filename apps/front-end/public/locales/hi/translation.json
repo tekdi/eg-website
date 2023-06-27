@@ -16,7 +16,8 @@
   "AADHAR_CARD": "आधार कार्ड",
   "AADHAR_KYC_VERIFICATION_FAILED": "आधार KYC वेरिफिकेशन  विफल",
   "AADHAR_NUMBER_KYC": "आधार संख्या KYC",
-  "AADHAR_UPLOAD_CLEAR": "हटाए और नया अपलोड करे",
+  "AADHAR_UPLOAD_CLEAR": "हटाएं",
+  "AADHAR_UPLOAD_KYC": "आधार फोटो KYC",
   "ABSENT": "अनुपस्थित",
   "ACCEPT": "स्वीकार करना",
   "ACTION": "एक्शन",
@@ -666,6 +667,9 @@
   "TRANSFER_CERTIFICATE": "ट्रांसफर सर्टिफिकेट (TC)",
   "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "CBO हस्ताक्षर के साथ हस्तांतरण प्रमाणपत्र",
   "TRY_OTHER": "कोई दूसरा कोशिश",
+  "TRY_AADHAR_NUMER_KYC": "आधार संख्या KYC प्रयास करें",
+  "TRY_AADHAR_QR_KYC": "आधार QR KYC प्रयास करें",
+  "TRY_AADHAR_UPLOAD_KYC": "आधार फोटो KYC प्रयास करें",
   "TYPE": "प्रकार",
   "TYPE_OF_DEVICE": "डिवाइस का प्रकार",
   "TYPE_OF_DOCUMENT": "दस्तावेज़ का प्रकार",
@@ -762,5 +766,4 @@
   "FACILITATOR_REFERENCE_DESIGNATIONE_PRI":"PRI",
   "FACILITATOR_REFERENCE_DESIGNATIONE_ANM":"ANM",
   "FACILITATOR_REFERENCE_DESIGNATIONE_OTHERS":"अन्य"
-
 }
