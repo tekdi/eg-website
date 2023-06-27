@@ -208,7 +208,7 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
         <Center>
           <Pressable
             onPress={() => {
-              navigate("/");
+              navigate("/", { state: "PrerakDuties" });
             }}
           >
             <Text style={stylesheet.text1}>

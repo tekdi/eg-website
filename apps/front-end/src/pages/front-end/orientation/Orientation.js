@@ -8,6 +8,7 @@ import {
   Loading,
   enumRegistryService,
   getOptions,
+  EVENTS_COLORS,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -32,6 +33,7 @@ import {
   BaseInputTemplate,
   HFieldTemplate,
 } from "../../../component/BaseInput";
+
 import {
   HStack,
   VStack,
@@ -97,11 +99,20 @@ export default function Orientation({ footerLinks }) {
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
-    setReminders(result?.data?.REMINDERS);
+    setReminders(result);
     let newSchema = orientationPopupSchema;
     newSchema = getOptions(newSchema, {
       key: "reminders",
       arr: result?.data?.REMINDERS.map((e) => ({ ...e, title: t(e.title) })),
+      title: "title",
+      value: "value",
+    });
+    newSchema = getOptions(newSchema, {
+      key: "type",
+      arr: result?.data?.FACILITATOR_EVENT_TYPE.map((e) => ({
+        ...e,
+        title: t(e.title),
+      })),
       title: "title",
       value: "value",
     });
@@ -206,14 +217,14 @@ export default function Orientation({ footerLinks }) {
     setFormData({
       attendees: [],
       type: null,
-      name: null,
-      master_trainer: null,
+      name: "",
+      master_trainer: "",
       start_date: null,
       end_date: null,
       start_time: null,
       end_time: null,
       reminders: [],
-      location: null,
+      location: "",
       location_type: null,
     });
   };
@@ -394,22 +405,19 @@ export default function Orientation({ footerLinks }) {
               </AdminTypo.Secondarybutton>
               <Cal />
               <VStack space="4" mt="4">
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="blue.500" />
-                  <AdminTypo.H6 bold>{t("INTERVIEW")}</AdminTypo.H6>
-                </HStack>
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="green.500" />
-                  <AdminTypo.H6 bold>{t("ORIENTATION_DAYS")}</AdminTypo.H6>
-                </HStack>
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="yellow.500" />
-                  <AdminTypo.H6 bold>{t("TRAINING_DAYS")}</AdminTypo.H6>
-                </HStack>
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="purple.500" />
-                  <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
-                </HStack>
+                {reminders?.data?.FACILITATOR_EVENT_TYPE.map((e) => (
+                  <HStack alignItems="Center" space="md">
+                    <CheckCircleIcon
+                      size="4"
+                      color={
+                        EVENTS_COLORS?.[e?.value]
+                          ? EVENTS_COLORS[e?.value]
+                          : "#808080"
+                      }
+                    />
+                    <AdminTypo.H6 bold>{t(e?.title)}</AdminTypo.H6>
+                  </HStack>
+                ))}
               </VStack>
             </VStack>
             <Box>
@@ -467,6 +475,12 @@ export default function Orientation({ footerLinks }) {
                       ? item?.location_type
                       : "",
                     event_id: item?.id ? item?.id : "",
+                    borderColor: EVENTS_COLORS?.[item?.type]
+                      ? EVENTS_COLORS[item?.type]
+                      : "#808080",
+                    backgroundColor: EVENTS_COLORS?.[item?.type]
+                      ? EVENTS_COLORS[item?.type]
+                      : "#808080",
                   };
                 })}
                 eventTimeFormat={{

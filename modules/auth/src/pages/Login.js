@@ -12,14 +12,15 @@ import {
 import {
   useWindowSize,
   Subtitle,
-  t,
   login,
   logout,
   Layout,
   BodyMedium,
   FrontEndTypo,
+  IconByName,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const styles = {
   box: {
@@ -29,11 +30,14 @@ const styles = {
 };
 
 export default function Login() {
+  const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
   const [width, Height] = useWindowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
+  const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validate = () => {
     let arr = {};
@@ -72,11 +76,10 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
-
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["helpBtn"],
+        onlyIconsShow: location?.state ? ["backBtn", "helpBtn"] : ["helpBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
@@ -92,11 +95,11 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/images/auth/login.png",
+            uri: "/splash1.png",
           }}
           alt=""
-          width="240"
-          height="144"
+          resizeMode="contain"
+          size={200}
         />
         <VStack space={5} p="5">
           <Alert status="info" colorScheme="info" textAlign="center">
@@ -186,7 +189,16 @@ export default function Login() {
                   variant="unstyled"
                   p={"10px"}
                   placeholder={t("ENTER") + " " + t("PASSWORD")}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  InputRightElement={
+                    <IconByName
+                      name={showPassword ? "EyeLineIcon" : "EyeOffLineIcon"}
+                      _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                      onPress={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                    />
+                  }
                   onChange={(e) =>
                     setCredentials({
                       ...credentials,

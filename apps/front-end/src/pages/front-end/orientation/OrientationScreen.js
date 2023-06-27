@@ -2,6 +2,7 @@ import {
   IconByName,
   facilitatorRegistryService,
   AdminTypo,
+  ImageView,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
@@ -50,12 +51,12 @@ export default function OrientationScreen({
       name: t("NAME"),
       selector: (row) => (
         <HStack alignItems={"center"} space="2">
-          {row?.profile_url ? (
-            <Avatar
+          {row?.profile_photo_1?.id ? (
+            <ImageView
               source={{
-                uri: row?.profile_url,
+                document_id: row?.profile_photo_1.id,
               }}
-              // alt="Alternate Text"
+              alt={row?.profile_photo_1.id}
               width={"35px"}
               height={"35px"}
             />
