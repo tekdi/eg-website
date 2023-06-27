@@ -19,7 +19,7 @@ import {
   FrontEndTypo,
   IconByName,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const styles = {
@@ -37,6 +37,7 @@ export default function Login() {
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validate = () => {
     let arr = {};
@@ -75,11 +76,10 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
-
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["helpBtn"],
+        onlyIconsShow: location?.state ? ["backBtn", "helpBtn"] : ["helpBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}

@@ -17,6 +17,7 @@ import {
   Checkbox,
   Pressable,
   Text,
+  FormControl,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
@@ -78,7 +79,12 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [userId, setuserId] = React.useState(id);
   const [uploadPayment, setUploadPayment] = React.useState(true);
   const [source, setSource] = React.useState();
-
+  const buttonStyle = {
+    borderWidth: "2px",
+    borderStyle: "dotted",
+    borderRadius: "12px",
+    borderColor: "gray",
+  };
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
@@ -266,7 +272,9 @@ export default function App({ facilitator, id, ip, onClick }) {
     let enrollment_number =
       qData?.result?.program_beneficiaries?.enrollment_number;
     let subjects = qData?.result?.program_beneficiaries?.subjects;
-    let subjectData = JSON.parse(subjects);
+    let subjectData = subjects ? JSON.parse(subjects) : [];
+    let payment_receipt_document_id =
+      qData?.result?.program_beneficiaries?.payment_receipt_document_id;
     setSource({
       document_id:
         qData?.result?.program_beneficiaries?.payment_receipt_document_id,
@@ -289,8 +297,9 @@ export default function App({ facilitator, id, ip, onClick }) {
           ? enrollment_number
           : "",
       subjects:
-        enrollment_status === "other" ? "" : stringsArray ? stringsArray : "",
+        enrollment_status === "other" ? [] : stringsArray ? stringsArray : [],
       facilitator_id: localStorage.getItem("id"),
+      payment_receipt_document_id: payment_receipt_document_id,
     });
   }, []);
 
@@ -369,7 +378,6 @@ export default function App({ facilitator, id, ip, onClick }) {
         const required = constantSchema?.required.filter(
           (item) => !["enrollment_number", "subjects"].includes(item)
         );
-        //const required =["enrollment_status"]
         const newData = {
           enrollment_status: e.formData?.enrollment_status,
           enrolled_for_board: e.formData?.enrolled_for_board,
@@ -379,6 +387,15 @@ export default function App({ facilitator, id, ip, onClick }) {
         setSchema({ ...constantSchema, properties, required });
         setFormData(newData);
         setUploadPayment(false);
+      } else if (data?.enrollment_status === "other") {
+        setUploadPayment(true);
+        const { ...properties } = constantSchema?.properties;
+        const required = ["enrollment_status"];
+
+        setSchema({ ...constantSchema, properties, required });
+        const newData = { ...formData, ...data };
+        setFormData(newData);
+        setUploadPayment(true);
       } else {
         setSchema(constantSchema);
         setUploadPayment(true);
@@ -441,7 +458,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_status = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_STATUS")],
         };
-      } else if (!formData?.enrolled_for_board) {
+      } else if (formData?.enrolled_for_board === "null") {
         newErrors.enrolled_for_board = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLED_FOR_BOARD")],
         };
@@ -449,7 +466,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         };
-      } else if (formData?.subjects.length <= 0) {
+      } else if (formData?.subjects.length < 1) {
         newErrors.subjects = {
           __errors: [t("REQUIRED_MESSAGE_SUBJECTS")],
         };
@@ -467,9 +484,6 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    const data = await getBase64(file);
-    console.log(data);
-
     if (file.size <= 1048576 * 2) {
       const form_data = new FormData();
       const item = {
@@ -485,26 +499,23 @@ export default function App({ facilitator, id, ip, onClick }) {
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
       setFormData({ ...formData, ["payment_receipt_document_id"]: id });
+      // uri: uploadDoc?.fileUrl,  using this is giving a grey screen as image hence I restored it back
       setSource({
-        uri: data,
+        document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
     }
   };
-
-  //
   const editSubmit = async () => {
-    console.log(formData);
-
     if (formData?.enrollment_status === "enrolled") {
       if (
         formData?.enrollment_status &&
-        formData?.enrolled_for_board &&
+        formData?.enrolled_for_board !== "null" &&
         formData?.enrollment_number &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
-        formData?.subjects.length > 0
+        formData?.subjects.length > 1
       ) {
         const updateDetails = await AgRegistryService.updateAg(
           formData,
@@ -597,12 +608,17 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
+                <H1 color={"rgb(121, 0, 0)"} fontSize={"15px"}>
+                  {t("PAYMENT_RECEIPT")}
+                </H1>
+
                 <HStack justifyContent="space-between" alignItems="Center">
                   <Button
-                    leftIcon={
-                      <IconByName name="Download2LineIcon" isDisabled />
-                    }
+                    padding={"9vh"}
+                    marginLeft={"9vh"}
+                    style={buttonStyle}
                     variant={"secondary"}
+                    leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
                     onPress={(e) => {
                       uplodInputRef?.current?.click();
                     }}
@@ -617,6 +633,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                     onChange={handleFileInputChange}
                   />
                 </HStack>
+
                 <VStack
                   px="5"
                   pb="3"
@@ -642,11 +659,27 @@ export default function App({ facilitator, id, ip, onClick }) {
             ) : (
               <React.Fragment></React.Fragment>
             )}
+            {errors?.payment_receipt_document_id ? (
+              <span
+                style={{
+                  fontSize: "xs",
+                  color: "#a94442",
+                  fontWeight: 400,
+                  paddingLeft: "8%",
+                }}
+              >
+                {errors?.payment_receipt_document_id?.__errors[0]}{" "}
+              </span>
+            ) : (
+              <React.Fragment></React.Fragment>
+            )}
             <Button
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => editSubmit()}
+              onPress={() => {
+                editSubmit();
+              }}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </Button>
