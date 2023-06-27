@@ -270,8 +270,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   const onSubmit = async (data) => {
-    console.log(data.formData, "data");
-
     let newFormData = data.formData;
     if (_.isEmpty(errors)) {
       const newdata = filterObject(newFormData, [

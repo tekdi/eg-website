@@ -37,10 +37,10 @@ const List = ({ data }) => {
             >
               <HStack justifyContent="space-between">
                 <HStack alignItems="Center" justifyContent="space-between">
-                  {item?.profile_photo_1?.[0]?.id ? (
+                  {item?.profile_photo_1?.id ? (
                     <ImageView
                       source={{
-                        document_id: item?.profile_photo_1?.[0]?.id,
+                        document_id: item?.profile_photo_1?.id,
                       }}
                       // alt="Alternate Text"
                       width={"45px"}

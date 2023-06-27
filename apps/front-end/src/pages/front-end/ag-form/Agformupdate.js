@@ -338,7 +338,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
-    console.log(ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS, ListOfEnum?.data);
     if (schema["properties"]["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",

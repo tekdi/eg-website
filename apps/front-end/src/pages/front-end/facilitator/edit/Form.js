@@ -216,7 +216,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         block: formData?.block,
       });
     }
-    console.log(enumObj);
     if (schema?.properties?.device_ownership) {
       if (formData?.device_ownership == "no") {
         setAlert(t("YOU_NOT_ELIGIBLE"));
