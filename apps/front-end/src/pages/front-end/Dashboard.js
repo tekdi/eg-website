@@ -394,7 +394,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Secondarybutton> */}
               <FrontEndTypo.Primarybutton
                 onPress={() => {
-                  navigate(`/aadhaar-kyc/${id}/upload`);
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`);
                 }}
               >
                 {t("AADHAR_UPLOAD_KYC")}
