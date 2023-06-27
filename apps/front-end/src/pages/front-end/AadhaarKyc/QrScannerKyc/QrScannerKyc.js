@@ -6,7 +6,7 @@ import {
 } from "@shiksha/common-lib";
 import { Box, VStack, HStack, Center } from "native-base";
 import React from "react";
-import QrReader from "react-qr-reader";
+import { QrReader } from "react-qr-reader";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 
@@ -132,8 +132,9 @@ const App = ({
                 size: "30px",
               }}
               onPress={(e) => {
-                setPage();
-                setOtpFailedPopup(true);
+                // setPage();
+                // setOtpFailedPopup(true);
+                setStartScan(false);
               }}
             />
           </HStack>
@@ -142,18 +143,24 @@ const App = ({
           <VStack>
             <Center>
               <QrReader
-                key={cameraHeight + cameraWidth}
-                facingMode={selected ? "user" : "environment"}
-                torch={torch}
+                onLoad={(e) => console.log(e)}
+                key={cameraHeight + cameraWidth + selected + torch}
+                // facingMode={selected ? "user" : "environment"}
                 constraints={{
-                  facingMode: selected ? "user" : "environment",
-                  torch,
+                  facingMode: selected ? "left" : "environment",
+                  mirrorVideo: true,
+                  advanced: [{ torch: true }],
                 }}
-                style={{
+                videoStyle={{
                   height: cameraHeight,
                   width: cameraWidth,
                   display: "flex",
                   alignItems: "center",
+                }}
+                videoContainerStyle={{
+                  height: cameraHeight,
+                  width: cameraWidth,
+                  padding: "0px",
                 }}
                 delay={2000}
                 onError={handleError}
@@ -172,7 +179,7 @@ const App = ({
           >
             {startScan && (
               <IconByName
-                name="FlashlightLineIcon"
+                name={torch ? "FlashlightFillIcon" : "FlashlightLineIcon"}
                 color={"white"}
                 _icon={{
                   size: "30px",
@@ -182,7 +189,7 @@ const App = ({
             )}
             {startScan && (
               <IconByName
-                name="CameraSwitchLineIcon"
+                name={selected ? "CameraLineIcon" : "CameraSwitchLineIcon"}
                 color={"white"}
                 _icon={{
                   size: "30px",

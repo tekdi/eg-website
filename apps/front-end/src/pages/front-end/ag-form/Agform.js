@@ -268,7 +268,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 30);
-      let maxYear = moment().subtract("years", 14);
+      let maxYear = moment().subtract("years", 12);
       setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
     }
@@ -327,11 +327,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
-      if (years < 14) {
-        errors?.dob?.addError(t("MINIMUM_AGE_14_YEAR_OLD"));
+      if (years < 12) {
+        errors?.dob?.addError(t("MINIMUM_AGE_12_YEAR_OLD"));
       }
-      if (years > 29) {
-        errors?.dob?.addError(t("MAXIMUM_AGE_29_YEAR_OLD"));
+      if (years > 30) {
+        errors?.dob?.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
