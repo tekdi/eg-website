@@ -179,7 +179,6 @@ export default function agFormEdit({ ip }) {
       }
     }
   };
-
   const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
     let enumObj = {};
     let arrData = arr;
@@ -265,7 +264,6 @@ export default function agFormEdit({ ip }) {
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
-    setFormData(newData);
     if (id === "root_mobile") {
       if (
         data?.mobile &&
@@ -311,6 +309,7 @@ export default function agFormEdit({ ip }) {
             item
           )
         );
+
         setSchema({ ...constantSchema, properties, required });
       }
 
@@ -344,7 +343,7 @@ export default function agFormEdit({ ip }) {
 
     if (data?.alternative_mobile_number == null) {
       setFormData({
-        ...formData,
+        ...newData,
         alternative_device_ownership: null,
         alternative_device_type: null,
         alternative_mobile_number: data?.alternative_mobile_number,
