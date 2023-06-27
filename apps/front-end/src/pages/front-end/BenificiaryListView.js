@@ -35,13 +35,16 @@ const List = ({ data }) => {
               space="2"
             >
               <HStack justifyContent="space-between">
-                <HStack alignItems="Center" justifyContent="space-between">
+                <HStack alignItems="Center" justifyContent="space-between" flex="0.6">
                   <IconByName
                     name="AccountCircleLineIcon"
-                    _icon={{ size: "40px", color: "textGreyColor.900" }}
+                    _icon={{ size: "40px", color: "textGreyColor.900" }} 
                   />
                   <VStack>
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
+                    <FrontEndTypo.H3 bold  color="textGreyColor.800"  wordWrap="break-word"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis" width="150px">
                       {item?.first_name}
                       {item?.last_name && ` ${item.last_name}`}
                     </FrontEndTypo.H3>
@@ -50,7 +53,7 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box>
+                <Box flex="0.3">
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
                     rounded={"sm"}
@@ -59,7 +62,7 @@ const List = ({ data }) => {
               </HStack>
               <VStack bg="white" pl="2">
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450" underline >
                     {t("CHECK_DOCUMENTS")}
                   </FrontEndTypo.H4>
                   <IconByName name="ArrowRightSLineIcon" />
