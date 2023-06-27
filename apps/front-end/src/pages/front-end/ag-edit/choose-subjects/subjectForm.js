@@ -673,16 +673,15 @@ export default function App({ facilitator, id, ip, onClick }) {
             ) : (
               <React.Fragment></React.Fragment>
             )}
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => {
                 editSubmit();
               }}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
@@ -757,9 +756,8 @@ export default function App({ facilitator, id, ip, onClick }) {
                 </Clipboard>
               </VStack>
               <HStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Primarybutton
                   flex={1}
-                  variant="primary"
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
@@ -769,7 +767,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                   }}
                 >
                   {t("LOGIN")}
-                </Button>
+                </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
           </Modal.Body>

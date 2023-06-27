@@ -38,7 +38,7 @@ const List = ({ data }) => {
                 <HStack
                   alignItems="Center"
                   justifyContent="space-between"
-                  flex="0.6"
+                  flex="5"
                 >
                   <IconByName
                     name="AccountCircleLineIcon"
@@ -62,7 +62,7 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box flex="0.3">
+                <Box flex="3">
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
                     rounded={"sm"}
