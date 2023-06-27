@@ -82,7 +82,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     };
     getData();
   }, [qualifications]);
-
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {
@@ -217,7 +216,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         block: formData?.block,
       });
     }
-
     if (schema?.properties?.device_ownership) {
       if (formData?.device_ownership == "no") {
         setAlert(t("YOU_NOT_ELIGIBLE"));
@@ -225,7 +223,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         setAlert();
       }
     }
-
+    if (schema?.properties?.designation) {
+      newSchema = getOptions(newSchema, {
+        key: "designation",
+        arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
+        title: "title",
+        value: "value",
+      });
+    }
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
@@ -475,8 +480,9 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
     return newSchema;
   };
-
   const onChange = async (e, id) => {
+    console.log(schema);
+
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
@@ -495,6 +501,27 @@ export default function App({ userTokenInfo, footerLinks }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+    setFormData(newData);
+    if (id === "root_contact_number") {
+      if (data?.contact_number?.toString()?.length < 10) {
+        const newErrors = {
+          contact_number: {
+            __errors: [t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    if (id === "root_name") {
+      if (!data?.name?.length) {
+        const newErrors = {
+          name: {
+            __errors: [t("NAME_CANNOT_BE_EMPTY")],
+          },
+        };
+        setErrors(newErrors);
       }
     }
     if (id === "root_alternative_mobile_number") {

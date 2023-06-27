@@ -42,6 +42,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       ? "JOB_EXPERIENCE"
       : "ADD_VOLUNTEER_EXPERIENCE";
 
+  const stepTitle = type === "experience" ? "JOB_TITLE" : "VOLUNTEER_TITLE";
   const nextPreviewStep = async (p = "n") => {
     setAlert();
     if (addMore) {
@@ -94,7 +95,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (newSchema["properties"]?.["role_title"]) {
           newSchema = getOptions(newSchema, {
             key: "role_title",
-            extra: { title: stepLabel },
+            extra: { title: stepTitle },
           });
         }
         setSchema({ ...newSchema, title: stepLabel });

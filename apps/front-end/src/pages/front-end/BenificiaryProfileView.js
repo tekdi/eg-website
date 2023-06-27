@@ -125,7 +125,6 @@ export default function BenificiaryProfileView(props) {
         return <React.Fragment></React.Fragment>;
     }
   }
-
   return (
     <Layout
       _appBar={{
