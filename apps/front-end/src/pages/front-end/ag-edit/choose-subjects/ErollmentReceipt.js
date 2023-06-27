@@ -1,9 +1,14 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { dateOfBirth, validation } from "@shiksha/common-lib";
+import {
+  benificiaryRegistoryService,
+  dateOfBirth,
+  validation,
+} from "@shiksha/common-lib";
 import enrollmentSchema from "./EnrollmentSchema.js";
 import { Alert, Box, Button, HStack } from "native-base";
+import { useParams } from "react-router-dom";
 
 import {
   facilitatorRegistryService,
@@ -28,11 +33,10 @@ import { useScreenshot } from "use-screenshot-hook";
 import { useTranslation } from "react-i18next";
 
 // App
-export default function App({ facilitator, id, ip, onClick }) {
+export default function App({ facilitator, ip, onClick }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
@@ -40,25 +44,24 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState(id);
+  const [benificiary, setBenificiary] = React.useState();
+
   let age;
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+  const { id } = useParams();
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/enrollmentdetails`);
+    navigate(`/beneficiary/${id}/enrollmentdetails`);
   };
   const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
-  };
-
   React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
+    benificiaryDetails();
+  }, []);
+
+  const benificiaryDetails = async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
+  };
 
   const updateData = (data, deleteData = false) => {
     if (deleteData) {
@@ -69,23 +72,32 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
 
   const [uiSchema, setUiSchema] = React.useState({
-    enrollment_date: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        hideNowButton: true,
-        hideClearButton: true,
-        yearsRange: [2022, 2030],
-      },
-    },
     enrollment_dob: {
       "ui:widget": "alt-date",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
-        yearsRange: [1980, 2030],
+        yearsRange: [1980, moment().format("YYYY")],
       },
     },
   });
+
+  React.useEffect(() => {
+    if (formData?.enrollment_dob) {
+      const dob = moment.utc(formData.enrollment_dob).format("DD-MM-YYYY");
+      dateOfBirth(dob)
+        .then((age) => {
+          setUiSchema((prevUiSchema) => ({
+            ...prevUiSchema,
+            enrollment_dob: { ...prevUiSchema?.enrollment_dob, "ui:help": age },
+          }));
+        })
+        .catch((error) => {
+          console.log(error);
+          // Handle any errors that occur during the date calculation
+        });
+    }
+  }, [formData]);
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -167,6 +179,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       };
     }
   };
+
   React.useEffect(async () => {
     if (enrollmentSchema.type === "step") {
       const properties = enrollmentSchema.properties;
@@ -185,30 +198,29 @@ export default function App({ facilitator, id, ip, onClick }) {
       setFormData({ ...newData, ...facilitator });
     }
 
+    const qData = await benificiaryRegistoryService.getOne(id);
+    let enrollment_first_name =
+      qData?.result?.program_beneficiaries?.enrollment_first_name;
+    let enrollment_middle_name =
+      qData?.result?.program_beneficiaries?.enrollment_middle_name;
+    let enrollment_last_name =
+      qData?.result?.program_beneficiaries?.enrollment_last_name;
+    let enrollment_dob = qData?.result?.program_beneficiaries?.enrollment_dob;
+    let enrollment_aadhaar_no =
+      qData?.result?.program_beneficiaries?.enrollment_aadhaar_no;
     setFormData({
       ...formData,
-      // enrollment_date: enrollment_date ? enrollment_date : "",
-      // enrollment_first_name: enrollment_first_name ? enrollment_first_name : "",
-      // enrollment_middle_name: enrollment_middle_name
-      //   ? enrollment_middle_name
-      //   : "",
-      // enrollment_last_name: enrollment_last_name ? enrollment_last_name : "",
-      // enrollment_dob: enrollment_dob ? enrollment_dob : "",
-      // enrollment_aadhaar_no: enrollment_aadhaar_no ? enrollment_aadhaar_no : "",
+      enrollment_first_name: enrollment_first_name ? enrollment_first_name : "",
+      enrollment_middle_name: enrollment_middle_name
+        ? enrollment_middle_name
+        : "",
+      enrollment_last_name: enrollment_last_name ? enrollment_last_name : "",
+      enrollment_dob: enrollment_dob ? enrollment_dob : "",
+      enrollment_aadhaar_no: enrollment_aadhaar_no
+        ? parseInt(enrollment_aadhaar_no)
+        : "",
     });
   }, []);
-
-  const formSubmitUpdate = async (formData) => {
-    const { id } = facilitator;
-    if (id) {
-      updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
-        ...formData,
-        parent_ip: ip?.id,
-        id: id,
-      });
-    }
-  };
 
   const goErrorPage = (key) => {
     if (key) {
@@ -238,16 +250,8 @@ export default function App({ facilitator, id, ip, onClick }) {
     });
   };
   const onChange = async (e, id) => {
-    setErrors();
+    setErrors({});
     const data = e.formData;
-    if (moment.utc(data?.enrollment_date) > moment()) {
-      const newErrors = {
-        enrollment_date: {
-          __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
-        },
-      };
-      setErrors(newErrors);
-    }
     if (id === "root_enrollment_aadhaar_no") {
       if (data?.enrollment_aadhaar_no) {
         const newErrors = validation({
@@ -270,6 +274,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         });
       }
     }
+
     if (
       data?.enrollment_first_name &&
       !`${data?.enrollment_first_name}`?.match(/^[a-zA-Z ]*$/g)
@@ -306,14 +311,6 @@ export default function App({ facilitator, id, ip, onClick }) {
       setErrors(newErrors);
     }
 
-    if (data?.enrollment_dob) {
-      const dob = moment.utc(data?.enrollment_dob).format("DD-MM-YYYY");
-      age = await dateOfBirth(dob);
-      setUiSchema({
-        ...uiSchema,
-        enrollment_dob: { ...uiSchema?.enrollment_dob, "ui:help": age },
-      });
-    }
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -337,54 +334,28 @@ export default function App({ facilitator, id, ip, onClick }) {
   //   setErrors(newErrors);
   // };
 
-  //
-  const editSubmit = async () => {
-    console.log("edit");
-    // if (formData?.enrollment_status === "enrolled") {
-    //   if (
-    //     formData?.enrollment_status &&
-    //     formData?.enrolled_for_board &&
-    //     formData?.enrollment_number &&
-    //     formData?.payment_receipt_document_id &&
-    //     formData?.subjects.length < 8 &&
-    //     formData?.subjects.length > 0
-    //   ) {
-    //     const updateDetails = await AgRegistryService.updateAg(
-    //       formData,
-    //       userId
-    //     );
-    //     // navigate(`/beneficiary/profile/${userId}`);
-    //     console.log("hi");
-    //   } else {
-    //     validation();
-    //   }
-    // } else if (
-    //   formData?.enrollment_status === "applied_but_pending" ||
-    //   formData?.enrollment_status === "rejected"
-    // ) {
-    //   if (formData?.enrollment_status && formData?.enrolled_for_board) {
-    //     const updateDetails = await AgRegistryService.updateAg(
-    //       formData,
-    //       userId
-    //     );
-    //     navigate(`/beneficiary/profile/${userId}`);
-    //   } else {
-    //     validation();
-    //   }
-    // } else if (formData?.enrollment_status === "not_enrolled") {
-    //   if (formData?.enrollment_status) {
-    //     const updateDetails = await AgRegistryService.updateAg(
-    //       formData,
-    //       userId
-    //     );
-    //     navigate(`/beneficiary/profile/${userId}`);
-    //   } else {
-    //     validation();
-    //   }
-    // } else {
-    //   const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    //   navigate(`/beneficiary/profile/${userId}`);
-    // }
+  const onSubmit = async (data) => {
+    let newFormData = data.formData;
+    const bodyData = {
+      edit_page_type: "edit_enrollement_details",
+      enrollment_status: "enrolled",
+      enrollment_first_name: newFormData?.enrollment_first_name,
+      enrollment_middle_name: newFormData?.enrollment_middle_name,
+      enrollment_last_name: newFormData?.enrollment_last_name,
+      enrollment_dob: newFormData?.enrollment_dob,
+      enrollment_aadhaar_no: newFormData?.enrollment_aadhaar_no.toString(),
+    };
+    if (bodyData) {
+      const updateDetails = await benificiaryRegistoryService.enrollmentReceipt(
+        id,
+        bodyData
+      );
+      if (updateDetails) {
+        navigate(`/beneficiary/profile/${id}`);
+      }
+    } else {
+      validation();
+    }
   };
 
   return (
@@ -435,15 +406,20 @@ export default function App({ facilitator, id, ip, onClick }) {
               formData,
               onChange,
               onError,
-              onSubmit: { editSubmit },
+              onSubmit,
               transformErrors,
             }}
           >
             <Button
               mt="3"
               variant={"primary"}
-              type="submit"
-              onPress={() => editSubmit()}
+              onPress={() => {
+                if (Object.keys(errors).length > 0) {
+                  console.log("hi");
+                } else {
+                  formRef?.current?.submit();
+                }
+              }}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </Button>

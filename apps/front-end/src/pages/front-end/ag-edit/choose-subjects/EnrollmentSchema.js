@@ -6,18 +6,11 @@ export default {
       title: "ENROLLMENT_RECEIPT",
       type: "object",
       required: [
-        "enrollment_date",
         "enrollment_first_name",
-        "enrollment_last_name",
         "enrollment_dob",
         "enrollment_aadhaar_no",
       ],
       properties: {
-        enrollment_date: {
-          type: "string",
-          label: "ENROLLMENT_DATE",
-          format: "alt-date",
-        },
         enrollment_first_name: {
           type: "string",
           title: "FIRST_NAME",
@@ -36,7 +29,7 @@ export default {
         enrollment_dob: {
           type: "string",
           format: "alt-date",
-          label: "DATE_OF_BIRTH_AS_PER_AADHAAR",
+          label: "DATE_OF_BIRTH",
           help: "hello",
         },
         enrollment_aadhaar_no: {

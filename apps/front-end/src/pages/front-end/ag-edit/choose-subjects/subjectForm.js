@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { ImageView } from "@shiksha/common-lib";
+import {
+  ImageView,
+  dateOfBirth,
+  enrollmentDateOfBirth,
+} from "@shiksha/common-lib";
 import schema1 from "./schema.js";
 import {
   Alert,
@@ -78,6 +82,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [userId, setuserId] = React.useState(id);
   const [uploadPayment, setUploadPayment] = React.useState(true);
   const [source, setSource] = React.useState();
+  const [benificiary, setBenificiary] = React.useState();
 
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
@@ -100,6 +105,15 @@ export default function App({ facilitator, id, ip, onClick }) {
     getImage();
   }, [page, credentials]);
 
+  React.useEffect(() => {
+    benificiaryDetails();
+  }, []);
+
+  const benificiaryDetails = async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
+  };
+
   const updateData = (data, deleteData = false) => {
     if (deleteData) {
       localStorage.removeItem(`id_data_${facilitator?.id}`);
@@ -108,11 +122,22 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
-  const uiSchema = {
+  const [uiSchema, setUiSchema] = React.useState({
     subjects: {
       "ui:widget": "checkboxes",
     },
-  };
+    enrollment_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+        yearsRange: [
+          moment().subtract("years", 30).format("YYYY"),
+          moment().format("YYYY"),
+        ],
+      },
+    },
+  });
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -220,13 +245,21 @@ export default function App({ facilitator, id, ip, onClick }) {
       const propertiesMain = schema1.properties;
       setUploadPayment(false);
       const constantSchema = propertiesMain[1];
-      const { enrolled_for_board, enrollment_number, subjects, ...properties } =
-        constantSchema?.properties;
+      const {
+        enrolled_for_board,
+        enrollment_number,
+        enrollment_date,
+        subjects,
+        ...properties
+      } = constantSchema?.properties;
       const required = constantSchema?.required.filter(
         (item) =>
-          !["enrolled_for_board", "enrollment_number", "subjects"].includes(
-            item
-          )
+          ![
+            "enrolled_for_board",
+            "enrollment_number",
+            "enrollment_date",
+            "subjects",
+          ].includes(item)
       );
 
       setSchema({ ...constantSchema, properties, required });
@@ -238,10 +271,11 @@ export default function App({ facilitator, id, ip, onClick }) {
       setUploadPayment(false);
       const propertiesMain = schema1.properties;
       const constantSchema = propertiesMain[1];
-      const { enrollment_number, subjects, ...properties } =
+      const { enrollment_number, subjects, enrollment_date, ...properties } =
         constantSchema?.properties;
       const required = constantSchema?.required.filter(
-        (item) => !["enrollment_number", "subjects"].includes(item)
+        (item) =>
+          !["enrollment_number", "enrollment_date", "subjects"].includes(item)
       );
 
       setSchema({ ...constantSchema, properties, required });
@@ -266,6 +300,7 @@ export default function App({ facilitator, id, ip, onClick }) {
     let enrollment_number =
       qData?.result?.program_beneficiaries?.enrollment_number;
     let subjects = qData?.result?.program_beneficiaries?.subjects;
+    let enrollment_date = qData?.result?.program_beneficiaries?.enrollment_date;
     let subjectData = JSON.parse(subjects);
     setSource({
       document_id:
@@ -288,11 +323,37 @@ export default function App({ facilitator, id, ip, onClick }) {
           : enrollment_number
           ? enrollment_number
           : "",
+      enrollment_date: enrollment_date ? enrollment_date : "",
       subjects:
         enrollment_status === "other" ? "" : stringsArray ? stringsArray : "",
       facilitator_id: localStorage.getItem("id"),
     });
   }, []);
+
+  React.useEffect(() => {
+    if (formData?.enrollment_date) {
+      const dob = moment.utc(benificiary?.dob).format("DD-MM-YYYY");
+      enrollmentDateOfBirth(formData?.enrollment_date, dob)
+        .then((age) => {
+          setUiSchema((prevUiSchema) => ({
+            ...prevUiSchema,
+            enrollment_date: {
+              ...prevUiSchema?.enrollment_date,
+              "ui:help": age?.message,
+            },
+          }));
+          if (age?.diff <= 14 || age?.diff >= 29) {
+            setAlert(t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"));
+          } else {
+            setAlert();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          // Handle any errors that occur during the enrollment date of birth calculation
+        });
+    }
+  }, [formData]);
 
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
@@ -335,7 +396,17 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
 
   const onChange = async (e, id) => {
+    setErrors();
+
     const data = e.formData;
+    if (moment.utc(data?.enrollment_date) > moment.utc()) {
+      const newErrors = {
+        enrollment_date: {
+          __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
+        },
+      };
+      setErrors(newErrors);
+    }
     if (id === "root_enrollment_status") {
       const properties = schema1.properties;
       const constantSchema = properties[1];
@@ -343,14 +414,18 @@ export default function App({ facilitator, id, ip, onClick }) {
         const {
           enrolled_for_board,
           enrollment_number,
+          enrollment_date,
           subjects,
           ...properties
         } = constantSchema?.properties;
         const required = constantSchema?.required.filter(
           (item) =>
-            !["enrolled_for_board", "enrollment_number", "subjects"].includes(
-              item
-            )
+            ![
+              "enrolled_for_board",
+              "enrollment_number",
+              "enrollment_date",
+              "subjects",
+            ].includes(item)
         );
         const newData = {
           enrollment_status: formData?.enrollment_status,
@@ -364,10 +439,11 @@ export default function App({ facilitator, id, ip, onClick }) {
         data?.enrollment_status === "applied_but_pending" ||
         data?.enrollment_status === "rejected"
       ) {
-        const { enrollment_number, subjects, ...properties } =
+        const { enrollment_number, subjects, enrollment_date, ...properties } =
           constantSchema?.properties;
         const required = constantSchema?.required.filter(
-          (item) => !["enrollment_number", "subjects"].includes(item)
+          (item) =>
+            !["enrollment_number", "enrollment_date", "subjects"].includes(item)
         );
         //const required =["enrollment_status"]
         const newData = {
@@ -385,7 +461,6 @@ export default function App({ facilitator, id, ip, onClick }) {
       }
     }
 
-    setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -449,6 +524,10 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         };
+      } else if (!formData?.enrollment_date) {
+        newErrors.enrollment_date = {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_DATE")],
+        };
       } else if (formData?.subjects.length <= 0) {
         newErrors.subjects = {
           __errors: [t("REQUIRED_MESSAGE_SUBJECTS")],
@@ -502,6 +581,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_status &&
         formData?.enrolled_for_board &&
         formData?.enrollment_number &&
+        formData?.enrollment_date &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
         formData?.subjects.length > 0
