@@ -99,6 +99,7 @@ export default function Orientation({ footerLinks }) {
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
+    setReminders(result);
     let newSchema = orientationPopupSchema;
     newSchema = getOptions(newSchema, {
       key: "reminders",
@@ -404,28 +405,19 @@ export default function Orientation({ footerLinks }) {
               </AdminTypo.Secondarybutton>
               <Cal />
               <VStack space="4" mt="4">
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="blue.500" />
-                  <AdminTypo.H6 bold>
-                    {t("FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION")}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="green.500" />
-                  <AdminTypo.H6 bold>
-                    {t("FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING")}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="yellow.500" />
-                  <AdminTypo.H6 bold>
-                    {t("FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING")}
-                  </AdminTypo.H6>
-                </HStack>
-                {/* <HStack alignItems="Center" space="md">
-                  <CheckCircleIcon size="4" color="purple.500" />
-                  <AdminTypo.H6 bold>{t("CAMP_VISITS")}</AdminTypo.H6>
-                </HStack> */}
+                {reminders?.data?.FACILITATOR_EVENT_TYPE.map((e) => (
+                  <HStack alignItems="Center" space="md">
+                    <CheckCircleIcon
+                      size="4"
+                      color={
+                        EVENTS_COLORS?.[e?.value]
+                          ? EVENTS_COLORS[e?.value]
+                          : "#808080"
+                      }
+                    />
+                    <AdminTypo.H6 bold>{t(e?.title)}</AdminTypo.H6>
+                  </HStack>
+                ))}
               </VStack>
             </VStack>
             <Box>
