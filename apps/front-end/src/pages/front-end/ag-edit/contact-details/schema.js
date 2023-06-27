@@ -61,7 +61,7 @@ export default {
         },
         edit_page_type: {
           type: "string",
-          default: "edit_education",
+          default: "edit_contact",
           format: "hidden",
         },
       },
