@@ -5,12 +5,37 @@ import {
   IconByName,
   FrontEndTypo,
   benificiaryRegistoryService,
-  t,
   Layout,
   enumRegistryService,
   GetEnumValue,
+  getUniqueArray,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
+import Chip from "component/Chip";
+import { useTranslation } from "react-i18next";
+
+const GetOptions = ({ array, enumType, enumApiData }) => {
+  const { t } = useTranslation();
+  return (
+    <VStack>
+      {getUniqueArray(array)?.map((item, index) => (
+        <Chip
+          textAlign="center"
+          lineHeight="14px"
+          label={
+            <GetEnumValue
+              fontSize="10px"
+              key={index}
+              t={t}
+              enumOptionValue={item}
+              {...{ enumType, enumApiData }}
+            />
+          }
+        />
+      ))}
+    </VStack>
+  );
+};
 
 export default function BenificiaryEducation() {
   const params = useParams();
@@ -18,6 +43,7 @@ export default function BenificiaryEducation() {
   const [userId, setUserId] = React.useState(params?.id);
   const [enumOptions, setEnumOptions] = React.useState({});
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     benificiaryDetails();
@@ -50,7 +76,7 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack justifyContent="space-between" alignItems="Center">
+            <HStack space={2} alignItems="Center">
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("EDUCATION_DETAILS")}
               </FrontEndTypo.H3>
@@ -77,15 +103,15 @@ export default function BenificiaryEducation() {
             </Box>
             <VStack space="2" paddingTop="5">
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
-                  flex="0.3"
+                  flex="3"
                   pb="2"
                 >
                   {t("TYPE_OF_LEARNER")}
@@ -94,7 +120,7 @@ export default function BenificiaryEducation() {
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
                   fontWeight="400"
-                  flex="0.4"
+                  flex="4"
                 >
                   {/* {benificiary?.core_beneficiaries?.last_standard_of_education
                     ? benificiary?.core_beneficiaries
@@ -115,15 +141,15 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
               </HStack>
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
-                  flex="0.3"
+                  flex="3"
                   pb="2"
                 >
                   {t("LAST_STANDARD_OF_EDUCATION")}
@@ -132,7 +158,7 @@ export default function BenificiaryEducation() {
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
                   fontWeight="400"
-                  flex="0.4"
+                  flex="4"
                 >
                   {benificiary?.core_beneficiaries
                     ?.last_standard_of_education ? (
@@ -152,15 +178,15 @@ export default function BenificiaryEducation() {
               </HStack>
 
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
-                  flex="0.3"
+                  flex="3"
                   pb="2"
                 >
                   {t("LAST_YEAR_OF_EDUCATION")}
@@ -169,7 +195,7 @@ export default function BenificiaryEducation() {
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
                   fontWeight="400"
-                  flex="0.4"
+                  flex="4"
                 >
                   {benificiary?.core_beneficiaries
                     ?.last_standard_of_education_year
@@ -180,16 +206,16 @@ export default function BenificiaryEducation() {
               </HStack>
 
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                   {t("PREVIOUS_SCHOOL_TYPE")}
                 </FrontEndTypo.H3>
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                   {benificiary?.core_beneficiaries?.previous_school_type ? (
                     <GetEnumValue
                       t={t}
@@ -205,15 +231,15 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
               </HStack>
 
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
+              <HStack space={2} alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
                   {t("REASON_FOR_LEAVING")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
                   fontWeight="400"
-                  flex="0.4"
+                  flex="4"
                 >
                   {benificiary?.core_beneficiaries
                     ?.reason_of_leaving_education ? (
@@ -242,7 +268,7 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack justifyContent="space-between" alignItems="Center">
+            <HStack space={2} alignItems="Center">
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("LEARNER_ASPIRATION")}
               </FrontEndTypo.H3>
@@ -269,24 +295,23 @@ export default function BenificiaryEducation() {
             </Box>
             <VStack space="2" paddingTop="5">
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                   {t("MOTIVATION_TO_PASS_10TH")}
                 </FrontEndTypo.H3>
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                   {benificiary?.program_beneficiaries?.learning_motivation ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"LEARNING_MOTIVATION"}
-                      enumOptionValue={
+                    <GetOptions
+                      array={
                         benificiary?.program_beneficiaries?.learning_motivation
                       }
                       enumApiData={enumOptions}
+                      enumType={"LEARNING_MOTIVATION"}
                     />
                   ) : (
                     "-"
@@ -295,30 +320,29 @@ export default function BenificiaryEducation() {
               </HStack>
 
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                   {t("SUPPORT_FROM_PRAGATI")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
                   fontWeight="400"
-                  flex="0.4"
+                  flex="4"
                 >
                   {benificiary?.program_beneficiaries
                     ?.type_of_support_needed ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"TYPE_OF_SUPPORT_NEEDED"}
-                      enumOptionValue={
+                    <GetOptions
+                      array={
                         benificiary?.program_beneficiaries
                           ?.type_of_support_needed
                       }
                       enumApiData={enumOptions}
+                      enumType={"TYPE_OF_SUPPORT_NEEDED"}
                     />
                   ) : (
                     "-"
@@ -326,29 +350,26 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
               </HStack>
               <HStack
+                space={2}
                 alignItems="Center"
-                justifyContent="space-between"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
-                  flex="0.3"
+                  flex="3"
                   pb="2"
                 >
                   {t("CAREER_ASPIRATION")}
                 </FrontEndTypo.H3>
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                   {benificiary?.core_beneficiaries?.career_aspiration ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"CAREER_ASPIRATION"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries?.career_aspiration
-                      }
+                    <GetOptions
+                      array={benificiary?.core_beneficiaries?.career_aspiration}
                       enumApiData={enumOptions}
+                      enumType={"CAREER_ASPIRATION"}
                     />
                   ) : (
                     "-"
@@ -356,11 +377,11 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
               </HStack>
 
-              <HStack alignItems="Center" justifyContent="space-between">
+              <HStack alignItems="Center" space={2}>
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
-                  flex="0.3"
+                  flex="3"
                   pb="2"
                 >
                   {t("REMARKS")}
@@ -369,7 +390,7 @@ export default function BenificiaryEducation() {
                 <FrontEndTypo.H3
                   color="textGreyColor.800"
                   fontWeight="400"
-                  flex="0.4"
+                  flex="4"
                 >
                   {benificiary?.core_beneficiaries?.career_aspiration_details
                     ? benificiary?.core_beneficiaries?.career_aspiration_details
