@@ -83,15 +83,15 @@ export default {
       properties: {
         marital_status: {
           label: "MARITAL_STATUS",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
-          grid: "2",
+          grid: 2,
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
-          type: "string",
+          type: ["string", "null"],
           format: "CustomR",
-          grid: "2",
+          grid: 2,
         },
       },
     },
