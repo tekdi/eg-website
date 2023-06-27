@@ -601,7 +601,11 @@ export default function App({ facilitator, id, ip, onClick }) {
           formData,
           userId
         );
-        navigate(`/beneficiary/edit/${userId}/enrollment-receipt`);
+        navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
+          state: {
+            alert: alert ? "yes" : "no",
+          },
+        });
         // navigate(`/beneficiary/profile/${userId}`);
         // console("hi");
       } else {

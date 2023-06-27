@@ -8,7 +8,7 @@ import {
 } from "@shiksha/common-lib";
 import enrollmentSchema from "./EnrollmentSchema.js";
 import { Alert, Box, Button, HStack } from "native-base";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import {
   facilitatorRegistryService,
@@ -45,6 +45,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [benificiary, setBenificiary] = React.useState();
+  const { state } = useLocation();
 
   let age;
   const navigate = useNavigate();
@@ -57,7 +58,6 @@ export default function App({ facilitator, ip, onClick }) {
   React.useEffect(() => {
     benificiaryDetails();
   }, []);
-
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
@@ -339,6 +339,7 @@ export default function App({ facilitator, ip, onClick }) {
     const bodyData = {
       edit_page_type: "edit_enrollement_details",
       enrollment_status: "enrolled",
+      is_eligible: state?.alert,
       enrollment_first_name: newFormData?.enrollment_first_name,
       enrollment_middle_name: newFormData?.enrollment_middle_name,
       enrollment_last_name: newFormData?.enrollment_last_name,
