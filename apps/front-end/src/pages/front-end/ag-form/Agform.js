@@ -319,9 +319,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
     if (id === "root_dob") {
       if (data?.dob) {
-        const today = moment().diff(data?.dob);
-        if (today < 378762675632 || today >= 946842558914) {
-          console.log("ture");
+        const age_in_years = moment().diff(data?.dob, "years", true);
+        if (!(age_in_years >= 12 && age_in_years <= 30)) {
           const newErrors = {
             dob: {
               __errors: [t("BENEFICIARY_DATE_OF_BIRTH_VALIDATION")],
