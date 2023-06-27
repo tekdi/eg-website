@@ -20,7 +20,7 @@ export default {
 
         aspiration_mapping: {
           type: "object",
-          label: "ASPIRATION_MAPPING",
+          // label: "ASPIRATION_MAPPING",
           required: ["learning_motivation", "type_of_support_needed"],
           properties: {
             learning_motivation: {
