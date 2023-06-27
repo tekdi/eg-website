@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { ImageView } from "@shiksha/common-lib";
+import { FrontEndTypo, ImageView } from "@shiksha/common-lib";
 import schema1 from "./schema.js";
 import {
   Alert,
@@ -608,23 +608,45 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
-                <H1 color={"rgb(121, 0, 0)"} fontSize={"15px"}>
-                  {t("PAYMENT_RECEIPT")}
-                </H1>
+                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
+                  {t("PAYMENT_RECEIPT")} *
+                </FrontEndTypo.H2>
 
                 <HStack justifyContent="space-between" alignItems="Center">
-                  <Button
-                    padding={"9vh"}
-                    marginLeft={"9vh"}
-                    style={buttonStyle}
-                    variant={"secondary"}
-                    leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
-                    onPress={(e) => {
-                      uplodInputRef?.current?.click();
-                    }}
-                  >
-                    {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
-                  </Button>
+                  <Box style={buttonStyle}>
+                    <VStack
+                      px="5"
+                      pb="3"
+                      pt="2"
+                      borderRadius="10px"
+                      borderWidth="1px"
+                      bg="white"
+                      borderColor="appliedColor"
+                    >
+                      <VStack space="5">
+                        <ImageView
+                          source={source}
+                          width="full"
+                          height="172px"
+                          borderRadius="5px"
+                          borderWidth="1px"
+                          borderColor="worksheetBoxText.100"
+                          alignSelf="Center"
+                        />
+                      </VStack>
+                    </VStack>
+                    <Button
+                      variant={"secondary"}
+                      leftIcon={
+                        <IconByName name="Upload2FillIcon" isDisabled />
+                      }
+                      onPress={(e) => {
+                        uplodInputRef?.current?.click();
+                      }}
+                    >
+                      {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
+                    </Button>
+                  </Box>
                   <input
                     accept="image/*"
                     type="file"
@@ -633,28 +655,6 @@ export default function App({ facilitator, id, ip, onClick }) {
                     onChange={handleFileInputChange}
                   />
                 </HStack>
-
-                <VStack
-                  px="5"
-                  pb="3"
-                  pt="2"
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  bg="white"
-                  borderColor="appliedColor"
-                >
-                  <VStack space="5">
-                    <ImageView
-                      source={source}
-                      width="full"
-                      height="172px"
-                      borderRadius="5px"
-                      borderWidth="1px"
-                      borderColor="worksheetBoxText.100"
-                      alignSelf="Center"
-                    />
-                  </VStack>
-                </VStack>
               </VStack>
             ) : (
               <React.Fragment></React.Fragment>
