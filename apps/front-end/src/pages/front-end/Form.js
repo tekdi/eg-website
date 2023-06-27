@@ -857,9 +857,7 @@ export default function App({ facilitator, ip, onClick }) {
       _appBar={{
         onPressBackButton,
         exceptIconsShow:
-          `${page}` === "1"
-            ? ["backBtn", "menuBtn"]
-            : ["menuBtn", "notificationBtn"],
+          `${page}` === "1" ? ["menuBtn"] : ["menuBtn", "notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,

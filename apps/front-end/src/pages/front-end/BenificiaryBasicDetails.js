@@ -477,11 +477,11 @@ export default function BenificiaryBasicDetails() {
                       ? benificiary?.references[0]?.first_name
                       : ""
                   } ${
-                    benificiary?.references[0]?.middle_name != "null"
+                    benificiary?.references[0]?.middle_name !== null
                       ? benificiary?.references[0]?.middle_name
                       : ""
                   } ${
-                    benificiary?.references[0]?.last_name != "null"
+                    benificiary?.references[0]?.last_name !== null
                       ? benificiary?.references[0]?.last_name
                       : ""
                   }`}
