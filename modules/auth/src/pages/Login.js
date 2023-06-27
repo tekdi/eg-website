@@ -12,14 +12,15 @@ import {
 import {
   useWindowSize,
   Subtitle,
-  t,
   login,
   logout,
   Layout,
   BodyMedium,
   FrontEndTypo,
+  IconByName,
 } from "@shiksha/common-lib";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const styles = {
   box: {
@@ -29,10 +30,12 @@ const styles = {
 };
 
 export default function Login() {
+  const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
   const [width, Height] = useWindowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
+  const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -186,7 +189,16 @@ export default function Login() {
                   variant="unstyled"
                   p={"10px"}
                   placeholder={t("ENTER") + " " + t("PASSWORD")}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  InputRightElement={
+                    <IconByName
+                      name={showPassword ? "EyeLineIcon" : "EyeOffLineIcon"}
+                      _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                      onPress={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                    />
+                  }
                   onChange={(e) =>
                     setCredentials({
                       ...credentials,

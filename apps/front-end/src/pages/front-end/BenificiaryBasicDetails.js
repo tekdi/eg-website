@@ -180,7 +180,9 @@ export default function BenificiaryBasicDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.email_id ? benificiary?.email_id : "-"}
+                  {benificiary?.email_id !== "null"
+                    ? benificiary?.email_id
+                    : "-"}
                 </FrontEndTypo.H3>
 
                 <IconByName
@@ -293,11 +295,12 @@ export default function BenificiaryBasicDetails() {
                       ? benificiary?.core_beneficiaries?.father_first_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.father_middle_name
+                    benificiary?.core_beneficiaries?.father_middle_name !==
+                    "null"
                       ? benificiary?.core_beneficiaries?.father_middle_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.father_last_name
+                    benificiary?.core_beneficiaries?.father_last_name !== "null"
                       ? benificiary?.core_beneficiaries?.father_last_name
                       : ""
                   }`}
@@ -325,11 +328,12 @@ export default function BenificiaryBasicDetails() {
                       ? benificiary?.core_beneficiaries?.mother_first_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.mother_middle_name
+                    benificiary?.core_beneficiaries?.mother_middle_name !==
+                    "null"
                       ? benificiary?.core_beneficiaries?.mother_middle_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.mother_last_name
+                    benificiary?.core_beneficiaries?.mother_last_name !== "null"
                       ? benificiary?.core_beneficiaries?.mother_last_name
                       : ""
                   }`}
@@ -408,7 +412,7 @@ export default function BenificiaryBasicDetails() {
                   {benificiary?.extended_users?.marital_status ? (
                     <GetEnumValue
                       t={t}
-                      enumType={"BENEFICIARY_MARITAL_STATUS"}
+                      enumType={"MARITAL_STATUS"}
                       enumOptionValue={
                         benificiary?.extended_users?.marital_status
                       }
