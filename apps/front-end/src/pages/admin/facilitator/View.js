@@ -425,7 +425,7 @@ export default function FacilitatorView({ footerLinks }) {
                       type={showPassword ? "text" : "password"}
                       InputRightElement={
                         <IconByName
-                          name="EyeOffLineIcon"
+                          name={showPassword ? "EyeLineIcon" : "EyeOffLineIcon"}
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
                           onPress={() => {
                             togglePasswordVisibility();
@@ -469,7 +469,9 @@ export default function FacilitatorView({ footerLinks }) {
                       type={confirmPassword ? "text" : "password"}
                       InputRightElement={
                         <IconByName
-                          name="EyeOffLineIcon"
+                          name={
+                            confirmPassword ? "EyeLineIcon" : "EyeOffLineIcon"
+                          }
                           _icon={{ size: "16px", color: "Defaultcolor.400" }}
                           onPress={() => {
                             toggleConfirmPasswordVisibility();

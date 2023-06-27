@@ -92,6 +92,22 @@ export default function agFormEdit({ ip }) {
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
+    if (qData?.result?.alternative_mobile_number === null) {
+      const propertiesMain = schema1.properties;
+      const constantSchema = propertiesMain[1];
+      const {
+        alternative_device_type,
+        alternative_device_ownership,
+        ...properties
+      } = constantSchema?.properties;
+      const required = constantSchema?.required.filter(
+        (item) =>
+          !["alternative_device_type", "alternative_device_ownership"].includes(
+            item
+          )
+      );
+      setSchema({ ...constantSchema, properties, required });
+    }
   }, []);
 
   React.useEffect(async () => {
@@ -124,44 +140,6 @@ export default function agFormEdit({ ip }) {
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
-      },
-    },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
       },
     },
   };
@@ -315,6 +293,37 @@ export default function agFormEdit({ ip }) {
         };
         setErrors(newErrors);
       }
+
+      if (
+        !data?.alternative_mobile_number
+          ?.toString()
+          ?.match(/^([+]\d{2})?\d{10}$/)
+      ) {
+        const propertiesMain = schema1.properties;
+        const constantSchema = propertiesMain[1];
+        const {
+          alternative_device_type,
+          alternative_device_ownership,
+          ...properties
+        } = constantSchema?.properties;
+        const required = constantSchema?.required.filter((item) =>
+          ["alternative_device_type", "alternative_device_ownership"].includes(
+            item
+          )
+        );
+        setSchema({ ...constantSchema, properties, required });
+      }
+
+      if (
+        data?.alternative_mobile_number &&
+        data?.alternative_mobile_number
+          ?.toString()
+          ?.match(/^([+]\d{2})?\d{10}$/)
+      ) {
+        const propertiesMain = schema1.properties;
+        const constantSchema = propertiesMain[1];
+        setSchema(constantSchema);
+      }
     }
 
     if (id === "root_email_id") {
@@ -332,6 +341,15 @@ export default function agFormEdit({ ip }) {
     }
 
     setFormData(newData);
+
+    if (data?.alternative_mobile_number == null) {
+      setFormData({
+        ...formData,
+        alternative_device_ownership: null,
+        alternative_device_type: null,
+        alternative_mobile_number: data?.alternative_mobile_number,
+      });
+    }
   };
 
   const onError = (data) => {
@@ -359,8 +377,6 @@ export default function agFormEdit({ ip }) {
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };
-
-  console.log("errors", errors);
 
   return (
     <Layout
