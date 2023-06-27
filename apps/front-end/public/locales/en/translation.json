@@ -92,6 +92,7 @@
   "BASIC": "Basic",
   "BASIC_DETAILS": "Basic Details",
   "BENEFICIARY_ALL": "All",
+  "BENEFICIARY_DATE_OF_BIRTH_VALIDATION": "Age of the learner should be above 12 years and less than 30 years.",
   "BENEFICIARY_LEARNING_LEVEL": "Beneficiary learning level",
   "BENEFICIARY_LEARNING_LEVEL_EXPERT": "Expert",
   "BENEFICIARY_LEARNING_LEVEL_FOUNDATIONAL_FNL": "Basic (FLN)",

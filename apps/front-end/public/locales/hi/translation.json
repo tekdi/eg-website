@@ -92,6 +92,7 @@
   "BASIC": "बुनियादी ",
   "BASIC_DETAILS": "सामान्य विवरण",
   "BENEFICIARY_ALL": "सभी",
+  "BENEFICIARY_DATE_OF_BIRTH_VALIDATION": "शिक्षार्थी की आयु 12 वर्ष से अधिक तथा 30 वर्ष से कम होनी चाहिए।",
   "BENEFICIARY_LEARNING_LEVEL": "लाभार्थी सीखने का स्तर",
   "BENEFICIARY_LEARNING_LEVEL_EXPERT": "निपुण",
   "BENEFICIARY_LEARNING_LEVEL_FOUNDATIONAL_FNL": "बुनियादी (FLN)",
