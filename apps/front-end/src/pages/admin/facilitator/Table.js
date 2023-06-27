@@ -58,10 +58,10 @@ const columns = (e) => [
     name: t("NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
-        {row?.documents?.[2]?.name ? (
+        {row?.profile_photo_1?.name ? (
           <ImageView
             source={{
-              uri: row?.documents?.[2]?.name,
+              uri: row?.profile_photo_1?.name,
             }}
             // alt="Alternate Text"
             width={"35px"}
