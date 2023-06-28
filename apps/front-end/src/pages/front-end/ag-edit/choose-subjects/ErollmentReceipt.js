@@ -4,6 +4,7 @@ import validator from "@rjsf/validator-ajv8";
 import {
   benificiaryRegistoryService,
   dateOfBirth,
+  enrollmentDateOfBirth,
   validation,
 } from "@shiksha/common-lib";
 import enrollmentSchema from "./EnrollmentSchema.js";
@@ -41,7 +42,6 @@ export default function App({ facilitator }) {
   const [benificiary, setBenificiary] = React.useState();
   const { state } = useLocation();
 
-  let age;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
@@ -67,22 +67,6 @@ export default function App({ facilitator }) {
       },
     },
   });
-
-  React.useEffect(() => {
-    if (formData?.enrollment_dob) {
-      const dob = moment.utc(formData.enrollment_dob).format("DD-MM-YYYY");
-      dateOfBirth(dob)
-        .then((age) => {
-          setUiSchema((prevUiSchema) => ({
-            ...prevUiSchema,
-            enrollment_dob: { ...prevUiSchema?.enrollment_dob, "ui:help": age },
-          }));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [formData]);
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -160,6 +144,31 @@ export default function App({ facilitator }) {
         : "",
     });
   }, []);
+
+  React.useEffect(() => {
+    if (formData?.enrollment_dob) {
+      const dob = moment.utc(formData.enrollment_dob).format("DD-MM-YYYY");
+
+      enrollmentDateOfBirth(state?.enrollment_date, dob)
+        .then((age) => {
+          setUiSchema((prevUiSchema) => ({
+            ...prevUiSchema,
+            enrollment_dob: {
+              ...prevUiSchema.enrollment_dob,
+              "ui:help": age?.message,
+            },
+          }));
+          if (!(age.diff >= 14 && age.diff <= 29)) {
+            setAlert(t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"));
+          } else {
+            setAlert();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [formData, benificiary?.program_beneficiaries?.enrollment_date]);
 
   const goErrorPage = (key) => {
     if (key) {
@@ -266,7 +275,7 @@ export default function App({ facilitator }) {
     const bodyData = {
       edit_page_type: "edit_enrollement_details",
       enrollment_status: "enrolled",
-      is_eligible: state?.alert,
+      is_eligible: alert ? "no" : "yes",
       enrollment_first_name: newFormData?.enrollment_first_name,
       enrollment_middle_name: newFormData?.enrollment_middle_name,
       enrollment_last_name: newFormData?.enrollment_last_name,
