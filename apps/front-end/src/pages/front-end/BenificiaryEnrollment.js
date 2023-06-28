@@ -12,6 +12,7 @@ import {
   GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
+import moment from "moment";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
@@ -80,11 +81,10 @@ export default function BenificiaryEnrollment() {
           <Box>
             <Progress
               value={arrList(benificiary?.program_beneficiaries, [
-                "type_of_enrollement",
                 "enrollment_status",
                 "enrolled_for_board",
                 "enrollment_number",
-                "subjects",
+                "enrollment_date",
               ])}
               size="xs"
               colorScheme="info"
@@ -159,8 +159,20 @@ export default function BenificiaryEnrollment() {
                   : "-"}
               </FrontEndTypo.H3>
             </HStack>
+            <HStack alignItems="Center" justifyContent="space-between">
+              <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+                {t("DATE_OF_ENROLLMENT")}
+              </FrontEndTypo.H3>
+              <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+                {benificiary?.program_beneficiaries?.enrollment_date
+                  ? moment(
+                      benificiary?.program_beneficiaries?.enrollment_date
+                    ).format("DD-MM-YYYY")
+                  : "-"}
+              </FrontEndTypo.H3>
+            </HStack>
 
-            <HStack
+            {/* <HStack
               alignItems="Center"
               borderBottomWidth="1px"
               borderBottomColor="appliedColor"
@@ -184,7 +196,7 @@ export default function BenificiaryEnrollment() {
                   }
                 })}
               </VStack>
-            </HStack>
+            </HStack> */}
           </VStack>
         </VStack>
 
