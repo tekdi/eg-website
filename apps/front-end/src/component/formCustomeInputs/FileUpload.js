@@ -1,5 +1,6 @@
 import {
   FrontEndTypo,
+  H2,
   IconByName,
   ImageView,
   uploadRegistryService,

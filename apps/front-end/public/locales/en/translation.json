@@ -237,7 +237,7 @@
   "ENROLLMENT_DATE":"Enrollment Date",
   "ENROLLMENT_NUMBER": "Enrollment Number",
   "ENROLLMENT_PENDING": "Enrollment Pending",
-  "ENROLLMENT_RECEIPT":"Enrollment Receipt",
+  "ENROLLMENT_RECEIPT":"Details of the learner as per the enrolment receipt",
   "ENROLLMENT_STATUS": "Enrollment Status",
   "ENTER": "Enter",
   "ENTER_6_DIGIT_OTP": "Enter 6 digit OTP",
