@@ -4,7 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function AadhaarSuccess({ user, aadhaarCompare }) {
+export default function AadhaarSuccess({ user, location, aadhaarCompare }) {
   const [data, setData] = React.useState([]);
   const [isVerified, setIsVerified] = React.useState(true);
   const { t } = useTranslation();

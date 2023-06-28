@@ -367,7 +367,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack>
             </Stack>
           )}
-          {facilitator?.aadhar_verified !== "yes" && (
+          {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
@@ -394,7 +394,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Secondarybutton> */}
               <FrontEndTypo.Primarybutton
                 onPress={() => {
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`);
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`, {
+                    state: "/",
+                  });
                 }}
               >
                 {t("AADHAR_UPLOAD_KYC")}
