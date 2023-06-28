@@ -65,6 +65,9 @@ const List = ({ data }) => {
                       width="150px"
                     >
                       {item?.first_name}
+                      {item?.middle_name &&
+                        item?.middle_name !== "null" &&
+                        ` ${item.middle_name}`}
                       {item?.last_name && ` ${item.last_name}`}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
@@ -105,11 +108,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const { form_step_number } = facilitator;
   const [service, setService] = React.useState("");
   const [sort, setSort] = React.useState("sort");
-  const [sortValue, setSortValue] = React.useState("desc");
+  const [sortValue, setSortValue] = React.useState("");
   const [statusValue, setStatusValue] = React.useState("");
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
-  const [reqBodyData, setReqBodyData] = React.useState();
   const [status, setStatus] = React.useState("status");
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
@@ -121,21 +123,17 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   }, []);
 
   React.useEffect(() => {
-    setReqBodyData({ page, limit, statusValue, sortValue, searchBenficiary });
-  }, [page, limit, statusValue, sortValue, searchBenficiary]);
-
-  React.useEffect(() => {
-    aglist(reqBodyData);
-  }, [reqBodyData]);
-
-  const aglist = async (reqBodyData) => {
-    let reqBody = {
-      page: reqBodyData?.page,
-      limit: reqBodyData?.limit,
-      status: reqBodyData?.statusValue,
-      sortType: reqBodyData?.sortValue,
-      search: reqBodyData?.searchBenficiary,
+    const reqBody = {
+      page: page,
+      limit: limit,
+      status: statusValue,
+      sortType: sortValue,
+      search: searchBenficiary,
     };
+
+    aglist(reqBody);
+  }, [page, limit, statusValue, sortValue, searchBenficiary]);
+  const aglist = async (reqBody) => {
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
     );

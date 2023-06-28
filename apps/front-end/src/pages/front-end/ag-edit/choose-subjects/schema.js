@@ -10,6 +10,7 @@ export default {
         "enrolled_for_board",
         "enrollment_number",
         "subjects",
+        "enrollment_date",
       ],
 
       properties: {
@@ -24,6 +25,11 @@ export default {
           format: "radio",
           enumNames: ["RSOS", "NIOS"], //title
           enum: ["rsos", "nios"], //values
+        },
+        enrollment_date: {
+          type: "string",
+          label: "ENROLLMENT_DATE",
+          format: "alt-date",
         },
         enrollment_number: {
           type: "number",
