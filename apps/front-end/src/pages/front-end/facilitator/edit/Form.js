@@ -481,8 +481,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
   const onChange = async (e, id) => {
-    console.log(schema);
-
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };

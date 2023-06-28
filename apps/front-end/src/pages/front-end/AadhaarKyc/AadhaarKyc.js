@@ -205,7 +205,11 @@ export default function AdharKyc({ footerLinks }) {
           _page={{ _scollView: { bg: "formBg.500" } }}
         >
           {page === "aadhaarSuccess" ? (
-            <AadhaarSuccess user={user} aadhaarCompare={aadhaarCompare} />
+            <AadhaarSuccess
+              user={user}
+              aadhaarCompare={aadhaarCompare}
+              location={location}
+            />
           ) : page === "aadhaar-number" ? (
             <VStack p="4" space={4}>
               {error?.top && (

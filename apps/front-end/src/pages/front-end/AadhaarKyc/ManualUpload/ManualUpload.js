@@ -145,14 +145,14 @@ export default function ManualUpload({
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <Box px="4">
+      <Box px="4" pb="10">
         {error?.top && (
           <FrontEndTypo.Prompts m="5" status="danger" flex="1">
             {error?.top}
           </FrontEndTypo.Prompts>
         )}
         {!submitted ? (
-          <VStack space="10">
+          <VStack space="5" pt="5">
             <VStack>
               <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
                 {t("AADHAR_CARD")}
@@ -232,33 +232,33 @@ export default function ManualUpload({
                 }}
               />
             </HStack>
-            {isFront ? (
-              image?.front ? (
-                <Button
-                  variant="link"
-                  onPress={() => {
-                    setImage((prev) => ({ ...prev, front: "" }));
-                    setModal(true);
-                  }}
-                >
-                  <FrontEndTypo.H3 color="blueText.450" underline>
-                    {t("UPLOAD_AGAIN")}
-                  </FrontEndTypo.H3>
-                </Button>
-              ) : null
-            ) : image?.back ? (
-              <Button
-                variant="link"
-                onPress={() => {
-                  setImage((prev) => ({ ...prev, back: "" }));
-                  setModal(true);
-                }}
-              >
-                <FrontEndTypo.H3 color="blueText.450" underline>
-                  {t("UPLOAD_AGAIN")}
-                </FrontEndTypo.H3>
-              </Button>
-            ) : null}
+            {isFront
+              ? image?.front && (
+                  <Button
+                    variant="link"
+                    onPress={() => {
+                      setImage((prev) => ({ ...prev, front: "" }));
+                      setModal(true);
+                    }}
+                  >
+                    <FrontEndTypo.H3 color="blueText.450" underline>
+                      {t("UPLOAD_AGAIN")}
+                    </FrontEndTypo.H3>
+                  </Button>
+                )
+              : image?.back && (
+                  <Button
+                    variant="link"
+                    onPress={() => {
+                      setImage((prev) => ({ ...prev, back: "" }));
+                      setModal(true);
+                    }}
+                  >
+                    <FrontEndTypo.H3 color="blueText.450" underline>
+                      {t("UPLOAD_AGAIN")}
+                    </FrontEndTypo.H3>
+                  </Button>
+                )}
             <VStack space={"4"}>
               <FrontEndTypo.Primarybutton
                 bg={!image?.front || !image?.back ? "gray.300" : "gray.500"}
@@ -266,12 +266,12 @@ export default function ManualUpload({
               >
                 {t("CONTINUE")}
               </FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton
+              {/* <FrontEndTypo.Secondarybutton
                 onPress={(e) => setOtpFailedPopup(true)}
               >
                 {t("TRY_OTHER")}
-              </FrontEndTypo.Secondarybutton>
-            </VStack>{" "}
+              </FrontEndTypo.Secondarybutton> */}
+            </VStack>
           </VStack>
         ) : (
           <VStack space={"5"} py="5">
@@ -282,7 +282,6 @@ export default function ManualUpload({
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("FRONT_VIEW")}
               </FrontEndTypo.H2>
-
               <img
                 src={image?.front}
                 alt="front image"
@@ -293,7 +292,6 @@ export default function ManualUpload({
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("BACK_VIEW")}
               </FrontEndTypo.H2>
-
               <img
                 src={image?.back}
                 alt="back image"
