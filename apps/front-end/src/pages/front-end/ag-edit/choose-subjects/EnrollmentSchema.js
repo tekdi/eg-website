@@ -13,8 +13,8 @@ export default {
       properties: {
         enrollment_first_name: {
           type: "string",
-          title: "FIRST_NAME",
-          label: "FIRST_NAME",
+          title: "FIRST_NAME_AS_PER_ENROLLMENT",
+          label: "FIRST_NAME_AS_PER_ENROLLMENT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],
@@ -29,7 +29,7 @@ export default {
         enrollment_dob: {
           type: "string",
           format: "alt-date",
-          label: "DATE_OF_BIRTH",
+          label: "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
           help: "hello",
         },
         enrollment_aadhaar_no: {
