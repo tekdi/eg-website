@@ -2,60 +2,23 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./futureStudySchema.js";
+import { Alert, Box, HStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  uploadRegistryService,
   AgRegistryService,
-  Camera,
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
-  filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
-  StudentEnumService,
-  sendAndVerifyOtp,
-  CustomOTPBox,
   benificiaryRegistoryService,
   enumRegistryService,
   FrontEndTypo,
   getOptions,
+  filterObject,
+  getUniqueArray,
+  Loading,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  RadioBtn,
-  CustomR,
-  select,
-} from "../../../../component/BaseInput";
-
-import { useLocation } from "react-router-dom";
+import { widgets, templates } from "../../../../component/BaseInput";
+import { useTranslation } from "react-i18next";
 
 // App
 
@@ -64,31 +27,22 @@ export default function AgformUpdate({ userTokenInfo }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [userId, setuserId] = React.useState(id);
-
-  const location = useLocation();
-
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [loading, setLoading] = React.useState(true);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/educationdetails`);
   };
   const ref = React.createRef(null);
-
-  const updateData = (data, deleteData = false) => {};
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -107,7 +61,6 @@ export default function AgformUpdate({ userTokenInfo }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
         setPage("upload");
       } else {
         return true;
@@ -116,19 +69,9 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   React.useEffect(async () => {
+    setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
-    if (page === "2") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      setFormData({ ...formData, edit_page_type: "add_address" });
-    } else if (page === "3") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      setFormData({ ...formData, edit_page_type: "personal" });
-    } else if (page === "4") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      setFormData({ ...formData, edit_page_type: "add_education" });
-    } else if (page === "upload") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    }
+    setLoading(false);
   }, [page]);
 
   const setStep = async (pageNumber = "") => {
@@ -148,85 +91,68 @@ export default function AgformUpdate({ userTokenInfo }) {
   // Type Of Student
 
   React.useEffect(async () => {
-    const career_aspiration = await enumRegistryService.listOfEnum();
-    const Data = career_aspiration?.data?.CAREER_ASPIRATION;
-    let newSchema = schema;
-    if (schema["properties"]["career_aspiration"]) {
-      newSchema = getOptions(newSchema, {
-        key: "career_aspiration",
-        arr: Data,
-        title: "title",
-        value: "value",
-      });
-    }
-
-    newSchema = getOptions(newSchema, {
-      key: "aspiration_mapping",
-      extra: getOptions(newSchema["properties"]?.["aspiration_mapping"], {
-        key: "learning_motivation",
-        arr: career_aspiration.data?.LEARNING_MOTIVATION,
-        title: "title",
-        value: "value",
-      }),
-    });
-
-    newSchema = getOptions(newSchema, {
-      key: "aspiration_mapping",
-      extra: getOptions(newSchema["properties"]?.["aspiration_mapping"], {
-        key: "type_of_support_needed",
-        arr: career_aspiration.data?.TYPE_OF_SUPPORT_NEEDED,
-        title: "title",
-        value: "value",
-      }),
-    });
-
-    setSchema(newSchema);
-  }, [formData]);
-
-  React.useEffect(() => {
+    setLoading(true);
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
+      let newSchema = properties[newSteps[0]];
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
-      setYearsRange([minYear.year(), maxYear.year()]);
       setSubmitBtn(t("NEXT"));
+      const career_aspiration = await enumRegistryService.listOfEnum();
+      if (newSchema["properties"]?.["career_aspiration"]) {
+        newSchema = getOptions(newSchema, {
+          key: "career_aspiration",
+          arr: career_aspiration?.data?.CAREER_ASPIRATION,
+          title: "title",
+          value: "value",
+        });
+      }
+
+      if (newSchema?.["properties"]?.["aspiration_mapping"]) {
+        newSchema = getOptions(newSchema, {
+          key: "aspiration_mapping",
+          extra: getOptions(newSchema?.["properties"]?.["aspiration_mapping"], {
+            key: "learning_motivation",
+            arr: career_aspiration.data?.LEARNING_MOTIVATION,
+            title: "title",
+            value: "value",
+          }),
+        });
+      }
+      newSchema = getOptions(newSchema, {
+        key: "aspiration_mapping",
+        extra: getOptions(newSchema["properties"]?.["aspiration_mapping"], {
+          key: "type_of_support_needed",
+          arr: career_aspiration.data?.TYPE_OF_SUPPORT_NEEDED,
+          title: "title",
+          value: "value",
+        }),
+      });
+
+      setSchema(newSchema);
     }
-  }, []);
-
-  React.useEffect(async () => {
-    const qData = await benificiaryRegistoryService.getOne(userId);
-    let career_aspiration =
-      qData?.result?.core_beneficiaries?.career_aspiration;
-    let career_aspiration_details =
-      qData?.result?.core_beneficiaries?.career_aspiration_details;
-    let learning_motivation =
-      qData?.result?.program_beneficiaries?.learning_motivation;
-    let type_of_support_needed =
-      qData?.result?.program_beneficiaries?.type_of_support_needed;
-
-    setFormData({
-      ...formData,
-      career_aspiration_details:
-        career_aspiration_details == "null" ? "" : career_aspiration_details,
-      career_aspiration: career_aspiration,
-      aspiration_mapping: {
-        learning_motivation: learning_motivation,
-        type_of_support_needed: type_of_support_needed,
-      },
-    });
-  }, []);
-
-  const formSubmitUpdate = async (formData) => {
-    const { id } = authUser;
-
-    if (id) {
-      updateData({}, true);
+    const { result } = await benificiaryRegistoryService.getOne(userId);
+    if (result) {
+      setFormData({
+        ...formData,
+        career_aspiration_details:
+          result?.core_beneficiaries?.career_aspiration_details,
+        career_aspiration: getUniqueArray(
+          result?.core_beneficiaries?.career_aspiration
+        ),
+        aspiration_mapping: {
+          learning_motivation: getUniqueArray(
+            result?.program_beneficiaries?.learning_motivation
+          ),
+          type_of_support_needed: getUniqueArray(
+            result?.program_beneficiaries?.type_of_support_needed
+          ),
+        },
+      });
     }
-  };
+    setLoading(false);
+  }, []);
 
   const goErrorPage = (key) => {
     if (key) {
@@ -240,6 +166,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   const transformErrors = (errors, uiSchema) => {
+    console.log(errors);
     return errors.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
@@ -261,7 +188,6 @@ export default function AgformUpdate({ userTokenInfo }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
@@ -285,11 +211,17 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    let newFormData = data.formData;
+    const newdata = filterObject(newFormData, Object.keys(schema?.properties));
+    const updateDetails = await AgRegistryService.updateAg(newdata, userId);
     if (updateDetails) {
       navigate(`/beneficiary/${userId}/educationdetails`);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Layout
@@ -318,21 +250,27 @@ export default function AgformUpdate({ userTokenInfo }) {
 
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox, select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
+            uiSchema={{
+              career_aspiration: {
+                "ui:widget": "MultiCheck",
+              },
+              aspiration_mapping: {
+                learning_motivation: {
+                  "ui:widget": "MultiCheck",
+                },
+                type_of_support_needed: {
+                  "ui:widget": "MultiCheck",
+                },
+              },
+            }}
             {...{
+              widgets,
+              templates,
               validator,
               schema: schema ? schema : {},
               formData,

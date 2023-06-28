@@ -84,11 +84,7 @@ export default function Login() {
       }}
       getRefAppBar={(e) => setRef(e)}
     >
-      <VStack
-        bg="bgGreyColor.200"
-        minH={Height - ref?.clientHeight}
-        space="50px"
-      >
+      <VStack bg="bgGreyColor.200" minH={Height - ref?.clientHeight} space="1">
         <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
         </FrontEndTypo.H1>

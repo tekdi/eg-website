@@ -2,39 +2,12 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/Schema.js";
+import { Alert, Box, HStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-  Text,
-} from "native-base";
-import CustomRadio from "../../../component/CustomRadio";
-import Steper from "../../../component/Steper";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  uploadRegistryService,
   AgRegistryService,
-  Camera,
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   sendAndVerifyOtp,
   CustomOTPBox,
   FrontEndTypo,
@@ -42,7 +15,6 @@ import {
 
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -54,34 +26,28 @@ import {
   CustomR,
   MobileNumber,
 } from "../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-import Success from "../Success.js";
+import { useTranslation } from "react-i18next";
 
 // App
 
 export default function Agform({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [keycloakId, setkeycloakId] = React.useState();
-  const [username, setusername] = React.useState();
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = React.useState(false);
-
-  const navigate = useNavigate();
 
   const onPressBackButton = async (e) => {
     const data = await nextPreviewStep("p");
@@ -89,9 +55,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       navigate(-1);
     }
   };
-  const ref = React.createRef(null);
-
-  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     facilitator_id: {
@@ -122,19 +85,10 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
         setPage("upload");
       } else {
         return true;
       }
-    }
-  };
-
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
 
@@ -183,8 +137,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       hash: localStorage.getItem("hash"),
     });
 
-    console.log("newSchema", newSchema);
-
     setverifyOtpData(otpData);
     if (status === true) {
       const data = await formSubmitCreate(formData);
@@ -230,36 +182,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
-  };
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -284,14 +206,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   // const userExist = async (filters) => {
   //   return await facilitatorRegistryService.isExist(filters);
   // };
-
-  const formSubmitUpdate = async (formData) => {
-    const { id } = authUser;
-
-    if (id) {
-      updateData({}, true);
-    }
-  };
 
   const formSubmitCreate = async (formData) => {};
 
@@ -382,7 +296,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length > 10) {
         const newErrors = {
@@ -402,6 +315,19 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           return fData;
         });
         setotpbtn(false);
+      }
+    }
+    if (id === "root_dob") {
+      if (data?.dob) {
+        const age_in_years = moment().diff(data?.dob, "years", true);
+        if (!(age_in_years >= 12 && age_in_years <= 30)) {
+          const newErrors = {
+            dob: {
+              __errors: [t("BENEFICIARY_DATE_OF_BIRTH_VALIDATION")],
+            },
+          };
+          setErrors(newErrors);
+        }
       }
     }
   };
@@ -436,7 +362,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
-    updateData(newData);
     if (_.isEmpty(errors)) {
       const { id } = authUser;
       let success = false;
