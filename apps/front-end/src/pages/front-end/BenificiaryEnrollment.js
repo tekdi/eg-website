@@ -18,7 +18,7 @@ export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [source, setsource] = React.useState();
-  const [subject, setSubject] = React.useState();
+  // const [subject, setSubject] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
 
   const navigate = useNavigate();
@@ -38,15 +38,15 @@ export default function BenificiaryEnrollment() {
       document_id:
         result?.result?.program_beneficiaries?.payment_receipt_document_id,
     });
-    const subjectResult = await enumRegistryService.getSubjects();
-    const sub = JSON.parse(result?.result?.program_beneficiaries?.subjects);
-    if (sub?.length > 0) {
-      const filterData = subjectResult?.data?.filter((e) => {
-        const subData = sub?.find((item) => `${item}` === `${e?.id}`);
-        return subData ? true : false;
-      });
-      setSubject(filterData);
-    }
+    // const subjectResult = await enumRegistryService.getSubjects();
+    // const sub = JSON.parse(result?.result?.program_beneficiaries?.subjects);
+    // if (sub?.length > 0) {
+    //   const filterData = subjectResult?.data?.filter((e) => {
+    //     const subData = sub?.find((item) => `${item}` === `${e?.id}`);
+    //     return subData ? true : false;
+    //   });
+    //   setSubject(filterData);
+    // }
   };
 
   React.useEffect(async () => {
@@ -93,15 +93,14 @@ export default function BenificiaryEnrollment() {
           <VStack space="2" pt="5">
             <HStack
               alignItems="Center"
-              justifyContent="space-between"
               borderBottomWidth="1px"
               borderBottomColor="appliedColor"
             >
-              <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+              <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                 {t("ENROLLMENT_STATUS")}
               </FrontEndTypo.H3>
 
-              <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+              <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                 {benificiary?.program_beneficiaries?.enrollment_status ? (
                   <GetEnumValue
                     t={t}
@@ -119,14 +118,13 @@ export default function BenificiaryEnrollment() {
 
             <HStack
               alignItems="Center"
-              justifyContent="space-between"
               borderBottomWidth="1px"
               borderBottomColor="appliedColor"
             >
-              <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+              <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                 {t("ENROLLMENT_BOARD")}
               </FrontEndTypo.H3>
-              <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+              <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                 {benificiary?.program_beneficiaries?.enrolled_for_board !==
                 "null" ? (
                   <GetEnumValue
@@ -145,25 +143,24 @@ export default function BenificiaryEnrollment() {
 
             <HStack
               alignItems="Center"
-              justifyContent="space-between"
               borderBottomWidth="1px"
               borderBottomColor="appliedColor"
             >
-              <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+              <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                 {t("ENROLLMENT_NUMBER")}
               </FrontEndTypo.H3>
 
-              <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+              <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                 {benificiary?.program_beneficiaries?.enrollment_number
                   ? benificiary?.program_beneficiaries?.enrollment_number
                   : "-"}
               </FrontEndTypo.H3>
             </HStack>
-            <HStack alignItems="Center" justifyContent="space-between">
-              <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3" pb="2">
+            <HStack alignItems="Center">
+              <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
                 {t("DATE_OF_ENROLLMENT")}
               </FrontEndTypo.H3>
-              <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
+              <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                 {benificiary?.program_beneficiaries?.enrollment_date
                   ? moment(
                       benificiary?.program_beneficiaries?.enrollment_date
