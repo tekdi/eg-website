@@ -688,7 +688,8 @@ export default function App({ facilitator, id, ip, onClick }) {
             {uploadPayment ? (
               <VStack>
                 <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
-                  {t("PAYMENT_RECEIPT")} *
+                  {t("PAYMENT_RECEIPT")}
+                  {formData?.enrollment_status !== "other" ? " *" : ""}
                 </FrontEndTypo.H2>
 
                 <HStack justifyContent="space-between" alignItems="Center">
