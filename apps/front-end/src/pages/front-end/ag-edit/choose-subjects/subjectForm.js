@@ -43,7 +43,8 @@ import {
   benificiaryRegistoryService,
   ImageView,
   dateOfBirth,
-  enrollmentDateOfBirth
+  enrollmentDateOfBirth,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
