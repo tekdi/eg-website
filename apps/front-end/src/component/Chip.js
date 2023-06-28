@@ -40,7 +40,7 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
         setColor("shortlistedColor");
         break;
-      case "prerak_mobilizer":
+      case "pragati_mobilizer":
         setNewStatus(t("PRAGATI_MOBILIZER"));
         setColor("potentialColor");
         break;
