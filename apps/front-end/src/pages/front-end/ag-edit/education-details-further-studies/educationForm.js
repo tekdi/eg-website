@@ -106,7 +106,7 @@ export default function App({ facilitator, ip, onClick, id }) {
     const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
     let newSchema = schema;
-    if (schema["properties"]["type_of_learner"]) {
+    if (schema?.["properties"]?.["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
         arr: ListOfEnum?.data?.TYPE_OF_LEARNER,

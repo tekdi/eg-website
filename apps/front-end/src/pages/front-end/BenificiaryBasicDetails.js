@@ -293,14 +293,13 @@ export default function BenificiaryBasicDetails() {
                   {`${
                     benificiary?.core_beneficiaries?.father_first_name
                       ? benificiary?.core_beneficiaries?.father_first_name
-                      : ""
+                      : "-"
                   } ${
-                    benificiary?.core_beneficiaries?.father_middle_name !==
-                    "null"
+                    benificiary?.core_beneficiaries?.father_middle_name
                       ? benificiary?.core_beneficiaries?.father_middle_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.father_last_name !== "null"
+                    benificiary?.core_beneficiaries?.father_last_name
                       ? benificiary?.core_beneficiaries?.father_last_name
                       : ""
                   }`}
@@ -326,14 +325,13 @@ export default function BenificiaryBasicDetails() {
                   {`${
                     benificiary?.core_beneficiaries?.mother_first_name
                       ? benificiary?.core_beneficiaries?.mother_first_name
-                      : ""
+                      : "-"
                   } ${
-                    benificiary?.core_beneficiaries?.mother_middle_name !==
-                    "null"
+                    benificiary?.core_beneficiaries?.mother_middle_name
                       ? benificiary?.core_beneficiaries?.mother_middle_name
                       : ""
                   } ${
-                    benificiary?.core_beneficiaries?.mother_last_name !== "null"
+                    benificiary?.core_beneficiaries?.mother_last_name
                       ? benificiary?.core_beneficiaries?.mother_last_name
                       : ""
                   }`}
@@ -475,13 +473,13 @@ export default function BenificiaryBasicDetails() {
                   {`${
                     benificiary?.references[0]?.first_name
                       ? benificiary?.references[0]?.first_name
-                      : ""
+                      : "-"
                   } ${
-                    benificiary?.references[0]?.middle_name !== null
+                    benificiary?.references[0]?.middle_name
                       ? benificiary?.references[0]?.middle_name
                       : ""
                   } ${
-                    benificiary?.references[0]?.last_name !== null
+                    benificiary?.references[0]?.last_name
                       ? benificiary?.references[0]?.last_name
                       : ""
                   }`}
