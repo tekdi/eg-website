@@ -108,8 +108,8 @@ export default function AadhaarSuccess({ user, aadhaarCompare }) {
               <Alert.Icon />
               <FrontEndTypo.H4>
                 {isVerified
-                  ? t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")
-                  : t("YOUR_AADHAAR_VERIFICATION_IS_FAILED")}
+                  ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
+                  : t("YOUR_AADHAAR_UPLOAD_FAILED")}
               </FrontEndTypo.H4>
             </HStack>
           </HStack>
