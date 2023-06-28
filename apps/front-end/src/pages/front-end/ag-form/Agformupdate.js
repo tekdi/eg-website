@@ -294,7 +294,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
     let newSchema = schema;
     console.log(schema);
-    if (schema?.["properties"]?.["type_of_learner"]) {
+    if (schema["properties"]?.["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
         arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
@@ -338,7 +338,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
-    if (schema["properties"]["marital_status"]) {
+    if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
@@ -355,7 +355,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       setSchema(newSchema);
     }
 
-    if (schema["properties"]["learning_motivation"]) {
+    if (schema["properties"]?.["learning_motivation"]) {
       newSchema = getOptions(newSchema, {
         key: "learning_motivation",
         arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
