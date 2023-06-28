@@ -4,7 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function AadhaarSuccess({ user, aadhaarCompare }) {
+export default function AadhaarSuccess({ user, location, aadhaarCompare }) {
   const [data, setData] = React.useState([]);
   const [isVerified, setIsVerified] = React.useState(true);
   const { t } = useTranslation();
@@ -108,8 +108,8 @@ export default function AadhaarSuccess({ user, aadhaarCompare }) {
               <Alert.Icon />
               <FrontEndTypo.H4>
                 {isVerified
-                  ? t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")
-                  : t("YOUR_AADHAAR_VERIFICATION_IS_FAILED")}
+                  ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
+                  : t("YOUR_AADHAAR_UPLOAD_FAILED")}
               </FrontEndTypo.H4>
             </HStack>
           </HStack>
