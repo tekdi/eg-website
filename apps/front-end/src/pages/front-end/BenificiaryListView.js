@@ -45,6 +45,7 @@ const List = ({ data }) => {
                       // alt="Alternate Text"
                       width={"45px"}
                       height={"45px"}
+                      
                     />
                   ) : (
                     <IconByName
@@ -54,7 +55,7 @@ const List = ({ data }) => {
                       _icon={{ size: "50px" }}
                     />
                   )}
-                  <VStack>
+                  <VStack pl="2">
                     <FrontEndTypo.H3
                       bold
                       color="textGreyColor.800"
@@ -63,6 +64,7 @@ const List = ({ data }) => {
                       overflow="hidden"
                       textOverflow="ellipsis"
                       width="150px"
+                     
                     >
                       {item?.first_name}
                       {item?.middle_name &&

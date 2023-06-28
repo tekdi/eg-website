@@ -692,11 +692,10 @@ export default function App({ facilitator, id, ip, onClick }) {
                 </FrontEndTypo.H2>
 
                 <HStack justifyContent="space-between" alignItems="Center">
-                  <Box style={buttonStyle}>
+                  <Box style={buttonStyle} width="100%">
                     <VStack
                       px="5"
-                      pb="3"
-                      pt="2"
+                      py="3"
                       borderRadius="10px"
                       borderWidth="1px"
                       bg="white"
