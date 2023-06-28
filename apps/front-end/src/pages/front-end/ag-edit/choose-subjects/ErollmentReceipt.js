@@ -46,7 +46,7 @@ export default function App({ facilitator }) {
   const { t } = useTranslation();
   const { id } = useParams();
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${id}/enrollmentdetails`);
+    navigate(`/beneficiary/edit/${id}/enrollment-details`);
   };
   const ref = React.createRef(null);
   React.useEffect(() => {
@@ -168,7 +168,7 @@ export default function App({ facilitator }) {
           console.log(error);
         });
     }
-  }, [formData, benificiary?.program_beneficiaries?.enrollment_date]);
+  }, [formData, state?.enrollment_date]);
 
   const goErrorPage = (key) => {
     if (key) {
