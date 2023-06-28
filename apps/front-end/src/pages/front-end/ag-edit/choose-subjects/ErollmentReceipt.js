@@ -10,12 +10,7 @@ import enrollmentSchema from "./EnrollmentSchema.js";
 import { Alert, Box, Button, HStack } from "native-base";
 import { useParams, useLocation } from "react-router-dom";
 
-import {
-  facilitatorRegistryService,
-  Layout,
-  filtersByObject,
-  BodyMedium,
-} from "@shiksha/common-lib";
+import { Layout, filtersByObject, BodyMedium } from "@shiksha/common-lib";
 
 //updateSchemaEnum
 import moment from "moment";
@@ -29,11 +24,10 @@ import {
   BaseInputTemplate,
   select,
 } from "../../../../component/BaseInput.js";
-import { useScreenshot } from "use-screenshot-hook";
 import { useTranslation } from "react-i18next";
 
 // App
-export default function App({ facilitator, ip, onClick }) {
+export default function App({ facilitator }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -63,14 +57,6 @@ export default function App({ facilitator, ip, onClick }) {
     setBenificiary(result?.result);
   };
 
-  const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
-    }
-  };
-
   const [uiSchema, setUiSchema] = React.useState({
     enrollment_dob: {
       "ui:widget": "alt-date",
@@ -94,7 +80,6 @@ export default function App({ facilitator, ip, onClick }) {
         })
         .catch((error) => {
           console.log(error);
-          // Handle any errors that occur during the date calculation
         });
     }
   }, [formData]);
@@ -131,52 +116,6 @@ export default function App({ facilitator, ip, onClick }) {
       } else {
         nextPreviewStep();
       }
-    }
-  };
-
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema?.["properties"]?.[key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    if (newProperties?.type === "array") {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            items: {
-              ...(properties?.items ? properties?.items : {}),
-              ...(_.isEmpty(arr) ? {} : enumObj),
-            },
-          },
-        },
-      };
-    } else {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            ...(_.isEmpty(arr) ? {} : enumObj),
-          },
-        },
-      };
     }
   };
 
@@ -321,18 +260,6 @@ export default function App({ facilitator, ip, onClick }) {
       goErrorPage(key);
     }
   };
-
-  // const validation = () => {
-  //   const newErrors = {};
-  //   if (formData?.edit_page_type) {
-  //     if (!formData?.enrollment_number) {
-  //       newErrors.enrollment_number = {
-  //         __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
-  //       };
-  //     }
-  //   }
-  //   setErrors(newErrors);
-  // };
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;

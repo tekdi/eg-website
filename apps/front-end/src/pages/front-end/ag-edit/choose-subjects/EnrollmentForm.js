@@ -1,18 +1,13 @@
 import React from "react";
 import Form from "./ErollmentReceipt";
-import { useParams } from "react-router-dom";
-import { IconByName } from "@shiksha/common-lib";
 import { VStack } from "native-base";
 
 export default function enrollmentForm() {
-  const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
-  const [ip, setIp] = React.useState({});
-  const { id } = useParams();
 
   return (
     <VStack>
-      <Form {...{ ip, id, facilitator }} onClick={(e) => setPage(e)} />
+      <Form {...{ facilitator }} />
     </VStack>
   );
 }
