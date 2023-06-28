@@ -23,7 +23,9 @@ export default function Chip({ label, children, isActive, ...props }) {
 // ChipStatus
 export function ChipStatus({ status, ...props }) {
   const [color, setColor] = React.useState("appliedColor");
-  const [newStatus, setNewStatus] = React.useState(status).toString().toLowerCase();
+  const [newStatus, setNewStatus] = React.useState(status)
+    .toString()
+    .toLowerCase();
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "screened":
