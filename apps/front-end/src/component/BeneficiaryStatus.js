@@ -33,8 +33,8 @@ export function ChipStatus({ status, ...props }) {
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
-      case "dropped_out":
-        setNewStatus(t("DROPPED_OUT"));
+      case "dropout":
+        setNewStatus(t("BENEFICIARY_STATUS_DROPOUT"));
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
