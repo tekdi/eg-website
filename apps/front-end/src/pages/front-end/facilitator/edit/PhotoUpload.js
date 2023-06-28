@@ -41,7 +41,7 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
+    if (file && file.size <= 1048576 * 25) {
       if (page < 4) {
         const result = await uploadProfile(file, `profile_photo_${page}`);
         setCameraFile([...(cameraFile ? cameraFile : []), result]);
