@@ -43,7 +43,8 @@ import {
   benificiaryRegistoryService,
   ImageView,
   dateOfBirth,
-  enrollmentDateOfBirth
+  enrollmentDateOfBirth,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
@@ -346,14 +347,8 @@ export default function App({ facilitator, id, ip, onClick }) {
             ...prevUiSchema,
             enrollment_date: {
               ...prevUiSchema?.enrollment_date,
-              "ui:help": age?.message,
             },
           }));
-          if (age?.diff <= 14 || age?.diff >= 29) {
-            setAlert(t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"));
-          } else {
-            setAlert();
-          }
         })
         .catch((error) => {
           console.log(error);
@@ -601,7 +596,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         );
         navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
           state: {
-            alert: alert ? "yes" : "no",
+            enrollment_date: formData?.enrollment_date,
           },
         });
         // navigate(`/beneficiary/profile/${userId}`);
@@ -692,7 +687,7 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
-                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
+                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3">
                   {t("PAYMENT_RECEIPT")} *
                 </FrontEndTypo.H2>
 

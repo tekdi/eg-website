@@ -36,7 +36,7 @@ const List = ({ data }) => {
               space="2"
             >
               <HStack justifyContent="space-between">
-                <HStack alignItems="Center" justifyContent="space-between" flex="5">
+                <HStack alignItems="Center" flex="5">
                   {item?.profile_photo_1?.id ? (
                     <ImageView
                       source={{
@@ -75,7 +75,7 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box flex="3">
+                <Box>
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
                     rounded={"sm"}

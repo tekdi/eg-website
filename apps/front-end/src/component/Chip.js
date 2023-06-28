@@ -23,8 +23,7 @@ export default function Chip({ label, children, isActive, ...props }) {
 // ChipStatus
 export function ChipStatus({ status, ...props }) {
   const [color, setColor] = React.useState("appliedColor");
-  const [newStatus, setNewStatus] = React.useState(status);
-
+  const [newStatus, setNewStatus] = React.useState(status).toString().toLowerCase();
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "screened":
@@ -39,7 +38,7 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
         setColor("shortlistedColor");
         break;
-      case "pragati_mobilizer":
+      case "prerak_mobilizer":
         setNewStatus(t("PRAGATI_MOBILIZER"));
         setColor("potentialColor");
         break;
