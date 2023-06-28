@@ -2,20 +2,7 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/SchemaUpdate.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../component/CustomRadio";
-import Steper from "../../../component/Steper";
+import { Alert, Box, Button, Center, HStack, Image, VStack } from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -24,45 +11,27 @@ import {
   Camera,
   Layout,
   H1,
-  t,
-  login,
-  H3,
   IconByName,
-  BodySmall,
-  filtersByObject,
   H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
-  sendAndVerifyOtp,
-  CustomOTPBox,
   benificiaryRegistoryService,
   enumRegistryService,
   FrontEndTypo,
+  getOptions,
+  Loading,
+  getUniqueArray,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  RadioBtn,
-  CustomR,
-  select,
-  readOnly,
-} from "../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-import Success from "../Success.js";
+import { templates, widgets } from "../../../component/BaseInput";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // App
 
 export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
+  const { t } = useTranslation();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -81,6 +50,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [userId, setuserId] = React.useState();
   const location = useLocation();
   const [agroute, setagroute] = React.useState(location?.state?.route);
+  const [loading, setLoading] = React.useState(true);
 
   const id = useParams();
 
@@ -88,51 +58,57 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setuserId(id?.id);
-    const qData = await benificiaryRegistoryService.getOne(id?.id);
-    setFormData({
-      ...formData,
-      device_ownership: qData?.result?.core_beneficiaries?.device_ownership,
-      device_type: qData?.result?.core_beneficiaries?.device_type,
-      state: qData?.result?.state,
-      district: qData?.result?.district,
-      address: qData?.result?.address == "null" ? "" : qData?.result?.address,
-      block: qData?.result?.block,
-      village: qData?.result?.village,
-      grampanchayat:
-        qData?.result?.grampanchayat == "null"
-          ? ""
-          : qData?.result?.grampanchayat,
-      marital_status: qData?.result?.extended_users?.marital_status,
-      social_category: qData?.result?.extended_users?.social_category,
-      type_of_learner: qData?.result?.core_beneficiaries?.type_of_learner,
-      last_standard_of_education_year:
-        qData?.result?.core_beneficiaries?.last_standard_of_education_year,
-      last_standard_of_education:
-        qData?.result?.core_beneficiaries?.last_standard_of_education,
-      previous_school_type:
-        qData?.result?.core_beneficiaries?.previous_school_type,
-      reason_of_leaving_education:
-        qData?.result?.core_beneficiaries?.reason_of_leaving_education,
-      learning_level: qData?.result?.program_beneficiaries?.learning_level,
-      learning_motivation:
-        qData?.result?.program_beneficiaries?.learning_motivation,
-      type_of_support_needed:
-        qData?.result?.program_beneficiaries?.type_of_support_needed,
-    });
+    const { result } = await benificiaryRegistoryService.getOne(id?.id);
+    if (result) {
+      setFormData({
+        ...formData,
+        device_ownership: result?.core_beneficiaries?.device_ownership,
+        device_type: result?.core_beneficiaries?.device_type,
+        state: result?.state,
+        district: result?.district,
+        address: result?.address == "null" ? "" : result?.address,
+        block: result?.block,
+        village: result?.village,
+        grampanchayat:
+          result?.grampanchayat == "null" ? "" : result?.grampanchayat,
+        marital_status: result?.extended_users?.marital_status,
+        social_category: result?.extended_users?.social_category,
+        type_of_learner: result?.core_beneficiaries?.type_of_learner,
+        last_standard_of_education_year:
+          result?.core_beneficiaries?.last_standard_of_education_year,
+        last_standard_of_education:
+          result?.core_beneficiaries?.last_standard_of_education,
+        previous_school_type: result?.core_beneficiaries?.previous_school_type,
+        reason_of_leaving_education:
+          result?.core_beneficiaries?.reason_of_leaving_education,
+        learning_level: result?.program_beneficiaries?.learning_level,
+        learning_motivation: result?.program_beneficiaries?.learning_motivation,
+        type_of_support_needed:
+          result?.program_beneficiaries?.type_of_support_needed,
+        learning_motivation: getUniqueArray(
+          result?.program_beneficiaries?.learning_motivation
+        ),
+        type_of_support_needed: getUniqueArray(
+          result?.program_beneficiaries?.type_of_support_needed
+        ),
+      });
+    }
   }, []);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
   };
-  const ref = React.createRef(null);
 
   const updateData = (data, deleteData = false) => {};
 
-  // const uiSchema = {
-  //   facilitator_id: {
-  //     "ui:widget": "hidden",
-  //   },
-  // };
+  const uiSchema = {
+    learning_motivation: {
+      "ui:widget": "MultiCheck",
+    },
+    type_of_support_needed: {
+      "ui:widget": "MultiCheck",
+    },
+  };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -200,12 +176,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
   }
 
-  // React.useEffect(async () => {
-  //   if (page == "2") {
-  //   }
-  // }, [page]);
-
   React.useEffect(async () => {
+    setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
@@ -222,6 +194,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     } else if (page === "upload") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
     }
+    setLoading(false);
   }, [page]);
 
   const setStep = async (pageNumber = "") => {
@@ -238,37 +211,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData?.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData?.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
-  };
-
   React.useEffect(async () => {
+    setLoading(true);
     if (schema?.properties?.state) {
       const qData = await geolocationRegistryService.getStates();
       let newSchema = schema;
@@ -293,8 +237,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     const lastYear = await benificiaryRegistoryService.lastYear();
 
     let newSchema = schema;
-    console.log(schema);
-    if (schema["properties"]?.["type_of_learner"]) {
+    if (schema?.["properties"]?.["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
         arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
@@ -371,6 +314,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
+    setLoading(false);
   }, [page]);
 
   // Type Of Student
@@ -382,7 +326,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       // setPage(newSteps[0]);
       setPage(agroute ? "upload" : newSteps[0]);
 
-      setSchema(properties[newSteps[0]]);
+      setSchema(properties[newSteps[4]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
@@ -606,8 +550,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       }
     }
 
-    console.log("data", data);
-
     if (id === "root_address") {
       if (
         !data?.address?.match(
@@ -727,6 +669,11 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       }
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
+
   if (cameraUrl) {
     return (
       <Layout
@@ -906,19 +853,13 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox, select, readOnly }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
             {...{
+              templates,
+              widgets,
+              uiSchema,
               validator,
               schema: schema ? schema : {},
               formData,
