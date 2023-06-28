@@ -1,11 +1,6 @@
 import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import {
-  ImageView,
-  dateOfBirth,
-  enrollmentDateOfBirth,
-} from "@shiksha/common-lib";
 import schema1 from "./schema.js";
 import {
   Alert,
@@ -46,6 +41,10 @@ import {
   uploadRegistryService,
   AgRegistryService,
   benificiaryRegistoryService,
+  ImageView,
+  dateOfBirth,
+  enrollmentDateOfBirth,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
@@ -348,14 +347,8 @@ export default function App({ facilitator, id, ip, onClick }) {
             ...prevUiSchema,
             enrollment_date: {
               ...prevUiSchema?.enrollment_date,
-              "ui:help": age?.message,
             },
           }));
-          if (age?.diff <= 14 || age?.diff >= 29) {
-            setAlert(t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"));
-          } else {
-            setAlert();
-          }
         })
         .catch((error) => {
           console.log(error);
@@ -603,7 +596,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         );
         navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
           state: {
-            alert: alert ? "yes" : "no",
+            enrollment_date: formData?.enrollment_date,
           },
         });
         // navigate(`/beneficiary/profile/${userId}`);
@@ -694,23 +687,45 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
-                <H1 color={"rgb(121, 0, 0)"} fontSize={"15px"}>
-                  {t("PAYMENT_RECEIPT")}
-                </H1>
+                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
+                  {t("PAYMENT_RECEIPT")} *
+                </FrontEndTypo.H2>
 
                 <HStack justifyContent="space-between" alignItems="Center">
-                  <Button
-                    padding={"9vh"}
-                    marginLeft={"9vh"}
-                    style={buttonStyle}
-                    variant={"secondary"}
-                    leftIcon={<IconByName name="Upload2FillIcon" isDisabled />}
-                    onPress={(e) => {
-                      uplodInputRef?.current?.click();
-                    }}
-                  >
-                    {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
-                  </Button>
+                  <Box style={buttonStyle}>
+                    <VStack
+                      px="5"
+                      pb="3"
+                      pt="2"
+                      borderRadius="10px"
+                      borderWidth="1px"
+                      bg="white"
+                      borderColor="appliedColor"
+                    >
+                      <VStack space="5">
+                        <ImageView
+                          source={source}
+                          width="full"
+                          height="172px"
+                          borderRadius="5px"
+                          borderWidth="1px"
+                          borderColor="worksheetBoxText.100"
+                          alignSelf="Center"
+                        />
+                      </VStack>
+                    </VStack>
+                    <Button
+                      variant={"secondary"}
+                      leftIcon={
+                        <IconByName name="Upload2FillIcon" isDisabled />
+                      }
+                      onPress={(e) => {
+                        uplodInputRef?.current?.click();
+                      }}
+                    >
+                      {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
+                    </Button>
+                  </Box>
                   <input
                     accept="image/*"
                     type="file"
@@ -719,28 +734,6 @@ export default function App({ facilitator, id, ip, onClick }) {
                     onChange={handleFileInputChange}
                   />
                 </HStack>
-
-                <VStack
-                  px="5"
-                  pb="3"
-                  pt="2"
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  bg="white"
-                  borderColor="appliedColor"
-                >
-                  <VStack space="5">
-                    <ImageView
-                      source={source}
-                      width="full"
-                      height="172px"
-                      borderRadius="5px"
-                      borderWidth="1px"
-                      borderColor="worksheetBoxText.100"
-                      alignSelf="Center"
-                    />
-                  </VStack>
-                </VStack>
               </VStack>
             ) : (
               <React.Fragment></React.Fragment>
@@ -759,16 +752,15 @@ export default function App({ facilitator, id, ip, onClick }) {
             ) : (
               <React.Fragment></React.Fragment>
             )}
-            <Button
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
               onPress={() => {
                 editSubmit();
               }}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
@@ -843,9 +835,8 @@ export default function App({ facilitator, id, ip, onClick }) {
                 </Clipboard>
               </VStack>
               <HStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Primarybutton
                   flex={1}
-                  variant="primary"
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
@@ -855,7 +846,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                   }}
                 >
                   {t("LOGIN")}
-                </Button>
+                </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
           </Modal.Body>

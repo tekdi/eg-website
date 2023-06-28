@@ -156,6 +156,9 @@ export default function BenificiaryProfileView(props) {
             )}
             <FrontEndTypo.H2 bold color="textMaroonColor.400">
               {benificiary?.first_name}
+              {benificiary?.middle_name &&
+                benificiary?.middle_name !== "null" &&
+                ` ${benificiary.middle_name}`}
               {benificiary?.last_name && ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
 
