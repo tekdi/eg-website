@@ -36,7 +36,7 @@ const List = ({ data }) => {
               space="2"
             >
               <HStack justifyContent="space-between">
-                <HStack alignItems="Center" justifyContent="space-between">
+                <HStack alignItems="Center" justifyContent="space-between" flex="5">
                   {item?.profile_photo_1?.id ? (
                     <ImageView
                       source={{
@@ -55,7 +55,15 @@ const List = ({ data }) => {
                     />
                   )}
                   <VStack>
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
+                    <FrontEndTypo.H3
+                      bold
+                      color="textGreyColor.800"
+                      wordWrap="break-word"
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      width="150px"
+                    >
                       {item?.first_name}
                       {item?.middle_name &&
                         item?.middle_name !== "null" &&
@@ -67,7 +75,7 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box>
+                <Box flex="3">
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
                     rounded={"sm"}
