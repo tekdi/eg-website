@@ -566,6 +566,7 @@
   "REMOVE_EXPERIENCE": "अनुभव मिटाएँ",
   "REQUIRED_MESSAGE": "वैध जानकारी दर्ज करें",
   "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "कृपया एक पंजीकरण बोर्ड चुनें।",
+  "REQUIRED_MESSAGE_ENROLLMENT_DATE": "एनरोलमेंट की तारीख अनिवार्य है",
   "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "कृपया एक वैध पंजीकरण संख्या दर्ज करें। ",
   "REQUIRED_MESSAGE_ENROLLMENT_STATUS": "कृपया एक वैध पंजीकरण स्थिति दर्ज करें।",
   "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "कृपया भुगतान रसीद अपलोड करें।",

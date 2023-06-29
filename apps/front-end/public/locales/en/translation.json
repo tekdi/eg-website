@@ -568,6 +568,7 @@
   "REMOVE_EXPERIENCE": "Remove Experience",
   "REQUIRED_MESSAGE": "Please enter a valid data",
   "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "Please select a Enrollment Board",
+  "REQUIRED_MESSAGE_ENROLLMENT_DATE": "Enrollment date is mandatory",
   "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "Please enter a valid Enrollment Number",
   "REQUIRED_MESSAGE_ENROLLMENT_STATUS": "Please enter a valid Enrollment Status",
   "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "Please upload the payment receipt",
