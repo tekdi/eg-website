@@ -228,7 +228,7 @@ export default function AgformUpdate({ userTokenInfo }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("CAREER_ASPIRATION"),
+        name: t("LEARNER_ASPIRATION"),
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
