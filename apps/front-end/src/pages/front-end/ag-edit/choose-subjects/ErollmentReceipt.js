@@ -170,11 +170,16 @@ export default function App({ facilitator }) {
         });
     }
 
-    if (formData?.enrollment_aadhaar_no.toString() !== benificiary?.aadhar_no) {
-      setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
-    } else {
-      setAlertAadhar();
-      setErrors({});
+    if (formData?.enrollment_aadhaar_no && benificiary?.aadhar_no) {
+      if (
+        formData.enrollment_aadhaar_no.toString() !==
+        benificiary.aadhar_no.toString()
+      ) {
+        setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
+      } else {
+        setAlertAadhar();
+        setErrors({});
+      }
     }
   }, [formData, state?.enrollment_date]);
 
@@ -220,13 +225,16 @@ export default function App({ facilitator }) {
         },
       };
       setErrors(newErrors);
-    } else if (
-      data?.enrollment_aadhaar_no.toString() !== benificiary?.aadhar_no
-    ) {
-      setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
-    } else {
-      setAlertAadhar();
-      setErrors({});
+    } else if (data?.enrollment_aadhaar_no && benificiary?.aadhar_no) {
+      if (
+        data.enrollment_aadhaar_no.toString() !==
+        benificiary.aadhar_no.toString()
+      ) {
+        setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
+      } else {
+        setAlertAadhar();
+        setErrors({});
+      }
     }
 
     if (
