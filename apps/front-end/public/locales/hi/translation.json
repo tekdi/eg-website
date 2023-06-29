@@ -53,7 +53,7 @@
   "AFFIDAVIT_FOR_NON_SCHOOLING_CERTIFICATION_NOTARY": "गैर-स्कूली शिक्षा प्रमाणन के लिए शपथ पत्र (नोटरी)",
   "AG_ADDED_SUCCESSFULLY": "शिक्षार्थी सफलतापूर्वक जुड़ गई",
   "AG_LEARNER_ALREADY_IDENTIFIED": "शिक्षार्थी पहले से ही उपस्थित",
-  "AG_LEARNER_ALREADY_IDENTIFIED_DES": "आप शिक्षार्थी को जोड़ना जारी रख सकते हैं, लेकिन वे आपको आवंटित नहीं किए जा सकते हैं",
+  "AG_LEARNER_ALREADY_IDENTIFIED_DES": "आप लर्नर जोड़ना जारी रख सकते हैं लेकिन हो सकता है कि वे आपको असाइन न किए गए हों",
   "AG_LEARNER_PROFILE": "शिक्षार्थी प्रोफाइल",
   "AG_LERNER_RELATIONSHP": "संदर्भ के साथ शिक्षार्थी का संबंध",
   "AG_PROFILE_ARE_YOU_SURE": "क्या आप सहमत है?",
