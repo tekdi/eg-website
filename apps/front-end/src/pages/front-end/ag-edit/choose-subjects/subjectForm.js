@@ -707,7 +707,6 @@ export default function App({ facilitator, id, ip, onClick }) {
                   {t("PAYMENT_RECEIPT")}
                   {formData?.enrollment_status !== "other" ? " *" : ""}
                 </FrontEndTypo.H2>
-
                 <HStack justifyContent="space-between" alignItems="Center">
                   <Box style={buttonStyle} width="100%">
                     <VStack
