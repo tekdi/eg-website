@@ -37,6 +37,7 @@ export default function App({ facilitator }) {
   const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
+  const [alertAadhar, setAlertAadhar] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [benificiary, setBenificiary] = React.useState();
@@ -168,6 +169,13 @@ export default function App({ facilitator }) {
           console.log(error);
         });
     }
+
+    if (formData?.enrollment_aadhaar_no.toString() !== benificiary?.aadhar_no) {
+      setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
+    } else {
+      setAlertAadhar();
+      setErrors({});
+    }
   }, [formData, state?.enrollment_date]);
 
   const goErrorPage = (key) => {
@@ -200,27 +208,25 @@ export default function App({ facilitator }) {
   const onChange = async (e, id) => {
     setErrors({});
     const data = e.formData;
-    if (id === "root_enrollment_aadhaar_no") {
-      if (data?.enrollment_aadhaar_no) {
-        const newErrors = validation({
-          data: data?.enrollment_aadhaar_no,
-          key: "enrollment_aadhaar_no",
-          errors: {
-            enrollment_aadhaar_no: {
-              addError: (e) => {
-                setErrors({
-                  ...errors,
-                  enrollment_aadhaar_no: {
-                    __errors: [e],
-                  },
-                });
-              },
-            },
-          },
-          message: `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`,
-          type: "aadhaar",
-        });
-      }
+    if (
+      data?.enrollment_aadhaar_no &&
+      !`${data?.enrollment_aadhaar_no}`?.match(
+        /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/
+      )
+    ) {
+      const newErrors = {
+        enrollment_aadhaar_no: {
+          __errors: [t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (
+      data?.enrollment_aadhaar_no.toString() !== benificiary?.aadhar_no
+    ) {
+      setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
+    } else {
+      setAlertAadhar();
+      setErrors({});
     }
 
     if (
@@ -347,8 +353,19 @@ export default function App({ facilitator }) {
               transformErrors,
             }}
           >
+            {alertAadhar ? (
+              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{alertAadhar}</BodyMedium>
+                </HStack>
+              </Alert>
+            ) : (
+              <React.Fragment />
+            )}
+
             <Button
-              mt="3"
+              mt="4"
               variant={"primary"}
               onPress={() => {
                 if (Object.keys(errors).length > 0) {
