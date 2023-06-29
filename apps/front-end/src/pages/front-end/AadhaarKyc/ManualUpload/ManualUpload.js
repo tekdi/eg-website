@@ -197,21 +197,33 @@ export default function ManualUpload({
                     color="textGreyColor.100"
                   />
                   <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                    {isFront && image?.back
+                    {!isFront
                       ? t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")
                       : t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}
                   </FrontEndTypo.H2>
                 </VStack>
               )}
-              <Image
-                source={{
-                  uri: "/aadhar.svg",
-                }}
-                alt="Aadhar"
-                w="200px"
-                h="113"
-                resizeMode="contain"
-              />
+              {isFront ? (
+                <Image
+                  source={{
+                    uri: "/aadhar.svg",
+                  }}
+                  alt="Aadhar"
+                  w="200px"
+                  h="113"
+                  resizeMode="contain"
+                />
+              ) : (
+                <Image
+                  source={{
+                    uri: "/AadhaarBack.png",
+                  }}
+                  alt="AadharBack"
+                  w="200px"
+                  h="113"
+                  resizeMode="contain"
+                />
+              )}
             </Pressable>
             <HStack
               display="flex"
