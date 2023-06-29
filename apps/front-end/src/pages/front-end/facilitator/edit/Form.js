@@ -149,7 +149,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     if (schema?.properties?.qualification_master_id) {
       setLoading(true);
-      if (schema["properties"]?.["qualification_master_id"]) {
+      if (schema?.["properties"]?.["qualification_master_id"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_master_id",
           arr: qualifications,
@@ -177,7 +177,7 @@ export default function App({ userTokenInfo, footerLinks }) {
           }
         }
       }
-      if (schema["properties"]?.["qualification_reference_document_id"]) {
+      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
         const { id } = userTokenInfo?.authUser;
         newSchema = getOptions(newSchema, {
           key: "qualification_reference_document_id",
@@ -188,7 +188,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
 
-      if (schema["properties"]?.["qualification_ids"]) {
+      if (schema?.["properties"]?.["qualification_ids"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_ids",
           arr: qualifications,
@@ -201,7 +201,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     if (schema?.properties?.state) {
       const qData = await geolocationRegistryService.getStates();
-      if (schema["properties"]["state"]) {
+      if (schema?.["properties"]?.["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
           arr: qData?.states,
@@ -231,7 +231,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         value: "value",
       });
     }
-    if (schema["properties"]?.["marital_status"]) {
+    if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
@@ -247,7 +247,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
 
-    if (schema["properties"]?.["device_type"]) {
+    if (schema?.["properties"]?.["device_type"]) {
       newSchema = getOptions(newSchema, {
         key: "device_type",
         arr: enumObj?.MOBILE_TYPE,
@@ -256,7 +256,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
 
-    if (schema["properties"]?.["document_id"]) {
+    if (schema?.["properties"]?.["document_id"]) {
       const { id } = userTokenInfo?.authUser;
       newSchema = getOptions(newSchema, {
         key: "document_id",
@@ -401,7 +401,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const qData = await geolocationRegistryService.getDistricts({
         name: state,
       });
-      if (schema["properties"]["district"]) {
+      if (schema?.["properties"]?.["district"]) {
         newSchema = getOptions(newSchema, {
           key: "district",
           arr: qData?.districts,
@@ -409,16 +409,16 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "district_name",
         });
       }
-      if (schema["properties"]["block"]) {
+      if (schema?.["properties"]?.["block"]) {
         newSchema = await setBlock({ district, block, schemaData: newSchema });
         setSchema(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
+      if (schema?.["properties"]?.["block"]) {
         newSchema = getOptions(newSchema, { key: "block", arr: [] });
       }
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
       setSchema(newSchema);
@@ -434,7 +434,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
       });
-      if (schema["properties"]["block"]) {
+      if (schema?.["properties"]?.["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
           arr: qData?.blocks,
@@ -442,13 +442,13 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "block_name",
         });
       }
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = await setVilage({ block, schemaData: newSchema });
         setSchema(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
       setSchema(newSchema);
@@ -464,7 +464,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
       });
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
           arr: qData?.villages,
@@ -602,7 +602,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (id === "root_type_of_document") {
       let newSchema = schema;
       const user = userTokenInfo?.authUser;
-      if (schema["properties"]["qualification_reference_document_id"]) {
+      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
         setLoading(true);
         newSchema = getOptions(schema, {
           key: "qualification_reference_document_id",

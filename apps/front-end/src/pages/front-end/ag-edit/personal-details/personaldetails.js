@@ -233,7 +233,7 @@ export default function agFormEdit({ ip }) {
 
     let newSchema = schema;
 
-    if (schema["properties"]["marital_status"]) {
+    if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
