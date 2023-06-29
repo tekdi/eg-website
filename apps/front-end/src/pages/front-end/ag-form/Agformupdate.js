@@ -281,7 +281,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
-    if (schema["properties"]["marital_status"]) {
+    if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
@@ -298,7 +298,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       setSchema(newSchema);
     }
 
-    if (schema["properties"]["learning_motivation"]) {
+    if (schema["properties"]?.["learning_motivation"]) {
       newSchema = getOptions(newSchema, {
         key: "learning_motivation",
         arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
@@ -323,10 +323,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      // setPage(newSteps[0]);
       setPage(agroute ? "upload" : newSteps[0]);
-
-      setSchema(properties[newSteps[4]]);
+      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
