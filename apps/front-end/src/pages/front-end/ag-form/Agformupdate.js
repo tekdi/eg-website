@@ -323,10 +323,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      // setPage(newSteps[0]);
       setPage(agroute ? "upload" : newSteps[0]);
-
-      setSchema(properties[newSteps[4]]);
+      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
