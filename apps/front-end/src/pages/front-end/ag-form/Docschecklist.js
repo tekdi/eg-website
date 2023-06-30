@@ -27,8 +27,8 @@ const Docschecklist = () => {
   const [selectData, setselectData] = useState([]);
   const [status, setStatus] = useState({});
   const [checkList, setCheckList] = useState(false);
+  const [buttonPress, setButtonPress] = useState(false);
   const [benificiary, setBenificiary] = React.useState({});
-
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
     setBenificiary(data?.result);
@@ -46,6 +46,11 @@ const Docschecklist = () => {
 
   React.useEffect(async () => {
     const keysLength = Object.keys(status).length;
+    if (benificiary?.program_beneficiaries?.status === "ready_to_enroll") {
+      setButtonPress(true);
+    } else {
+      setButtonPress(false);
+    }
     const allValuesMatch = Object.values(status).every(
       (value) => value === "not_applicable" || value === "complete"
     );
@@ -53,6 +58,13 @@ const Docschecklist = () => {
       setCheckList(true);
     } else {
       setCheckList(false);
+      setButtonPress(false);
+      let bodyData = {
+        user_id: benificiary?.id.toString(),
+        status: "identified",
+      };
+
+      const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     }
     let data = {
       edit_page_type: "document_status",
@@ -68,11 +80,13 @@ const Docschecklist = () => {
 
   const readyToEnrollApiCall = async () => {
     let bodyData = {
-      id: benificiary?.program_beneficiaries?.id.toString(),
+      user_id: benificiary?.id.toString(),
       status: "ready_to_enroll",
+      reason_for_status_update: "documents_completed",
     };
 
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+    setButtonPress(true);
   };
   return (
     <Layout
@@ -465,7 +479,8 @@ const Docschecklist = () => {
         {checkList ? (
           <Button
             mb={1}
-            variant={"secondary"}
+            variant={"primary"}
+            bg={buttonPress ? "rgb(3 ,102, 14)" : "rgb(45, 20, 44)"}
             type="submit"
             onPress={() => {
               readyToEnrollApiCall();
