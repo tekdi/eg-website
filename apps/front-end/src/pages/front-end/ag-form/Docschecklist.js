@@ -5,20 +5,10 @@ import {
   Layout,
   t,
   benificiaryRegistoryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
-import {
-  Image,
-  Text,
-  VStack,
-  HStack,
-  Button,
-  Modal,
-  TextArea,
-  Select,
-  CheckIcon,
-  Box,
-} from "native-base";
+import { Text, VStack, HStack, Button, Select, CheckIcon } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = () => {
@@ -477,32 +467,35 @@ const Docschecklist = () => {
           </Select>
         </HStack>
         {checkList ? (
-          <Button
-            mb={1}
-            variant={"primary"}
-            bg={buttonPress ? "rgb(3 ,102, 14)" : "rgb(45, 20, 44)"}
-            type="submit"
-            onPress={() => {
-              readyToEnrollApiCall();
-            }}
-          >
-            {t("MARK_AS_COMPLETE")}
-          </Button>
+          buttonPress ? (
+            <FrontEndTypo.ColourPrimaryButton mb={1} type="submit">
+              {t("MARK_AS_COMPLETE")}
+            </FrontEndTypo.ColourPrimaryButton>
+          ) : (
+            <FrontEndTypo.Primarybutton
+              mb={1}
+              type="submit"
+              onPress={() => {
+                readyToEnrollApiCall();
+              }}
+            >
+              {t("MARK_AS_COMPLETE")}
+            </FrontEndTypo.Primarybutton>
+          )
         ) : (
           <></>
         )}
 
-        <Button
+        <FrontEndTypo.Primarybutton
           mt="4"
           mb={8}
-          variant={"primary"}
           type="submit"
           onPress={() => {
             navigate(-1);
           }}
         >
           {t("SAVE")}
-        </Button>
+        </FrontEndTypo.Primarybutton>
       </VStack>
     </Layout>
   );
