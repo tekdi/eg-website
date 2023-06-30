@@ -56,7 +56,7 @@ export default function BenificiaryProfileView(props) {
 
   const dropoutApiCall = async () => {
     let bodyData = {
-      id: benificiary?.program_beneficiaries?.id.toString(),
+      user_id: benificiary?.id.toString(),
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
@@ -71,7 +71,7 @@ export default function BenificiaryProfileView(props) {
 
   const reactivateApiCall = async () => {
     let bodyData = {
-      id: benificiary?.program_beneficiaries?.id.toString(),
+      user_id: benificiary?.id.toString(),
       status: "activate",
       reason_for_status_update: reactivateReasonValue,
     };
@@ -159,7 +159,9 @@ export default function BenificiaryProfileView(props) {
               {benificiary?.middle_name &&
                 benificiary?.middle_name !== "null" &&
                 ` ${benificiary.middle_name}`}
-              {benificiary?.last_name && ` ${benificiary?.last_name}`}
+              {benificiary?.last_name &&
+                benificiary?.last_name !== "null" &&
+                ` ${benificiary?.last_name}`}
             </FrontEndTypo.H2>
 
             <ChipStatus
