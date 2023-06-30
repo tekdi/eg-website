@@ -160,6 +160,14 @@ export default function ManualUpload({
               <FrontEndTypo.H3 color="textGreyColor.800">
                 {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
               </FrontEndTypo.H3>
+              <FrontEndTypo.H3
+                mt="4"
+                ml="90px"
+                bold
+                color="textMaroonColor.400"
+              >
+                {t("UPLOADED_AADHAR_NOT_EDITABLE")}
+              </FrontEndTypo.H3>
             </VStack>
             <Pressable
               variant="outline"

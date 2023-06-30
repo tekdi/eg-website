@@ -386,13 +386,12 @@ export default function Orientation({ footerLinks }) {
             </AdminTypo.H3>
           </VStack>
           <HStack
-            space="2xl"
             justifyContent="space-between"
             px="2"
             pb="10"
             direction={["column", "column", "row"]}
           >
-            <VStack alignContent="center">
+            <VStack alignContent="center" pb="270px" pr="5" flex="1">
               <AdminTypo.Secondarybutton
                 alignContent="center"
                 mb="3"
@@ -420,8 +419,9 @@ export default function Orientation({ footerLinks }) {
                 ))}
               </VStack>
             </VStack>
-            <Box>
+            <VStack flex="4"> 
               <Fullcalendar
+              width="100%"
                 ref={calendarRef}
                 key={eventList}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -490,7 +490,7 @@ export default function Orientation({ footerLinks }) {
                 }}
                 eventClick={handleEventClick}
               />
-            </Box>
+            </VStack>
           </HStack>
           <Modal
             isOpen={modalVisible}
