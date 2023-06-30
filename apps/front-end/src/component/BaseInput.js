@@ -295,8 +295,12 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
 };
 
 export const Aadhaar = (props) => {
+  const { t } = useTranslation();
   return (
     <VStack space="10">
+      <FrontEndTypo.H3 ml="90px" bold color="textMaroonColor.400">
+        {t("ENTERED_AADHAR_NOT_EDITABLE")}
+      </FrontEndTypo.H3>
       <Image
         alignSelf="center"
         source={{ uri: "/Aadhaar2.png" }}
