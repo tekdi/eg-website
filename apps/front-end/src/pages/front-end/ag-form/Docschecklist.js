@@ -26,6 +26,7 @@ const Docschecklist = () => {
   const { id } = useParams();
   const [selectData, setselectData] = useState([]);
   const [status, setStatus] = useState({});
+  const [checkList, setCheckList] = useState(false);
   const [benificiary, setBenificiary] = React.useState({});
 
   React.useEffect(async () => {
@@ -44,6 +45,15 @@ const Docschecklist = () => {
   const navigate = useNavigate();
 
   React.useEffect(async () => {
+    const keysLength = Object.keys(status).length;
+    const allValuesMatch = Object.values(status).every(
+      (value) => value === "not_applicable" || value === "complete"
+    );
+    if (keysLength === 12 && allValuesMatch) {
+      setCheckList(true);
+    } else {
+      setCheckList(false);
+    }
     let data = {
       edit_page_type: "document_status",
       documents_status: status,
@@ -56,6 +66,14 @@ const Docschecklist = () => {
     }
   }, [status]);
 
+  const readyToEnrollApiCall = async () => {
+    let bodyData = {
+      id: benificiary?.program_beneficiaries?.id.toString(),
+      status: "ready_to_enroll",
+    };
+
+    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+  };
   return (
     <Layout
       _appBar={{
@@ -71,8 +89,11 @@ const Docschecklist = () => {
       }}
     >
       <VStack width={"90%"} margin={"auto"} mt={3}>
+        <Text fontSize="sm" mt={3} bold color="textMaroonColor.900">
+          {t("MANDATORY")}
+        </Text>
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("JAN_AADHAAR_CARD")}
           </Text>
           <Select
@@ -106,7 +127,7 @@ const Docschecklist = () => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("AADHAAR_CARD")}
           </Text>
 
@@ -141,7 +162,7 @@ const Docschecklist = () => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("PHOTO")}
           </Text>
           <Select
@@ -170,7 +191,7 @@ const Docschecklist = () => {
         </HStack>
 
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("MOBILE_NUMBER")}
           </Text>
           <Select
@@ -199,7 +220,7 @@ const Docschecklist = () => {
         </HStack>
 
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("MARKSHEET")}
           </Text>
           <Select
@@ -228,7 +249,7 @@ const Docschecklist = () => {
         </HStack>
 
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("BANK_PASSBOOK")}
           </Text>
           <Select
@@ -256,8 +277,13 @@ const Docschecklist = () => {
           </Select>
         </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+        <HStack
+          mt={8}
+          mb={10}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("BIRTH_CERTIFICATE")}
           </Text>
           <Select
@@ -284,9 +310,11 @@ const Docschecklist = () => {
             })}
           </Select>
         </HStack>
-
+        <Text fontSize="sm" bold color="textMaroonColor.900">
+          {t("MAY_BE_REQUIRED")}
+        </Text>
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("CASTE_CERTIFICATE")}
           </Text>
           <Select
@@ -315,7 +343,7 @@ const Docschecklist = () => {
         </HStack>
 
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("TRANSFER_CERTIFICATE")}
           </Text>
           <Select
@@ -344,7 +372,7 @@ const Docschecklist = () => {
         </HStack>
 
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("AFFIDAVIT")}
           </Text>
           <Select
@@ -373,7 +401,7 @@ const Docschecklist = () => {
         </HStack>
 
         <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("CBOSIGN")}
           </Text>
           <Select
@@ -407,7 +435,7 @@ const Docschecklist = () => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text fontSize="sm" bold color="textMaroonColor.400">
+          <Text fontSize="sm" color="textMaroonColor.400">
             {t("CBOSIGNTRANSFER")}
           </Text>
           <Select
@@ -434,6 +462,21 @@ const Docschecklist = () => {
             })}
           </Select>
         </HStack>
+        {checkList ? (
+          <Button
+            mb={1}
+            variant={"secondary"}
+            type="submit"
+            onPress={() => {
+              readyToEnrollApiCall();
+            }}
+          >
+            {t("MARK_AS_COMPLETE")}
+          </Button>
+        ) : (
+          <></>
+        )}
+
         <Button
           mt="4"
           mb={8}

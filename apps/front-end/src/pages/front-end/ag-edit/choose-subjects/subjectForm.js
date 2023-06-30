@@ -534,6 +534,10 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         };
+      } else if (typeof formData?.enrollment_number !== "number") {
+        newErrors.enrollment_number = {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NOT_A_NUMBER")],
+        };
       } else if (!formData?.enrollment_date) {
         newErrors.enrollment_date = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_DATE")],
@@ -585,6 +589,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_status &&
         formData?.enrolled_for_board !== "null" &&
         formData?.enrollment_number &&
+        typeof formData?.enrollment_number === "number" &&
         formData?.enrollment_date &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
@@ -627,9 +632,20 @@ export default function App({ facilitator, id, ip, onClick }) {
       } else {
         validation();
       }
-    } else {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      navigate(`/beneficiary/profile/${userId}`);
+    } else if (formData?.enrollment_status === "other") {
+      if (
+        formData?.enrollment_number
+          ? typeof formData?.enrollment_number == "number"
+          : true
+      ) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
     }
   };
 
@@ -687,10 +703,10 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
-                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3">
-                  {t("PAYMENT_RECEIPT")} *
+                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
+                  {t("PAYMENT_RECEIPT")}
+                  {formData?.enrollment_status !== "other" ? " *" : ""}
                 </FrontEndTypo.H2>
-
                 <HStack justifyContent="space-between" alignItems="Center">
                   <Box style={buttonStyle} width="100%">
                     <VStack
