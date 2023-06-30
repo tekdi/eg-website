@@ -68,7 +68,9 @@ const List = ({ data }) => {
                       {item?.middle_name &&
                         item?.middle_name !== "null" &&
                         ` ${item.middle_name}`}
-                      {item?.last_name && ` ${item.last_name}`}
+                      {item?.last_name &&
+                        item?.last_name !== "null" &&
+                        ` ${item.last_name}`}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
@@ -116,7 +118,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
   const [searchBenficiary, setSearchBenficiary] = React.useState("");
-
+  const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
     setSelectStatus(data);
@@ -164,7 +166,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     if (userTokenInfo) {
-      const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
     }
