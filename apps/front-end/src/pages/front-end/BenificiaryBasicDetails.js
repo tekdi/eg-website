@@ -207,14 +207,14 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
+              {/* <IconByName
                 name="EditBoxLineIcon"
                 _icon={{ size: "20" }}
                 color="iconColor.100"
                 onPress={(e) => {
                   navigate(`/beneficiary/edit/${id}/address`);
                 }}
-              />
+              /> */}
             </HStack>
             <VStack>
               <HStack alignItems="Center" space="xl">
