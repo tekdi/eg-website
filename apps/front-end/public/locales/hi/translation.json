@@ -573,6 +573,7 @@
   "REQUIRED_MESSAGE": "वैध जानकारी दर्ज करें",
   "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "कृपया एक पंजीकरण बोर्ड चुनें।",
   "REQUIRED_MESSAGE_ENROLLMENT_DATE": "नामांकन की तारीख अनिवार्य है",
+  "REQUIRED_MESSAGE_ENROLLMENT_NOT_A_NUMBER": "नामांकन संख्या सिर्फ संख्या होनी चाहिए",
   "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "कृपया एक वैध पंजीकरण संख्या दर्ज करें। ",
   "REQUIRED_MESSAGE_ENROLLMENT_STATUS": "कृपया एक वैध पंजीकरण स्थिति दर्ज करें।",
   "REQUIRED_MESSAGE_PAYMENT_RECEIPT": "कृपया भुगतान रसीद अपलोड करें।",
