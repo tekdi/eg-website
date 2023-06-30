@@ -68,8 +68,9 @@ const Docschecklist = () => {
 
   const readyToEnrollApiCall = async () => {
     let bodyData = {
-      id: benificiary?.program_beneficiaries?.id.toString(),
+      user_id: benificiary?.id.toString(),
       status: "ready_to_enroll",
+      reason_for_status_update: "documents_completed",
     };
 
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
