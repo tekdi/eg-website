@@ -27,7 +27,7 @@
     "react-i18next": "^11.15.3",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-web": "^0.17.5",
-    "react-qr-reader": "^2.2.1",
+    "react-qr-reader": "3.0.0-beta-1",
     "react-router-dom": "^6.1.1",
     "react-scripts": "5.0.0",
     "remixicon-react": "^1.0.0",

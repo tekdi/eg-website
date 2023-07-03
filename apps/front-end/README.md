@@ -17,7 +17,6 @@
 module.exports = {
   name: "[module-name]",
 ...
-
 ```
 
 # Run Module as Standalone Application

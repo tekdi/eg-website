@@ -41,7 +41,7 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
+    if (file && file.size <= 1048576 * 25) {
       if (page < 4) {
         const result = await uploadProfile(file, `profile_photo_${page}`);
         setCameraFile([...(cameraFile ? cameraFile : []), result]);
@@ -136,9 +136,29 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
                   <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
                 )}
                 <IconByName name="Upload2FillIcon" isDisabled />
-                <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                  {t(page)} {t("ADD_FRONT_VIEW")}
-                </FrontEndTypo.H2>
+                {page === 1 ? (
+                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
+                    {t("ADD_FRONT_VIEW_1")}
+                  </FrontEndTypo.H2>
+                ) : <></> ? (
+                  page === 2 ? (
+                    <FrontEndTypo.H2
+                      color="textGreyColor.100"
+                      textAlign="center"
+                    >
+                      {t("ADD_FRONT_VIEW_2")}
+                    </FrontEndTypo.H2>
+                  ) : (
+                    <FrontEndTypo.H2
+                      color="textGreyColor.100"
+                      textAlign="center"
+                    >
+                      {t("ADD_FRONT_VIEW_3")}
+                    </FrontEndTypo.H2>
+                  )
+                ) : (
+                  <></>
+                )}
               </VStack>
             </Pressable>
           </Box>

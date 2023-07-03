@@ -6,6 +6,7 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   SelectStyle,
+  ImageView,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
@@ -22,28 +23,54 @@ const List = ({ data }) => {
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
-          <Pressable
-            onPress={async () => {
-              navigate(`/beneficiary/${item?.id}`);
-            }}
+          <VStack
+            bg="white"
+            p="2"
+            shadow="FooterShadow"
+            borderRadius="4px"
+            space="2"
           >
-            <VStack
-              bg="white"
-              p="2"
-              shadow="FooterShadow"
-              borderRadius="4px"
-              space="2"
+            <Pressable
+              onPress={async () => {
+                navigate(`/beneficiary/${item?.id}`);
+              }}
             >
               <HStack justifyContent="space-between">
-                <HStack alignItems="Center" justifyContent="space-between">
-                  <IconByName
-                    name="AccountCircleLineIcon"
-                    _icon={{ size: "40px", color: "textGreyColor.900" }}
-                  />
-                  <VStack>
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
+                <HStack alignItems="Center" flex="5">
+                  {item?.profile_photo_1?.id ? (
+                    <ImageView
+                      source={{
+                        document_id: item?.profile_photo_1?.id,
+                      }}
+                      // alt="Alternate Text"
+                      width={"45px"}
+                      height={"45px"}
+                    />
+                  ) : (
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="gray.300"
+                      _icon={{ size: "50px" }}
+                    />
+                  )}
+                  <VStack pl="2">
+                    <FrontEndTypo.H3
+                      bold
+                      color="textGreyColor.800"
+                      wordWrap="break-word"
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      width="150px"
+                    >
                       {item?.first_name}
-                      {item?.last_name && ` ${item.last_name}`}
+                      {item?.middle_name &&
+                        item?.middle_name !== "null" &&
+                        ` ${item.middle_name}`}
+                      {item?.last_name &&
+                        item?.last_name !== "null" &&
+                        ` ${item.last_name}`}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
@@ -57,16 +84,104 @@ const List = ({ data }) => {
                   />
                 </Box>
               </HStack>
-              <VStack bg="white" pl="2">
+            </Pressable>
+            <VStack bg="white" pl="2">
+              {item?.program_beneficiaries?.status === "identified" && (
                 <HStack color="blueText.450" alignItems="center">
                   <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("CHECK_DOCUMENTS")}
+                    {t("COMPLETE_THE_DOCUMENTATION")}
                   </FrontEndTypo.H4>
-                  <IconByName name="ArrowRightSLineIcon" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={() => {
+                      navigate(`/beneficiary/${item?.id}/docschecklist`);
+                    }}
+                  />
                 </HStack>
-              </VStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "enrollment_pending" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("CONTINUE_ENROLLMENT")}
+                  </FrontEndTypo.H4>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={() => {
+                      navigate(`/beneficiary/${item?.id}/docschecklist`);
+                    }}
+                  />
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "ready_to_enroll" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("ENTER_THE_ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H4>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={() => {
+                      navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
+                    }}
+                  />
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "enrolled" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("FOLLOW_UP_WITH_IP")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "dropout" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4
+                    color="blueText.450"
+                    underline
+                  ></FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "duplicated" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("FOLLOW_UP_WITH_IP_ASSIGNMENT")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status ===
+                "enrolled_ip_verified" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "rejected" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4
+                    color="blueText.450"
+                    underline
+                  ></FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status ===
+                "ineligible_for_pragati_camp" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4
+                    color="blueText.450"
+                    underline
+                  ></FrontEndTypo.H4>
+                </HStack>
+              )}
             </VStack>
-          </Pressable>
+          </VStack>
         ))
       )}
     </VStack>
@@ -83,37 +198,32 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const { form_step_number } = facilitator;
   const [service, setService] = React.useState("");
   const [sort, setSort] = React.useState("sort");
-  const [sortValue, setSortValue] = React.useState("desc");
+  const [sortValue, setSortValue] = React.useState("");
   const [statusValue, setStatusValue] = React.useState("");
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
-  const [reqBodyData, setReqBodyData] = React.useState();
   const [status, setStatus] = React.useState("status");
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
   const [searchBenficiary, setSearchBenficiary] = React.useState("");
-
+  const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
     setSelectStatus(data);
   }, []);
 
   React.useEffect(() => {
-    setReqBodyData({ page, limit, statusValue, sortValue, searchBenficiary });
-  }, [page, limit, statusValue, sortValue, searchBenficiary]);
-
-  React.useEffect(() => {
-    aglist(reqBodyData);
-  }, [reqBodyData]);
-
-  const aglist = async (reqBodyData) => {
-    let reqBody = {
-      page: reqBodyData?.page,
-      limit: reqBodyData?.limit,
-      status: reqBodyData?.statusValue,
-      sortType: reqBodyData?.sortValue,
-      search: reqBodyData?.searchBenficiary,
+    const reqBody = {
+      page: page,
+      limit: limit,
+      status: statusValue,
+      sortType: sortValue,
+      search: searchBenficiary,
     };
+
+    aglist(reqBody);
+  }, [page, limit, statusValue, sortValue, searchBenficiary]);
+  const aglist = async (reqBody) => {
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
     );
@@ -144,7 +254,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     if (userTokenInfo) {
-      const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
     }
@@ -183,7 +292,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               name="UserFollowLineIcon"
               _icon={{ size: "30px" }}
               onPress={(e) => {
-                console.log(e);
                 navigate("/beneficiary");
               }}
             />

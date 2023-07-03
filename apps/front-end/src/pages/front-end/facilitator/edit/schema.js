@@ -8,20 +8,23 @@ export default {
       required: ["first_name", "dob"],
       properties: {
         first_name: {
-          type: ["string", "null"],
+          type: "string",
           title: "FIRST_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         middle_name: {
           type: ["string", "null"],
           title: "MIDDLE_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         dob: {
           label: "DATE_OF_BIRTH",
-          type: ["string", "null"],
+          type: "string",
           format: "date",
         },
       },
@@ -98,7 +101,7 @@ export default {
     personal_details: {
       step_name: "PERSONAL_DETAILS",
       type: "object",
-      required: ["aadhar_token"],
+      required: ["gender", "marital_status", "social_category"],
       properties: {
         gender: {
           label: "GENDER",
@@ -178,7 +181,7 @@ export default {
       type: "object",
       properties: {
         qualification_master_id: {
-          label: "YOUR_HIGHEST_QUALIFICATION",
+          //label: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string", "number", "null"],
           format: "CustomR",
           grid: 2,

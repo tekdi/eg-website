@@ -42,18 +42,21 @@ export default function App({ userTokenInfo, footerLinks }) {
       ? "JOB_EXPERIENCE"
       : "ADD_VOLUNTEER_EXPERIENCE";
 
+  const stepTitle = type === "experience" ? "JOB_TITLE" : "VOLUNTEER_TITLE";
   const nextPreviewStep = async (p = "n") => {
     setAlert();
     if (addMore) {
       setAddMore();
     } else if (p === "p") {
-      if (type === "vo_experience") {
-        navigate(`/profile/edit/work_availability_details`);
-      } else if (type === "experience") {
-        navigate(`/profile/edit/array-form/vo_experience`);
-      } else {
-        navigate(`/profile/edit/reference_details`);
-      }
+      navigate("/profile");
+
+      // if (type === "vo_experience") {
+      //   navigate(`/profile/edit/work_availability_details`);
+      // } else if (type === "experience") {
+      //   navigate(`/profile/edit/array-form/vo_experience`);
+      // } else {
+      //   navigate(`/profile/edit/reference_details`);
+      // }
     } else if (type === "reference_details") {
       navigate(`/profile/edit/work_availability_details`);
     } else if (type === "vo_experience") {
@@ -92,7 +95,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (newSchema["properties"]?.["role_title"]) {
           newSchema = getOptions(newSchema, {
             key: "role_title",
-            extra: { title: stepLabel },
+            extra: { title: stepTitle },
           });
         }
         setSchema({ ...newSchema, title: stepLabel });

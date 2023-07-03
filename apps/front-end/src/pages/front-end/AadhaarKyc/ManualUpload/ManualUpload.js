@@ -145,20 +145,23 @@ export default function ManualUpload({
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <Box px="4">
+      <Box px="4" pb="10">
         {error?.top && (
           <FrontEndTypo.Prompts m="5" status="danger" flex="1">
             {error?.top}
           </FrontEndTypo.Prompts>
         )}
         {!submitted ? (
-          <VStack space="10">
+          <VStack space="5" pt="5">
             <VStack>
               <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
                 {t("AADHAR_CARD")}
               </FrontEndTypo.H1>
               <FrontEndTypo.H3 color="textGreyColor.800">
                 {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
+              </FrontEndTypo.H3>
+              <FrontEndTypo.H3 mt="4" bold color="textMaroonColor.400">
+                {t("UPLOADED_AADHAR_NOT_EDITABLE")}
               </FrontEndTypo.H3>
             </VStack>
             <Pressable
@@ -178,7 +181,7 @@ export default function ManualUpload({
                 <img
                   src={(isFront && image?.front) || (!isFront && image?.back)}
                   alt="front image"
-                  style={{ widt: "auto", maxWidth: "480px", height: "196px" }}
+                  style={{ widt: "auto", maxWidth: "480px", height: "196px" ,filter:'grayscale(0%)' }}
                 />
               ) : (
                 <VStack alignItems="center" space="4">
@@ -189,21 +192,33 @@ export default function ManualUpload({
                     color="textGreyColor.100"
                   />
                   <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                    {isFront && image?.back
+                    {!isFront
                       ? t("UPLOAD_THE_BACK_SIDE_OF_YOUR_AADHAAR_CARD")
                       : t("UPLOAD_THE_FRONT_SIDE_OF_YOUR_AADHAAR_CARD")}
                   </FrontEndTypo.H2>
                 </VStack>
               )}
-              <Image
-                source={{
-                  uri: "/aadhar.svg",
-                }}
-                alt="Aadhar"
-                w="200px"
-                h="113"
-                resizeMode="contain"
-              />
+              {isFront ? (
+                <Image
+                  source={{
+                    uri: "/aadhar.svg",
+                  }}
+                  alt="Aadhar"
+                  w="200px"
+                  h="113"
+                  resizeMode="contain"
+                />
+              ) : (
+                <Image
+                  source={{
+                    uri: "/AadhaarBack.png",
+                  }}
+                  alt="AadharBack"
+                  w="200px"
+                  h="113"
+                  resizeMode="contain"
+                />
+              )}
             </Pressable>
             <HStack
               display="flex"
@@ -232,33 +247,33 @@ export default function ManualUpload({
                 }}
               />
             </HStack>
-            {isFront ? (
-              image?.front ? (
-                <Button
-                  variant="link"
-                  onPress={() => {
-                    setImage((prev) => ({ ...prev, front: "" }));
-                    setModal(true);
-                  }}
-                >
-                  <FrontEndTypo.H3 color="blueText.450" underline>
-                    {t("UPLOAD_AGAIN")}
-                  </FrontEndTypo.H3>
-                </Button>
-              ) : null
-            ) : image?.back ? (
-              <Button
-                variant="link"
-                onPress={() => {
-                  setImage((prev) => ({ ...prev, back: "" }));
-                  setModal(true);
-                }}
-              >
-                <FrontEndTypo.H3 color="blueText.450" underline>
-                  {t("UPLOAD_AGAIN")}
-                </FrontEndTypo.H3>
-              </Button>
-            ) : null}
+            {isFront
+              ? image?.front && (
+                  <Button
+                    variant="link"
+                    onPress={() => {
+                      setImage((prev) => ({ ...prev, front: "" }));
+                      setModal(true);
+                    }}
+                  >
+                    <FrontEndTypo.H3 color="blueText.450" underline>
+                      {t("UPLOAD_AGAIN")}
+                    </FrontEndTypo.H3>
+                  </Button>
+                )
+              : image?.back && (
+                  <Button
+                    variant="link"
+                    onPress={() => {
+                      setImage((prev) => ({ ...prev, back: "" }));
+                      setModal(true);
+                    }}
+                  >
+                    <FrontEndTypo.H3 color="blueText.450" underline>
+                      {t("UPLOAD_AGAIN")}
+                    </FrontEndTypo.H3>
+                  </Button>
+                )}
             <VStack space={"4"}>
               <FrontEndTypo.Primarybutton
                 bg={!image?.front || !image?.back ? "gray.300" : "gray.500"}
@@ -266,12 +281,12 @@ export default function ManualUpload({
               >
                 {t("CONTINUE")}
               </FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton
+              {/* <FrontEndTypo.Secondarybutton
                 onPress={(e) => setOtpFailedPopup(true)}
               >
                 {t("TRY_OTHER")}
-              </FrontEndTypo.Secondarybutton>
-            </VStack>{" "}
+              </FrontEndTypo.Secondarybutton> */}
+            </VStack>
           </VStack>
         ) : (
           <VStack space={"5"} py="5">
@@ -282,22 +297,20 @@ export default function ManualUpload({
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("FRONT_VIEW")}
               </FrontEndTypo.H2>
-
               <img
                 src={image?.front}
                 alt="front image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" }}
+                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)' }}
               />
             </VStack>
             <VStack alignItems="center" space={"3"}>
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("BACK_VIEW")}
               </FrontEndTypo.H2>
-
               <img
                 src={image?.back}
                 alt="back image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" }}
+                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)'}}
               />
             </VStack>
             <FrontEndTypo.Primarybutton

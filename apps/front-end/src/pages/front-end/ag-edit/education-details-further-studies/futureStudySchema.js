@@ -8,9 +8,12 @@ export default {
       required: ["career_aspiration", "aspiration_mapping"],
       properties: {
         career_aspiration: {
-          type: "string",
-          label: "LEARNER_ASPIRATION",
-          format: "select",
+          minItems: 1,
+          type: "array",
+          label: "CAREER_ASPIRATION",
+          grid: 1,
+          format: "MultiCheck",
+          uniqueItems: true,
         },
 
         career_aspiration_details: {
@@ -20,18 +23,26 @@ export default {
 
         aspiration_mapping: {
           type: "object",
-          label: "ASPIRATION_MAPPING",
+          // label: "ASPIRATION_MAPPING",
           required: ["learning_motivation", "type_of_support_needed"],
           properties: {
             learning_motivation: {
-              title: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
-              type: "string",
-              format: "select",
+              minItems: 1,
+              maxItems: 3,
+              label: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
+              type: "array",
+              grid: 1,
+              format: "MultiCheck",
+              uniqueItems: true,
             },
             type_of_support_needed: {
-              title: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
-              type: "string",
-              format: "select",
+              minItems: 1,
+              maxItems: 3,
+              label: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
+              grid: 1,
+              type: "array",
+              format: "MultiCheck",
+              uniqueItems: true,
             },
           },
         },

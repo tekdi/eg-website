@@ -3,6 +3,7 @@ import { VStack, Text, Image, Box, Button, Stack } from "native-base";
 import { AppBar, FrontEndTypo, t, Layout } from "@shiksha/common-lib";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SplashScreen from "../splash/SplashScreen";
+import Home from "../Home";
 
 const stylesheet = {
   mainBox: {
@@ -75,12 +76,12 @@ function PrerakDuties(props) {
   let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } =
     props;
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  console.log(location);
   const setBackButton = () => {
     let data = page - 1;
-    console.log(data);
     if (data === 0) {
-      let data = "SplashScreen";
-      navigate(-1, { state: data });
+      setPage(data.toString());
+      // navigate(`/facilitator-self-onboarding/${id}`);
     } else {
       setPage(data.toString());
     }
@@ -160,7 +161,9 @@ export default function SwiperFile({ onClick }) {
   const [page, setPage] = React.useState("1");
   return (
     <Stack>
-      {page === "1" ? (
+      {page === "0" ? (
+        <Home pageInfo={"SplashScreen"} />
+      ) : page === "1" ? (
         <PrerakDuties
           title={t("PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS")}
           imgUrl={`/images/facilitator-duties/img1.png`}

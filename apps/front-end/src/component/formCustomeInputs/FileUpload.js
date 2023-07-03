@@ -96,7 +96,9 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
           </Box>
         )}
       </VStack>
-      {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
+      {errors?.fileSize && (
+        <FrontEndTypo.H2 color="red.400">{errors?.fileSize}</FrontEndTypo.H2>
+      )}
     </VStack>
   );
 };

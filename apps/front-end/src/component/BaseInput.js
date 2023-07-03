@@ -6,6 +6,7 @@ import {
   FormControl,
   HStack,
   Image,
+  Pressable,
   Radio,
   Select,
   Stack,
@@ -22,6 +23,7 @@ import {
   FrontEndTypo,
   CustomOTPBox,
   AdminTypo,
+  chunk,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
@@ -293,15 +295,28 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
 };
 
 export const Aadhaar = (props) => {
+  const { t } = useTranslation();
   return (
     <VStack space="10">
+      <FrontEndTypo.H3 ml="90px" bold color="textMaroonColor.400">
+        {t("ENTERED_AADHAR_NOT_EDITABLE")}
+      </FrontEndTypo.H3>
       <Image
         alignSelf="center"
         source={{ uri: "/Aadhaar2.png" }}
         w="248"
         h="140"
       />
-      <FloatingInput {...props} />
+      <FloatingInput
+        {...props}
+        schema={{
+          ...(props?.schema ? props?.schema : {}),
+          regex: /^\d{0,12}$/,
+          _input: props?.schema?._input
+            ? props?.schema?._input
+            : { keyboardType: "numeric" },
+        }}
+      />
     </VStack>
   );
 };
@@ -447,7 +462,7 @@ export const HFieldTemplate = ({
       pl="3"
     >
       {(label || schema?.label) && typeof type === "string" && (
-        <Box  w={["67%", "100%", "60%"]}>
+        <Box w={["67%", "100%", "60%"]}>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
               <HStack space="1" alignItems="center">
@@ -469,12 +484,93 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box  w={["70%", "100%", "60%"]}>
+      <Box w={["70%", "100%", "60%"]}>
         {children}
         {errors}
         {help}
       </Box>
     </HStack>
+  );
+};
+
+const MultiCheck = ({
+  options,
+  value,
+  onChange,
+  schema,
+  required,
+  ...props
+}) => {
+  const { t } = useTranslation();
+  const { _hstack, icons, grid, label, format } = schema ? schema : {};
+  const { enumOptions } = options ? options : {};
+  let items = [enumOptions];
+  if (grid && enumOptions?.constructor.name === "Array") {
+    items = chunk(enumOptions, grid);
+  }
+
+  const handleCheck = (event) => {
+    let newValue = [];
+    if (value?.constructor?.name === "Array") {
+      newValue = value.filter((val, index) => {
+        return value.indexOf(val) === index;
+      });
+    }
+
+    var updatedList = [...newValue];
+    if (event.target.checked) {
+      updatedList = [...newValue, event.target.value];
+    } else {
+      updatedList.splice(newValue.indexOf(event.target.value), 1);
+    }
+    onChange(updatedList);
+  };
+
+  return (
+    <FormControl gap="6">
+      {label && !format && (
+        <FormControl.Label>
+          <H2 color="textMaroonColor.400">{t(label)}</H2>
+          {required && <H2 color="textMaroonColor.400">*</H2>}
+        </FormControl.Label>
+      )}
+      <Stack flexDirection={grid ? "column" : ""} {...(_hstack ? _hstack : {})}>
+        {items?.map((subItem, subKey) => (
+          <Box gap={"2"} key={subKey} flexDirection="row" flexWrap="wrap">
+            {subItem?.map((item, key) => (
+              <label key={key}>
+                <HStack alignItems="center" space="3" flex="1">
+                  {icons?.[key] && icons?.[key].name && (
+                    <IconByName
+                      {...icons[key]}
+                      isDisabled
+                      color={
+                        value === item?.value ? "secondaryBlue.500" : "gray.500"
+                      }
+                      _icon={{
+                        ...(icons?.[key]?.["_icon"]
+                          ? icons?.[key]?.["_icon"]
+                          : {}),
+                      }}
+                    />
+                  )}
+                  <input
+                    checked={
+                      value?.constructor?.name === "Array" &&
+                      value?.includes(item?.value)
+                    }
+                    type="checkbox"
+                    value={item?.value}
+                    onChange={handleCheck}
+                  />
+                  {t(item?.label)}
+                </HStack>
+              </label>
+            ))}
+          </Box>
+        ))}
+      </Stack>
+    </FormControl>
   );
 };
 
@@ -562,6 +658,7 @@ const widgets = {
   CustomOTPBox,
   FileUpload,
   MobileNumber,
+  MultiCheck,
 };
 
 const templates = {

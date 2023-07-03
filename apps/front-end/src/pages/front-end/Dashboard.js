@@ -71,6 +71,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       if (expData?.length > 0) {
         isAllow++;
       }
+      if (key === "experience") {
+        if (expData?.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      }
     }
     if (key === "" || key === "vo_experience") {
       const expData = facilitator?.vo_experience?.filter(
@@ -78,6 +85,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       );
       if (expData?.length > 0) {
         isAllow++;
+      }
+      if (key === "vo_experience") {
+        if (expData?.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
       }
     }
 
@@ -87,15 +101,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       if (expData) {
         isAllow++;
       }
+      if (key === "qualifications") {
+        if (expData) {
+          return false;
+        } else {
+          return true;
+        }
+      }
     }
-
-    return isAllow === 0;
+    return isAllow < 3;
   };
 
   return (
     <Layout
       _appBar={{
         profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
         facilitator,
       }}
@@ -346,12 +367,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack>
             </Stack>
           )}
-          {facilitator?.aadhar_verified !== "yes" && (
+          {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
               </FrontEndTypo.H2>
-              <FrontEndTypo.Primarybutton
+              {/* <FrontEndTypo.Primarybutton
                 onPress={(e) =>
                   navigate(`/aadhaar-kyc/${facilitator?.id}/aadhaar-number`, {
                     state: "/",
@@ -370,7 +391,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 }
               >
                 {t("SCAN_QR_CODE")}
-              </FrontEndTypo.Secondarybutton>
+              </FrontEndTypo.Secondarybutton> */}
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`, {
+                    state: "/",
+                  });
+                }}
+              >
+                {t("AADHAR_UPLOAD_KYC")}
+              </FrontEndTypo.Primarybutton>
             </Stack>
           )}
           {isDocumentUpload() && (
@@ -381,21 +411,23 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <FrontEndTypo.H3>
                 {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
               </FrontEndTypo.H3>
-              <HStack space="2">
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleLineIcon"
-                  _icon={{ size: "20px" }}
-                />
-                <VStack width="99%">
-                  <FrontEndTypo.H3 bold>
-                    {t("QUALIFICATION_PROOF")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H4>
-                    {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
-                  </FrontEndTypo.H4>
-                </VStack>
-              </HStack>
+              {isDocumentUpload("qualifications") && (
+                <HStack space="2">
+                  <IconByName
+                    isDisabled
+                    name="CheckboxCircleLineIcon"
+                    _icon={{ size: "20px" }}
+                  />
+                  <VStack width="99%">
+                    <FrontEndTypo.H3 bold>
+                      {t("QUALIFICATION_PROOF")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
+                      {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
+                    </FrontEndTypo.H4>
+                  </VStack>
+                </HStack>
+              )}
               {isDocumentUpload("experience") && (
                 <HStack space="2">
                   <IconByName
@@ -430,23 +462,21 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </VStack>
                 </HStack>
               )}
-              {isDocumentUpload("qualifications") && (
-                <HStack>
-                  <FrontEndTypo.Secondarybutton
-                    width="100%"
-                    endIcon={
-                      <IconByName
-                        isDisabled
-                        name="Upload2FillIcon"
-                        _icon={{ size: "25px" }}
-                      />
-                    }
-                    onPress={(e) => navigate("/profile")}
-                  >
-                    {t("UPLOAD_NOW")}
-                  </FrontEndTypo.Secondarybutton>
-                </HStack>
-              )}
+              <HStack>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  endIcon={
+                    <IconByName
+                      isDisabled
+                      name="Upload2FillIcon"
+                      _icon={{ size: "25px" }}
+                    />
+                  }
+                  onPress={(e) => navigate("/profile")}
+                >
+                  {t("UPLOAD_NOW")}
+                </FrontEndTypo.Secondarybutton>
+              </HStack>
             </Stack>
           )}
         </VStack>

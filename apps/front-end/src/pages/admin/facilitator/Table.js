@@ -8,7 +8,15 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
-import { HStack, VStack, Modal, Image, Text, ScrollView } from "native-base";
+import {
+  HStack,
+  VStack,
+  Modal,
+  Image,
+  Text,
+  ScrollView,
+  Input,
+} from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -50,10 +58,10 @@ const columns = (e) => [
     name: t("NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
-        {row?.documents?.[0]?.name ? (
+        {row?.profile_photo_1?.name ? (
           <ImageView
             source={{
-              uri: row?.documents?.[0]?.name,
+              uri: row?.profile_photo_1?.name,
             }}
             // alt="Alternate Text"
             width={"35px"}
@@ -128,13 +136,16 @@ function Table({
   facilitator,
   setadminPage,
   setadminLimit,
-  setadminstatus,
+  setadminStatus,
+  adminStatus,
+  adminSearchValue,
+  setadminSearchValue,
   admindata,
   formData,
   totalCount,
 }) {
   const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState();
+  const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState();
   const [paginationTotalRows, setPaginationTotalRows] =
     React.useState(totalCount);
@@ -168,12 +179,14 @@ function Table({
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
+    let searchValue = adminSearchValue;
 
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
       adminlimit,
-      status
+      status,
+      searchValue
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
@@ -187,17 +200,39 @@ function Table({
   const filterByStatus = async (value) => {
     setLoading(true);
     setstatus(value);
-    setadminstatus(value);
+    setadminStatus(value);
     let _formData = formData;
     let adminpage = page;
     let adminlimit = limit;
-    let status = value;
+    let adminStatus = value;
+    let searchValue = adminSearchValue;
 
     const result = await facilitatorRegistryService.filter(
       _formData,
       adminpage,
       adminlimit,
-      status
+      adminStatus,
+      searchValue
+    );
+    setData(result.data?.data);
+    setPaginationTotalRows(result?.data?.totalCount);
+    // setLimit(result?.limit);
+    setLoading(false);
+  };
+
+  const searchName = async (e) => {
+    let searchValue = e?.nativeEvent?.text;
+    setadminSearchValue(searchValue);
+    let _formData = formData;
+    let adminpage = page;
+    let adminlimit = limit;
+    let status = adminStatus;
+    const result = await facilitatorRegistryService.filter(
+      _formData,
+      adminpage,
+      adminlimit,
+      status,
+      searchValue
     );
     setData(result.data?.data);
     setPaginationTotalRows(result?.data?.totalCount);
@@ -227,13 +262,16 @@ function Table({
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
+        <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
           }
           placeholder="search"
           variant="outline"
-        /> */}
+          onChange={(e) => {
+            searchName(e);
+          }}
+        />
         <HStack space={2}>
           {/* <Button
             variant={"primary"}
@@ -381,7 +419,7 @@ function Table({
         persistTableHead
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[15, 25, 50, 100]}
+        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {

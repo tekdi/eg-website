@@ -34,6 +34,8 @@ import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasi
 import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
 import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
 
+import EnrollmentReceipt from "../pages/front-end/ag-edit/choose-subjects/ErollmentReceipt";
+
 export default [
   { path: "/form", component: Home },
   {
@@ -138,4 +140,8 @@ export default [
     component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
+  {
+    path: "/beneficiary/edit/:id/enrollment-receipt",
+    component: EnrollmentReceipt,
+  },
 ];

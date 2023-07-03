@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { ImageView } from "@shiksha/common-lib";
 import schema1 from "./schema.js";
 import {
   Alert,
@@ -17,6 +16,7 @@ import {
   Checkbox,
   Pressable,
   Text,
+  FormControl,
 } from "native-base";
 import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
@@ -41,6 +41,10 @@ import {
   uploadRegistryService,
   AgRegistryService,
   benificiaryRegistoryService,
+  ImageView,
+  dateOfBirth,
+  enrollmentDateOfBirth,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
@@ -78,7 +82,13 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [userId, setuserId] = React.useState(id);
   const [uploadPayment, setUploadPayment] = React.useState(true);
   const [source, setSource] = React.useState();
-
+  const [benificiary, setBenificiary] = React.useState();
+  const buttonStyle = {
+    borderWidth: "2px",
+    borderStyle: "dotted",
+    borderRadius: "12px",
+    borderColor: "gray",
+  };
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
@@ -100,6 +110,15 @@ export default function App({ facilitator, id, ip, onClick }) {
     getImage();
   }, [page, credentials]);
 
+  React.useEffect(() => {
+    benificiaryDetails();
+  }, []);
+
+  const benificiaryDetails = async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
+  };
+
   const updateData = (data, deleteData = false) => {
     if (deleteData) {
       localStorage.removeItem(`id_data_${facilitator?.id}`);
@@ -108,11 +127,22 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
-  const uiSchema = {
+  const [uiSchema, setUiSchema] = React.useState({
     subjects: {
       "ui:widget": "checkboxes",
     },
-  };
+    enrollment_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+        yearsRange: [
+          moment().subtract("years", 30).format("YYYY"),
+          moment().format("YYYY"),
+        ],
+      },
+    },
+  });
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -220,13 +250,21 @@ export default function App({ facilitator, id, ip, onClick }) {
       const propertiesMain = schema1.properties;
       setUploadPayment(false);
       const constantSchema = propertiesMain[1];
-      const { enrolled_for_board, enrollment_number, subjects, ...properties } =
-        constantSchema?.properties;
+      const {
+        enrolled_for_board,
+        enrollment_number,
+        enrollment_date,
+        subjects,
+        ...properties
+      } = constantSchema?.properties;
       const required = constantSchema?.required.filter(
         (item) =>
-          !["enrolled_for_board", "enrollment_number", "subjects"].includes(
-            item
-          )
+          ![
+            "enrolled_for_board",
+            "enrollment_number",
+            "enrollment_date",
+            "subjects",
+          ].includes(item)
       );
 
       setSchema({ ...constantSchema, properties, required });
@@ -238,10 +276,11 @@ export default function App({ facilitator, id, ip, onClick }) {
       setUploadPayment(false);
       const propertiesMain = schema1.properties;
       const constantSchema = propertiesMain[1];
-      const { enrollment_number, subjects, ...properties } =
+      const { enrollment_number, subjects, enrollment_date, ...properties } =
         constantSchema?.properties;
       const required = constantSchema?.required.filter(
-        (item) => !["enrollment_number", "subjects"].includes(item)
+        (item) =>
+          !["enrollment_number", "enrollment_date", "subjects"].includes(item)
       );
 
       setSchema({ ...constantSchema, properties, required });
@@ -266,7 +305,10 @@ export default function App({ facilitator, id, ip, onClick }) {
     let enrollment_number =
       qData?.result?.program_beneficiaries?.enrollment_number;
     let subjects = qData?.result?.program_beneficiaries?.subjects;
-    let subjectData = JSON.parse(subjects);
+    let enrollment_date = qData?.result?.program_beneficiaries?.enrollment_date;
+    let subjectData = subjects ? JSON.parse(subjects) : [];
+    let payment_receipt_document_id =
+      qData?.result?.program_beneficiaries?.payment_receipt_document_id;
     setSource({
       document_id:
         qData?.result?.program_beneficiaries?.payment_receipt_document_id,
@@ -288,11 +330,32 @@ export default function App({ facilitator, id, ip, onClick }) {
           : enrollment_number
           ? enrollment_number
           : "",
+      enrollment_date: enrollment_date ? enrollment_date : "",
       subjects:
-        enrollment_status === "other" ? "" : stringsArray ? stringsArray : "",
+        enrollment_status === "other" ? [] : stringsArray ? stringsArray : [],
       facilitator_id: localStorage.getItem("id"),
+      payment_receipt_document_id: payment_receipt_document_id,
     });
   }, []);
+
+  React.useEffect(() => {
+    if (formData?.enrollment_date) {
+      const dob = moment.utc(benificiary?.dob).format("DD-MM-YYYY");
+      enrollmentDateOfBirth(formData?.enrollment_date, dob)
+        .then((age) => {
+          setUiSchema((prevUiSchema) => ({
+            ...prevUiSchema,
+            enrollment_date: {
+              ...prevUiSchema?.enrollment_date,
+            },
+          }));
+        })
+        .catch((error) => {
+          console.log(error);
+          // Handle any errors that occur during the enrollment date of birth calculation
+        });
+    }
+  }, [formData]);
 
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
@@ -335,7 +398,24 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
 
   const onChange = async (e, id) => {
+    setErrors();
     const data = e.formData;
+    if (moment.utc(data?.enrollment_date) > moment.utc()) {
+      const newErrors = {
+        enrollment_date: {
+          __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
+        },
+      };
+      setErrors(newErrors);
+    }
+    if (typeof e?.formData?.enrollment_number !== "number") {
+      const newErrors = {
+        enrollment_number: {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
+    }
     if (id === "root_enrollment_status") {
       const properties = schema1.properties;
       const constantSchema = properties[1];
@@ -343,14 +423,18 @@ export default function App({ facilitator, id, ip, onClick }) {
         const {
           enrolled_for_board,
           enrollment_number,
+          enrollment_date,
           subjects,
           ...properties
         } = constantSchema?.properties;
         const required = constantSchema?.required.filter(
           (item) =>
-            !["enrolled_for_board", "enrollment_number", "subjects"].includes(
-              item
-            )
+            ![
+              "enrolled_for_board",
+              "enrollment_number",
+              "enrollment_date",
+              "subjects",
+            ].includes(item)
         );
         const newData = {
           enrollment_status: formData?.enrollment_status,
@@ -364,12 +448,12 @@ export default function App({ facilitator, id, ip, onClick }) {
         data?.enrollment_status === "applied_but_pending" ||
         data?.enrollment_status === "rejected"
       ) {
-        const { enrollment_number, subjects, ...properties } =
+        const { enrollment_number, subjects, enrollment_date, ...properties } =
           constantSchema?.properties;
         const required = constantSchema?.required.filter(
-          (item) => !["enrollment_number", "subjects"].includes(item)
+          (item) =>
+            !["enrollment_number", "enrollment_date", "subjects"].includes(item)
         );
-        //const required =["enrollment_status"]
         const newData = {
           enrollment_status: e.formData?.enrollment_status,
           enrolled_for_board: e.formData?.enrolled_for_board,
@@ -379,13 +463,21 @@ export default function App({ facilitator, id, ip, onClick }) {
         setSchema({ ...constantSchema, properties, required });
         setFormData(newData);
         setUploadPayment(false);
+      } else if (data?.enrollment_status === "other") {
+        setUploadPayment(true);
+        const { ...properties } = constantSchema?.properties;
+        const required = ["enrollment_status"];
+
+        setSchema({ ...constantSchema, properties, required });
+        const newData = { ...formData, ...data };
+        setFormData(newData);
+        setUploadPayment(true);
       } else {
         setSchema(constantSchema);
         setUploadPayment(true);
       }
     }
 
-    setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -441,7 +533,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_status = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_STATUS")],
         };
-      } else if (!formData?.enrolled_for_board) {
+      } else if (formData?.enrolled_for_board === "null") {
         newErrors.enrolled_for_board = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLED_FOR_BOARD")],
         };
@@ -449,7 +541,15 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         };
-      } else if (formData?.subjects.length <= 0) {
+      } else if (typeof formData?.enrollment_number !== "number") {
+        newErrors.enrollment_number = {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NOT_A_NUMBER")],
+        };
+      } else if (!formData?.enrollment_date) {
+        newErrors.enrollment_date = {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_DATE")],
+        };
+      } else if (formData?.subjects.length < 1) {
         newErrors.subjects = {
           __errors: [t("REQUIRED_MESSAGE_SUBJECTS")],
         };
@@ -467,10 +567,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    const data = await getBase64(file);
-    console.log(data);
-
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 10) {
       const form_data = new FormData();
       const item = {
         file: file,
@@ -485,32 +582,41 @@ export default function App({ facilitator, id, ip, onClick }) {
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
       setFormData({ ...formData, ["payment_receipt_document_id"]: id });
+      // uri: uploadDoc?.fileUrl,  using this is giving a grey screen as image hence I restored it back
       setSource({
-        uri: data,
+        document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
     } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
+      const newErrors = {};
+      newErrors.payment_receipt_document_id = {
+        __errors: [t("FILE_SIZE")],
+      };
+      setErrors(newErrors);
     }
   };
-
-  //
   const editSubmit = async () => {
-    console.log(formData);
-
     if (formData?.enrollment_status === "enrolled") {
       if (
         formData?.enrollment_status &&
-        formData?.enrolled_for_board &&
+        formData?.enrolled_for_board !== "null" &&
         formData?.enrollment_number &&
+        typeof formData?.enrollment_number === "number" &&
+        formData?.enrollment_date &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
-        formData?.subjects.length > 0
+        formData?.subjects.length > 1
       ) {
         const updateDetails = await AgRegistryService.updateAg(
           formData,
           userId
         );
-        navigate(`/beneficiary/profile/${userId}`);
+        navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
+          state: {
+            enrollment_date: formData?.enrollment_date,
+          },
+        });
+        // navigate(`/beneficiary/profile/${userId}`);
+        // console("hi");
       } else {
         validation();
       }
@@ -537,9 +643,20 @@ export default function App({ facilitator, id, ip, onClick }) {
       } else {
         validation();
       }
-    } else {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      navigate(`/beneficiary/profile/${userId}`);
+    } else if (formData?.enrollment_status === "other") {
+      if (
+        formData?.enrollment_number
+          ? typeof formData?.enrollment_number == "number"
+          : true
+      ) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
     }
   };
 
@@ -597,18 +714,44 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
+                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
+                  {t("PAYMENT_RECEIPT")}
+                  {formData?.enrollment_status !== "other" ? " *" : ""}
+                </FrontEndTypo.H2>
                 <HStack justifyContent="space-between" alignItems="Center">
-                  <Button
-                    leftIcon={
-                      <IconByName name="Download2LineIcon" isDisabled />
-                    }
-                    variant={"secondary"}
-                    onPress={(e) => {
-                      uplodInputRef?.current?.click();
-                    }}
-                  >
-                    {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
-                  </Button>
+                  <Box style={buttonStyle} width="100%">
+                    <VStack
+                      px="5"
+                      py="3"
+                      borderRadius="10px"
+                      borderWidth="1px"
+                      bg="white"
+                      borderColor="appliedColor"
+                    >
+                      <VStack space="5">
+                        <ImageView
+                          source={source}
+                          width="full"
+                          height="172px"
+                          borderRadius="5px"
+                          borderWidth="1px"
+                          borderColor="worksheetBoxText.100"
+                          alignSelf="Center"
+                        />
+                      </VStack>
+                    </VStack>
+                    <Button
+                      variant={"secondary"}
+                      leftIcon={
+                        <IconByName name="Upload2FillIcon" isDisabled />
+                      }
+                      onPress={(e) => {
+                        uplodInputRef?.current?.click();
+                      }}
+                    >
+                      {t("UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT")}
+                    </Button>
+                  </Box>
                   <input
                     accept="image/*"
                     type="file"
@@ -617,39 +760,33 @@ export default function App({ facilitator, id, ip, onClick }) {
                     onChange={handleFileInputChange}
                   />
                 </HStack>
-                <VStack
-                  px="5"
-                  pb="3"
-                  pt="2"
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  bg="white"
-                  borderColor="appliedColor"
-                >
-                  <VStack space="5">
-                    <ImageView
-                      source={source}
-                      width="full"
-                      height="172px"
-                      borderRadius="5px"
-                      borderWidth="1px"
-                      borderColor="worksheetBoxText.100"
-                      alignSelf="Center"
-                    />
-                  </VStack>
-                </VStack>
               </VStack>
             ) : (
               <React.Fragment></React.Fragment>
             )}
-            <Button
+            {errors?.payment_receipt_document_id ? (
+              <span
+                style={{
+                  fontSize: "xs",
+                  color: "#a94442",
+                  fontWeight: 400,
+                  paddingLeft: "8%",
+                }}
+              >
+                {errors?.payment_receipt_document_id?.__errors[0]}{" "}
+              </span>
+            ) : (
+              <React.Fragment></React.Fragment>
+            )}
+            <FrontEndTypo.Primarybutton
               mt="3"
-              variant={"primary"}
               type="submit"
-              onPress={() => editSubmit()}
+              onPress={() => {
+                editSubmit();
+              }}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />
@@ -724,9 +861,8 @@ export default function App({ facilitator, id, ip, onClick }) {
                 </Clipboard>
               </VStack>
               <HStack space="5" pt="5">
-                <Button
+                <FrontEndTypo.Primarybutton
                   flex={1}
-                  variant="primary"
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
@@ -736,7 +872,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                   }}
                 >
                   {t("LOGIN")}
-                </Button>
+                </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
           </Modal.Body>

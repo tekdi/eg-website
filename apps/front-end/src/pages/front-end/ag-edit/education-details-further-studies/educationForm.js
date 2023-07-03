@@ -106,7 +106,7 @@ export default function App({ facilitator, ip, onClick, id }) {
     const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
     let newSchema = schema;
-    if (schema["properties"]["type_of_learner"]) {
+    if (schema?.["properties"]?.["type_of_learner"]) {
       newSchema = getOptions(newSchema, {
         key: "type_of_learner",
         arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
@@ -258,10 +258,6 @@ export default function App({ facilitator, ip, onClick, id }) {
     }
   }, []);
 
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
-
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
     if (id) {
@@ -272,13 +268,6 @@ export default function App({ facilitator, ip, onClick, id }) {
         id: id,
       });
     }
-  };
-  const formSubmitCreate = async (formData) => {
-    console.log(formData);
-    /* await facilitatorRegistryService.create({
-            ...formData,
-            parent_ip: ip?.id,
-        }); */
   };
 
   const goErrorPage = (key) => {
@@ -291,62 +280,6 @@ export default function App({ facilitator, ip, onClick, id }) {
       });
     }
   };
-
-  // const customValidate = (data, errors, c) => {
-  //   if (data?.mobile) {
-  //     if (data?.mobile?.toString()?.length !== 10) {
-  //       errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-  //     }
-  //     if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-  //       errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-  //     }
-  //   }
-  //   if (data?.aadhar_token) {
-  //     if (
-  //       data?.aadhar_token &&
-  //       !data?.aadhar_token?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-  //     ) {
-  //       errors?.aadhar_token?.addError(
-  //         `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-  //       );
-  //     }
-  //   }
-  //   if (data?.dob) {
-  //     const years = moment().diff(data?.dob, "years");
-  //     if (years < 18) {
-  //       errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-  //     }
-  //   }
-  //   ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-  //     if (
-  //       key === "first_name" &&
-  //       data?.first_name?.replaceAll(" ", "") === ""
-  //     ) {
-  //       errors?.[key]?.addError(
-  //         `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-  //       );
-  //     }
-
-  //     if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-  //       errors?.[key]?.addError(
-  //         `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-  //       );
-  //     }
-  //   });
-  //   ["vo_experience", "experience"].forEach((keyex) => {
-  //     data?.[keyex]?.map((item, index) => {
-  //       ["role_title", "organization", "description"].forEach((key) => {
-  //         if (item?.[key] && !item?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-  //           errors[keyex][index]?.[key]?.addError(
-  //             `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-  //           );
-  //         }
-  //       });
-  //     });
-  //   });
-
-  //   return errors;
-  // };
 
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
@@ -367,25 +300,36 @@ export default function App({ facilitator, ip, onClick, id }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
-    setErrors();
+    setErrors({});
     const newData = { ...formData, ...data };
     setFormData(newData);
     updateData(newData);
 
-    if (id === "root_qualification") {
-      if (schema?.properties?.qualification) {
-        let valueIndex = "";
-        schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
-          if (e.match("12")) {
-            valueIndex = schema?.properties?.qualification?.enum[index];
-          }
-        });
-        if (valueIndex !== "" && data.qualification == valueIndex) {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
+    if (newData?.type_of_learner === "never_enrolled") {
+      setErrors({});
+      if (newData?.last_standard_of_education !== "na") {
+        const newErrors = {
+          last_standard_of_education: {
+            __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
+          },
+        };
+
+        setErrors(newErrors);
+      } else if (newData?.last_standard_of_education_year !== "NA") {
+        const newErrors = {
+          last_standard_of_education_year: {
+            __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
+          },
+        };
+
+        setErrors(newErrors);
+      } else {
+        const newErrors = {};
+        setErrors(newErrors);
       }
+    } else {
+      const newErrors = {};
+      setErrors(newErrors);
     }
   };
 
@@ -395,11 +339,12 @@ export default function App({ facilitator, ip, onClick, id }) {
       goErrorPage(key);
     }
   };
-
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    if (updateDetails) {
-      navigate(`/beneficiary/${userId}/educationdetails`);
+    if (!Object.keys(errors).length) {
+      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      if (updateDetails) {
+        navigate(`/beneficiary/${userId}/educationdetails`);
+      }
     }
   };
 
@@ -408,7 +353,7 @@ export default function App({ facilitator, ip, onClick, id }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("EDUCATIONAL_DETAILS"),
+        name: t("EDUCATION_DETAILS"),
         lang,
         setLang,
       }}
