@@ -316,6 +316,29 @@ export default function BenificiaryProfileView(props) {
               </HStack>
             </VStack>
           </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/BenificiaryJourney`);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Box>
           {renderDropoutButton()}
           {renderReactivateButton()}
         </VStack>
