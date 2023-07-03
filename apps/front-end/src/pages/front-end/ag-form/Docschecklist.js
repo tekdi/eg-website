@@ -50,7 +50,7 @@ const Docschecklist = () => {
       setCheckList(false);
       setButtonPress(false);
       let bodyData = {
-        user_id: benificiary?.id.toString(),
+        user_id: benificiary?.id?.toString(),
         status: "identified",
       };
 
@@ -70,7 +70,7 @@ const Docschecklist = () => {
 
   const readyToEnrollApiCall = async () => {
     let bodyData = {
-      user_id: benificiary?.id.toString(),
+      user_id: benificiary?.id?.toString(),
       status: "ready_to_enroll",
       reason_for_status_update: "documents_completed",
     };
