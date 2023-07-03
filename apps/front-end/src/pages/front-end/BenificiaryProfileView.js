@@ -56,7 +56,7 @@ export default function BenificiaryProfileView(props) {
 
   const dropoutApiCall = async () => {
     let bodyData = {
-      user_id: benificiary?.id.toString(),
+      user_id: benificiary?.id?.toString(),
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
@@ -71,7 +71,7 @@ export default function BenificiaryProfileView(props) {
 
   const reactivateApiCall = async () => {
     let bodyData = {
-      user_id: benificiary?.id.toString(),
+      user_id: benificiary?.id?.toString(),
       status: "activate",
       reason_for_status_update: reactivateReasonValue,
     };
