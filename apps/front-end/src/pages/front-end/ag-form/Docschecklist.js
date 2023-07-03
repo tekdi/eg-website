@@ -5,20 +5,10 @@ import {
   Layout,
   t,
   benificiaryRegistoryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
-import {
-  Image,
-  Text,
-  VStack,
-  HStack,
-  Button,
-  Modal,
-  TextArea,
-  Select,
-  CheckIcon,
-  Box,
-} from "native-base";
+import { Text, VStack, HStack, Button, Select, CheckIcon } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = () => {
@@ -27,8 +17,8 @@ const Docschecklist = () => {
   const [selectData, setselectData] = useState([]);
   const [status, setStatus] = useState({});
   const [checkList, setCheckList] = useState(false);
+  const [buttonPress, setButtonPress] = useState(false);
   const [benificiary, setBenificiary] = React.useState({});
-
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
     setBenificiary(data?.result);
@@ -46,6 +36,11 @@ const Docschecklist = () => {
 
   React.useEffect(async () => {
     const keysLength = Object.keys(status).length;
+    if (benificiary?.program_beneficiaries?.status === "ready_to_enroll") {
+      setButtonPress(true);
+    } else {
+      setButtonPress(false);
+    }
     const allValuesMatch = Object.values(status).every(
       (value) => value === "not_applicable" || value === "complete"
     );
@@ -53,6 +48,13 @@ const Docschecklist = () => {
       setCheckList(true);
     } else {
       setCheckList(false);
+      setButtonPress(false);
+      let bodyData = {
+        user_id: benificiary?.id.toString(),
+        status: "identified",
+      };
+
+      const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     }
     let data = {
       edit_page_type: "document_status",
@@ -68,11 +70,13 @@ const Docschecklist = () => {
 
   const readyToEnrollApiCall = async () => {
     let bodyData = {
-      id: benificiary?.program_beneficiaries?.id.toString(),
+      user_id: benificiary?.id.toString(),
       status: "ready_to_enroll",
+      reason_for_status_update: "documents_completed",
     };
 
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+    setButtonPress(true);
   };
   return (
     <Layout
@@ -463,31 +467,35 @@ const Docschecklist = () => {
           </Select>
         </HStack>
         {checkList ? (
-          <Button
-            mb={1}
-            variant={"secondary"}
-            type="submit"
-            onPress={() => {
-              readyToEnrollApiCall();
-            }}
-          >
-            {t("MARK_AS_COMPLETE")}
-          </Button>
+          buttonPress ? (
+            <FrontEndTypo.ColourPrimaryButton mb={1} type="submit">
+              {t("MARK_AS_COMPLETE")}
+            </FrontEndTypo.ColourPrimaryButton>
+          ) : (
+            <FrontEndTypo.Primarybutton
+              mb={1}
+              type="submit"
+              onPress={() => {
+                readyToEnrollApiCall();
+              }}
+            >
+              {t("MARK_AS_COMPLETE")}
+            </FrontEndTypo.Primarybutton>
+          )
         ) : (
           <></>
         )}
 
-        <Button
+        <FrontEndTypo.Primarybutton
           mt="4"
           mb={8}
-          variant={"primary"}
           type="submit"
           onPress={() => {
             navigate(-1);
           }}
         >
           {t("SAVE")}
-        </Button>
+        </FrontEndTypo.Primarybutton>
       </VStack>
     </Layout>
   );
