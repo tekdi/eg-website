@@ -14,11 +14,6 @@
   "AADHAAR_VERIFICATION": "Aadhaar Verification",
   "AADHAAR_VERIFICATION_SUCCESSFUL": "Aadhaar Verification Successful",
   "AADHAR_CARD": "Aadhaar Card",
-<<<<<<< HEAD
-  "UPLOADED_AADHAR_NOT_EDITABLE": "\"Uploaded Aadhar Card Photo Is Not Editable. Please Verify Before Uploading.\"",
-  "ENTERED_AADHAR_NOT_EDITABLE": "\"Entered Aadhar Card Number Is Not Editable. Please Verify Before Entering.\"",
-=======
->>>>>>> e6cd855a228e3ff39bc21d98e126ec81ad451c59
   "AADHAR_KYC_VERIFICATION_FAILED": "Aadhaar KYC Verification Failed",
   "AADHAR_NUMBER_KYC": "Aadhar Number KYC",
   "AADHAR_UPLOAD_CLEAR": "Clear and upload new one",
