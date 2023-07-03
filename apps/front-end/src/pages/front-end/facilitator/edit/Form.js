@@ -82,6 +82,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     };
     getData();
   }, [qualifications]);
+
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {

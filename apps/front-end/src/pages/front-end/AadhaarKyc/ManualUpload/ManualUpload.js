@@ -181,7 +181,7 @@ export default function ManualUpload({
                 <img
                   src={(isFront && image?.front) || (!isFront && image?.back)}
                   alt="front image"
-                  style={{ widt: "auto", maxWidth: "480px", height: "196px" }}
+                  style={{ widt: "auto", maxWidth: "480px", height: "196px" ,filter:'grayscale(0%)' }}
                 />
               ) : (
                 <VStack alignItems="center" space="4">
@@ -300,7 +300,7 @@ export default function ManualUpload({
               <img
                 src={image?.front}
                 alt="front image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" }}
+                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)' }}
               />
             </VStack>
             <VStack alignItems="center" space={"3"}>
@@ -310,7 +310,7 @@ export default function ManualUpload({
               <img
                 src={image?.back}
                 alt="back image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" }}
+                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)'}}
               />
             </VStack>
             <FrontEndTypo.Primarybutton

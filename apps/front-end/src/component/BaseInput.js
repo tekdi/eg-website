@@ -311,7 +311,7 @@ export const Aadhaar = (props) => {
         {...props}
         schema={{
           ...(props?.schema ? props?.schema : {}),
-          regex: /^\d{0,10}$/,
+          regex: /^\d{0,12}$/,
           _input: props?.schema?._input
             ? props?.schema?._input
             : { keyboardType: "numeric" },
