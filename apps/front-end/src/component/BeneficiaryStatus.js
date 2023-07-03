@@ -38,6 +38,11 @@ export function ChipStatus({ status, ...props }) {
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
+      case "duplicated":
+        setNewStatus(t("BENEFICIARY_STATUS_DUPLICATED"));
+        setTextColor("textMaroonColor.400");
+        setColor("textMaroonColor.100");
+        break;
       case "ready_to_enroll":
         setNewStatus(t("BENEFICIARY_STATUS_READY_TO_ENROLL"));
         setTextColor("badgeColor.600");
@@ -55,8 +60,8 @@ export function ChipStatus({ status, ...props }) {
         break;
       case "enrolled":
         setNewStatus(t("ENROLLED"));
-        setTextColor("blueText.700");
-        setColor("blueText.200");
+        setTextColor("textGreen.700");
+        setColor("textGreen.300");
         break;
       case "activate":
         setNewStatus(t("BENEFICIARY_STATUS_ACTIVATE"));

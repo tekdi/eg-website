@@ -399,12 +399,19 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   const onChange = async (e, id) => {
     setErrors();
-
     const data = e.formData;
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
       const newErrors = {
         enrollment_date: {
           __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
+        },
+      };
+      setErrors(newErrors);
+    }
+    if (typeof e?.formData?.enrollment_number !== "number") {
+      const newErrors = {
+        enrollment_number: {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         },
       };
       setErrors(newErrors);
@@ -534,6 +541,10 @@ export default function App({ facilitator, id, ip, onClick }) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         };
+      } else if (typeof formData?.enrollment_number !== "number") {
+        newErrors.enrollment_number = {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NOT_A_NUMBER")],
+        };
       } else if (!formData?.enrollment_date) {
         newErrors.enrollment_date = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_DATE")],
@@ -556,7 +567,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 10) {
       const form_data = new FormData();
       const item = {
         file: file,
@@ -576,7 +587,11 @@ export default function App({ facilitator, id, ip, onClick }) {
         document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
     } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
+      const newErrors = {};
+      newErrors.payment_receipt_document_id = {
+        __errors: [t("FILE_SIZE")],
+      };
+      setErrors(newErrors);
     }
   };
   const editSubmit = async () => {
@@ -585,6 +600,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_status &&
         formData?.enrolled_for_board !== "null" &&
         formData?.enrollment_number &&
+        typeof formData?.enrollment_number === "number" &&
         formData?.enrollment_date &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
@@ -627,9 +643,20 @@ export default function App({ facilitator, id, ip, onClick }) {
       } else {
         validation();
       }
-    } else {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      navigate(`/beneficiary/profile/${userId}`);
+    } else if (formData?.enrollment_status === "other") {
+      if (
+        formData?.enrollment_number
+          ? typeof formData?.enrollment_number == "number"
+          : true
+      ) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
     }
   };
 
@@ -687,10 +714,10 @@ export default function App({ facilitator, id, ip, onClick }) {
           >
             {uploadPayment ? (
               <VStack>
-                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3">
-                  {t("PAYMENT_RECEIPT")} *
+                <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
+                  {t("PAYMENT_RECEIPT")}
+                  {formData?.enrollment_status !== "other" ? " *" : ""}
                 </FrontEndTypo.H2>
-
                 <HStack justifyContent="space-between" alignItems="Center">
                   <Box style={buttonStyle} width="100%">
                     <VStack
