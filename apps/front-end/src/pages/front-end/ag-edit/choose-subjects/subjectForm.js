@@ -399,12 +399,19 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   const onChange = async (e, id) => {
     setErrors();
-
     const data = e.formData;
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
       const newErrors = {
         enrollment_date: {
           __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
+        },
+      };
+      setErrors(newErrors);
+    }
+    if (typeof e?.formData?.enrollment_number !== "number") {
+      const newErrors = {
+        enrollment_number: {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         },
       };
       setErrors(newErrors);
@@ -560,7 +567,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file.size <= 1048576 * 10) {
       const form_data = new FormData();
       const item = {
         file: file,
@@ -580,7 +587,11 @@ export default function App({ facilitator, id, ip, onClick }) {
         document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
     } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
+      const newErrors = {};
+      newErrors.payment_receipt_document_id = {
+        __errors: [t("FILE_SIZE")],
+      };
+      setErrors(newErrors);
     }
   };
   const editSubmit = async () => {
