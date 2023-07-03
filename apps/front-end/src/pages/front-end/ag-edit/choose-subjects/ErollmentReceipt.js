@@ -144,7 +144,7 @@ export default function App({ facilitator }) {
       enrollment_dob: enrollment_dob ? enrollment_dob : undefined,
       enrollment_aadhaar_no: enrollment_aadhaar_no
         ? parseInt(enrollment_aadhaar_no)
-        : null,
+        : undefined,
     });
   }, []);
 
