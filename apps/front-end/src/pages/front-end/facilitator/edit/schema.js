@@ -206,5 +206,19 @@ export default {
         },
       },
     },
+    aadhaar_details: {
+      step_name: "QUALIFICATION_DETAILS",
+      title: "ID_VERIFICATION",
+      description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
+      type: "object",
+      required: ["aadhar_no"],
+      properties: {
+        aadhar_no: {
+          title: "AADHAAR_NUMBER",
+          type: "number",
+          format: "Aadhaar",
+        },
+      },
+    },
   },
 };

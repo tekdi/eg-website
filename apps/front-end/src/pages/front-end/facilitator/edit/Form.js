@@ -129,12 +129,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         // }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
+      } else if (nextIndex === "aadhaar_details") {
+        navigate(`/profile/edit/upload`);
       } else if (nextIndex !== undefined) {
         navigate(`/profile/edit/${nextIndex}`);
-      } else if (pageStape.toLowerCase() === "n") {
-        navigate(`/profile/edit/upload`);
       } else {
-        navigate(`/profile`);
+        navigate(`/aadhaar-kyc/${facilitator?.id}`, {
+          state: "/profile",
+        });
       }
     }
   };
@@ -356,6 +358,18 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
     }
+    if (step === "aadhaar_details") {
+      if (data?.aadhar_no) {
+        if (
+          data?.aadhar_no &&
+          !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        ) {
+          errors?.aadhar_no?.addError(
+            `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+          );
+        }
+      }
+    }
     return errors;
   };
 
@@ -537,14 +551,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         setErrors(newErrors);
       }
     }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
+    if (id === "root_aadhar_no") {
+      if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({
-          aadhar_token: data?.aadhar_token,
+          aadhar_no: data?.aadhar_no,
         });
         if (result.isUserExist) {
           const newErrors = {
-            aadhar_token: {
+            aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
             },
           };
@@ -660,7 +674,16 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   if (page === "upload") {
-    return <PhotoUpload {...{ formData, cameraFile, setCameraFile }} />;
+    return (
+      <PhotoUpload
+        {...{
+          formData,
+          cameraFile,
+          setCameraFile,
+          aadhar_no: facilitator?.aadhar_no,
+        }}
+      />
+    );
   }
 
   const onClickSubmit = (backToProfile) => {
