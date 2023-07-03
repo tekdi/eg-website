@@ -23,17 +23,17 @@ const List = ({ data }) => {
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
-          <Pressable
-            onPress={async () => {
-              navigate(`/beneficiary/${item?.id}`);
-            }}
+          <VStack
+            bg="white"
+            p="2"
+            shadow="FooterShadow"
+            borderRadius="4px"
+            space="2"
           >
-            <VStack
-              bg="white"
-              p="2"
-              shadow="FooterShadow"
-              borderRadius="4px"
-              space="2"
+            <Pressable
+              onPress={async () => {
+                navigate(`/beneficiary/${item?.id}`);
+              }}
             >
               <HStack justifyContent="space-between">
                 <HStack alignItems="Center" flex="5">
@@ -68,7 +68,9 @@ const List = ({ data }) => {
                       {item?.middle_name &&
                         item?.middle_name !== "null" &&
                         ` ${item.middle_name}`}
-                      {item?.last_name && ` ${item.last_name}`}
+                      {item?.last_name &&
+                        item?.last_name !== "null" &&
+                        ` ${item.last_name}`}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
@@ -82,16 +84,104 @@ const List = ({ data }) => {
                   />
                 </Box>
               </HStack>
-              <VStack bg="white" pl="2">
+            </Pressable>
+            <VStack bg="white" pl="2">
+              {item?.program_beneficiaries?.status === "identified" && (
                 <HStack color="blueText.450" alignItems="center">
                   <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("CHECK_DOCUMENTS")}
+                    {t("COMPLETE_THE_DOCUMENTATION")}
                   </FrontEndTypo.H4>
-                  <IconByName name="ArrowRightSLineIcon" />
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={() => {
+                      navigate(`/beneficiary/${item?.id}/docschecklist`);
+                    }}
+                  />
                 </HStack>
-              </VStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "enrollment_pending" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("CONTINUE_ENROLLMENT")}
+                  </FrontEndTypo.H4>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={() => {
+                      navigate(`/beneficiary/${item?.id}/docschecklist`);
+                    }}
+                  />
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "ready_to_enroll" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("ENTER_THE_ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H4>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={() => {
+                      navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
+                    }}
+                  />
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "enrolled" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("FOLLOW_UP_WITH_IP")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "dropout" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4
+                    color="blueText.450"
+                    underline
+                  ></FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "duplicated" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("FOLLOW_UP_WITH_IP_ASSIGNMENT")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status ===
+                "enrolled_ip_verified" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450" underline>
+                    {t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status === "rejected" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4
+                    color="blueText.450"
+                    underline
+                  ></FrontEndTypo.H4>
+                </HStack>
+              )}
+
+              {item?.program_beneficiaries?.status ===
+                "ineligible_for_pragati_camp" && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4
+                    color="blueText.450"
+                    underline
+                  ></FrontEndTypo.H4>
+                </HStack>
+              )}
             </VStack>
-          </Pressable>
+          </VStack>
         ))
       )}
     </VStack>
@@ -116,7 +206,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
   const [searchBenficiary, setSearchBenficiary] = React.useState("");
-
+  const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
     setSelectStatus(data);
@@ -164,7 +254,6 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     if (userTokenInfo) {
-      const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
     }

@@ -307,7 +307,16 @@ export const Aadhaar = (props) => {
         w="248"
         h="140"
       />
-      <FloatingInput {...props} />
+      <FloatingInput
+        {...props}
+        schema={{
+          ...(props?.schema ? props?.schema : {}),
+          regex: /^\d{0,12}$/,
+          _input: props?.schema?._input
+            ? props?.schema?._input
+            : { keyboardType: "numeric" },
+        }}
+      />
     </VStack>
   );
 };
