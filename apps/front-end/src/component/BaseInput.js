@@ -298,7 +298,12 @@ export const Aadhaar = (props) => {
   const { t } = useTranslation();
   return (
     <VStack space="10">
-      <FrontEndTypo.H3 ml="90px" bold color="textMaroonColor.400">
+      <FrontEndTypo.H3
+        ml="90px"
+        textAlign="center"
+        bold
+        color="textMaroonColor.400"
+      >
         {t("ENTERED_AADHAR_NOT_EDITABLE")}
       </FrontEndTypo.H3>
       <Image

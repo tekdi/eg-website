@@ -160,7 +160,12 @@ export default function ManualUpload({
               <FrontEndTypo.H3 color="textGreyColor.800">
                 {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
               </FrontEndTypo.H3>
-              <FrontEndTypo.H3 mt="4" bold color="textMaroonColor.400">
+              <FrontEndTypo.H3
+                textAlign="center"
+                mt="4"
+                bold
+                color="textMaroonColor.400"
+              >
                 {t("UPLOADED_AADHAR_NOT_EDITABLE")}
               </FrontEndTypo.H3>
             </VStack>
@@ -181,7 +186,12 @@ export default function ManualUpload({
                 <img
                   src={(isFront && image?.front) || (!isFront && image?.back)}
                   alt="front image"
-                  style={{ widt: "auto", maxWidth: "480px", height: "196px" ,filter:'grayscale(0%)' }}
+                  style={{
+                    widt: "auto",
+                    maxWidth: "480px",
+                    height: "196px",
+                    filter: "grayscale(0%)",
+                  }}
                 />
               ) : (
                 <VStack alignItems="center" space="4">
@@ -300,7 +310,12 @@ export default function ManualUpload({
               <img
                 src={image?.front}
                 alt="front image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)' }}
+                style={{
+                  width: "auto",
+                  maxWidth: "280px",
+                  height: "180px",
+                  filter: "grayscale(0%)",
+                }}
               />
             </VStack>
             <VStack alignItems="center" space={"3"}>
@@ -310,7 +325,12 @@ export default function ManualUpload({
               <img
                 src={image?.back}
                 alt="back image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)'}}
+                style={{
+                  width: "auto",
+                  maxWidth: "280px",
+                  height: "180px",
+                  filter: "grayscale(0%)",
+                }}
               />
             </VStack>
             <FrontEndTypo.Primarybutton
