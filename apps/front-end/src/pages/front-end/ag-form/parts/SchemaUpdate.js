@@ -37,12 +37,12 @@ export default {
       properties: {
         lat: {
           type: "number",
-          label: "LATITUDE",
+          title: "LATITUDE",
           format: "readOnly",
         },
         long: {
           type: "number",
-          label: "LONGITUDE",
+          title: "LONGITUDE",
           format: "readOnly",
         },
         address: {

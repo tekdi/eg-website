@@ -20,22 +20,16 @@ export default [
   { path: "/admin/facilitator", component: AdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
-  {
-    path: "/admin/aadhaarStart",
-    component: AadhaarStartKyc,
-  },
+
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
   },
   {
-    path: "/admin/aadhaarManualUpload",
-    component: ManualUpload,
+    path: "/aadhaar-kyc/:id/:type",
+    component: AdharKyc,
   },
-  {
-    path: "/admin/aadhaarQrScanner",
-    component: QrScannerKyc,
-  },
+
   { path: "/", component: Orientation },
 
   { path: "*", component: NotFound },

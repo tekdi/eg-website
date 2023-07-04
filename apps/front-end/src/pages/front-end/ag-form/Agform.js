@@ -101,7 +101,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const otpfunction = async () => {
-    if (formData?.mobile.length < 10) {
+    if (formData?.mobile?.length < 10) {
       const data = await formSubmitCreate(formData);
 
       const newErrors = {
@@ -249,16 +249,13 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       }
     }
     ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
+      if (key === "first_name" && data?.first_name?.replace(/ /g, "") === "") {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
 
-      if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
+      if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
