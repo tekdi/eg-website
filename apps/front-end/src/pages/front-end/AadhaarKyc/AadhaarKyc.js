@@ -40,6 +40,7 @@ export default function AdharKyc({ footerLinks }) {
   const [isAadharDisabled, setIsAadharDisabled] = React.useState(false);
   const { t } = useTranslation();
   const [aadhaarCompare, setAadhaarCompare] = React.useState();
+  const [loadingHeight, setLoadingHeight] = React.useState(0);
 
   React.useEffect(async () => {
     if (page === "aadhaar-number") {
@@ -191,6 +192,7 @@ export default function AdharKyc({ footerLinks }) {
         />
       ) : (
         <Layout
+          getBodyHeight={(e) => setLoadingHeight(e)}
           _appBar={{
             onlyIconsShow: ["backBtn", "userInfo"],
             name: `${user?.first_name}${
@@ -378,6 +380,7 @@ export default function AdharKyc({ footerLinks }) {
           ) : (
             <Box>
               <Loading
+                height={loadingHeight}
                 customComponent={
                   <VStack w="100%">
                     {error?.top && (
@@ -387,6 +390,7 @@ export default function AdharKyc({ footerLinks }) {
                     )}
                     <AadhaarOptions
                       {...{
+                        redirect: location?.state,
                         setData,
                         setOtpFailedPopup,
                         setError,
@@ -451,6 +455,7 @@ const AadhaarOptions = ({
   navigate,
   isQRDisabled,
   isAadharDisabled,
+  redirect,
   id,
 }) => {
   const { t } = useTranslation();
@@ -484,7 +489,9 @@ const AadhaarOptions = ({
         onPress={() => {
           setPage("upload");
           setOtpFailedPopup(false);
-          navigate(`/aadhaar-kyc/${id}/upload`);
+          navigate(`/aadhaar-kyc/${id}/upload`, {
+            state: redirect,
+          });
         }}
       >
         {t("TRY_AADHAR_UPLOAD_KYC")}
