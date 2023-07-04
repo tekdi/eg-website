@@ -888,9 +888,9 @@ export default function Attendence({ footerLinks }) {
                                 <AdminTypo.H5 style={{ color: "red" }}>
                                   {t("NO")}
                                 </AdminTypo.H5>
-                                <Button
-                                  bg="red.300"
-                                  children="Aadhar_eKYC"
+                                <FrontEndTypo.Secondarysmallbutton
+                                  background="red.300"
+                                  children={t("AADHAAR_EKYC")}
                                   onPress={() => {
                                     navigate(
                                       `/aadhaar-kyc/${formData?.user_id}`,
