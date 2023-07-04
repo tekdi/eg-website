@@ -159,6 +159,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
         setAlert("User denied the request for Geolocation.");
+        getLocation();
 
         break;
       case error.POSITION_UNAVAILABLE:

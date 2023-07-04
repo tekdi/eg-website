@@ -91,13 +91,56 @@ export default function agFormEdit({ ip }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setAlert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const showPosition = (position) => {
+    let lati = position.coords.latitude;
+    let longi = position.coords.longitude;
+
+    setFormData({
+      ...formData,
+      lat: lati,
+      long: longi,
+    });
+  };
+
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setAlert("User denied the request for Geolocation.");
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setAlert("Location information is unavailable.");
+
+        break;
+      case error.TIMEOUT:
+        setAlert("The request to get user location timed out.");
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setAlert("An unknown error occurred.");
+
+        break;
+    }
+  }
+
   //getting data
   React.useEffect(async () => {
+    getLocation();
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData.result;
     setFormData(qData.result);
     setFormData({
       ...formData,
+      lat: finalData?.lat,
+      long: finalData?.long,
       address: finalData?.address == "null" ? "" : finalData?.address,
       state: finalData?.state,
       district: finalData?.district,
@@ -106,8 +149,6 @@ export default function agFormEdit({ ip }) {
       grampanchayat: finalData?.grampanchayat,
     });
   }, []);
-
-  console.log("formdata", formData);
 
   const uiSchema = {
     dob: {
