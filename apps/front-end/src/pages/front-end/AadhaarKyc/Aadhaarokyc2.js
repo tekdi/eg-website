@@ -55,7 +55,7 @@ export default function Aadhaarokyc2({
       const success = searchParams.get("success");
       if (!id) {
         const reuslt = await aadhaarService.okyc2({
-          redirectUrl: `${process.env.REACT_APP_BASE_URL}/aadhaar-kyc/41/okyc2`,
+          redirectUrl: `${process.env.REACT_APP_BASE_URL}/aadhaar-kyc/${user?.id}/okyc2`,
         });
         if (reuslt && reuslt?.url) {
           setUrl(reuslt?.url);
