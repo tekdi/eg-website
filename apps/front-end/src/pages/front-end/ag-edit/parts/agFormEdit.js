@@ -356,12 +356,9 @@ export default function agFormEdit({ ip, id }) {
 
   const customValidate = (data, errors, c) => {
     if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 12) {
-        errors?.dob?.addError(t("MINIMUM_AGE_12_YEAR_OLD"));
-      }
-      if (years > 30) {
-        errors?.dob?.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
+      const age_in_years = moment().diff(data?.dob, "years", true);
+      if (!(age_in_years >= 12 && age_in_years <= 30)) {
+        errors?.dob?.addError(t("BENEFICIARY_DATE_OF_BIRTH_VALIDATION"));
       }
     }
     ["first_name", "last_name", "middle_name"].forEach((key) => {
@@ -373,21 +370,6 @@ export default function agFormEdit({ ip, id }) {
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
-
-      // if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
-      //   errors?.[key]?.addError(
-      //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-      //   );
-      // }
-      // if (
-      //   key === "middle_name" &&
-      //   data?.middle_name?.includes(" ") &&
-      //   data?.middle_name?.trim() === ""
-      // ) {
-      //   errors?.[key]?.addError(
-      //     `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-      //   );
-      // }
 
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
@@ -428,6 +410,19 @@ export default function agFormEdit({ ip, id }) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            },
+          };
+          setErrors(newErrors);
+        }
+      }
+    }
+    if (id === "root_dob") {
+      if (data?.dob) {
+        const age_in_years = moment().diff(data?.dob, "years", true);
+        if (!(age_in_years >= 12 && age_in_years <= 30)) {
+          const newErrors = {
+            dob: {
+              __errors: [t("BENEFICIARY_DATE_OF_BIRTH_VALIDATION")],
             },
           };
           setErrors(newErrors);
