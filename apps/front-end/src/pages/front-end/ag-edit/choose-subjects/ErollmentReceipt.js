@@ -34,7 +34,7 @@ export default function App({ facilitator }) {
   const [schema, setSchema] = React.useState({});
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [alertAadhar, setAlertAadhar] = React.useState();
@@ -134,15 +134,17 @@ export default function App({ facilitator }) {
       qData?.result?.program_beneficiaries?.enrollment_aadhaar_no;
     setFormData({
       ...formData,
-      enrollment_first_name: enrollment_first_name ? enrollment_first_name : "",
+      enrollment_first_name: enrollment_first_name
+        ? enrollment_first_name
+        : undefined,
       enrollment_middle_name: enrollment_middle_name
         ? enrollment_middle_name
         : "",
       enrollment_last_name: enrollment_last_name ? enrollment_last_name : "",
-      enrollment_dob: enrollment_dob ? enrollment_dob : "",
+      enrollment_dob: enrollment_dob ? enrollment_dob : undefined,
       enrollment_aadhaar_no: enrollment_aadhaar_no
         ? parseInt(enrollment_aadhaar_no)
-        : "",
+        : undefined,
     });
   }, []);
 
