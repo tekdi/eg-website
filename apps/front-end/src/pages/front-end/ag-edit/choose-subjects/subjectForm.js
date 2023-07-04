@@ -59,6 +59,8 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   select,
+  widgets,
+  templates,
 } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 import { useId } from "react";
@@ -136,10 +138,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
-        yearsRange: [
-          moment().subtract("years", 30).format("YYYY"),
-          moment().format("YYYY"),
-        ],
+        yearsRange: [2023, moment().format("YYYY")],
       },
     },
   });
@@ -689,15 +688,8 @@ export default function App({ facilitator, id, ip, onClick }) {
           <Form
             key={lang + schema}
             ref={formRef}
-            widgets={{ select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
