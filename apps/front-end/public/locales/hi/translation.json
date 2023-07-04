@@ -48,6 +48,7 @@
   "ADDRESS_DETAIL": "पूरा पता जोड़ें (वैकल्पिक)",
   "ADDRESS_DETAILS": "पता विवरण",
   "ADHAR_KYC": "आधार KYC",
+  "AADHAAR_REQUIRED_MESSAGE":"नामांकन विवरण टैब तक पहुंचने के लिए कृपया पहले आधार नंबर दर्ज करें",
   "ADVERTISEMENTS": "विज्ञापन",
   "AFFIDAVIT": "शपत पत्र",
   "AFFIDAVIT_FOR_NON_SCHOOLING_CERTIFICATION_NOTARY": "गैर-स्कूली शिक्षा प्रमाणन के लिए शपथ पत्र (नोटरी)",

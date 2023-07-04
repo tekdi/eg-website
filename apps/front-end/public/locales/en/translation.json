@@ -48,6 +48,7 @@
   "ADDRESS_DETAIL": "Add Detailed Address (Optional)",
   "ADDRESS_DETAILS": "Address Details",
   "ADHAR_KYC": "Aadhaar KYC",
+  "AADHAAR_REQUIRED_MESSAGE":"Please enter adhar number first to accesses the enrollment details tab",
   "ADVERTISEMENTS": "Advertisements",
   "AFFIDAVIT": "Affidavit for non schooling Certification, notary",
   "AFFIDAVIT_FOR_NON_SCHOOLING_CERTIFICATION_NOTARY": "Affidavit For Non Schooling Certification Notary",
