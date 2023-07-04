@@ -41,6 +41,8 @@ export default function ManualUpload({
   const uplodInputRef = React.useRef();
 
   const handleFileInputChange = async (e) => {
+    console.log("data");
+    console.log(isFront, image?.front, image?.back);
     let file = e.target.files[0];
     if (file.size <= 1048576 * 25) {
       const data = await getBase64(file);
@@ -183,15 +185,13 @@ export default function ManualUpload({
               }}
             >
               {(isFront && image?.front) || (!isFront && image?.back) ? (
-                <img
-                  src={(isFront && image?.front) || (!isFront && image?.back)}
-                  alt="front image"
-                  style={{
-                    widt: "auto",
-                    maxWidth: "480px",
-                    height: "196px",
-                    filter: "grayscale(0%)",
+                <Image
+                  source={{
+                    uri: (isFront && image?.front) || (!isFront && image?.back),
                   }}
+                  alt="front image"
+                  size={"2xl"}
+                  resizeMode="contain"
                 />
               ) : (
                 <VStack alignItems="center" space="4">
@@ -307,30 +307,24 @@ export default function ManualUpload({
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("FRONT_VIEW")}
               </FrontEndTypo.H2>
-              <img
-                src={image?.front}
-                alt="front image"
-                style={{
-                  width: "auto",
-                  maxWidth: "280px",
-                  height: "180px",
-                  filter: "grayscale(0%)",
+              <Image
+                source={{
+                  uri: image?.front,
                 }}
+                alt="front image"
+                size={"2xl"}
+                resizeMode="contain"
               />
             </VStack>
             <VStack alignItems="center" space={"3"}>
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("BACK_VIEW")}
               </FrontEndTypo.H2>
-              <img
+              <Image
                 src={image?.back}
                 alt="back image"
-                style={{
-                  width: "auto",
-                  maxWidth: "280px",
-                  height: "180px",
-                  filter: "grayscale(0%)",
-                }}
+                size={"2xl"}
+                resizeMode="contain"
               />
             </VStack>
             <FrontEndTypo.Primarybutton

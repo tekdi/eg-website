@@ -7,6 +7,7 @@ import {
   FrontEndTypo,
   SelectStyle,
   ImageView,
+  Loading,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
@@ -367,11 +368,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           </SelectStyle>
         </Box>
       </HStack>
-      {!loadingList ? (
-        <List data={data} />
-      ) : (
-        <FrontEndTypo.H3>{t("LOADING")}</FrontEndTypo.H3>
-      )}
+      {!loadingList ? <List data={data} /> : <Loading />}
     </Layout>
   );
 }
