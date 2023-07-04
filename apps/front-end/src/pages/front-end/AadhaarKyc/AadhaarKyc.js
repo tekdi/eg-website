@@ -23,6 +23,7 @@ import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
 import { useTranslation } from "react-i18next";
 import AadhaarSuccess from "./AadhaarSuccess";
+import Aadhaarokyc2 from "./Aadhaarokyc2";
 
 export default function AdharKyc({ footerLinks }) {
   const location = useLocation();
@@ -57,7 +58,7 @@ export default function AdharKyc({ footerLinks }) {
 
   React.useEffect(() => {
     const typeData = type?.toLowerCase();
-    if (["qr", "aadhaar-number", "upload"].includes(typeData)) {
+    if (["qr", "aadhaar-number", "upload", "okyc2"].includes(typeData)) {
       setPage(typeData);
     } else {
       setPage();
@@ -151,7 +152,21 @@ export default function AdharKyc({ footerLinks }) {
 
   return (
     <Box>
-      {page === "qr" ? (
+      {page === "okyc2" ? (
+        <Aadhaarokyc2
+          {...{
+            setPage,
+            setLoading,
+            error,
+            setError,
+            handalBack,
+            setAttempt,
+            footerLinks,
+            setAadhaarCompare,
+            user,
+          }}
+        />
+      ) : page === "qr" ? (
         <QrScannerKyc
           {...{
             setOtpFailedPopup,
@@ -454,7 +469,6 @@ const AadhaarOptions = ({
   setPage,
   navigate,
   isQRDisabled,
-  isAadharDisabled,
   redirect,
   id,
 }) => {
@@ -462,19 +476,19 @@ const AadhaarOptions = ({
 
   return (
     <VStack bg="white" width={"100%"} space="5" p="5">
-      {/* <FrontEndTypo.Secondarybutton
+      <FrontEndTypo.Secondarybutton
         onPress={() => {
           setData();
           setOtpFailedPopup(false);
           setError();
           aadhaarInit();
           setPage("aadhaar-number");
-          navigate(`/aadhaar-kyc/${id}/aadhaar-number`);
+          navigate(`/aadhaar-kyc/${id}/okyc2`);
         }}
       >
         {t("TRY_AADHAR_NUMER_KYC")}
       </FrontEndTypo.Secondarybutton>
-      <FrontEndTypo.Secondarybutton
+      {/* <FrontEndTypo.Secondarybutton
         isDisabled={isAadharDisabled}
         onPress={() => {
           setPage("qr");

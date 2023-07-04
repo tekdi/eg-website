@@ -147,15 +147,15 @@ export default function BenificiaryAadhaarDetails() {
                   <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                     {t("COMPLETE_AADHAAR_VERIFICATION")}
                   </FrontEndTypo.H2>
-                  {/* <FrontEndTypo.Primarybutton
+                  <FrontEndTypo.Primarybutton
                     mt="10"
                     onPress={() => {
-                      navigate(`/aadhaar-kyc/${id}`);
+                      navigate(`/aadhaar-kyc/${id}/okyc2`);
                     }}
                   >
                     {t("AADHAAR_NUMBER_KYC")}
                   </FrontEndTypo.Primarybutton>
-                  <FrontEndTypo.Secondarybutton
+                  {/* <FrontEndTypo.Secondarybutton
                     my="4"
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/QR`);
