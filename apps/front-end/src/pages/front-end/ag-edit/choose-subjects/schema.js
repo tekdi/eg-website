@@ -34,6 +34,7 @@ export default {
         enrollment_number: {
           type: "number",
           label: "ENROLLMENT_NUMBER",
+          _input: { keyboardType: "numeric" },
         },
         subjects: {
           type: "array",
