@@ -7,6 +7,7 @@ import {
   Progress,
   Divider,
   Actionsheet,
+  Alert,
 } from "native-base";
 import {
   FrontEndTypo,
@@ -16,6 +17,7 @@ import {
   enumRegistryService,
   t,
   ImageView,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
@@ -36,11 +38,20 @@ export default function BenificiaryProfileView(props) {
     React.useState();
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
+  const [alert, setAlert] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
     enumAPicall();
   }, []);
+
+  React.useEffect(() => {
+    if (benificiary?.aadhar_no === null) {
+      setAlert(t("AADHAAR_REQUIRED_MESSAGE"));
+    } else {
+      setAlert();
+    }
+  }, [benificiary]);
 
   const enumAPicall = async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -269,30 +280,62 @@ export default function BenificiaryProfileView(props) {
               </HStack>
             </VStack>
           </Box>
-
-          <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("ENROLLMENT_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="#790000"
-                  size="sm"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/enrollmentdetails`);
-                  }}
-                />
+          {alert ? (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{alert}</BodyMedium>
               </HStack>
-            </VStack>
-          </Box>
+            </Alert>
+          ) : (
+            <React.Fragment />
+          )}
+          {benificiary?.aadhar_no === null ? (
+            <Box
+              bg="boxBackgroundColour.100"
+              borderColor="btnGray.100"
+              borderRadius="10px"
+              borderWidth="1px"
+              paddingBottom="24px"
+            >
+              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+                <HStack justifyContent="space-between" alignItems="Center">
+                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                    {t("ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H3>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="#790000"
+                    size="sm"
+                  />
+                </HStack>
+              </VStack>
+            </Box>
+          ) : (
+            <Box
+              bg="boxBackgroundColour.100"
+              borderColor="btnGray.100"
+              borderRadius="10px"
+              borderWidth="1px"
+              paddingBottom="24px"
+            >
+              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+                <HStack justifyContent="space-between" alignItems="Center">
+                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                    {t("ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H3>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="#790000"
+                    size="sm"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/enrollmentdetails`);
+                    }}
+                  />
+                </HStack>
+              </VStack>
+            </Box>
+          )}
           <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
