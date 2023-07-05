@@ -17,7 +17,7 @@ const CRadio = ({ items, onChange }) => {
       onChange={onChange}
     >
       <HStack alignItems="center" space={3} flexWrap="wrap">
-        {items.map((item, key) => (
+        {items?.map((item, key) => (
           <Radio key={key} value={item?.value} size="sm">
             {t(item?.title)}
           </Radio>
@@ -39,7 +39,6 @@ export default function StatusButton({ data, setData }) {
   const [showModal, setShowModal] = React.useState();
   const [reason, setReason] = React.useState();
   const [disabledBtn, setDisabledBtn] = React.useState([]);
-  const [color, setColor] = React.useState();
   const [statusList, setStatusList] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const { t } = useTranslation();
@@ -57,125 +56,62 @@ export default function StatusButton({ data, setData }) {
   };
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
-    console.log(data);
-    //      setShowModal({ name, ...item });
+    const statusListNew = data?.data.FACILITATOR_STATUS.map((item) => {
+      let buttonStatus = "success";
+      if (["rejected", "quit", "rusticate", "on_hold"].includes(item?.value)) {
+        buttonStatus = "error";
+        return {
+          status: item.value,
+          name: item.title,
+          btnStatus: buttonStatus,
+          reason: true,
+        };
+      } else {
+        return {
+          status: item.value,
+          name: item.title,
+          btnStatus: buttonStatus,
+        };
+      }
+    });
+    setStatusList(statusListNew);
 
-    setStatusList([
-      {
-        status: "screened",
-        btnStatus: "success",
-        name: "SCREEN_APPLICATION",
-      },
-      {
-        status: "rejected",
-        btnStatus: "error",
-        name: "REJECT_APPLICATION",
-        reason: true,
-      },
-      {
-        status: "shortlisted_for_orientation",
-        btnStatus: "success",
-        name: "SHORTLIST_FOR_ORIENTATION",
-      },
-      {
-        status: "pragati_mobilizer",
-        btnStatus: "success",
-        name: "PRAGATI_MOBILIZER",
-      },
-      {
-        status: "selected_for_training",
-        btnStatus: "success",
-        name: "SELECT_FOR_TRAINING",
-      },
-      {
-        status: "selected_for_onboarding",
-        btnStatus: "success",
-        colorScheme: "success",
-        name: "SELECT_FOR_ONBOARDING",
-      },
-      {
-        status: "selected_prerak",
-        btnStatus: "success",
-        colorScheme: "success",
-        name: "SELECT_PRERAK",
-      },
-      {
-        status: "quit",
-        btnStatus: "error",
-        colorScheme: "danger",
-        name: "QUIT",
-        reason: true,
-      },
-
-      {
-        status: "rusticate",
-        btnStatus: "error",
-        colorScheme: "danger",
-        name: "RUSTICATE",
-        reason: true,
-      },
-      {
-        status: "on_hold",
-        btnStatus: "error",
-        colorScheme: "danger",
-        name: "HOLD",
-        reason: true,
-      },
-    ]);
     setEnumOptions(data?.data);
   }, []);
-
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
+      case "applied":
+        setDisabledBtn(["on_hold"]);
+        break;
       case "screened":
-        setDisabledBtn([
-          "rejected",
-          "shortlisted_for_orientation",
-          "quit",
-          "rusticate",
-        ]);
+        setDisabledBtn(["on_hold", "quit"]);
         break;
       case "rejected":
-        setDisabledBtn(["screened", "quit", "rusticate"]);
+        setDisabledBtn(["on_hold", "selected_prerak"]);
         break;
       case "shortlisted_for_orientation":
-        setDisabledBtn(["pragati_mobilizer", "rejected", "quit", "rusticate"]);
+        setDisabledBtn(["quit"]);
         break;
       case "pragati_mobilizer":
-        setDisabledBtn([
-          "selected_for_training",
-          "rejected",
-          "quit",
-          "rusticate",
-        ]);
+        setDisabledBtn(["quit"]);
         break;
       case "selected_for_training":
-        setDisabledBtn([
-          "selected_for_onboarding",
-          "rejected",
-          "quit",
-          "rusticate",
-        ]);
+        setDisabledBtn(["quit"]);
         break;
       case "selected_for_onboarding":
-        setDisabledBtn(["selected_prerak", "rejected", "quit", "rusticate"]);
+        setDisabledBtn(["quit"]);
         break;
       case "selected_prerak":
-        setDisabledBtn(["rejected", "quit", "rusticate"]);
-        break;
-      case "quit":
-        ["rejected", "rusticate"];
-        break;
-      case "rusticate":
         setDisabledBtn([]);
         break;
+      case "quit":
+        setDisabledBtn(["selected_prerak", "on_hold"]);
+        break;
+      case "rusticate":
+        setDisabledBtn(["on_hold", "selected_prerak"]);
+        break;
       case "on_hold":
-        setDisabledBtn([
-          "rejected",
-          "quit",
-          "rusticate",
-          "selected_for_onboarding",
-        ]);
+        setDisabledBtn(["rusticate", "quit"]);
       default:
         setDisabledBtn(["screened", "rejected", "quit", "rusticate"]);
     }
@@ -189,31 +125,23 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      {enumOptions?.FACILITATOR_STATUS?.map(({ title, ...item }) => (
+      {statusList?.map(({ name, ...item }) => (
         <AdminTypo.StatusButton
-          key={title}
-          status={
-            item?.value === "rusticate" ||
-            item?.value === "on_hold" ||
-            item?.value === "quit" ||
-            item?.value === "rejected"
-              ? "error"
-              : "success"
-          }
-          isDisabled={!disabledBtn.includes(item?.value)}
+          key={name}
+          {...item}
+          status={item?.btnStatus}
+          isDisabled={!disabledBtn.includes(item?.status)}
           onPress={(e) => {
-            setShowModal({ title, ...item });
+            setShowModal({ name, ...item });
             setReason();
           }}
         >
-          {t(title)}
+          {t(name)}
         </AdminTypo.StatusButton>
       ))}
       <Modal
         size={"xl"}
-        isOpen={enumOptions?.FACILITATOR_STATUS?.map((e) => e?.title).includes(
-          showModal?.title
-        )}
+        isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
         onClose={() => setShowModal()}
       >
         <Modal.Content rounded="2xl">
@@ -221,7 +149,7 @@ export default function StatusButton({ data, setData }) {
           <Modal.Header borderBottomWidth={0}>
             <HStack alignItems="center" space={2} justifyContent="center">
               <AdminTypo.H1 color="textGreyColor.500" bold>
-                {t(showModal?.value)}
+                {t(showModal?.name)}
               </AdminTypo.H1>
             </HStack>
           </Modal.Header>
@@ -242,17 +170,18 @@ export default function StatusButton({ data, setData }) {
                     onChange={(e) => setReason(e)}
                     items={
                       enumOptions[
-                        showModal.value === "quit"
+                        showModal.status === "quit"
                           ? "FACILITATOR_REASONS_FOR_QUIT"
-                          : showModal.value === "rusticate"
+                          : showModal.status === "rusticate"
                           ? "FACILITATOR_REASONS_FOR_RUSTICATE"
-                          : showModal.value === "rejected"
+                          : showModal.status === "rejected"
                           ? "FACILITATOR_REASONS_FOR_REJECTED"
+                          : showModal.status === "on_hold"
+                          ? "FACILITATOR_REASONS_FOR_ON_REJECTED"
                           : []
                       ]
                     }
                   />
-                  {console.log(showModal.value)}
                   {reason &&
                   ![
                     "Incomplete Form",
@@ -260,12 +189,20 @@ export default function StatusButton({ data, setData }) {
                     "Less experienced",
                   ].includes(reason) ? (
                     <Input
-                      onChange={(e) => setReason(e?.target?.value)}
+                      onChange={(e) => {
+                        setReason(e?.target?.value);
+                      }}
                       variant={"underlined"}
                       placeholder={t("MENTION_YOUR_REASON")}
                     />
                   ) : (
-                    <React.Fragment />
+                    <Input
+                      onChange={(e) => {
+                        setReason(e?.target?.value);
+                      }}
+                      variant={"underlined"}
+                      placeholder={t("MENTION_YOUR_REASON")}
+                    />
                   )}
                 </VStack>
               ) : (
@@ -293,11 +230,11 @@ export default function StatusButton({ data, setData }) {
                         reason?.toLowerCase() != "other") ||
                       !showModal?.reason
                     ) {
-                      update(showModal?.value);
+                      update(showModal?.status);
                     }
                   }}
                 >
-                  {t(showModal?.title)}
+                  {t(showModal?.name)}
                 </AdminTypo.PrimaryButton>
               </HStack>
             </VStack>
