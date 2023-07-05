@@ -137,7 +137,7 @@ export default function FacilitatorView({ footerLinks }) {
 
   const handleSendOtp = async () => {
     const sendotpBody = {
-      mobile: data?.mobile.toString(),
+      mobile: data?.mobile?.toString(),
       reason: "verify_mobile",
     };
     const datas = await authRegistryService.sendOtp(sendotpBody);
