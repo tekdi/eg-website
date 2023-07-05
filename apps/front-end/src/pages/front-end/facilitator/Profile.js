@@ -71,23 +71,29 @@ export default function Profile({ userTokenInfo, footerLinks }) {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(facilitator, [
-                    "first_name",
-                    "email_id",
-                    "last_name",
-                    "middle_name",
-                    "dob",
-                    "mobile",
-                    "alternate_mobile",
-                    "address",
-                    "district",
-                    "block",
-                    "village",
-                    "grampanchayat",
-                    "gender",
-                    "marital_status",
-                    "social_category",
-                  ])}
+                  value={arrList(
+                    {
+                      ...facilitator,
+                      ref_name: facilitator?.references?.name,
+                      ref_number: facilitator?.references?.contact_number,
+                    },
+                    [
+                      "first_name",
+                      "last_name",
+                      // "middle_name",
+                      "dob",
+                      "mobile",
+                      "district",
+                      "block",
+                      "village",
+                      "gender",
+                      "marital_status",
+                      "social_category",
+                      "availability",
+                      "ref_name",
+                      "ref_number",
+                    ]
+                  )}
                   size="xs"
                   colorScheme="info"
                 />
@@ -195,7 +201,15 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 />
               </HStack>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(facilitator, [
+                    "aadhar_no",
+                    "aadhaar_verification_mode",
+                    "aadhar_verified",
+                  ])}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
             </VStack>
           </Box>

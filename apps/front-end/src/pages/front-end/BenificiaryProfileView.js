@@ -23,6 +23,26 @@ import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 
 import { ChipStatus } from "component/BeneficiaryStatus";
+import { arrList } from "@shiksha/common-lib";
+
+const result = {};
+
+const isObject = (val) => {
+  if (val === null) {
+    return false;
+  }
+  return typeof val === "object";
+};
+
+const objProps = (obj) => {
+  for (let val in obj) {
+    if (isObject(obj[val])) {
+      objProps(obj[val]);
+    } else {
+      result[val] = obj[val];
+    }
+  }
+};
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -52,6 +72,8 @@ export default function BenificiaryProfileView(props) {
       setAlert();
     }
   }, [benificiary]);
+
+  objProps(benificiary);
 
   const enumAPicall = async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -192,7 +214,31 @@ export default function BenificiaryProfileView(props) {
                 {t("PROFILE_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(result, [
+                    "email_id",
+                    "mobile",
+                    "alternative_mobile_number",
+                    "device_type",
+                    "device_ownership",
+                    "mark_as_whatsapp_number",
+                    "father_first_name",
+                    "father_middle_name",
+                    "father_last_name",
+                    "mother_first_name",
+                    "mother_middle_name",
+                    "mother_last_name",
+                    "social_category",
+                    "marital_status",
+                    "first_name",
+                    "middle_name",
+                    "last_name",
+                    "relation",
+                    "contact_number",
+                  ])}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
