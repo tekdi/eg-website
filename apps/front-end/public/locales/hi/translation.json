@@ -813,7 +813,11 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
+<<<<<<< HEAD
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
   "LOADING":"लोड हो रहा है, कृपया प्रतीक्षा करें।"
 
+=======
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+>>>>>>> 4ad7b6a9016d1d109f280d03ee8991ec0d36ecc9
 }
