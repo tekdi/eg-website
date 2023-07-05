@@ -58,14 +58,18 @@ export default function BenificiaryAadhaarDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("AADHAAR_DETAILS")}
               </FrontEndTypo.H3>
-              {/* <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/enrollment-details`);
-                }}
-              /> */}
+              {!benificiary?.aadhar_no && (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  _icon={{ size: "20" }}
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/3`, {
+                      state: { route: true },
+                    });
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
