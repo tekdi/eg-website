@@ -29,7 +29,12 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
+export default function PhotoUpload({
+  aadhar_no,
+  formData,
+  cameraFile,
+  setCameraFile,
+}) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { photoNo } = useParams();
@@ -83,7 +88,11 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
 
   React.useEffect(() => {
     if (!(page < 4)) {
-      navigate(`/profile`);
+      if (!aadhar_no || aadhar_no !== "") {
+        navigate(`/profile/edit/aadhaar_details`);
+      } else {
+        navigate(`/profile`);
+      }
     }
     setFile(formData?.[`profile_photo_${page}`]);
   }, [page, formData]);

@@ -65,10 +65,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [isExistflag, setisExistflag] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
-  const [beneficiaryData, setBeneficiaryData] = React.useState({});
   const id = useParams();
   const navigate = useNavigate();
-
+  const location = useLocation();
   React.useEffect(async () => {
     setuserId(id?.id);
     if (userId) {
@@ -83,7 +82,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   }, [userId]);
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    const route = location?.state?.route;
+    if (route) {
+      navigate(`/beneficiary/${userId}/aadhaardetails`, {
+        state: { id: userId, route: true },
+      });
+    } else {
+      navigate(`/beneficiary/${userId}/2`, {
+        state: { id: userId, route: true },
+      });
+    }
   };
   const ref = React.createRef(null);
 
@@ -267,11 +275,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => {
-          navigate(`/beneficiary/${userId}/2`, {
-            state: { id: userId, route: true },
-          });
-        },
+        onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,

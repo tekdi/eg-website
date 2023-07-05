@@ -52,6 +52,7 @@ const styles = {
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [facilitator, setFacilitator] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
 
   React.useEffect(async () => {
@@ -60,6 +61,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
     }
+    setLoading(false);
   }, []);
 
   const isDocumentUpload = (key = "") => {
@@ -114,6 +116,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   return (
     <Layout
+      loading={loading}
       _appBar={{
         profile_url: facilitator?.profile_photo_1?.name,
         name: [facilitator?.first_name, facilitator?.last_name].join(" "),
