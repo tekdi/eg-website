@@ -11,6 +11,10 @@ export default {
           type: "string",
           title: "FIRST_NAME",
         },
+        middle_name: {
+          type: ["string", "null"],
+          title: "MIDDLE_NAME",
+        },
         last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
