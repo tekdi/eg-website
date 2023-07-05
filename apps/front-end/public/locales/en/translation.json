@@ -801,5 +801,8 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "FACILITATOR_STATUS_ON_HOLD":"On Hold",
+  "HOLD":"On Hold"
+
 }

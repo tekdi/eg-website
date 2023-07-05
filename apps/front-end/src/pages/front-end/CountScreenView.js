@@ -10,6 +10,7 @@ import React from "react";
 export default function TableView({ footerLinks }) {
   React.useEffect(async () => {
     const selectStatus = await benificiaryRegistoryService.getStatusList();
+
     let statuswiseCount =
       await benificiaryRegistoryService.getStatusWiseCount();
     for (let i = 0; i < statuswiseCount?.data?.length; i++) {

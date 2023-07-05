@@ -4,23 +4,16 @@ import {
   AdminLayout as Layout,
   ProgressBar,
   facilitatorRegistryService,
-  H3,
-  H1,
-  H2,
-  BodySmall,
   Loading,
   t,
   authRegistryService,
   ImageView,
   AdminTypo,
-  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
-  Button,
   Center,
-  Heading,
   HStack,
   Text,
   VStack,
@@ -34,7 +27,6 @@ import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import Steper from "component/Steper";
-import Interviewschedule from "./view/Interviewschedule";
 const Experience = (obj) => {
   return (
     <VStack>
