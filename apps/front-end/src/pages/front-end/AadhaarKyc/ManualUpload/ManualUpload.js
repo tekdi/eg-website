@@ -41,8 +41,6 @@ export default function ManualUpload({
   const uplodInputRef = React.useRef();
 
   const handleFileInputChange = async (e) => {
-    console.log("data");
-    console.log(isFront, image?.front, image?.back);
     let file = e.target.files[0];
     if (file.size <= 1048576 * 25) {
       const data = await getBase64(file);

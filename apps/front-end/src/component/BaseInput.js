@@ -178,7 +178,6 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
-  // console.log(label, type, id);
   return (
     <VStack
       style={style}
