@@ -47,12 +47,15 @@ const objProps = (obj) => {
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
+  const [isOpenReject, setIsOpenReject] = React.useState(false);
 
   const [reactivatemodalVisible, setreactivateModalVisible] =
     React.useState(false);
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
   const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
+    React.useState();
+  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
     React.useState();
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
     React.useState();
@@ -79,6 +82,9 @@ export default function BenificiaryProfileView(props) {
     const result = await enumRegistryService.listOfEnum();
     setBenificiaryDropoutReasons(result?.data?.DROPOUT_REASONS);
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
+    setBenificiaryRejectReasons(
+      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+    );
   };
 
   const benificiaryDetails = async () => {
@@ -113,6 +119,21 @@ export default function BenificiaryProfileView(props) {
       setReactivateReasonValue("");
       setreactivateModalVisible(false);
       setIsOpenReactive(false);
+    }
+  };
+
+  const RejectApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.id?.toString(),
+      status: "rejected",
+      reason_for_status_update: reasonValue,
+    };
+
+    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+
+    if (result) {
+      setReasonValue("");
+      setIsOpenReject(false);
     }
   };
   React.useEffect(() => {
@@ -158,6 +179,31 @@ export default function BenificiaryProfileView(props) {
         return <React.Fragment></React.Fragment>;
     }
   }
+
+  function renderRejectButton() {
+    const status = benificiary?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case null:
+        return (
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => setIsOpenReject(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("REJECT")}
+          </FrontEndTypo.Secondarybutton>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
+  }
+
   return (
     <Layout
       _appBar={{
@@ -407,6 +453,7 @@ export default function BenificiaryProfileView(props) {
           </Box>
           {renderDropoutButton()}
           {renderReactivateButton()}
+          {renderRejectButton()}
         </VStack>
       </VStack>
       <Actionsheet
@@ -514,6 +561,61 @@ export default function BenificiaryProfileView(props) {
                 }}
               >
                 {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
+
+      {/* Reject Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenReject}
+        onClose={(e) => setIsOpenReject(false)}
+      >
+        <Actionsheet.Content>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenReject(false)}
+            />
+          </VStack>
+
+          <FrontEndTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </FrontEndTypo.H1>
+
+          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+            {t("PLEASE_MENTION_YOUR_REASON_FOR_REJECTING_THE_CANDIDATE")}
+          </FrontEndTypo.H2>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
+              <VStack alignItems="center" space="1" flex="1">
+                <React.Suspense fallback={<HStack>{t("LOADING")}</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryRejectReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reasonValue}
+                    onChange={(e) => {
+                      setReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
+              </VStack>
+            </VStack>
+            <VStack space="5" pt="5">
+              <FrontEndTypo.Primarybutton
+                flex={1}
+                onPress={() => {
+                  RejectApiCall();
+                }}
+              >
+                {t("REJECT")}
               </FrontEndTypo.Primarybutton>
             </VStack>
           </VStack>

@@ -291,7 +291,7 @@ export default function agFormEdit({ ip }) {
     ["father_first_name", "mother_first_name"].forEach((key) => {
       if (
         key === "father_first_name" &&
-        data?.father_details?.father_first_name?.replaceAll(" ", "") === ""
+        data?.father_details?.father_first_name?.replace(/\s/g, "") === ""
       ) {
         errors?.father_details?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
