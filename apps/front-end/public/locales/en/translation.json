@@ -413,6 +413,7 @@
   "LOGIN_SUCCESS": "Login Success",
   "LOGOUT": "Logout",
   "LONGITUDE": "Longitude",
+  "LOADING":"Loading...",
   "MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS": "Make sure you have the following list of documents with you when you attend the orientation",
   "MALE": "Male",
   "MANDATORY": "Mandatory",
