@@ -539,12 +539,12 @@ export default function BenificiaryProfileView(props) {
           </FrontEndTypo.H1>
 
           <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-            {t("PLEASE_MENTION_YOUR_REASON_FOR_REJECTING_THE_CANDIDATE")}{" "}
+            {t("PLEASE_MENTION_YOUR_REASON_FOR_REJECTING_THE_CANDIDATE")}
           </FrontEndTypo.H2>
           <VStack space="5">
             <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
               <VStack alignItems="center" space="1" flex="1">
-                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                <React.Suspense fallback={<HStack>{t("LOADING")}</HStack>}>
                   <CustomRadio
                     options={{
                       enumOptions: benificiaryRejectReasons?.map((e) => ({
