@@ -22,8 +22,6 @@ import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -31,20 +29,15 @@ import {
   H3,
   IconByName,
   BodySmall,
-  filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
-  updateSchemaEnum,
   uploadRegistryService,
   AgRegistryService,
   benificiaryRegistoryService,
   ImageView,
-  dateOfBirth,
   enrollmentDateOfBirth,
   FrontEndTypo,
+  getOptions,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
@@ -179,57 +172,11 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema?.["properties"]?.[key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    if (newProperties?.type === "array") {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            items: {
-              ...(properties?.items ? properties?.items : {}),
-              ...(_.isEmpty(arr) ? {} : enumObj),
-            },
-          },
-        },
-      };
-    } else {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            ...(_.isEmpty(arr) ? {} : enumObj),
-          },
-        },
-      };
-    }
-  };
   React.useEffect(async () => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
@@ -293,6 +240,11 @@ export default function App({ facilitator, id, ip, onClick }) {
       const required = ["enrollment_status"];
 
       setSchema({ ...constantSchema, properties, required });
+    } else {
+      const properties1 = schema1.properties;
+      const constantSchema = properties1[1];
+      const { subjects, ...properties } = constantSchema?.properties;
+      setSchema({ ...constantSchema, properties });
     }
 
     let enrolled_for_board = qData?.result?.program_beneficiaries
@@ -313,7 +265,6 @@ export default function App({ facilitator, id, ip, onClick }) {
         qData?.result?.program_beneficiaries?.payment_receipt_document_id,
     });
     const stringsArray = subjectData?.map((number) => number?.toString());
-
     setFormData({
       ...formData,
       enrollment_status: enrollment_status ? enrollment_status : "",
@@ -328,7 +279,7 @@ export default function App({ facilitator, id, ip, onClick }) {
           ? ""
           : enrollment_number
           ? enrollment_number
-          : "",
+          : undefined,
       enrollment_date: enrollment_date ? enrollment_date : "",
       subjects:
         enrollment_status === "other" ? [] : stringsArray ? stringsArray : [],
@@ -407,7 +358,10 @@ export default function App({ facilitator, id, ip, onClick }) {
       };
       setErrors(newErrors);
     }
-    if (typeof e?.formData?.enrollment_number !== "number") {
+    if (
+      typeof e?.formData?.enrollment_number !== "number" &&
+      typeof e?.formData?.enrollment_number !== "undefined"
+    ) {
       const newErrors = {
         enrollment_number: {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
@@ -464,19 +418,32 @@ export default function App({ facilitator, id, ip, onClick }) {
         setUploadPayment(false);
       } else if (data?.enrollment_status === "other") {
         setUploadPayment(true);
-        const { ...properties } = constantSchema?.properties;
-        const required = ["enrollment_status"];
+        if (!data?.enrolled_for_board) {
+          const { subjects, ...properties } = constantSchema?.properties;
+          const required = ["enrollment_status"];
+          setSchema({ ...constantSchema, properties, required });
+        } else {
+          const { ...properties } = constantSchema?.properties;
+          const required = ["enrollment_status"];
 
-        setSchema({ ...constantSchema, properties, required });
+          setSchema({ ...constantSchema, properties, required });
+        }
+
         const newData = { ...formData, ...data };
         setFormData(newData);
         setUploadPayment(true);
       } else {
-        setSchema(constantSchema);
-        setUploadPayment(true);
+        if (!data?.enrolled_for_board) {
+          const properties1 = schema1.properties;
+          const constantSchema = properties1[1];
+          const { subjects, ...properties } = constantSchema?.properties;
+          setSchema({ ...constantSchema, properties });
+        } else {
+          setSchema(constantSchema);
+          setUploadPayment(true);
+        }
       }
     }
-
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -501,12 +468,25 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_status === "other"
       ) {
         let subjects = await enumRegistryService.getSubjects(filters);
-        newSchema = getOptions(newSchema, {
-          key: "subjects",
-          arr: subjects ? subjects?.data : [],
-          title: "name",
-          value: "id",
-        });
+        newSchema = getOptions(
+          {
+            ...newSchema,
+            properties: {
+              ...newSchema["properties"],
+              subjects: {
+                type: "array",
+                label: "SELECT_SUBJECTS",
+                uniqueItems: true,
+              },
+            },
+          },
+          {
+            key: "subjects",
+            arr: subjects ? subjects?.data : [],
+            title: "name",
+            value: "id",
+          }
+        );
       }
 
       newSchema = getOptions(newSchema, {
@@ -525,6 +505,7 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
     setSchema(newSchema);
   }, [formData]);
+
   const validation = () => {
     const newErrors = {};
     if (formData?.edit_page_type) {
@@ -603,7 +584,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_date &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
-        formData?.subjects.length > 1
+        formData?.subjects.length >= 1
       ) {
         const updateDetails = await AgRegistryService.updateAg(
           formData,
@@ -614,8 +595,6 @@ export default function App({ facilitator, id, ip, onClick }) {
             enrollment_date: formData?.enrollment_date,
           },
         });
-        // navigate(`/beneficiary/profile/${userId}`);
-        // console("hi");
       } else {
         validation();
       }

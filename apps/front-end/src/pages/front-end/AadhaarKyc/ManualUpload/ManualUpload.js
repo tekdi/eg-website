@@ -160,7 +160,12 @@ export default function ManualUpload({
               <FrontEndTypo.H3 color="textGreyColor.800">
                 {t("UPLOAD_A_PHOTO_OR_SCAN_OF_YOUR_CARD")}
               </FrontEndTypo.H3>
-              <FrontEndTypo.H3 mt="4" bold color="textMaroonColor.400">
+              <FrontEndTypo.H3
+                textAlign="center"
+                mt="4"
+                bold
+                color="textMaroonColor.400"
+              >
                 {t("UPLOADED_AADHAR_NOT_EDITABLE")}
               </FrontEndTypo.H3>
             </VStack>
@@ -178,10 +183,13 @@ export default function ManualUpload({
               }}
             >
               {(isFront && image?.front) || (!isFront && image?.back) ? (
-                <img
-                  src={(isFront && image?.front) || (!isFront && image?.back)}
+                <Image
+                  source={{
+                    uri: (isFront && image?.front) || (!isFront && image?.back),
+                  }}
                   alt="front image"
-                  style={{ widt: "auto", maxWidth: "480px", height: "196px" ,filter:'grayscale(0%)' }}
+                  size={"2xl"}
+                  resizeMode="contain"
                 />
               ) : (
                 <VStack alignItems="center" space="4">
@@ -297,20 +305,24 @@ export default function ManualUpload({
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("FRONT_VIEW")}
               </FrontEndTypo.H2>
-              <img
-                src={image?.front}
+              <Image
+                source={{
+                  uri: image?.front,
+                }}
                 alt="front image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)' }}
+                size={"2xl"}
+                resizeMode="contain"
               />
             </VStack>
             <VStack alignItems="center" space={"3"}>
               <FrontEndTypo.H2 color="worksheetBoxText.400">
                 {t("BACK_VIEW")}
               </FrontEndTypo.H2>
-              <img
+              <Image
                 src={image?.back}
                 alt="back image"
-                style={{ width: "auto", maxWidth: "280px", height: "180px" ,filter:'grayscale(0%)'}}
+                size={"2xl"}
+                resizeMode="contain"
               />
             </VStack>
             <FrontEndTypo.Primarybutton
