@@ -57,6 +57,9 @@ export default function StatusButton({ data, setData }) {
   };
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
+    console.log(data);
+    //      setShowModal({ name, ...item });
+
     setStatusList([
       {
         status: "screened",
@@ -103,6 +106,7 @@ export default function StatusButton({ data, setData }) {
         name: "QUIT",
         reason: true,
       },
+
       {
         status: "rusticate",
         btnStatus: "error",
@@ -185,23 +189,31 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      {statusList.map(({ name, ...item }) => (
+      {enumOptions?.FACILITATOR_STATUS?.map(({ title, ...item }) => (
         <AdminTypo.StatusButton
-          key={name}
-          {...item}
-          status={item?.btnStatus}
-          isDisabled={!disabledBtn.includes(item?.status)}
+          key={title}
+          status={
+            item?.value === "rusticate" ||
+            item?.value === "on_hold" ||
+            item?.value === "quit" ||
+            item?.value === "rejected"
+              ? "error"
+              : "success"
+          }
+          isDisabled={!disabledBtn.includes(item?.value)}
           onPress={(e) => {
-            setShowModal({ name, ...item });
+            setShowModal({ title, ...item });
             setReason();
           }}
         >
-          {t(name)}
+          {t(title)}
         </AdminTypo.StatusButton>
       ))}
       <Modal
         size={"xl"}
-        isOpen={statusList.map((e) => e?.status).includes(showModal?.status)}
+        isOpen={enumOptions?.FACILITATOR_STATUS?.map((e) => e?.title).includes(
+          showModal?.title
+        )}
         onClose={() => setShowModal()}
       >
         <Modal.Content rounded="2xl">
@@ -209,7 +221,7 @@ export default function StatusButton({ data, setData }) {
           <Modal.Header borderBottomWidth={0}>
             <HStack alignItems="center" space={2} justifyContent="center">
               <AdminTypo.H1 color="textGreyColor.500" bold>
-                {t(showModal?.name)}
+                {t(showModal?.value)}
               </AdminTypo.H1>
             </HStack>
           </Modal.Header>
@@ -230,17 +242,17 @@ export default function StatusButton({ data, setData }) {
                     onChange={(e) => setReason(e)}
                     items={
                       enumOptions[
-                        showModal.status === "quit"
+                        showModal.value === "quit"
                           ? "FACILITATOR_REASONS_FOR_QUIT"
-                          : showModal.status === "rusticate"
+                          : showModal.value === "rusticate"
                           ? "FACILITATOR_REASONS_FOR_RUSTICATE"
-                          : showModal.status === "rejected"
+                          : showModal.value === "rejected"
                           ? "FACILITATOR_REASONS_FOR_REJECTED"
                           : []
                       ]
                     }
                   />
-                  {console.log(showModal.status)}
+                  {console.log(showModal.value)}
                   {reason &&
                   ![
                     "Incomplete Form",
@@ -281,11 +293,11 @@ export default function StatusButton({ data, setData }) {
                         reason?.toLowerCase() != "other") ||
                       !showModal?.reason
                     ) {
-                      update(showModal?.status);
+                      update(showModal?.value);
                     }
                   }}
                 >
-                  {t(showModal?.name)}
+                  {t(showModal?.title)}
                 </AdminTypo.PrimaryButton>
               </HStack>
             </VStack>
