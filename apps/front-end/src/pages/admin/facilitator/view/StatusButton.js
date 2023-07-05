@@ -41,12 +41,6 @@ const statusList = [
     name: "SCREEN_APPLICATION",
   },
   {
-    status: "rejected",
-    btnStatus: "error",
-    name: "REJECT_APPLICATION",
-    reason: true,
-  },
-  {
     status: "shortlisted_for_orientation",
     btnStatus: "success",
     name: "SHORTLIST_FOR_ORIENTATION",
@@ -72,6 +66,12 @@ const statusList = [
     btnStatus: "success",
     colorScheme: "success",
     name: "SELECT_PRERAK",
+  },
+  {
+    status: "rejected",
+    btnStatus: "error",
+    name: "REJECT_APPLICATION",
+    reason: true,
   },
   {
     status: "quit",
