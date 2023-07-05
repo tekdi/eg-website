@@ -113,8 +113,8 @@ const Docschecklist = () => {
               setStatus({ ...status, jan_adhar: itemValue })
             }
           >
-            {Array.isArray(m) &&
-              m.map((item, i) => {
+            {Array.isArray(selectData) &&
+              selectData.map((item, i) => {
                 return (
                   <Select.Item
                     key={i}
