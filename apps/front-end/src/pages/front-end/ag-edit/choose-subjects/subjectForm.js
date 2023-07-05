@@ -547,7 +547,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 10) {
+    if (file && file.size <= 1048576 * 10) {
       const form_data = new FormData();
       const item = {
         file: file,

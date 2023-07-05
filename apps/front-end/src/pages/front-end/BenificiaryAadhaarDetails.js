@@ -58,14 +58,18 @@ export default function BenificiaryAadhaarDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("AADHAAR_DETAILS")}
               </FrontEndTypo.H3>
-              {/* <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/enrollment-details`);
-                }}
-              /> */}
+              {!benificiary?.aadhar_no && (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  _icon={{ size: "20" }}
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/3`, {
+                      state: { route: true },
+                    });
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
@@ -147,15 +151,15 @@ export default function BenificiaryAadhaarDetails() {
                   <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                     {t("COMPLETE_AADHAAR_VERIFICATION")}
                   </FrontEndTypo.H2>
-                  {/* <FrontEndTypo.Primarybutton
+                  <FrontEndTypo.Primarybutton
                     mt="10"
                     onPress={() => {
-                      navigate(`/aadhaar-kyc/${id}`);
+                      navigate(`/aadhaar-kyc/${id}/okyc2`);
                     }}
                   >
                     {t("AADHAAR_NUMBER_KYC")}
                   </FrontEndTypo.Primarybutton>
-                  <FrontEndTypo.Secondarybutton
+                  {/* <FrontEndTypo.Secondarybutton
                     my="4"
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/QR`);
