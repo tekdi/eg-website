@@ -340,7 +340,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (step === "basic_details") {
       ["first_name"].forEach((key) => {
         validation({
-          data: data?.[key]?.replaceAll(" ", ""),
+          data:
+            typeof data?.[key] === "string"
+              ? data?.[key].replaceAll(" ", "")
+              : data?.[key],
           key,
           errors,
           message: `${t("REQUIRED_MESSAGE")} ${t(
