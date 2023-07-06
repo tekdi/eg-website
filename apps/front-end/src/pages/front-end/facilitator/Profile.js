@@ -10,6 +10,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { objProps } from "@shiksha/common-lib";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
@@ -26,6 +27,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     setFacilitator(result);
   };
 
+  const res = objProps(facilitator);
   return (
     <Layout
       _appBar={{
@@ -68,29 +70,17 @@ export default function Profile({ userTokenInfo, footerLinks }) {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(
-                    {
-                      ...facilitator,
-                      ref_name: facilitator?.references?.name,
-                      ref_number: facilitator?.references?.contact_number,
-                    },
-                    [
-                      "first_name",
-                      "last_name",
-                      // "middle_name",
-                      "dob",
-                      "mobile",
-                      "district",
-                      "block",
-                      "village",
-                      "gender",
-                      "marital_status",
-                      "social_category",
-                      "availability",
-                      "ref_name",
-                      "ref_number",
-                    ]
-                  )}
+                  value={arrList(res, [
+                    "device_ownership",
+                    "mobile",
+                    "device_type",
+                    "gender",
+                    "marital_status",
+                    "social_category",
+                    "name",
+                    "contact_number",
+                    "availability",
+                  ])}
                   size="xs"
                   colorScheme="info"
                 />
@@ -199,7 +189,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(facilitator, [
+                  value={arrList(res, [
                     "aadhar_no",
                     "aadhaar_verification_mode",
                     "aadhar_verified",
