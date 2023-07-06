@@ -206,7 +206,7 @@ export default function agFormEdit({ ip }) {
     }
     enumObj = {
       ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
+      ["enumNames"]: arrData?.map((e) => `${e?.[title]}`),
     };
     enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
     const newProperties = schema["properties"][key];
