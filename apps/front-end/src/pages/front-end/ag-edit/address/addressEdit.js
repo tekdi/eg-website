@@ -365,7 +365,7 @@ export default function agFormEdit({ ip }) {
     ["grampanchayat"].forEach((key) => {
       if (
         key === "grampanchayat" &&
-        data?.grampanchayat?.replaceAll(" ", "") === ""
+        data?.grampanchayat?.replace(/\s/g, "") === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
