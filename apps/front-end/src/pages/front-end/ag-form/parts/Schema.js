@@ -12,7 +12,7 @@ export default {
           title: "FIRST_NAME",
         },
         middle_name: {
-          type: ["string", "null"],
+          type: "string",
           title: "MIDDLE_NAME",
         },
         last_name: {
