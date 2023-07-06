@@ -67,9 +67,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const isDocumentUpload = (key = "") => {
     let isAllow = 0;
     if (key === "" || key === "experience") {
-      const expData = facilitator?.experience?.filter(
-        (e) => e?.reference?.document_id
-      );
+      const expData = Array.isArray(facilitator?.experience)
+        ? facilitator?.experience.filter((e) => e?.reference?.document_id)
+        : [];
       if (expData?.length > 0) {
         isAllow++;
       }
@@ -375,9 +375,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <FrontEndTypo.H2 bold>
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
               </FrontEndTypo.H2>
-              {/* <FrontEndTypo.Primarybutton
+              <FrontEndTypo.Primarybutton
                 onPress={(e) =>
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/aadhaar-number`, {
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
                     state: "/",
                   })
                 }
@@ -385,7 +385,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 {t("AADHAR_NUMBER_KYC")}
               </FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton
+              {/* <FrontEndTypo.Secondarybutton
                 width="100%"
                 onPress={(e) =>
                   navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, {

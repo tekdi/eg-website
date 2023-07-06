@@ -36,7 +36,7 @@ export default {
         },
 
         alternative_mobile_number: {
-          type: "number",
+          type: ["number", "null"],
           title: "ALTERNATIVE_NUMBER",
         },
         alternative_device_type: {

@@ -17,7 +17,7 @@ const CRadio = ({ items, onChange }) => {
       onChange={onChange}
     >
       <HStack alignItems="center" space={3} flexWrap="wrap">
-        {items.map((item, key) => (
+        {items?.map((item, key) => (
           <Radio key={key} value={item?.value} size="sm">
             {t(item?.title)}
           </Radio>
@@ -34,66 +34,12 @@ const styles = {
     height: "100%",
   },
 };
-const statusList = [
-  {
-    status: "screened",
-    btnStatus: "success",
-    name: "SCREEN_APPLICATION",
-  },
-  {
-    status: "rejected",
-    btnStatus: "error",
-    name: "REJECT_APPLICATION",
-    reason: true,
-  },
-  {
-    status: "shortlisted_for_orientation",
-    btnStatus: "success",
-    name: "SHORTLIST_FOR_ORIENTATION",
-  },
-  {
-    status: "pragati_mobilizer",
-    btnStatus: "success",
-    name: "PRAGATI_MOBILIZER",
-  },
-  {
-    status: "selected_for_training",
-    btnStatus: "success",
-    name: "SELECT_FOR_TRAINING",
-  },
-  {
-    status: "selected_for_onboarding",
-    btnStatus: "success",
-    colorScheme: "success",
-    name: "SELECT_FOR_ONBOARDING",
-  },
-  {
-    status: "selected_prerak",
-    btnStatus: "success",
-    colorScheme: "success",
-    name: "SELECT_PRERAK",
-  },
-  {
-    status: "quit",
-    btnStatus: "error",
-    colorScheme: "danger",
-    name: "QUIT",
-    reason: true,
-  },
-  {
-    status: "rusticate",
-    btnStatus: "error",
-    colorScheme: "danger",
-    name: "RUSTICATE",
-    reason: true,
-  },
-];
 
 export default function StatusButton({ data, setData }) {
   const [showModal, setShowModal] = React.useState();
   const [reason, setReason] = React.useState();
   const [disabledBtn, setDisabledBtn] = React.useState([]);
-  const [color, setColor] = React.useState();
+  const [statusList, setStatusList] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const { t } = useTranslation();
 
@@ -110,53 +56,58 @@ export default function StatusButton({ data, setData }) {
   };
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
+    const statusListNew = data?.data.FACILITATOR_STATUS.map((item) => {
+      let buttonStatus = "success";
+      let reasonStatus = false;
+      if (["rejected", "quit", "rusticate", "on_hold"].includes(item?.value)) {
+        buttonStatus = "error";
+        reasonStatus = true;
+      }
+      return {
+        status: item.value,
+        name: item.title,
+        btnStatus: buttonStatus,
+        reason: reasonStatus,
+      };
+    });
+    setStatusList(statusListNew);
+
     setEnumOptions(data?.data);
   }, []);
-
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
+      case "applied":
+        setDisabledBtn(["on_hold"]);
+        break;
       case "screened":
-        setDisabledBtn([
-          "rejected",
-          "shortlisted_for_orientation",
-          "quit",
-          "rusticate",
-        ]);
+        setDisabledBtn(["on_hold", "quit"]);
         break;
       case "rejected":
-        setDisabledBtn(["screened", "quit", "rusticate"]);
+        setDisabledBtn(["on_hold", "selected_prerak"]);
         break;
       case "shortlisted_for_orientation":
-        setDisabledBtn(["pragati_mobilizer", "rejected", "quit", "rusticate"]);
+        setDisabledBtn(["quit"]);
         break;
       case "pragati_mobilizer":
-        setDisabledBtn([
-          "selected_for_training",
-          "rejected",
-          "quit",
-          "rusticate",
-        ]);
+        setDisabledBtn(["quit"]);
         break;
       case "selected_for_training":
-        setDisabledBtn([
-          "selected_for_onboarding",
-          "rejected",
-          "quit",
-          "rusticate",
-        ]);
+        setDisabledBtn(["quit"]);
         break;
       case "selected_for_onboarding":
-        setDisabledBtn(["selected_prerak", "rejected", "quit", "rusticate"]);
+        setDisabledBtn(["quit"]);
         break;
       case "selected_prerak":
-        setDisabledBtn(["rejected", "quit", "rusticate"]);
-        break;
-      case "quit":
-        ["rejected", "rusticate"];
-        break;
-      case "rusticate":
         setDisabledBtn([]);
         break;
+      case "quit":
+        setDisabledBtn(["selected_prerak", "on_hold"]);
+        break;
+      case "rusticate":
+        setDisabledBtn(["on_hold", "selected_prerak"]);
+        break;
+      case "on_hold":
+        setDisabledBtn(["rusticate", "quit"]);
       default:
         setDisabledBtn(["screened", "rejected", "quit", "rusticate"]);
     }
@@ -170,148 +121,7 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      {/* <AdminTypo.StatusButton
-        status="success"
-        onPress={() => {
-          setShowModal("screened");
-          setReason();
-        }}
-        isDisabled={!disabledBtn.includes("screened")}
-      >
-        {t("SCREEN_APPLICATION")}
-      </AdminTypo.StatusButton> */}
-      {/* <Modal
-        size={"xl"}
-        isOpen={showModal === "screened"}
-        onClose={() => setShowModal()}
-      >
-        <Modal.Content {...styles.modalxxl}>
-          <Modal.CloseButton />
-          <Modal.Header bg="white">
-            <VStack>
-              <HStack justifyContent="center" space={2}>
-                <IconByName
-                  isDisabled
-                  name="CheckboxCircleFillIcon"
-                  color="SuccessColor"
-                  _icon={{ size: "30px" }}
-                />
-                <AdminTypo.H2 bold color="textGreyColor.500">
-                  {t("APPLICATION_APPROVED")}
-                </AdminTypo.H2>
-              </HStack>
-              <AdminTypo.H6 color="textGreyColor.500" textAlign="center">
-                {t(
-                  "YOU_CAN_NOW_SCHEDULE_AN_INTERVIEW_WITH_THE_APPROVED_CANDIDATE"
-                )}
-              </AdminTypo.H6>
-            </VStack>
-          </Modal.Header>
-          <Modal.Body p="5" bg="white">
-            <VStack space={5}>
-              <HStack alignItems="center" space={2}>
-                <IconByName isDisabled name="TimeLineIcon" />
-                <AdminTypo.H1 color="textGreyColor.800">
-                  {t("SCHEDULE_AN_INTERVIEW")}
-                </AdminTypo.H1>
-              </HStack>
-
-              <HStack alignItems="center" space={2}>
-                <VStack>
-                  <HStack justifyContent="flex-end">
-                    <HStack alignItems="center" space={"2"} p="1">
-                      <AdminTypo.H4 color="textGreyColor.500" bold>
-                        for {data?.first_name} {data?.last_name}
-                      </AdminTypo.H4>
-                    </HStack>
-                    <IconByName isDisabled name="UserLineIcon" />
-                  </HStack>
-                  <HStack alignItems="center" space={5}>
-                    <HStack alignItems="center" space={6}>
-                      <IconByName
-                        isDisabled
-                        name="TimeLineIcon"
-                        _icon={{ size: "20px" }}
-                        color="textGreyColor.100"
-                      />
-                      <AdminTypo.H6 color="textGreyColor.100">
-                        Time
-                      </AdminTypo.H6>
-                      <AdminTypo.H5
-                        borderBottomWidth="1"
-                        borderBottomStyle="dotted"
-                      >
-                        {moment().format("dddd, Do MMM")}
-                      </AdminTypo.H5>
-                    </HStack>
-                    <HStack alignItems="center" space={3} py="2">
-                      <Chip bg="#e9e9e9">
-                        <H3>11:00</H3>
-                      </Chip>
-                      <H3>to</H3>
-                      <Chip bg="#e9e9e9">
-                        <H3>12:00</H3>
-                      </Chip>
-                    </HStack>
-                  </HStack>
-                  <HStack alignItems="center" space={4} py="2">
-                    <HStack alignItems="center" space={2}>
-                      <IconByName
-                        isDisabled
-                        name="Notification2LineIcon"
-                        _icon={{ size: "20px" }}
-                        color="textGreyColor.100"
-                      />
-                      <AdminTypo.H6 color="textGreyColor.100">
-                        {t("REMINDER")}
-                      </AdminTypo.H6>
-                    </HStack>
-                    <Chip bg="textGreyColor">
-                      <HStack alignItems="center" space={"2"} p="1">
-                        <H2>{t("10_MINUTES_BEFORE")}</H2>
-                      </HStack>
-                    </Chip>
-                  </HStack>
-                  <HStack alignItems="center" space={5} py="2">
-                    <HStack alignItems="center" space={2}>
-                      <IconByName
-                        isDisabled
-                        name="MapPinLineIcon"
-                        _icon={{ size: "20px" }}
-                        color="textGreyColor.100"
-                      />
-                      <AdminTypo.H6 color="textGreyColor.100">
-                        {t("LOCATION")}
-                      </AdminTypo.H6>
-                    </HStack>
-                    <HStack alignItems="center" space={1}>
-                      <CRadio
-                        items={[
-                          { label: t("ON_PHONE"), value: "on_phone" },
-                          { label: t("Offline"), value: "offline" },
-                        ]}
-                      />
-                    </HStack>
-                  </HStack>
-                  <Input placeholder={t("ADD_ADDRESS")} />
-                </VStack>
-                <HStack flex={0.3}></HStack>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-          <Modal.Footer>
-            <HStack width="100%" justifyContent="space-between">
-              <AdminTypo.Secondarybutton onPress={() => setShowModal()}>
-                {t("CANCEL")}
-              </AdminTypo.Secondarybutton>
-              <AdminTypo.PrimaryButton onPress={() => update("screened")}>
-                {t("SCHEDULE")}
-              </AdminTypo.PrimaryButton>
-            </HStack>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal> */}
-      {statusList.map(({ name, ...item }) => (
+      {statusList?.map(({ name, ...item }) => (
         <AdminTypo.StatusButton
           key={name}
           {...item}
@@ -327,7 +137,7 @@ export default function StatusButton({ data, setData }) {
       ))}
       <Modal
         size={"xl"}
-        isOpen={statusList.map((e) => e?.status).includes(showModal?.status)}
+        isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
         onClose={() => setShowModal()}
       >
         <Modal.Content rounded="2xl">
@@ -362,11 +172,12 @@ export default function StatusButton({ data, setData }) {
                           ? "FACILITATOR_REASONS_FOR_RUSTICATE"
                           : showModal.status === "rejected"
                           ? "FACILITATOR_REASONS_FOR_REJECTED"
+                          : showModal.status === "on_hold"
+                          ? "FACILITATOR_REASONS_FOR_ON_REJECTED"
                           : []
                       ]
                     }
                   />
-                  {console.log(showModal.status)}
                   {reason &&
                   ![
                     "Incomplete Form",
@@ -374,12 +185,20 @@ export default function StatusButton({ data, setData }) {
                     "Less experienced",
                   ].includes(reason) ? (
                     <Input
-                      onChange={(e) => setReason(e?.target?.value)}
+                      onChange={(e) => {
+                        setReason(e?.target?.value);
+                      }}
                       variant={"underlined"}
                       placeholder={t("MENTION_YOUR_REASON")}
                     />
                   ) : (
-                    <React.Fragment />
+                    <Input
+                      onChange={(e) => {
+                        setReason(e?.target?.value);
+                      }}
+                      variant={"underlined"}
+                      placeholder={t("MENTION_YOUR_REASON")}
+                    />
                   )}
                 </VStack>
               ) : (
