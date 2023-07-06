@@ -81,9 +81,7 @@ const Docschecklist = () => {
   return (
     <Layout
       _appBar={{
-        name: `${benificiary?.first_name} ${
-          benificiary?.last_name && benificiary?.last_name
-        }`,
+        name: t("DOCUMENTS_CHECKLIST"),
         lang,
         setLang,
         onPressBackButton: (e) => {
