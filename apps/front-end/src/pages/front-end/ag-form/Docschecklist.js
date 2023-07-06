@@ -111,15 +111,16 @@ const Docschecklist = () => {
               setStatus({ ...status, jan_adhar: itemValue })
             }
           >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
+            {Array.isArray(selectData) &&
+              selectData.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
           </Select>
         </HStack>
 

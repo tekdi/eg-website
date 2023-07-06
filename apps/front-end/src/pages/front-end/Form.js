@@ -361,22 +361,24 @@ export default function App({ facilitator, ip, onClick }) {
         errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+    ["grampanchayat", "first_name", "last_name", "middle_name"].forEach(
+      (key) => {
+        if (
+          key === "first_name" &&
+          data?.first_name?.replaceAll(" ", "") === ""
+        ) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
+        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
       }
-    });
+    );
     ["vo_experience", "experience"].forEach((keyex) => {
       data?.[keyex]?.map((item, index) => {
         ["role_title", "organization", "description"].forEach((key) => {
