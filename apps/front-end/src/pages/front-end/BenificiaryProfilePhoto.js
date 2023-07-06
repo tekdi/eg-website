@@ -25,7 +25,7 @@ export default function BenificiaryProfilePhoto() {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
+    if (file && file.size <= 1048576 * 25) {
       if (page < 4) {
         const result = await uploadProfile(file, `profile_photo_${page}`);
         const data = result?.data?.insert_documents?.returning?.[0];

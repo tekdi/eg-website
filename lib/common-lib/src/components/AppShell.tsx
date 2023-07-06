@@ -38,7 +38,7 @@ function AppShell({
 
   React.useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search)
-    const searchParams = Object.fromEntries(urlSearchParams.entries())
+    const searchParams = Object?.fromEntries(urlSearchParams.entries())
     if (searchParams.token != undefined) {
       localStorage.setItem('token', searchParams.token)
       setToken(searchParams.token)

@@ -7,6 +7,7 @@ import {
   FrontEndTypo,
   SelectStyle,
   ImageView,
+  Loading,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
@@ -17,9 +18,7 @@ const List = ({ data }) => {
   const navigate = useNavigate();
   return (
     <VStack space="4" p="4" alignContent="center">
-      {(data && data?.length <= 0) || data?.constructor?.name !== "Array" ? (
-        <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
-      ) : (
+      {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
@@ -183,6 +182,8 @@ const List = ({ data }) => {
             </VStack>
           </VStack>
         ))
+      ) : (
+        <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
       )}
     </VStack>
   );
@@ -206,6 +207,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
   const [searchBenficiary, setSearchBenficiary] = React.useState("");
+  const [loadingList, setLoadingList] = React.useState(true);
   const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -229,6 +231,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     );
 
     if (!result?.error) {
+      setLoadingList(false);
       setData(result);
     } else {
       setData([]);
@@ -332,13 +335,14 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             accessibilityLabel="Select a position for Menu"
           >
             <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-            {selectStatus?.map((option, index) => (
-              <Select.Item
-                key={index}
-                label={t(option.title)}
-                value={option.value}
-              />
-            ))}
+            {Array.isArray(selectStatus) &&
+              selectStatus.map((option, index) => (
+                <Select.Item
+                  key={index}
+                  label={t(option.title)}
+                  value={option.value}
+                />
+              ))}
           </SelectStyle>
         </Box>
         <Box flex="2">
@@ -365,7 +369,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           </SelectStyle>
         </Box>
       </HStack>
-      <List data={data} />
+      {!loadingList ? <List data={data} /> : <Loading />}
     </Layout>
   );
 }

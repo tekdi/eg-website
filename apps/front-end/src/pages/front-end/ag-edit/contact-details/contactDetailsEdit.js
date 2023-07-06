@@ -36,6 +36,9 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   uploadRegistryService,
+  sendAndVerifyOtp,
+  FrontEndTypo,
+  CustomOTPBox,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -75,6 +78,9 @@ export default function agFormEdit({ ip }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [userId, setuserId] = React.useState(id);
+  const [verifyOtpData, setverifyOtpData] = useState();
+  const [otpButton, setOtpButton] = React.useState(false);
+  const [mobileConditon, setMobileConditon] = React.useState(false);
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
@@ -87,7 +93,6 @@ export default function agFormEdit({ ip }) {
     var FileSaver = require("file-saver");
     FileSaver.saveAs(`${image}`, "image.png");
   };
-
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
@@ -222,6 +227,75 @@ export default function agFormEdit({ ip }) {
       setSubmitBtn(t("NEXT"));
     }
   }, []);
+  const formSubmitCreate = async (formData) => {};
+  const otpfunction = async () => {
+    if (formData?.mobile.length < 10) {
+      const data = await formSubmitCreate(formData);
+
+      const newErrors = {
+        mobile: {
+          __errors:
+            data?.error?.constructor?.name === "String"
+              ? [data?.error]
+              : data?.error?.constructor?.name === "Array"
+              ? data?.error
+              : [t("MINIMUM_LENGTH_IS_10")],
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
+      const data = await formSubmitCreate(formData);
+      const newErrors = {
+        mobile: {
+          __errors:
+            data?.error?.constructor?.name === "String"
+              ? [data?.error]
+              : data?.error?.constructor?.name === "Array"
+              ? data?.error
+              : [t("PLEASE_ENTER_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+      ...formData,
+      hash: localStorage.getItem("hash"),
+    });
+
+    setverifyOtpData(otpData);
+    if (status === true) {
+      const data = await formSubmitCreate(formData);
+
+      if (data?.error) {
+        const newErrors = {
+          mobile: {
+            __errors:
+              data?.error?.constructor?.name === "String"
+                ? [data?.error]
+                : data?.error?.constructor?.name === "Array"
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        submit();
+      }
+    } else if (status === false) {
+      const newErrors = {
+        otp: {
+          __errors: [t("USER_ENTER_VALID_OTP")],
+        },
+      };
+      setErrors(newErrors);
+    } else {
+      setSchema(newSchema);
+      setOtpButton(true);
+    }
+  };
 
   const formSubmitUpdate = async (formData) => {
     if (id) {
@@ -275,6 +349,19 @@ export default function agFormEdit({ ip }) {
           },
         };
         setErrors(newErrors);
+        setMobileConditon(false);
+      } else {
+        setMobileConditon(true);
+      }
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties;
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+        setFormData((e) => {
+          const { otp, ...fData } = e;
+          return fData;
+        });
+        setOtpButton(false);
       }
     }
     if (id === "root_alternative_mobile_number") {
@@ -346,7 +433,7 @@ export default function agFormEdit({ ip }) {
         ...newData,
         alternative_device_ownership: null,
         alternative_device_type: null,
-        alternative_mobile_number: data?.alternative_mobile_number,
+        alternative_mobile_number: null,
       });
     }
   };
@@ -403,7 +490,7 @@ export default function agFormEdit({ ip }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR }}
+            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -425,14 +512,25 @@ export default function agFormEdit({ ip }) {
               transformErrors,
             }}
           >
-            <Button
-              mt="3"
-              variant={"primary"}
-              type="submit"
-              onPress={() => submit()}
-            >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </Button>
+            {mobileConditon ? (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={otpfunction}
+              >
+                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+              </FrontEndTypo.Primarybutton>
+            ) : (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={() => submit()}
+              >
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            )}
           </Form>
         ) : (
           <React.Fragment />
