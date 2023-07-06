@@ -433,7 +433,7 @@ export default function agFormEdit({ ip }) {
         ...newData,
         alternative_device_ownership: null,
         alternative_device_type: null,
-        alternative_mobile_number: data?.alternative_mobile_number,
+        alternative_mobile_number: null,
       });
     }
   };
