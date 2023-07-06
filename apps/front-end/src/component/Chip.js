@@ -63,6 +63,10 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("RUSTICATE"));
         setColor("rejectedColor");
         break;
+      case "on_hold":
+        setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
+        setColor("rejectedColor");
+        break;
       default:
         setNewStatus(t("APPLIED"));
         setColor("appliedColor");
