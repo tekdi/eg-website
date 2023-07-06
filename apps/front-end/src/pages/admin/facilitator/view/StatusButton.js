@@ -58,21 +58,17 @@ export default function StatusButton({ data, setData }) {
     const data = await enumRegistryService.listOfEnum();
     const statusListNew = data?.data.FACILITATOR_STATUS.map((item) => {
       let buttonStatus = "success";
+      let reasonStatus = false;
       if (["rejected", "quit", "rusticate", "on_hold"].includes(item?.value)) {
         buttonStatus = "error";
-        return {
-          status: item.value,
-          name: item.title,
-          btnStatus: buttonStatus,
-          reason: true,
-        };
-      } else {
-        return {
-          status: item.value,
-          name: item.title,
-          btnStatus: buttonStatus,
-        };
+        reasonStatus = true;
       }
+      return {
+        status: item.value,
+        name: item.title,
+        btnStatus: buttonStatus,
+        reason: reasonStatus,
+      };
     });
     setStatusList(statusListNew);
 
