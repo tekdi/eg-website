@@ -73,8 +73,16 @@ export default function App({ userTokenInfo, footerLinks }) {
           };
           setFormData(newData);
         } else if (step === "reference_details") {
-          const newData = result?.references;
-          setFormData(newData);
+          if (result?.references?.designation === "") {
+            const newData = {
+              ...result?.references,
+              designation: undefined,
+            };
+            setFormData(newData);
+          } else {
+            const newData = result?.references;
+            setFormData(newData);
+          }
         } else {
           setFormData(result);
         }
