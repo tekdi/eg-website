@@ -91,13 +91,56 @@ export default function agFormEdit({ ip }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
+    }
+  };
+
+  const showPosition = (position) => {
+    let lati = position.coords.latitude;
+    let longi = position.coords.longitude;
+
+    setFormData({
+      ...formData,
+      lat: lati,
+      long: longi,
+    });
+  };
+
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
+
+        break;
+      case error.TIMEOUT:
+        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
+
+        break;
+    }
+  }
+
   //getting data
   React.useEffect(async () => {
+    getLocation();
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData.result;
     setFormData(qData.result);
     setFormData({
       ...formData,
+      lat: finalData?.lat,
+      long: finalData?.long,
       address: finalData?.address == "null" ? "" : finalData?.address,
       state: finalData?.state,
       district: finalData?.district,
@@ -106,8 +149,6 @@ export default function agFormEdit({ ip }) {
       grampanchayat: finalData?.grampanchayat,
     });
   }, []);
-
-  console.log("formdata", formData);
 
   const uiSchema = {
     dob: {

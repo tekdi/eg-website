@@ -42,15 +42,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
           </FrontEndTypo.H1>
 
           <Box paddingBottom="20px">
-            {Progress.value === 100 ? (
-              <FrontEndTypo.H2 color="textGreyColor.900">
-                Your profle has been completed
-              </FrontEndTypo.H2>
-            ) : (
-              <FrontEndTypo.H2 color="textGreyColor.900">
-                {t("COMPLETE_YOUR_PROFILE")}
-              </FrontEndTypo.H2>
-            )}
+            <FrontEndTypo.H2 color="textGreyColor.900">
+              {t("COMPLETE_YOUR_PROFILE")}
+            </FrontEndTypo.H2>
           </Box>
           <Box
             bg="boxBackgroundColour.100"

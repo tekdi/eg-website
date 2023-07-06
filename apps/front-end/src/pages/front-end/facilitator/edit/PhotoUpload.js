@@ -59,7 +59,7 @@ export default function PhotoUpload({
   };
 
   const uploadProfile = async (file, document_sub_type) => {
-    const { id } = formData;
+    const { id } = formData || {};
     if (id) {
       setLoading(true);
       const form_data = new FormData();
