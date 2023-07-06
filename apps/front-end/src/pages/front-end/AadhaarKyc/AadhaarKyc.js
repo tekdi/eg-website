@@ -226,6 +226,7 @@ export default function AdharKyc({ footerLinks }) {
               user={user}
               aadhaarCompare={aadhaarCompare}
               location={location}
+              type={type}
             />
           ) : page === "aadhaar-number" ? (
             <VStack p="4" space={4}>
