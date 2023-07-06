@@ -362,10 +362,7 @@ export default function agFormEdit({ ip, id }) {
       }
     }
     ["first_name", "last_name", "middle_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
+      if (key === "first_name" && data?.first_name?.replace(/ /g, "") === "") {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );

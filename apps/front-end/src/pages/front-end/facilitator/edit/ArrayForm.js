@@ -189,7 +189,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (item?.[key]) {
         if (
           // !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
-          item?.[key]?.replaceAll(" ", "") === ""
+          item?.[key]?.replace(/\s/g, "") === ""
         ) {
           errors?.[key]?.addError(
             `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
