@@ -1,6 +1,6 @@
 import {
   IconByName,
-  facilitatorRegistryService,
+  benificiaryRegistoryService,
   t,
   ImageView,
   AdminTypo,
@@ -152,7 +152,7 @@ function Table({
   // const [filterObj, setFilterObj] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
-  const [status, setstatus] = React.useState("ALL");
+  const [status, setstatus] = React.useState("");
 
   const navigate = useNavigate();
 
@@ -180,7 +180,7 @@ function Table({
     let adminlimit = limit;
     let searchValue = adminSearchValue;
 
-    const result = await facilitatorRegistryService.filter(
+    const result = await benificiaryRegistoryService.beneficiariesFilter(
       _formData,
       adminpage,
       adminlimit,
@@ -192,9 +192,9 @@ function Table({
     setLoading(false);
   }, [page, limit, formData]);
 
-  const exportPrerakCSV = async () => {
-    const result = await facilitatorRegistryService.exportFacilitatorsCsv();
-  };
+  // const exportPrerakCSV = async () => {
+  //   const result = await benificiaryRegistoryService.exportFacilitatorsCsv();
+  // };
 
   const filterByStatus = async (value) => {
     setLoading(true);
@@ -206,7 +206,7 @@ function Table({
     let adminStatus = value;
     let searchValue = adminSearchValue;
 
-    const result = await facilitatorRegistryService.filter(
+    const result = await benificiaryRegistoryService.beneficiariesFilter(
       _formData,
       adminpage,
       adminlimit,
@@ -226,7 +226,7 @@ function Table({
     let adminpage = page;
     let adminlimit = limit;
     let status = adminStatus;
-    const result = await facilitatorRegistryService.filter(
+    const result = await benificiaryRegistoryService.beneficiariesFilter(
       _formData,
       adminpage,
       adminlimit,
@@ -261,7 +261,7 @@ function Table({
             resizeMode="contain"
           />
         </HStack>
-        <Input
+        {/* <Input
           InputLeftElement={
             <IconByName color="coolGray.500" name="SearchLineIcon" />
           }
@@ -270,11 +270,12 @@ function Table({
           onChange={(e) => {
             searchName(e);
           }}
-        />
+        /> */}
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
-              exportPrerakCSV();
+              // exportPrerakCSV();
+              console.log("hi");
             }}
             rightIcon={
               <IconByName
@@ -295,11 +296,11 @@ function Table({
             cursor={"pointer"}
             mx={3}
             onPress={() => {
-              filterByStatus("ALL");
+              filterByStatus("");
             }}
           >
             {t("BENEFICIARY_ALL")}
-            {status == "ALL" && `(${paginationTotalRows})`}
+            {status == "" && `(${paginationTotalRows})`}
           </Text>
           {beneficiaryStatus?.map((item) => {
             return (

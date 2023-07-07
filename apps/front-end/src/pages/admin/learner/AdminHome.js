@@ -21,9 +21,10 @@ import {
   useWindowSize,
   H3,
   t,
-  facilitatorRegistryService,
+  benificiaryRegistoryService,
   AdminTypo,
   geolocationRegistryService,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import Chip from "component/Chip";
@@ -45,6 +46,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [adminStatus, setadminStatus] = React.useState();
   const [adminSearchValue, setadminSearchValue] = React.useState();
   const [blockData, setBlockData] = React.useState();
+  const [benificiary, setBenificiary] = React.useState();
+
   let finalData;
 
   React.useEffect(async () => {
@@ -54,6 +57,20 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     });
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
+
+  React.useEffect(() => {
+    benificiaryDetails();
+  }, []);
+  const benificiaryDetails = async () => {
+    let _formData = formData;
+    const result = await facilitatorRegistryService.filter(
+      _formData,
+      adminpage,
+      adminlimit,
+      adminStatus
+    );
+    setBenificiary(result?.data?.data);
+  };
 
   const schema = {
     type: "object",
@@ -73,6 +90,22 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
+
+      PRERAKS: {
+        type: "array",
+        label: "PRERAKS",
+        items: {
+          type: "string",
+
+          enumNames: benificiary?.map((item, i) => {
+            return item?.first_name;
+          }),
+          enum: benificiary?.map((item, i) => {
+            return item?.id;
+          }),
+        },
+        uniqueItems: true,
+      },
     },
   };
 
@@ -81,19 +114,16 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       "ui:widget": "checkboxes",
       "ui:options": {},
     },
-    QUALIFICATION: {
+    PRERAKS: {
       "ui:widget": "checkboxes",
       "ui:options": {},
-    },
-    WORK_EXPERIENCE: {
-      "ui:widget": CustomRadio,
     },
   };
 
   const onChange = async (formData) => {
     const _formData = formData?.formData;
     let searchValue = adminSearchValue;
-    const result = await facilitatorRegistryService.filter(
+    const result = await benificiaryRegistoryService.beneficiariesFilter(
       _formData,
       adminpage,
       adminlimit,
