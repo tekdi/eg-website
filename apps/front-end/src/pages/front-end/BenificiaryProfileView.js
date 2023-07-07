@@ -368,7 +368,7 @@ export default function BenificiaryProfileView(props) {
                       "rejected" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
-                        color="#790000"
+                        color="textMaroonColor.400"
                         size="sm"
                       />
                     )}
