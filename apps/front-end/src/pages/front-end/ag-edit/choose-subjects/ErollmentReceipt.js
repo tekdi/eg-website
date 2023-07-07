@@ -26,6 +26,8 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   select,
+  templates,
+  widgets,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 
@@ -219,9 +221,7 @@ export default function App({ facilitator }) {
     const data = e.formData;
     if (
       data?.enrollment_aadhaar_no &&
-      !`${data?.enrollment_aadhaar_no}`?.match(
-        /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/
-      )
+      !`${data?.enrollment_aadhaar_no}`?.match(/^\d{0,12}$/)
     ) {
       const newErrors = {
         enrollment_aadhaar_no: {
@@ -351,15 +351,8 @@ export default function App({ facilitator }) {
           <Form
             key={lang + schema + uiSchema}
             ref={formRef}
-            widgets={{ select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -433,14 +426,14 @@ export default function App({ facilitator }) {
                     setNotMatched(false);
                   }}
                 >
-                  {t("NO")}
+                  {t("EDIT_AADHAR_NUMBER")}
                 </FrontEndTypo.Secondarybutton>
                 <FrontEndTypo.Primarybutton
                   px="2"
                   shadow="BlueFillShadow"
                   onPress={() => clearForm()}
                 >
-                  {t("YES")}
+                  {t("HOME_PAGE")}
                 </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
