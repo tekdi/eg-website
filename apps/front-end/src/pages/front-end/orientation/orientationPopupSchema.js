@@ -17,19 +17,19 @@ export default {
     type: {
       icons: "VidiconLine",
       type: "string",
-      label: "Event Type",
+      label: "EVENT_TYPE",
       format: "select",
     },
     name: {
       icons: "UserFollowLineIcon",
-      label: "Event Name \n (Batch Number)",
-      title: "Event Name (Batch Number)",
+      label: "EVENT_NAME",
+      title: "EVENT_NAME",
       type: "string",
     },
     master_trainer: {
       icons: "UserFollowLineIcon",
-      label: "Master Trainer",
-      title: "Master Trainer",
+      label: "MASTER_TRAINER",
+      title: "MASTER_TRAINER",
       type: "string",
     },
     attendees: {
@@ -40,7 +40,7 @@ export default {
     },
     start_date: {
       icons: "CalendarLineIcon",
-      label: "Start Date & Time",
+      label: "START_DATE_&_TIME",
       title: "Start Date & Time",
       type: "string",
       format: "alt-date",
@@ -54,7 +54,7 @@ export default {
     },
     end_date: {
       icons: "CalendarLineIcon",
-      label: "End Date & Time",
+      label: "END_DATE_&_TIME",
       title: "End Date & Time",
       type: "string",
       format: "alt-date",
@@ -68,7 +68,7 @@ export default {
     },
     reminders: {
       icons: "Notification2LineIcon",
-      label: "Reminder",
+      label: "REMINDER",
       type: "array",
       title: "Reminder",
       items: {
@@ -78,17 +78,17 @@ export default {
     },
     location: {
       icons: "MapPinLineIcon",
-      label: "Location",
-      title: "Location",
+      label: "LOCATION",
+      title: "LOCATION",
       type: "string",
     },
     location_type: {
       icons: "MapPinLineIcon",
-      label: "Location Type",
+      label: "LOCATION_TYPE",
       title: "Location Type",
       type: "string",
       format: "CustomR",
-      enumNames: ["online", "offline"],
+      enumNames: ["ONLINE", "OFFLINE"],
       enum: ["online", "offline"],
     },
   },
