@@ -187,7 +187,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   name="ArrowRightSLineIcon"
                   color="textMaroonColor.400"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${facilitator?.id}/aadhaardetails`);
+                    navigate(`/profile/${facilitator?.id}/aadhaardetails`);
                   }}
                 />
               </HStack>
