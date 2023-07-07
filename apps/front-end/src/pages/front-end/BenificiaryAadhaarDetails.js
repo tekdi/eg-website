@@ -147,12 +147,11 @@ export default function BenificiaryAadhaarDetails() {
               {!["yes", "in_progress"].includes(
                 benificiary?.aadhar_verified
               ) && (
-                <VStack>
+                <VStack space={"4"}>
                   <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
                     {t("COMPLETE_AADHAAR_VERIFICATION")}
                   </FrontEndTypo.H2>
                   <FrontEndTypo.Primarybutton
-                    mt="10"
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/okyc2`);
                     }}
@@ -168,6 +167,7 @@ export default function BenificiaryAadhaarDetails() {
                     {t("SCAN_QR_CODE")}
                   </FrontEndTypo.Secondarybutton> */}
                   <FrontEndTypo.Primarybutton
+                    mt="10"
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/upload`, {
                         state: `/beneficiary/${id}/aadhaardetails`,
