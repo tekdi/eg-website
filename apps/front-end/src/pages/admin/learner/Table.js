@@ -192,9 +192,9 @@ function Table({
     setLoading(false);
   }, [page, limit, formData]);
 
-  // const exportPrerakCSV = async () => {
-  //   const result = await benificiaryRegistoryService.exportFacilitatorsCsv();
-  // };
+  const exportBeneficiaryCSV = async () => {
+    const result = await benificiaryRegistoryService.exportBeneficiariesCsv();
+  };
 
   const filterByStatus = async (value) => {
     setLoading(true);
@@ -274,8 +274,7 @@ function Table({
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
-              // exportPrerakCSV();
-              console.log("hi");
+              exportBeneficiaryCSV();
             }}
             rightIcon={
               <IconByName
