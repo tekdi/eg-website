@@ -371,6 +371,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
       <Select
+        key={value}
         selectedValue={value}
         accessibilityLabel={t(label ? label : title)}
         placeholder={t(label ? label : title)}
@@ -436,19 +437,20 @@ export const HFieldTemplate = ({
     <HStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
-      alignItems="start"
+      alignItems="flex-start"
       pl="3"
+      direction={["column", "row"]}
     >
       {(label || schema?.label) && typeof type === "string" && (
-        <Box w={["67%", "100%", "60%"]}>
+        <Box flex={["1", "1", "1"]}>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
+              <HStack space="2" alignItems="center">
                 <IconByName
                   name={schema?.icons}
-                  color="textGreyColor.800"
+                  color="textGreyColor.200"
                   isDisabled
-                  pr="2"
+                  _icon={{ size: "14px" }}
                 />
                 <AdminTypo.H6 color="textGreyColor.100">
                   {t(schema?.label ? schema?.label : label)}
@@ -462,7 +464,7 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box w={["70%", "100%", "60%"]}>
+      <Box flex={["1", "3", "4"]}>
         {children}
         {errors}
         {help}
