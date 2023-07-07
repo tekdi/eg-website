@@ -18,8 +18,11 @@ export default function BenificiaryJourney() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [source, setsource] = React.useState();
-  // const [subject, setSubject] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState({});
+  const [contextId, setcontextId] = React.useState();
+  const [auditLogs, setauditLogs] = React.useState([]);
+  const [auditDate, setauditDate] = React.useState([]);
+  const [auditMonth, setauditMonth] = React.useState([]);
+  const [auditYear, setauditYear] = React.useState([]);
 
   const navigate = useNavigate();
 
@@ -38,12 +41,49 @@ export default function BenificiaryJourney() {
       document_id:
         result?.result?.program_beneficiaries?.payment_receipt_document_id,
     });
+    setcontextId(result?.result?.program_beneficiaries?.id);
   };
 
-  //   React.useEffect(async () => {
-  //     const data = await enumRegistryService.listOfEnum();
-  //     setEnumOptions(data?.data ? data?.data : {});
-  //   }, [benificiary]);
+  const getAuditData = async () => {
+    const result = await benificiaryRegistoryService.getAuditLogs(contextId);
+    const uniqueDates = result.reduce(
+      (acc, item) => {
+        const parsedDate = moment(item?.created_at);
+        const date = parsedDate.format("DD");
+        const month = parsedDate.format("MMMM");
+        const year = parsedDate.format("YYYY");
+        setauditLogs((prevState) => [
+          ...prevState,
+          {
+            status: JSON.parse(item?.new_data),
+            first_name: item?.user?.first_name,
+            middle_name: item?.user?.middle_name,
+            last_name: item.user?.last_name,
+            date: date,
+          },
+        ]);
+
+        if (!acc.months.includes(month)) {
+          acc.months.push(month);
+        }
+
+        if (!acc.years.includes(year)) {
+          acc.years.push(year);
+        }
+
+        return acc;
+      },
+      { dates: [], months: [], years: [] }
+    );
+
+    setauditMonth(uniqueDates.months);
+    setauditYear(uniqueDates.years);
+  };
+
+  React.useEffect(() => {
+    getAuditData();
+  }, [contextId]);
+
   return (
     <Layout
       _appBar={{ name: t("JOURNEY_IN_PROJECT_PRAGATI"), onPressBackButton }}
@@ -54,7 +94,6 @@ export default function BenificiaryJourney() {
             source={{
               document_id: benificiary?.profile_photo_1?.id,
             }}
-            // alt="Alternate Text"
             width={"80px"}
             height={"80px"}
           />
@@ -82,33 +121,59 @@ export default function BenificiaryJourney() {
       </HStack>
       <HStack mt={5} left={"30px"} width={"80%"}>
         <VStack width={"100%"}>
-          <HStack alignItems={"center"}>
-            <Text mr={"20px"}>30</Text>
-            <FrontEndTypo.Timeline status="rejoined">
-              <FrontEndTypo.H2 color="blueText.400" bold>
-                Rejoined
-              </FrontEndTypo.H2>
-              <FrontEndTypo.H4>by Rachana Wagh</FrontEndTypo.H4>
-            </FrontEndTypo.Timeline>
-          </HStack>
-          <HStack alignItems={"center"}>
-            <Text mr={"20px"}>30</Text>
-            <FrontEndTypo.Timeline status="approved">
-              <FrontEndTypo.H2 color="blueText.400" bold>
-                approved
-              </FrontEndTypo.H2>
-              <FrontEndTypo.H4>by Rachana Wagh</FrontEndTypo.H4>
-            </FrontEndTypo.Timeline>
-          </HStack>
-          <HStack alignItems={"center"}>
-            <Text mr={"20px"}>30</Text>
-            <FrontEndTypo.Timeline status="rejected">
-              <FrontEndTypo.H2 color="blueText.400" bold>
-                rejected
-              </FrontEndTypo.H2>
-              <FrontEndTypo.H4>by Rachana Wagh</FrontEndTypo.H4>
-            </FrontEndTypo.Timeline>
-          </HStack>
+          {auditYear.map((item) => {
+            return (
+              <>
+                <HStack alignItems={"center"}>
+                  <Text width={"50px"}>{JSON.parse(item)}</Text>
+                  <HStack
+                    height="50px"
+                    borderColor="Disablecolor.400"
+                    borderLeftWidth="2px"
+                    mr="5"
+                    alignItems="center"
+                  ></HStack>
+                </HStack>
+                {auditMonth.map((month) => {
+                  return (
+                    <>
+                      <HStack alignItems={"center"}>
+                        <Text width={"50px"}>{month}</Text>
+                        <HStack
+                          height="50px"
+                          borderColor="Disablecolor.400"
+                          borderLeftWidth="2px"
+                          mr="5"
+                          alignItems="center"
+                        ></HStack>
+                      </HStack>
+                      {auditLogs.map((logs) => {
+                        return (
+                          <>
+                            <HStack alignItems={"center"}>
+                              <Text width={"50px"}>{logs?.date}</Text>;
+                              <FrontEndTypo.Timeline
+                                status={logs?.status?.status}
+                              >
+                                <FrontEndTypo.H2 color="blueText.400" bold>
+                                  {logs?.status?.status}
+                                </FrontEndTypo.H2>
+                                <FrontEndTypo.H4>
+                                  {logs?.first_name}&nbsp;
+                                  {logs?.middle_name && logs?.middle_name}&nbsp;
+                                  {logs?.last_name && logs?.last_name}
+                                </FrontEndTypo.H4>
+                              </FrontEndTypo.Timeline>
+                            </HStack>
+                          </>
+                        );
+                      })}
+                    </>
+                  );
+                })}
+              </>
+            );
+          })}
         </VStack>
       </HStack>
     </Layout>
