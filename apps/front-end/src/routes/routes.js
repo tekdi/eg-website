@@ -36,6 +36,7 @@ import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQua
 import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
 
 import EnrollmentReceipt from "../pages/front-end/ag-edit/choose-subjects/ErollmentReceipt";
+import AadhaarDetails from "pages/front-end/facilitator/AadhaarDetails";
 
 export default [
   { path: "/form", component: Home },
@@ -135,6 +136,10 @@ export default [
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
+  {
+    path: "/profile/:id/aadhaardetails",
+    component: AadhaarDetails,
+  },
   { path: "/profile/edit/:step/:photoNo", component: EditForm },
   {
     path: "/facilitatorbasicdetail",
