@@ -4,38 +4,23 @@ import {
   arrList,
   IconByName,
   FrontEndTypo,
-  benificiaryRegistoryService,
+  facilitatorRegistryService,
   t,
   Layout,
   ImageView,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function BenificiaryAadhaarDetails() {
+export default function AadhaarDetails() {
   const { id } = useParams();
-  const [benificiary, setbenificiary] = React.useState();
-  let aadharFront;
-  let aadharBack;
-  benificiary?.documents.forEach((element) => {
-    if (element?.document_sub_type == "aadhaar_front") {
-      aadharFront = element?.id;
-    }
-    if (element?.document_sub_type == "aadhaar_back") {
-      aadharBack = element?.id;
-    }
-  });
-
+  const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
-  const aadhar_verified = benificiary?.aadhar_verified;
-  React.useEffect(() => {
-    agDetails();
+
+  React.useEffect(async () => {
+    const result = await facilitatorRegistryService.getOne({ id });
+    setFacilitator(result);
   }, [id]);
-
-  const agDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setbenificiary(result?.result);
-  };
-
+  console.log(facilitator);
   return (
     <Layout
       _appBar={{
@@ -43,7 +28,7 @@ export default function BenificiaryAadhaarDetails() {
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
       }}
     >
-      <VStack bg="bgGreyColor.200">
+      <VStack bg="bgGreyColor.200" pb="5">
         <VStack px="5" pt="3">
           <VStack
             px="5"
@@ -58,14 +43,14 @@ export default function BenificiaryAadhaarDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("AADHAAR_DETAILS")}
               </FrontEndTypo.H3>
-              {!benificiary?.aadhar_no && (
+              {!facilitator?.aadhar_no && (
                 <IconByName
                   name="EditBoxLineIcon"
                   _icon={{ size: "20" }}
                   color="iconColor.100"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/3`, {
-                      state: { route: true },
+                    navigate(`/profile/edit/aadhaar_details`, {
+                      state: `/beneficiary/${id}/aadhaardetails`,
                     });
                   }}
                 />
@@ -73,7 +58,7 @@ export default function BenificiaryAadhaarDetails() {
             </HStack>
             <Box>
               <Progress
-                value={arrList(benificiary, [
+                value={arrList(facilitator, [
                   "aadhar_no",
                   "aadhar_verified",
                   "aadhaar_verification_mode",
@@ -94,7 +79,7 @@ export default function BenificiaryAadhaarDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.aadhar_no ? benificiary?.aadhar_no : "-"}
+                  {facilitator?.aadhar_no ? facilitator?.aadhar_no : "-"}
                 </FrontEndTypo.H3>
               </HStack>
 
@@ -109,8 +94,8 @@ export default function BenificiaryAadhaarDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.aadhaar_verification_mode
-                    ? benificiary?.aadhaar_verification_mode
+                  {facilitator?.aadhaar_verification_mode
+                    ? facilitator?.aadhaar_verification_mode
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -126,15 +111,15 @@ export default function BenificiaryAadhaarDetails() {
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.aadhar_verified
-                    ? benificiary?.aadhar_verified
+                  {facilitator?.aadhar_verified
+                    ? facilitator?.aadhar_verified
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
           </VStack>
-          {(benificiary?.aadhar_verified !== "yes" ||
-            benificiary?.aadhaar_verification_mode === "upload") && (
+          {(facilitator?.aadhar_verified !== "yes" ||
+            facilitator?.aadhaar_verification_mode === "upload") && (
             <VStack
               px="5"
               pb="3"
@@ -145,19 +130,19 @@ export default function BenificiaryAadhaarDetails() {
               borderColor="appliedColor"
             >
               {!["yes", "in_progress"].includes(
-                benificiary?.aadhar_verified
+                facilitator?.aadhar_verified
               ) && (
-                <VStack space={"4"}>
-                  <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
+                <VStack space="5">
+                  <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="5">
                     {t("COMPLETE_AADHAAR_VERIFICATION")}
                   </FrontEndTypo.H2>
-                  <FrontEndTypo.Primarybutton
+                  <FrontEndTypo.Secondarybutton
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/okyc2`);
                     }}
                   >
                     {t("AADHAAR_NUMBER_KYC")}
-                  </FrontEndTypo.Primarybutton>
+                  </FrontEndTypo.Secondarybutton>
                   {/* <FrontEndTypo.Secondarybutton
                     my="4"
                     onPress={() => {
@@ -166,8 +151,7 @@ export default function BenificiaryAadhaarDetails() {
                   >
                     {t("SCAN_QR_CODE")}
                   </FrontEndTypo.Secondarybutton> */}
-                  <FrontEndTypo.Primarybutton
-                    mt="10"
+                  <FrontEndTypo.Secondarybutton
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/upload`, {
                         state: `/beneficiary/${id}/aadhaardetails`,
@@ -175,10 +159,10 @@ export default function BenificiaryAadhaarDetails() {
                     }}
                   >
                     {t("AADHAR_UPLOAD_KYC")}
-                  </FrontEndTypo.Primarybutton>
+                  </FrontEndTypo.Secondarybutton>
                 </VStack>
               )}
-              {benificiary?.aadhaar_verification_mode === "upload" && (
+              {facilitator?.aadhaar_verification_mode === "upload" && (
                 <VStack space="5">
                   <FrontEndTypo.H2 bold color="textMaroonColor.400">
                     {t("HAVE_YOU_UPDATED_AADHAAR_CARD")}
@@ -188,9 +172,9 @@ export default function BenificiaryAadhaarDetails() {
                   </FrontEndTypo.H3>
 
                   <FrontEndTypo.H2>{t("FRONT_VIEW")}</FrontEndTypo.H2>
-                  {aadharFront ? (
+                  {facilitator?.aadhaar_front ? (
                     <ImageView
-                      source={{ document_id: aadharFront }}
+                      source={{ document_id: facilitator?.aadhaar_front?.id }}
                       alt="aadhaar_front"
                       width="full"
                       height="172px"
@@ -202,9 +186,9 @@ export default function BenificiaryAadhaarDetails() {
                   ) : null}
 
                   <FrontEndTypo.H2>{t("BACK_VIEW")}</FrontEndTypo.H2>
-                  {aadharBack ? (
+                  {facilitator?.aadhaar_back ? (
                     <ImageView
-                      source={{ document_id: aadharBack }}
+                      source={{ document_id: facilitator?.aadhaar_back?.id }}
                       alt="aadhaar_back"
                       width="full"
                       height="172px"

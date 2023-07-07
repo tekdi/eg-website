@@ -1,10 +1,15 @@
 import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
-import { Alert, HStack, VStack, Image } from "native-base";
+import { Alert, HStack, VStack, Image, Box } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function AadhaarSuccess({ user, location, aadhaarCompare }) {
+export default function AadhaarSuccess({
+  user,
+  type,
+  location,
+  aadhaarCompare,
+}) {
   const [data, setData] = React.useState([]);
   const [isVerified, setIsVerified] = React.useState(true);
   const { t } = useTranslation();
@@ -24,15 +29,13 @@ export default function AadhaarSuccess({ user, location, aadhaarCompare }) {
         {data?.map((item, index) =>
           item.name === "PHOTO" ? (
             <HStack
-              p="3"
-              space={5}
-              alignItems="center"
-              justifyContent={item?.aadhaar ? "center" : "center"}
+              px="4"
+              py="2"
+              justifyContent={item?.aadhaar ? "" : "center"}
             >
-              <VStack alignItems="center" space="1">
-                <FrontEndTypo.H3 flex="1">
-                  {t("PROFILE_DETAILS")}
-                </FrontEndTypo.H3>
+              <Box w="120" h="120" flex="1" display={["none", "unset"]} />
+              <VStack space="1" flex="1">
+                <FrontEndTypo.H3>{t("PROFILE_DETAILS")}</FrontEndTypo.H3>
                 {item?.user ? (
                   <ImageView
                     w="120"
@@ -51,10 +54,8 @@ export default function AadhaarSuccess({ user, location, aadhaarCompare }) {
                 )}
               </VStack>
               {item?.aadhaar && (
-                <VStack alignItems="center" space="1">
-                  <FrontEndTypo.H3 flex="1">
-                    {t("AADHAAR_DETAILS")}
-                  </FrontEndTypo.H3>
+                <VStack space="1" flex="1">
+                  <FrontEndTypo.H3>{t("AADHAAR_DETAILS")}</FrontEndTypo.H3>
                   <Image
                     rounded={"full"}
                     w="120"
@@ -107,9 +108,13 @@ export default function AadhaarSuccess({ user, location, aadhaarCompare }) {
             <HStack flexShrink={1} space={2} alignItems="center">
               <Alert.Icon />
               <FrontEndTypo.H4>
-                {isVerified
-                  ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
-                  : t("YOUR_AADHAAR_UPLOAD_FAILED")}
+                {type === "upload"
+                  ? isVerified
+                    ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
+                    : t("YOUR_AADHAAR_UPLOAD_FAILED")
+                  : isVerified
+                  ? t("AADHAAR_VERIFICATION_SUCCESSFUL")
+                  : t("AADHAR_KYC_VERIFICATION_FAILED")}
               </FrontEndTypo.H4>
             </HStack>
           </HStack>

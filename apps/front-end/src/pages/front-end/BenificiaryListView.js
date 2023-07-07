@@ -76,7 +76,7 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box>
+                <Box maxW="121px">
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
                     rounded={"sm"}

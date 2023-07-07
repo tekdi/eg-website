@@ -434,6 +434,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         setUploadPayment(true);
       } else {
         if (!data?.enrolled_for_board) {
+          setUploadPayment(true);
           const properties1 = schema1.properties;
           const constantSchema = properties1[1];
           const { subjects, ...properties } = constantSchema?.properties;
@@ -586,13 +587,13 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.subjects.length < 8 &&
         formData?.subjects.length >= 1
       ) {
-        const updateDetails = await AgRegistryService.updateAg(
-          formData,
-          userId
-        );
+        // const updateDetails = await AgRegistryService.updateAg(
+        //   formData,
+        //   userId
+        // );
         navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
           state: {
-            enrollment_date: formData?.enrollment_date,
+            formData,
           },
         });
       } else {
