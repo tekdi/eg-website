@@ -290,12 +290,13 @@ export default function Attendence({ footerLinks }) {
       name: t("ATTENDENCE_VERIFIED"),
       selector: (row, index) => (
         <Chip
-          // bg={
-          //   row?.user?.aadhar_verified !== null
-          //     ? "potentialColor"
-          //     : "dangerColor"
-          // }
-          label={"-"}
+          label={
+            row?.fa_is_processed === null
+              ? "-"
+              : row?.fa_is_processed +
+                " " +
+                Math.floor(row?.fa_similarity_percentage * 100) / 100
+          }
           rounded={"sm"}
         />
       ),
