@@ -14,11 +14,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 const List = ({ data }) => {
   const navigate = useNavigate();
   return (
-    <VStack overflow={"scroll"} space="4" p="4" alignContent="center">
+    <VStack space="4" p="4" alignContent="center">
       {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
         data &&
         data?.constructor?.name === "Array" &&
@@ -210,6 +209,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [loadingList, setLoadingList] = React.useState(true);
   const [hasMore, setHasMore] = React.useState(true);
   const [totalCount, setTotalCount] = React.useState();
+  const [loadingHeight, setLoadingHeight] = React.useState(0);
 
   const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
@@ -273,6 +273,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   };
   return (
     <Layout
+      getBodyHeight={(e) => setLoadingHeight(e)}
       _appBar={{
         onlyIconsShow: ["userInfo"],
         isEnableSearchBtn: "true",
@@ -383,7 +384,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           dataLength={data?.length || limit}
           next={fetchMoreData}
           hasMore={hasMore}
-          height={400}
+          height={loadingHeight}
           loader={<Loading />}
           endMessage={
             <p style={{ textAlign: "center" }}>

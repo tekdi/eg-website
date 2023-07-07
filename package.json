@@ -27,7 +27,6 @@
     "@fullcalendar/react": "^6.1.7",
     "@fullcalendar/timegrid": "^6.1.7",
     "fullcalendar": "^6.1.7",
-    "react-calendar": "^4.2.1",
-    "react-infinite-scroll-component": "^6.1.0"
+    "react-calendar": "^4.2.1"
   }
 }
