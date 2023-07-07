@@ -214,7 +214,9 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
-    setSelectStatus(data);
+    if (data.length > 0) {
+      setSelectStatus(data);
+    }
   }, []);
 
   React.useEffect(() => {
@@ -388,7 +390,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           loader={<Loading />}
           endMessage={
             <p style={{ textAlign: "center" }}>
-              <b>Sorry! There are no more beneficiaries to display.</b>
+              <b>{t("COMMON_NO_MORE_RECORDS")}</b>
             </p>
           }
         >
