@@ -18,6 +18,7 @@ export default function BenificiaryJourney() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [source, setsource] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
   const [contextId, setcontextId] = React.useState();
   const [auditLogs, setauditLogs] = React.useState([]);
   const [auditDate, setauditDate] = React.useState([]);
@@ -26,7 +27,9 @@ export default function BenificiaryJourney() {
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
     agDetails();
   }, [id]);
 
@@ -140,7 +143,7 @@ export default function BenificiaryJourney() {
                       <HStack alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
-                          height="50px"
+                          height="25px"
                           borderColor="Disablecolor.400"
                           borderLeftWidth="2px"
                           mr="5"
@@ -155,9 +158,16 @@ export default function BenificiaryJourney() {
                               <FrontEndTypo.Timeline
                                 status={logs?.status?.status}
                               >
-                                <FrontEndTypo.H2 color="blueText.400" bold>
-                                  {logs?.status?.status}
-                                </FrontEndTypo.H2>
+                                <FrontEndTypo.H2
+                                  color="blueText.400"
+                                  bold
+                                ></FrontEndTypo.H2>
+                                <GetEnumValue
+                                  t={t}
+                                  enumType={"BENEFICIARY_STATUS"}
+                                  enumOptionValue={logs?.status?.status}
+                                  enumApiData={enumOptions}
+                                />
                                 <FrontEndTypo.H4>
                                   {logs?.first_name}&nbsp;
                                   {logs?.middle_name && logs?.middle_name}&nbsp;
