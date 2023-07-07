@@ -293,9 +293,12 @@ export default function Attendence({ footerLinks }) {
           label={
             row?.fa_is_processed === null
               ? "-"
-              : row?.fa_is_processed +
+              : row?.fa_is_processed === true
+              ? t("YES") +
                 " " +
-                Math.floor(row?.fa_similarity_percentage * 100) / 100
+                Math.floor(row?.fa_similarity_percentage * 100) / 100 +
+                "%"
+              : t("NO")
           }
           rounded={"sm"}
         />
