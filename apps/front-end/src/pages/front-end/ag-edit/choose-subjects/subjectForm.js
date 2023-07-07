@@ -358,6 +358,14 @@ export default function App({ facilitator, id, ip, onClick }) {
       };
       setErrors(newErrors);
     }
+    if (data?.enrolled_for_board === "") {
+      const newErrors = {
+        enrolled_for_board: {
+          __errors: [t("PLEASE_SELECT")],
+        },
+      };
+      setErrors(newErrors);
+    }
     if (
       typeof e?.formData?.enrollment_number !== "number" &&
       typeof e?.formData?.enrollment_number !== "undefined"
@@ -591,6 +599,8 @@ export default function App({ facilitator, id, ip, onClick }) {
         //   formData,
         //   userId
         // );
+
+        formRef?.current?.validate();
         navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
           state: {
             formData,

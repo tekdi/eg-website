@@ -36,7 +36,7 @@ export default {
           title: "AADHAAR_NUMBER",
           label: "AADHAAR_NUMBER",
           type: "number",
-          format: "Aadhaar",
+          regex: /^\d{0,12}$/,
         },
       },
     },
