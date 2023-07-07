@@ -287,7 +287,7 @@ export default function Attendence({ footerLinks }) {
     },
 
     {
-      name: t("ATTENDENCE_VERIFIED"),
+      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
       selector: (row, index) => (
         <Chip
           label={
