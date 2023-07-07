@@ -371,7 +371,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
       <Select
-        key={value}
+        key={value + items}
         selectedValue={value}
         accessibilityLabel={t(label ? label : title)}
         placeholder={t(label ? label : title)}
