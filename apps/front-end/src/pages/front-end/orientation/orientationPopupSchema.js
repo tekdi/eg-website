@@ -40,7 +40,7 @@ export default {
     },
     start_date: {
       icons: "CalendarLineIcon",
-      label: "START_DATE_&_TIME",
+      label: "EVENT_START_DATE_&_TIME",
       title: "Start Date & Time",
       type: "string",
       format: "alt-date",
@@ -54,7 +54,7 @@ export default {
     },
     end_date: {
       icons: "CalendarLineIcon",
-      label: "END_DATE_&_TIME",
+      label: "EVENT_END_DATE_&_TIME",
       title: "End Date & Time",
       type: "string",
       format: "alt-date",
