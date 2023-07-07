@@ -13,7 +13,7 @@ import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 const List = ({ data }) => {
   const navigate = useNavigate();
   return (
@@ -202,37 +202,40 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [sortValue, setSortValue] = React.useState("");
   const [statusValue, setStatusValue] = React.useState("");
   const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState(1);
   const [status, setStatus] = React.useState("status");
   const [data, setData] = React.useState();
   const [selectStatus, setSelectStatus] = React.useState([]);
   const [searchBenficiary, setSearchBenficiary] = React.useState("");
   const [loadingList, setLoadingList] = React.useState(true);
+  const [hasMore, setHasMore] = React.useState(true);
+  const [totalCount, setTotalCount] = React.useState();
+  const [loadingHeight, setLoadingHeight] = React.useState(0);
+
   const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
-    setSelectStatus(data);
+    if (data.length > 0) {
+      setSelectStatus(data);
+    }
   }, []);
 
   React.useEffect(() => {
     const reqBody = {
-      page: page,
       limit: limit,
       status: statusValue,
       sortType: sortValue,
       search: searchBenficiary,
     };
-
     aglist(reqBody);
-  }, [page, limit, statusValue, sortValue, searchBenficiary]);
+  }, [limit, statusValue, sortValue, searchBenficiary]);
   const aglist = async (reqBody) => {
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
     );
-
+    setTotalCount(result?.totalCount);
     if (!result?.error) {
       setLoadingList(false);
-      setData(result);
+      setData(result?.data);
     } else {
       setData([]);
     }
@@ -261,9 +264,18 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       setFacilitator(fa_data);
     }
   }, []);
-
+  const fetchMoreData = () => {
+    if (limit >= totalCount) {
+      setHasMore(false);
+      return;
+    }
+    setTimeout(() => {
+      setLimit((prevLimit) => prevLimit + 10);
+    }, 500);
+  };
   return (
     <Layout
+      getBodyHeight={(e) => setLoadingHeight(e)}
       _appBar={{
         onlyIconsShow: ["userInfo"],
         isEnableSearchBtn: "true",
@@ -369,7 +381,24 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           </SelectStyle>
         </Box>
       </HStack>
-      {!loadingList ? <List data={data} /> : <Loading />}
+      {!loadingList ? (
+        <InfiniteScroll
+          dataLength={data?.length || limit}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          height={loadingHeight}
+          loader={<Loading />}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>{t("COMMON_NO_MORE_RECORDS")}</b>
+            </p>
+          }
+        >
+          <List data={data} />
+        </InfiniteScroll>
+      ) : (
+        <Loading />
+      )}
     </Layout>
   );
 }
