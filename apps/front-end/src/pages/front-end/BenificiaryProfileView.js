@@ -58,7 +58,9 @@ export default function BenificiaryProfileView(props) {
 
   const enumAPicall = async () => {
     const result = await enumRegistryService.listOfEnum();
-    setBenificiaryDropoutReasons(result?.data?.DROPOUT_REASONS);
+    setBenificiaryDropoutReasons(
+      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+    );
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
     setBenificiaryRejectReasons(
       result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
