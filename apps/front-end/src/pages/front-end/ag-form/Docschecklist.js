@@ -81,9 +81,7 @@ const Docschecklist = () => {
   return (
     <Layout
       _appBar={{
-        name: `${benificiary?.first_name} ${
-          benificiary?.last_name && benificiary?.last_name
-        }`,
+        name: t("DOCUMENTS_CHECKLIST"),
         lang,
         setLang,
         onPressBackButton: (e) => {
@@ -113,15 +111,16 @@ const Docschecklist = () => {
               setStatus({ ...status, jan_adhar: itemValue })
             }
           >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
+            {Array.isArray(selectData) &&
+              selectData.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
           </Select>
         </HStack>
 

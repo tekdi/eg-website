@@ -73,8 +73,16 @@ export default function App({ userTokenInfo, footerLinks }) {
           };
           setFormData(newData);
         } else if (step === "reference_details") {
-          const newData = result?.references;
-          setFormData(newData);
+          if (result?.references?.designation === "") {
+            const newData = {
+              ...result?.references,
+              designation: undefined,
+            };
+            setFormData(newData);
+          } else {
+            const newData = result?.references;
+            setFormData(newData);
+          }
         } else {
           setFormData(result);
         }
@@ -340,7 +348,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (step === "basic_details") {
       ["first_name"].forEach((key) => {
         validation({
-          data: data?.[key]?.replaceAll(" ", ""),
+          data:
+            typeof data?.[key] === "string"
+              ? data?.[key].replaceAll(" ", "")
+              : data?.[key],
           key,
           errors,
           message: `${t("REQUIRED_MESSAGE")} ${t(
