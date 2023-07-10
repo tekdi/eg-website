@@ -285,6 +285,27 @@ export default function Attendence({ footerLinks }) {
       sortable: false,
       attr: "adhar_kyc",
     },
+
+    {
+      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
+      selector: (row, index) => (
+        <Chip
+          label={
+            row?.fa_is_processed === null
+              ? "-"
+              : row?.fa_is_processed === true
+              ? t("YES") +
+                " " +
+                Math.floor(row?.fa_similarity_percentage * 100) / 100 +
+                "%"
+              : t("NO")
+          }
+          rounded={"sm"}
+        />
+      ),
+      sortable: false,
+      attr: "attendence_verified",
+    },
     // {
     //   name: t("VERIFIED_DOCUMENTS"),
     //   selector: (row) => row?.gender,

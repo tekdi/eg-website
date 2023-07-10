@@ -2,13 +2,15 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import {
+  AgRegistryService,
+  FrontEndTypo,
   benificiaryRegistoryService,
   dateOfBirth,
   enrollmentDateOfBirth,
   validation,
 } from "@shiksha/common-lib";
 import enrollmentSchema from "./EnrollmentSchema.js";
-import { Alert, Box, Button, HStack } from "native-base";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
 import { useParams, useLocation } from "react-router-dom";
 
 import { Layout, filtersByObject, BodyMedium } from "@shiksha/common-lib";
@@ -24,6 +26,8 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   select,
+  templates,
+  widgets,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 
@@ -41,8 +45,8 @@ export default function App({ facilitator }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [benificiary, setBenificiary] = React.useState();
+  const [notMatched, setNotMatched] = React.useState(false);
   const { state } = useLocation();
-
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
@@ -152,7 +156,7 @@ export default function App({ facilitator }) {
     if (formData?.enrollment_dob) {
       const dob = moment.utc(formData.enrollment_dob).format("DD-MM-YYYY");
 
-      enrollmentDateOfBirth(state?.enrollment_date, dob)
+      enrollmentDateOfBirth(state?.formData?.enrollment_date, dob)
         .then((age) => {
           setUiSchema((prevUiSchema) => ({
             ...prevUiSchema,
@@ -183,7 +187,7 @@ export default function App({ facilitator }) {
         setErrors({});
       }
     }
-  }, [formData, state?.enrollment_date]);
+  }, [formData, state?.formData?.enrollment_date]);
 
   const goErrorPage = (key) => {
     if (key) {
@@ -217,9 +221,7 @@ export default function App({ facilitator }) {
     const data = e.formData;
     if (
       data?.enrollment_aadhaar_no &&
-      !`${data?.enrollment_aadhaar_no}`?.match(
-        /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/
-      )
+      !`${data?.enrollment_aadhaar_no}`?.match(/^\d{0,12}$/)
     ) {
       const newErrors = {
         enrollment_aadhaar_no: {
@@ -285,30 +287,39 @@ export default function App({ facilitator }) {
       goErrorPage(key);
     }
   };
-
   const onSubmit = async (data) => {
     let newFormData = data.formData;
-    const bodyData = {
-      edit_page_type: "edit_enrollement_details",
-      enrollment_status: "enrolled",
-      is_eligible: alert ? "no" : "yes",
-      enrollment_first_name: newFormData?.enrollment_first_name,
-      enrollment_middle_name: newFormData?.enrollment_middle_name,
-      enrollment_last_name: newFormData?.enrollment_last_name,
-      enrollment_dob: newFormData?.enrollment_dob,
-      enrollment_aadhaar_no: newFormData?.enrollment_aadhaar_no.toString(),
-    };
-    if (bodyData) {
-      const updateDetails = await benificiaryRegistoryService.enrollmentReceipt(
-        id,
-        bodyData
-      );
-      if (updateDetails) {
-        navigate(`/beneficiary/profile/${id}`);
-      }
+
+    if (
+      formData?.enrollment_aadhaar_no?.toString() !==
+      benificiary?.aadhar_no?.toString()
+    ) {
+      setNotMatched(true);
     } else {
-      validation();
+      const bodyData = {
+        edit_page_type: "edit_enrollement_details",
+        enrollment_status: "enrolled",
+        is_eligible: alert ? "no" : "yes",
+        enrollment_first_name: newFormData?.enrollment_first_name,
+        enrollment_middle_name: newFormData?.enrollment_middle_name,
+        enrollment_last_name: newFormData?.enrollment_last_name,
+        enrollment_dob: newFormData?.enrollment_dob,
+        enrollment_aadhaar_no: newFormData?.enrollment_aadhaar_no.toString(),
+      };
+      if (bodyData) {
+        const updateDetails =
+          await benificiaryRegistoryService.enrollmentReceipt(id, bodyData);
+        const data = await AgRegistryService.updateAg(state?.formData, id);
+        if (updateDetails) {
+          navigate(`/beneficiary/profile/${id}`);
+        }
+      } else {
+        validation();
+      }
     }
+  };
+  const clearForm = async () => {
+    navigate(`/beneficiary/profile/${id}`);
   };
 
   return (
@@ -340,15 +351,8 @@ export default function App({ facilitator }) {
           <Form
             key={lang + schema + uiSchema}
             ref={formRef}
-            widgets={{ select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -392,6 +396,50 @@ export default function App({ facilitator }) {
           <React.Fragment />
         )}
       </Box>
+
+      <Modal isOpen={notMatched} onClose={() => setNotMatched(false)} size="lg">
+        <Modal.Content>
+          <Modal.Body p="2" bg="white">
+            <FrontEndTypo.H3
+              textAlign="center"
+              pt="2"
+              color="textGreyColor.500"
+            >
+              {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
+            </FrontEndTypo.H3>
+
+            <VStack space={5}>
+              <HStack
+                alignItems="center"
+                space={4}
+                mt="5"
+                pt="4"
+                borderTopWidth="1px"
+                bg="white"
+                borderTopColor="appliedColor"
+                justifyContent="center"
+              >
+                <FrontEndTypo.Secondarybutton
+                  shadow="BlueFillShadow"
+                  px="2"
+                  onPress={() => {
+                    setNotMatched(false);
+                  }}
+                >
+                  {t("EDIT_AADHAR_NUMBER")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton
+                  px="2"
+                  shadow="BlueFillShadow"
+                  onPress={() => clearForm()}
+                >
+                  {t("HOME_PAGE")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }

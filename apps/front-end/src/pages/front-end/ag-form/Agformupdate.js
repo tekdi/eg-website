@@ -385,8 +385,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
     ["grampanchayat"].forEach((key) => {
       if (
-        key === "grampanchayat" &&
-        data?.grampanchayat?.replaceAll(" ", "") === ""
+        (key === "grampanchayat" &&
+          data?.grampanchayat?.replaceAll(" ", "") === "") ||
+        data?.grampanchayat === null
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`

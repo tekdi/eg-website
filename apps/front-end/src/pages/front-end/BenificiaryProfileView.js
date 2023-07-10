@@ -62,7 +62,9 @@ export default function BenificiaryProfileView(props) {
 
   const enumAPicall = async () => {
     const result = await enumRegistryService.listOfEnum();
-    setBenificiaryDropoutReasons(result?.data?.DROPOUT_REASONS);
+    setBenificiaryDropoutReasons(
+      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+    );
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
     setBenificiaryRejectReasons(
       result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
@@ -120,7 +122,7 @@ export default function BenificiaryProfileView(props) {
   };
   React.useEffect(() => {
     benificiaryDetails();
-  }, [reactivateReasonValue, reasonValue]);
+  }, [reactivateReasonValue, reasonValue, dropoutApiCall]);
 
   function renderDropoutButton() {
     const status = benificiary?.program_beneficiaries?.status;
@@ -289,13 +291,17 @@ export default function BenificiaryProfileView(props) {
                     <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/basicdetails`);
-                    }}
-                    color="textMaroonColor.400"
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/basicdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
                 <Divider
                   orientation="horizontal"
@@ -310,13 +316,17 @@ export default function BenificiaryProfileView(props) {
                       {t("ADD_YOUR_ADDRESS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/edit/${id}/address`);
-                    }}
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/address`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
                 <Divider
                   orientation="horizontal"
@@ -332,17 +342,32 @@ export default function BenificiaryProfileView(props) {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/aadhaardetails`);
-                    }}
-                    color="textMaroonColor.400"
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/aadhaardetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
               </VStack>
             </VStack>
           </Box>
+          {(benificiary?.program_beneficiaries?.status == "dropout" ||
+            benificiary?.program_beneficiaries?.status == "rejected") && (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>
+                  {t("PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB")}
+                </BodyMedium>
+              </HStack>
+            </Alert>
+          )}
 
           <Box
             bg="boxBackgroundColour.100"
@@ -356,14 +381,16 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  size="sm"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/docschecklist`);
-                  }}
-                />
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/docschecklist`);
+                      }}
+                      color="textMaroonColor.400"
+                    />
+                  )}
               </HStack>
             </VStack>
           </Box>
@@ -390,11 +417,15 @@ export default function BenificiaryProfileView(props) {
                   <FrontEndTypo.H3 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </FrontEndTypo.H3>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="#790000"
-                    size="sm"
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        color="textMaroonColor.400"
+                        size="sm"
+                      />
+                    )}
                 </HStack>
               </VStack>
             </Box>
@@ -411,14 +442,18 @@ export default function BenificiaryProfileView(props) {
                   <FrontEndTypo.H3 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </FrontEndTypo.H3>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="#790000"
-                    size="sm"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/enrollmentdetails`);
-                    }}
-                  />
+
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/enrollmentdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
               </VStack>
             </Box>
@@ -435,12 +470,37 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("EDUCATION_DETAILS")}
                 </FrontEndTypo.H3>
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/educationdetails`);
+                      }}
+                      color="textMaroonColor.400"
+                    />
+                  )}
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
+                </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
                   size="sm"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/educationdetails`);
+                    navigate(`/beneficiary/${id}/BenificiaryJourney`);
                   }}
                 />
               </HStack>
