@@ -502,7 +502,7 @@ const Docschecklist = () => {
             </VStack>
           )
         ) : (
-          <></>
+          <React.Fragment></React.Fragment>
         )}
 
         <FrontEndTypo.Primarybutton
