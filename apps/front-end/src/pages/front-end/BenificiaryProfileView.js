@@ -554,7 +554,7 @@ export default function BenificiaryProfileView(props) {
           </FrontEndTypo.H2>
           <VStack space="5">
             <VStack space="2" p="1" rounded="lg">
-              <VStack alignItems="center" space="1" flex="1">
+              <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
                 <React.Suspense fallback={<HStack>Loading...</HStack>}>
                   <CustomRadio
                     options={{
