@@ -6,9 +6,18 @@ import {
   t,
   benificiaryRegistoryService,
   FrontEndTypo,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
-import { Text, VStack, HStack, Button, Select, CheckIcon } from "native-base";
+import {
+  Text,
+  VStack,
+  HStack,
+  Button,
+  Select,
+  CheckIcon,
+  Alert,
+} from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = () => {
@@ -81,9 +90,7 @@ const Docschecklist = () => {
   return (
     <Layout
       _appBar={{
-        name: `${benificiary?.first_name} ${
-          benificiary?.last_name && benificiary?.last_name
-        }`,
+        name: t("DOCUMENTS_CHECKLIST"),
         lang,
         setLang,
         onPressBackButton: (e) => {
@@ -113,15 +120,16 @@ const Docschecklist = () => {
               setStatus({ ...status, jan_adhar: itemValue })
             }
           >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
+            {Array.isArray(selectData) &&
+              selectData.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
           </Select>
         </HStack>
 
@@ -472,18 +480,29 @@ const Docschecklist = () => {
               {t("MARK_AS_COMPLETE")}
             </FrontEndTypo.ColourPrimaryButton>
           ) : (
-            <FrontEndTypo.Primarybutton
-              mb={1}
-              type="submit"
-              onPress={() => {
-                readyToEnrollApiCall();
-              }}
-            >
-              {t("MARK_AS_COMPLETE")}
-            </FrontEndTypo.Primarybutton>
+            <VStack>
+              <Alert status="warning" alignItems={"start"} mb="3">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium justifyContent="Center">
+                    {t("DOCUMENT_INSTRUCTION_MESSAGE")}
+                  </BodyMedium>
+                </HStack>
+              </Alert>
+
+              <FrontEndTypo.Primarybutton
+                mb={1}
+                type="submit"
+                onPress={() => {
+                  readyToEnrollApiCall();
+                }}
+              >
+                {t("MARK_AS_COMPLETE")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
           )
         ) : (
-          <></>
+          <React.Fragment></React.Fragment>
         )}
 
         <FrontEndTypo.Primarybutton

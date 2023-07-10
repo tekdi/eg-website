@@ -349,7 +349,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (schema?.properties?.last_name && newFormData?.last_name) {
       newFormData = {
         ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+        ["last_name"]: newFormData?.last_name.replace(/ /g, ""),
       };
     }
 

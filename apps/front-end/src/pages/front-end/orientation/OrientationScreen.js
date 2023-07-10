@@ -166,7 +166,6 @@ export default function OrientationScreen({
         await facilitatorRegistryService.getFacilitatorByStatusInOrientation({
           limit: limit,
           page: page,
-          status: "shortlisted_for_orientation",
         });
       setData(result?.data?.data);
       setPaginationTotalRows(result?.totalCount);
@@ -174,7 +173,7 @@ export default function OrientationScreen({
     };
 
     fetchData();
-  }, [limit, page]);
+  }, [limit, page, isOpen]);
 
   const handleSelectRow = (state) => {
     const arr = state?.selectedRows;
