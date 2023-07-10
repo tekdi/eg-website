@@ -316,6 +316,17 @@ export default function BenificiaryProfileView(props) {
               </VStack>
             </VStack>
           </Box>
+          {(benificiary?.program_beneficiaries?.status == "dropout" ||
+            benificiary?.program_beneficiaries?.status == "rejected") && (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>
+                  {t("PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB")}
+                </BodyMedium>
+              </HStack>
+            </Alert>
+          )}
 
           <Box
             bg="boxBackgroundColour.100"
@@ -428,6 +439,29 @@ export default function BenificiaryProfileView(props) {
                       color="textMaroonColor.400"
                     />
                   )}
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/BenificiaryJourney`);
+                  }}
+                />
               </HStack>
             </VStack>
           </Box>
