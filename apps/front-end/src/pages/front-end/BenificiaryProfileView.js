@@ -553,7 +553,7 @@ export default function BenificiaryProfileView(props) {
             {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
           </FrontEndTypo.H2>
           <VStack space="5">
-            <VStack space="2" bg="textMaroonColor.100" p="1" rounded="lg">
+            <VStack space="2" p="1" rounded="lg">
               <VStack alignItems="center" space="1" flex="1">
                 <React.Suspense fallback={<HStack>Loading...</HStack>}>
                   <CustomRadio
