@@ -42,6 +42,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
+  const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -69,8 +70,10 @@ export default function BenificiaryProfileView(props) {
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
-
     setBenificiary(result?.result);
+    const contextId = result?.result?.program_beneficiaries?.id;
+    const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
+    setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
   };
 
   const dropoutApiCall = async () => {
@@ -91,7 +94,7 @@ export default function BenificiaryProfileView(props) {
   const reactivateApiCall = async () => {
     let bodyData = {
       user_id: benificiary?.id?.toString(),
-      status: "activate",
+      status: prevStatus,
       reason_for_status_update: reactivateReasonValue,
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
@@ -118,7 +121,7 @@ export default function BenificiaryProfileView(props) {
   };
   React.useEffect(() => {
     benificiaryDetails();
-  }, [reactivateReasonValue, reasonValue, dropoutApiCall]);
+  }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
     const status = benificiary?.program_beneficiaries?.status;
@@ -228,6 +231,17 @@ export default function BenificiaryProfileView(props) {
               rounded={"sm"}
             />
           </VStack>
+          {(benificiary?.program_beneficiaries?.status == "dropout" ||
+            benificiary?.program_beneficiaries?.status == "rejected") && (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>
+                  {t("PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB")}
+                </BodyMedium>
+              </HStack>
+            </Alert>
+          )}
           <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
@@ -316,17 +330,6 @@ export default function BenificiaryProfileView(props) {
               </VStack>
             </VStack>
           </Box>
-          {(benificiary?.program_beneficiaries?.status == "dropout" ||
-            benificiary?.program_beneficiaries?.status == "rejected") && (
-            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <BodyMedium>
-                  {t("PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB")}
-                </BodyMedium>
-              </HStack>
-            </Alert>
-          )}
 
           <Box
             bg="boxBackgroundColour.100"
