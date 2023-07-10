@@ -17,7 +17,6 @@ import moment from "moment";
 export default function BenificiaryJourney() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  const [source, setsource] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [contextId, setcontextId] = React.useState();
   const [auditLogs, setauditLogs] = React.useState([]);
@@ -40,10 +39,6 @@ export default function BenificiaryJourney() {
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
-    setsource({
-      document_id:
-        result?.result?.program_beneficiaries?.payment_receipt_document_id,
-    });
     setcontextId(result?.result?.program_beneficiaries?.id);
   };
 
