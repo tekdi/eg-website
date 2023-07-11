@@ -299,7 +299,7 @@ export default function BenificiaryProfileView(props) {
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
-                          navigate(`/beneficiary/${id}/address`);
+                          navigate(`/beneficiary/edit/${id}/address`);
                         }}
                         color="textMaroonColor.400"
                       />

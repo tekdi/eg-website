@@ -307,9 +307,9 @@ export default function App({ facilitator }) {
         enrollment_aadhaar_no: newFormData?.enrollment_aadhaar_no.toString(),
       };
       if (bodyData) {
+        const data = await AgRegistryService.updateAg(state?.formData, id);
         const updateDetails =
           await benificiaryRegistoryService.enrollmentReceipt(id, bodyData);
-        const data = await AgRegistryService.updateAg(state?.formData, id);
         if (updateDetails) {
           navigate(`/beneficiary/profile/${id}`);
         }
