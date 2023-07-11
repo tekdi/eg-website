@@ -21,12 +21,5 @@
     "lerna": "4.0.0",
     "prettier": "^2.6.0"
   },
-  "dependencies": {
-    "@fullcalendar/daygrid": "^6.1.7",
-    "@fullcalendar/interaction": "^6.1.7",
-    "@fullcalendar/react": "^6.1.7",
-    "@fullcalendar/timegrid": "^6.1.7",
-    "fullcalendar": "^6.1.7",
-    "react-calendar": "^4.2.1"
-  }
+  "dependencies": {}
 }

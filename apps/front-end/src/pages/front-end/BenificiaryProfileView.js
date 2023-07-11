@@ -8,6 +8,8 @@ import {
   Divider,
   Actionsheet,
   Alert,
+  ScrollView,
+  Stack,
 } from "native-base";
 import {
   FrontEndTypo,
@@ -42,6 +44,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
+  const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -69,8 +72,10 @@ export default function BenificiaryProfileView(props) {
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
-
     setBenificiary(result?.result);
+    const contextId = result?.result?.program_beneficiaries?.id;
+    const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
+    setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
   };
 
   const dropoutApiCall = async () => {
@@ -91,7 +96,7 @@ export default function BenificiaryProfileView(props) {
   const reactivateApiCall = async () => {
     let bodyData = {
       user_id: benificiary?.id?.toString(),
-      status: "activate",
+      status: prevStatus,
       reason_for_status_update: reactivateReasonValue,
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
@@ -228,6 +233,17 @@ export default function BenificiaryProfileView(props) {
               rounded={"sm"}
             />
           </VStack>
+          {(benificiary?.program_beneficiaries?.status == "dropout" ||
+            benificiary?.program_beneficiaries?.status == "rejected") && (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>
+                  {t("PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB")}
+                </BodyMedium>
+              </HStack>
+            </Alert>
+          )}
           <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
@@ -250,13 +266,17 @@ export default function BenificiaryProfileView(props) {
                     <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/basicdetails`);
-                    }}
-                    color="textMaroonColor.400"
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/basicdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
                 <Divider
                   orientation="horizontal"
@@ -271,13 +291,17 @@ export default function BenificiaryProfileView(props) {
                       {t("ADD_YOUR_ADDRESS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/edit/${id}/address`);
-                    }}
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/address`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
                 <Divider
                   orientation="horizontal"
@@ -293,13 +317,17 @@ export default function BenificiaryProfileView(props) {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/aadhaardetails`);
-                    }}
-                    color="textMaroonColor.400"
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/aadhaardetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
               </VStack>
             </VStack>
@@ -317,14 +345,16 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  size="sm"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/docschecklist`);
-                  }}
-                />
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/docschecklist`);
+                      }}
+                      color="textMaroonColor.400"
+                    />
+                  )}
               </HStack>
             </VStack>
           </Box>
@@ -351,11 +381,15 @@ export default function BenificiaryProfileView(props) {
                   <FrontEndTypo.H3 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </FrontEndTypo.H3>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="#790000"
-                    size="sm"
-                  />
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        color="textMaroonColor.400"
+                        size="sm"
+                      />
+                    )}
                 </HStack>
               </VStack>
             </Box>
@@ -372,14 +406,18 @@ export default function BenificiaryProfileView(props) {
                   <FrontEndTypo.H3 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </FrontEndTypo.H3>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="#790000"
-                    size="sm"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/enrollmentdetails`);
-                    }}
-                  />
+
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/enrollmentdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
                 </HStack>
               </VStack>
             </Box>
@@ -396,12 +434,37 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("EDUCATION_DETAILS")}
                 </FrontEndTypo.H3>
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/educationdetails`);
+                      }}
+                      color="textMaroonColor.400"
+                    />
+                  )}
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
+                </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   color="#790000"
                   size="sm"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/educationdetails`);
+                    navigate(`/beneficiary/${id}/BenificiaryJourney`);
                   }}
                 />
               </HStack>
@@ -416,56 +479,60 @@ export default function BenificiaryProfileView(props) {
         isOpen={isOpenDropOut}
         onClose={(e) => setIsOpenDropOut(false)}
       >
-        <Actionsheet.Content>
-          <VStack alignItems="end" width="100%">
-            <IconByName
-              name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenDropOut(false)}
-            />
-          </VStack>
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenDropOut(false)}
+              />
+            </VStack>
 
-          <FrontEndTypo.H1 bold color="textGreyColor.450">
-            {t("AG_PROFILE_ARE_YOU_SURE")}
-          </FrontEndTypo.H1>
-          <FrontEndTypo.H2 color="textGreyColor.450">
-            {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
-          </FrontEndTypo.H2>
-          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-            {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
-          </FrontEndTypo.H2>
-          <VStack space="5">
-            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
-              <VStack alignItems="center" space="1" flex="1">
-                <React.Suspense fallback={<HStack>Loading...</HStack>}>
-                  <CustomRadio
-                    options={{
-                      enumOptions: benificiaryDropoutReasons?.map((e) => ({
-                        ...e,
-                        label: e?.title,
-                        value: e?.value,
-                      })),
-                    }}
-                    schema={{ grid: 2 }}
-                    value={reasonValue}
-                    onChange={(e) => {
-                      setReasonValue(e);
-                    }}
-                  />
-                </React.Suspense>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textGreyColor.450">
+              {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+            </FrontEndTypo.H2>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg" w="100%">
+                <VStack alignItems="center" space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryDropoutReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reasonValue}
+                      onChange={(e) => {
+                        setReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+              <VStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={() => {
+                    dropoutApiCall();
+                  }}
+                >
+                  {t("MARK_AS_DROPOUT")}
+                </FrontEndTypo.Primarybutton>
               </VStack>
             </VStack>
-            <VStack space="5" pt="5">
-              <FrontEndTypo.Primarybutton
-                flex={1}
-                onPress={() => {
-                  dropoutApiCall();
-                }}
-              >
-                {t("MARK_AS_DROPOUT")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          </VStack>
-        </Actionsheet.Content>
+          </ScrollView>
+        </Stack>
       </Actionsheet>
 
       <Actionsheet
@@ -489,8 +556,8 @@ export default function BenificiaryProfileView(props) {
             {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
           </FrontEndTypo.H2>
           <VStack space="5">
-            <VStack space="2" bg="textMaroonColor.100" p="1" rounded="lg">
-              <VStack alignItems="center" space="1" flex="1">
+            <VStack space="2" p="1" rounded="lg">
+              <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
                 <React.Suspense fallback={<HStack>Loading...</HStack>}>
                   <CustomRadio
                     options={{

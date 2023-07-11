@@ -1,32 +1,11 @@
 import {
-  BodySmall,
   facilitatorRegistryService,
-  H2,
   IconByName,
   Layout,
-  ButtonStyle,
-  SelectStyle,
   RedOutlineButton,
   FrontEndTypo,
 } from "@shiksha/common-lib";
-import { ChipStatus } from "component/Chip";
-import {
-  HStack,
-  Pressable,
-  VStack,
-  Box,
-  Stack,
-  Button,
-  Text,
-  View,
-  Center,
-  Alert,
-  Badge,
-  Select,
-  Image,
-  selected,
-  Container,
-} from "native-base";
+import { HStack, VStack, Stack, Image } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
