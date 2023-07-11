@@ -2,55 +2,33 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-import {
-  Box,
-  HStack,
-  Select,
-  CheckIcon,
-  Text,
-  Checkbox,
-  VStack,
-  ScrollView,
-  Flex,
-  Button,
-  Input,
-} from "native-base";
+import { Box, HStack, VStack, ScrollView, Button } from "native-base";
 import {
   IconByName,
   AdminLayout as Layout,
-  H2,
   useWindowSize,
-  H3,
-  t,
   benificiaryRegistoryService,
   AdminTypo,
   geolocationRegistryService,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import Table from "./Table";
-import Chip from "component/Chip";
-import CustomRadio from "component/CustomRadio";
+import { MultiCheck } from "../../../component/BaseInput";
+import { useTranslation } from "react-i18next";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
+  const { t } = useTranslation();
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-  const [formData, setFormData] = React.useState({});
-  const [getQualificationAll, setgetQualificationAll] = React.useState();
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [facilitator, setFacilitator] = React.useState([]);
+  const [filter, setFilter] = React.useState({});
 
-  const [service, setService] = React.useState();
-  const [adminlimit, setadminLimit] = React.useState();
-  const [adminpage, setadminPage] = React.useState(1);
-  const [admindata, setadminData] = React.useState();
-  const [totalCount, settotalCount] = React.useState();
-  const [adminStatus, setadminStatus] = React.useState();
-  const [adminSearchValue, setadminSearchValue] = React.useState();
-  const [blockData, setBlockData] = React.useState();
-  const [benificiary, setBenificiary] = React.useState();
-  const [search, setSearch] = React.useState("");
-
-  let finalData;
+  // facilitator pagination
+  const [facilitatorLimit, setFacilitatorLimit] = React.useState(10);
+  const [facilitatorPage, setFacilitatorPage] = React.useState(1);
+  const [isMore, setIsMore] = React.useState("");
 
   React.useEffect(async () => {
     let name = "RAJASTHAN";
@@ -61,28 +39,37 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(() => {
-    benificiaryDetails();
-  }, []);
-  const benificiaryDetails = async () => {
-    let _formData = formData;
-    const result = await facilitatorRegistryService.filter(
-      _formData,
-      adminpage,
-      adminlimit,
-      adminStatus
-    );
-    setBenificiary(result?.data?.data);
-  };
+    const facilitatorDetails = async () => {
+      const result = await facilitatorRegistryService.filter(
+        {},
+        facilitatorPage,
+        facilitatorLimit
+      );
+      setIsMore(
+        parseInt(`${result?.data?.currentPage}`) <
+          parseInt(`${result?.data?.totalPages}`)
+      );
+      const newData = result?.data?.data?.map((e) => ({
+        value: e?.id,
+        label: `${e?.first_name} ${e?.last_name}`,
+      }));
+      const newFilterData = newData.filter(
+        (e) =>
+          facilitator.filter((subE) => subE.value === e?.value).length === 0
+      );
+      setFacilitator([...facilitator, ...newFilterData]);
+    };
+    facilitatorDetails();
+  }, [facilitatorPage]);
 
   const schema = {
     type: "object",
     properties: {
-      DISTRICT: {
+      district: {
         type: "array",
         label: "DISTRICT",
         items: {
           type: "string",
-
           enumNames: getDistrictsAll?.map((item, i) => {
             return item?.district_name;
           }),
@@ -92,68 +79,26 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
-
-      PRERAKS: {
-        type: "array",
-        label: "PRERAKS",
-        items: {
-          type: "string",
-
-          enumNames: benificiary?.map((item, i) => {
-            return item?.first_name;
-          }),
-          enum: benificiary?.map((item, i) => {
-            return item?.id;
-          }),
-        },
-        uniqueItems: true,
-      },
     },
   };
 
   const uiSchema = {
-    DISTRICT: {
-      "ui:widget": "checkboxes",
-      "ui:options": {},
-    },
-    PRERAKS: {
+    district: {
       "ui:widget": "checkboxes",
       "ui:options": {},
     },
   };
 
-  const onChange = async (formData) => {
-    const _formData = formData?.formData;
-    let searchValue = adminSearchValue;
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      _formData,
-      adminpage,
-      adminlimit,
-      adminStatus,
-      searchValue
-    );
-    setadminData(result?.data?.data);
-    settotalCount(result?.data?.totalCount);
-    setFormData(_formData);
+  const onChange = async (data) => {
+    const { district } = data?.formData;
+    setFilter({ ...filter, district });
   };
 
   const clearFilter = () => {
-    setadminData("");
-    setFormData("");
+    setFilter({});
   };
 
-  function CustomFieldTemplate(props) {
-    const {
-      id,
-      classNames,
-      style,
-      label,
-      help,
-      required,
-      description,
-      errors,
-      children,
-    } = props;
+  function CustomFieldTemplate({ id, classNames, label, required, children }) {
     return (
       <VStack
         className={classNames}
@@ -219,13 +164,30 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   uiSchema={uiSchema}
                   onChange={onChange}
                   validator={validator}
-                  formData={formData}
+                  formData={filter}
                   templates={{
                     FieldTemplate: CustomFieldTemplate,
                   }}
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
+                <MultiCheck
+                  value={filter?.facilitator ? filter?.facilitator : []}
+                  onChange={(e) => {
+                    setFilter({ ...filter, facilitator: e });
+                  }}
+                  schema={{ label: "PRERAK", grid: 1 }}
+                  options={{
+                    enumOptions: facilitator,
+                  }}
+                />
+                {isMore && (
+                  <Button
+                    onPress={(e) => setFacilitatorPage(facilitatorPage + 1)}
+                  >
+                    {t("MORE")}
+                  </Button>
+                )}
               </VStack>
             </VStack>
           </ScrollView>
@@ -235,18 +197,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           minH={Height - refAppBar?.clientHeight}
         >
           <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table
-              formData={formData}
-              admindata={admindata}
-              totalCount={totalCount}
-              setadminLimit={setadminLimit}
-              setadminPage={setadminPage}
-              setadminStatus={setadminStatus}
-              adminStatus={adminStatus}
-              setadminSearchValue={setadminSearchValue}
-              adminSearchValue={adminSearchValue}
-              facilitator={userTokenInfo?.authUser}
-            />
+            <Table filter={filter} setFilter={setFilter} />
           </Box>
         </ScrollView>
       </HStack>

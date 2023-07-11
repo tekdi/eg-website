@@ -6,7 +6,7 @@ import {
   AdminTypo,
   enumRegistryService,
 } from "@shiksha/common-lib";
-import { ChipStatus } from "component/Chip";
+import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
 import {
   HStack,
@@ -103,69 +103,21 @@ const columns = (e) => [
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <ChipStatus key={index} status={row?.program_faciltators?.status} />
+      <ChipStatus key={index} status={row?.program_beneficiaries?.status} />
     ),
     sortable: true,
     attr: "email",
   },
 ];
 
-const filters = (data, filter) => {
-  return data.filter((item) => {
-    for (let key in filter) {
-      if (
-        item[key] === undefined ||
-        !filter[key].includes(
-          `${
-            item[key] && typeof item[key] === "string"
-              ? item[key].trim()
-              : item[key]
-          }`
-        )
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-};
-
 // Table component
-function Table({
-  facilitator,
-  setadminPage,
-  setadminLimit,
-  setadminStatus,
-  adminStatus,
-  adminSearchValue,
-  setadminSearchValue,
-  admindata,
-  formData,
-  totalCount,
-}) {
+function Table({ filter, setFilter }) {
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState();
-  const [paginationTotalRows, setPaginationTotalRows] =
-    React.useState(totalCount);
-  // const [filterObj, setFilterObj] = React.useState();
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
-  const [status, setstatus] = React.useState("");
-
-  const navigate = useNavigate();
-
-  React.useEffect(async () => {
-    setLoading(true);
-    setData(admindata);
-    setLoading(false);
-    setPaginationTotalRows(totalCount);
-  }, [admindata]);
-
-  React.useEffect(async () => {
-    setPaginationTotalRows(totalCount);
-  }, [totalCount]);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -174,23 +126,17 @@ function Table({
 
   React.useEffect(async () => {
     setLoading(true);
-
-    let _formData = formData;
-    let adminpage = page;
-    let adminlimit = limit;
-    let searchValue = adminSearchValue;
-
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      _formData,
-      adminpage,
-      adminlimit,
-      status,
-      searchValue
-    );
+    const result = await benificiaryRegistoryService.beneficiariesFilter({
+      ...filter,
+      limit,
+      page,
+    });
     setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount);
+    setPaginationTotalRows(
+      result?.data?.totalCount ? result?.data?.totalCount : 0
+    );
     setLoading(false);
-  }, [page, limit, formData]);
+  }, [page, limit, filter]);
 
   const exportBeneficiaryCSV = async () => {
     const result = await benificiaryRegistoryService.exportBeneficiariesCsv();
@@ -198,44 +144,7 @@ function Table({
 
   const filterByStatus = async (value) => {
     setLoading(true);
-    setstatus(value);
-    setadminStatus(value);
-    let _formData = formData;
-    let adminpage = page;
-    let adminlimit = limit;
-    let adminStatus = value;
-    let searchValue = adminSearchValue;
-
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      _formData,
-      adminpage,
-      adminlimit,
-      adminStatus,
-      searchValue
-    );
-    setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount);
-    // setLimit(result?.limit);
-    setLoading(false);
-  };
-
-  const searchName = async (e) => {
-    let searchValue = e?.nativeEvent?.text;
-    setadminSearchValue(searchValue);
-    let _formData = formData;
-    let adminpage = page;
-    let adminlimit = limit;
-    let status = adminStatus;
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      _formData,
-      adminpage,
-      adminlimit,
-      status,
-      searchValue
-    );
-    setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount);
-    // setLimit(result?.limit);
+    setFilter({ ...filter, status: value });
     setLoading(false);
   };
 
@@ -292,20 +201,23 @@ function Table({
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
           <Text
+            color={!filter?.status ? "blueText.400" : ""}
+            bold={!filter?.status ? true : false}
             cursor={"pointer"}
             mx={3}
             onPress={() => {
-              filterByStatus("");
+              const { status, ...newFilter } = filter;
+              setFilter(newFilter);
             }}
           >
             {t("BENEFICIARY_ALL")}
-            {status == "" && `(${paginationTotalRows})`}
+            {!filter?.status && `(${paginationTotalRows})`}
           </Text>
           {beneficiaryStatus?.map((item) => {
             return (
               <Text
-                color={status == t(item?.value) ? "blueText.400" : ""}
-                bold={status == t(item?.value) ? true : false}
+                color={filter?.status == t(item?.value) ? "blueText.400" : ""}
+                bold={filter?.status == t(item?.value) ? true : false}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
@@ -313,7 +225,7 @@ function Table({
                 }}
               >
                 {t(item?.title)}
-                {status == t(item?.value) && `(${paginationTotalRows})`}
+                {filter?.status == t(item?.value) && `(${paginationTotalRows})`}
               </Text>
             );
           })}
