@@ -27,6 +27,7 @@ export function ChipStatus({ status, ...props }) {
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
+      case "application_screened":
       case "screened":
         setColor("screenedColor");
         setNewStatus(t("SCREENED"));
