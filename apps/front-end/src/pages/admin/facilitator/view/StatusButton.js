@@ -76,40 +76,73 @@ export default function StatusButton({ data, setData }) {
   }, []);
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
-      case "applied":
-        setDisabledBtn(["on_hold"]);
-        break;
-      case "screened":
-        setDisabledBtn(["on_hold", "quit"]);
+      case "application_screened":
+        setDisabledBtn([
+          "rejected",
+          "shortlisted_for_orientation",
+          "rusticate",
+          "on_hold",
+          "quit",
+        ]);
         break;
       case "rejected":
-        setDisabledBtn(["on_hold", "selected_prerak"]);
+        setDisabledBtn(["on_hold", "application_screened", "quit"]);
         break;
       case "shortlisted_for_orientation":
-        setDisabledBtn(["quit"]);
+        setDisabledBtn(["quit", "rejected", "pragati_mobilizer", "rusticate"]);
         break;
       case "pragati_mobilizer":
-        setDisabledBtn(["quit"]);
+        setDisabledBtn([
+          "quit",
+          "rejected",
+          "selected_for_training",
+          "rusticate",
+        ]);
         break;
       case "selected_for_training":
-        setDisabledBtn(["quit"]);
+        setDisabledBtn([
+          "rejected",
+          "quit",
+          "selected_for_onboarding",
+          "rusticate",
+        ]);
         break;
       case "selected_for_onboarding":
-        setDisabledBtn(["quit"]);
+        setDisabledBtn(["rejected", "quit", "pragati_mobilizer", "rusticate"]);
         break;
       case "selected_prerak":
-        setDisabledBtn([]);
+        setDisabledBtn(["rejected", "quit", "rusticate"]);
         break;
       case "quit":
-        setDisabledBtn(["selected_prerak", "on_hold"]);
+        setDisabledBtn([
+          "application_screened",
+          "shortlisted_for_orientation",
+          "pragati_mobilizer",
+          "selected_for_onboarding",
+          "selected_for_training",
+          "on_hold",
+        ]);
         break;
       case "rusticate":
-        setDisabledBtn(["on_hold", "selected_prerak"]);
+        setDisabledBtn(["on_hold"]);
         break;
       case "on_hold":
-        setDisabledBtn(["rusticate", "quit"]);
+        setDisabledBtn([
+          "rusticate",
+          "quit",
+          "applied",
+          "application_screened",
+          "rejected",
+        ]);
+        break;
       default:
-        setDisabledBtn(["screened", "rejected", "quit", "rusticate"]);
+        setDisabledBtn([
+          "application_screened",
+          "rejected",
+          "quit",
+          "rusticate",
+          "on_hold",
+        ]);
     }
   }, [data?.status]);
 
