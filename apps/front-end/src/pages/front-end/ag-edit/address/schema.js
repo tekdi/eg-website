@@ -8,12 +8,12 @@ export default {
       required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         lat: {
-          type: "number",
+          type: ["number", "string"],
           label: "LATITUDE",
           format: "readOnly",
         },
         long: {
-          type: "number",
+          type: ["number", "string"],
           label: "LONGITUDE",
           format: "readOnly",
         },
