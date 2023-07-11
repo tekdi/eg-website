@@ -217,7 +217,8 @@ export default function App({ facilitator, id, ip, onClick }) {
     } else if (
       qData?.result?.program_beneficiaries?.enrollment_status ===
         "applied_but_pending" ||
-      qData?.result?.program_beneficiaries?.enrollment_status === "rejected"
+      qData?.result?.program_beneficiaries?.enrollment_status ===
+        "enrollment_rejected"
     ) {
       setUploadPayment(false);
       const propertiesMain = schema1.properties;
@@ -407,7 +408,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         setUploadPayment(false);
       } else if (
         data?.enrollment_status === "applied_but_pending" ||
-        data?.enrollment_status === "rejected"
+        data?.enrollment_status === "enrollment_rejected"
       ) {
         const { enrollment_number, subjects, enrollment_date, ...properties } =
           constantSchema?.properties;
@@ -611,7 +612,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       }
     } else if (
       formData?.enrollment_status === "applied_but_pending" ||
-      formData?.enrollment_status === "rejected"
+      formData?.enrollment_status === "enrollment_rejected"
     ) {
       if (formData?.enrollment_status && formData?.enrolled_for_board) {
         const updateDetails = await AgRegistryService.updateAg(
