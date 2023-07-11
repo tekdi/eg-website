@@ -75,7 +75,9 @@ export default function BenificiaryProfileView(props) {
     setBenificiary(result?.result);
     const contextId = result?.result?.program_beneficiaries?.id;
     const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
-    setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
+    if (auditLogs[0]) {
+      setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
+    }
   };
 
   const dropoutApiCall = async () => {
