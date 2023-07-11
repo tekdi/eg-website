@@ -28,6 +28,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   };
 
   const res = objProps(facilitator);
+
   return (
     <Layout
       _appBar={{
@@ -100,7 +101,18 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 {t("EDUCATION_AND_WORK_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      qua_name:
+                        facilitator?.qualifications?.qualification_master?.name,
+                    },
+                    ["qualification_ids", "qua_name"]
+                  )}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
