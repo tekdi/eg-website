@@ -13,6 +13,7 @@ import {
   ScrollView,
   Flex,
   Button,
+  Input,
 } from "native-base";
 import {
   IconByName,
@@ -47,6 +48,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [adminSearchValue, setadminSearchValue] = React.useState();
   const [blockData, setBlockData] = React.useState();
   const [benificiary, setBenificiary] = React.useState();
+  const [search, setSearch] = React.useState("");
 
   let finalData;
 
@@ -158,6 +160,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         style={{ borderTopColor: "#EEEEEE", borderTopWidth: "1px" }}
       >
         <HStack style={{ justifyContent: "space-between" }}>
+          {/* <Input
+            type="text"
+            placeholder="Search name"
+            value={search}
+            onChange={(e) => setSearch(e.nativeEvent.text)}
+          /> */}
           {id !== "root" && (
             <HStack style={{ justifyContent: "space-between" }} width="100%">
               <label
@@ -170,6 +178,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 {label}
                 {required ? "*" : null}
               </label>
+
               <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
             </HStack>
           )}
