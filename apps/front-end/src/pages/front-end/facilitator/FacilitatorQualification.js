@@ -45,7 +45,7 @@ export default function FacilitatorQualification({
         ? facilitator?.program_faciltators?.qualification_ids
         : "[]"
     );
-    const arr = qua.filter((item) => ids.includes(item.id));
+    const arr = qua?.filter((item) => ids.includes(item.id));
     setQualifications(arr);
   };
 

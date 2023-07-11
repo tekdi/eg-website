@@ -44,7 +44,7 @@ export default function BenificiaryJourney() {
 
   const getAuditData = async () => {
     const result = await benificiaryRegistoryService.getAuditLogs(contextId);
-    const uniqueDates = result.reduce(
+    const uniqueDates = Array.result.reduce(
       (acc, item) => {
         const parsedDate = moment(item?.created_at);
         const date = parsedDate.format("DD");
