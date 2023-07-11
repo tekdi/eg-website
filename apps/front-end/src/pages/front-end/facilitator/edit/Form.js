@@ -350,7 +350,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         validation({
           data:
             typeof data?.[key] === "string"
-              ? data?.[key].replaceAll(" ", "")
+              ? data?.[key].replace(/ /g, "")
               : data?.[key],
           key,
           errors,
