@@ -108,7 +108,7 @@ export default function StatusButton({ data, setData }) {
         ]);
         break;
       case "selected_for_onboarding":
-        setDisabledBtn(["rejected", "quit", "pragati_mobilizer", "rusticate"]);
+        setDisabledBtn(["rejected", "quit", "selected_prerak", "rusticate"]);
         break;
       case "selected_prerak":
         setDisabledBtn(["rejected", "quit", "rusticate"]);
