@@ -12,6 +12,7 @@ import {
   enumRegistryService,
   getOptions,
   validation,
+  sendAndVerifyOtp,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -38,6 +39,9 @@ export default function App({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [qualifications, setQualifications] = React.useState([]);
   const [enumObj, setEnumObj] = React.useState();
+  const [verifyOtpData, setverifyOtpData] = React.useState();
+  const [otpButton, setOtpButton] = React.useState(false);
+  const [mobileConditon, setMobileConditon] = React.useState(false);
 
   React.useEffect(() => {
     const getData = async () => {
@@ -296,6 +300,55 @@ export default function App({ userTokenInfo, footerLinks }) {
     return await facilitatorRegistryService.isExist(filters);
   };
 
+  const otpfunction = async () => {
+    if (formData?.mobile.length < 10) {
+      const newErrors = {
+        mobile: {
+          __errors: t("MINIMUM_LENGTH_IS_10"),
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
+      const newErrors = {
+        mobile: {
+          __errors: t("PLEASE_ENTER_VALID_NUMBER"),
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+      ...formData,
+      hash: localStorage.getItem("hash"),
+    });
+
+    setverifyOtpData(otpData);
+    if (status === true) {
+      if (errors) {
+        const newErrors = {
+          mobile: {
+            __errors: t("MOBILE_NUMBER_ALREADY_EXISTS"),
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        onClickSubmit(false);
+      }
+    } else if (status === false) {
+      const newErrors = {
+        otp: {
+          __errors: [t("USER_ENTER_VALID_OTP")],
+        },
+      };
+      setErrors(newErrors);
+    } else {
+      setSchema(newSchema);
+      setOtpButton(true);
+    }
+  };
+
   const formSubmitUpdate = async (data, overide) => {
     const { id } = userTokenInfo?.authUser;
     if (id) {
@@ -524,6 +577,19 @@ export default function App({ userTokenInfo, footerLinks }) {
             },
           };
           setErrors(newErrors);
+          setMobileConditon(false);
+        } else {
+          setMobileConditon(true);
+        }
+        if (schema?.properties?.otp) {
+          const { otp, ...properties } = schema?.properties;
+          const required = schema?.required.filter((item) => item !== "otp");
+          setSchema({ ...schema, properties, required });
+          setFormData((e) => {
+            const { otp, ...fData } = e;
+            return fData;
+          });
+          setOtpButton(false);
         }
       }
     }
@@ -749,23 +815,36 @@ export default function App({ userTokenInfo, footerLinks }) {
               transformErrors,
             }}
           >
-            <FrontEndTypo.Primarybutton
-              isLoading={loading}
-              p="4"
-              mt="4"
-              onPress={() => onClickSubmit(false)}
-            >
-              {t("SAVE_AND_NEXT")}
-            </FrontEndTypo.Primarybutton>
+            {mobileConditon && step === "contact_details" ? (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={otpfunction}
+              >
+                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+              </FrontEndTypo.Primarybutton>
+            ) : (
+              <Box>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("SAVE_AND_NEXT")}
+                </FrontEndTypo.Primarybutton>
 
-            <FrontEndTypo.Secondarybutton
-              isLoading={loading}
-              p="4"
-              mt="4"
-              onPress={() => onClickSubmit(true)}
-            >
-              {t("SAVE_AND_PROFILE")}
-            </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("SAVE_AND_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
+            )}
           </Form>
         )}
       </Box>
