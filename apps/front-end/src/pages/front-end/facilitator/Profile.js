@@ -10,6 +10,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { objProps } from "@shiksha/common-lib";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
@@ -25,6 +26,8 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     const result = await facilitatorRegistryService.getOne({ id });
     setFacilitator(result);
   };
+
+  const res = objProps(facilitator);
 
   return (
     <Layout
@@ -68,22 +71,16 @@ export default function Profile({ userTokenInfo, footerLinks }) {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(facilitator, [
-                    "first_name",
-                    "email_id",
-                    "last_name",
-                    "middle_name",
-                    "dob",
+                  value={arrList(res, [
+                    "device_ownership",
                     "mobile",
-                    "alternate_mobile",
-                    "address",
-                    "district",
-                    "block",
-                    "village",
-                    "grampanchayat",
+                    "device_type",
                     "gender",
                     "marital_status",
                     "social_category",
+                    "name",
+                    "contact_number",
+                    "availability",
                   ])}
                   size="xs"
                   colorScheme="info"
@@ -104,7 +101,18 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 {t("EDUCATION_AND_WORK_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      qua_name:
+                        facilitator?.qualifications?.qualification_master?.name,
+                    },
+                    ["qualification_ids", "qua_name"]
+                  )}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
@@ -192,7 +200,15 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 />
               </HStack>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(res, [
+                    "aadhar_no",
+                    "aadhaar_verification_mode",
+                    "aadhar_verified",
+                  ])}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
             </VStack>
           </Box>

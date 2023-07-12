@@ -105,11 +105,24 @@ export default function BenificiaryBasicDetails() {
             </HStack>
             <Box>
               <Progress
-                value={arrList(benificiary, [
-                  "email_id",
-                  "mobile",
-                  "alternative_mobile_number",
-                ])}
+                value={arrList(
+                  {
+                    ...benificiary,
+                    device_type: benificiary?.core_beneficiaries?.device_type,
+                    device_ownership:
+                      benificiary?.core_beneficiaries?.device_ownership,
+                    mark_as_whatsapp_number:
+                      benificiary?.core_beneficiaries?.mark_as_whatsapp_number,
+                  },
+                  [
+                    "email_id",
+                    "mobile",
+                    "alternative_mobile_number",
+                    "device_type",
+                    "device_ownership",
+                    "mark_as_whatsapp_number",
+                  ]
+                )}
                 size="xs"
                 colorScheme="info"
               />
@@ -452,6 +465,7 @@ export default function BenificiaryBasicDetails() {
                   "middle_name",
                   "last_name",
                   "relation",
+                  "contact_number",
                 ])}
                 size="xs"
                 colorScheme="info"
