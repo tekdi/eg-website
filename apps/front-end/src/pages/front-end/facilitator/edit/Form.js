@@ -300,34 +300,20 @@ export default function App({ userTokenInfo, footerLinks }) {
     return await facilitatorRegistryService.isExist(filters);
   };
 
-  const formSubmitCreate = async (formData) => {};
   const otpfunction = async () => {
     if (formData?.mobile.length < 10) {
-      const data = await formSubmitCreate(formData);
-
       const newErrors = {
         mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("MINIMUM_LENGTH_IS_10")],
+          __errors: t("MINIMUM_LENGTH_IS_10"),
         },
       };
       setErrors(newErrors);
     }
 
     if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
-      const data = await formSubmitCreate(formData);
       const newErrors = {
         mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("PLEASE_ENTER_VALID_NUMBER")],
+          __errors: t("PLEASE_ENTER_VALID_NUMBER"),
         },
       };
       setErrors(newErrors);
@@ -340,17 +326,10 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     setverifyOtpData(otpData);
     if (status === true) {
-      const data = await formSubmitCreate(formData);
-
-      if (data?.error) {
+      if (errors) {
         const newErrors = {
           mobile: {
-            __errors:
-              data?.error?.constructor?.name === "String"
-                ? [data?.error]
-                : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            __errors: t("MOBILE_NUMBER_ALREADY_EXISTS"),
           },
         };
         setErrors(newErrors);
