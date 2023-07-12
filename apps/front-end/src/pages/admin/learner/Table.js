@@ -247,7 +247,7 @@ function Table({ filter, setFilter }) {
         }}
         onChangePage={(e) => {
           setPage(e);
-          setadminPage(e);
+          setFilter(e);
         }}
       />
     </VStack>
