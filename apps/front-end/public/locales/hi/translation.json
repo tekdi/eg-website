@@ -265,6 +265,7 @@
   "ENROLLED": "नामांकित",
   "ENROLLMENT_AADHAR_NUMBER_ERROR": "नामांकन रसीद और चिन्हित शिक्षार्थी का आधार नंबर मेल नहीं खाता",
   "ENROLLMENT_AADHAR_POPUP_MESSAGE": "नामांकन रसीद और चिन्हित शिक्षार्थी का आधार नंबर मेल नहीं खाता | कृपया सही आधार संख्या दर्ज करें या एक नया शिक्षार्थी जोड़ें।",
+  "ENROLLMENT_NUMBER_POPUP_MESSAGE": "नामांकन संख्या पहले से मौजूद. सही नामांकन संख्या दर्ज करें",
   "ENROLLMENT_BOARD": "नामांकन बोर्ड",
   "ENROLLMENT_DATE": "नामांकन तारीख",
   "ENROLLMENT_DETAILS": " नामांकन विवरण",

@@ -2,29 +2,12 @@ import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-  Checkbox,
-  Pressable,
-  Text,
-  FormControl,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+
 import {
   facilitatorRegistryService,
   Layout,
   H1,
-  t,
   login,
   H3,
   IconByName,
@@ -45,28 +28,17 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  select,
-  widgets,
-  templates,
-} from "../../../../component/BaseInput.js";
+import { widgets, templates } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ facilitator, id, ip, onClick }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
@@ -87,13 +59,15 @@ export default function App({ facilitator, id, ip, onClick }) {
     borderColor: "gray",
   };
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
 
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
+  const enrollmentNumberExist = async (filters) => {
+    return await benificiaryRegistoryService.isExistEnrollment(id, filters);
   };
 
   const onPressBackButton = async () => {
@@ -364,10 +338,10 @@ export default function App({ facilitator, id, ip, onClick }) {
     if (id === "root_enrollment_number") {
       if (data?.enrollment_number) {
         debounce(async () => {
-          const result = await userExist({
+          const result = await enrollmentNumberExist({
             enrollment_number: data?.enrollment_number,
           });
-          if (result.isUserExist) {
+          if (result.error) {
             setNotMatched(true);
             const newErrors = {
               enrollment_number: {
@@ -630,11 +604,13 @@ export default function App({ facilitator, id, ip, onClick }) {
         // );
 
         formRef?.current?.validate();
-        navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
-          state: {
-            formData,
-          },
-        });
+        if (!errors) {
+          navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
+            state: {
+              formData,
+            },
+          });
+        }
       } else {
         validation();
       }
@@ -812,7 +788,7 @@ export default function App({ facilitator, id, ip, onClick }) {
               pt="2"
               color="textGreyColor.500"
             >
-              {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
+              {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
             </FrontEndTypo.H3>
 
             <VStack space={5}>
