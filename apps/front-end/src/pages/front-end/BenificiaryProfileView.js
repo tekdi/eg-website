@@ -8,6 +8,8 @@ import {
   Divider,
   Actionsheet,
   Alert,
+  ScrollView,
+  Stack,
 } from "native-base";
 import {
   FrontEndTypo,
@@ -42,6 +44,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
+  const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -69,8 +72,12 @@ export default function BenificiaryProfileView(props) {
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
-
     setBenificiary(result?.result);
+    const contextId = result?.result?.program_beneficiaries?.id;
+    const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
+    if (auditLogs[0]) {
+      setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
+    }
   };
 
   const dropoutApiCall = async () => {
@@ -91,7 +98,7 @@ export default function BenificiaryProfileView(props) {
   const reactivateApiCall = async () => {
     let bodyData = {
       user_id: benificiary?.id?.toString(),
-      status: "activate",
+      status: prevStatus,
       reason_for_status_update: reactivateReasonValue,
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
@@ -118,7 +125,7 @@ export default function BenificiaryProfileView(props) {
   };
   React.useEffect(() => {
     benificiaryDetails();
-  }, [reactivateReasonValue, reasonValue, dropoutApiCall]);
+  }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
     const status = benificiary?.program_beneficiaries?.status;
@@ -228,6 +235,17 @@ export default function BenificiaryProfileView(props) {
               rounded={"sm"}
             />
           </VStack>
+          {(benificiary?.program_beneficiaries?.status == "dropout" ||
+            benificiary?.program_beneficiaries?.status == "rejected") && (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>
+                  {t("PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB")}
+                </BodyMedium>
+              </HStack>
+            </Alert>
+          )}
           <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
@@ -281,7 +299,7 @@ export default function BenificiaryProfileView(props) {
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
-                          navigate(`/beneficiary/${id}/address`);
+                          navigate(`/beneficiary/edit/${id}/address`);
                         }}
                         color="textMaroonColor.400"
                       />
@@ -463,56 +481,60 @@ export default function BenificiaryProfileView(props) {
         isOpen={isOpenDropOut}
         onClose={(e) => setIsOpenDropOut(false)}
       >
-        <Actionsheet.Content>
-          <VStack alignItems="end" width="100%">
-            <IconByName
-              name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenDropOut(false)}
-            />
-          </VStack>
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenDropOut(false)}
+              />
+            </VStack>
 
-          <FrontEndTypo.H1 bold color="textGreyColor.450">
-            {t("AG_PROFILE_ARE_YOU_SURE")}
-          </FrontEndTypo.H1>
-          <FrontEndTypo.H2 color="textGreyColor.450">
-            {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
-          </FrontEndTypo.H2>
-          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-            {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
-          </FrontEndTypo.H2>
-          <VStack space="5">
-            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
-              <VStack alignItems="center" space="1" flex="1">
-                <React.Suspense fallback={<HStack>Loading...</HStack>}>
-                  <CustomRadio
-                    options={{
-                      enumOptions: benificiaryDropoutReasons?.map((e) => ({
-                        ...e,
-                        label: e?.title,
-                        value: e?.value,
-                      })),
-                    }}
-                    schema={{ grid: 2 }}
-                    value={reasonValue}
-                    onChange={(e) => {
-                      setReasonValue(e);
-                    }}
-                  />
-                </React.Suspense>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textGreyColor.450">
+              {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+            </FrontEndTypo.H2>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg" w="100%">
+                <VStack alignItems="center" space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryDropoutReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reasonValue}
+                      onChange={(e) => {
+                        setReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+              <VStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={() => {
+                    dropoutApiCall();
+                  }}
+                >
+                  {t("MARK_AS_DROPOUT")}
+                </FrontEndTypo.Primarybutton>
               </VStack>
             </VStack>
-            <VStack space="5" pt="5">
-              <FrontEndTypo.Primarybutton
-                flex={1}
-                onPress={() => {
-                  dropoutApiCall();
-                }}
-              >
-                {t("MARK_AS_DROPOUT")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          </VStack>
-        </Actionsheet.Content>
+          </ScrollView>
+        </Stack>
       </Actionsheet>
 
       <Actionsheet
@@ -536,8 +558,8 @@ export default function BenificiaryProfileView(props) {
             {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
           </FrontEndTypo.H2>
           <VStack space="5">
-            <VStack space="2" bg="textMaroonColor.100" p="1" rounded="lg">
-              <VStack alignItems="center" space="1" flex="1">
+            <VStack space="2" p="1" rounded="lg">
+              <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
                 <React.Suspense fallback={<HStack>Loading...</HStack>}>
                   <CustomRadio
                     options={{

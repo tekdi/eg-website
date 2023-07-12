@@ -23,15 +23,9 @@ import orientationPopupSchema from "./orientationPopupSchema";
 import validator from "@rjsf/validator-ajv8";
 
 import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  ObjectFieldTemplate,
-  select,
-  RadioBtn,
-  CustomR,
-  AddButton,
-  BaseInputTemplate,
   HFieldTemplate,
+  templates,
+  widgets,
 } from "../../../component/BaseInput";
 
 import {
@@ -42,6 +36,7 @@ import {
   CheckCircleIcon,
   Image,
   Pressable,
+  Text,
 } from "native-base";
 import moment from "moment";
 import OrientationScreen from "./OrientationScreen";
@@ -61,22 +56,33 @@ export default function Orientation({ footerLinks }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [userIds, setUserIds] = React.useState({});
   const nowDate = new Date();
+  const [goToDate, setGoToDate] = React.useState(moment().toDate());
 
-  const SelectButton = () => (
-    <HStack space={"10"}>
-      <HStack wdith="60%" flex="0.5">
-        <IconByName name="UserLineIcon" isDisabled />
+  const SelectButton = ({ required }) => (
+    <HStack space={"4"} direction={["column", "row"]}>
+      <HStack flex={["1", "1", "1"]} alignItems="center" space={"2"}>
+        <IconByName
+          name="UserLineIcon"
+          color="textGreyColor.200"
+          isDisabled
+          _icon={{ size: "14px" }}
+        />
         <AdminTypo.H6 color="textGreyColor.100">
-          {t("SELECT_CANDIDATE")} *
+          {t("SELECT_CANDIDATE")}
+        </AdminTypo.H6>
+
+        <AdminTypo.H6 color="textGreyColor.100">
+          {required ? "*" : null}
         </AdminTypo.H6>
       </HStack>
-      <HStack alignItems="center" flex="0.4">
-        <AdminTypo.Secondarybutton onPress={() => setIsOpen(true)}>
+      <HStack alignItems="center" flex={["1", "3", "4"]}>
+        <AdminTypo.Secondarybutton
+          leftIcon={<Text>{userIds ? Object.values(userIds).length : ""}</Text>}
+          onPress={() => setIsOpen(true)}
+          flex="1"
+        >
           {t("SELECT_PRERAK")}
         </AdminTypo.Secondarybutton>
-        <AdminTypo.H3 color="textGreyColor.800" bold pl="3">
-          {userIds !== undefined ? Object.values(userIds).length : ""}
-        </AdminTypo.H3>
       </HStack>
     </HStack>
   );
@@ -214,18 +220,42 @@ export default function Orientation({ footerLinks }) {
 
   const clearForm = () => {
     setUserIds({});
-    setFormData({
-      attendees: [],
-      type: null,
-      name: "",
-      master_trainer: "",
-      start_date: null,
-      end_date: null,
-      start_time: null,
-      end_time: null,
-      reminders: [],
-      location: "",
-      location_type: null,
+    setFormData();
+  };
+
+  const transformErrors = (errors, uiSchema) => {
+    return errors.map((error) => {
+      if (error.name === "required") {
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t("REQUIRED_MESSAGE")} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t("REQUIRED_MESSAGE")}`;
+        }
+      } else if (error.name === "enum") {
+        error.message = `${t("SELECT_MESSAGE")}`;
+      } else if (error.name === "format") {
+        const { format } = error?.params ? error?.params : {};
+        let message = "REQUIRED_MESSAGE";
+        if (format === "email") {
+          message = "PLEASE_ENTER_VALID_EMAIL";
+        }
+        if (format === "string") {
+          message = "PLEASE_ENTER_VALID_STREING";
+        } else if (format === "number") {
+          message = "PLEASE_ENTER_VALID_NUMBER";
+        }
+
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t(message)} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t(message)}`;
+        }
+      }
+      return error;
     });
   };
 
@@ -287,7 +317,7 @@ export default function Orientation({ footerLinks }) {
       alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
     }
   };
-
+  // console.log(formData);
   return (
     <Layout
       _appBar={{
@@ -314,13 +344,14 @@ export default function Orientation({ footerLinks }) {
               </HStack>
             </Box>
             <HStack>
-              <BoxBlue justifyContent="center" pl="3">
-                <VStack alignItems={"Center"}>
-                  <Pressable
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                    }}
-                  >
+              <Pressable
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setFormData({ type: "prerak_orientation" });
+                }}
+              >
+                <BoxBlue justifyContent="center" pl="3">
+                  <VStack alignItems={"Center"}>
                     <Image
                       source={{
                         uri: "/orientation.svg",
@@ -332,9 +363,9 @@ export default function Orientation({ footerLinks }) {
                     <AdminTypo.H6 bold pt="4">
                       {t("ORIENTATION")}
                     </AdminTypo.H6>
-                  </Pressable>
-                </VStack>
-              </BoxBlue>
+                  </VStack>
+                </BoxBlue>
+              </Pressable>
               {/* <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
@@ -386,15 +417,16 @@ export default function Orientation({ footerLinks }) {
             </AdminTypo.H3>
           </VStack>
           <HStack
-            justifyContent="space-between"
             px="2"
             pb="10"
+            space={"4"}
             direction={["column", "column", "row"]}
+            width="100%"
+            flex="1"
           >
-            <VStack alignContent="center" pb="270px" pr="5" flex="1">
+            <VStack alignContent="center" space="4" flex={["1", "1"]}>
               <AdminTypo.Secondarybutton
                 alignContent="center"
-                mb="3"
                 shadow="BlueOutlineShadow"
                 onPress={() => {
                   setModalVisible(!modalVisible);
@@ -402,10 +434,12 @@ export default function Orientation({ footerLinks }) {
               >
                 {t("SCHEDULE_EVENT")}
               </AdminTypo.Secondarybutton>
-              <Cal />
-              <VStack space="4" mt="4">
-                {reminders?.data?.FACILITATOR_EVENT_TYPE.map((e) => (
-                  <HStack alignItems="Center" space="md">
+              <Cal
+                onChange={(e) => setGoToDate(moment(e).add(1, "days").toDate())}
+              />
+              <VStack space="4">
+                {reminders?.data?.FACILITATOR_EVENT_TYPE.map((e, key) => (
+                  <HStack alignItems="Center" space="md" key={key}>
                     <CheckCircleIcon
                       size="4"
                       color={
@@ -419,17 +453,19 @@ export default function Orientation({ footerLinks }) {
                 ))}
               </VStack>
             </VStack>
-            <VStack flex="4"> 
+            <VStack flex={["none", "none", "4"]}>
               <Fullcalendar
-              width="100%"
+                height={1350}
+                width="100%"
                 ref={calendarRef}
-                key={eventList}
+                key={eventList + goToDate}
+                initialDate={goToDate}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 timeZone="Asia/Kolkata"
                 headerToolbar={{
-                  left: "prev,next today",
+                  left: "prev,next",
                   center: "title",
-                  right: "timeGridDay,timeGridWeek,dayGridMonth,dayGridYear",
+                  right: "timeGridDay,timeGridWeek,dayGridMonth",
                 }}
                 initialView="timeGridDay"
                 editable={true}
@@ -498,8 +534,6 @@ export default function Orientation({ footerLinks }) {
               setModalVisible(false), clearForm();
             }}
             avoidKeyboard
-            // height={"450px"}
-            overflowY={"scroll"}
           >
             <Modal.Content {...styles.modalxxl}>
               <Modal.CloseButton />
@@ -509,61 +543,52 @@ export default function Orientation({ footerLinks }) {
                 </AdminTypo.H1>
               </Modal.Header>
 
-              <Modal.Body p="1" pb="10" bg="white">
+              <Modal.Body pt="4" pb="10" bg="white">
                 <Suspense fallback={<div>Loading... </div>}>
                   <Form
                     ref={formRef}
-                    widgets={{ RadioBtn, CustomR, select, TimePickerComponent }}
                     templates={{
-                      ButtonTemplates: { AddButton },
+                      ...templates,
                       FieldTemplate: HFieldTemplate,
-                      ObjectFieldTemplate,
-                      TitleFieldTemplate,
-                      DescriptionFieldTemplate,
-                      BaseInputTemplate,
                     }}
                     extraErrors={errors}
                     showErrorList={false}
                     noHtml5Validate={true}
                     // liveValidate
                     {...{
+                      widgets,
                       validator,
                       schema: schema ? schema : {},
                       formData,
                       uiSchema,
                       onChange,
                       onSubmit,
+                      transformErrors,
                     }}
                   >
-                    <HStack
-                      justifyContent="space-between"
-                      space={2}
-                      py="5"
-                      borderTopWidth="1px"
-                      bg="white"
-                      borderTopColor="appliedColor"
-                    >
-                      <AdminTypo.Secondarybutton
-                        onPress={() => {
-                          setModalVisible(false);
-                          clearForm();
-                        }}
-                        shadow="BlueOutlineShadow"
-                      >
-                        {t("CANCEL")}
-                      </AdminTypo.Secondarybutton>
-                      <AdminTypo.PrimaryButton
-                        onPress={() => {
-                          formRef?.current?.submit();
-                        }}
-                        shadow="BlueFillShadow"
-                      >
-                        {t("SEND_INVITES")}
-                      </AdminTypo.PrimaryButton>
-                    </HStack>
+                    <button style={{ display: "none" }} />
                   </Form>
                 </Suspense>
               </Modal.Body>
+              <Modal.Footer justifyContent={"space-between"}>
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    setModalVisible(false);
+                    clearForm();
+                  }}
+                  shadow="BlueOutlineShadow"
+                >
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    formRef?.current?.submit();
+                  }}
+                  shadow="BlueFillShadow"
+                >
+                  {t("SEND_INVITES")}
+                </AdminTypo.PrimaryButton>
+              </Modal.Footer>
             </Modal.Content>
           </Modal>
           <OrientationScreen {...{ isOpen, setIsOpen, userIds, setUserIds }} />
