@@ -38,6 +38,7 @@ import {
   enrollmentDateOfBirth,
   FrontEndTypo,
   getOptions,
+  debounce,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
@@ -78,6 +79,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [uploadPayment, setUploadPayment] = React.useState(true);
   const [source, setSource] = React.useState();
   const [benificiary, setBenificiary] = React.useState();
+  const [notMatched, setNotMatched] = React.useState(false);
   const buttonStyle = {
     borderWidth: "2px",
     borderStyle: "dotted",
@@ -89,6 +91,10 @@ export default function App({ facilitator, id, ip, onClick }) {
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
+
+  const userExist = async (filters) => {
+    return await facilitatorRegistryService.isExist(filters);
+  };
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/enrollmentdetails`);
@@ -348,9 +354,31 @@ export default function App({ facilitator, id, ip, onClick }) {
     });
   };
 
+  const clearForm = async () => {
+    navigate(`/beneficiary/profile/${id}`);
+  };
+
   const onChange = async (e, id) => {
     setErrors();
     const data = e.formData;
+    if (id === "root_enrollment_number") {
+      if (data?.enrollment_number) {
+        debounce(async () => {
+          const result = await userExist({
+            enrollment_number: data?.enrollment_number,
+          });
+          if (result.isUserExist) {
+            setNotMatched(true);
+            const newErrors = {
+              enrollment_number: {
+                __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          }
+        }, 1000);
+      }
+    }
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
       const newErrors = {
         enrollment_date: {
@@ -775,6 +803,51 @@ export default function App({ facilitator, id, ip, onClick }) {
           <React.Fragment />
         )}
       </Box>
+
+      <Modal isOpen={notMatched} onClose={() => setNotMatched(false)} size="lg">
+        <Modal.Content>
+          <Modal.Body p="2" bg="white">
+            <FrontEndTypo.H3
+              textAlign="center"
+              pt="2"
+              color="textGreyColor.500"
+            >
+              {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
+            </FrontEndTypo.H3>
+
+            <VStack space={5}>
+              <HStack
+                alignItems="center"
+                space={4}
+                mt="5"
+                pt="4"
+                borderTopWidth="1px"
+                bg="white"
+                borderTopColor="appliedColor"
+                justifyContent="center"
+              >
+                <FrontEndTypo.Secondarybutton
+                  shadow="BlueFillShadow"
+                  px="2"
+                  onPress={() => {
+                    setNotMatched(false);
+                  }}
+                >
+                  {t("EDIT_ENROLLMENT_NUMBER")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton
+                  px="2"
+                  shadow="BlueFillShadow"
+                  onPress={() => clearForm()}
+                >
+                  {t("HOME_PAGE")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+
       <Modal
         isOpen={credentials}
         onClose={() => setCredentials(false)}
