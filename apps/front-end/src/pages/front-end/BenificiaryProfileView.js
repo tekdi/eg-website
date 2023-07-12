@@ -25,6 +25,8 @@ import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 
 import { ChipStatus } from "component/BeneficiaryStatus";
+import { arrList } from "@shiksha/common-lib";
+import { objProps } from "@shiksha/common-lib";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -58,6 +60,8 @@ export default function BenificiaryProfileView(props) {
       setAlert();
     }
   }, [benificiary]);
+
+  const res = objProps(benificiary);
 
   const enumAPicall = async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -262,7 +266,44 @@ export default function BenificiaryProfileView(props) {
                 {t("PROFILE_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      ...(res?.references?.[0] ? res?.references?.[0] : {}),
+                    },
+                    [
+                      "email_id",
+                      "mobile",
+                      "alternative_mobile_number",
+                      "device_type",
+                      "device_ownership",
+                      "mark_as_whatsapp_number",
+                      "father_first_name",
+                      "father_middle_name",
+                      "father_last_name",
+                      "mother_first_name",
+                      "mother_middle_name",
+                      "mother_last_name",
+                      "social_category",
+                      "marital_status",
+                      "first_name",
+                      "middle_name",
+                      "last_name",
+                      "relation",
+                      "contact_number",
+                      "district",
+                      "state",
+                      "block",
+                      "village",
+                      "aadhar_no",
+                      "aadhaar_verification_mode",
+                      "aadhar_verified",
+                    ]
+                  )}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
