@@ -7,6 +7,16 @@ export default {
       type: "object",
       required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
+        lat: {
+          type: ["number", "string"],
+          label: "LATITUDE",
+          format: "readOnly",
+        },
+        long: {
+          type: ["number", "string"],
+          label: "LONGITUDE",
+          format: "readOnly",
+        },
         address: {
           title: "STREET_ADDRESS",
           type: ["string", "null"],

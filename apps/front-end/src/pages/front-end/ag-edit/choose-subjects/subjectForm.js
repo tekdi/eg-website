@@ -22,8 +22,6 @@ import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -31,13 +29,8 @@ import {
   H3,
   IconByName,
   BodySmall,
-  filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
-  updateSchemaEnum,
   uploadRegistryService,
   AgRegistryService,
   benificiaryRegistoryService,
@@ -45,6 +38,7 @@ import {
   dateOfBirth,
   enrollmentDateOfBirth,
   FrontEndTypo,
+  getOptions,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
@@ -59,6 +53,8 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   select,
+  widgets,
+  templates,
 } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 import { useId } from "react";
@@ -136,10 +132,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
-        yearsRange: [
-          moment().subtract("years", 30).format("YYYY"),
-          moment().format("YYYY"),
-        ],
+        yearsRange: [2023, moment().format("YYYY")],
       },
     },
   });
@@ -180,57 +173,11 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema?.["properties"]?.[key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    if (newProperties?.type === "array") {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            items: {
-              ...(properties?.items ? properties?.items : {}),
-              ...(_.isEmpty(arr) ? {} : enumObj),
-            },
-          },
-        },
-      };
-    } else {
-      return {
-        ...schema,
-        ["properties"]: {
-          ...schema["properties"],
-          [key]: {
-            ...properties,
-            ...(_.isEmpty(arr) ? {} : enumObj),
-          },
-        },
-      };
-    }
-  };
   React.useEffect(async () => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
@@ -271,7 +218,8 @@ export default function App({ facilitator, id, ip, onClick }) {
     } else if (
       qData?.result?.program_beneficiaries?.enrollment_status ===
         "applied_but_pending" ||
-      qData?.result?.program_beneficiaries?.enrollment_status === "rejected"
+      qData?.result?.program_beneficiaries?.enrollment_status ===
+        "enrollment_rejected"
     ) {
       setUploadPayment(false);
       const propertiesMain = schema1.properties;
@@ -294,6 +242,11 @@ export default function App({ facilitator, id, ip, onClick }) {
       const required = ["enrollment_status"];
 
       setSchema({ ...constantSchema, properties, required });
+    } else {
+      const properties1 = schema1.properties;
+      const constantSchema = properties1[1];
+      const { subjects, ...properties } = constantSchema?.properties;
+      setSchema({ ...constantSchema, properties });
     }
 
     let enrolled_for_board = qData?.result?.program_beneficiaries
@@ -314,7 +267,6 @@ export default function App({ facilitator, id, ip, onClick }) {
         qData?.result?.program_beneficiaries?.payment_receipt_document_id,
     });
     const stringsArray = subjectData?.map((number) => number?.toString());
-
     setFormData({
       ...formData,
       enrollment_status: enrollment_status ? enrollment_status : "",
@@ -329,7 +281,7 @@ export default function App({ facilitator, id, ip, onClick }) {
           ? ""
           : enrollment_number
           ? enrollment_number
-          : "",
+          : undefined,
       enrollment_date: enrollment_date ? enrollment_date : "",
       subjects:
         enrollment_status === "other" ? [] : stringsArray ? stringsArray : [],
@@ -399,12 +351,30 @@ export default function App({ facilitator, id, ip, onClick }) {
 
   const onChange = async (e, id) => {
     setErrors();
-
     const data = e.formData;
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
       const newErrors = {
         enrollment_date: {
           __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
+        },
+      };
+      setErrors(newErrors);
+    }
+    if (data?.enrolled_for_board === "") {
+      const newErrors = {
+        enrolled_for_board: {
+          __errors: [t("PLEASE_SELECT")],
+        },
+      };
+      setErrors(newErrors);
+    }
+    if (
+      typeof e?.formData?.enrollment_number !== "number" &&
+      typeof e?.formData?.enrollment_number !== "undefined"
+    ) {
+      const newErrors = {
+        enrollment_number: {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
         },
       };
       setErrors(newErrors);
@@ -439,7 +409,7 @@ export default function App({ facilitator, id, ip, onClick }) {
         setUploadPayment(false);
       } else if (
         data?.enrollment_status === "applied_but_pending" ||
-        data?.enrollment_status === "rejected"
+        data?.enrollment_status === "enrollment_rejected"
       ) {
         const { enrollment_number, subjects, enrollment_date, ...properties } =
           constantSchema?.properties;
@@ -458,19 +428,33 @@ export default function App({ facilitator, id, ip, onClick }) {
         setUploadPayment(false);
       } else if (data?.enrollment_status === "other") {
         setUploadPayment(true);
-        const { ...properties } = constantSchema?.properties;
-        const required = ["enrollment_status"];
+        if (!data?.enrolled_for_board) {
+          const { subjects, ...properties } = constantSchema?.properties;
+          const required = ["enrollment_status"];
+          setSchema({ ...constantSchema, properties, required });
+        } else {
+          const { ...properties } = constantSchema?.properties;
+          const required = ["enrollment_status"];
 
-        setSchema({ ...constantSchema, properties, required });
+          setSchema({ ...constantSchema, properties, required });
+        }
+
         const newData = { ...formData, ...data };
         setFormData(newData);
         setUploadPayment(true);
       } else {
-        setSchema(constantSchema);
-        setUploadPayment(true);
+        if (!data?.enrolled_for_board) {
+          setUploadPayment(true);
+          const properties1 = schema1.properties;
+          const constantSchema = properties1[1];
+          const { subjects, ...properties } = constantSchema?.properties;
+          setSchema({ ...constantSchema, properties });
+        } else {
+          setSchema(constantSchema);
+          setUploadPayment(true);
+        }
       }
     }
-
     const newData = { ...formData, ...data };
     setFormData(newData);
   };
@@ -495,12 +479,25 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_status === "other"
       ) {
         let subjects = await enumRegistryService.getSubjects(filters);
-        newSchema = getOptions(newSchema, {
-          key: "subjects",
-          arr: subjects ? subjects?.data : [],
-          title: "name",
-          value: "id",
-        });
+        newSchema = getOptions(
+          {
+            ...newSchema,
+            properties: {
+              ...newSchema["properties"],
+              subjects: {
+                type: "array",
+                label: "SELECT_SUBJECTS",
+                uniqueItems: true,
+              },
+            },
+          },
+          {
+            key: "subjects",
+            arr: subjects ? subjects?.data : [],
+            title: "name",
+            value: "id",
+          }
+        );
       }
 
       newSchema = getOptions(newSchema, {
@@ -519,6 +516,7 @@ export default function App({ facilitator, id, ip, onClick }) {
     }
     setSchema(newSchema);
   }, [formData]);
+
   const validation = () => {
     const newErrors = {};
     if (formData?.edit_page_type) {
@@ -533,6 +531,10 @@ export default function App({ facilitator, id, ip, onClick }) {
       } else if (!formData?.enrollment_number) {
         newErrors.enrollment_number = {
           __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NUMBER")],
+        };
+      } else if (typeof formData?.enrollment_number !== "number") {
+        newErrors.enrollment_number = {
+          __errors: [t("REQUIRED_MESSAGE_ENROLLMENT_NOT_A_NUMBER")],
         };
       } else if (!formData?.enrollment_date) {
         newErrors.enrollment_date = {
@@ -556,7 +558,7 @@ export default function App({ facilitator, id, ip, onClick }) {
   };
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 2) {
+    if (file && file.size <= 1048576 * 10) {
       const form_data = new FormData();
       const item = {
         file: file,
@@ -576,7 +578,11 @@ export default function App({ facilitator, id, ip, onClick }) {
         document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
     } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
+      const newErrors = {};
+      newErrors.payment_receipt_document_id = {
+        __errors: [t("FILE_SIZE")],
+      };
+      setErrors(newErrors);
     }
   };
   const editSubmit = async () => {
@@ -585,28 +591,29 @@ export default function App({ facilitator, id, ip, onClick }) {
         formData?.enrollment_status &&
         formData?.enrolled_for_board !== "null" &&
         formData?.enrollment_number &&
+        typeof formData?.enrollment_number === "number" &&
         formData?.enrollment_date &&
         formData?.payment_receipt_document_id &&
         formData?.subjects.length < 8 &&
-        formData?.subjects.length > 1
+        formData?.subjects.length >= 1
       ) {
-        const updateDetails = await AgRegistryService.updateAg(
-          formData,
-          userId
-        );
+        // const updateDetails = await AgRegistryService.updateAg(
+        //   formData,
+        //   userId
+        // );
+
+        formRef?.current?.validate();
         navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
           state: {
-            enrollment_date: formData?.enrollment_date,
+            formData,
           },
         });
-        // navigate(`/beneficiary/profile/${userId}`);
-        // console("hi");
       } else {
         validation();
       }
     } else if (
       formData?.enrollment_status === "applied_but_pending" ||
-      formData?.enrollment_status === "rejected"
+      formData?.enrollment_status === "enrollment_rejected"
     ) {
       if (formData?.enrollment_status && formData?.enrolled_for_board) {
         const updateDetails = await AgRegistryService.updateAg(
@@ -627,9 +634,20 @@ export default function App({ facilitator, id, ip, onClick }) {
       } else {
         validation();
       }
-    } else {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      navigate(`/beneficiary/profile/${userId}`);
+    } else if (formData?.enrollment_status === "other") {
+      if (
+        formData?.enrollment_number
+          ? typeof formData?.enrollment_number == "number"
+          : true
+      ) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        navigate(`/beneficiary/profile/${userId}`);
+      } else {
+        validation();
+      }
     }
   };
 
@@ -662,15 +680,8 @@ export default function App({ facilitator, id, ip, onClick }) {
           <Form
             key={lang + schema}
             ref={formRef}
-            widgets={{ select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -688,15 +699,14 @@ export default function App({ facilitator, id, ip, onClick }) {
             {uploadPayment ? (
               <VStack>
                 <FrontEndTypo.H2 color="textMaroonColor.400" pb="3" bold>
-                  {t("PAYMENT_RECEIPT")} *
+                  {t("PAYMENT_RECEIPT")}
+                  {formData?.enrollment_status !== "other" ? " *" : ""}
                 </FrontEndTypo.H2>
-
                 <HStack justifyContent="space-between" alignItems="Center">
-                  <Box style={buttonStyle}>
+                  <Box style={buttonStyle} width="100%">
                     <VStack
                       px="5"
-                      pb="3"
-                      pt="2"
+                      py="3"
                       borderRadius="10px"
                       borderWidth="1px"
                       bg="white"

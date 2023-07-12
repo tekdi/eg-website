@@ -26,6 +26,7 @@ import Profile from "pages/front-end/facilitator/Profile";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
 import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
+import BenificiaryJourney from "pages/front-end/BenificiaryJourney";
 import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
 import BenificiaryAadhaarDetails from "pages/front-end/BenificiaryAadhaarDetails";
 import EditForm from "../pages/front-end/facilitator/edit/Form";
@@ -35,6 +36,7 @@ import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQua
 import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
 
 import EnrollmentReceipt from "../pages/front-end/ag-edit/choose-subjects/ErollmentReceipt";
+import AadhaarDetails from "pages/front-end/facilitator/AadhaarDetails";
 
 export default [
   { path: "/form", component: Home },
@@ -116,6 +118,10 @@ export default [
     component: BenificiaryEducation,
   },
   {
+    path: "/beneficiary/:id/benificiaryJourney",
+    component: BenificiaryJourney,
+  },
+  {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
   },
@@ -130,6 +136,10 @@ export default [
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
+  {
+    path: "/profile/:id/aadhaardetails",
+    component: AadhaarDetails,
+  },
   { path: "/profile/edit/:step/:photoNo", component: EditForm },
   {
     path: "/facilitatorbasicdetail",

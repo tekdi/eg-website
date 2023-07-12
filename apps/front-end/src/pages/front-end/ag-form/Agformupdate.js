@@ -139,7 +139,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      setAlert("Geolocation is not supported by this browser.");
+      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
     }
   };
 
@@ -158,19 +158,19 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   function showError(error) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        setAlert("User denied the request for Geolocation.");
+        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
 
         break;
       case error.POSITION_UNAVAILABLE:
-        setAlert("Location information is unavailable.");
+        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
 
         break;
       case error.TIMEOUT:
-        setAlert("The request to get user location timed out.");
+        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
 
         break;
       case error.UNKNOWN_ERROR:
-        setAlert("An unknown error occurred.");
+        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
 
         break;
     }
@@ -281,7 +281,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       });
       setSchema(newSchema);
     }
-    if (schema["properties"]["marital_status"]) {
+    if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
@@ -298,7 +298,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       setSchema(newSchema);
     }
 
-    if (schema["properties"]["learning_motivation"]) {
+    if (schema["properties"]?.["learning_motivation"]) {
       newSchema = getOptions(newSchema, {
         key: "learning_motivation",
         arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
@@ -323,10 +323,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      // setPage(newSteps[0]);
       setPage(agroute ? "upload" : newSteps[0]);
-
-      setSchema(properties[newSteps[4]]);
+      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
@@ -387,8 +385,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
     ["grampanchayat"].forEach((key) => {
       if (
-        key === "grampanchayat" &&
-        data?.grampanchayat?.replaceAll(" ", "") === ""
+        (key === "grampanchayat" &&
+          data?.grampanchayat?.replaceAll(" ", "") === "") ||
+        data?.grampanchayat === null
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`

@@ -2,13 +2,15 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import {
+  AgRegistryService,
+  FrontEndTypo,
   benificiaryRegistoryService,
   dateOfBirth,
   enrollmentDateOfBirth,
   validation,
 } from "@shiksha/common-lib";
 import enrollmentSchema from "./EnrollmentSchema.js";
-import { Alert, Box, Button, HStack } from "native-base";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
 import { useParams, useLocation } from "react-router-dom";
 
 import { Layout, filtersByObject, BodyMedium } from "@shiksha/common-lib";
@@ -24,6 +26,8 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   select,
+  templates,
+  widgets,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 
@@ -34,19 +38,20 @@ export default function App({ facilitator }) {
   const [schema, setSchema] = React.useState({});
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
+  const [alertAadhar, setAlertAadhar] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [benificiary, setBenificiary] = React.useState();
+  const [notMatched, setNotMatched] = React.useState(false);
   const { state } = useLocation();
-
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${id}/enrollmentdetails`);
+    navigate(`/beneficiary/edit/${id}/enrollment-details`);
   };
   const ref = React.createRef(null);
   React.useEffect(() => {
@@ -133,15 +138,17 @@ export default function App({ facilitator }) {
       qData?.result?.program_beneficiaries?.enrollment_aadhaar_no;
     setFormData({
       ...formData,
-      enrollment_first_name: enrollment_first_name ? enrollment_first_name : "",
+      enrollment_first_name: enrollment_first_name
+        ? enrollment_first_name
+        : undefined,
       enrollment_middle_name: enrollment_middle_name
         ? enrollment_middle_name
         : "",
       enrollment_last_name: enrollment_last_name ? enrollment_last_name : "",
-      enrollment_dob: enrollment_dob ? enrollment_dob : "",
+      enrollment_dob: enrollment_dob ? enrollment_dob : undefined,
       enrollment_aadhaar_no: enrollment_aadhaar_no
         ? parseInt(enrollment_aadhaar_no)
-        : "",
+        : undefined,
     });
   }, []);
 
@@ -149,7 +156,7 @@ export default function App({ facilitator }) {
     if (formData?.enrollment_dob) {
       const dob = moment.utc(formData.enrollment_dob).format("DD-MM-YYYY");
 
-      enrollmentDateOfBirth(state?.enrollment_date, dob)
+      enrollmentDateOfBirth(state?.formData?.enrollment_date, dob)
         .then((age) => {
           setUiSchema((prevUiSchema) => ({
             ...prevUiSchema,
@@ -168,7 +175,19 @@ export default function App({ facilitator }) {
           console.log(error);
         });
     }
-  }, [formData, benificiary?.program_beneficiaries?.enrollment_date]);
+
+    if (formData?.enrollment_aadhaar_no && benificiary?.aadhar_no) {
+      if (
+        formData.enrollment_aadhaar_no.toString() !==
+        benificiary.aadhar_no.toString()
+      ) {
+        setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
+      } else {
+        setAlertAadhar();
+        setErrors({});
+      }
+    }
+  }, [formData, state?.formData?.enrollment_date]);
 
   const goErrorPage = (key) => {
     if (key) {
@@ -200,26 +219,25 @@ export default function App({ facilitator }) {
   const onChange = async (e, id) => {
     setErrors({});
     const data = e.formData;
-    if (id === "root_enrollment_aadhaar_no") {
-      if (data?.enrollment_aadhaar_no) {
-        const newErrors = validation({
-          data: data?.enrollment_aadhaar_no,
-          key: "enrollment_aadhaar_no",
-          errors: {
-            enrollment_aadhaar_no: {
-              addError: (e) => {
-                setErrors({
-                  ...errors,
-                  enrollment_aadhaar_no: {
-                    __errors: [e],
-                  },
-                });
-              },
-            },
-          },
-          message: `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`,
-          type: "aadhaar",
-        });
+    if (
+      data?.enrollment_aadhaar_no &&
+      !`${data?.enrollment_aadhaar_no}`?.match(/^\d{0,12}$/)
+    ) {
+      const newErrors = {
+        enrollment_aadhaar_no: {
+          __errors: [t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (data?.enrollment_aadhaar_no && benificiary?.aadhar_no) {
+      if (
+        data.enrollment_aadhaar_no.toString() !==
+        benificiary.aadhar_no.toString()
+      ) {
+        setAlertAadhar(t("ENROLLMENT_AADHAR_NUMBER_ERROR"));
+      } else {
+        setAlertAadhar();
+        setErrors({});
       }
     }
 
@@ -269,30 +287,39 @@ export default function App({ facilitator }) {
       goErrorPage(key);
     }
   };
-
   const onSubmit = async (data) => {
     let newFormData = data.formData;
-    const bodyData = {
-      edit_page_type: "edit_enrollement_details",
-      enrollment_status: "enrolled",
-      is_eligible: alert ? "no" : "yes",
-      enrollment_first_name: newFormData?.enrollment_first_name,
-      enrollment_middle_name: newFormData?.enrollment_middle_name,
-      enrollment_last_name: newFormData?.enrollment_last_name,
-      enrollment_dob: newFormData?.enrollment_dob,
-      enrollment_aadhaar_no: newFormData?.enrollment_aadhaar_no.toString(),
-    };
-    if (bodyData) {
-      const updateDetails = await benificiaryRegistoryService.enrollmentReceipt(
-        id,
-        bodyData
-      );
-      if (updateDetails) {
-        navigate(`/beneficiary/profile/${id}`);
-      }
+
+    if (
+      formData?.enrollment_aadhaar_no?.toString() !==
+      benificiary?.aadhar_no?.toString()
+    ) {
+      setNotMatched(true);
     } else {
-      validation();
+      const bodyData = {
+        edit_page_type: "edit_enrollement_details",
+        enrollment_status: "enrolled",
+        is_eligible: alert ? "no" : "yes",
+        enrollment_first_name: newFormData?.enrollment_first_name,
+        enrollment_middle_name: newFormData?.enrollment_middle_name,
+        enrollment_last_name: newFormData?.enrollment_last_name,
+        enrollment_dob: newFormData?.enrollment_dob,
+        enrollment_aadhaar_no: newFormData?.enrollment_aadhaar_no.toString(),
+      };
+      if (bodyData) {
+        const data = await AgRegistryService.updateAg(state?.formData, id);
+        const updateDetails =
+          await benificiaryRegistoryService.enrollmentReceipt(id, bodyData);
+        if (updateDetails) {
+          navigate(`/beneficiary/profile/${id}`);
+        }
+      } else {
+        validation();
+      }
     }
+  };
+  const clearForm = async () => {
+    navigate(`/beneficiary/profile/${id}`);
   };
 
   return (
@@ -324,15 +351,8 @@ export default function App({ facilitator }) {
           <Form
             key={lang + schema + uiSchema}
             ref={formRef}
-            widgets={{ select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-            }}
+            widgets={widgets}
+            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
@@ -347,8 +367,19 @@ export default function App({ facilitator }) {
               transformErrors,
             }}
           >
+            {alertAadhar ? (
+              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{alertAadhar}</BodyMedium>
+                </HStack>
+              </Alert>
+            ) : (
+              <React.Fragment />
+            )}
+
             <Button
-              mt="3"
+              mt="4"
               variant={"primary"}
               onPress={() => {
                 if (Object.keys(errors).length > 0) {
@@ -365,6 +396,50 @@ export default function App({ facilitator }) {
           <React.Fragment />
         )}
       </Box>
+
+      <Modal isOpen={notMatched} onClose={() => setNotMatched(false)} size="lg">
+        <Modal.Content>
+          <Modal.Body p="2" bg="white">
+            <FrontEndTypo.H3
+              textAlign="center"
+              pt="2"
+              color="textGreyColor.500"
+            >
+              {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
+            </FrontEndTypo.H3>
+
+            <VStack space={5}>
+              <HStack
+                alignItems="center"
+                space={4}
+                mt="5"
+                pt="4"
+                borderTopWidth="1px"
+                bg="white"
+                borderTopColor="appliedColor"
+                justifyContent="center"
+              >
+                <FrontEndTypo.Secondarybutton
+                  shadow="BlueFillShadow"
+                  px="2"
+                  onPress={() => {
+                    setNotMatched(false);
+                  }}
+                >
+                  {t("EDIT_AADHAR_NUMBER")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton
+                  px="2"
+                  shadow="BlueFillShadow"
+                  onPress={() => clearForm()}
+                >
+                  {t("HOME_PAGE")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }

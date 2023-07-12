@@ -274,16 +274,37 @@ export default function Attendence({ footerLinks }) {
       selector: (row, index) => (
         <Chip
           bg={
-            row?.user?.aadhar_verified !== "yes"
-              ? "dangerColor"
-              : "potentialColor"
+            row?.user?.aadhar_verified !== null
+              ? "potentialColor"
+              : "dangerColor"
           }
-          label={row?.user?.aadhar_verified !== "yes" ? t("NO") : t("YES")}
+          label={row?.user?.aadhar_verified !== null ? t("YES") : t("NO")}
           rounded={"sm"}
         />
       ),
       sortable: false,
       attr: "adhar_kyc",
+    },
+
+    {
+      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
+      selector: (row, index) => (
+        <Chip
+          label={
+            row?.fa_is_processed === null
+              ? "-"
+              : row?.fa_is_processed === true
+              ? t("YES") +
+                " " +
+                Math.floor(row?.fa_similarity_percentage * 100) / 100 +
+                "%"
+              : t("NO")
+          }
+          rounded={"sm"}
+        />
+      ),
+      sortable: false,
+      attr: "attendence_verified",
     },
     // {
     //   name: t("VERIFIED_DOCUMENTS"),
@@ -789,15 +810,9 @@ export default function Attendence({ footerLinks }) {
                             {t("EVENT_TYPE")}
                           </AdminTypo.H6>
                           <HStack alignItems="center" space={"2"}>
-                            <Input
-                              value={event?.name ? event?.name : event?.type}
-                              variant="outline"
-                              width="70%"
-                              placeholder={
-                                event?.name ? event?.name : event?.type
-                              }
-                              isDisabled
-                            />
+                            <AdminTypo.H5>
+                              {event?.name ? event?.name : event?.type}
+                            </AdminTypo.H5>
                           </HStack>
                         </HStack>
                         <HStack
@@ -890,16 +905,23 @@ export default function Attendence({ footerLinks }) {
                                 )
                               </AdminTypo.H3>
                             ) : (
-                              <AdminTypo.H5 style={{ color: "red" }}>
-                                {t("NO")}
-                              </AdminTypo.H5>
-                              // <FrontEndTypo.Primarybutton
-                              //   // width="30%"
-                              //   children="Aadhar_eKYC"
-                              //   onPress={() => {
-                              //     navigate(`/aadhaar-kyc/${ids?.user_id}`);
-                              //   }}
-                              // />
+                              <HStack space="3">
+                                <AdminTypo.H5 style={{ color: "red" }}>
+                                  {t("NO")}
+                                </AdminTypo.H5>
+                                <FrontEndTypo.Secondarysmallbutton
+                                  background="red.300"
+                                  children={t("AADHAAR_EKYC")}
+                                  onPress={() => {
+                                    navigate(
+                                      `/aadhaar-kyc/${formData?.user_id}`,
+                                      {
+                                        state: `/attendence/${formData?.context_id}`,
+                                      }
+                                    );
+                                  }}
+                                />
+                              </HStack>
                             )}
                           </HStack>
                         </HStack>

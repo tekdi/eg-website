@@ -10,7 +10,7 @@ export default {
         career_aspiration: {
           minItems: 1,
           type: "array",
-          label: "LEARNER_ASPIRATION",
+          label: "CAREER_ASPIRATION",
           grid: 1,
           format: "MultiCheck",
           uniqueItems: true,

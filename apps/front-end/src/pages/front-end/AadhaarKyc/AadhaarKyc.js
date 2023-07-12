@@ -23,6 +23,7 @@ import QrScannerKyc from "./QrScannerKyc/QrScannerKyc";
 import ManualUpload from "./ManualUpload/ManualUpload";
 import { useTranslation } from "react-i18next";
 import AadhaarSuccess from "./AadhaarSuccess";
+import Aadhaarokyc2 from "./Aadhaarokyc2";
 
 export default function AdharKyc({ footerLinks }) {
   const location = useLocation();
@@ -40,6 +41,7 @@ export default function AdharKyc({ footerLinks }) {
   const [isAadharDisabled, setIsAadharDisabled] = React.useState(false);
   const { t } = useTranslation();
   const [aadhaarCompare, setAadhaarCompare] = React.useState();
+  const [loadingHeight, setLoadingHeight] = React.useState(0);
 
   React.useEffect(async () => {
     if (page === "aadhaar-number") {
@@ -56,7 +58,7 @@ export default function AdharKyc({ footerLinks }) {
 
   React.useEffect(() => {
     const typeData = type?.toLowerCase();
-    if (["qr", "aadhaar-number", "upload"].includes(typeData)) {
+    if (["qr", "aadhaar-number", "upload", "okyc2"].includes(typeData)) {
       setPage(typeData);
     } else {
       setPage();
@@ -150,7 +152,21 @@ export default function AdharKyc({ footerLinks }) {
 
   return (
     <Box>
-      {page === "qr" ? (
+      {page === "okyc2" ? (
+        <Aadhaarokyc2
+          {...{
+            setPage,
+            setLoading,
+            error,
+            setError,
+            handalBack,
+            setAttempt,
+            footerLinks,
+            setAadhaarCompare,
+            user,
+          }}
+        />
+      ) : page === "qr" ? (
         <QrScannerKyc
           {...{
             setOtpFailedPopup,
@@ -191,6 +207,7 @@ export default function AdharKyc({ footerLinks }) {
         />
       ) : (
         <Layout
+          getBodyHeight={(e) => setLoadingHeight(e)}
           _appBar={{
             onlyIconsShow: ["backBtn", "userInfo"],
             name: `${user?.first_name}${
@@ -209,6 +226,7 @@ export default function AdharKyc({ footerLinks }) {
               user={user}
               aadhaarCompare={aadhaarCompare}
               location={location}
+              type={type}
             />
           ) : page === "aadhaar-number" ? (
             <VStack p="4" space={4}>
@@ -378,6 +396,7 @@ export default function AdharKyc({ footerLinks }) {
           ) : (
             <Box>
               <Loading
+                height={loadingHeight}
                 customComponent={
                   <VStack w="100%">
                     {error?.top && (
@@ -387,6 +406,7 @@ export default function AdharKyc({ footerLinks }) {
                     )}
                     <AadhaarOptions
                       {...{
+                        redirect: location?.state,
                         setData,
                         setOtpFailedPopup,
                         setError,
@@ -450,26 +470,26 @@ const AadhaarOptions = ({
   setPage,
   navigate,
   isQRDisabled,
-  isAadharDisabled,
+  redirect,
   id,
 }) => {
   const { t } = useTranslation();
 
   return (
     <VStack bg="white" width={"100%"} space="5" p="5">
-      {/* <FrontEndTypo.Secondarybutton
+      <FrontEndTypo.Secondarybutton
         onPress={() => {
           setData();
           setOtpFailedPopup(false);
           setError();
           aadhaarInit();
           setPage("aadhaar-number");
-          navigate(`/aadhaar-kyc/${id}/aadhaar-number`);
+          navigate(`/aadhaar-kyc/${id}/okyc2`);
         }}
       >
         {t("TRY_AADHAR_NUMER_KYC")}
       </FrontEndTypo.Secondarybutton>
-      <FrontEndTypo.Secondarybutton
+      {/* <FrontEndTypo.Secondarybutton
         isDisabled={isAadharDisabled}
         onPress={() => {
           setPage("qr");
@@ -484,7 +504,9 @@ const AadhaarOptions = ({
         onPress={() => {
           setPage("upload");
           setOtpFailedPopup(false);
-          navigate(`/aadhaar-kyc/${id}/upload`);
+          navigate(`/aadhaar-kyc/${id}/upload`, {
+            state: redirect,
+          });
         }}
       >
         {t("TRY_AADHAR_UPLOAD_KYC")}

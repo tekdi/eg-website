@@ -29,7 +29,12 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
+export default function PhotoUpload({
+  aadhar_no,
+  formData,
+  cameraFile,
+  setCameraFile,
+}) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { photoNo } = useParams();
@@ -41,7 +46,7 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 25) {
+    if (file && file.size <= 1048576 * 25) {
       if (page < 4) {
         const result = await uploadProfile(file, `profile_photo_${page}`);
         setCameraFile([...(cameraFile ? cameraFile : []), result]);
@@ -54,7 +59,7 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
   };
 
   const uploadProfile = async (file, document_sub_type) => {
-    const { id } = formData;
+    const { id } = formData || {};
     if (id) {
       setLoading(true);
       const form_data = new FormData();
@@ -83,7 +88,11 @@ export default function PhotoUpload({ formData, cameraFile, setCameraFile }) {
 
   React.useEffect(() => {
     if (!(page < 4)) {
-      navigate(`/profile`);
+      if (!aadhar_no || aadhar_no !== "") {
+        navigate(`/profile/edit/aadhaar_details`);
+      } else {
+        navigate(`/profile`);
+      }
     }
     setFile(formData?.[`profile_photo_${page}`]);
   }, [page, formData]);

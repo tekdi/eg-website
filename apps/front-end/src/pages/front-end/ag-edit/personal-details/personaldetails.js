@@ -206,7 +206,7 @@ export default function agFormEdit({ ip }) {
     }
     enumObj = {
       ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
+      ["enumNames"]: arrData?.map((e) => `${e?.[title]}`),
     };
     enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
     const newProperties = schema["properties"][key];
@@ -233,7 +233,7 @@ export default function agFormEdit({ ip }) {
 
     let newSchema = schema;
 
-    if (schema["properties"]["marital_status"]) {
+    if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,

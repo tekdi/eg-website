@@ -8,20 +8,23 @@ export default {
       required: ["first_name", "dob"],
       properties: {
         first_name: {
-          type: ["string", "null"],
+          type: "string",
           title: "FIRST_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         middle_name: {
           type: ["string", "null"],
           title: "MIDDLE_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         dob: {
           label: "DATE_OF_BIRTH",
-          type: ["string", "null"],
+          type: "string",
           format: "date",
         },
       },
@@ -98,7 +101,7 @@ export default {
     personal_details: {
       step_name: "PERSONAL_DETAILS",
       type: "object",
-      required: ["aadhar_token"],
+      required: ["gender", "marital_status", "social_category"],
       properties: {
         gender: {
           label: "GENDER",
@@ -200,6 +203,20 @@ export default {
             type: ["string", "number"],
           },
           uniqueItems: true,
+        },
+      },
+    },
+    aadhaar_details: {
+      step_name: "QUALIFICATION_DETAILS",
+      title: "ID_VERIFICATION",
+      description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
+      type: "object",
+      required: ["aadhar_no"],
+      properties: {
+        aadhar_no: {
+          title: "AADHAAR_NUMBER",
+          type: "number",
+          format: "Aadhaar",
         },
       },
     },

@@ -73,8 +73,16 @@ export default function App({ userTokenInfo, footerLinks }) {
           };
           setFormData(newData);
         } else if (step === "reference_details") {
-          const newData = result?.references;
-          setFormData(newData);
+          if (result?.references?.designation === "") {
+            const newData = {
+              ...result?.references,
+              designation: undefined,
+            };
+            setFormData(newData);
+          } else {
+            const newData = result?.references;
+            setFormData(newData);
+          }
         } else {
           setFormData(result);
         }
@@ -82,6 +90,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     };
     getData();
   }, [qualifications]);
+
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {
@@ -128,12 +137,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         // }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
+      } else if (nextIndex === "aadhaar_details") {
+        navigate(`/profile/edit/upload`);
       } else if (nextIndex !== undefined) {
         navigate(`/profile/edit/${nextIndex}`);
-      } else if (pageStape.toLowerCase() === "n") {
-        navigate(`/profile/edit/upload`);
       } else {
-        navigate(`/profile`);
+        navigate(`/aadhaar-kyc/${facilitator?.id}`, {
+          state: "/profile",
+        });
       }
     }
   };
@@ -149,7 +160,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     if (schema?.properties?.qualification_master_id) {
       setLoading(true);
-      if (schema["properties"]?.["qualification_master_id"]) {
+      if (schema?.["properties"]?.["qualification_master_id"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_master_id",
           arr: qualifications,
@@ -177,7 +188,7 @@ export default function App({ userTokenInfo, footerLinks }) {
           }
         }
       }
-      if (schema["properties"]?.["qualification_reference_document_id"]) {
+      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
         const { id } = userTokenInfo?.authUser;
         newSchema = getOptions(newSchema, {
           key: "qualification_reference_document_id",
@@ -188,7 +199,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
 
-      if (schema["properties"]?.["qualification_ids"]) {
+      if (schema?.["properties"]?.["qualification_ids"]) {
         newSchema = getOptions(newSchema, {
           key: "qualification_ids",
           arr: qualifications,
@@ -201,7 +212,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
     if (schema?.properties?.state) {
       const qData = await geolocationRegistryService.getStates();
-      if (schema["properties"]["state"]) {
+      if (schema?.["properties"]?.["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
           arr: qData?.states,
@@ -231,7 +242,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         value: "value",
       });
     }
-    if (schema["properties"]?.["marital_status"]) {
+    if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
         arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
@@ -247,7 +258,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
 
-    if (schema["properties"]?.["device_type"]) {
+    if (schema?.["properties"]?.["device_type"]) {
       newSchema = getOptions(newSchema, {
         key: "device_type",
         arr: enumObj?.MOBILE_TYPE,
@@ -256,7 +267,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
 
-    if (schema["properties"]?.["document_id"]) {
+    if (schema?.["properties"]?.["document_id"]) {
       const { id } = userTokenInfo?.authUser;
       newSchema = getOptions(newSchema, {
         key: "document_id",
@@ -337,7 +348,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (step === "basic_details") {
       ["first_name"].forEach((key) => {
         validation({
-          data: data?.[key]?.replaceAll(" ", ""),
+          data:
+            typeof data?.[key] === "string"
+              ? data?.[key].replaceAll(" ", "")
+              : data?.[key],
           key,
           errors,
           message: `${t("REQUIRED_MESSAGE")} ${t(
@@ -353,6 +367,18 @@ export default function App({ userTokenInfo, footerLinks }) {
           message: `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
           type: "age-18",
         });
+      }
+    }
+    if (step === "aadhaar_details") {
+      if (data?.aadhar_no) {
+        if (
+          data?.aadhar_no &&
+          !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        ) {
+          errors?.aadhar_no?.addError(
+            `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+          );
+        }
       }
     }
     return errors;
@@ -401,7 +427,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const qData = await geolocationRegistryService.getDistricts({
         name: state,
       });
-      if (schema["properties"]["district"]) {
+      if (schema?.["properties"]?.["district"]) {
         newSchema = getOptions(newSchema, {
           key: "district",
           arr: qData?.districts,
@@ -409,16 +435,16 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "district_name",
         });
       }
-      if (schema["properties"]["block"]) {
+      if (schema?.["properties"]?.["block"]) {
         newSchema = await setBlock({ district, block, schemaData: newSchema });
         setSchema(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
+      if (schema?.["properties"]?.["block"]) {
         newSchema = getOptions(newSchema, { key: "block", arr: [] });
       }
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
       setSchema(newSchema);
@@ -434,7 +460,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
       });
-      if (schema["properties"]["block"]) {
+      if (schema?.["properties"]?.["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
           arr: qData?.blocks,
@@ -442,13 +468,13 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "block_name",
         });
       }
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = await setVilage({ block, schemaData: newSchema });
         setSchema(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
       setSchema(newSchema);
@@ -464,7 +490,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
       });
-      if (schema["properties"]["village"]) {
+      if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, {
           key: "village",
           arr: qData?.villages,
@@ -536,14 +562,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         setErrors(newErrors);
       }
     }
-    if (id === "root_aadhar_token") {
-      if (data?.aadhar_token?.toString()?.length === 12) {
+    if (id === "root_aadhar_no") {
+      if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({
-          aadhar_token: data?.aadhar_token,
+          aadhar_no: data?.aadhar_no,
         });
         if (result.isUserExist) {
           const newErrors = {
-            aadhar_token: {
+            aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
             },
           };
@@ -602,7 +628,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (id === "root_type_of_document") {
       let newSchema = schema;
       const user = userTokenInfo?.authUser;
-      if (schema["properties"]["qualification_reference_document_id"]) {
+      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
         setLoading(true);
         newSchema = getOptions(schema, {
           key: "qualification_reference_document_id",
@@ -659,7 +685,16 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   if (page === "upload") {
-    return <PhotoUpload {...{ formData, cameraFile, setCameraFile }} />;
+    return (
+      <PhotoUpload
+        {...{
+          formData,
+          cameraFile,
+          setCameraFile,
+          aadhar_no: facilitator?.aadhar_no,
+        }}
+      />
+    );
   }
 
   const onClickSubmit = (backToProfile) => {

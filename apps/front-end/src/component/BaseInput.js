@@ -178,7 +178,6 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
-  // console.log(label, type, id);
   return (
     <VStack
       style={style}
@@ -295,15 +294,33 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
 };
 
 export const Aadhaar = (props) => {
+  const { t } = useTranslation();
   return (
     <VStack space="10">
+      <FrontEndTypo.H3
+        ml="90px"
+        textAlign="center"
+        bold
+        color="textMaroonColor.400"
+      >
+        {t("ENTERED_AADHAR_NOT_EDITABLE")}
+      </FrontEndTypo.H3>
       <Image
         alignSelf="center"
         source={{ uri: "/Aadhaar2.png" }}
         w="248"
         h="140"
       />
-      <FloatingInput {...props} />
+      <FloatingInput
+        {...props}
+        schema={{
+          ...(props?.schema ? props?.schema : {}),
+          regex: /^\d{0,12}$/,
+          _input: props?.schema?._input
+            ? props?.schema?._input
+            : { keyboardType: "numeric" },
+        }}
+      />
     </VStack>
   );
 };
@@ -354,6 +371,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
       <Select
+        key={value + items}
         selectedValue={value}
         accessibilityLabel={t(label ? label : title)}
         placeholder={t(label ? label : title)}
@@ -376,54 +394,28 @@ export const select = ({ options, value, onChange, required, schema }) => {
   );
 };
 
-export const readOnly = ({ options, value, onChange, required, schema }) => {
-  const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label } = schema ? schema : {};
+export const readOnly = ({ value, onChange, required, schema }) => {
+  const { title } = schema ? schema : {};
   const { t } = useTranslation();
   return (
-    <FormControl gap="4">
-      {label && (
-        <FormControl.Label
-          rounded="sm"
-          position="absolute"
-          left="1rem"
-          bg="white"
-          px="1"
-          m="0"
-          height={"1px"}
-          alignItems="center"
-          style={{
-            ...(value
-              ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
-              : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
-          }}
-        >
-          <Text fontSize="14" fontWeight="400">
-            {required && <Text color={"danger.500"}>*</Text>}
-            {value && (
-              <Text
-                marginLeft={"5px"}
-                fontWeight="700"
-                fontSize={14}
-                color={"#9E9E9E"}
-              >
-                {value}
-              </Text>
-            )}
+    <HStack gap="2">
+      <FrontEndTypo.H3 bold color="textMaroonColor.400">
+        {t(title)}
+      </FrontEndTypo.H3>
+      <Text fontSize="14" fontWeight="400">
+        {required && <Text color={"danger.500"}>*</Text>}
+        {value && (
+          <Text
+            marginLeft={"5px"}
+            fontWeight="700"
+            fontSize={14}
+            color={"#9E9E9E"}
+          >
+            : {value}
           </Text>
-        </FormControl.Label>
-      )}
-    </FormControl>
+        )}
+      </Text>
+    </HStack>
   );
 };
 
@@ -445,19 +437,20 @@ export const HFieldTemplate = ({
     <HStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
-      alignItems="start"
+      alignItems="flex-start"
       pl="3"
+      direction={["column", "row"]}
     >
       {(label || schema?.label) && typeof type === "string" && (
-        <Box w={["67%", "100%", "60%"]}>
+        <Box flex={["1", "1", "1"]}>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
+              <HStack space="2" alignItems="center">
                 <IconByName
                   name={schema?.icons}
-                  color="textGreyColor.800"
+                  color="textGreyColor.200"
                   isDisabled
-                  pr="2"
+                  _icon={{ size: "14px" }}
                 />
                 <AdminTypo.H6 color="textGreyColor.100">
                   {t(schema?.label ? schema?.label : label)}
@@ -471,7 +464,7 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box w={["70%", "100%", "60%"]}>
+      <Box flex={["1", "3", "4"]}>
         {children}
         {errors}
         {help}
@@ -646,6 +639,7 @@ const widgets = {
   FileUpload,
   MobileNumber,
   MultiCheck,
+  readOnly,
 };
 
 const templates = {

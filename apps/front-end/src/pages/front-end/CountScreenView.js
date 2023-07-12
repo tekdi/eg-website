@@ -10,15 +10,18 @@ import React from "react";
 export default function TableView({ footerLinks }) {
   React.useEffect(async () => {
     const selectStatus = await benificiaryRegistoryService.getStatusList();
+
     let statuswiseCount =
       await benificiaryRegistoryService.getStatusWiseCount();
     for (let i = 0; i < statuswiseCount?.data?.length; i++) {
-      if (statuswiseCount.data[i].status === selectStatus[i].value) {
-        const dataObject = {};
-        dataObject.status = statuswiseCount.data[i].status;
-        dataObject.title = selectStatus[i].title;
-        dataObject.count = statuswiseCount.data[i].count;
-        setStatusData((prevStatusData) => [...prevStatusData, dataObject]);
+      for (let j = 0; j < selectStatus?.length; j++) {
+        if (statuswiseCount.data[i].status === selectStatus[j].value) {
+          const dataObject = {};
+          dataObject.status = statuswiseCount.data[i].status;
+          dataObject.title = selectStatus[j].title;
+          dataObject.count = statuswiseCount.data[i].count;
+          setStatusData((prevStatusData) => [...prevStatusData, dataObject]);
+        }
       }
     }
   }, []);

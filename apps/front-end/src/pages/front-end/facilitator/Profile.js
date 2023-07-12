@@ -45,9 +45,6 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             <FrontEndTypo.H2 color="textGreyColor.900">
               {t("COMPLETE_YOUR_PROFILE")}
             </FrontEndTypo.H2>
-            <FrontEndTypo.H5 color="textGreyColor.900">
-              {t("INCREASE_YOUR_CHANCES_OF_GETTING_SELECTED")}
-            </FrontEndTypo.H5>
           </Box>
           <Box
             bg="boxBackgroundColour.100"
@@ -190,7 +187,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   name="ArrowRightSLineIcon"
                   color="textMaroonColor.400"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${facilitator?.id}/aadhaardetails`);
+                    navigate(`/profile/${facilitator?.id}/aadhaardetails`);
                   }}
                 />
               </HStack>
