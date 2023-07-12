@@ -137,6 +137,8 @@ export default function BenificiaryProfileView(props) {
       case "registered_in_camp":
       case "pragati_syc":
       case "activate":
+      case "duplicate":
+      case "ineligible_for_pragati_camp":
       case null:
         return (
           <FrontEndTypo.Secondarybutton
@@ -177,6 +179,8 @@ export default function BenificiaryProfileView(props) {
       case "registered_in_camp":
       case "pragati_syc":
       case "activate":
+      case "duplicate":
+      case "ineligible_for_pragati_camp":
       case null:
         return (
           <FrontEndTypo.Secondarybutton
