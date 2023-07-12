@@ -80,7 +80,9 @@ const Docschecklist = () => {
   const readyToEnrollApiCall = async () => {
     let bodyData = {
       user_id: benificiary?.id?.toString(),
-      status: "ready_to_enroll",
+      status: benificiary?.program_beneficiaries?.enrollment_status
+        ? "enrolled"
+        : "ready_to_enroll",
       reason_for_status_update: "documents_completed",
     };
 

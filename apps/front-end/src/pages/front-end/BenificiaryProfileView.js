@@ -44,7 +44,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
-  const [prevStatus, setprevStatus] = React.useState();
+  // const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -73,11 +73,11 @@ export default function BenificiaryProfileView(props) {
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
-    const contextId = result?.result?.program_beneficiaries?.id;
-    const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
-    if (auditLogs[0]) {
-      setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
-    }
+    // const contextId = result?.result?.program_beneficiaries?.id;
+    // const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
+    // if (auditLogs[0]) {
+    //   setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
+    // }
   };
 
   const dropoutApiCall = async () => {
@@ -98,7 +98,7 @@ export default function BenificiaryProfileView(props) {
   const reactivateApiCall = async () => {
     let bodyData = {
       user_id: benificiary?.id?.toString(),
-      status: prevStatus,
+      status: "identified",
       reason_for_status_update: reactivateReasonValue,
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
