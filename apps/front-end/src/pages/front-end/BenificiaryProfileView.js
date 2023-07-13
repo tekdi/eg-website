@@ -582,55 +582,59 @@ export default function BenificiaryProfileView(props) {
         isOpen={isOpenReactive}
         onClose={(e) => setIsOpenReactive(false)}
       >
-        <Actionsheet.Content>
-          <VStack alignItems="end" width="100%">
-            <IconByName
-              name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenReactive(false)}
-            />
-          </VStack>
-          <FrontEndTypo.H1 bold color="textGreyColor.450">
-            {t("AG_PROFILE_ARE_YOU_SURE")}
-          </FrontEndTypo.H1>
-          <FrontEndTypo.H2 color="textGreyColor.450">
-            {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
-          </FrontEndTypo.H2>
-          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-            {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
-          </FrontEndTypo.H2>
-          <VStack space="5">
-            <VStack space="2" p="1" rounded="lg">
-              <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
-                <React.Suspense fallback={<HStack>Loading...</HStack>}>
-                  <CustomRadio
-                    options={{
-                      enumOptions: benificiaryReactivateReasons?.map((e) => ({
-                        ...e,
-                        label: e?.title,
-                        value: e?.value,
-                      })),
-                    }}
-                    schema={{ grid: 2 }}
-                    value={reactivateReasonValue}
-                    onChange={(e) => {
-                      setReactivateReasonValue(e);
-                    }}
-                  />
-                </React.Suspense>
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenReactive(false)}
+              />
+            </VStack>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textGreyColor.450">
+              {t("AG_PROFILE_REACTIVAYE_MESSAGE")}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}
+            </FrontEndTypo.H2>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg">
+                <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryReactivateReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reactivateReasonValue}
+                      onChange={(e) => {
+                        setReactivateReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+              <VStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={() => {
+                    reactivateApiCall();
+                  }}
+                >
+                  {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+                </FrontEndTypo.Primarybutton>
               </VStack>
             </VStack>
-            <VStack space="3">
-              <FrontEndTypo.Primarybutton
-                flex={1}
-                onPress={() => {
-                  reactivateApiCall();
-                }}
-              >
-                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          </VStack>
-        </Actionsheet.Content>
+          </ScrollView>
+        </Stack>
       </Actionsheet>
 
       {/* Reject Action  Sheet */}
