@@ -781,7 +781,12 @@ export default function App({ facilitator, id, ip, onClick }) {
         )}
       </Box>
 
-      <Modal isOpen={notMatched} onClose={() => setNotMatched(false)} size="lg">
+      <Modal
+        isOpen={notMatched}
+        size="lg"
+        safeAreaTop={true}
+        _backdrop={{ opacity: "0.7" }}
+      >
         <Modal.Content>
           <Modal.Body p="2" bg="white">
             <FrontEndTypo.H3
