@@ -109,9 +109,9 @@ export default function FacilitatorBasicDetails({
               <Box paddingTop="2">
                 <Progress
                   value={arrList(facilitator, [
-                    "email_id",
+                    "device_ownership",
                     "mobile",
-                    "alternative_mobile_number",
+                    "device_type",
                   ])}
                   size="xs"
                   colorScheme="info"
@@ -411,7 +411,7 @@ export default function FacilitatorBasicDetails({
                   <Progress
                     value={arrList(facilitator?.references, [
                       "name",
-                      "designation",
+
                       "contact_number",
                     ])}
                     size="xs"
