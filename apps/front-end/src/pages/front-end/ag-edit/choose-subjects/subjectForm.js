@@ -18,6 +18,7 @@ import {
   AgRegistryService,
   benificiaryRegistoryService,
   ImageView,
+  dateOfBirth,
   enrollmentDateOfBirth,
   FrontEndTypo,
   getOptions,
