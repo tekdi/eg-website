@@ -351,7 +351,7 @@ export default function App({ facilitator, id, ip, onClick }) {
             };
             setErrors(newErrors);
           }
-        }, 1000);
+        }, 3000);
       }
     }
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
