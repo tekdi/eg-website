@@ -714,7 +714,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (schema?.properties?.first_name) {
       newFormData = {
         ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        ["first_name"]: newFormData?.first_name.replace(/ /g, ""),
       };
     }
 
