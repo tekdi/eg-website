@@ -58,12 +58,6 @@ const Docschecklist = () => {
     } else {
       setCheckList(false);
       setButtonPress(false);
-      let bodyData = {
-        user_id: benificiary?.id?.toString(),
-        status: "identified",
-      };
-
-      const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     }
     let data = {
       edit_page_type: "document_status",
