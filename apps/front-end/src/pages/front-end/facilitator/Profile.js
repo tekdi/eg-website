@@ -17,10 +17,38 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   const [facilitator, setFacilitator] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [progress, setProgress] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     facilitatorDetails();
-  }, []);
+    const percentage =
+      arrList(res, [
+        "device_ownership",
+        "mobile",
+        "device_type",
+        "gender",
+        "marital_status",
+        "social_category",
+        "name",
+        "contact_number",
+        "availability",
+      ]) +
+      arrList(
+        {
+          ...res,
+          qua_name: facilitator?.qualifications?.qualification_master?.name,
+        },
+        ["qualification_ids", "qua_name"]
+      ) +
+      arrList(res, [
+        "aadhar_no",
+        "aadhaar_verification_mode",
+        "aadhar_verified",
+      ]);
+    setProgress(percentage);
+    setLoading(false);
+  }, [facilitator]);
 
   const facilitatorDetails = async () => {
     const result = await facilitatorRegistryService.getOne({ id });
@@ -31,6 +59,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
   return (
     <Layout
+      loading={loading}
       _appBar={{
         onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn"],
@@ -46,7 +75,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
           <Box paddingBottom="20px">
             <FrontEndTypo.H2 color="textGreyColor.900">
-              {t("COMPLETE_YOUR_PROFILE")}
+              {progress !== 300
+                ? t("COMPLETE_YOUR_PROFILE")
+                : t("PROFILE_COMPLETED")}
             </FrontEndTypo.H2>
           </Box>
           <Box
