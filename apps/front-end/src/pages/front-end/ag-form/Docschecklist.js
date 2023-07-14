@@ -58,12 +58,6 @@ const Docschecklist = () => {
     } else {
       setCheckList(false);
       setButtonPress(false);
-      let bodyData = {
-        user_id: benificiary?.id?.toString(),
-        status: "identified",
-      };
-
-      const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     }
     let data = {
       edit_page_type: "document_status",
@@ -78,15 +72,18 @@ const Docschecklist = () => {
   }, [status]);
 
   const readyToEnrollApiCall = async () => {
-    let bodyData = {
-      user_id: benificiary?.id?.toString(),
-      status: benificiary?.program_beneficiaries?.enrollment_status
-        ? "enrolled"
-        : "ready_to_enroll",
-      reason_for_status_update: "documents_completed",
-    };
+    if (
+      !benificiary?.program_beneficiaries?.enrollment_status ||
+      benificiary?.program_beneficiaries?.enrollment_status === "identified"
+    ) {
+      let bodyData = {
+        user_id: benificiary?.id?.toString(),
+        status: "ready_to_enroll",
+        reason_for_status_update: "documents_completed",
+      };
 
-    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+      const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+    }
     setButtonPress(true);
   };
   return (
