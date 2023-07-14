@@ -20,7 +20,7 @@ export default function AadhaarDetails() {
     const result = await facilitatorRegistryService.getOne({ id });
     setFacilitator(result);
   }, [id]);
-  console.log(facilitator);
+
   return (
     <Layout
       _appBar={{
@@ -129,7 +129,6 @@ export default function AadhaarDetails() {
               bg="white"
               borderColor="appliedColor"
             >
-              {console.log(facilitator?.aadhar_no)}
               {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) &&
                 facilitator?.aadhar_no !== "" &&
                 facilitator?.aadhar_no !== null &&
