@@ -55,6 +55,8 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [notMatched, setNotMatched] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
   const buttonStyle = {
     borderWidth: "2px",
     borderStyle: "dotted",
@@ -340,7 +342,7 @@ export default function App({ facilitator, id, ip, onClick }) {
     const data = e.formData;
     if (id === "root_enrollment_number") {
       if (data?.enrollment_number) {
-        debounce(async () => {
+        const debouncedFunction = debounce(async () => {
           const result = await enrollmentNumberExist({
             enrollment_number: data?.enrollment_number,
           });
@@ -354,6 +356,8 @@ export default function App({ facilitator, id, ip, onClick }) {
             setErrors(newErrors);
           }
         }, 3000);
+
+        debouncedFunction();
       }
     }
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
@@ -792,6 +796,8 @@ export default function App({ facilitator, id, ip, onClick }) {
         size="lg"
         safeAreaTop={true}
         _backdrop={{ opacity: "0.7" }}
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
       >
         <Modal.Content>
           <Modal.Body p="2" bg="white">
@@ -813,6 +819,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                 bg="white"
                 borderTopColor="appliedColor"
                 justifyContent="center"
+                flexWrap="wrap"
               >
                 <FrontEndTypo.Secondarybutton
                   shadow="BlueFillShadow"
