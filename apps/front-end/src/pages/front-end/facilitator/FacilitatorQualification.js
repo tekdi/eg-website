@@ -55,9 +55,6 @@ export default function FacilitatorQualification({
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
   }, [facilitator]);
-
-  console.log(facilitator);
-
   return (
     <Layout
       _appBar={{

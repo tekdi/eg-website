@@ -132,13 +132,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         } else {
           navigate("/facilitatorbasicdetail");
         }
-        // if (nextIndex === "work_availability_details") {
-        //   navigate(`/profile/edit/array-form/experience`);
-        // } else if (nextIndex !== undefined) {
-        //   navigate(`/profile/edit/${nextIndex}`);
-        // } else {
-        //   navigate(`/facilitatorbasicdetail`);
-        // }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else if (nextIndex === "aadhaar_details") {
@@ -386,6 +379,17 @@ export default function App({ userTokenInfo, footerLinks }) {
       }
     }
 
+    ["grampanchayat"].forEach((key) => {
+      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      } else if (!data?.[key]) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+    });
     if (step === "reference_details") {
       if (data?.contact_number) {
         validation({
