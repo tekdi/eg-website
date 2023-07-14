@@ -20,7 +20,7 @@ export default function AadhaarDetails() {
     const result = await facilitatorRegistryService.getOne({ id });
     setFacilitator(result);
   }, [id]);
-  console.log(facilitator);
+
   return (
     <Layout
       _appBar={{
@@ -129,21 +129,22 @@ export default function AadhaarDetails() {
               bg="white"
               borderColor="appliedColor"
             >
-              {!["yes", "in_progress"].includes(
-                facilitator?.aadhar_verified
-              ) && (
-                <VStack space="5">
-                  <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="5">
-                    {t("COMPLETE_AADHAAR_VERIFICATION")}
-                  </FrontEndTypo.H2>
-                  <FrontEndTypo.Secondarybutton
-                    onPress={() => {
-                      navigate(`/aadhaar-kyc/${id}/okyc2`);
-                    }}
-                  >
-                    {t("AADHAAR_NUMBER_KYC")}
-                  </FrontEndTypo.Secondarybutton>
-                  {/* <FrontEndTypo.Secondarybutton
+              {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) &&
+                facilitator?.aadhar_no !== "" &&
+                facilitator?.aadhar_no !== null &&
+                facilitator?.aadhar_no !== undefined && (
+                  <VStack space="5">
+                    <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="5">
+                      {t("COMPLETE_AADHAAR_VERIFICATION")}
+                    </FrontEndTypo.H2>
+                    <FrontEndTypo.Secondarybutton
+                      onPress={() => {
+                        navigate(`/aadhaar-kyc/${id}/okyc2`);
+                      }}
+                    >
+                      {t("AADHAAR_NUMBER_KYC")}
+                    </FrontEndTypo.Secondarybutton>
+                    {/* <FrontEndTypo.Secondarybutton
                     my="4"
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/QR`);
@@ -151,17 +152,17 @@ export default function AadhaarDetails() {
                   >
                     {t("SCAN_QR_CODE")}
                   </FrontEndTypo.Secondarybutton> */}
-                  <FrontEndTypo.Secondarybutton
-                    onPress={() => {
-                      navigate(`/aadhaar-kyc/${id}/upload`, {
-                        state: `/beneficiary/${id}/aadhaardetails`,
-                      });
-                    }}
-                  >
-                    {t("AADHAR_UPLOAD_KYC")}
-                  </FrontEndTypo.Secondarybutton>
-                </VStack>
-              )}
+                    <FrontEndTypo.Secondarybutton
+                      onPress={() => {
+                        navigate(`/aadhaar-kyc/${id}/upload`, {
+                          state: `/beneficiary/${id}/aadhaardetails`,
+                        });
+                      }}
+                    >
+                      {t("AADHAR_UPLOAD_KYC")}
+                    </FrontEndTypo.Secondarybutton>
+                  </VStack>
+                )}
               {facilitator?.aadhaar_verification_mode === "upload" && (
                 <VStack space="5">
                   <FrontEndTypo.H2 bold color="textMaroonColor.400">
