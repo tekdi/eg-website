@@ -139,13 +139,9 @@ export default function App({ userTokenInfo, footerLinks }) {
       } else if (nextIndex !== undefined) {
         navigate(`/profile/edit/${nextIndex}`);
       } else {
-        if (facilitator?.aadhaar_back?.id || facilitator?.aadhaar_front?.id) {
-          navigate(`/profile`);
-        } else {
-          navigate(`/aadhaar-kyc/${facilitator?.id}`, {
-            state: "/profile",
-          });
-        }
+        navigate(`/aadhaar-kyc/${facilitator?.id}`, {
+          state: "/profile",
+        });
       }
     }
   };
