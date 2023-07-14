@@ -9,11 +9,10 @@ export default {
       properties: {
         career_aspiration: {
           minItems: 1,
-          type: "array",
+          type: "string",
           label: "CAREER_ASPIRATION",
           grid: 1,
-          format: "MultiCheck",
-          uniqueItems: true,
+          format: "RadioBtn",
         },
 
         career_aspiration_details: {
