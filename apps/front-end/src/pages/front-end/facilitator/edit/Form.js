@@ -132,13 +132,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         } else {
           navigate("/facilitatorbasicdetail");
         }
-        // if (nextIndex === "work_availability_details") {
-        //   navigate(`/profile/edit/array-form/experience`);
-        // } else if (nextIndex !== undefined) {
-        //   navigate(`/profile/edit/${nextIndex}`);
-        // } else {
-        //   navigate(`/facilitatorbasicdetail`);
-        // }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else if (nextIndex === "aadhaar_details") {
@@ -146,9 +139,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       } else if (nextIndex !== undefined) {
         navigate(`/profile/edit/${nextIndex}`);
       } else {
-        navigate(`/aadhaar-kyc/${facilitator?.id}`, {
-          state: "/profile",
-        });
+        if (facilitator?.aadhaar_back?.id || facilitator?.aadhaar_front?.id) {
+          navigate(`/profile`);
+        } else {
+          navigate(`/aadhaar-kyc/${facilitator?.id}`, {
+            state: "/profile",
+          });
+        }
       }
     }
   };
@@ -717,25 +714,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
       };
     }
-
-    // if (schema?.properties?.last_name && newFormData?.last_name) {
-    //   newFormData = {
-    //     ...newFormData,
-    //     ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-    //   };
-    // }
     if (_.isEmpty(errors)) {
-      // if (["reference_details"].includes(step)) {
-      //   const result = await Promise.all(
-      //     newFormData.reference.map((item) => {
-      //       const newdata = filterObject(
-      //         item,
-      //         Object.keys(schema?.properties?.reference?.items?.properties)
-      //       );
-      //       return formSubmitUpdate(newdata);
-      //     })
-      //   );
-      // } else {
       const newdata = filterObject(
         newFormData,
         Object.keys(schema?.properties)
