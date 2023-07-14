@@ -53,6 +53,10 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [source, setSource] = React.useState();
   const [benificiary, setBenificiary] = React.useState();
   const [notMatched, setNotMatched] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
   const buttonStyle = {
     borderWidth: "2px",
     borderStyle: "dotted",
@@ -338,7 +342,7 @@ export default function App({ facilitator, id, ip, onClick }) {
     const data = e.formData;
     if (id === "root_enrollment_number") {
       if (data?.enrollment_number) {
-        debounce(async () => {
+        const debouncedFunction = debounce(async () => {
           const result = await enrollmentNumberExist({
             enrollment_number: data?.enrollment_number,
           });
@@ -352,6 +356,8 @@ export default function App({ facilitator, id, ip, onClick }) {
             setErrors(newErrors);
           }
         }, 3000);
+
+        debouncedFunction();
       }
     }
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
@@ -572,6 +578,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       for (let key in item) {
         form_data.append(key, item[key]);
       }
+      setLoading(true);
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
       setFormData({ ...formData, ["payment_receipt_document_id"]: id });
@@ -579,6 +586,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       setSource({
         document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
+      setLoading(false);
     } else {
       const newErrors = {};
       newErrors.payment_receipt_document_id = {
@@ -730,6 +738,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                     </VStack>
                     <Button
                       variant={"secondary"}
+                      isLoading={loading}
                       leftIcon={
                         <IconByName name="Upload2FillIcon" isDisabled />
                       }
@@ -769,6 +778,7 @@ export default function App({ facilitator, id, ip, onClick }) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
+              isLoading={loading}
               onPress={() => {
                 editSubmit();
               }}
@@ -786,6 +796,8 @@ export default function App({ facilitator, id, ip, onClick }) {
         size="lg"
         safeAreaTop={true}
         _backdrop={{ opacity: "0.7" }}
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
       >
         <Modal.Content>
           <Modal.Body p="2" bg="white">
@@ -807,6 +819,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                 bg="white"
                 borderTopColor="appliedColor"
                 justifyContent="center"
+                flexWrap="wrap"
               >
                 <FrontEndTypo.Secondarybutton
                   shadow="BlueFillShadow"
