@@ -26,6 +26,7 @@ export default function ManualUpload({
   setOtpFailedPopup,
   footerLinks,
   setAadhaarCompare,
+  user,
 }) {
   const { id } = useParams();
   const [image, setImage] = React.useState();
@@ -39,7 +40,6 @@ export default function ManualUpload({
 
   const [submitted, setSubmitted] = React.useState(false);
   const uplodInputRef = React.useRef();
-
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
     if (file.size <= 1048576 * 25) {

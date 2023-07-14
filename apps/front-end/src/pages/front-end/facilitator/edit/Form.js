@@ -385,7 +385,17 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
     }
-
+    ["grampanchayat"].forEach((key) => {
+      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      } else if (!data?.[key]) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+    });
     if (step === "reference_details") {
       if (data?.contact_number) {
         validation({
