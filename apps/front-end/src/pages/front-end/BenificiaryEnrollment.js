@@ -79,16 +79,21 @@ export default function BenificiaryEnrollment() {
             />
           </HStack>
           <Box>
-            <Progress
-              value={arrList(benificiary?.program_beneficiaries, [
-                "enrollment_status",
-                "enrolled_for_board",
-                "enrollment_number",
-                "enrollment_date",
-              ])}
-              size="xs"
-              colorScheme="info"
-            />
+            {benificiary?.program_beneficiaries?.enrollment_status ===
+            "not_enrolled" ? (
+              <Progress value={100} size="xs" colorScheme="info" />
+            ) : (
+              <Progress
+                value={arrList(benificiary?.program_beneficiaries, [
+                  "enrollment_status",
+                  "enrolled_for_board",
+                  "enrollment_number",
+                  "enrollment_date",
+                ])}
+                size="xs"
+                colorScheme="info"
+              />
+            )}
           </Box>
           <VStack space="2" pt="5">
             <HStack
