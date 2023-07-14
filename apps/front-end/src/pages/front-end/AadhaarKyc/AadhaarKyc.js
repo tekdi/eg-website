@@ -149,7 +149,6 @@ export default function AdharKyc({ footerLinks }) {
   if (loading) {
     return <Loading />;
   }
-
   return (
     <Box>
       {page === "okyc2" ? (
@@ -186,6 +185,7 @@ export default function AdharKyc({ footerLinks }) {
             setOtpFailedPopup,
             footerLinks,
             setAadhaarCompare,
+            user,
           }}
         />
       ) : page === "otp" && data?.aadhaarNumber ? (

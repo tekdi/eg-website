@@ -70,7 +70,7 @@ export default {
       step_name: "ADDRESS_DETAILS",
       title: "ADDRESS",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         state: {
           title: "STATE",
