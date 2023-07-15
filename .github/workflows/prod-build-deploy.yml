@@ -1,11 +1,12 @@
-name: CICD
+name: Deploy to PROD
 on: 
   push: 
-    branches:
-      - master
+    tags:
+       - 'v[0-9]+.[0-9]+.[0-9]+'
+       
 jobs:
   build:
-    name: Build Deploy to Prod
+    name: Build Deploy To PROD
     environment: PROD
     runs-on: ubuntu-latest
     steps:
@@ -17,10 +18,16 @@ jobs:
           yarn workspace @shiksha/common-lib build
           yarn install
           yarn build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+          REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
+          REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
+          
       - name: Create Lerna Bundles
         run: |
           sh ./scripts/pack-prod-build.sh
-          
+
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -30,21 +37,9 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
-      - name: Deploy with rsync
+      - name: Copy build to server using rsync
         run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-          
-#       - name: Install SSH key
-#         uses: shimataro/ssh-key-action@v2
-#         with:
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           known_hosts: ${{ secrets.SSH_HOST }}
-          
-#       - name: Adding known hosts
-#         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts          
-#       - name: RSYNC Build
-#         run: |
-#           rsync eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-        
+   
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -53,8 +48,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu
-            #cp eg-website.tar /var/www/html2
-            tar -xvf eg-website.tar -C /var/www/html2/
-            #rm -rf *
-            #cp ../eg-website.tar ./
-            #tar -xvf eg-website.tar .
+            tar -xvf eg-website.tar -C /var/www/html/
