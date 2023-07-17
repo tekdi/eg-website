@@ -125,7 +125,7 @@ export default function AadhaarSuccess({
           if (location?.state) {
             navigate(location?.state);
           } else {
-            navigate("/profile");
+            navigate("/beneficiary/list");
           }
         }}
       >
