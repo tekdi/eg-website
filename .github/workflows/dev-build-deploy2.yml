@@ -1,19 +1,22 @@
-name: Deploy to UAT
+name: Deploy to DEV2
 on: 
   push: 
-    tags:
-       - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
-       - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
-       - 'v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+'           
-       - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
+    branches:
+      - agmobi
 jobs:
   build:
-    name: Build Deploy To UAT
-    environment: QA
+    name: Build Deploy To DEV2 
+    environment: DEV
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.0.0
+          
       - name: Build
         run: |
           yarn install
@@ -29,7 +32,7 @@ jobs:
       - name: Create Lerna Bundles
         run: |
           sh ./scripts/pack-prod-build.sh
-
+          
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -39,9 +42,9 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
-      - name: Copy build to server using rsync
+      - name: Deploy with rsync
         run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-   
+        
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -50,4 +53,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu
+            #cp eg-website.tar /var/www/html2
             tar -xvf eg-website.tar -C /var/www/html/
+            #rm -rf *
+            #cp ../eg-website.tar ./
+            #tar -xvf eg-website.tar .
