@@ -164,7 +164,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   const transformErrors = (errors, uiSchema) => {
-    console.log(errors);
     return errors.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
