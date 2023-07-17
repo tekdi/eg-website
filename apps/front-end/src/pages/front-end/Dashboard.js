@@ -4,6 +4,8 @@ import {
   Layout,
   RedOutlineButton,
   FrontEndTypo,
+  objProps,
+  arrList,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Stack, Image } from "native-base";
 import React from "react";
@@ -33,6 +35,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [facilitator, setFacilitator] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
+  const [progress, setProgress] = React.useState(0);
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -40,8 +43,37 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
     }
+
     setLoading(false);
   }, []);
+
+  const res = objProps(facilitator);
+  React.useEffect(() => {
+    setProgress(
+      arrList(
+        {
+          ...res,
+          qua_name: facilitator?.qualifications?.qualification_master?.name,
+        },
+        [
+          "device_ownership",
+          "mobile",
+          "device_type",
+          "gender",
+          "marital_status",
+          "social_category",
+          "name",
+          "contact_number",
+          "availability",
+          "aadhar_no",
+          "aadhaar_verification_mode",
+          "aadhar_verified",
+          "qualification_ids",
+          "qua_name",
+        ]
+      )
+    );
+  }, [facilitator]);
 
   const isDocumentUpload = (key = "") => {
     let isAllow = 0;
@@ -106,7 +138,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
-          <InfoBox status={facilitator?.status} />
+          <InfoBox status={facilitator?.status} progress={progress} />
           <Stack>
             <HStack py="6" flex="1" px="4">
               <Image
@@ -336,19 +368,21 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             </Stack>
           )}
-          {["lead", "applied", ""].includes(facilitator.status) && (
-            <Stack>
-              <VStack p="5" pt={1}>
-                <FrontEndTypo.Primarybutton
-                  onPress={(e) => navigate("/profile/edit/basic_details")}
-                  bold
-                  flex="1"
-                >
-                  {t("COMPLETE_FORM")}
-                </FrontEndTypo.Primarybutton>
-              </VStack>
-            </Stack>
-          )}
+
+          {["lead", "applied", ""]?.includes(facilitator.status) &&
+            progress !== 100 && (
+              <Stack>
+                <VStack p="5" pt={1}>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) => navigate("/profile/edit/basic_details")}
+                    bold
+                    flex="1"
+                  >
+                    {t("COMPLETE_FORM")}
+                  </FrontEndTypo.Primarybutton>
+                </VStack>
+              </Stack>
+            )}
           {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
@@ -467,7 +501,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   );
 }
 
-const InfoBox = ({ status }) => {
+const InfoBox = ({ status, progress }) => {
   let infoBox;
   const { t } = useTranslation();
 
@@ -597,7 +631,11 @@ const InfoBox = ({ status }) => {
             <FrontEndTypo.H3 bold>
               {t("YOUR_APPLICATION_IS_UNDER_REVIEW")}
             </FrontEndTypo.H3>
-            <FrontEndTypo.H4>{t("MEANWHILE_PROFILE")}</FrontEndTypo.H4>
+            {progress === 100 ? (
+              <FrontEndTypo.H4>{t("PROFILE_COMPLETED")}</FrontEndTypo.H4>
+            ) : (
+              <FrontEndTypo.H4>{t("MEANWHILE_PROFILE")}</FrontEndTypo.H4>
+            )}
           </VStack>
         </HStack>
       );
