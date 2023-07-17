@@ -88,7 +88,7 @@ export default function PhotoUpload({
 
   React.useEffect(() => {
     if (!(page < 4)) {
-      if (!aadhar_no || aadhar_no !== "") {
+      if (!aadhar_no || aadhar_no === "") {
         navigate(`/profile/edit/aadhaar_details`);
       } else {
         navigate(`/profile`);
