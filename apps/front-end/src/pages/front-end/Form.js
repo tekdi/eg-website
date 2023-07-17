@@ -609,7 +609,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
-    console.log("sad");
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -926,7 +925,6 @@ export default function App({ facilitator, ip, onClick }) {
                 variant={"primary"}
                 type="submit"
                 onPress={(e) => {
-                  console.log(formRef?.current);
                   formRef?.current?.submit();
                 }}
               >
@@ -939,7 +937,6 @@ export default function App({ facilitator, ip, onClick }) {
                 p="4"
                 mt="10"
                 onPress={(e) => {
-                  console.log(formRef?.current);
                   formRef?.current?.submit();
                 }}
               >

@@ -1,4 +1,4 @@
-# EG Website on Shiksha Platform Admin Console (Uses Module Federation)
+# EG Website on Shiksha Platform Admin Console [Uses Module Federation]
 
 ## Modules
 

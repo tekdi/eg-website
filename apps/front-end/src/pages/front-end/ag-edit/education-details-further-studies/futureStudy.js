@@ -138,9 +138,7 @@ export default function AgformUpdate({ userTokenInfo }) {
         ...formData,
         career_aspiration_details:
           result?.core_beneficiaries?.career_aspiration_details,
-        career_aspiration: getUniqueArray(
-          result?.core_beneficiaries?.career_aspiration
-        ),
+        career_aspiration: result?.core_beneficiaries?.career_aspiration,
         aspiration_mapping: {
           learning_motivation: getUniqueArray(
             result?.program_beneficiaries?.learning_motivation
@@ -166,7 +164,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   const transformErrors = (errors, uiSchema) => {
-    console.log(errors);
     return errors.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
@@ -257,7 +254,7 @@ export default function AgformUpdate({ userTokenInfo }) {
             noHtml5Validate={true}
             uiSchema={{
               career_aspiration: {
-                "ui:widget": "MultiCheck",
+                "ui:widget": "RadioBtn",
               },
               aspiration_mapping: {
                 learning_motivation: {
