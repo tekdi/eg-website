@@ -47,8 +47,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, []);
 
-  const res = objProps(facilitator);
   React.useEffect(() => {
+    const res = objProps(facilitator);
     setProgress(
       arrList(
         {
