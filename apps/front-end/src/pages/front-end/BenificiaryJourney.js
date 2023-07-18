@@ -165,6 +165,7 @@ export default function BenificiaryJourney() {
                                   enumApiData={enumOptions}
                                 />
                                 <FrontEndTypo.H4>
+                                  <Text>By &nbsp;</Text>
                                   {logs?.first_name}&nbsp;
                                   {logs?.middle_name && logs?.middle_name}&nbsp;
                                   {logs?.last_name && logs?.last_name}
