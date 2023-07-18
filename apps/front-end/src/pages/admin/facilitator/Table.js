@@ -5,6 +5,7 @@ import {
   ImageView,
   AdminTypo,
   enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -153,6 +154,7 @@ function Table({
   const [modal, setModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setfacilitaorStatus] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
   const [status, setstatus] = React.useState("ALL");
 
   const navigate = useNavigate();
@@ -169,8 +171,10 @@ function Table({
   }, [totalCount]);
 
   React.useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setfacilitaorStatus(result?.data?.FACILITATOR_STATUS);
+    const result = await enumRegistryService.statuswiseCount();
+    setfacilitaorStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
   }, []);
 
   React.useEffect(async () => {
@@ -370,29 +374,24 @@ function Table({
       </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-          <Text
-            cursor={"pointer"}
-            mx={3}
-            onPress={() => {
-              filterByStatus("ALL");
-            }}
-          >
-            {t("BENEFICIARY_ALL")}
-            {status == "ALL" && `(${paginationTotalRows})`}
-          </Text>
           {facilitaorStatus?.map((item) => {
             return (
               <Text
-                color={status == t(item?.value) ? "blueText.400" : ""}
-                bold={status == t(item?.value) ? true : false}
+                color={status == t(item?.status) ? "blueText.400" : ""}
+                bold={status == t(item?.status) ? true : false}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
-                  filterByStatus(item?.value);
+                  filterByStatus(item?.status);
                 }}
               >
-                {t(item?.title)}
-                {status == t(item?.value) && `(${paginationTotalRows})`}
+                <GetEnumValue
+                  t={t}
+                  enumType={"FACILITATOR_STATUS"}
+                  enumOptionValue={item?.status}
+                  enumApiData={enumOptions}
+                />
+                {`(${item?.count})`}
               </Text>
             );
           })}
