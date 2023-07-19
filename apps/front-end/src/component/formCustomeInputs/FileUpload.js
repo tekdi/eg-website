@@ -9,7 +9,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 const FileUpload = ({ options, value, onChange, required, schema }) => {
-  const { label, title, userId, document_type } = schema ? schema : {};
+  const { label, title, uploadTitle, userId, document_type } = schema
+    ? schema
+    : {};
   const uplodInputRef = React.useRef();
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState({});
@@ -91,7 +93,9 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
               ) : (
                 <IconByName name="Upload2FillIcon" isDisabled />
               )}
-              <FrontEndTypo.H2>{t(label ? label : title)}</FrontEndTypo.H2>
+              <FrontEndTypo.H2 textAlign="center">
+                {t(uploadTitle ? uploadTitle : label ? label : title)}
+              </FrontEndTypo.H2>
             </Pressable>
           </Box>
         )}

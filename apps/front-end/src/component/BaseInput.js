@@ -212,9 +212,13 @@ export const ObjectFieldTemplate = (props) => {
   return (
     <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
-        <VStack key={`element${index}`} w="100%">
-          {element.content}
-        </VStack>
+        <div
+          key={`element${index}`}
+          id={`element_${element.name}`}
+          style={{ width: "100%" }}
+        >
+          <VStack w="100%">{element.content}</VStack>
+        </div>
       ))}
     </VStack>
   );
@@ -651,6 +655,29 @@ const templates = {
   BaseInputTemplate,
   ArrayFieldTemplate,
 };
+
+export const focusToField = (errors) => {
+  const firstError = errors?.[errors?.length - 1];
+  console.log(firstError, errors);
+  if (firstError) {
+    const element = document.getElementById(`element_${firstError?.property}`);
+    if (element) {
+      element?.scrollIntoView();
+    } else {
+      const element1 = document.getElementById(
+        `root_${firstError?.property}__error`
+      );
+      if (element1) {
+        element1?.scrollIntoView();
+      }
+    }
+  }
+};
+
+const onError = (errors, dsat) => {
+  focusToField(errors);
+};
+
 export {
   widgets,
   templates,
@@ -658,4 +685,5 @@ export {
   FileUpload,
   validator,
   MobileNumber,
+  onError,
 };

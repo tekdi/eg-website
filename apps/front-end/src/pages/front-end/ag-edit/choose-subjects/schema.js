@@ -11,6 +11,7 @@ export default {
         "enrollment_number",
         "subjects",
         "enrollment_date",
+        "payment_receipt_document_id",
       ],
 
       properties: {
@@ -49,6 +50,12 @@ export default {
           type: "string",
           default: "edit_enrollement",
           format: "hidden",
+        },
+        payment_receipt_document_id: {
+          label: "PAYMENT_RECEIPT",
+          uploadTitle: "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT",
+          type: ["string", "number", "null"],
+          format: "FileUpload",
         },
       },
     },
