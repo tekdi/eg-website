@@ -18,6 +18,7 @@ export default [
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: AdminHome },
+  { path: "/admin/facilitator/:limit/:page", component: AdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
 
