@@ -34,6 +34,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   // facilitator pagination
   const [getQualificationAll, setgetQualificationAll] = React.useState();
@@ -67,8 +68,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setfacilitaorStatus(result?.data?.FACILITATOR_STATUS);
+    const result = await enumRegistryService.statuswiseCount();
+    setfacilitaorStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
   }, []);
 
   React.useEffect(async () => {
@@ -262,6 +265,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               paginationTotalRows={paginationTotalRows}
               data={data}
               loading={loading}
+              enumOptions={enumOptions}
             />
           </Box>
         </ScrollView>

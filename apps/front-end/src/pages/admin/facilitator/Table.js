@@ -4,6 +4,7 @@ import {
   ImageView,
   AdminTypo,
   debounce,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -63,6 +64,7 @@ function Table({
   paginationTotalRows,
   data,
   loading,
+  enumOptions,
 }) {
   const { t } = useTranslation();
   const columns = (e) => [
@@ -246,29 +248,24 @@ function Table({
       </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-          <Text
-            cursor={"pointer"}
-            mx={3}
-            onPress={() => {
-              setFilter({ ...filter, status: "ALL", page: 1 });
-            }}
-          >
-            {t("BENEFICIARY_ALL")}
-            {filter?.status == "ALL" && `(${paginationTotalRows})`}
-          </Text>
           {facilitaorStatus?.map((item) => {
             return (
               <Text
-                color={filter?.status == t(item?.value) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.value) ? true : false}
+                color={filter?.status == t(item?.status) ? "blueText.400" : ""}
+                bold={filter?.status == t(item?.status) ? true : false}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
-                  setFilter({ ...filter, status: item?.value, page: 1 });
+                  setFilter({ ...filter, status: item?.status, page: 1 });
                 }}
               >
-                {t(item?.title)}
-                {filter?.status == t(item?.value) && `(${paginationTotalRows})`}
+                <GetEnumValue
+                  t={t}
+                  enumType={"FACILITATOR_STATUS"}
+                  enumOptionValue={item?.status}
+                  enumApiData={enumOptions}
+                />
+                {`(${item?.count})`}
               </Text>
             );
           })}
