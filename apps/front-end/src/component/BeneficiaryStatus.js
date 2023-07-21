@@ -1,8 +1,15 @@
-import { Box } from "native-base";
+import { Box, Text } from "native-base";
 import React from "react";
 import { t } from "@shiksha/common-lib";
 
-export default function Chip({ label, children, isActive, ...props }) {
+export default function Chip({
+  label,
+  children,
+  is_duplicate,
+  is_deactivate,
+  isActive,
+  ...props
+}) {
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
@@ -15,13 +22,23 @@ export default function Chip({ label, children, isActive, ...props }) {
       m="1"
       {...props}
     >
-      {children ? children : label}
+      <Text>
+        {" "}
+        {children ? children : label}{" "}
+        {is_duplicate === "yes" ? (
+          <Text>{`(${t("BENEFICIARY_STATUS_DUPLICATED")})`}</Text>
+        ) : is_deactivate === "yes" ? (
+          <Text>{`(${t("DEACTIVATE")})`}</Text>
+        ) : (
+          <></>
+        )}
+      </Text>
     </Box>
   );
 }
 
 // ChipStatus
-export function ChipStatus({ status, ...props }) {
+export function ChipStatus({ status, is_duplicate, is_deactivate, ...props }) {
   const [color, setColor] = React.useState("identifiedColor");
   const [textColor, setTextColor] = React.useState("textGreyColor.800");
   const [newStatus, setNewStatus] = React.useState(status);
@@ -96,6 +113,8 @@ export function ChipStatus({ status, ...props }) {
       bg={color}
       color={textColor}
       label={newStatus}
+      is_duplicate={is_duplicate}
+      is_deactivate={is_deactivate}
       _text={{ textTransform: "capitalize" }}
       rounded="sm"
       {...props}
