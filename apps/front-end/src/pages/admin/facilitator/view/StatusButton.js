@@ -129,6 +129,9 @@ export default function StatusButton({ data, setData }) {
       case "on_hold":
         setDisabledBtn([
           "rusticate",
+          "shortlisted_for_orientation",
+          "pragati_mobilizer",
+          "selected_for_training",
           "quit",
           "applied",
           "application_screened",
