@@ -657,8 +657,7 @@ const templates = {
 };
 
 export const focusToField = (errors) => {
-  const firstError = errors?.[errors?.length - 1];
-  console.log(firstError, errors);
+  const firstError = errors?.[0];
   if (firstError) {
     const element = document.getElementById(`element_${firstError?.property}`);
     if (element) {
@@ -674,6 +673,64 @@ export const focusToField = (errors) => {
   }
 };
 
+const transformErrors = (errors, schema, t) => {
+  return errors.map((error) => {
+    const schemaItem = schema?.properties?.[error?.property.replace(".", "")];
+    if (error.name === "required") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        if (schemaItem?.format === "FileUpload") {
+          error.message = `${t("REQUIRED_MESSAGE_UPLOAD")} "${t(title)}"`;
+        } else {
+          error.message = `${t("REQUIRED_MESSAGE")} "${t(title)}"`;
+        }
+      } else {
+        error.message = `${t("REQUIRED_MESSAGE")}`;
+      }
+    } else if (error.name === "minItems") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        error.message = `${t("SELECT_MINIMUM")} ${error?.params?.limit} ${t(
+          title
+        )}`;
+      } else {
+        error.message = `${t("SELECT_MINIMUM")} ${error?.params?.limit}`;
+      }
+    } else if (error.name === "maxItems") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        error.message = `${t("SELECT_MAXIMUM")} ${error?.params?.limit} ${t(
+          title
+        )}`;
+      } else {
+        error.message = `${t("SELECT_MAXIMUM")} ${error?.params?.limit}`;
+      }
+    } else if (error.name === "enum") {
+      error.message = `${t("SELECT_MESSAGE")}`;
+    } else if (error.name === "format") {
+      const { format } = error?.params ? error?.params : {};
+      let message = "REQUIRED_MESSAGE";
+      if (format === "email") {
+        message = "PLEASE_ENTER_VALID_EMAIL";
+      }
+      if (format === "string") {
+        message = "PLEASE_ENTER_VALID_STREING";
+      } else if (format === "number") {
+        message = "PLEASE_ENTER_VALID_NUMBER";
+      }
+
+      if (schema?.properties?.[error?.property]?.title) {
+        error.message = `${t(message)} "${t(
+          schema?.properties?.[error?.property]?.title
+        )}"`;
+      } else {
+        error.message = `${t(message)}`;
+      }
+    }
+    return error;
+  });
+};
+
 const onError = (errors, dsat) => {
   focusToField(errors);
 };
@@ -686,4 +743,5 @@ export {
   validator,
   MobileNumber,
   onError,
+  transformErrors,
 };

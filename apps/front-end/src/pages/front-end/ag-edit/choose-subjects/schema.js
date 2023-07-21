@@ -35,26 +35,23 @@ export default {
         enrollment_number: {
           type: "number",
           label: "ENROLLMENT_NUMBER",
+          regex: /^\d+$/,
           _input: { keyboardType: "numeric" },
         },
         subjects: {
+          minItems: 1,
+          maxItems: 7,
           type: "array",
           label: "SELECT_SUBJECTS",
-
           items: {
-            type: "number",
+            type: ["string", "number"],
           },
           uniqueItems: true,
-        },
-        edit_page_type: {
-          type: "string",
-          default: "edit_enrollement",
-          format: "hidden",
         },
         payment_receipt_document_id: {
           label: "PAYMENT_RECEIPT",
           uploadTitle: "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT",
-          type: ["string", "number", "null"],
+          type: ["string", "number"],
           format: "FileUpload",
         },
       },

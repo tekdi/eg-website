@@ -4,7 +4,7 @@ import {
   ImageView,
   uploadRegistryService,
 } from "@shiksha/common-lib";
-import { Box, Image, Pressable, Spinner, VStack } from "native-base";
+import { Box, Pressable, Progress, Spinner, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,11 +14,13 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
     : {};
   const uplodInputRef = React.useRef();
   const [loading, setLoading] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
   const [errors, setErrors] = React.useState({});
   const [file, setFile] = React.useState();
   const { t } = useTranslation();
   const uploadProfile = async (file) => {
     setLoading(true);
+    setProgress(0);
     const form_data = new FormData();
     const item = {
       file,
@@ -28,7 +30,15 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadFile(form_data);
+    const result = await uploadRegistryService.uploadFile(
+      form_data,
+      {},
+      (progressEvent) => {
+        const { loaded, total } = progressEvent;
+        let percent = Math.floor((loaded * 100) / total);
+        setProgress(percent);
+      }
+    );
     setLoading(false);
     const document_id = result?.data?.insert_documents?.returning?.[0]?.id;
     onChange(document_id);
@@ -50,22 +60,38 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
 
   return (
     <VStack space={2}>
-      <VStack
-        justifyContent="center"
-        borderWidth="1"
-        borderStyle="dotted"
-        borderColor="textGreyColor.50"
-        alignItems="center"
-        minH="200px"
-      >
-        {loading ? (
+      {loading ? (
+        <VStack
+          space={4}
+          borderWidth="1"
+          borderStyle="dotted"
+          borderColor="textGreyColor.50"
+          minH="200px"
+          justifyContent="center"
+          p="4"
+        >
           <Spinner
             color={"primary.500"}
             accessibilityLabel="Loading posts"
             size="lg"
           />
-        ) : (
-          <Box>
+          <Progress value={progress} />
+          <FrontEndTypo.H3 textAlign="center">{progress}%</FrontEndTypo.H3>
+        </VStack>
+      ) : (
+        <Pressable
+          onPress={(e) => {
+            uplodInputRef?.current?.click();
+          }}
+          alignItems="center"
+          gap="5"
+          borderWidth="1"
+          borderStyle="dotted"
+          borderColor="textGreyColor.50"
+          minH="200px"
+          justifyContent="center"
+        >
+          <Box alignItems="center">
             <input
               accept="image/*,application/pdf"
               type="file"
@@ -73,33 +99,26 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
               ref={uplodInputRef}
               onChange={handleFileInputChange}
             />
-            <Pressable
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-              alignItems="center"
-              gap="5"
-            >
-              {file ? (
-                <ImageView
-                  source={{
-                    document_id: file,
-                  }}
-                  alt={`Alternate ${t(label)}`}
-                  width={"190px"}
-                  height={"190px"}
-                  borderRadius="0"
-                />
-              ) : (
-                <IconByName name="Upload2FillIcon" isDisabled />
-              )}
-              <FrontEndTypo.H2 textAlign="center">
-                {t(uploadTitle ? uploadTitle : label ? label : title)}
-              </FrontEndTypo.H2>
-            </Pressable>
+
+            {file ? (
+              <ImageView
+                source={{
+                  document_id: file,
+                }}
+                alt={`Alternate ${t(label)}`}
+                width={"190px"}
+                height={"190px"}
+                borderRadius="0"
+              />
+            ) : (
+              <IconByName name="Upload2FillIcon" isDisabled />
+            )}
+            <FrontEndTypo.H2>
+              {t(uploadTitle ? uploadTitle : label ? label : title)}
+            </FrontEndTypo.H2>
           </Box>
-        )}
-      </VStack>
+        </Pressable>
+      )}
       {errors?.fileSize && (
         <FrontEndTypo.H2 color="red.400">{errors?.fileSize}</FrontEndTypo.H2>
       )}
