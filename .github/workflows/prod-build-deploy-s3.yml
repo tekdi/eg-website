@@ -3,6 +3,7 @@ on:
   push: 
     branches:
       - gha-deploy2s3
+      
 jobs:
   build:
     name: Build Deploy To PROD S3 Test
@@ -10,7 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.0.0
+          
       - name: Build
         run: |
           yarn install
