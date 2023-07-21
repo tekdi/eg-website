@@ -3,7 +3,11 @@ on:
   push: 
     branches:
       - gha-deploy2s3
-      
+
+defaults:
+  run:
+    working-directory: .
+    
 jobs:
   build:
     name: Build Deploy To PROD S3 Test
@@ -22,7 +26,7 @@ jobs:
         with:
           node-version: 18.0.0
           
-      - name: Build
+      - name: Install deps, and build
         run: |
           yarn install
           yarn workspace @shiksha/common-lib build
