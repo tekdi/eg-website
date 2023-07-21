@@ -10,6 +10,10 @@ jobs:
     environment: PROD
     runs-on: ubuntu-latest
     steps:
+      - name: List contents
+        run: |
+          ls -lha
+          
       - name: Checkout code
         uses: actions/checkout@v3
         
@@ -32,11 +36,19 @@ jobs:
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
-          
+     
+      - name: List contents
+        run: |
+          ls -lha
+               
       - name: Create Lerna Bundles
         run: |
           sh ./scripts/pack-prod-build.sh
 
+      - name: List contents
+        run: |
+          ls -lha
+          
       - name: Deploy
         uses: reggionick/s3-deploy@v3
         with:
@@ -48,4 +60,4 @@ jobs:
           delete-removed: true
           no-cache: true
           private: true
-          filesToInclude: "prod-build/*"
+          filesToInclude: prod-build/*
