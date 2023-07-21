@@ -3,8 +3,12 @@ import Form from "./Form";
 import SplashScreen from "./splash/SplashScreen";
 import PrerakDuties from "./splash/PrerakDuties";
 import Success from "./Success";
-import { Layout, facilitatorRegistryService } from "@shiksha/common-lib";
-import { useParams, useLocation } from "react-router-dom";
+import {
+  FrontEndTypo,
+  Loading,
+  facilitatorRegistryService,
+} from "@shiksha/common-lib";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 function Home({ userTokenInfo, pageInfo }) {
   const location = useLocation();
@@ -12,6 +16,7 @@ function Home({ userTokenInfo, pageInfo }) {
   const [facilitator, setFacilitator] = React.useState({});
   const [ip, setIp] = React.useState({});
   const { id } = useParams();
+  const navigate = useNavigate();
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -31,22 +36,33 @@ function Home({ userTokenInfo, pageInfo }) {
       localStorage.setItem("profile_url", data?.documents?.[0]?.name);
 
       setIp(data);
+      if (!data?.name) {
+        setPage("login");
+      }
     }
   }, []);
-  return page === "success" ? (
-    <Success {...{ facilitator }} />
-  ) : page === "SplashScreen" ? (
-    <SplashScreen
-      page={page}
-      onClick={() => setPage("Form")}
-      onClickPrerakDuties={() => setPage("Prerak_Duties")}
-      onPreferedLanguage={() => setPage("Prerak_Duties")}
-      isBackButton={pageInfo ? pageInfo : ""}
-    />
-  ) : page === "Prerak_Duties" ? (
-    <PrerakDuties page={page} onClick={() => setPage("Form")} />
-  ) : (
-    <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
+  return (
+    <>
+      {page == "login" ? (
+        <Loading
+          customComponent={<FrontEndTypo.H3>Invalid URL</FrontEndTypo.H3>}
+        />
+      ) : page === "success" ? (
+        <Success {...{ facilitator }} />
+      ) : page === "SplashScreen" ? (
+        <SplashScreen
+          page={page}
+          onClick={() => setPage("Form")}
+          onClickPrerakDuties={() => setPage("Prerak_Duties")}
+          onPreferedLanguage={() => setPage("Prerak_Duties")}
+          isBackButton={pageInfo ? pageInfo : ""}
+        />
+      ) : page === "Prerak_Duties" ? (
+        <PrerakDuties page={page} onClick={() => setPage("Form")} />
+      ) : (
+        <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
+      )}
+    </>
   );
 }
 export default Home;
