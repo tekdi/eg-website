@@ -292,7 +292,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </VStack>
           </HStack> */}
           {/* potential prerak */}
-          {["pragati_mobilizer"].includes(facilitator.status) && (
+          {[
+            "pragati_mobilizer",
+            "selected_prerak",
+            "selected_for_training",
+            "selected_for_onboarding",
+          ].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
                 background="#FCEEE2"
