@@ -38,14 +38,15 @@ export default function OrientationScreen({
   setIsOpen,
   userIds,
   setUserIds,
+  users,
 }) {
   const [data, setData] = React.useState([]);
   const [limit, setLimit] = React.useState(100);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
+  const [oldUser, setOldUser] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const { t } = useTranslation();
-
   const columns = (e) => [
     {
       name: t("NAME"),
@@ -103,62 +104,6 @@ export default function OrientationScreen({
     },
   ];
 
-  const scheduleCandidates = (e) => [
-    {
-      name: t("NAME"),
-      selector: (row) => (
-        <HStack alignItems={"center"} space="2">
-          {row?.profile_url ? (
-            <Avatar
-              source={{
-                uri: row?.profile_url,
-              }}
-              // alt="Alternate Text"
-              width={"35px"}
-              height={"35px"}
-            />
-          ) : (
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              color="gray.300"
-              _icon={{ size: "35" }}
-            />
-          )}
-          <Text>{row?.first_name + " " + row.last_name}</Text>
-        </HStack>
-      ),
-      sortable: false,
-      attr: "name",
-    },
-    {
-      name: t("INVITE_STATUS"),
-      selector: (row) => <Text color={"#00D790"}>Accepted</Text>,
-      sortable: false,
-      attr: "email",
-    },
-    {
-      name: t("MARK_ATTENDANCE"),
-      selector: (row) => (
-        <>
-          <HStack space={"2"}>
-            <Text>Present</Text>
-            <Switch
-              offTrackColor="#00D790"
-              onTrackColor="#DC2626"
-              onThumbColor="#E0E0E0"
-              offThumbColor="#E0E0E0"
-              value={switchAttendance}
-              onValueChange={!switchAttendance}
-            />
-          </HStack>
-        </>
-      ),
-      sortable: false,
-      attr: "email",
-    },
-  ];
-
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -174,6 +119,11 @@ export default function OrientationScreen({
 
     fetchData();
   }, [limit, page, isOpen]);
+
+  React.useEffect(() => {
+    const data = users?.map((e) => e?.user);
+    setOldUser(data);
+  }, []);
 
   const handleSelectRow = (state) => {
     const arr = state?.selectedRows;
@@ -206,7 +156,7 @@ export default function OrientationScreen({
         <Modal.Body p="5" pb="10">
           <DataTable
             columns={[...columns()]}
-            data={data}
+            data={[...data]}
             customStyles={customStyles}
             subHeader
             persistTableHead

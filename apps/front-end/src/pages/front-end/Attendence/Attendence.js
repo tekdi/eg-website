@@ -14,6 +14,8 @@ import {
   uploadRegistryService,
   eventService,
   Loading,
+  enumRegistryService,
+  getOptions,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";
@@ -34,7 +36,7 @@ import {
   Badge,
   Input,
 } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
@@ -42,8 +44,12 @@ import validator from "@rjsf/validator-ajv8";
 
 import { useNavigate } from "react-router-dom";
 import schema from "./schema";
+import orientationPopupSchema from "../orientation/orientationPopupSchema";
 
-const stylesheet = {
+import { HFieldTemplate, templates, widgets } from "component/BaseInput";
+import OrientationScreen from "../orientation/OrientationScreen";
+
+const styles = {
   modalxxl: {
     maxWidth: "950px",
     width: "100%",
@@ -64,77 +70,15 @@ const customStyles = {
     },
   },
 };
-const columns = (e) => [
-  {
-    name: t("NAME"),
-    selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_url ? (
-          <Avatar
-            source={{
-              uri: row?.profile_url,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        <Text textOverflow="ellipsis">
-          {row?.first_name + " " + row.last_name}
-        </Text>
-      </HStack>
-    ),
-    sortable: false,
-    attr: "name",
-  },
-  {
-    name: t("QUALIFICATION"),
-    selector: (row) =>
-      row?.qualifications?.map((val) => {
-        return " " + val.qualification_master.name;
-      }),
-    sortable: false,
-    attr: "qualification",
-  },
-  {
-    name: t("DISTRICT"),
-    selector: (row) => (row?.district ? row?.district : ""),
-    sortable: false,
-    attr: "city",
-  },
-  {
-    name: t("ELIGIBILITY"),
-    selector: (row) => row?.gender,
-    sortable: false,
-    attr: "city",
-  },
-  {
-    name: t("STATUS"),
-    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
-    sortable: false,
-    attr: "email",
-  },
-  {
-    name: t("COMMENT"),
-    // selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
-    sortable: false,
-    attr: "email",
-  },
-];
 
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
   const [Height] = useWindowSize();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [userIds, setUserIds] = React.useState({});
+  const [errors, setErrors] = useState({});
   const [users, setUsers] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
@@ -151,16 +95,69 @@ export default function Attendence({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const uplodInputRef = React.useRef();
   const formRef = React.useRef();
+  const eventFormRef = React.useRef();
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({});
-
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const nowDate = new Date();
+  const [enventSchema, setEnventSchema] = useState({});
   const [userData, setUserData] = useState({});
-
   const [cameraFile, setcameraFile] = useState();
   useEffect(() => {
     getLocation();
   }, []);
 
+  React.useEffect(() => {
+    setEvent({
+      ...event,
+      attendees:
+        userIds !== undefined ? Object.values(userIds).map((e) => e?.id) : "",
+    });
+  }, [userIds]);
+
+  function convertToIST(utcTime) {
+    const utcMoment = moment.utc(utcTime, "HH:mm:ssZ");
+    const istMoment = utcMoment.local().utcOffset("+05:30");
+    const formattedIST = istMoment.format("hh:mm:ss A"); // Using 'hh:mm:ss A' for AM/PM format
+    return formattedIST;
+  }
+
+  const SelectButton = ({ required }) => (
+    <HStack space={"4"} direction={["column", "row"]}>
+      <HStack flex={["1", "1", "1"]} alignItems="center" space={"2"}>
+        <IconByName
+          name="UserLineIcon"
+          color="textGreyColor.200"
+          isDisabled
+          _icon={{ size: "14px" }}
+        />
+        <AdminTypo.H6 color="textGreyColor.100">
+          {t("SELECT_CANDIDATE")}
+        </AdminTypo.H6>
+
+        <AdminTypo.H6 color="textGreyColor.100">
+          {required ? "*" : null}
+        </AdminTypo.H6>
+      </HStack>
+      <HStack alignItems="center" flex={["1", "3", "4"]}>
+        <AdminTypo.Secondarybutton
+          leftIcon={
+            <Text>
+              {users
+                ? Object.values(users).length
+                : userIds
+                ? Object.values(userIds).length
+                : ""}
+            </Text>
+          }
+          onPress={() => setIsOpen(true)}
+          flex="1"
+        >
+          {t("SELECT_PRERAK")}
+        </AdminTypo.Secondarybutton>
+      </HStack>
+    </HStack>
+  );
   const onSwitchToggle = async (value) => {
     getLocation();
     setCameraUrl();
@@ -192,6 +189,61 @@ export default function Attendence({ footerLinks }) {
     },
   };
 
+  const uiEventSchema = {
+    attendees: {
+      "ui:widget": SelectButton,
+    },
+    start_date: {
+      "ui:widget": "alt-datetime",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+        yearsRange: [2023, 2030],
+      },
+    },
+    end_date: {
+      "ui:widget": "alt-datetime",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+        yearsRange: [2023, 2030],
+      },
+    },
+    reminders: {
+      "ui:widget": "checkboxes",
+      "ui:options": {
+        inline: true,
+      },
+    },
+    start_time: {
+      "ui:widget": "hidden",
+    },
+    end_time: {
+      "ui:widget": "hidden",
+    },
+  };
+
+  React.useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    let newSchema = orientationPopupSchema;
+    newSchema = getOptions(newSchema, {
+      key: "reminders",
+      arr: result?.data?.REMINDERS.map((e) => ({ ...e, title: t(e.title) })),
+      title: "title",
+      value: "value",
+    });
+    newSchema = getOptions(newSchema, {
+      key: "type",
+      arr: result?.data?.FACILITATOR_EVENT_TYPE.map((e) => ({
+        ...e,
+        title: t(e.title),
+      })),
+      title: "title",
+      value: "value",
+    });
+    setEnventSchema(newSchema);
+  }, [event]);
+
   const onSubmit = async (data) => {
     const apiResponse = await eventService.editAttendanceDocumentList({
       id: formData?.user_id,
@@ -208,6 +260,82 @@ export default function Attendence({ footerLinks }) {
     }
   };
 
+  const transformErrors = (errors, uiSchema) => {
+    return errors.map((error) => {
+      if (error.name === "required") {
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t("REQUIRED_MESSAGE")} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t("REQUIRED_MESSAGE")}`;
+        }
+      } else if (error.name === "enum") {
+        error.message = `${t("SELECT_MESSAGE")}`;
+      } else if (error.name === "format") {
+        const { format } = error?.params ? error?.params : {};
+        let message = "REQUIRED_MESSAGE";
+        if (format === "email") {
+          message = "PLEASE_ENTER_VALID_EMAIL";
+        }
+        if (format === "string") {
+          message = "PLEASE_ENTER_VALID_STREING";
+        } else if (format === "number") {
+          message = "PLEASE_ENTER_VALID_NUMBER";
+        }
+
+        if (schema?.properties?.[error?.property]?.title) {
+          error.message = `${t(message)} "${t(
+            schema?.properties?.[error?.property]?.title
+          )}"`;
+        } else {
+          error.message = `${t(message)}`;
+        }
+      }
+      return error;
+    });
+  };
+
+  const onChange = async (data, id) => {
+    setErrors({});
+    // formRef?.current?.validateForm();
+    const newData = data.formData;
+    setEvent({ ...formData, ...newData });
+    if (newData?.end_date) {
+      if (
+        moment.utc(newData?.start_date).isAfter(moment.utc(newData?.end_date))
+      ) {
+        const newErrors = {
+          end_date: {
+            __errors: [t("EVENT_CREATE_END_DATE_GREATERE_THAN_START_DATE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    if (moment.utc(newData?.start_date) < moment.utc(nowDate)) {
+      const newErrors = {
+        start_date: {
+          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_START_DATE")],
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (moment.utc(newData?.end_date) < moment.utc(nowDate)) {
+      const newErrors = {
+        end_date: {
+          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_END_DATE")],
+        },
+      };
+      setErrors(newErrors);
+    }
+  };
+  const clearForm = () => {
+    setUserIds({});
+    setEvent();
+  };
   const scheduleCandidates = (e) => [
     {
       name: t("NAME"),
@@ -591,11 +719,14 @@ export default function Attendence({ footerLinks }) {
                   <AdminTypo.H6 color="textGreyColor.800" bold>
                     {event?.name ? event?.name : event?.type}
                   </AdminTypo.H6>
-                  {/* <AdminTypo.Secondarybutton
-                  shadow="BlueOutlineShadow"
-                >
-                  {t("EDIT_DETAILS")}
-                </AdminTypo.Secondarybutton> */}
+                  <AdminTypo.Secondarybutton
+                    shadow="BlueOutlineShadow"
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    {t("EDIT_DETAILS")}
+                  </AdminTypo.Secondarybutton>
                   <Box>
                     <AdminTypo.Secondarybutton
                       onPress={() => setShowDeleteModal(true)}
@@ -621,7 +752,7 @@ export default function Attendence({ footerLinks }) {
                     {event?.start_date
                       ? moment(event?.start_date).format("Do MMM")
                       : ""}{" "}
-                    {event?.start_time ? event?.start_time : ""}
+                    {event?.start_time ? convertToIST(event?.start_time) : ""}
                     {/* 16th April, 11:00 to 12:00 */}
                   </AdminTypo.H6>
                   <IconByName
@@ -969,7 +1100,6 @@ export default function Attendence({ footerLinks }) {
                 </Modal.Body>
               </Modal.Content>
             </Modal>
-
             <DataTable
               columns={[
                 ...scheduleCandidates(),
@@ -1010,6 +1140,72 @@ export default function Attendence({ footerLinks }) {
               // onChangePage={(e) => setPage(e)}
             />
           </VStack>
+          <Modal
+            isOpen={modalVisible}
+            onClose={() => {
+              setModalVisible(false), clearForm();
+            }}
+            avoidKeyboard
+          >
+            <Modal.Content {...styles.modalxxl}>
+              <Modal.CloseButton />
+              <Modal.Header p="5" borderBottomWidth="0" bg="white">
+                <AdminTypo.H1 textAlign="center" bold>
+                  {t("SCHEDULE_EVENT")}
+                </AdminTypo.H1>
+              </Modal.Header>
+
+              <Modal.Body pt="4" pb="10" bg="white">
+                <Suspense fallback={<div>Loading... </div>}>
+                  <Form
+                    ref={eventFormRef}
+                    templates={{
+                      ...templates,
+                      FieldTemplate: HFieldTemplate,
+                    }}
+                    extraErrors={errors}
+                    showErrorList={false}
+                    noHtml5Validate={true}
+                    formData={event ? event : {}}
+                    // liveValidate
+                    uiSchema={uiEventSchema}
+                    {...{
+                      widgets,
+                      validator,
+                      schema: enventSchema ? enventSchema : {},
+                      onChange,
+                      onSubmit,
+                      transformErrors,
+                    }}
+                  >
+                    <button style={{ display: "none" }} />
+                  </Form>
+                </Suspense>
+              </Modal.Body>
+              <Modal.Footer justifyContent={"space-between"}>
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    setModalVisible(false);
+                    clearForm();
+                  }}
+                  shadow="BlueOutlineShadow"
+                >
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    eventFormRef?.current?.submit();
+                  }}
+                  shadow="BlueFillShadow"
+                >
+                  {t("SEND_INVITES")}
+                </AdminTypo.PrimaryButton>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <OrientationScreen
+            {...{ isOpen, setIsOpen, userIds, setUserIds, users }}
+          />
         </Box>
       </ScrollView>
     </Layout>
