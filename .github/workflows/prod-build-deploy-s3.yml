@@ -26,25 +26,25 @@ jobs:
         with:
           node-version: 18.0.0
           
-      - name: Install deps, and build
-        run: |
-          yarn install
-          yarn workspace @shiksha/common-lib build
-          yarn install
-          yarn build
-        env:          
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
-          REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
-          REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
+#       - name: Install deps, and build
+#         run: |
+#           yarn install
+#           yarn workspace @shiksha/common-lib build
+#           yarn install
+#           yarn build
+#         env:          
+#           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+#           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+#           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
+#           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
      
-      - name: List contents
-        run: |
-          ls -lha
+#       - name: List contents
+#         run: |
+#           ls -lha
                
-      - name: Create Lerna Bundles
-        run: |
-          sh ./scripts/pack-prod-build.sh
+#       - name: Create Lerna Bundles
+#         run: |
+#           sh ./scripts/pack-prod-build.sh
 
       - name: List contents
         run: |
