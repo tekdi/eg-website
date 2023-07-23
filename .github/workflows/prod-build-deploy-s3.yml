@@ -10,7 +10,7 @@ defaults:
     
 jobs:
   build:
-    name: Build Deploy To PROD S3 Test
+    name: Build Deploy To PROD S3 Test2
     environment: PROD
     runs-on: ubuntu-latest
     steps:
