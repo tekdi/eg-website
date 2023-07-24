@@ -607,6 +607,7 @@
   "REFERENCE_CONTACT_DETAILS": "Reference Contact Details",
   "REFERENCE_DETAILS": "Reference Details",
   "REFERENCE_FULL_NAME": "Reference Full Name",
+  "REFERENCE_NUMBER_SHOULD_NOT_BE_SAME":"Reference contact number should not be same as your number",
   "REGION": "Region",
   "REGISTER_PRERAK": "Register Prerak",
   "REJECT": "Reject",

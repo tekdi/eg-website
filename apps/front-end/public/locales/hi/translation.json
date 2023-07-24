@@ -606,6 +606,7 @@
   "REFERENCE_CONTACT_DETAILS": "संदर्भ संपर्क विवरण",
   "REFERENCE_DETAILS": "संदर्भ विवरण",
   "REFERENCE_FULL_NAME": "संदर्भ पूरा नाम",
+  "REFERENCE_NUMBER_SHOULD_NOT_BE_SAME":"संदर्भ संपर्क नंबर आपके नंबर के समान नहीं होना चाहिए",
   "REGION": "क्षेत्र",
   "REGISTER_PRERAK": "प्रेरक पंजीकरण",
   "REJECT": "रिजेक्ट ",
