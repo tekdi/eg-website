@@ -144,7 +144,7 @@ const Page1 = () => {
     <Box>
       <Image
         source={{
-          uri: "/splash1.png",
+          uri: "/images/logos/splash1.png",
         }}
         alt="Alternate Text"
         size={"2xl"}

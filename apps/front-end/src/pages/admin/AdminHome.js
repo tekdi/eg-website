@@ -1,51 +1,60 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-import {
-  Box,
-  HStack,
-  Select,
-  CheckIcon,
-  Text,
-  Checkbox,
-  VStack,
-  ScrollView,
-  Flex,
-  Button,
-} from "native-base";
+import { Box, HStack, VStack, ScrollView, Button } from "native-base";
 import {
   IconByName,
   AdminLayout as Layout,
-  H2,
   useWindowSize,
-  H3,
-  t,
-  facilitatorRegistryService,
   AdminTypo,
   geolocationRegistryService,
+  facilitatorRegistryService,
+  enumRegistryService,
+  setQueryParameters,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
-import Chip from "component/Chip";
+import { useTranslation } from "react-i18next";
 import CustomRadio from "component/CustomRadio";
+import { useLocation } from "react-router-dom";
+import { MultiCheck } from "../../component/BaseInput";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
+  const { t } = useTranslation();
+  const location = useLocation();
+
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-  const [formData, setFormData] = React.useState({});
-  const [getQualificationAll, setgetQualificationAll] = React.useState();
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [filter, setFilter] = React.useState({});
 
-  const [service, setService] = React.useState();
-  const [adminlimit, setadminLimit] = React.useState();
-  const [adminpage, setadminPage] = React.useState(1);
-  const [admindata, setadminData] = React.useState();
-  const [totalCount, settotalCount] = React.useState();
-  const [adminStatus, setadminStatus] = React.useState();
-  const [adminSearchValue, setadminSearchValue] = React.useState();
+  const [loading, setLoading] = React.useState(true);
+  const [facilitaorStatus, setfacilitaorStatus] = React.useState();
 
-  let finalData;
+  const [data, setData] = React.useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [enumOptions, setEnumOptions] = React.useState({});
+
+  // facilitator pagination
+  const [getQualificationAll, setgetQualificationAll] = React.useState();
+
+  const urlData = () => {
+    return location.search
+      .slice(1)
+      .split("&")
+      .map((p) => p.split("="))
+      .reduce((obj, pair) => {
+        const [key, value] = pair.map(decodeURIComponent);
+        if (["district", "qualificationIds", "work_experience"].includes(key)) {
+          const newValue = value.split(",");
+          obj[key] = newValue;
+        } else {
+          obj[key] = value;
+        }
+        return obj;
+      }, {});
+  };
 
   React.useEffect(async () => {
     const getQualification =
@@ -58,11 +67,38 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
 
+  React.useEffect(async () => {
+    const result = await enumRegistryService.statuswiseCount();
+    setfacilitaorStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, []);
+
+  React.useEffect(async () => {
+    setLoading(true);
+    const result = await facilitatorRegistryService.filter(filter);
+    setData(result.data?.data);
+    setPaginationTotalRows(
+      result?.data?.totalCount ? result?.data?.totalCount : 0
+    );
+    setLoading(false);
+  }, [filter]);
+
+  const setFilterObject = (data) => {
+    setFilter(data);
+    setQueryParameters(data);
+  };
+
+  useEffect(() => {
+    setFilter(urlData());
+  }, []);
+
   const schema = {
     type: "object",
     properties: {
-      DISTRICT: {
+      district: {
         type: "array",
+        title: "DISTRICT",
         label: "DISTRICT",
         items: {
           type: "string",
@@ -76,9 +112,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
-      QUALIFICATION: {
+      qualificationIds: {
         type: "array",
-        label: "QUALIFICATION",
+        title: "QUALIFICATION",
+        grid: 1,
         items: {
           type: "string",
           enumNames: getQualificationAll?.map((item, i) => {
@@ -90,7 +127,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
-      WORK_EXPERIENCE: {
+      work_experience: {
         type: "array",
         title: "WORK  EXPERIENCE",
         items: {
@@ -112,51 +149,35 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   };
 
   const uiSchema = {
-    DISTRICT: {
+    district: {
       "ui:widget": "checkboxes",
       "ui:options": {},
     },
-    QUALIFICATION: {
-      "ui:widget": "checkboxes",
+    qualificationIds: {
+      "ui:widget": MultiCheck,
       "ui:options": {},
     },
-    WORK_EXPERIENCE: {
+    work_experience: {
       "ui:widget": CustomRadio,
     },
   };
 
-  const onChange = async (formData) => {
-    const _formData = formData?.formData;
-    let searchValue = adminSearchValue;
-    const result = await facilitatorRegistryService.filter(
-      _formData,
-      adminpage,
-      adminlimit,
-      adminStatus,
-      searchValue
-    );
-    setadminData(result?.data?.data);
-    settotalCount(result?.data?.totalCount);
-    setFormData(_formData);
+  const onChange = async (data) => {
+    const { district, qualificationIds, work_experience } = data?.formData;
+    setFilterObject({
+      ...filter,
+      ...(district ? { district } : {}),
+      ...(qualificationIds ? { qualificationIds } : {}),
+      ...(work_experience ? { work_experience } : {}),
+    });
   };
 
   const clearFilter = () => {
-    setadminData("");
-    setFormData("");
+    setFilter({});
+    setFilterObject({});
   };
 
-  function CustomFieldTemplate(props) {
-    const {
-      id,
-      classNames,
-      style,
-      label,
-      help,
-      required,
-      description,
-      errors,
-      children,
-    } = props;
+  function CustomFieldTemplate({ id, classNames, label, required, children }) {
     return (
       <VStack
         className={classNames}
@@ -185,7 +206,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   }
 
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+      loading={loading}
+    >
       <HStack>
         <Box
           width="18%"
@@ -198,23 +223,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             }
           >
             <VStack space={8} py="5">
-              {/* <HStack alignItems="center" space={1} width="200px" height="24px">
-                <IconByName isDisabled name="SortDescIcon" />
-                <Text>{t("SORT_BY")}</Text>
-              </HStack> */}
-              {/* <Select
-                minWidth="20"
-                placeholder="Recent"
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) => setService(itemValue)}
-              >
-                <Select.Item label="abc" value="ux" /> 
-              </Select>*/}
-
               <VStack space={3}>
                 <HStack alignItems="center" justifyContent="space-between">
                   <HStack>
@@ -232,7 +240,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   uiSchema={uiSchema}
                   onChange={onChange}
                   validator={validator}
-                  formData={formData}
+                  formData={filter}
+                  // widget={{ MultiCheck }}
                   templates={{
                     FieldTemplate: CustomFieldTemplate,
                   }}
@@ -249,16 +258,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         >
           <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
             <Table
-              formData={formData}
-              admindata={admindata}
-              totalCount={totalCount}
-              setadminLimit={setadminLimit}
-              setadminPage={setadminPage}
-              setadminStatus={setadminStatus}
-              adminStatus={adminStatus}
-              setadminSearchValue={setadminSearchValue}
-              adminSearchValue={adminSearchValue}
+              filter={filter}
+              setFilter={setFilterObject}
               facilitator={userTokenInfo?.authUser}
+              facilitaorStatus={facilitaorStatus}
+              paginationTotalRows={paginationTotalRows}
+              data={data}
+              loading={loading}
+              enumOptions={enumOptions}
             />
           </Box>
         </ScrollView>
