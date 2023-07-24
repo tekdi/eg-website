@@ -2,7 +2,7 @@ name: Deploy to DEV2
 on: 
   push: 
     branches:
-      - agmobi
+      - release-1.0.1
 jobs:
   build:
     name: Build Deploy To DEV2 
