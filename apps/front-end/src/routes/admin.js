@@ -1,17 +1,24 @@
-import Dashboard from "pages/front-end/Dashboard";
-import Profile from "pages/admin/facilitator/Profile";
-import FacilitatorView from "pages/admin/facilitator/View";
-import AdminHome from "pages/admin/AdminHome";
-import FacilitatorForm from "../pages/admin/FacilitatorForm";
-import NotFound from "pages/NotFound";
-import Orientation from "pages/front-end/orientation/Orientation";
-import Attendence from "pages/front-end/Attendence/Attendence";
+import React from "react";
 
-import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
-import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
-import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
-import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
-// import { CheatSheet } from "@shiksha/common-lib";
+const FacilitatorView = React.lazy(() =>
+  import("pages/admin/facilitator/View")
+);
+const AdminHome = React.lazy(() => import("pages/admin/AdminHome"));
+const FacilitatorForm = React.lazy(() =>
+  import("../pages/admin/FacilitatorForm")
+);
+const NotFound = React.lazy(() => import("pages/NotFound"));
+const Orientation = React.lazy(() =>
+  import("pages/front-end/orientation/Orientation")
+);
+const Attendence = React.lazy(() =>
+  import("pages/front-end/Attendence/Attendence")
+);
+const AdharKyc = React.lazy(() =>
+  import("pages/front-end/AadhaarKyc/AadhaarKyc")
+);
+
+const Profile = React.lazy(() => import("pages/admin/facilitator/Profile"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -33,6 +40,4 @@ export default [
   { path: "/", component: Orientation },
 
   { path: "*", component: NotFound },
-
-  // { path: "/cheatsheet", component: CheatSheet },
 ];
