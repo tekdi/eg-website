@@ -274,11 +274,17 @@ export default function Attendence({ footerLinks }) {
       selector: (row, index) => (
         <Chip
           bg={
-            row?.user?.aadhar_verified !== null
+            row?.user?.aadhar_verified !== null &&
+            row?.user?.aadhar_verified !== "pending"
               ? "potentialColor"
               : "dangerColor"
           }
-          label={row?.user?.aadhar_verified !== null ? t("YES") : t("NO")}
+          label={
+            row?.user?.aadhar_verified !== null &&
+            row?.user?.aadhar_verified !== "pending"
+              ? t("YES")
+              : t("NO")
+          }
           rounded={"sm"}
         />
       ),
@@ -895,7 +901,8 @@ export default function Attendence({ footerLinks }) {
                             {t("COMPLETE_AADHAR_KYC")}
                           </AdminTypo.H6>
                           <HStack alignItems="center" space={"2"} p="1">
-                            {formData?.user?.aadhar_verified !== null ? (
+                            {formData?.user?.aadhar_verified !== null &&
+                            formData?.user?.aadhar_verified !== "pending" ? (
                               <AdminTypo.H3 style={{ color: "green" }}>
                                 {t("YES")} (
                                 {formData?.user?.aadhaar_verification_mode !==
