@@ -9,17 +9,13 @@ import {
   facilitatorRegistryService,
   t,
 } from "@shiksha/common-lib";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-// import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 function Home({ userTokenInfo, pageInfo }) {
-  // const { t } = useTranslation();
-  const location = useLocation();
   const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
   const [ip, setIp] = React.useState({});
   const { id } = useParams();
-  const navigate = useNavigate();
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -44,30 +40,27 @@ function Home({ userTokenInfo, pageInfo }) {
       }
     }
   }, []);
-  return (
-    <>
-      {page == "login" ? (
-        <Loading
-          customComponent={
-            <FrontEndTypo.H1>{t("INVALID_INVITATION_URL")}</FrontEndTypo.H1>
-          }
-        />
-      ) : page === "success" ? (
-        <Success {...{ facilitator }} />
-      ) : page === "SplashScreen" ? (
-        <SplashScreen
-          page={page}
-          onClick={() => setPage("Form")}
-          onClickPrerakDuties={() => setPage("Prerak_Duties")}
-          onPreferedLanguage={() => setPage("Prerak_Duties")}
-          isBackButton={pageInfo ? pageInfo : ""}
-        />
-      ) : page === "Prerak_Duties" ? (
-        <PrerakDuties page={page} onClick={() => setPage("Form")} />
-      ) : (
-        <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
-      )}
-    </>
+
+  return page == "login" ? (
+    <Loading
+      customComponent={
+        <FrontEndTypo.H1>{t("INVALID_INVITATION_URL")}</FrontEndTypo.H1>
+      }
+    />
+  ) : page === "success" ? (
+    <Success {...{ facilitator }} />
+  ) : page === "SplashScreen" ? (
+    <SplashScreen
+      page={page}
+      onClick={() => setPage("Form")}
+      onClickPrerakDuties={() => setPage("Prerak_Duties")}
+      onPreferedLanguage={() => setPage("Prerak_Duties")}
+      isBackButton={pageInfo ? pageInfo : ""}
+    />
+  ) : page === "Prerak_Duties" ? (
+    <PrerakDuties page={page} onClick={() => setPage("Form")} />
+  ) : (
+    <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
   );
 }
 export default Home;
