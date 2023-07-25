@@ -80,7 +80,11 @@ export default function BenificiaryEnrollment() {
           </HStack>
           <Box>
             {benificiary?.program_beneficiaries?.enrollment_status ===
-            "not_enrolled" ? (
+              "not_enrolled" ||
+            benificiary?.program_beneficiaries?.enrollment_status ===
+              "applied_but_pending" ||
+            benificiary?.program_beneficiaries?.enrollment_status ===
+              "enrollment_rejected" ? (
               <Progress value={100} size="xs" colorScheme="info" />
             ) : (
               <Progress
