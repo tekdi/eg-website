@@ -7,10 +7,13 @@ import {
   FrontEndTypo,
   Loading,
   facilitatorRegistryService,
+  t,
 } from "@shiksha/common-lib";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+// import { useTranslation } from "react-i18next";
 
 function Home({ userTokenInfo, pageInfo }) {
+  // const { t } = useTranslation();
   const location = useLocation();
   const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
@@ -46,9 +49,7 @@ function Home({ userTokenInfo, pageInfo }) {
       {page == "login" ? (
         <Loading
           customComponent={
-            <FrontEndTypo.H3>
-              Invalid url, Please Ask your IP to resend the invitation link
-            </FrontEndTypo.H3>
+            <FrontEndTypo.H1>{t("INVALID_INVITATION_URL")}</FrontEndTypo.H1>
           }
         />
       ) : page === "success" ? (
