@@ -280,8 +280,9 @@ export default function Attendence({ footerLinks }) {
               : "dangerColor"
           }
           label={
-            row?.user?.aadhar_verified !== null &&
-            row?.user?.aadhar_verified !== "pending"
+            row?.user?.aadhar_verified === "pending"
+              ? t("AADHAR_KYC_PENDING")
+              : row?.user?.aadhar_verified !== null
               ? t("YES")
               : t("NO")
           }
@@ -914,7 +915,9 @@ export default function Attendence({ footerLinks }) {
                             ) : (
                               <HStack space="3">
                                 <AdminTypo.H5 style={{ color: "red" }}>
-                                  {t("NO")}
+                                  {formData?.user?.aadhar_verified === "pending"
+                                    ? t("AADHAR_KYC_PENDING")
+                                    : t("NO")}
                                 </AdminTypo.H5>
                                 <FrontEndTypo.Secondarysmallbutton
                                   background="red.300"
