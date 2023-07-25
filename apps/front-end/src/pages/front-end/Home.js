@@ -45,7 +45,11 @@ function Home({ userTokenInfo, pageInfo }) {
     <>
       {page == "login" ? (
         <Loading
-          customComponent={<FrontEndTypo.H3>Invalid URL</FrontEndTypo.H3>}
+          customComponent={
+            <FrontEndTypo.H3>
+              Invalid url, Please Ask your IP to resend the invitation link
+            </FrontEndTypo.H3>
+          }
         />
       ) : page === "success" ? (
         <Success {...{ facilitator }} />
