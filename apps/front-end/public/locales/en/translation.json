@@ -18,6 +18,7 @@
   "AADHAR_CARD": "Aadhaar Card",
   "AADHAR_KYC_VERIFICATION_FAILED": "Aadhaar KYC Verification Failed",
   "AADHAR_KYC_PENDING":"KYC Pending",
+  "AADHAR_KYC_IN_PROGRESS":"Aadhar KYC in Progress",
   "AADHAR_NUMBER_KYC": "Aadhar Number KYC",
   "AADHAR_UPLOAD_CLEAR": "Clear and upload new one",
   "AADHAR_UPLOAD_KYC": "Aadhaar upload KYC",

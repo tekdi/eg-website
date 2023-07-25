@@ -280,7 +280,9 @@ export default function Attendence({ footerLinks }) {
               : "dangerColor"
           }
           label={
-            row?.user?.aadhar_verified === "pending"
+            row?.user?.aadhar_verified === "in_progress"
+              ? t("AADHAR_KYC_IN_PROGRESS")
+              : row?.user?.aadhar_verified === "pending"
               ? t("AADHAR_KYC_PENDING")
               : row?.user?.aadhar_verified !== null
               ? t("YES")
@@ -903,7 +905,9 @@ export default function Attendence({ footerLinks }) {
                           </AdminTypo.H6>
                           <HStack alignItems="center" space={"2"} p="1">
                             {formData?.user?.aadhar_verified !== null &&
-                            formData?.user?.aadhar_verified !== "pending" ? (
+                            formData?.user?.aadhar_verified !== "pending" &&
+                            formData?.user?.aadhar_verified !==
+                              "in_progress" ? (
                               <AdminTypo.H3 style={{ color: "green" }}>
                                 {t("YES")} (
                                 {formData?.user?.aadhaar_verification_mode !==
@@ -915,7 +919,11 @@ export default function Attendence({ footerLinks }) {
                             ) : (
                               <HStack space="3">
                                 <AdminTypo.H5 style={{ color: "red" }}>
-                                  {formData?.user?.aadhar_verified === "pending"
+                                  {formData?.user?.aadhar_verified ===
+                                  "in_progress"
+                                    ? t("AADHAR_KYC_IN_PROGRESS")
+                                    : formData?.user?.aadhar_verified ===
+                                      "pending"
                                     ? t("AADHAR_KYC_PENDING")
                                     : t("NO")}
                                 </AdminTypo.H5>
