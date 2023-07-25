@@ -12,6 +12,7 @@ import {
   enumRegistryService,
   getOptions,
   validation,
+  sendAndVerifyOtp,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -38,6 +39,9 @@ export default function App({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [qualifications, setQualifications] = React.useState([]);
   const [enumObj, setEnumObj] = React.useState();
+  const [verifyOtpData, setverifyOtpData] = React.useState();
+  const [otpButton, setOtpButton] = React.useState(false);
+  const [mobileConditon, setMobileConditon] = React.useState(false);
 
   React.useEffect(() => {
     const getData = async () => {
@@ -128,13 +132,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         } else {
           navigate("/facilitatorbasicdetail");
         }
-        // if (nextIndex === "work_availability_details") {
-        //   navigate(`/profile/edit/array-form/experience`);
-        // } else if (nextIndex !== undefined) {
-        //   navigate(`/profile/edit/${nextIndex}`);
-        // } else {
-        //   navigate(`/facilitatorbasicdetail`);
-        // }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else if (nextIndex === "aadhaar_details") {
@@ -294,6 +291,55 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
+  };
+
+  const otpfunction = async () => {
+    if (formData?.mobile.length < 10) {
+      const newErrors = {
+        mobile: {
+          __errors: t("MINIMUM_LENGTH_IS_10"),
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
+      const newErrors = {
+        mobile: {
+          __errors: t("PLEASE_ENTER_VALID_NUMBER"),
+        },
+      };
+      setErrors(newErrors);
+    }
+
+    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+      ...formData,
+      hash: localStorage.getItem("hash"),
+    });
+
+    setverifyOtpData(otpData);
+    if (status === true) {
+      if (errors) {
+        const newErrors = {
+          mobile: {
+            __errors: t("MOBILE_NUMBER_ALREADY_EXISTS"),
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        onClickSubmit(false);
+      }
+    } else if (status === false) {
+      const newErrors = {
+        otp: {
+          __errors: [t("USER_ENTER_VALID_OTP")],
+        },
+      };
+      setErrors(newErrors);
+    } else {
+      setSchema(newSchema);
+      setOtpButton(true);
+    }
   };
 
   const formSubmitUpdate = async (data, overide) => {
@@ -524,6 +570,19 @@ export default function App({ userTokenInfo, footerLinks }) {
             },
           };
           setErrors(newErrors);
+          setMobileConditon(false);
+        } else {
+          setMobileConditon(true);
+        }
+        if (schema?.properties?.otp) {
+          const { otp, ...properties } = schema?.properties;
+          const required = schema?.required.filter((item) => item !== "otp");
+          setSchema({ ...schema, properties, required });
+          setFormData((e) => {
+            const { otp, ...fData } = e;
+            return fData;
+          });
+          setOtpButton(false);
         }
       }
     }
@@ -533,6 +592,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         const newErrors = {
           contact_number: {
             __errors: [t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+      if (userTokenInfo?.authUser?.mobile === data?.contact_number) {
+        const newErrors = {
+          contact_number: {
+            __errors: [t("REFERENCE_NUMBER_SHOULD_NOT_BE_SAME")],
           },
         };
         setErrors(newErrors);
@@ -651,25 +718,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
       };
     }
-
-    // if (schema?.properties?.last_name && newFormData?.last_name) {
-    //   newFormData = {
-    //     ...newFormData,
-    //     ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-    //   };
-    // }
     if (_.isEmpty(errors)) {
-      // if (["reference_details"].includes(step)) {
-      //   const result = await Promise.all(
-      //     newFormData.reference.map((item) => {
-      //       const newdata = filterObject(
-      //         item,
-      //         Object.keys(schema?.properties?.reference?.items?.properties)
-      //       );
-      //       return formSubmitUpdate(newdata);
-      //     })
-      //   );
-      // } else {
       const newdata = filterObject(
         newFormData,
         Object.keys(schema?.properties)
@@ -749,23 +798,36 @@ export default function App({ userTokenInfo, footerLinks }) {
               transformErrors,
             }}
           >
-            <FrontEndTypo.Primarybutton
-              isLoading={loading}
-              p="4"
-              mt="4"
-              onPress={() => onClickSubmit(false)}
-            >
-              {t("SAVE_AND_NEXT")}
-            </FrontEndTypo.Primarybutton>
+            {mobileConditon && step === "contact_details" ? (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={otpfunction}
+              >
+                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+              </FrontEndTypo.Primarybutton>
+            ) : (
+              <Box>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("SAVE_AND_NEXT")}
+                </FrontEndTypo.Primarybutton>
 
-            <FrontEndTypo.Secondarybutton
-              isLoading={loading}
-              p="4"
-              mt="4"
-              onPress={() => onClickSubmit(true)}
-            >
-              {t("SAVE_AND_PROFILE")}
-            </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("SAVE_AND_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
+            )}
           </Form>
         )}
       </Box>

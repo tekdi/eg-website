@@ -75,7 +75,9 @@ export default function FacilitatorBasicDetails({
             <HStack alignItems="Center">
               <IconByName name="Cake2LineIcon" color="iconColor.300" />
               <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                {moment(facilitator?.dob).format("DD/MM/YYYY")
+                {facilitator &&
+                facilitator.dob &&
+                moment(facilitator.dob, "YYYY-MM-DD", true).isValid()
                   ? moment(facilitator?.dob).format("DD/MM/YYYY")
                   : "-"}
               </FrontEndTypo.H3>
@@ -109,9 +111,9 @@ export default function FacilitatorBasicDetails({
               <Box paddingTop="2">
                 <Progress
                   value={arrList(facilitator, [
-                    "email_id",
+                    "device_ownership",
                     "mobile",
-                    "alternative_mobile_number",
+                    "device_type",
                   ])}
                   size="xs"
                   colorScheme="info"
@@ -411,7 +413,7 @@ export default function FacilitatorBasicDetails({
                   <Progress
                     value={arrList(facilitator?.references, [
                       "name",
-                      "designation",
+
                       "contact_number",
                     ])}
                     size="xs"

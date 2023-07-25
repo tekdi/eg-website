@@ -341,7 +341,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -609,7 +609,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
-    console.log("sad");
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -926,7 +925,6 @@ export default function App({ facilitator, ip, onClick }) {
                 variant={"primary"}
                 type="submit"
                 onPress={(e) => {
-                  console.log(formRef?.current);
                   formRef?.current?.submit();
                 }}
               >
@@ -939,7 +937,6 @@ export default function App({ facilitator, ip, onClick }) {
                 p="4"
                 mt="10"
                 onPress={(e) => {
-                  console.log(formRef?.current);
                   formRef?.current?.submit();
                 }}
               >

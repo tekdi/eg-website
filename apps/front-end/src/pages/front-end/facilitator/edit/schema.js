@@ -215,7 +215,7 @@ export default {
       properties: {
         aadhar_no: {
           title: "AADHAAR_NUMBER",
-          type: "number",
+          type: ["string", "number"],
           format: "Aadhaar",
         },
       },

@@ -2,29 +2,12 @@ import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-  Checkbox,
-  Pressable,
-  Text,
-  FormControl,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+
 import {
   facilitatorRegistryService,
   Layout,
   H1,
-  t,
   login,
   H3,
   IconByName,
@@ -35,37 +18,28 @@ import {
   AgRegistryService,
   benificiaryRegistoryService,
   ImageView,
+  dateOfBirth,
   enrollmentDateOfBirth,
   FrontEndTypo,
   getOptions,
+  debounce,
 } from "@shiksha/common-lib";
 
 //updateSchemaEnum
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  select,
-  widgets,
-  templates,
-} from "../../../../component/BaseInput.js";
+import { widgets, templates } from "../../../../component/BaseInput.js";
 import { useScreenshot } from "use-screenshot-hook";
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ facilitator, id, ip, onClick }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
@@ -78,6 +52,11 @@ export default function App({ facilitator, id, ip, onClick }) {
   const [uploadPayment, setUploadPayment] = React.useState(true);
   const [source, setSource] = React.useState();
   const [benificiary, setBenificiary] = React.useState();
+  const [notMatched, setNotMatched] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
   const buttonStyle = {
     borderWidth: "2px",
     borderStyle: "dotted",
@@ -85,10 +64,16 @@ export default function App({ facilitator, id, ip, onClick }) {
     borderColor: "gray",
   };
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const { form_step_number } = facilitator;
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
+
+  const enrollmentNumberExist = async (filters) => {
+    return await benificiaryRegistoryService.isExistEnrollment(id, filters);
+  };
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/enrollmentdetails`);
@@ -348,9 +333,33 @@ export default function App({ facilitator, id, ip, onClick }) {
     });
   };
 
+  const clearForm = async () => {
+    navigate(`/beneficiary/profile/${id}`);
+  };
+
   const onChange = async (e, id) => {
     setErrors();
     const data = e.formData;
+    if (id === "root_enrollment_number") {
+      if (data?.enrollment_number) {
+        const debouncedFunction = debounce(async () => {
+          const result = await enrollmentNumberExist({
+            enrollment_number: data?.enrollment_number,
+          });
+          if (result.error) {
+            setNotMatched(true);
+            const newErrors = {
+              enrollment_number: {
+                __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          }
+        }, 3000);
+
+        debouncedFunction();
+      }
+    }
     if (moment.utc(data?.enrollment_date) > moment.utc()) {
       const newErrors = {
         enrollment_date: {
@@ -569,6 +578,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       for (let key in item) {
         form_data.append(key, item[key]);
       }
+      setLoading(true);
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       const id = uploadDoc?.data?.insert_documents?.returning[0]?.id;
       setFormData({ ...formData, ["payment_receipt_document_id"]: id });
@@ -576,6 +586,7 @@ export default function App({ facilitator, id, ip, onClick }) {
       setSource({
         document_id: uploadDoc?.data?.insert_documents?.returning?.[0].id,
       });
+      setLoading(false);
     } else {
       const newErrors = {};
       newErrors.payment_receipt_document_id = {
@@ -602,11 +613,13 @@ export default function App({ facilitator, id, ip, onClick }) {
         // );
 
         formRef?.current?.validate();
-        navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
-          state: {
-            formData,
-          },
-        });
+        if (!errors) {
+          navigate(`/beneficiary/edit/${userId}/enrollment-receipt`, {
+            state: {
+              formData,
+            },
+          });
+        }
       } else {
         validation();
       }
@@ -725,6 +738,7 @@ export default function App({ facilitator, id, ip, onClick }) {
                     </VStack>
                     <Button
                       variant={"secondary"}
+                      isLoading={loading}
                       leftIcon={
                         <IconByName name="Upload2FillIcon" isDisabled />
                       }
@@ -764,6 +778,7 @@ export default function App({ facilitator, id, ip, onClick }) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
+              isLoading={loading}
               onPress={() => {
                 editSubmit();
               }}
@@ -775,6 +790,59 @@ export default function App({ facilitator, id, ip, onClick }) {
           <React.Fragment />
         )}
       </Box>
+
+      <Modal
+        isOpen={notMatched}
+        size="lg"
+        safeAreaTop={true}
+        _backdrop={{ opacity: "0.7" }}
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+      >
+        <Modal.Content>
+          <Modal.Body p="2" bg="white">
+            <FrontEndTypo.H3
+              textAlign="center"
+              pt="2"
+              color="textGreyColor.500"
+            >
+              {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
+            </FrontEndTypo.H3>
+
+            <VStack space={5}>
+              <HStack
+                alignItems="center"
+                space={4}
+                mt="5"
+                pt="4"
+                borderTopWidth="1px"
+                bg="white"
+                borderTopColor="appliedColor"
+                justifyContent="center"
+                flexWrap="wrap"
+              >
+                <FrontEndTypo.Secondarybutton
+                  shadow="BlueFillShadow"
+                  px="2"
+                  onPress={() => {
+                    setNotMatched(false);
+                  }}
+                >
+                  {t("EDIT_ENROLLMENT_NUMBER")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton
+                  px="2"
+                  shadow="BlueFillShadow"
+                  onPress={() => clearForm()}
+                >
+                  {t("HOME_PAGE")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+
       <Modal
         isOpen={credentials}
         onClose={() => setCredentials(false)}

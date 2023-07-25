@@ -44,38 +44,39 @@ export default function BenificiaryJourney() {
 
   const getAuditData = async () => {
     const result = await benificiaryRegistoryService.getAuditLogs(contextId);
-    const uniqueDates = result.reduce(
-      (acc, item) => {
-        const parsedDate = moment(item?.created_at);
-        const date = parsedDate.format("DD");
-        const month = parsedDate.format("MMMM");
-        const year = parsedDate.format("YYYY");
-        setauditLogs((prevState) => [
-          ...prevState,
-          {
-            status: JSON.parse(item?.new_data),
-            first_name: item?.user?.first_name,
-            middle_name: item?.user?.middle_name,
-            last_name: item.user?.last_name,
-            date: date,
-          },
-        ]);
+    if (result && result.length > 0) {
+      const uniqueDates = result.reduce(
+        (acc, item) => {
+          const parsedDate = moment(item?.created_at);
+          const date = parsedDate.format("DD");
+          const month = parsedDate.format("MMMM");
+          const year = parsedDate.format("YYYY");
+          setauditLogs((prevState) => [
+            ...prevState,
+            {
+              status: JSON.parse(item?.new_data),
+              first_name: item?.user?.first_name,
+              middle_name: item?.user?.middle_name,
+              last_name: item.user?.last_name,
+              date: date,
+            },
+          ]);
 
-        if (!acc.months.includes(month)) {
-          acc.months.push(month);
-        }
+          if (!acc.months.includes(month)) {
+            acc.months.push(month);
+          }
 
-        if (!acc.years.includes(year)) {
-          acc.years.push(year);
-        }
+          if (!acc.years.includes(year)) {
+            acc.years.push(year);
+          }
 
-        return acc;
-      },
-      { dates: [], months: [], years: [] }
-    );
-
-    setauditMonth(uniqueDates.months);
-    setauditYear(uniqueDates.years);
+          return acc;
+        },
+        { dates: [], months: [], years: [] }
+      );
+      setauditMonth(uniqueDates.months);
+      setauditYear(uniqueDates.years);
+    }
   };
 
   React.useEffect(() => {
@@ -119,10 +120,10 @@ export default function BenificiaryJourney() {
       </HStack>
       <HStack mt={5} left={"30px"} width={"80%"}>
         <VStack width={"100%"}>
-          {auditYear.map((item) => {
+          {auditYear.map((item, i) => {
             return (
-              <>
-                <HStack alignItems={"center"}>
+              <React.Fragment>
+                <HStack key={i} alignItems={"center"}>
                   <Text width={"50px"}>{JSON.parse(item)}</Text>
                   <HStack
                     height="50px"
@@ -132,10 +133,10 @@ export default function BenificiaryJourney() {
                     alignItems="center"
                   ></HStack>
                 </HStack>
-                {auditMonth.map((month) => {
+                {auditMonth.map((month, i) => {
                   return (
-                    <>
-                      <HStack alignItems={"center"}>
+                    <React.Fragment>
+                      <HStack key={i} alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
                           height="25px"
@@ -145,10 +146,10 @@ export default function BenificiaryJourney() {
                           alignItems="center"
                         ></HStack>
                       </HStack>
-                      {auditLogs.map((logs) => {
+                      {auditLogs.map((logs, i) => {
                         return (
-                          <>
-                            <HStack alignItems={"center"}>
+                          <React.Fragment>
+                            <HStack key={i} alignItems={"center"}>
                               <Text width={"50px"}>{logs?.date}</Text>;
                               <FrontEndTypo.Timeline
                                 status={logs?.status?.status}
@@ -164,19 +165,20 @@ export default function BenificiaryJourney() {
                                   enumApiData={enumOptions}
                                 />
                                 <FrontEndTypo.H4>
+                                  <Text>By &nbsp;</Text>
                                   {logs?.first_name}&nbsp;
                                   {logs?.middle_name && logs?.middle_name}&nbsp;
                                   {logs?.last_name && logs?.last_name}
                                 </FrontEndTypo.H4>
                               </FrontEndTypo.Timeline>
                             </HStack>
-                          </>
+                          </React.Fragment>
                         );
                       })}
-                    </>
+                    </React.Fragment>
                   );
                 })}
-              </>
+              </React.Fragment>
             );
           })}
         </VStack>

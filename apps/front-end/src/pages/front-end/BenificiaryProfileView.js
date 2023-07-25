@@ -25,6 +25,8 @@ import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 
 import { ChipStatus } from "component/BeneficiaryStatus";
+import { arrList } from "@shiksha/common-lib";
+import { objProps } from "@shiksha/common-lib";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -44,7 +46,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
-  const [prevStatus, setprevStatus] = React.useState();
+  // const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -58,6 +60,8 @@ export default function BenificiaryProfileView(props) {
       setAlert();
     }
   }, [benificiary]);
+
+  const res = objProps(benificiary);
 
   const enumAPicall = async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -73,11 +77,11 @@ export default function BenificiaryProfileView(props) {
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
-    const contextId = result?.result?.program_beneficiaries?.id;
-    const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
-    if (auditLogs[0]) {
-      setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
-    }
+    // const contextId = result?.result?.program_beneficiaries?.id;
+    // const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
+    // if (auditLogs[0]) {
+    //   setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
+    // }
   };
 
   const dropoutApiCall = async () => {
@@ -98,7 +102,7 @@ export default function BenificiaryProfileView(props) {
   const reactivateApiCall = async () => {
     let bodyData = {
       user_id: benificiary?.id?.toString(),
-      status: prevStatus,
+      status: "identified",
       reason_for_status_update: reactivateReasonValue,
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
@@ -258,7 +262,44 @@ export default function BenificiaryProfileView(props) {
                 {t("PROFILE_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      ...(res?.references?.[0] ? res?.references?.[0] : {}),
+                    },
+                    [
+                      "email_id",
+                      "mobile",
+                      "alternative_mobile_number",
+                      "device_type",
+                      "device_ownership",
+                      "mark_as_whatsapp_number",
+                      "father_first_name",
+                      "father_middle_name",
+                      "father_last_name",
+                      "mother_first_name",
+                      "mother_middle_name",
+                      "mother_last_name",
+                      "social_category",
+                      "marital_status",
+                      "first_name",
+                      "middle_name",
+                      "last_name",
+                      "relation",
+                      "contact_number",
+                      "district",
+                      "state",
+                      "block",
+                      "village",
+                      "aadhar_no",
+                      "aadhaar_verification_mode",
+                      "aadhar_verified",
+                    ]
+                  )}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
@@ -299,7 +340,7 @@ export default function BenificiaryProfileView(props) {
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
-                          navigate(`/beneficiary/${id}/address`);
+                          navigate(`/beneficiary/edit/${id}/address`);
                         }}
                         color="textMaroonColor.400"
                       />
@@ -541,55 +582,59 @@ export default function BenificiaryProfileView(props) {
         isOpen={isOpenReactive}
         onClose={(e) => setIsOpenReactive(false)}
       >
-        <Actionsheet.Content>
-          <VStack alignItems="end" width="100%">
-            <IconByName
-              name="CloseCircleLineIcon"
-              onPress={(e) => setIsOpenReactive(false)}
-            />
-          </VStack>
-          <FrontEndTypo.H1 bold color="textGreyColor.450">
-            {t("AG_PROFILE_ARE_YOU_SURE")}
-          </FrontEndTypo.H1>
-          <FrontEndTypo.H2 color="textGreyColor.450">
-            {t("AG_PROFILE_REACTIVAYE_MESSAGE")}{" "}
-          </FrontEndTypo.H2>
-          <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
-            {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}{" "}
-          </FrontEndTypo.H2>
-          <VStack space="5">
-            <VStack space="2" p="1" rounded="lg">
-              <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
-                <React.Suspense fallback={<HStack>Loading...</HStack>}>
-                  <CustomRadio
-                    options={{
-                      enumOptions: benificiaryReactivateReasons?.map((e) => ({
-                        ...e,
-                        label: e?.title,
-                        value: e?.value,
-                      })),
-                    }}
-                    schema={{ grid: 2 }}
-                    value={reactivateReasonValue}
-                    onChange={(e) => {
-                      setReactivateReasonValue(e);
-                    }}
-                  />
-                </React.Suspense>
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenReactive(false)}
+              />
+            </VStack>
+            <FrontEndTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textGreyColor.450">
+              {t("AG_PROFILE_REACTIVAYE_MESSAGE")}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H2 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}
+            </FrontEndTypo.H2>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg">
+                <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryReactivateReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reactivateReasonValue}
+                      onChange={(e) => {
+                        setReactivateReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+              <VStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={() => {
+                    reactivateApiCall();
+                  }}
+                >
+                  {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+                </FrontEndTypo.Primarybutton>
               </VStack>
             </VStack>
-            <VStack space="3">
-              <FrontEndTypo.Primarybutton
-                flex={1}
-                onPress={() => {
-                  reactivateApiCall();
-                }}
-              >
-                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          </VStack>
-        </Actionsheet.Content>
+          </ScrollView>
+        </Stack>
       </Actionsheet>
 
       {/* Reject Action  Sheet */}

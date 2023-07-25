@@ -26,6 +26,11 @@ export default function BenificiaryAadhaarDetails() {
   });
 
   const navigate = useNavigate();
+
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/profile/${id}`);
+  };
+
   const aadhar_verified = benificiary?.aadhar_verified;
   React.useEffect(() => {
     agDetails();
@@ -41,6 +46,7 @@ export default function BenificiaryAadhaarDetails() {
       _appBar={{
         exceptIconsShow: ["menuBtn", "userInfo"],
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
+        onPressBackButton,
       }}
     >
       <VStack bg="bgGreyColor.200">
@@ -133,6 +139,7 @@ export default function BenificiaryAadhaarDetails() {
               </HStack>
             </VStack>
           </VStack>
+
           {(benificiary?.aadhar_verified !== "yes" ||
             benificiary?.aadhaar_verification_mode === "upload") && (
             <VStack
@@ -144,21 +151,22 @@ export default function BenificiaryAadhaarDetails() {
               bg="white"
               borderColor="appliedColor"
             >
-              {!["yes", "in_progress"].includes(
-                benificiary?.aadhar_verified
-              ) && (
-                <VStack space={"4"}>
-                  <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
-                    {t("COMPLETE_AADHAAR_VERIFICATION")}
-                  </FrontEndTypo.H2>
-                  <FrontEndTypo.Primarybutton
-                    onPress={() => {
-                      navigate(`/aadhaar-kyc/${id}/okyc2`);
-                    }}
-                  >
-                    {t("AADHAAR_NUMBER_KYC")}
-                  </FrontEndTypo.Primarybutton>
-                  {/* <FrontEndTypo.Secondarybutton
+              {!["yes", "in_progress"].includes(benificiary?.aadhar_verified) &&
+                benificiary?.aadhar_no !== "" &&
+                benificiary?.aadhar_no !== null &&
+                benificiary?.aadhar_no !== undefined && (
+                  <VStack space={"4"}>
+                    <FrontEndTypo.H2 bold color="textMaroonColor.400" py="5">
+                      {t("COMPLETE_AADHAAR_VERIFICATION")}
+                    </FrontEndTypo.H2>
+                    <FrontEndTypo.Primarybutton
+                      onPress={() => {
+                        navigate(`/aadhaar-kyc/${id}/okyc2`);
+                      }}
+                    >
+                      {t("AADHAAR_NUMBER_KYC")}
+                    </FrontEndTypo.Primarybutton>
+                    {/* <FrontEndTypo.Secondarybutton
                     my="4"
                     onPress={() => {
                       navigate(`/aadhaar-kyc/${id}/QR`);
@@ -166,18 +174,18 @@ export default function BenificiaryAadhaarDetails() {
                   >
                     {t("SCAN_QR_CODE")}
                   </FrontEndTypo.Secondarybutton> */}
-                  <FrontEndTypo.Primarybutton
-                    mt="10"
-                    onPress={() => {
-                      navigate(`/aadhaar-kyc/${id}/upload`, {
-                        state: `/beneficiary/${id}/aadhaardetails`,
-                      });
-                    }}
-                  >
-                    {t("AADHAR_UPLOAD_KYC")}
-                  </FrontEndTypo.Primarybutton>
-                </VStack>
-              )}
+                    <FrontEndTypo.Primarybutton
+                      mt="10"
+                      onPress={() => {
+                        navigate(`/aadhaar-kyc/${id}/upload`, {
+                          state: `/beneficiary/${id}/aadhaardetails`,
+                        });
+                      }}
+                    >
+                      {t("AADHAR_UPLOAD_KYC")}
+                    </FrontEndTypo.Primarybutton>
+                  </VStack>
+                )}
               {benificiary?.aadhaar_verification_mode === "upload" && (
                 <VStack space="5">
                   <FrontEndTypo.H2 bold color="textMaroonColor.400">

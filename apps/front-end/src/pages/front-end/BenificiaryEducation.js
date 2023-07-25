@@ -366,8 +366,11 @@ export default function BenificiaryEducation() {
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
                   {benificiary?.core_beneficiaries?.career_aspiration ? (
-                    <GetOptions
-                      array={benificiary?.core_beneficiaries?.career_aspiration}
+                    <GetEnumValue
+                      t={t}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries?.career_aspiration
+                      }
                       enumApiData={enumOptions}
                       enumType={"CAREER_ASPIRATION"}
                     />
