@@ -8,13 +8,19 @@ on:
        - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
 jobs:
   build:
-    name: Build Deploy To UAT
-    environment: QA
+    name: Generate Build and Deploy to UAT
+    environment: UAT
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build
+        uses: actions/checkout@v3
+        
+      - name: Setup Node Env
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.0.0
+          
+      - name: Generate React Build
         run: |
           yarn install
           yarn workspace @shiksha/common-lib build
@@ -26,7 +32,7 @@ jobs:
           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
           
-      - name: Create Lerna Bundles
+      - name: Create Lerna Bundles for Submodules
         run: |
           sh ./scripts/pack-prod-build.sh
 
@@ -36,13 +42,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: unnecessary
           
-      - name: Adding Known Hosts
+      - name: Add Entry to Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
         
-      - name: Copy build to server using rsync
+      - name: Copy Build Artifact using Rsync
         run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" eg-website.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/eg-website.tar
-   
-      - name: Deploy
+
+      - name: Unzip Artifact to Correct Locations to Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -51,3 +57,7 @@ jobs:
           script: |
             cd /home/ubuntu
             tar -xvf eg-website.tar -C /var/www/html/
+            #cp eg-website.tar /var/www/html2
+            #rm -rf *
+            #cp ../eg-website.tar ./
+            #tar -xvf eg-website.tar .
