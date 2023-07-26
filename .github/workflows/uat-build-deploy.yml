@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Generate Build and Deploy to UAT
-    environment: UAT
+    environment: QA
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

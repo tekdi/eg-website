@@ -89,7 +89,13 @@ export default function StatusButton({ data, setData }) {
         setDisabledBtn(["on_hold", "application_screened", "quit"]);
         break;
       case "shortlisted_for_orientation":
-        setDisabledBtn(["quit", "rejected", "pragati_mobilizer", "rusticate"]);
+        setDisabledBtn([
+          "quit",
+          "rejected",
+          "pragati_mobilizer",
+          "rusticate",
+          "on_hold",
+        ]);
         break;
       case "pragati_mobilizer":
         setDisabledBtn([
@@ -97,6 +103,7 @@ export default function StatusButton({ data, setData }) {
           "rejected",
           "selected_for_training",
           "rusticate",
+          "on_hold",
         ]);
         break;
       case "selected_for_training":
@@ -105,6 +112,7 @@ export default function StatusButton({ data, setData }) {
           "quit",
           "selected_for_onboarding",
           "rusticate",
+          "on_hold",
         ]);
         break;
       case "selected_for_onboarding":
