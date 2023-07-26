@@ -17,6 +17,8 @@
   "AADHAAR_VERIFICATION_SUCCESSFUL": "आधार वेरिफिकेशन  सफल",
   "AADHAR_CARD": "आधार कार्ड",
   "AADHAR_KYC_VERIFICATION_FAILED": "आधार KYC वेरिफिकेशन  विफल",
+  "AADHAR_KYC_PENDING":"KYC लंबित है",
+  "AADHAR_KYC_IN_PROGRESS":"आधार KYC प्रगति पर है",
   "AADHAR_NUMBER_KYC": "आधार संख्या KYC",
   "AADHAR_UPLOAD_CLEAR": "हटाए और नया अपलोड करे",
   "AADHAR_UPLOAD_KYC": "आधार फोटो KYC",
