@@ -309,7 +309,7 @@ export default function agFormEdit({ ip }) {
 
       if (
         key === "mother_first_name" &&
-        data?.mother_details?.mother_first_name?.replaceAll(" ", "") === ""
+        data?.mother_details?.mother_first_name?.replace(/ /g, "") === ""
       ) {
         errors?.mother_details?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`

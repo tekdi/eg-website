@@ -210,7 +210,7 @@ export default function agFormEdit({ ip }) {
     ["relation", "first_name"].forEach((key) => {
       if (
         key === "first_name" &&
-        data?.referencefullname?.first_name?.replaceAll(" ", "") === ""
+        data?.referencefullname?.first_name?.replace(/ /g, "") === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -226,7 +226,7 @@ export default function agFormEdit({ ip }) {
         );
       }
 
-      if (key === "relation" && data?.relation?.replaceAll(" ", "") === "") {
+      if (key === "relation" && data?.relation?.replace(/ /g, "") === "") {
         errors?.[`referencefullname`]?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );

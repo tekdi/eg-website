@@ -365,7 +365,7 @@ export default function App({ facilitator, ip, onClick }) {
       (key) => {
         if (
           key === "first_name" &&
-          data?.first_name?.replaceAll(" ", "") === ""
+          data?.first_name?.replace(/ /g, "") === ""
         ) {
           errors?.[key]?.addError(
             `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`

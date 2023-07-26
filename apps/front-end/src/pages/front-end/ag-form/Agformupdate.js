@@ -386,7 +386,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     ["grampanchayat"].forEach((key) => {
       if (
         (key === "grampanchayat" &&
-          data?.grampanchayat?.replaceAll(" ", "") === "") ||
+          data?.grampanchayat?.replace(/ /g, "") === "") ||
         data?.grampanchayat === null
       ) {
         errors?.[key]?.addError(
@@ -579,14 +579,14 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (schema?.properties?.first_name) {
       newFormData = {
         ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        ["first_name"]: newFormData?.first_name.replace(/ /g, ""),
       };
     }
 
     if (schema?.properties?.last_name && newFormData?.last_name) {
       newFormData = {
         ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+        ["last_name"]: newFormData?.last_name.replace(/ /g, ""),
       };
     }
 
