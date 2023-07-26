@@ -477,7 +477,7 @@ export const HFieldTemplate = ({
   );
 };
 
-const MultiCheck = ({
+export const MultiCheck = ({
   options,
   value,
   onChange,
@@ -541,7 +541,8 @@ const MultiCheck = ({
                   <input
                     checked={
                       value?.constructor?.name === "Array" &&
-                      value?.includes(item?.value)
+                      (value?.includes(item?.value) ||
+                        value?.includes(`${item?.value}`))
                     }
                     type="checkbox"
                     value={item?.value}

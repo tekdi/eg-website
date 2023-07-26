@@ -75,7 +75,9 @@ export default function FacilitatorBasicDetails({
             <HStack alignItems="Center">
               <IconByName name="Cake2LineIcon" color="iconColor.300" />
               <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                {moment(facilitator?.dob).format("DD/MM/YYYY")
+                {facilitator &&
+                facilitator.dob &&
+                moment(facilitator.dob, "YYYY-MM-DD", true).isValid()
                   ? moment(facilitator?.dob).format("DD/MM/YYYY")
                   : "-"}
               </FrontEndTypo.H3>

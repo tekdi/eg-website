@@ -35,6 +35,7 @@ import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasi
 import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
 import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
 import AadhaarDetails from "pages/front-end/facilitator/AadhaarDetails";
+import BenificiaryAddress from "pages/front-end/BenificiaryAddress";
 
 export default [
   { path: "/form", component: Home },
@@ -126,6 +127,10 @@ export default [
   {
     path: "/beneficiary/:id/aadhaardetails",
     component: BenificiaryAadhaarDetails,
+  },
+  {
+    path: "/beneficiary/:id/addressdetails",
+    component: BenificiaryAddress,
   },
   {
     path: "/beneficiary/:id/upload/:photoNo",

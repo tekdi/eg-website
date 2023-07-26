@@ -71,35 +71,56 @@ export default function BenificiaryEnrollment() {
               />
             ),
           }}
+          {...([
+            "not_enrolled",
+            "applied_but_pending",
+            "enrollment_rejected",
+          ].includes(benificiary?.program_beneficiaries?.enrollment_status)
+            ? {
+                onlyField: ["enrollment_status"],
+              }
+            : {})}
           onEdit={(e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)}
         />
-        <ItemComponent
-          title={t("ENROLLMENT_RECEIPT")}
-          step={"edit_enrollement_details"}
-          item={{
-            ...benificiary?.program_beneficiaries,
-            enrollment_status: (
-              <GetEnumValue
-                enumType="BENEFICIARY_STATUS"
-                enumOptionValue={
-                  benificiary?.program_beneficiaries?.enrollment_status
-                }
-                enumApiData={enumOptions}
-                t={t}
-              />
-            ),
-          }}
-        />
+        {![
+          "not_enrolled",
+          "applied_but_pending",
+          "enrollment_rejected",
+        ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
+          <ItemComponent
+            title={t("ENROLLMENT_RECEIPT")}
+            step={"edit_enrollement_details"}
+            item={{
+              ...benificiary?.program_beneficiaries,
+              enrollment_status: (
+                <GetEnumValue
+                  enumType="BENEFICIARY_STATUS"
+                  enumOptionValue={
+                    benificiary?.program_beneficiaries?.enrollment_status
+                  }
+                  enumApiData={enumOptions}
+                  t={t}
+                />
+              ),
+            }}
+          />
+        )}
       </VStack>
     </Layout>
   );
 }
 
-const ItemComponent = ({ title, label, item, onEdit, step, notShow }) => {
+const ItemComponent = ({ title, item, onlyField, onEdit, step, notShow }) => {
   const { t } = useTranslation();
   const schema = schema1?.properties[step];
   let arr = Object.keys(schema?.properties);
-  if (notShow?.constructor.name === "Array" && notShow?.length) {
+  if (onlyField?.constructor.name === "Array" && onlyField?.length) {
+    arr = onlyField;
+  } else if (
+    !onlyField &&
+    notShow?.constructor.name === "Array" &&
+    notShow?.length
+  ) {
     arr = arr.filter((e) => !notShow?.includes(e));
   }
   return (
@@ -143,11 +164,7 @@ const ItemComponent = ({ title, label, item, onEdit, step, notShow }) => {
               fontWeight="400"
               flex="0.3"
             >
-              {t(
-                label?.[index]
-                  ? label?.[index]
-                  : schema?.properties?.[key]?.label
-              )}
+              {t(schema?.properties?.[key]?.label)}
             </FrontEndTypo.H3>
 
             <FrontEndTypo.H3

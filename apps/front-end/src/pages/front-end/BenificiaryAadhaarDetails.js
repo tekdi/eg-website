@@ -26,6 +26,11 @@ export default function BenificiaryAadhaarDetails() {
   });
 
   const navigate = useNavigate();
+
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/profile/${id}`);
+  };
+
   const aadhar_verified = benificiary?.aadhar_verified;
   React.useEffect(() => {
     agDetails();
@@ -41,6 +46,7 @@ export default function BenificiaryAadhaarDetails() {
       _appBar={{
         exceptIconsShow: ["menuBtn", "userInfo"],
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
+        onPressBackButton,
       }}
     >
       <VStack bg="bgGreyColor.200">

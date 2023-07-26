@@ -566,6 +566,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         };
         setErrors(newErrors);
       }
+      if (userTokenInfo?.authUser?.mobile === data?.contact_number) {
+        const newErrors = {
+          contact_number: {
+            __errors: [t("REFERENCE_NUMBER_SHOULD_NOT_BE_SAME")],
+          },
+        };
+        setErrors(newErrors);
+      }
     }
     if (id === "root_name") {
       if (!data?.name?.length) {
