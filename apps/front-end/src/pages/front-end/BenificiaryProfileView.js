@@ -389,7 +389,9 @@ export default function BenificiaryProfileView(props) {
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                  benificiary?.program_beneficiaries?.status !== "rejected" &&
+                  benificiary?.program_beneficiaries
+                    ?.reason_for_status_update !== "documents_completed" && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={(e) => {
