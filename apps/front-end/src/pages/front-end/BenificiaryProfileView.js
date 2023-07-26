@@ -386,6 +386,32 @@ export default function BenificiaryProfileView(props) {
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack justifyContent="space-between" alignItems="Center">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("EDUCATION_DETAILS")}
+                </FrontEndTypo.H3>
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/educationdetails`);
+                      }}
+                      color="textMaroonColor.400"
+                    />
+                  )}
+              </HStack>
+            </VStack>
+          </Box>
+
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="btnGray.100"
+            borderRadius="10px"
+            borderWidth="1px"
+            paddingBottom="24px"
+          >
+            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+              <HStack justifyContent="space-between" alignItems="Center">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 {benificiary?.program_beneficiaries?.status !== "dropout" &&
@@ -467,31 +493,6 @@ export default function BenificiaryProfileView(props) {
               </VStack>
             </Box>
           )}
-          <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("EDUCATION_DETAILS")}
-                </FrontEndTypo.H3>
-                {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                  benificiary?.program_beneficiaries?.status !== "rejected" && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/educationdetails`);
-                      }}
-                      color="textMaroonColor.400"
-                    />
-                  )}
-              </HStack>
-            </VStack>
-          </Box>
           <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
