@@ -656,21 +656,27 @@ const templates = {
   ArrayFieldTemplate,
 };
 
-export const focusToField = (errors) => {
-  const firstError = errors?.[0];
-  if (firstError) {
-    const element = document.getElementById(`element_${firstError?.property}`);
+export const scrollToField = ({ property } = {}) => {
+  if (property) {
+    const element = document.getElementById(
+      `element_${property.replace(".", "")}`
+    );
     if (element) {
       element?.scrollIntoView();
     } else {
       const element1 = document.getElementById(
-        `root_${firstError?.property}__error`
+        `root_${property.replace(".", "")}__error`
       );
       if (element1) {
         element1?.scrollIntoView();
       }
     }
   }
+};
+
+export const focusToField = (errors) => {
+  const firstError = errors?.[0];
+  scrollToField(firstError);
 };
 
 const transformErrors = (errors, schema, t) => {

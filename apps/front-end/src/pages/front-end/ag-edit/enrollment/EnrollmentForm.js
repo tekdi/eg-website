@@ -2,31 +2,35 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Box, HStack, Modal, VStack } from "native-base";
+import { Alert, Box, HStack, Modal } from "native-base";
 import {
   Layout,
   enumRegistryService,
   benificiaryRegistoryService,
-  enrollmentDateOfBirth,
   FrontEndTypo,
   getOptions,
+  getUiSchema,
   debounce,
   getArray,
+  filterObject,
+  BodyMedium,
+  enrollmentDateOfBirth,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   widgets,
   templates,
   onError,
   transformErrors,
+  scrollToField,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 
-const setSchemaByStatus = async (data, fixedSchema) => {
+const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
-  const constantSchema = properties[1];
+  const constantSchema = properties[page];
   const { enrollment_status, payment_receipt_document_id } =
     fixedSchema?.properties ? fixedSchema?.properties : {};
   let newSchema = {};
@@ -91,7 +95,11 @@ const setSchemaByStatus = async (data, fixedSchema) => {
             payment_receipt_document_id,
           },
         };
-        newSchema = await getSubjects(newSchema, data?.enrolled_for_board);
+        newSchema = await getSubjects(
+          newSchema,
+          data?.enrolled_for_board,
+          page
+        );
       } else {
         const { subjects, ...properties } = constantSchema?.properties;
         newSchema = {
@@ -108,10 +116,10 @@ const setSchemaByStatus = async (data, fixedSchema) => {
   return { newSchema, newData };
 };
 
-const getSubjects = async (schemaData, value) => {
+const getSubjects = async (schemaData, value, page) => {
   if (value) {
     const propertiesMain = schema1.properties;
-    const constantSchema = propertiesMain[1];
+    const constantSchema = propertiesMain[page];
     const { subjects } = constantSchema?.properties;
     const { payment_receipt_document_id, ...properties } =
       schemaData.properties;
@@ -141,7 +149,11 @@ const getSubjects = async (schemaData, value) => {
 };
 
 // App
-export default function App({ id }) {
+export default function App() {
+  const { step, id } = useParams();
+  const userId = id;
+  const [page, setPage] = React.useState();
+  const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
   const [fixedSchema, setFixedSchema] = React.useState({});
   const [benificiary, setBenificiary] = React.useState({});
@@ -149,11 +161,11 @@ export default function App({ id }) {
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState(id);
   const [notMatched, setNotMatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
   const [uiSchema, setUiSchema] = React.useState({
     subjects: {
       "ui:widget": "checkboxes",
@@ -166,14 +178,43 @@ export default function App({ id }) {
         yearsRange: [2023, moment().format("YYYY")],
       },
     },
+    enrollment_dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        hideNowButton: true,
+        hideClearButton: true,
+        yearsRange: [
+          moment().subtract("years", 30).format("YYYY"),
+          moment().format("YYYY"),
+        ],
+      },
+    },
   });
-
   const enrollmentNumberExist = async (filters) => {
     return await benificiaryRegistoryService.isExistEnrollment(userId, filters);
   };
 
+  const nextPreviewStep = async (pageStape = "n") => {
+    const index = pages.indexOf(page);
+    if (index !== undefined) {
+      let nextIndex = "";
+      if (pageStape.toLowerCase() === "n") {
+        nextIndex = pages[index + 1];
+      } else {
+        nextIndex = pages[index - 1];
+      }
+      if (nextIndex !== undefined) {
+        setPage(nextIndex);
+      } else if (pageStape === "p") {
+        navigate(`/beneficiary/${userId}/enrollmentdetails`);
+      } else {
+        navigate(`/beneficiary/${userId}`);
+      }
+    }
+  };
+
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/enrollmentdetails`);
+    await nextPreviewStep("p");
   };
 
   const getEnrollmentStatus = async (schemaData) => {
@@ -194,24 +235,96 @@ export default function App({ id }) {
     });
   };
 
-  React.useEffect(async () => {
-    const constantSchema = schema1.properties?.[1];
-    const newSchema = await getEnrollmentStatus(constantSchema);
-    setFixedSchema(newSchema);
-    const { result } = await benificiaryRegistoryService.getOne(userId);
-    setBenificiary(result);
-    const { program_beneficiaries } = result ? result : {};
-    const updatedSchema = await setSchemaByStatus(
-      program_beneficiaries,
-      newSchema
-    );
-    setSchema(updatedSchema?.newSchema);
-    setFormData({
-      ...formData,
-      ...updatedSchema?.newData,
+  const validate = (data, key) => {
+    let error = {};
+    switch (key) {
+      case "enrollment_aadhaar_no":
+        if (
+          data.enrollment_aadhaar_no &&
+          `${data.enrollment_aadhaar_no}` !== `${benificiary.aadhar_no}`
+        ) {
+          error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
+        }
+        break;
+      case "enrollment_dob":
+        const age = enrollmentDateOfBirth(
+          benificiary?.program_beneficiaries?.enrollment_date,
+          data?.enrollment_dob
+        );
+        if (!(age.diff >= 14 && age.diff <= 29)) {
+          error = {
+            [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
+            age,
+          };
+        } else {
+          error = { age };
+        }
+        break;
+      case "enrollment_date":
+        if (moment.utc(data?.enrollment_date) > moment.utc()) {
+          error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+        }
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  const customValidate = (data, err) => {
+    const arr = Object.keys(err);
+    arr.forEach((key) => {
+      const isValid = validate(data, key);
+      if (isValid?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValid[key]))
+          err?.[key]?.addError(isValid[key]);
+      }
     });
-    setLoading(false);
+
+    return err;
+  };
+
+  React.useEffect(() => {
+    const properties = schema1.properties;
+    const newSteps = Object.keys(properties);
+    const newStep = step ? step : newSteps[0];
+    setPage(newStep);
+    setPages(newSteps);
   }, []);
+
+  React.useEffect(async () => {
+    if (page) {
+      const constantSchema = schema1.properties?.[page];
+      const { result } = await benificiaryRegistoryService.getOne(userId);
+      setBenificiary(result);
+      const { program_beneficiaries } = result ? result : {};
+
+      if (page === "edit_enrollement") {
+        const newSchema = await getEnrollmentStatus(constantSchema);
+        setFixedSchema(newSchema);
+        const updatedSchema = await setSchemaByStatus(
+          program_beneficiaries,
+          newSchema,
+          page
+        );
+        setSchema(updatedSchema?.newSchema);
+        const newdata = filterObject(
+          updatedSchema?.newData,
+          Object.keys(updatedSchema?.newSchema?.properties)
+        );
+
+        setFormData(newdata);
+      } else {
+        setSchema(constantSchema);
+        const newdata = filterObject(
+          program_beneficiaries,
+          Object.keys(constantSchema?.properties)
+        );
+        setFormData(newdata);
+      }
+      setLoading(false);
+    }
+  }, [page]);
 
   const onChange = async (e, id) => {
     const data = e.formData;
@@ -242,34 +355,76 @@ export default function App({ id }) {
       case "root_enrollment_date":
         let { enrollment_date, ...otherErrore } = errors ? errors : {};
         setErrors(otherErrore);
-        if (moment.utc(data?.enrollment_date) > moment.utc()) {
-          const newErrors = {
+        const resultDate = validate(data, "enrollment_date");
+
+        if (resultDate?.enrollment_date) {
+          setErrors({
+            ...errors,
             enrollment_date: {
-              __errors: [t("FUTUTRE_DATES_NOT_ALLOWED")],
+              __errors: [resultDate?.enrollment_date],
             },
-          };
-          setErrors(newErrors);
+          });
         }
-        const dob = moment.utc(benificiary?.dob).format("DD-MM-YYYY");
-        const dataAge = enrollmentDateOfBirth(formData?.enrollment_date, dob);
-        setUiSchema({
-          ...uiSchema,
-          enrollment_date: {
-            ...uiSchema?.enrollment_date,
-            "ui:help": dataAge?.message,
-          },
-        });
         break;
       case "root_enrolled_for_board":
-        setSchema(await getSubjects(schema, data?.enrolled_for_board));
+        setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
         break;
 
       case "root_enrollment_status":
-        const updatedSchema = await setSchemaByStatus(data, fixedSchema);
+        const updatedSchema = await setSchemaByStatus(data, fixedSchema, page);
         newData = updatedSchema?.newData ? updatedSchema?.newData : {};
         setSchema(updatedSchema?.newSchema);
         break;
 
+      case "root_enrollment_aadhaar_no":
+        const result = validate(data, "enrollment_aadhaar_no");
+        if (result?.enrollment_aadhaar_no) {
+          setUiSchema(
+            getUiSchema(uiSchema, {
+              key: "enrollment_aadhaar_no",
+              extra: {
+                "ui:help": (
+                  <AlertCustom alert={result?.enrollment_aadhaar_no} />
+                ),
+              },
+            })
+          );
+        } else {
+          setUiSchema(
+            getUiSchema(uiSchema, {
+              key: "enrollment_aadhaar_no",
+              extra: {
+                "ui:help": undefined,
+              },
+            })
+          );
+        }
+
+        break;
+      case "root_enrollment_dob":
+        if (benificiary?.program_beneficiaries?.enrollment_dob) {
+          const age = validate(data, "enrollment_dob");
+          if (age?.enrollment_dob) {
+            setUiSchema(
+              getUiSchema(uiSchema, {
+                key: "enrollment_dob",
+                extra: {
+                  "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+                },
+              })
+            );
+          } else {
+            setUiSchema(
+              getUiSchema(uiSchema, {
+                key: "enrollment_dob",
+                extra: {
+                  "ui:help": undefined,
+                },
+              })
+            );
+          }
+        }
+        break;
       default:
         break;
     }
@@ -277,14 +432,20 @@ export default function App({ id }) {
   };
 
   const onSubmit = async () => {
-    const { success, isUserExist } = await benificiaryRegistoryService.updateAg(
-      { ...formData, edit_page_type: "edit_enrollement" },
-      userId
-    );
-    if (isUserExist) {
-      setNotMatched(true);
-    } else if (success) {
-      navigate(`/beneficiary/profile/${userId}`);
+    const keys = Object.keys(errors);
+    if (keys?.length > 0) {
+      scrollToField({ property: keys?.[0] });
+    } else {
+      const { success, isUserExist } =
+        await benificiaryRegistoryService.updateAg(
+          { ...formData, edit_page_type: page },
+          userId
+        );
+      if (isUserExist) {
+        setNotMatched(true);
+      } else if (success) {
+        nextPreviewStep();
+      }
     }
   };
 
@@ -320,6 +481,7 @@ export default function App({ id }) {
               onChange,
               onError,
               onSubmit,
+              customValidate,
               transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
@@ -370,3 +532,12 @@ export default function App({ id }) {
     </Layout>
   );
 }
+
+const AlertCustom = ({ alert }) => (
+  <Alert status="warning" alignItems={"start"} mb="3">
+    <HStack alignItems="center" space="2" color>
+      <Alert.Icon />
+      <BodyMedium>{alert}</BodyMedium>
+    </HStack>
+  </Alert>
+);

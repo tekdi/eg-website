@@ -8,19 +8,20 @@ import {
   Layout,
   ImageView,
   enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import schema1 from "./ag-edit/choose-subjects/schema";
+import schema1 from "./ag-edit/enrollment/schema";
+import schema from "pages/parts/schema";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  const [source, setsource] = React.useState();
   // const [subject, setSubject] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
-
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -34,27 +35,17 @@ export default function BenificiaryEnrollment() {
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setbenificiary(result?.result);
-    setsource({
-      document_id:
-        result?.result?.program_beneficiaries?.payment_receipt_document_id,
-    });
-    // const subjectResult = await enumRegistryService.getSubjects();
-    // const sub = JSON.parse(result?.result?.program_beneficiaries?.subjects);
-    // if (sub?.length > 0) {
-    //   const filterData = subjectResult?.data?.filter((e) => {
-    //     const subData = sub?.find((item) => `${item}` === `${e?.id}`);
-    //     return subData ? true : false;
-    //   });
-    //   setSubject(filterData);
-    // }
+    setLoading(false);
   };
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
-  }, [benificiary]);
+  }, []);
+
   return (
     <Layout
+      loading={loading}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
         name: t("ENROLLMENT_DETAILS"),
@@ -62,28 +53,55 @@ export default function BenificiaryEnrollment() {
         _box: { bg: "white" },
       }}
     >
-      <VStack px="5" pt="3" space={4}>
+      <VStack p="5" space={4}>
         <ItemComponent
           title={t("ENROLLMENT_DETAILS")}
-          schema={schema1?.properties[1]}
-          item={benificiary?.program_beneficiaries}
+          step={"edit_enrollement"}
+          notShow={["subjects", "enrollment_aadhaar_no"]}
+          item={{
+            ...benificiary?.program_beneficiaries,
+            enrollment_status: (
+              <GetEnumValue
+                enumType="BENEFICIARY_STATUS"
+                enumOptionValue={
+                  benificiary?.program_beneficiaries?.enrollment_status
+                }
+                enumApiData={enumOptions}
+                t={t}
+              />
+            ),
+          }}
           onEdit={(e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)}
-          arr={[
-            "enrollment_status",
-            "enrolled_for_board",
-            "enrollment_number",
-            "enrollment_date",
-            "payment_receipt_document_id",
-          ]}
-          label={[]}
+        />
+        <ItemComponent
+          title={t("ENROLLMENT_RECEIPT")}
+          step={"edit_enrollement_details"}
+          item={{
+            ...benificiary?.program_beneficiaries,
+            enrollment_status: (
+              <GetEnumValue
+                enumType="BENEFICIARY_STATUS"
+                enumOptionValue={
+                  benificiary?.program_beneficiaries?.enrollment_status
+                }
+                enumApiData={enumOptions}
+                t={t}
+              />
+            ),
+          }}
         />
       </VStack>
     </Layout>
   );
 }
 
-const ItemComponent = ({ schema, title, arr, label, item, onEdit }) => {
+const ItemComponent = ({ title, label, item, onEdit, step, notShow }) => {
   const { t } = useTranslation();
+  const schema = schema1?.properties[step];
+  let arr = Object.keys(schema?.properties);
+  if (notShow?.constructor.name === "Array" && notShow?.length) {
+    arr = arr.filter((e) => !notShow?.includes(e));
+  }
   return (
     <VStack
       px="5"
@@ -98,13 +116,15 @@ const ItemComponent = ({ schema, title, arr, label, item, onEdit }) => {
         <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
           {title}
         </FrontEndTypo.H3>
-        <HStack alignItems="center">
-          <IconByName
-            name="EditBoxLineIcon"
-            color="iconColor.100"
-            onPress={(e) => onEdit(item)}
-          />
-        </HStack>
+        {onEdit && (
+          <HStack alignItems="center">
+            <IconByName
+              name="EditBoxLineIcon"
+              color="iconColor.100"
+              onPress={(e) => onEdit(item)}
+            />
+          </HStack>
+        )}
       </HStack>
       <Box paddingTop="2">
         <Progress value={arrList(item, arr)} size="xs" colorScheme="info" />
