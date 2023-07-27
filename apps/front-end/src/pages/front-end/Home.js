@@ -7,15 +7,17 @@ import {
   FrontEndTypo,
   Loading,
   facilitatorRegistryService,
-  t,
 } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Home({ userTokenInfo, pageInfo }) {
   const [page, setPage] = React.useState("SplashScreen");
   const [facilitator, setFacilitator] = React.useState({});
   const [ip, setIp] = React.useState({});
   const { id } = useParams();
+  const { t } = useTranslation();
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -39,7 +41,12 @@ function Home({ userTokenInfo, pageInfo }) {
         setPage("login");
       }
     }
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return page == "login" ? (
     <Loading
