@@ -174,6 +174,7 @@ export default function App() {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [notMatched, setNotMatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -482,6 +483,7 @@ export default function App() {
   };
 
   const onSubmit = async () => {
+    setBtnLoading(true);
     const keys = Object.keys(errors ? errors : {});
     if (keys?.length > 0) {
       scrollToField({ property: keys?.[0] });
@@ -499,6 +501,7 @@ export default function App() {
         navigate(`/beneficiary/${userId}`);
       }
     }
+    setBtnLoading(false);
   };
 
   return (
@@ -540,7 +543,7 @@ export default function App() {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
-              isLoading={loading}
+              isLoading={btnLoading}
               onPress={() => {
                 if (formRef.current.validateForm()) {
                   formRef?.current?.submit();
