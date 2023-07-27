@@ -144,9 +144,9 @@ const Page1 = () => {
     <Box>
       <Image
         source={{
-          uri: "/images/logos/splash1.png",
+          uri: "/images/logos/EGlogo.png",
         }}
-        alt="Alternate Text"
+        alt={t("IMAGE_NOT_FOUND")}
         size={"2xl"}
         resizeMode="contain"
       />
