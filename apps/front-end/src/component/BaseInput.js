@@ -682,7 +682,7 @@ export const focusToField = (errors) => {
 
 const transformErrors = (errors, schema, t) => {
   return errors.map((error) => {
-    const schemaItem = schema?.properties?.[error?.property.replace(".", "")];
+    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
     if (error.name === "required") {
       if (schemaItem) {
         let title = schemaItem.label ? schemaItem.label : schemaItem.title;

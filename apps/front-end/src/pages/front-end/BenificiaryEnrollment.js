@@ -71,13 +71,17 @@ export default function BenificiaryEnrollment() {
               />
             ),
           }}
-          {...([
-            "not_enrolled",
-            "applied_but_pending",
-            "enrollment_rejected",
-          ].includes(benificiary?.program_beneficiaries?.enrollment_status)
+          {...(["not_enrolled"].includes(
+            benificiary?.program_beneficiaries?.enrollment_status
+          )
             ? {
                 onlyField: ["enrollment_status"],
+              }
+            : ["applied_but_pending", "enrollment_rejected"].includes(
+                benificiary?.program_beneficiaries?.enrollment_status
+              )
+            ? {
+                onlyField: ["enrollment_status", "enrolled_for_board"],
               }
             : {})}
           onEdit={(e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)}

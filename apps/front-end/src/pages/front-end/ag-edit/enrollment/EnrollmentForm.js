@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Box, Modal } from "native-base";
+import { Alert, Box, HStack, Modal } from "native-base";
 import {
   Layout,
   enumRegistryService,
@@ -12,6 +12,8 @@ import {
   getArray,
   filterObject,
   enrollmentDateOfBirth,
+  getUiSchema,
+  BodyMedium,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
@@ -72,7 +74,13 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       const { enrolled_for_board, subjects } = constantSchema?.properties;
       const required = constantSchema?.required.filter(
         (item) =>
-          !["enrollment_number", "enrollment_date", "subjects"].includes(item)
+          ![
+            "enrollment_number",
+            "enrollment_date",
+            "subjects",
+            "enrollment_aadhaar_no",
+            "payment_receipt_document_id",
+          ].includes(item)
       );
       newSchema = {
         ...constantSchema,
@@ -85,7 +93,6 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       newData = {
         enrollment_status: data?.enrollment_status,
         enrolled_for_board: data?.enrolled_for_board,
-        subjects: [],
       };
       break;
 
@@ -187,10 +194,7 @@ export default function App() {
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
-        yearsRange: [
-          moment().subtract("years", 30).format("YYYY"),
-          moment().format("YYYY"),
-        ],
+        yearsRange: [1980, moment().format("YYYY")],
       },
     },
   });
@@ -215,6 +219,28 @@ export default function App() {
         navigate(`/beneficiary/${userId}`);
       }
     }
+  };
+
+  const checkEnrollmentDobAndDate = (data, key) => {
+    let error = {};
+    const age = enrollmentDateOfBirth(
+      benificiary?.program_beneficiaries?.enrollment_date,
+      data?.enrollment_dob
+    );
+    if (!benificiary?.program_beneficiaries?.enrollment_date) {
+      error = {
+        [key]: t("REQUIRED_MESSAGE_ENROLLMENT_DATE"),
+        age,
+      };
+    } else if (!(age.diff >= 14 && age.diff <= 29)) {
+      error = {
+        [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
+        age,
+      };
+    } else {
+      error = { age };
+    }
+    return error;
   };
 
   const onPressBackButton = async () => {
@@ -248,20 +274,6 @@ export default function App() {
           `${data.enrollment_aadhaar_no}` !== `${benificiary.aadhar_no}`
         ) {
           error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
-        }
-        break;
-      case "enrollment_dob":
-        const age = enrollmentDateOfBirth(
-          benificiary?.program_beneficiaries?.enrollment_date,
-          data?.enrollment_dob
-        );
-        if (!(age.diff >= 14 && age.diff <= 29)) {
-          error = {
-            [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
-            age,
-          };
-        } else {
-          error = { age };
         }
         break;
       case "enrollment_date":
@@ -320,10 +332,38 @@ export default function App() {
         setFormData(newdata);
       } else {
         setSchema(constantSchema);
-        const newdata = filterObject(
+        let newdata = filterObject(
           program_beneficiaries,
           Object.keys(constantSchema?.properties)
         );
+        if (program_beneficiaries?.enrollment_dob) {
+          const age = checkEnrollmentDobAndDate(
+            program_beneficiaries,
+            "enrollment_dob"
+          );
+          if (age?.enrollment_dob) {
+            setUiSchema(
+              getUiSchema(uiSchema, {
+                key: "enrollment_dob",
+                extra: {
+                  "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+                },
+              })
+            );
+            newdata = { ...newdata, is_eligible: "no" };
+          } else {
+            newdata = { ...newdata, is_eligible: "yes" };
+            setUiSchema(
+              getUiSchema(uiSchema, {
+                key: "enrollment_dob",
+                extra: {
+                  "ui:help": age?.age?.message,
+                },
+              })
+            );
+          }
+        }
+
         setFormData(newdata);
       }
       setLoading(false);
@@ -371,25 +411,31 @@ export default function App() {
         }
         break;
       case "root_enrolled_for_board":
-        setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
+        if (data.enrollment_status === "enrolled") {
+          setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
+        }
         break;
 
       case "root_enrollment_status":
         const updatedSchema = await setSchemaByStatus(data, fixedSchema, page);
         newData = updatedSchema?.newData ? updatedSchema?.newData : {};
         setSchema(updatedSchema?.newSchema);
+        setErrors();
         break;
 
       case "root_enrollment_aadhaar_no":
         const result = validate(data, "enrollment_aadhaar_no");
         if (result?.enrollment_aadhaar_no) {
-          setErrors({
-            ...errors,
-            enrollment_aadhaar_no: {
-              __errors: [result?.enrollment_aadhaar_no],
-            },
-          });
-          setNotMatched("aadhaar");
+          const fun = debounce(() => {
+            setErrors({
+              ...errors,
+              enrollment_aadhaar_no: {
+                __errors: [result?.enrollment_aadhaar_no],
+              },
+            });
+            setNotMatched("aadhaar");
+          }, 1000);
+          fun();
         } else {
           let { enrollment_aadhaar_no, ...otherError } = errors ? errors : {};
           setErrors(otherError);
@@ -398,17 +444,27 @@ export default function App() {
         break;
       case "root_enrollment_dob":
         if (benificiary?.program_beneficiaries?.enrollment_dob) {
-          const age = validate(data, "enrollment_dob");
+          const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
           if (age?.enrollment_dob) {
-            setErrors({
-              ...errors,
-              enrollment_dob: {
-                __errors: [age?.enrollment_dob],
-              },
-            });
+            setUiSchema(
+              getUiSchema(uiSchema, {
+                key: "enrollment_dob",
+                extra: {
+                  "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+                },
+              })
+            );
+            newData = { ...newData, is_eligible: "no" };
           } else {
-            let { enrollment_dob, ...otherError } = errors ? errors : {};
-            setErrors(otherError);
+            newData = { ...newData, is_eligible: "yes" };
+            setUiSchema(
+              getUiSchema(uiSchema, {
+                key: "enrollment_dob",
+                extra: {
+                  "ui:help": age?.age?.message,
+                },
+              })
+            );
           }
         }
         break;
@@ -419,7 +475,7 @@ export default function App() {
   };
 
   const onSubmit = async () => {
-    const keys = Object.keys(errors);
+    const keys = Object.keys(errors ? errors : {});
     if (keys?.length > 0) {
       scrollToField({ property: keys?.[0] });
     } else {
@@ -430,8 +486,10 @@ export default function App() {
         );
       if (isUserExist) {
         setNotMatched(true);
-      } else if (success) {
+      } else if (success && formData.enrollment_status === "enrolled") {
         nextPreviewStep();
+      } else {
+        navigate(`/beneficiary/${userId}`);
       }
     }
   };
@@ -521,3 +579,12 @@ export default function App() {
     </Layout>
   );
 }
+
+const AlertCustom = ({ alert }) => (
+  <Alert status="warning" alignItems={"start"} mb="3">
+    <HStack alignItems="center" space="2" color>
+      <Alert.Icon />
+      <BodyMedium>{alert}</BodyMedium>
+    </HStack>
+  </Alert>
+);
