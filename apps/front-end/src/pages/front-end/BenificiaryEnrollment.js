@@ -57,7 +57,7 @@ export default function BenificiaryEnrollment() {
         <ItemComponent
           title={t("ENROLLMENT_DETAILS")}
           step={"edit_enrollement"}
-          notShow={["subjects", "enrollment_aadhaar_no"]}
+          notShow={["subjects"]}
           item={{
             ...benificiary?.program_beneficiaries,
             enrollment_status: (

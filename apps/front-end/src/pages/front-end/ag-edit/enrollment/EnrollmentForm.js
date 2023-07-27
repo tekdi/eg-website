@@ -1,19 +1,16 @@
 import React from "react";
 import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, Modal } from "native-base";
+import { Box, Modal } from "native-base";
 import {
   Layout,
   enumRegistryService,
   benificiaryRegistoryService,
   FrontEndTypo,
   getOptions,
-  getUiSchema,
   debounce,
   getArray,
   filterObject,
-  BodyMedium,
   enrollmentDateOfBirth,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
@@ -25,6 +22,7 @@ import {
   onError,
   transformErrors,
   scrollToField,
+  validator,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 
@@ -39,12 +37,18 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     "enrollment_status",
     "enrolled_for_board",
     "enrollment_number",
+    "enrollment_aadhaar_no",
     "enrollment_date",
     "subjects",
     "payment_receipt_document_id",
   ].forEach((e) => {
     if (e === "subjects") {
       newData = { ...newData, [e]: getArray(data?.[e]) };
+    } else if (e === "enrollment_aadhaar_no") {
+      newData = {
+        ...newData,
+        [e]: data?.[e] ? parseInt(data?.[e]) : data?.[e],
+      };
     } else newData = { ...newData, [e]: data?.[e] };
   });
 
@@ -379,25 +383,16 @@ export default function App() {
       case "root_enrollment_aadhaar_no":
         const result = validate(data, "enrollment_aadhaar_no");
         if (result?.enrollment_aadhaar_no) {
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_aadhaar_no",
-              extra: {
-                "ui:help": (
-                  <AlertCustom alert={result?.enrollment_aadhaar_no} />
-                ),
-              },
-            })
-          );
+          setErrors({
+            ...errors,
+            enrollment_aadhaar_no: {
+              __errors: [result?.enrollment_aadhaar_no],
+            },
+          });
+          setNotMatched("aadhaar");
         } else {
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_aadhaar_no",
-              extra: {
-                "ui:help": undefined,
-              },
-            })
-          );
+          let { enrollment_aadhaar_no, ...otherError } = errors ? errors : {};
+          setErrors(otherError);
         }
 
         break;
@@ -405,23 +400,15 @@ export default function App() {
         if (benificiary?.program_beneficiaries?.enrollment_dob) {
           const age = validate(data, "enrollment_dob");
           if (age?.enrollment_dob) {
-            setUiSchema(
-              getUiSchema(uiSchema, {
-                key: "enrollment_dob",
-                extra: {
-                  "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
-                },
-              })
-            );
+            setErrors({
+              ...errors,
+              enrollment_dob: {
+                __errors: [age?.enrollment_dob],
+              },
+            });
           } else {
-            setUiSchema(
-              getUiSchema(uiSchema, {
-                key: "enrollment_dob",
-                extra: {
-                  "ui:help": undefined,
-                },
-              })
-            );
+            let { enrollment_dob, ...otherError } = errors ? errors : {};
+            setErrors(otherError);
           }
         }
         break;
@@ -505,7 +492,9 @@ export default function App() {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <FrontEndTypo.H3 textAlign="center" p="4" color="textGreyColor.500">
-              {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
+              {notMatched === "aadhaar"
+                ? t("ENROLLMENT_AADHAR_POPUP_MESSAGE")
+                : t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
             </FrontEndTypo.H3>
           </Modal.Body>
           <Modal.Footer
@@ -532,12 +521,3 @@ export default function App() {
     </Layout>
   );
 }
-
-const AlertCustom = ({ alert }) => (
-  <Alert status="warning" alignItems={"start"} mb="3">
-    <HStack alignItems="center" space="2" color>
-      <Alert.Icon />
-      <BodyMedium>{alert}</BodyMedium>
-    </HStack>
-  </Alert>
-);
