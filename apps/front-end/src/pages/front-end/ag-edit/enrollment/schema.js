@@ -35,6 +35,7 @@ export default {
         },
         enrollment_aadhaar_no: {
           title: "AADHAAR_NUMBER",
+          description: "AS_PER_ENROLLMENT",
           label: "AADHAAR_NUMBER",
           type: "number",
           regex: /^\d{0,12}$/,
@@ -48,7 +49,7 @@ export default {
           minItems: 1,
           maxItems: 7,
           type: "array",
-          label: "SELECT_SUBJECTS",
+          label: "SUBJECTS",
           items: {
             type: ["string", "number"],
           },
@@ -56,7 +57,7 @@ export default {
         },
         payment_receipt_document_id: {
           label: "PAYMENT_RECEIPT",
-          uploadTitle: "UPLOAD_THE_PAYMENT_RECEIPT_FOR_ENROLLMENT",
+          uploadTitle: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
           type: ["string", "number"],
           format: "FileUpload",
         },
@@ -69,8 +70,9 @@ export default {
       properties: {
         enrollment_first_name: {
           type: "string",
-          title: "FIRST_NAME_AS_PER_ENROLLMENT",
-          label: "FIRST_NAME_AS_PER_ENROLLMENT",
+          title: "FIRST_NAME",
+          label: "FIRST_NAME",
+          description: "AS_PER_ENROLLMENT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],

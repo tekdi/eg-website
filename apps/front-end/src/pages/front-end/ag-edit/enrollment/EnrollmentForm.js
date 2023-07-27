@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, Modal } from "native-base";
+import { Alert, Box, HStack, Image, Modal } from "native-base";
 import {
   Layout,
   enumRegistryService,
@@ -255,6 +255,13 @@ export default function App() {
       extra: {
         userId,
         document_type: "enrollment_receipt",
+        iconComponent: (
+          <Image
+            source={{ uri: "/payment-receipt.jpeg" }}
+            size="200"
+            alt="background image"
+          />
+        ),
       },
     });
     return getOptions(newSchema, {

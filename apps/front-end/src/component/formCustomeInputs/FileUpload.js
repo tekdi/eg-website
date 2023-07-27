@@ -9,9 +9,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 const FileUpload = ({ options, value, onChange, required, schema }) => {
-  const { label, title, uploadTitle, userId, document_type } = schema
-    ? schema
-    : {};
+  const { label, title, uploadTitle, userId, document_type, iconComponent } =
+    schema ? schema : {};
   const uplodInputRef = React.useRef();
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -90,6 +89,8 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
           borderColor="textGreyColor.50"
           minH="200px"
           justifyContent="center"
+          p="2"
+          borderRadius="5"
         >
           <Box alignItems="center">
             <input
@@ -110,10 +111,12 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
                 height={"190px"}
                 borderRadius="0"
               />
+            ) : iconComponent ? (
+              iconComponent
             ) : (
               <IconByName name="Upload2FillIcon" isDisabled />
             )}
-            <FrontEndTypo.H2>
+            <FrontEndTypo.H2 textAlign="center">
               {t(uploadTitle ? uploadTitle : label ? label : title)}
             </FrontEndTypo.H2>
           </Box>
