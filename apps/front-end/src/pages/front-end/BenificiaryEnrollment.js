@@ -13,7 +13,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import schema1 from "./ag-edit/enrollment/schema";
-import schema from "pages/parts/schema";
+import moment from "moment";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
@@ -60,7 +60,13 @@ export default function BenificiaryEnrollment() {
           notShow={["subjects"]}
           item={{
             ...benificiary?.program_beneficiaries,
-            enrollment_status: (
+            enrollment_date: benificiary?.program_beneficiaries?.enrollment_date
+              ? moment(
+                  benificiary?.program_beneficiaries?.enrollment_date
+                ).format("DD-MM-YYYY")
+              : "-",
+            enrollment_status: benificiary?.program_beneficiaries
+              ?.enrollment_status ? (
               <GetEnumValue
                 enumType="ENROLLEMENT_STATUS"
                 enumOptionValue={
@@ -69,6 +75,21 @@ export default function BenificiaryEnrollment() {
                 enumApiData={enumOptions}
                 t={t}
               />
+            ) : (
+              "-"
+            ),
+            enrolled_for_board: benificiary?.program_beneficiaries
+              ?.enrolled_for_board ? (
+              <GetEnumValue
+                t={t}
+                enumType={"ENROLLED_FOR_BOARD"}
+                enumOptionValue={
+                  benificiary?.program_beneficiaries?.enrolled_for_board
+                }
+                enumApiData={enumOptions}
+              />
+            ) : (
+              "-"
             ),
           }}
           {...(["not_enrolled"].includes(
@@ -96,6 +117,11 @@ export default function BenificiaryEnrollment() {
             step={"edit_enrollement_details"}
             item={{
               ...benificiary?.program_beneficiaries,
+              enrollment_dob: benificiary?.program_beneficiaries?.enrollment_dob
+                ? moment(
+                    benificiary?.program_beneficiaries?.enrollment_dob
+                  ).format("DD-MM-YYYY")
+                : "-",
               enrollment_status: (
                 <GetEnumValue
                   enumType="BENEFICIARY_STATUS"

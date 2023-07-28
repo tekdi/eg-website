@@ -96,7 +96,7 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
             onChange={handleFileInputChange}
           />
           <Box alignItems="center">
-            {file && false ? (
+            {file ? (
               <ImageView
                 source={{
                   document_id: file,

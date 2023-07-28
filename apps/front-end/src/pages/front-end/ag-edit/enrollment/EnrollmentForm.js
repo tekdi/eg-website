@@ -46,11 +46,6 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
   ].forEach((e) => {
     if (e === "subjects") {
       newData = { ...newData, [e]: getArray(data?.[e]) };
-    } else if (e === "enrollment_aadhaar_no") {
-      newData = {
-        ...newData,
-        [e]: data?.[e] ? parseInt(data?.[e]) : data?.[e],
-      };
     } else newData = { ...newData, [e]: data?.[e] };
   });
 
@@ -311,7 +306,7 @@ export default function App() {
   React.useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
-    const newStep = step ? step : newSteps[0];
+    const newStep = step ? step : newSteps[1];
     setPage(newStep);
     setPages(newSteps);
   }, []);
@@ -344,32 +339,30 @@ export default function App() {
           program_beneficiaries,
           Object.keys(constantSchema?.properties)
         );
-        if (program_beneficiaries?.enrollment_dob) {
-          const age = checkEnrollmentDobAndDate(
-            program_beneficiaries,
-            "enrollment_dob"
+        const age = checkEnrollmentDobAndDate(
+          program_beneficiaries,
+          "enrollment_dob"
+        );
+        if (age?.enrollment_dob) {
+          setUiSchema(
+            getUiSchema(uiSchema, {
+              key: "enrollment_dob",
+              extra: {
+                "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+              },
+            })
           );
-          if (age?.enrollment_dob) {
-            setUiSchema(
-              getUiSchema(uiSchema, {
-                key: "enrollment_dob",
-                extra: {
-                  "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
-                },
-              })
-            );
-            newdata = { ...newdata, is_eligible: "no" };
-          } else {
-            newdata = { ...newdata, is_eligible: "yes" };
-            setUiSchema(
-              getUiSchema(uiSchema, {
-                key: "enrollment_dob",
-                extra: {
-                  "ui:help": age?.age?.message,
-                },
-              })
-            );
-          }
+          newdata = { ...newdata, is_eligible: "no" };
+        } else {
+          newdata = { ...newdata, is_eligible: "yes" };
+          setUiSchema(
+            getUiSchema(uiSchema, {
+              key: "enrollment_dob",
+              extra: {
+                "ui:help": age?.age?.message,
+              },
+            })
+          );
         }
 
         setFormData(newdata);
@@ -451,29 +444,27 @@ export default function App() {
 
         break;
       case "root_enrollment_dob":
-        if (benificiary?.program_beneficiaries?.enrollment_dob) {
-          const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
-          if (age?.enrollment_dob) {
-            setUiSchema(
-              getUiSchema(uiSchema, {
-                key: "enrollment_dob",
-                extra: {
-                  "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
-                },
-              })
-            );
-            newData = { ...newData, is_eligible: "no" };
-          } else {
-            newData = { ...newData, is_eligible: "yes" };
-            setUiSchema(
-              getUiSchema(uiSchema, {
-                key: "enrollment_dob",
-                extra: {
-                  "ui:help": age?.age?.message,
-                },
-              })
-            );
-          }
+        const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
+        if (age?.enrollment_dob) {
+          setUiSchema(
+            getUiSchema(uiSchema, {
+              key: "enrollment_dob",
+              extra: {
+                "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+              },
+            })
+          );
+          newData = { ...newData, is_eligible: "no" };
+        } else {
+          newData = { ...newData, is_eligible: "yes" };
+          setUiSchema(
+            getUiSchema(uiSchema, {
+              key: "enrollment_dob",
+              extra: {
+                "ui:help": age?.age?.message,
+              },
+            })
+          );
         }
         break;
       default:

@@ -37,7 +37,7 @@ export default {
           title: "AADHAAR_NUMBER",
           description: "AS_PER_ENROLLMENT",
           label: "AADHAAR_NUMBER",
-          type: "number",
+          type: "string",
           regex: /^\d{0,12}$/,
         },
         enrollment_date: {
