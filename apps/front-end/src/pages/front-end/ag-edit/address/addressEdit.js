@@ -70,7 +70,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   const ref = React.createRef(null);
