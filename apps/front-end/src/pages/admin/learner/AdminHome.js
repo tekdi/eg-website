@@ -98,7 +98,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     properties: {
       district: {
         type: "array",
-        label: "DISTRICT",
+        title: "DISTRICT",
         items: {
           type: "string",
           enumNames: getDistrictsAll?.map((item, i) => {
@@ -138,15 +138,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     return (
       <VStack
         className={classNames}
-        style={{ borderTopColor: "#EEEEEE", borderTopWidth: "1px" }}
+        style={{ borderTopColor: "dividerColor", borderTopWidth: "1px" }}
       >
         <HStack style={{ justifyContent: "space-between" }}>
-          {/* <Input
-            type="text"
-            placeholder="Search name"
-            value={search}
-            onChange={(e) => setSearch(e.nativeEvent.text)}
-          /> */}
           {id !== "root" && (
             <HStack style={{ justifyContent: "space-between" }} width="100%">
               <label
@@ -174,7 +168,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       <HStack>
         <Box
           width="18%"
-          style={{ borderRightColor: "#EEEEEE", borderRightWidth: "2px" }}
+          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
           <ScrollView
@@ -209,9 +203,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 </Form>
                 <Text bold>{t("PRERAK")}</Text>
                 <Input
-                  // InputLeftElement={
-                  //   <IconByName color="coolGray.500" name="SearchLineIcon" />
-                  // }
                   w="100%"
                   height="32px"
                   placeholder="search"
