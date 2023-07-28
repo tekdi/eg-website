@@ -5,9 +5,11 @@ import {
   ImageView,
   AdminTypo,
   enumRegistryService,
+  enrollmentDateOfBirth,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
+import moment from "moment";
 import {
   HStack,
   VStack,
@@ -84,11 +86,14 @@ const columns = (e) => [
     attr: "name",
   },
   {
-    name: t("MOBILE_NUMBER"),
-    selector: (row) => row?.mobile,
-    sortable: true,
-    attr: "email",
+    name: t("AGE"),
+
+    selector: (row) =>
+      row?.program_beneficiaries?.enrollment_dob
+        ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
+        : moment().diff(row?.dob, "years"),
   },
+
   {
     name: t("DISTRICT"),
 

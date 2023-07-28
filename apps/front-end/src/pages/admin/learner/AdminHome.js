@@ -32,6 +32,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getBlocksAll, setGetBlocksAll] = React.useState();
+
   const [facilitator, setFacilitator] = React.useState([]);
   const [filter, setFilter] = React.useState({});
   const [loading, setLoading] = React.useState(true);
@@ -52,6 +54,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
 
+  React.useEffect(async () => {
+    let blockData = [];
+    if (filter?.district?.length > 0) {
+      blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filter?.district,
+      });
+    }
+    setGetBlocksAll(blockData);
+  }, [filter?.district]);
   React.useEffect(async () => {
     setLoading(true);
     const result = await benificiaryRegistoryService.beneficiariesFilter(
@@ -89,6 +100,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   }, [facilitatorFilter]);
 
   const setFilterObject = (data) => {
+    if (data?.district) {
+      const { district } = data;
+      setFacilitatorFilter({ ...facilitatorFilter, district });
+    }
     setFilter(data);
     setQueryParameters(data);
   };
@@ -99,6 +114,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       district: {
         type: "array",
         title: "DISTRICT",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
         items: {
           type: "string",
           enumNames: getDistrictsAll?.map((item, i) => {
@@ -110,22 +130,45 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
+      block: {
+        type: "array",
+        title: "BLOCKS",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
+          }),
+          enum: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
+          }),
+        },
+        uniqueItems: true,
+      },
     },
   };
 
   const uiSchema = {
     district: {
-      "ui:widget": "checkboxes",
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+    block: {
+      "ui:widget": MultiCheck,
       "ui:options": {},
     },
   };
 
   const onChange = async (data) => {
-    const { district } = data?.formData;
+    const { district, block } = data?.formData;
     setFilterObject({
       ...filter,
       ...(district ? { district } : {}),
-      // ...(facilitator ? { facilitator } : {}),
+      ...(block ? { block } : {}),
     });
   };
 
@@ -223,7 +266,13 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   onChange={(e) => {
                     setFilterObject({ ...filter, facilitator: e });
                   }}
-                  schema={{ grid: 1 }}
+                  schema={{
+                    grid: 1,
+                    _hstack: {
+                      maxH: 130,
+                      overflowY: "scroll",
+                    },
+                  }}
                   options={{
                     enumOptions: facilitator,
                   }}
