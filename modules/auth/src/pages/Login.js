@@ -95,7 +95,7 @@ export default function Login() {
           source={{
             uri: "/images/logos/EGlogo.png",
           }}
-          alt={t("IMAGE_NOT_FOUND")}
+          alt="Educate Girls"
           resizeMode="contain"
           size={200}
         />
