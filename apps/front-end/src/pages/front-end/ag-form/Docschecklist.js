@@ -20,7 +20,7 @@ import {
 } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Docschecklist = () => {
+const Docschecklist = ({ footerLinks }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [selectData, setselectData] = useState([]);
@@ -28,9 +28,26 @@ const Docschecklist = () => {
   const [checkList, setCheckList] = useState(false);
   const [buttonPress, setButtonPress] = useState(false);
   const [benificiary, setBenificiary] = React.useState({});
+  const [msgshow, setmsgshow] = React.useState(false);
+
+  const DocumentStatus = (docStatus) => {
+    if (!docStatus) {
+      return false;
+    } else {
+      const JsonConvert = docStatus ? JSON.parse(docStatus) : {};
+      // Check if all values are either "complete" or "not_applicable"
+      const isAllCompleteOrNotApplicable = Object.values(JsonConvert).every(
+        (value) => value === "complete" || value === "not_applicable"
+      );
+      return isAllCompleteOrNotApplicable ? true : false;
+    }
+  };
+
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
+    let docStatus = data?.result?.program_beneficiaries?.documents_status;
     setBenificiary(data?.result);
+    setmsgshow(DocumentStatus(docStatus));
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(
         JSON.parse(data.result?.program_beneficiaries?.documents_status)
@@ -97,30 +114,74 @@ const Docschecklist = () => {
         },
         onlyIconsShow: ["backBtn", "userInfo"],
       }}
+      _footer={{ menues: footerLinks }}
     >
-      <VStack width={"90%"} margin={"auto"} mt={3}>
-        <Text fontSize="sm" mt={3} bold color="textMaroonColor.900">
-          {t("MANDATORY")}
-        </Text>
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("JAN_AADHAAR_CARD")}
+      {msgshow ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
+        <VStack width={"90%"} margin={"auto"} mt={3}>
+          <Text fontSize="sm" mt={3} bold color="textMaroonColor.900">
+            {t("MANDATORY")}
           </Text>
-          <Select
-            selectedValue={status?.jan_adhar || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.jan_adhar || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, jan_adhar: itemValue })
-            }
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("JAN_AADHAAR_CARD")}
+            </Text>
+            <Select
+              selectedValue={status?.jan_adhar || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.jan_adhar || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, jan_adhar: itemValue })
+              }
+            >
+              {Array.isArray(selectData) &&
+                selectData.map((item, i) => {
+                  return (
+                    <Select.Item
+                      key={i}
+                      label={`${t(item.title)}`}
+                      value={item.value}
+                    />
+                  );
+                })}
+            </Select>
+          </HStack>
+
+          <HStack
+            mt={8}
+            space="2"
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            {Array.isArray(selectData) &&
-              selectData.map((item, i) => {
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("AADHAAR_CARD")}
+            </Text>
+
+            <Select
+              selectedValue={status?.aadhaar || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.aadhaar || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon fontSize="sm" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, aadhaar: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
                 return (
                   <Select.Item
                     key={i}
@@ -129,392 +190,358 @@ const Docschecklist = () => {
                   />
                 );
               })}
-          </Select>
-        </HStack>
+            </Select>
+          </HStack>
 
-        <HStack
-          mt={8}
-          space="2"
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("AADHAAR_CARD")}
-          </Text>
-
-          <Select
-            selectedValue={status?.aadhaar || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.aadhaar || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon fontSize="sm" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, aadhaar: itemValue })
-            }
+          <HStack
+            mt={8}
+            space="2"
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("PHOTO")}
+            </Text>
+            <Select
+              selectedValue={status?.photo || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.photo || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, photo: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack
-          mt={8}
-          space="2"
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("PHOTO")}
-          </Text>
-          <Select
-            selectedValue={status?.photo || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.photo || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, photo: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("MOBILE_NUMBER")}
+            </Text>
+            <Select
+              selectedValue={status?.mobile || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.mobile || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, mobile: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("MOBILE_NUMBER")}
-          </Text>
-          <Select
-            selectedValue={status?.mobile || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.mobile || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, mobile: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("MARKSHEET")}
+            </Text>
+            <Select
+              selectedValue={status?.marksheet || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.marksheet || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, marksheet: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("MARKSHEET")}
-          </Text>
-          <Select
-            selectedValue={status?.marksheet || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.marksheet || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, marksheet: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("BANK_PASSBOOK")}
+            </Text>
+            <Select
+              selectedValue={status?.bank || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.bank || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, bank: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("BANK_PASSBOOK")}
-          </Text>
-          <Select
-            selectedValue={status?.bank || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.bank || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, bank: itemValue })
-            }
+          <HStack
+            mt={8}
+            mb={10}
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("BIRTH_CERTIFICATE")}
+            </Text>
+            <Select
+              selectedValue={status?.birth || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.birth || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, birth: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
+          <Text fontSize="sm" bold color="textMaroonColor.900">
+            {t("MAY_BE_REQUIRED")}
+          </Text>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("CASTE_CERTIFICATE")}
+            </Text>
+            <Select
+              selectedValue={status?.caste || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.caste || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, caste: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack
-          mt={8}
-          mb={10}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("BIRTH_CERTIFICATE")}
-          </Text>
-          <Select
-            selectedValue={status?.birth || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.birth || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, birth: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
-        <Text fontSize="sm" bold color="textMaroonColor.900">
-          {t("MAY_BE_REQUIRED")}
-        </Text>
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("CASTE_CERTIFICATE")}
-          </Text>
-          <Select
-            selectedValue={status?.caste || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.caste || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, caste: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("TRANSFER_CERTIFICATE")}
+            </Text>
+            <Select
+              selectedValue={status?.transfer || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.transfer || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, transfer: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("TRANSFER_CERTIFICATE")}
-          </Text>
-          <Select
-            selectedValue={status?.transfer || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.transfer || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, transfer: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("AFFIDAVIT")}
+            </Text>
+            <Select
+              selectedValue={status?.notary || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.notary || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, notary: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("AFFIDAVIT")}
-          </Text>
-          <Select
-            selectedValue={status?.notary || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.notary || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, notary: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
+          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("CBOSIGN")}
+            </Text>
+            <Select
+              selectedValue={status?.cbo || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.cbo || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, cbo: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
 
-        <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("CBOSIGN")}
-          </Text>
-          <Select
-            selectedValue={status?.cbo || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.cbo || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, cbo: itemValue })
-            }
+          <HStack
+            mt={8}
+            mb={8}
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
-
-        <HStack
-          mt={8}
-          mb={8}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Text fontSize="sm" color="textMaroonColor.400">
-            {t("CBOSIGNTRANSFER")}
-          </Text>
-          <Select
-            selectedValue={status?.cbo_sign || ""}
-            accessibilityLabel="Select"
-            placeholder={status?.cbo_sign || "Select"}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) =>
-              setStatus({ ...status, cbo_sign: itemValue })
-            }
-          >
-            {selectData?.map((item, i) => {
-              return (
-                <Select.Item
-                  key={i}
-                  label={`${t(item.title)}`}
-                  value={item.value}
-                />
-              );
-            })}
-          </Select>
-        </HStack>
-        {checkList ? (
-          buttonPress ? (
-            <FrontEndTypo.ColourPrimaryButton mb={1} type="submit">
-              {t("MARK_AS_COMPLETE")}
-            </FrontEndTypo.ColourPrimaryButton>
-          ) : (
-            <VStack>
-              <Alert status="warning" alignItems={"start"} mb="3">
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium justifyContent="Center">
-                    {t("DOCUMENT_INSTRUCTION_MESSAGE")}
-                  </BodyMedium>
-                </HStack>
-              </Alert>
-
-              <FrontEndTypo.Primarybutton
-                mb={1}
-                type="submit"
-                onPress={() => {
-                  readyToEnrollApiCall();
-                }}
-              >
+            <Text fontSize="sm" color="textMaroonColor.400">
+              {t("CBOSIGNTRANSFER")}
+            </Text>
+            <Select
+              selectedValue={status?.cbo_sign || ""}
+              accessibilityLabel="Select"
+              placeholder={status?.cbo_sign || "Select"}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              onValueChange={(itemValue) =>
+                setStatus({ ...status, cbo_sign: itemValue })
+              }
+            >
+              {selectData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={i}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
+          </HStack>
+          {checkList ? (
+            buttonPress ? (
+              <FrontEndTypo.ColourPrimaryButton mb={1} type="submit">
                 {t("MARK_AS_COMPLETE")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          )
-        ) : (
-          <React.Fragment></React.Fragment>
-        )}
+              </FrontEndTypo.ColourPrimaryButton>
+            ) : (
+              <VStack>
+                <Alert status="warning" alignItems={"start"} mb="3">
+                  <HStack alignItems="center" space="2" color>
+                    <Alert.Icon />
+                    <BodyMedium justifyContent="Center">
+                      {t("DOCUMENT_INSTRUCTION_MESSAGE")}
+                    </BodyMedium>
+                  </HStack>
+                </Alert>
 
-        <FrontEndTypo.Primarybutton
-          mt="4"
-          mb={8}
-          type="submit"
-          onPress={() => {
-            navigate(-1);
-          }}
-        >
-          {t("SAVE")}
-        </FrontEndTypo.Primarybutton>
-      </VStack>
+                <FrontEndTypo.Primarybutton
+                  mb={1}
+                  type="submit"
+                  onPress={() => {
+                    readyToEnrollApiCall();
+                  }}
+                >
+                  {t("MARK_AS_COMPLETE")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
+            )
+          ) : (
+            <React.Fragment></React.Fragment>
+          )}
+
+          <FrontEndTypo.Primarybutton
+            mt="4"
+            mb={8}
+            type="submit"
+            onPress={() => {
+              navigate(-1);
+            }}
+          >
+            {t("SAVE")}
+          </FrontEndTypo.Primarybutton>
+        </VStack>
+      )}
     </Layout>
   );
 };

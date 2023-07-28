@@ -198,12 +198,16 @@ export default function BenificiaryProfileView(props) {
   }
 
   const DocumentStatus = (docStatus) => {
-    const JsonConvert = docStatus ? JSON.parse(docStatus) : {};
-    // Check if all values are either "complete" or "not_applicable"
-    const isAllCompleteOrNotApplicable = Object.values(JsonConvert).every(
-      (value) => value === "complete" || value === "not_applicable"
-    );
-    return isAllCompleteOrNotApplicable ? true : false;
+    if (!docStatus) {
+      return false;
+    } else {
+      const JsonConvert = docStatus ? JSON.parse(docStatus) : {};
+      // Check if all values are either "complete" or "not_applicable"
+      const isAllCompleteOrNotApplicable = Object.values(JsonConvert).every(
+        (value) => value === "complete" || value === "not_applicable"
+      );
+      return isAllCompleteOrNotApplicable ? true : false;
+    }
   };
 
   return (
