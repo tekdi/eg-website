@@ -4,7 +4,7 @@ import {
   ImageView,
   uploadRegistryService,
 } from "@shiksha/common-lib";
-import { Box, Pressable, Progress, Spinner, VStack } from "native-base";
+import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -78,11 +78,7 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
           <FrontEndTypo.H3 textAlign="center">{progress}%</FrontEndTypo.H3>
         </VStack>
       ) : (
-        <Pressable
-          onPress={(e) => {
-            uplodInputRef?.current?.click();
-          }}
-          alignItems="center"
+        <Box
           gap="5"
           borderWidth="1"
           borderStyle="dotted"
@@ -92,16 +88,15 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
           p="2"
           borderRadius="5"
         >
+          <input
+            accept="image/*,application/pdf"
+            type="file"
+            style={{ display: "none" }}
+            ref={uplodInputRef}
+            onChange={handleFileInputChange}
+          />
           <Box alignItems="center">
-            <input
-              accept="image/*,application/pdf"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-
-            {file ? (
+            {file && false ? (
               <ImageView
                 source={{
                   document_id: file,
@@ -114,13 +109,32 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
             ) : iconComponent ? (
               iconComponent
             ) : (
-              <IconByName name="Upload2FillIcon" isDisabled />
+              <IconByName
+                color="gray.500"
+                name="FileTextLine"
+                _icon={{ size: "150" }}
+                isDisabled
+              />
             )}
-            <FrontEndTypo.H2 textAlign="center">
-              {t(uploadTitle ? uploadTitle : label ? label : title)}
-            </FrontEndTypo.H2>
           </Box>
-        </Pressable>
+          <Pressable
+            flex="1"
+            onPress={(e) => {
+              uplodInputRef?.current?.click();
+            }}
+            alignItems="center"
+            p="2"
+            bg="gray.200"
+            shadow={2}
+          >
+            <HStack alignItems="center" space="2">
+              <IconByName name="Upload2FillIcon" isDisabled color="gray.800" />
+              <FrontEndTypo.H2 textAlign="center" color="gray.800">
+                {t(uploadTitle ? uploadTitle : label ? label : title)}
+              </FrontEndTypo.H2>
+            </HStack>
+          </Pressable>
+        </Box>
       )}
       {errors?.fileSize && (
         <FrontEndTypo.H2 color="red.400">{errors?.fileSize}</FrontEndTypo.H2>

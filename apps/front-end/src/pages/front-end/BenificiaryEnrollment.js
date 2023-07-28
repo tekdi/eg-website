@@ -62,7 +62,7 @@ export default function BenificiaryEnrollment() {
             ...benificiary?.program_beneficiaries,
             enrollment_status: (
               <GetEnumValue
-                enumType="BENEFICIARY_STATUS"
+                enumType="ENROLLEMENT_STATUS"
                 enumOptionValue={
                   benificiary?.program_beneficiaries?.enrollment_status
                 }
