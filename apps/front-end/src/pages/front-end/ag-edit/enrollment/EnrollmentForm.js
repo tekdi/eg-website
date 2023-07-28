@@ -306,7 +306,7 @@ export default function App() {
   React.useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
-    const newStep = step ? step : newSteps[1];
+    const newStep = step ? step : newSteps[0];
     setPage(newStep);
     setPages(newSteps);
   }, []);
