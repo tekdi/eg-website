@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Alert,
@@ -474,7 +474,18 @@ const AadhaarOptions = ({
   id,
 }) => {
   const { t } = useTranslation();
+  const [user, setUser] = React.useState();
 
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    const result = await facilitatorRegistryService.getOne({ id });
+    if (result?.id) {
+      setUser(result);
+    }
+  };
   return (
     <VStack bg="white" width={"100%"} space="5" p="5">
       <FrontEndTypo.Secondarybutton
@@ -499,18 +510,22 @@ const AadhaarOptions = ({
       >
         {t("TRY_AADHAR_QR_KYC")}
       </FrontEndTypo.Secondarybutton> */}
-      <FrontEndTypo.Secondarybutton
-        isDisabled={isQRDisabled}
-        onPress={() => {
-          setPage("upload");
-          setOtpFailedPopup(false);
-          navigate(`/aadhaar-kyc/${id}/upload`, {
-            state: redirect,
-          });
-        }}
-      >
-        {t("TRY_AADHAR_UPLOAD_KYC")}
-      </FrontEndTypo.Secondarybutton>
+      {user?.aadhar_verified === "in_progress" ? (
+        <React.Fragment></React.Fragment>
+      ) : (
+        <FrontEndTypo.Secondarybutton
+          isDisabled={isQRDisabled}
+          onPress={() => {
+            setPage("upload");
+            setOtpFailedPopup(false);
+            navigate(`/aadhaar-kyc/${id}/upload`, {
+              state: redirect,
+            });
+          }}
+        >
+          {t("TRY_AADHAR_UPLOAD_KYC")}
+        </FrontEndTypo.Secondarybutton>
+      )}
       <FrontEndTypo.Primarybutton
         onPress={() => {
           navigate(-1);

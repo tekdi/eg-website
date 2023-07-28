@@ -128,7 +128,9 @@ function Table({
   const navigate = useNavigate();
 
   const exportPrerakCSV = async () => {
-    const result = await facilitatorRegistryService.exportFacilitatorsCsv();
+    const result = await facilitatorRegistryService.exportFacilitatorsCsv(
+      filter
+    );
   };
 
   return (

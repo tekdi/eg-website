@@ -217,54 +217,6 @@ export default function BenificiaryBasicDetails() {
             borderColor="appliedColor"
           >
             <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("ADDRESS_DETAILS")}
-              </FrontEndTypo.H3>
-              {/* <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/address`);
-                }}
-              /> */}
-            </HStack>
-            <VStack>
-              <HStack alignItems="Center" space="xl">
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="0.4"
-                >
-                  {t("HOME")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {[
-                    benificiary?.address == "null" ? "" : benificiary?.address,
-                    benificiary?.state,
-                    benificiary?.district,
-                    benificiary?.block,
-                    benificiary?.village,
-                    benificiary?.grampanchayat,
-                  ]
-                    .filter((e) => e)
-                    .join(", ")}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
-
-          <VStack
-            px="5"
-            py="3"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("FAMILY_DETAILS")}
               </FrontEndTypo.H3>
