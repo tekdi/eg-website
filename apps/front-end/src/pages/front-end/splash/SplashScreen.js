@@ -146,7 +146,7 @@ const Page1 = () => {
         source={{
           uri: "/images/logos/EGlogo.png",
         }}
-        alt={t("IMAGE_NOT_FOUND")}
+        alt="Educate Girls"
         size={"2xl"}
         resizeMode="contain"
       />
