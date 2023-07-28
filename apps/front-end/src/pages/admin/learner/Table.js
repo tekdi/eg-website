@@ -76,7 +76,7 @@ const columns = (e) => [
           />
         )}
         <AdminTypo.H5 bold>
-          {row?.first_name + " " + row.last_name}
+          {row?.first_name + " "} {row?.last_name ? row?.last_name : ""}
         </AdminTypo.H5>
       </HStack>
     ),
@@ -111,41 +111,22 @@ const columns = (e) => [
 ];
 
 // Table component
-function Table({ filter, setFilter }) {
-  const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState();
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
-
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
-  React.useEffect(async () => {
-    setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter({
-      ...filter,
-      limit,
-      page,
-    });
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
-    setLoading(false);
-  }, [page, limit, filter]);
-
   const exportBeneficiaryCSV = async () => {
-    const result = await benificiaryRegistoryService.exportBeneficiariesCsv();
+    const result = await benificiaryRegistoryService.exportBeneficiariesCsv(
+      filter
+    );
   };
 
-  const filterByStatus = async (value) => {
-    setLoading(true);
-    setFilter({ ...filter, status: value });
-    setLoading(false);
+  const exportSubjectCSV = async () => {
+    const result =
+      await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
   };
 
   return (
@@ -196,6 +177,22 @@ function Table({ filter, setFilter }) {
           >
             {t("EXPORT")}
           </AdminTypo.Secondarybutton>
+
+          <AdminTypo.Secondarybutton
+            onPress={() => {
+              exportSubjectCSV();
+            }}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("EXPORT_SUBJECT_CSV")}
+          </AdminTypo.Secondarybutton>
         </HStack>
       </HStack>
       <ScrollView horizontal={true} mb="2">
@@ -221,7 +218,7 @@ function Table({ filter, setFilter }) {
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
-                  filterByStatus(item?.value);
+                  setFilter({ ...filter, status: item?.value, page: 1 });
                 }}
               >
                 {t(item?.title)}
@@ -242,12 +239,10 @@ function Table({ filter, setFilter }) {
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {
-          setLimit(e);
-          setadminLimit(e);
+          setFilter({ ...filter, limit: e });
         }}
         onChangePage={(e) => {
-          setPage(e);
-          setFilter(e);
+          setFilter({ ...filter, page: e });
         }}
       />
     </VStack>

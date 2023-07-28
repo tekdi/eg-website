@@ -2,7 +2,15 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-import { Box, HStack, VStack, ScrollView, Button } from "native-base";
+import {
+  Box,
+  HStack,
+  VStack,
+  ScrollView,
+  Button,
+  Input,
+  Text,
+} from "native-base";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -11,6 +19,8 @@ import {
   AdminTypo,
   geolocationRegistryService,
   facilitatorRegistryService,
+  setQueryParameters,
+  debounce,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -24,10 +34,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [facilitator, setFacilitator] = React.useState([]);
   const [filter, setFilter] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
+
+  const [data, setData] = React.useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+
+  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
 
   // facilitator pagination
-  const [facilitatorLimit, setFacilitatorLimit] = React.useState(10);
-  const [facilitatorPage, setFacilitatorPage] = React.useState(1);
   const [isMore, setIsMore] = React.useState("");
 
   React.useEffect(async () => {
@@ -38,29 +52,46 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
 
+  React.useEffect(async () => {
+    setLoading(true);
+    const result = await benificiaryRegistoryService.beneficiariesFilter(
+      filter
+    );
+    setData(result.data?.data);
+    setPaginationTotalRows(
+      result?.data?.totalCount ? result?.data?.totalCount : 0
+    );
+    setLoading(false);
+  }, [filter]);
+
   React.useEffect(() => {
     const facilitatorDetails = async () => {
-      const result = await facilitatorRegistryService.filter(
-        {},
-        facilitatorPage,
-        facilitatorLimit
-      );
+      const result = await facilitatorRegistryService.filter(facilitatorFilter);
       setIsMore(
         parseInt(`${result?.data?.currentPage}`) <
           parseInt(`${result?.data?.totalPages}`)
       );
       const newData = result?.data?.data?.map((e) => ({
         value: e?.id,
-        label: `${e?.first_name} ${e?.last_name}`,
+        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
       }));
       const newFilterData = newData.filter(
         (e) =>
           facilitator.filter((subE) => subE.value === e?.value).length === 0
       );
-      setFacilitator([...facilitator, ...newFilterData]);
+      if (filter?.page > 1) {
+        setFacilitator([...facilitator, ...newFilterData]);
+      } else {
+        setFacilitator(newFilterData);
+      }
     };
     facilitatorDetails();
-  }, [facilitatorPage]);
+  }, [facilitatorFilter]);
+
+  const setFilterObject = (data) => {
+    setFilter(data);
+    setQueryParameters(data);
+  };
 
   const schema = {
     type: "object",
@@ -91,11 +122,16 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const onChange = async (data) => {
     const { district } = data?.formData;
-    setFilter({ ...filter, district });
+    setFilterObject({
+      ...filter,
+      ...(district ? { district } : {}),
+      // ...(facilitator ? { facilitator } : {}),
+    });
   };
 
   const clearFilter = () => {
     setFilter({});
+    setFilterObject({});
   };
 
   function CustomFieldTemplate({ id, classNames, label, required, children }) {
@@ -171,19 +207,47 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
+                <Text bold>{t("PRERAK")}</Text>
+                <Input
+                  // InputLeftElement={
+                  //   <IconByName color="coolGray.500" name="SearchLineIcon" />
+                  // }
+                  w="100%"
+                  height="32px"
+                  placeholder="search"
+                  variant="outline"
+                  onChange={(e) => {
+                    debounce(
+                      setFacilitatorFilter({
+                        ...facilitatorFilter,
+                        search: e.nativeEvent.text,
+                        page: 1,
+                      }),
+                      3000
+                    );
+                  }}
+                />
                 <MultiCheck
                   value={filter?.facilitator ? filter?.facilitator : []}
                   onChange={(e) => {
-                    setFilter({ ...filter, facilitator: e });
+                    setFilterObject({ ...filter, facilitator: e });
                   }}
-                  schema={{ label: "PRERAK", grid: 1 }}
+                  schema={{ grid: 1 }}
                   options={{
                     enumOptions: facilitator,
                   }}
                 />
                 {isMore && (
                   <Button
-                    onPress={(e) => setFacilitatorPage(facilitatorPage + 1)}
+                    onPress={(e) =>
+                      setFacilitatorFilter({
+                        ...facilitatorFilter,
+                        page:
+                          (facilitatorFilter?.page
+                            ? parseInt(facilitatorFilter?.page)
+                            : 1) + 1,
+                      })
+                    }
                   >
                     {t("MORE")}
                   </Button>
@@ -197,7 +261,13 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           minH={Height - refAppBar?.clientHeight}
         >
           <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table filter={filter} setFilter={setFilter} />
+            <Table
+              filter={filter}
+              setFilter={setFilterObject}
+              paginationTotalRows={paginationTotalRows}
+              data={data}
+              loading={loading}
+            />
           </Box>
         </ScrollView>
       </HStack>
