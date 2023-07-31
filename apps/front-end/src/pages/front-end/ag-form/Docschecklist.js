@@ -125,13 +125,18 @@ const Docschecklist = ({ footerLinks }) => {
         </Alert>
       ) : (
         <VStack width={"90%"} margin={"auto"} mt={3}>
-          <Text fontSize="sm" mt={3} bold color="textMaroonColor.900">
+          <FrontEndTypo.H3
+            fontSize="sm"
+            mt={3}
+            bold
+            color="textMaroonColor.900"
+          >
             {t("MANDATORY")}
-          </Text>
+          </FrontEndTypo.H3>
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("JAN_AADHAAR_CARD")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.jan_adhar || ""}
               accessibilityLabel="Select"
@@ -164,9 +169,9 @@ const Docschecklist = ({ footerLinks }) => {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("AADHAAR_CARD")}
-            </Text>
+            </FrontEndTypo.H3>
 
             <Select
               selectedValue={status?.aadhaar || ""}
@@ -199,9 +204,9 @@ const Docschecklist = ({ footerLinks }) => {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("PHOTO")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.photo || ""}
               accessibilityLabel="Select"
@@ -228,9 +233,9 @@ const Docschecklist = ({ footerLinks }) => {
           </HStack>
 
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("MOBILE_NUMBER")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.mobile || ""}
               accessibilityLabel="Select"
@@ -257,9 +262,9 @@ const Docschecklist = ({ footerLinks }) => {
           </HStack>
 
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("MARKSHEET")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.marksheet || ""}
               accessibilityLabel="Select"
@@ -286,9 +291,9 @@ const Docschecklist = ({ footerLinks }) => {
           </HStack>
 
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("BANK_PASSBOOK")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.bank || ""}
               accessibilityLabel="Select"
@@ -320,9 +325,9 @@ const Docschecklist = ({ footerLinks }) => {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("BIRTH_CERTIFICATE")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.birth || ""}
               accessibilityLabel="Select"
@@ -347,13 +352,13 @@ const Docschecklist = ({ footerLinks }) => {
               })}
             </Select>
           </HStack>
-          <Text fontSize="sm" bold color="textMaroonColor.900">
+          <FrontEndTypo.H3 fontSize="sm" bold color="textMaroonColor.900">
             {t("MAY_BE_REQUIRED")}
-          </Text>
+          </FrontEndTypo.H3>
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("CASTE_CERTIFICATE")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.caste || ""}
               accessibilityLabel="Select"
@@ -380,9 +385,9 @@ const Docschecklist = ({ footerLinks }) => {
           </HStack>
 
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("TRANSFER_CERTIFICATE")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.transfer || ""}
               accessibilityLabel="Select"
@@ -409,9 +414,9 @@ const Docschecklist = ({ footerLinks }) => {
           </HStack>
 
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("AFFIDAVIT")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.notary || ""}
               accessibilityLabel="Select"
@@ -438,9 +443,9 @@ const Docschecklist = ({ footerLinks }) => {
           </HStack>
 
           <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("CBOSIGN")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.cbo || ""}
               accessibilityLabel="Select"
@@ -472,9 +477,9 @@ const Docschecklist = ({ footerLinks }) => {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <Text fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("CBOSIGNTRANSFER")}
-            </Text>
+            </FrontEndTypo.H3>
             <Select
               selectedValue={status?.cbo_sign || ""}
               accessibilityLabel="Select"
