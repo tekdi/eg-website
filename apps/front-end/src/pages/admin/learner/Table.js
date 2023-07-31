@@ -86,6 +86,14 @@ const columns = (e) => [
     attr: "name",
   },
   {
+    name: t("PRERAK"),
+
+    selector: (row) =>
+      row?.program_beneficiaries?.facilitator_user?.first_name
+        ? row?.program_beneficiaries?.facilitator_user?.first_name
+        : "-",
+  },
+  {
     name: t("AGE"),
 
     selector: (row) =>
@@ -114,7 +122,6 @@ const columns = (e) => [
     attr: "email",
   },
 ];
-
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
