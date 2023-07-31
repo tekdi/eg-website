@@ -1,14 +1,4 @@
-import {
-  H3,
-  H4,
-  Heading,
-  IconByName,
-  Layout,
-  t,
-  changeLanguage,
-  useWindowSize,
-  FrontEndTypo,
-} from "@shiksha/common-lib";
+import { Layout, changeLanguage, FrontEndTypo } from "@shiksha/common-lib";
 import {
   Box,
   Button,
@@ -21,7 +11,8 @@ import {
   Pressable,
 } from "native-base";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const stylesheet = {
   mainBox: {
@@ -89,14 +80,12 @@ const stylesheet = {
 export default function SplashScreen({
   onClick,
   onClickPrerakDuties,
-  onPreferedLanguage,
   isBackButton,
 }) {
   const [page, setPage] = React.useState("screen1");
   const [code, setCode] = React.useState("en");
-
   const [refAppBar, RefAppBar] = React.useState();
-  changeLanguage(localStorage.getItem("lang"));
+
   React.useEffect(() => {
     //if location is pressed directly setpage screen2
     if (isBackButton === "SplashScreen") {
@@ -110,6 +99,7 @@ export default function SplashScreen({
         clearTimeout(setTime);
       };
     }
+    changeLanguage(localStorage.getItem("lang"));
   }, []);
 
   const onShowScreen = (code) => {
@@ -155,8 +145,19 @@ const Page1 = () => {
 };
 
 const Page2 = ({ onClick, onClickPrerakDuties }) => {
-  changeLanguage(localStorage.getItem("lang"));
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const getData = () => {
+      if (isMounted) changeLanguage(localStorage.getItem("lang"));
+    };
+    getData();
+    return () => {
+      isMounted = false;
+    };
+  }, [localStorage.getItem("lang")]);
 
   return (
     <Stack style={stylesheet.bgimage}>
@@ -224,9 +225,17 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
 
 const Page3 = ({ onShowScreen }) => {
   const [code, setCode] = React.useState("hi");
+  const { t } = useTranslation();
 
   React.useEffect(() => {
-    changeLanguage(code);
+    let isMounted = true;
+    const getData = () => {
+      if (isMounted) changeLanguage(code);
+    };
+    getData();
+    return () => {
+      isMounted = false;
+    };
   }, [code]);
 
   return (
