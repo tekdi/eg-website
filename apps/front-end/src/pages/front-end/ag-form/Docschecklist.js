@@ -7,6 +7,7 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   BodyMedium,
+  DocumentStatus,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
@@ -19,7 +20,6 @@ import {
   Alert,
 } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
-import { DocumentStatus } from "../../../component/BaseInput";
 
 const Docschecklist = ({ footerLinks }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));

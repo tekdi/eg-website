@@ -45,19 +45,6 @@ export function AddButton({ icon, iconType, ...btnProps }) {
   );
 }
 
-export const DocumentStatus = (docStatus) => {
-  if (!docStatus) {
-    return false;
-  } else {
-    const JsonConvert = docStatus ? JSON.parse(docStatus) : {};
-    // Check if all values are either "complete" or "not_applicable"
-    const isAllCompleteOrNotApplicable = Object.values(JsonConvert).every(
-      (value) => value === "complete" || value === "not_applicable"
-    );
-    return isAllCompleteOrNotApplicable ? true : false;
-  }
-};
-
 export function RemoveButton({ icon, iconType, ...btnProps }) {
   const { t } = useTranslation();
   return (
