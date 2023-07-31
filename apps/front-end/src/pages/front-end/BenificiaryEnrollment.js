@@ -1,12 +1,9 @@
 import React from "react";
-import { HStack, VStack, Box, Progress } from "native-base";
+import { VStack } from "native-base";
 import {
-  arrList,
-  IconByName,
-  FrontEndTypo,
+  ItemComponent,
   benificiaryRegistoryService,
   Layout,
-  ImageView,
   enumRegistryService,
   GetEnumValue,
 } from "@shiksha/common-lib";
@@ -56,7 +53,7 @@ export default function BenificiaryEnrollment() {
       <VStack p="5" space={4}>
         <ItemComponent
           title={t("ENROLLMENT_DETAILS")}
-          step={"edit_enrollement"}
+          schema={schema1?.properties["edit_enrollement"]}
           notShow={["subjects"]}
           item={{
             ...benificiary?.program_beneficiaries,
@@ -114,7 +111,7 @@ export default function BenificiaryEnrollment() {
         ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
           <ItemComponent
             title={t("ENROLLMENT_RECEIPT")}
-            step={"edit_enrollement_details"}
+            schema={schema1?.properties["edit_enrollement_details"]}
             item={{
               ...benificiary?.program_beneficiaries,
               enrollment_dob: benificiary?.program_beneficiaries?.enrollment_dob
@@ -139,80 +136,3 @@ export default function BenificiaryEnrollment() {
     </Layout>
   );
 }
-
-const ItemComponent = ({ title, item, onlyField, onEdit, step, notShow }) => {
-  const { t } = useTranslation();
-  const schema = schema1?.properties[step];
-  let arr = Object.keys(schema?.properties);
-  if (onlyField?.constructor.name === "Array" && onlyField?.length) {
-    arr = onlyField;
-  } else if (
-    !onlyField &&
-    notShow?.constructor.name === "Array" &&
-    notShow?.length
-  ) {
-    arr = arr.filter((e) => !notShow?.includes(e));
-  }
-  return (
-    <VStack
-      px="5"
-      py="4"
-      space="3"
-      borderRadius="10px"
-      borderWidth="1px"
-      bg="white"
-      borderColor="appliedColor"
-    >
-      <HStack justifyContent="space-between" alignItems="Center">
-        <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
-          {title}
-        </FrontEndTypo.H3>
-        {onEdit && (
-          <HStack alignItems="center">
-            <IconByName
-              name="EditBoxLineIcon"
-              color="iconColor.100"
-              onPress={(e) => onEdit(item)}
-            />
-          </HStack>
-        )}
-      </HStack>
-      <Box paddingTop="2">
-        <Progress value={arrList(item, arr)} size="xs" colorScheme="info" />
-      </Box>
-      <VStack space="2" paddingTop="5">
-        {arr?.map((key, index) => (
-          <HStack
-            key={key}
-            alignItems="Center"
-            justifyContent="space-between"
-            borderBottomWidth="1px"
-            borderBottomColor="appliedColor"
-          >
-            <FrontEndTypo.H3
-              color="textGreyColor.50"
-              fontWeight="400"
-              flex="0.3"
-            >
-              {t(schema?.properties?.[key]?.label)}
-            </FrontEndTypo.H3>
-
-            <FrontEndTypo.H3
-              color="textGreyColor.800"
-              fontWeight="400"
-              flex="0.4"
-            >
-              {schema?.properties?.[key]?.format === "FileUpload" ? (
-                <ImageView source={{ document_id: item?.[key] }} text="link" />
-              ) : item?.[key] ? (
-                item?.[key]
-              ) : (
-                "-"
-              )}
-            </FrontEndTypo.H3>
-          </HStack>
-        ))}
-      </VStack>
-    </VStack>
-  );
-};
