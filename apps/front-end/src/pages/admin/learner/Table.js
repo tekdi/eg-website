@@ -88,10 +88,16 @@ const columns = (e) => [
   {
     name: t("PRERAK"),
 
-    selector: (row) =>
-      row?.program_beneficiaries?.facilitator_user?.first_name
-        ? row?.program_beneficiaries?.facilitator_user?.first_name
-        : "-",
+    selector: (row) => {
+      const {
+        program_beneficiaries: {
+          facilitator_user: { first_name, last_name },
+        },
+      } = row;
+      return first_name || last_name
+        ? `${first_name}${last_name ? ` ${last_name}` : ""}`
+        : "-";
+    },
   },
   {
     name: t("AGE"),
