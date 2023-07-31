@@ -19,6 +19,7 @@ import {
   Alert,
 } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
+import { DocumentStatus } from "../../../component/BaseInput";
 
 const Docschecklist = ({ footerLinks }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
@@ -29,19 +30,6 @@ const Docschecklist = ({ footerLinks }) => {
   const [buttonPress, setButtonPress] = useState(false);
   const [benificiary, setBenificiary] = React.useState({});
   const [msgshow, setmsgshow] = React.useState(false);
-
-  const DocumentStatus = (docStatus) => {
-    if (!docStatus) {
-      return false;
-    } else {
-      const JsonConvert = docStatus ? JSON.parse(docStatus) : {};
-      // Check if all values are either "complete" or "not_applicable"
-      const isAllCompleteOrNotApplicable = Object.values(JsonConvert).every(
-        (value) => value === "complete" || value === "not_applicable"
-      );
-      return isAllCompleteOrNotApplicable ? true : false;
-    }
-  };
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);

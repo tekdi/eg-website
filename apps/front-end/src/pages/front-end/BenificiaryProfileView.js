@@ -23,10 +23,10 @@ import {
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
-
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
+import { DocumentStatus } from "../../component/BaseInput";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -47,7 +47,6 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
-  // const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -196,19 +195,6 @@ export default function BenificiaryProfileView(props) {
         return <React.Fragment></React.Fragment>;
     }
   }
-
-  const DocumentStatus = (docStatus) => {
-    if (!docStatus) {
-      return false;
-    } else {
-      const JsonConvert = docStatus ? JSON.parse(docStatus) : {};
-      // Check if all values are either "complete" or "not_applicable"
-      const isAllCompleteOrNotApplicable = Object.values(JsonConvert).every(
-        (value) => value === "complete" || value === "not_applicable"
-      );
-      return isAllCompleteOrNotApplicable ? true : false;
-    }
-  };
 
   return (
     <Layout
