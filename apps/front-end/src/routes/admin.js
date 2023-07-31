@@ -7,11 +7,12 @@ import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/Orientation";
 import Attendence from "pages/front-end/Attendence/Attendence";
-
+import DuplicateHome from "pages/admin/duplicate/DuplicateHome";
 import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
 import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
 import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
+import DuplicateView from "pages/admin/duplicate/DuplicateView";
 // import { CheatSheet } from "@shiksha/common-lib";
 
 export default [
@@ -22,6 +23,8 @@ export default [
   { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
+  { path: "/admin/facilitator/duplicatelist", component: DuplicateHome },
+  { path: "/admin/view/duplicate/:adhaarNo", component: DuplicateView },
 
   {
     path: "/aadhaar-kyc/:id",

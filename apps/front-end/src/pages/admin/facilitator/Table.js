@@ -171,6 +171,21 @@ function Table({
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
+              navigate("/admin/facilitator/duplicatelist");
+            }}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("DUPLICATE")}
+          </AdminTypo.Secondarybutton>
+          <AdminTypo.Secondarybutton
+            onPress={() => {
               exportPrerakCSV();
             }}
             rightIcon={

@@ -79,6 +79,42 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   );
 };
 
+export const tableCustomStyles = {
+  rows: {
+    style: {
+      minHeight: "72px", // override the row height
+    },
+    style: {
+      minHeight: "72px", // override the row height
+    },
+  },
+  headCells: {
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+    },
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+      justifyContent: "center",
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+    },
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "center",
+    },
+  },
+};
+
+
 export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   const [isShow, setIsShow] = React.useState("");
   const { title } = schema;
