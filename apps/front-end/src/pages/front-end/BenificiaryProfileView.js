@@ -20,7 +20,7 @@ import {
   t,
   ImageView,
   BodyMedium,
-  DocumentStatus,
+  getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
@@ -391,7 +391,7 @@ export default function BenificiaryProfileView(props) {
                 {!["dropout", "rejected"].includes(
                   benificiary?.program_beneficiaries?.status
                 ) &&
-                  !DocumentStatus(docStatus) && (
+                  !getBeneficaryDocumentationStatus(docStatus) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={(e) => {

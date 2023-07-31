@@ -32,7 +32,6 @@ import * as eventService from './services/EventService'
 import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
-import { DocumentStatus } from './components/helper'
 
 // export
 export {
@@ -71,8 +70,7 @@ export {
   eventService,
   aadhaarService,
   Alert,
-  GetEnumValue,
-  DocumentStatus
+  GetEnumValue
 }
 
 export * from './services/RestClient'

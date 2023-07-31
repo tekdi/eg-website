@@ -7,7 +7,7 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   BodyMedium,
-  DocumentStatus,
+  getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import {
@@ -30,12 +30,14 @@ const Docschecklist = ({ footerLinks }) => {
   const [buttonPress, setButtonPress] = useState(false);
   const [benificiary, setBenificiary] = React.useState({});
   const [msgshow, setmsgshow] = React.useState(false);
+  const [loading, setloading] = React.useState(true);
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
     let docStatus = data?.result?.program_beneficiaries?.documents_status;
     setBenificiary(data?.result);
-    setmsgshow(DocumentStatus(docStatus));
+    setloading(false);
+    setmsgshow(getBeneficaryDocumentationStatus(docStatus));
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(
         JSON.parse(data.result?.program_beneficiaries?.documents_status)
@@ -93,6 +95,7 @@ const Docschecklist = ({ footerLinks }) => {
   };
   return (
     <Layout
+      loading={loading}
       _appBar={{
         name: t("DOCUMENTS_CHECKLIST"),
         lang,
