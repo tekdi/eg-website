@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, VStack, Box, Progress, Divider } from "native-base";
+import { HStack, VStack, Box, Progress, Divider, Alert } from "native-base";
 import {
   arrList,
   FrontEndTypo,
@@ -10,6 +10,7 @@ import {
   ImageView,
   enumRegistryService,
   GetEnumValue,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -69,7 +70,14 @@ export default function FacilitatorQualification({
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      {
+      {["quit", "rejected", "rusticate"].includes(facilitator?.status) ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
         <VStack>
           <VStack px="5" pt="3">
             <VStack
@@ -210,7 +218,7 @@ export default function FacilitatorQualification({
             </VStack>
           </VStack>
         </VStack>
-      }
+      )}
     </Layout>
   );
 }
