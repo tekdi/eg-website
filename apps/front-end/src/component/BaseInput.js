@@ -6,7 +6,6 @@ import {
   FormControl,
   HStack,
   Image,
-  Pressable,
   Radio,
   Select,
   Stack,
@@ -24,16 +23,19 @@ import {
   CustomOTPBox,
   AdminTypo,
   chunk,
+  sprintF,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
+// rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
 }
 
+// rjsf custom AddButton for ArrayFieldTemplate use in all form
 export function AddButton({ icon, iconType, ...btnProps }) {
   const { t } = useTranslation();
   return (
@@ -45,6 +47,7 @@ export function AddButton({ icon, iconType, ...btnProps }) {
   );
 }
 
+// rjsf custom RemoveButton for ArrayFieldTemplate use in all form
 export function RemoveButton({ icon, iconType, ...btnProps }) {
   const { t } = useTranslation();
   return (
@@ -56,6 +59,7 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
   );
 }
 
+// rjsf custom TitleFieldTemplate title field layout Template use in all form
 export const TitleFieldTemplate = ({ id, required, title }) => {
   const { t } = useTranslation();
   return (
@@ -68,6 +72,7 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
   );
 };
 
+// rjsf custom DescriptionFieldTemplate field layout Template use in all form
 export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
@@ -79,6 +84,7 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   );
 };
 
+// rjsf custom ArrayFieldTemplate Array layout Template use in all form
 export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   const [isShow, setIsShow] = React.useState("");
   const { title } = schema;
@@ -164,6 +170,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   );
 };
 
+// rjsf custom FieldTemplate field layout Template use in all form
 export const FieldTemplate = ({
   id,
   style,
@@ -207,14 +214,20 @@ export const FieldTemplate = ({
     </VStack>
   );
 };
+
+// rjsf custom ObjectFieldTemplate object field layout Template use in all form
 export const ObjectFieldTemplate = (props) => {
   const { t } = useTranslation();
   return (
     <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
-        <VStack key={`element${index}`} w="100%">
-          {element.content}
-        </VStack>
+        <div
+          key={`element${index}`}
+          id={`element_${element.name}`}
+          style={{ width: "100%" }}
+        >
+          <VStack w="100%">{element.content}</VStack>
+        </div>
       ))}
     </VStack>
   );
@@ -224,6 +237,7 @@ export const ArrayFieldTitleTemplate = (props) => {
   return <React.Fragment />;
 };
 
+// rjsf custom CustomRadioBtn as CustomR field
 export const CustomR = ({
   options,
   value,
@@ -244,6 +258,7 @@ export const CustomR = ({
   );
 };
 
+// rjsf custom RadioBtn field
 export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
   const { label, format } = schema ? schema : {};
@@ -293,6 +308,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   );
 };
 
+// rjsf custom Aadhaar field
 export const Aadhaar = (props) => {
   const { t } = useTranslation();
   return (
@@ -325,6 +341,7 @@ export const Aadhaar = (props) => {
   );
 };
 
+// rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label, title } = schema ? schema : {};
@@ -394,6 +411,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
   );
 };
 
+// rjsf custom readOnly field
 export const readOnly = ({ value, onChange, required, schema }) => {
   const { title } = schema ? schema : {};
   const { t } = useTranslation();
@@ -419,6 +437,7 @@ export const readOnly = ({ value, onChange, required, schema }) => {
   );
 };
 
+// rjsf custom HFieldTemplate title layout Template use in orientation
 export const HFieldTemplate = ({
   id,
   style,
@@ -473,6 +492,7 @@ export const HFieldTemplate = ({
   );
 };
 
+// rjsf custom MultiCheck field
 export const MultiCheck = ({
   options,
   value,
@@ -555,6 +575,7 @@ export const MultiCheck = ({
   );
 };
 
+// rjsf custom textarea field
 const textarea = ({
   schema,
   options,
@@ -653,6 +674,100 @@ const templates = {
   BaseInputTemplate,
   ArrayFieldTemplate,
 };
+
+// scroll to input error field
+export const scrollToField = ({ property } = {}) => {
+  if (property) {
+    const element = document.getElementById(
+      `element_${property.replace(".", "")}`
+    );
+    if (element) {
+      element?.scrollIntoView();
+    } else {
+      const element1 = document.getElementById(
+        `root_${property.replace(".", "")}__error`
+      );
+      if (element1) {
+        element1?.scrollIntoView();
+      }
+    }
+  }
+};
+
+// errors first error focus
+export const focusToField = (errors) => {
+  const firstError = errors?.[0];
+  scrollToField(firstError);
+};
+
+// trans form erros in i18 lang translate
+const transformErrors = (errors, schema, t) => {
+  return errors.map((error) => {
+    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
+    if (error.name === "required") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        if (schemaItem?.format === "FileUpload") {
+          error.message = `${t("REQUIRED_MESSAGE_UPLOAD")} "${t(title)}"`;
+        } else {
+          error.message = `${t("REQUIRED_MESSAGE")} "${t(title)}"`;
+        }
+      } else {
+        error.message = `${t("REQUIRED_MESSAGE")}`;
+      }
+    } else if (error.name === "minItems") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        error.message = sprintF(
+          t("SELECT_MINIMUM"),
+          error?.params?.limit,
+          t(title)
+        );
+      } else {
+        error.message = sprintF(t("SELECT_MINIMUM"), error?.params?.limit, "");
+      }
+    } else if (error.name === "maxItems") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        error.message = sprintF(
+          t("SELECT_MAXIMUM"),
+          error?.params?.limit,
+          t(title)
+        );
+      } else {
+        error.message = sprintF(t("SELECT_MAXIMUM"), error?.params?.limit, "");
+      }
+    } else if (error.name === "enum") {
+      error.message = `${t("SELECT_MESSAGE")}`;
+    } else if (error.name === "format") {
+      const { format } = error?.params ? error?.params : {};
+      let message = "REQUIRED_MESSAGE";
+      if (format === "email") {
+        message = "PLEASE_ENTER_VALID_EMAIL";
+      }
+      if (format === "string") {
+        message = "PLEASE_ENTER_VALID_STREING";
+      } else if (format === "number") {
+        message = "PLEASE_ENTER_VALID_NUMBER";
+      }
+
+      if (schema?.properties?.[error?.property]?.title) {
+        error.message = `${t(message)} "${t(
+          schema?.properties?.[error?.property]?.title
+        )}"`;
+      } else {
+        error.message = `${t(message)}`;
+      }
+    }
+    return error;
+  });
+};
+
+// rjsf onerror parmaeter for common
+const onError = (errors, dsat) => {
+  focusToField(errors);
+};
+
 export {
   widgets,
   templates,
@@ -660,4 +775,6 @@ export {
   FileUpload,
   validator,
   MobileNumber,
+  onError,
+  transformErrors,
 };
