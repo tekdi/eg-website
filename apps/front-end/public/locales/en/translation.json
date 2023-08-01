@@ -534,6 +534,7 @@
   "PASSWORD_IS_REQUIRED": "Password is required",
   "PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "PAYMENT_RECEIPT": "Enrollment Receipt",
+  "PAGE_NOT_ACCESSABLE": "This page is not accessible, please go to the home page and then navigate.",
   "PERSONAL_DETAILS": "Personal Details",
   "PHD": "PhD",
   "PHOTO": "Photo",
