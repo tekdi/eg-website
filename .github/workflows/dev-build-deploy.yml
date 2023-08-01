@@ -2,7 +2,7 @@ name: Deploy to DEV
 on: 
   push: 
     branches:
-      - agmobi
+      - hotfix-1.0.1
 jobs:
   build:
     name: Build Deploy To DEV
