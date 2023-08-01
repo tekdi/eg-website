@@ -20,10 +20,10 @@ import {
   t,
   ImageView,
   BodyMedium,
+  getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
-
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
@@ -37,6 +37,7 @@ export default function BenificiaryProfileView(props) {
     React.useState(false);
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
+  const [docStatus, setdocStatus] = React.useState();
   const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
     React.useState();
   const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
@@ -46,7 +47,6 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
-  // const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -77,6 +77,7 @@ export default function BenificiaryProfileView(props) {
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
+    setdocStatus(result?.result?.program_beneficiaries?.documents_status);
     // const contextId = result?.result?.program_beneficiaries?.id;
     // const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
     // if (auditLogs[0]) {
@@ -395,8 +396,10 @@ export default function BenificiaryProfileView(props) {
               <FrontEndTypo.H3 color="textGreyColor.800" bold>
                 {t("DOCUMENT_CHECKLIST")}
               </FrontEndTypo.H3>
-              {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                benificiary?.program_beneficiaries?.status !== "rejected" && (
+              {!["dropout", "rejected"].includes(
+                benificiary?.program_beneficiaries?.status
+              ) &&
+                !getBeneficaryDocumentationStatus(docStatus) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     onPress={(e) => {
