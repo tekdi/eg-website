@@ -238,7 +238,7 @@ export default function BenificiaryProfileView(props) {
             <ChipStatus
               status={benificiary?.program_beneficiaries?.status}
               is_duplicate={benificiary?.is_duplicate}
-              is_deactivate={benificiary?.is_deactivate}
+              is_deactivated={benificiary?.is_deactivated}
               rounded={"sm"}
             />
           </VStack>

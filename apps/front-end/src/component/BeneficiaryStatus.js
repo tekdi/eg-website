@@ -1,15 +1,16 @@
 import { Box, Text } from "native-base";
 import React from "react";
-import { t } from "@shiksha/common-lib";
+import { FrontEndTypo, t } from "@shiksha/common-lib";
 
 export default function Chip({
   label,
   children,
   is_duplicate,
-  is_deactivate,
+  is_deactivated,
   isActive,
   ...props
 }) {
+  console.log("is_deactivated", is_deactivated);
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
@@ -23,14 +24,17 @@ export default function Chip({
       {...props}
     >
       <Text>
-        {" "}
         {children ? children : label}{" "}
-        {is_duplicate === "yes" ? (
-          <Text>{`(${t("BENEFICIARY_STATUS_DUPLICATED")})`}</Text>
-        ) : is_deactivate === "yes" ? (
-          <Text>{`(${t("DEACTIVATE")})`}</Text>
+        {is_deactivated ? (
+          <FrontEndTypo.H3>{`(${t("DEACTIVATE")})`}</FrontEndTypo.H3>
+        ) : is_deactivated === false ? (
+          <React.Fragment></React.Fragment>
+        ) : is_duplicate === "yes" ? (
+          <FrontEndTypo.H3>{`(${t(
+            "BENEFICIARY_STATUS_DUPLICATED"
+          )})`}</FrontEndTypo.H3>
         ) : (
-          <></>
+          <React.Fragment></React.Fragment>
         )}
       </Text>
     </Box>
@@ -38,7 +42,7 @@ export default function Chip({
 }
 
 // ChipStatus
-export function ChipStatus({ status, is_duplicate, is_deactivate, ...props }) {
+export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
   const [color, setColor] = React.useState("identifiedColor");
   const [textColor, setTextColor] = React.useState("textGreyColor.800");
   const [newStatus, setNewStatus] = React.useState(status);
@@ -114,7 +118,7 @@ export function ChipStatus({ status, is_duplicate, is_deactivate, ...props }) {
       color={textColor}
       label={newStatus}
       is_duplicate={is_duplicate}
-      is_deactivate={is_deactivate}
+      is_deactivated={is_deactivated}
       _text={{ textTransform: "capitalize" }}
       rounded="sm"
       {...props}

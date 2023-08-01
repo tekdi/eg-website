@@ -80,7 +80,7 @@ const List = ({ data }) => {
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
                     is_duplicate={item?.is_duplicate}
-                    is_deactivate={item?.is_deactivate}
+                    is_deactivated={item?.is_deactivated}
                     rounded={"sm"}
                   />
                 </Box>
