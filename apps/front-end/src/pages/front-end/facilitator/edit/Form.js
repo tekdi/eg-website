@@ -16,7 +16,13 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import { templates, widgets, validator } from "component/BaseInput";
+import {
+  templates,
+  widgets,
+  validator,
+  transformErrors,
+  onError,
+} from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 
@@ -430,42 +436,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     return errors;
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      } else if (error.name === "format") {
-        const { format } = error?.params ? error?.params : {};
-        let message = "REQUIRED_MESSAGE";
-        if (format === "email") {
-          message = "PLEASE_ENTER_VALID_EMAIL";
-        }
-        if (format === "string") {
-          message = "PLEASE_ENTER_VALID_STREING";
-        } else if (format === "number") {
-          message = "PLEASE_ENTER_VALID_NUMBER";
-        }
-
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t(message)} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t(message)}`;
-        }
-      }
-      return error;
-    });
-  };
-
   const setDistric = async ({ state, district, block, schemaData }) => {
     let newSchema = schemaData;
     setLoading(true);
@@ -592,6 +562,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         const newErrors = {
           contact_number: {
             __errors: [t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+      if (userTokenInfo?.authUser?.mobile === data?.contact_number) {
+        const newErrors = {
+          contact_number: {
+            __errors: [t("REFERENCE_NUMBER_SHOULD_NOT_BE_SAME")],
           },
         };
         setErrors(newErrors);
@@ -774,12 +752,12 @@ export default function App({ userTokenInfo, footerLinks }) {
           <Form
             key={lang}
             ref={formRef}
-            widgets={widgets}
-            templates={templates}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
             {...{
+              widgets,
+              templates,
               validator,
               schema: schema ? schema : {},
               uiSchema,
@@ -787,7 +765,8 @@ export default function App({ userTokenInfo, footerLinks }) {
               customValidate,
               onChange,
               onSubmit,
-              transformErrors,
+              onError,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
             {mobileConditon && step === "contact_details" ? (

@@ -31,6 +31,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [data, setData] = React.useState();
+  const [facilitator, setfacilitator] = React.useState();
   const [addMore, setAddMore] = React.useState();
   const [keys, setKeys] = React.useState([]);
   const [labels, setLabels] = React.useState([]);
@@ -144,6 +145,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     const { id } = userTokenInfo?.authUser;
     if (id) {
       const result = await facilitatorRegistryService.getOne({ id });
+      setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
       } else if (type === "vo_experience") {
@@ -334,115 +336,128 @@ export default function App({ userTokenInfo, footerLinks }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <Box py={6} px={4} mb={5}>
-        {!addMore ? (
-          <VStack space={"4"}>
-            {data &&
-              data.constructor.name === "Array" &&
-              data?.map((item, index) => {
-                const { name, contact_number, type_of_document, document_id } =
-                  item?.reference ? item?.reference : {};
-                return (
-                  <Box key={index}>
-                    <ItemComponent
-                      schema={schema}
-                      index={index + 1}
-                      item={{
-                        ...item,
-                        ...(item?.reference?.constructor.name === "Object"
-                          ? {
-                              name,
-                              contact_number,
-                              type_of_document,
-                              document_id,
-                            }
-                          : {}),
-                      }}
-                      onEdit={(e) => onEdit(e)}
-                      onDelete={(e) => onDelete(e.id)}
-                      arr={keys}
-                      label={labels}
-                    />
-                  </Box>
-                );
-              })}
-            <Button variant={"link"} colorScheme="info" onPress={onAdd}>
-              <FrontEndTypo.H3 color="blueText.400" underline bold>
-                {`${t(stepLabel)}`}
-              </FrontEndTypo.H3>
-            </Button>
-            <FrontEndTypo.Primarybutton
-              isLoading={loading}
-              p="4"
-              mt="4"
-              onPress={() => onClickSubmit(false)}
-            >
-              {t("SAVE_AND_NEXT")}
-            </FrontEndTypo.Primarybutton>
-
-            <FrontEndTypo.Secondarybutton
-              isLoading={loading}
-              p="4"
-              mt="4"
-              onPress={() => onClickSubmit(true)}
-            >
-              {t("SAVE_AND_PROFILE")}
-            </FrontEndTypo.Secondarybutton>
-          </VStack>
-        ) : (
-          <Box>
-            {alert ? (
-              <Alert status="warning" alignItems={"start"} mb="3">
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>{alert}</BodyMedium>
-                </HStack>
-              </Alert>
-            ) : (
-              <React.Fragment />
-            )}
-            <Form
-              key={lang}
-              ref={formRef}
-              extraErrors={errors}
-              showErrorList={false}
-              noHtml5Validate={true}
-              {...{
-                widgets,
-                templates,
-                validator,
-                schema: schema ? schema : {},
-                formData,
-                customValidate,
-                onChange,
-                onSubmit,
-                transformErrors,
-              }}
-            >
+      {["quit", "rejected", "rusticate"].includes(facilitator?.status) ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {!addMore ? (
+            <VStack space={"4"}>
+              {data &&
+                data.constructor.name === "Array" &&
+                data?.map((item, index) => {
+                  const {
+                    name,
+                    contact_number,
+                    type_of_document,
+                    document_id,
+                  } = item?.reference ? item?.reference : {};
+                  return (
+                    <Box key={index}>
+                      <ItemComponent
+                        schema={schema}
+                        index={index + 1}
+                        item={{
+                          ...item,
+                          ...(item?.reference?.constructor.name === "Object"
+                            ? {
+                                name,
+                                contact_number,
+                                type_of_document,
+                                document_id,
+                              }
+                            : {}),
+                        }}
+                        onEdit={(e) => onEdit(e)}
+                        onDelete={(e) => onDelete(e.id)}
+                        arr={keys}
+                        label={labels}
+                      />
+                    </Box>
+                  );
+                })}
+              <Button variant={"link"} colorScheme="info" onPress={onAdd}>
+                <FrontEndTypo.H3 color="blueText.400" underline bold>
+                  {`${t(stepLabel)}`}
+                </FrontEndTypo.H3>
+              </Button>
               <FrontEndTypo.Primarybutton
                 isLoading={loading}
                 p="4"
                 mt="4"
-                onPress={() => {
-                  if (formRef.current.validateForm()) {
-                    formRef?.current?.submit();
-                  }
-                }}
+                onPress={() => onClickSubmit(false)}
               >
-                {t("SAVE")}
+                {t("SAVE_AND_NEXT")}
               </FrontEndTypo.Primarybutton>
+
               <FrontEndTypo.Secondarybutton
                 isLoading={loading}
                 p="4"
                 mt="4"
-                onPress={() => setAddMore()}
+                onPress={() => onClickSubmit(true)}
               >
-                {t("CANCEL")}
+                {t("SAVE_AND_PROFILE")}
               </FrontEndTypo.Secondarybutton>
-            </Form>
-          </Box>
-        )}
-      </Box>
+            </VStack>
+          ) : (
+            <Box>
+              {alert ? (
+                <Alert status="warning" alignItems={"start"} mb="3">
+                  <HStack alignItems="center" space="2" color>
+                    <Alert.Icon />
+                    <BodyMedium>{alert}</BodyMedium>
+                  </HStack>
+                </Alert>
+              ) : (
+                <React.Fragment />
+              )}
+              <Form
+                key={lang}
+                ref={formRef}
+                extraErrors={errors}
+                showErrorList={false}
+                noHtml5Validate={true}
+                {...{
+                  widgets,
+                  templates,
+                  validator,
+                  schema: schema ? schema : {},
+                  formData,
+                  customValidate,
+                  onChange,
+                  onSubmit,
+                  transformErrors,
+                }}
+              >
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    }
+                  }}
+                >
+                  {t("SAVE")}
+                </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => setAddMore()}
+                >
+                  {t("CANCEL")}
+                </FrontEndTypo.Secondarybutton>
+              </Form>
+            </Box>
+          )}
+        </Box>
+      )}
     </Layout>
   );
 }

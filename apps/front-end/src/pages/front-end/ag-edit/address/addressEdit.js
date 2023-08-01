@@ -70,7 +70,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   const ref = React.createRef(null);
@@ -89,14 +89,24 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-  const showPosition = (position) => {
+  const showPosition = async (position) => {
     let lati = position.coords.latitude;
     let longi = position.coords.longitude;
 
+    const qData = await benificiaryRegistoryService.getOne(id);
+    const finalData = qData.result;
+    setFormData(qData.result);
     setFormData({
       ...formData,
       lat: lati,
       long: longi,
+      address: finalData?.address == "null" ? "" : finalData?.address,
+      state: finalData?.state,
+      district: finalData?.district,
+      block: finalData?.block,
+      village: finalData?.village,
+      grampanchayat:
+        finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
     });
   };
 

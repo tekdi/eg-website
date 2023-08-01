@@ -20,10 +20,10 @@ import {
   t,
   ImageView,
   BodyMedium,
+  getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
-
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
@@ -37,6 +37,7 @@ export default function BenificiaryProfileView(props) {
     React.useState(false);
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
+  const [docStatus, setdocStatus] = React.useState();
   const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
     React.useState();
   const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
@@ -46,7 +47,6 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
-  // const [prevStatus, setprevStatus] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -77,6 +77,7 @@ export default function BenificiaryProfileView(props) {
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
+    setdocStatus(result?.result?.program_beneficiaries?.documents_status);
     // const contextId = result?.result?.program_beneficiaries?.id;
     // const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
     // if (auditLogs[0]) {
@@ -257,7 +258,7 @@ export default function BenificiaryProfileView(props) {
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
-            paddingBottom="24px"
+            pb="6"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <FrontEndTypo.H3 bold color="textGreyColor.800">
@@ -307,7 +308,6 @@ export default function BenificiaryProfileView(props) {
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack space="md" alignItems="Center">
                     <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-
                     <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                   </HStack>
 
@@ -342,7 +342,7 @@ export default function BenificiaryProfileView(props) {
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
-                          navigate(`/beneficiary/edit/${id}/address`);
+                          navigate(`/beneficiary/${id}/addressdetails`);
                         }}
                         color="textMaroonColor.400"
                       />
@@ -378,143 +378,108 @@ export default function BenificiaryProfileView(props) {
             </VStack>
           </Box>
 
-          <Box
+          <VStack
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
-            paddingBottom="24px"
+            px="4"
+            p="2"
+            pb="6"
+            divider={
+              <Divider
+                orientation="horizontal"
+                bg="btnGray.100"
+                thickness="1"
+              />
+            }
           >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
+            <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                {t("DOCUMENT_CHECKLIST")}
+              </FrontEndTypo.H3>
+              {!["dropout", "rejected"].includes(
+                benificiary?.program_beneficiaries?.status
+              ) &&
+                !getBeneficaryDocumentationStatus(docStatus) && (
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/docschecklist`);
+                    }}
+                    color="textMaroonColor.400"
+                  />
+                )}
+            </HStack>
+            <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                {t("EDUCATION_DETAILS")}
+              </FrontEndTypo.H3>
+              {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                benificiary?.program_beneficiaries?.status !== "rejected" && (
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/educationdetails`);
+                    }}
+                    color="textMaroonColor.400"
+                  />
+                )}
+            </HStack>
+            {alert && (
+              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{alert}</BodyMedium>
+                </HStack>
+              </Alert>
+            )}
+            {benificiary?.aadhar_no === null ? (
+              <HStack justifyContent="space-between" alignItems="Center" p="3">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("DOCUMENT_CHECKLIST")}
+                  {t("ENROLLMENT_DETAILS")}
                 </FrontEndTypo.H3>
                 {benificiary?.program_beneficiaries?.status !== "dropout" &&
                   benificiary?.program_beneficiaries?.status !== "rejected" && (
                     <IconByName
                       name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/docschecklist`);
-                      }}
                       color="textMaroonColor.400"
+                      size="sm"
                     />
                   )}
               </HStack>
-            </VStack>
-          </Box>
-          {alert ? (
-            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <BodyMedium>{alert}</BodyMedium>
-              </HStack>
-            </Alert>
-          ) : (
-            <React.Fragment />
-          )}
-          {benificiary?.aadhar_no === null ? (
-            <Box
-              bg="boxBackgroundColour.100"
-              borderColor="btnGray.100"
-              borderRadius="10px"
-              borderWidth="1px"
-              paddingBottom="24px"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                    {t("ENROLLMENT_DETAILS")}
-                  </FrontEndTypo.H3>
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        color="textMaroonColor.400"
-                        size="sm"
-                      />
-                    )}
-                </HStack>
-              </VStack>
-            </Box>
-          ) : (
-            <Box
-              bg="boxBackgroundColour.100"
-              borderColor="btnGray.100"
-              borderRadius="10px"
-              borderWidth="1px"
-              paddingBottom="24px"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                    {t("ENROLLMENT_DETAILS")}
-                  </FrontEndTypo.H3>
+            ) : (
+              <HStack justifyContent="space-between" alignItems="Center" p="3">
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("ENROLLMENT_DETAILS")}
+                </FrontEndTypo.H3>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={(e) => {
-                          navigate(`/beneficiary/${id}/enrollmentdetails`);
-                        }}
-                        color="textMaroonColor.400"
-                      />
-                    )}
-                </HStack>
-              </VStack>
-            </Box>
-          )}
-          <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("EDUCATION_DETAILS")}
-                </FrontEndTypo.H3>
                 {benificiary?.program_beneficiaries?.status !== "dropout" &&
                   benificiary?.program_beneficiaries?.status !== "rejected" && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={(e) => {
-                        navigate(`/beneficiary/${id}/educationdetails`);
+                        navigate(`/beneficiary/${id}/enrollmentdetails`);
                       }}
                       color="textMaroonColor.400"
                     />
                   )}
               </HStack>
-            </VStack>
-          </Box>
-          <Box
-            bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
-            borderWidth="1px"
-            paddingBottom="24px"
-          >
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="#790000"
-                  size="sm"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/BenificiaryJourney`);
-                  }}
-                />
-              </HStack>
-            </VStack>
-          </Box>
+            )}
+            <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                {t("JOURNEY_IN_PROJECT_PRAGATI")}
+              </FrontEndTypo.H3>
+              <IconByName
+                name="ArrowRightSLineIcon"
+                color="#790000"
+                size="sm"
+                onPress={(e) => {
+                  navigate(`/beneficiary/${id}/BenificiaryJourney`);
+                }}
+              />
+            </HStack>
+          </VStack>
           {renderDropoutButton()}
           {renderReactivateButton()}
           {renderRejectButton()}
