@@ -28,7 +28,7 @@ export default {
           enum: ["rsos", "nios"], //values
         },
         enrollment_number: {
-          type: "number",
+          type: "string",
           label: "ENROLLMENT_NUMBER",
           regex: /^\d+$/,
           _input: { keyboardType: "numeric" },
