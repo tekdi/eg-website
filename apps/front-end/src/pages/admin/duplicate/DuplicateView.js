@@ -23,7 +23,7 @@ import {
   Image,
   useToast,
 } from "native-base";
-import { ChipStatus } from "component/Chip";
+import moment from "moment";
 import DataTable from "react-data-table-component";
 import { tableCustomStyles } from "../../../component/BaseInput";
 
@@ -54,7 +54,7 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("DATE_OF_ENTRY_IN_PMS"),
-      selector: (row) => row?.created_at,
+      selector: (row) => moment(row?.created_at).format("DD/MM/YYYY"),
       sortable: true,
       attr: "name",
     },
@@ -75,9 +75,9 @@ export default function DuplicateView({ footerLinks }) {
       selector: (row) => (
         <HStack alignItems={"center"} space="2">
           <AdminTypo.H5 bold>
-            {row?.program_beneficiaries[0]?.facilitator_user?.first_name + " "}
-            {row?.program_beneficiaries[0]?.facilitator_user?.last_name &&
-              row?.program_beneficiaries[0]?.facilitator_user?.last_name}
+            {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
+            {row?.program_beneficiaries?.facilitator_user?.last_name &&
+              row?.program_beneficiaries?.facilitator_user?.last_name}
           </AdminTypo.H5>
         </HStack>
       ),
@@ -86,8 +86,7 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("PRERAK_NUMBER"),
-      selector: (row) =>
-        row?.program_beneficiaries[0]?.facilitator_user?.mobile,
+      selector: (row) => row?.program_beneficiaries?.facilitator_user?.mobile,
       sortable: true,
       attr: "email",
     },
@@ -231,11 +230,11 @@ export default function DuplicateView({ footerLinks }) {
                     />
                     <AdminTypo.H6 color="textGreyColor.100">
                       {`${t("PRERAK_NAME")}:`}{" "}
-                      {viewData?.program_beneficiaries[0]?.facilitator_user
+                      {viewData?.program_beneficiaries?.facilitator_user
                         ?.first_name + " "}
-                      {viewData?.program_beneficiaries[0]?.facilitator_user
+                      {viewData?.program_beneficiaries?.facilitator_user
                         ?.last_name &&
-                        viewData?.program_beneficiaries[0]?.facilitator_user
+                        viewData?.program_beneficiaries?.facilitator_user
                           ?.last_name}
                     </AdminTypo.H6>
                   </HStack>
