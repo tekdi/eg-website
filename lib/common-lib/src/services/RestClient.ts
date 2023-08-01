@@ -7,10 +7,16 @@ export async function get(url: string, headers: any = {}) {
   })
 }
 
-export async function post(url: string, body: any, headers: any = {}) {
+export async function post(
+  url: string,
+  body: any,
+  headers: any = {},
+  onUploadProgress: any = {}
+) {
   return await axios.post(url, body, {
     ...headers,
-    headers: { ...headers?.headers, 'Access-Control-Allow-Origin': '*' }
+    headers: { ...headers?.headers, 'Access-Control-Allow-Origin': '*' },
+    onUploadProgress
   })
 }
 

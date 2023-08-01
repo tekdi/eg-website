@@ -2,7 +2,7 @@ import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
 import { Alert, HStack, VStack, Image, Box } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function AadhaarSuccess({
   user,
@@ -14,6 +14,7 @@ export default function AadhaarSuccess({
   const [isVerified, setIsVerified] = React.useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
   React.useEffect(() => {
     setData(aadhaarCompare?.data);
     setIsVerified(aadhaarCompare?.isVerified);
@@ -125,7 +126,11 @@ export default function AadhaarSuccess({
           if (location?.state) {
             navigate(location?.state);
           } else {
-            navigate("/beneficiary/list");
+            if (id) {
+              navigate(`/beneficiary/${id}`);
+            } else {
+              navigate("/beneficiary/list");
+            }
           }
         }}
       >

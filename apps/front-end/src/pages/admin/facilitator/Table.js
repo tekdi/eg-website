@@ -128,12 +128,21 @@ function Table({
   const navigate = useNavigate();
 
   const exportPrerakCSV = async () => {
-    const result = await facilitatorRegistryService.exportFacilitatorsCsv();
+    const result = await facilitatorRegistryService.exportFacilitatorsCsv(
+      filter
+    );
   };
 
   return (
     <VStack>
-      <HStack my="1" mb="3" justifyContent="space-between">
+      <HStack
+        space={[0, 0, "2"]}
+        my="1"
+        mb="3"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gridGap="2"
+      >
         <HStack justifyContent="space-between" alignItems="center">
           <Image
             source={{
@@ -154,8 +163,16 @@ function Table({
           />
         </HStack>
         <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
           placeholder="search"
           variant="outline"
@@ -294,8 +311,10 @@ function Table({
         progressPending={loading}
         pagination
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+        paginationPerPage={filter?.limit ? filter?.limit : 15}
         paginationServer
         paginationTotalRows={paginationTotalRows}
+        paginationDefaultPage={filter?.page}
         onChangeRowsPerPage={(e) => {
           setFilter({ ...filter, limit: e });
         }}
