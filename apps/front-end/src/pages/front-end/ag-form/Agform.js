@@ -332,45 +332,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         }
       }
     }
-
-    if (id === "root_first_name") {
-      if (!data?.first_name?.match(/^[a-zA-Z]*$/)) {
-        const newErrors = {
-          first_name: {
-            __errors: [`${t("REQUIRED_MESSAGE")} "${t("FIRST_NAME")}"`],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
-
-    if (id === "root_last_name") {
-      if (
-        !data?.last_name?.match(/^[a-zA-Z]*$/) &&
-        data?.last_name !== undefined
-      ) {
-        const newErrors = {
-          last_name: {
-            __errors: [`${t("REQUIRED_MESSAGE")} "${t("LAST_NAME")}"`],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
-
-    if (id === "root_middle_name") {
-      if (
-        !data?.middle_name?.match(/^[a-zA-Z]*$/) &&
-        data?.middle_name !== undefined
-      ) {
-        const newErrors = {
-          middle_name: {
-            __errors: [`${t("REQUIRED_MESSAGE")} "${t("MIDDLE_NAME")}"`],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
   };
 
   const onError = (data) => {
