@@ -48,6 +48,7 @@ import {
   BaseInputTemplate,
   ArrayFieldTemplate,
   CustomOTPBox,
+  MobileNumber,
   select,
   AddButton,
   RemoveButton,
@@ -341,7 +342,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -509,6 +510,20 @@ export default function App({ facilitator, ip, onClick }) {
     return newSchema;
   };
 
+  const checkMobileExist = async (mobile) => {
+    const result = await userExist({ mobile });
+    if (result.isUserExist) {
+      const newErrors = {
+        mobile: {
+          __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+        },
+      };
+      setErrors(newErrors);
+      return true;
+    }
+    return false;
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -516,15 +531,7 @@ export default function App({ facilitator, ip, onClick }) {
     setFormData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
+        await checkMobileExist(data?.mobile);
       }
       if (schema?.properties?.otp) {
         const { otp, ...properties } = schema?.properties;
@@ -630,6 +637,7 @@ export default function App({ facilitator, ip, onClick }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
+
     if (_.isEmpty(errors)) {
       const { id } = facilitator;
       let success = false;
@@ -639,40 +647,46 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "2") {
-        const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-          ...newFormData,
-          hash: localStorage.getItem("hash"),
-        });
-        setverifyOtpData(otpData);
-        if (status === true) {
-          const data = await formSubmitCreate(newFormData);
-          if (data?.error) {
+        const resultCheck = await checkMobileExist(newFormData?.mobile);
+        if (!resultCheck) {
+          const { status, otpData, newSchema } = await sendAndVerifyOtp(
+            schema,
+            {
+              ...newFormData,
+              hash: localStorage.getItem("hash"),
+            }
+          );
+          setverifyOtpData(otpData);
+          if (status === true) {
+            const data = await formSubmitCreate(newFormData);
+            if (data?.error) {
+              const newErrors = {
+                mobile: {
+                  __errors:
+                    data?.error?.constructor?.name === "String"
+                      ? [data?.error]
+                      : data?.error?.constructor?.name === "Array"
+                      ? data?.error
+                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                },
+              };
+              setErrors(newErrors);
+            } else {
+              if (data?.username && data?.password) {
+                setCredentials(data);
+              }
+            }
+          } else if (status === false) {
             const newErrors = {
-              mobile: {
-                __errors:
-                  data?.error?.constructor?.name === "String"
-                    ? [data?.error]
-                    : data?.error?.constructor?.name === "Array"
-                    ? data?.error
-                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              otp: {
+                __errors: [t("USER_ENTER_VALID_OTP")],
               },
             };
             setErrors(newErrors);
           } else {
-            if (data?.username && data?.password) {
-              setCredentials(data);
-            }
+            setSchema(newSchema);
+            setOtpButton(true);
           }
-        } else if (status === false) {
-          const newErrors = {
-            otp: {
-              __errors: [t("USER_ENTER_VALID_OTP")],
-            },
-          };
-          setErrors(newErrors);
-        } else {
-          setSchema(newSchema);
-          setOtpButton(true);
         }
       } else if (page <= 1) {
         success = true;
@@ -893,7 +907,14 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, Aadhaar, select, CustomOTPBox }}
+            widgets={{
+              RadioBtn,
+              CustomR,
+              Aadhaar,
+              select,
+              CustomOTPBox,
+              MobileNumber,
+            }}
             templates={{
               ButtonTemplates: { AddButton, RemoveButton },
               FieldTemplate,

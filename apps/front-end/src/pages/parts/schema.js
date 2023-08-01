@@ -31,6 +31,7 @@ export default {
         mobile: {
           type: "number",
           title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
         // email_id: {
         //   type: ['string', 'null'],
