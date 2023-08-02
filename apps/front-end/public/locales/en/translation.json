@@ -11,7 +11,7 @@
   "AADHAAR_NUMBER": "Aadhaar Number",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
   "AADHAAR_NUMBER_KYC": "Aadhaar Number KYC",
-  "AADHAAR_REQUIRED_MESSAGE": "Please enter adhar number first to accesses the enrollment details tab",
+  "AADHAAR_REQUIRED_MESSAGE": "Please enter Aadhaar number first to accesses the enrollment details tab",
   "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER": "Aadhaar should be 12 digit valid number",
   "AADHAAR_VERIFICATION": "Aadhaar Verification",
   "AADHAAR_VERIFICATION_SUCCESSFUL": "Aadhaar Verification Successful",
