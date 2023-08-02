@@ -219,22 +219,28 @@ export default function App() {
 
   const checkEnrollmentDobAndDate = (data, key) => {
     let error = {};
-    const age = enrollmentDateOfBirth(
-      benificiary?.program_beneficiaries?.enrollment_date,
-      data?.enrollment_dob
-    );
-    if (!benificiary?.program_beneficiaries?.enrollment_date) {
-      error = {
-        [key]: t("REQUIRED_MESSAGE_ENROLLMENT_DATE"),
-        age,
-      };
-    } else if (!(age.diff >= 14 && age.diff <= 29)) {
-      error = {
-        [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
-        age,
-      };
-    } else {
-      error = { age };
+    if (data?.enrollment_dob) {
+      const age = enrollmentDateOfBirth(
+        benificiary?.program_beneficiaries?.enrollment_date,
+        data?.enrollment_dob
+      );
+      const {
+        program_beneficiaries: { enrollment_date },
+      } = benificiary ? benificiary : {};
+
+      if (!enrollment_date) {
+        error = {
+          [key]: t("REQUIRED_MESSAGE_ENROLLMENT_DATE"),
+          age,
+        };
+      } else if (!(age.diff >= 14 && age.diff <= 29)) {
+        error = {
+          [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
+          age,
+        };
+      } else {
+        error = { age };
+      }
     }
     return error;
   };
