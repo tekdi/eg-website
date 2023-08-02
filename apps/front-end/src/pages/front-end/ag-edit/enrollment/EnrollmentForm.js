@@ -483,6 +483,7 @@ export default function App() {
     setFormData(newData);
   };
 
+  // form submit
   const onSubmit = async () => {
     setBtnLoading(true);
     const keys = Object.keys(errors ? errors : {});
