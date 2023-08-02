@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, Image, Modal } from "native-base";
+import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
 import {
   Layout,
   enumRegistryService,
@@ -167,7 +167,7 @@ export default function App() {
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [notMatched, setNotMatched] = React.useState(false);
+  const [notMatched, setNotMatched] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
@@ -194,9 +194,6 @@ export default function App() {
       },
     },
   });
-  const enrollmentNumberExist = async (filters) => {
-    return await benificiaryRegistoryService.isExistEnrollment(userId, filters);
-  };
 
   const nextPreviewStep = async (pageStape = "n") => {
     const index = pages.indexOf(page);
@@ -377,6 +374,28 @@ export default function App() {
     }
   }, [page]);
 
+  const enrollmentNumberExist = async (enrollment_number) => {
+    if (enrollment_number) {
+      const result = await benificiaryRegistoryService.isExistEnrollment(
+        userId,
+        {
+          enrollment_number: enrollment_number,
+        }
+      );
+      if (result.error) {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
+          },
+        });
+      } else {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
@@ -387,18 +406,7 @@ export default function App() {
         setErrors(otherError);
         if (data?.enrollment_number) {
           const debouncedFunction = debounce(async () => {
-            const result = await enrollmentNumberExist({
-              enrollment_number: data?.enrollment_number,
-            });
-            if (result.error) {
-              setNotMatched(true);
-              const newErrors = {
-                enrollment_number: {
-                  __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
-                },
-              };
-              setErrors(newErrors);
-            }
+            const result = await enrollmentNumberExist(data?.enrollment_number);
           }, 1000);
           debouncedFunction();
         }
@@ -433,16 +441,12 @@ export default function App() {
       case "root_enrollment_aadhaar_no":
         const result = validate(data, "enrollment_aadhaar_no");
         if (result?.enrollment_aadhaar_no) {
-          const fun = debounce(() => {
-            setErrors({
-              ...errors,
-              enrollment_aadhaar_no: {
-                __errors: [result?.enrollment_aadhaar_no],
-              },
-            });
-            setNotMatched("aadhaar");
-          }, 1000);
-          fun();
+          setErrors({
+            ...errors,
+            enrollment_aadhaar_no: {
+              __errors: [result?.enrollment_aadhaar_no],
+            },
+          });
         } else {
           let { enrollment_aadhaar_no, ...otherError } = errors ? errors : {};
           setErrors(otherError);
@@ -482,7 +486,21 @@ export default function App() {
   const onSubmit = async () => {
     setBtnLoading(true);
     const keys = Object.keys(errors ? errors : {});
+    if (keys?.length < 1 && page === "edit_enrollement") {
+      const resulten = await enrollmentNumberExist(formData?.enrollment_number);
+      if (!resulten) {
+        setNotMatched(["enrollment_number"]);
+        setBtnLoading(false);
+        return resulten;
+      }
+    }
     if (keys?.length > 0) {
+      const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
+        (e) => keys.includes(e)
+      );
+      if (errorData.length > 0) {
+        setNotMatched(errorData);
+      }
       scrollToField({ property: keys?.[0] });
     } else {
       const { success, isUserExist } =
@@ -491,7 +509,7 @@ export default function App() {
           userId
         );
       if (isUserExist) {
-        setNotMatched(true);
+        setNotMatched(["enrollment_number"]);
       } else if (success && formData.enrollment_status === "enrolled") {
         nextPreviewStep();
       } else {
@@ -553,14 +571,25 @@ export default function App() {
         )}
       </Box>
 
-      <Modal isOpen={notMatched} size="lg" _backdrop={{ opacity: "0.7" }}>
+      <Modal
+        isOpen={Array.isArray(notMatched) && notMatched?.length > 0}
+        size="lg"
+        _backdrop={{ opacity: "0.7" }}
+      >
         <Modal.Content>
           <Modal.Body p="4" bg="white">
-            <FrontEndTypo.H3 textAlign="center" p="4" color="textGreyColor.500">
-              {notMatched === "aadhaar"
-                ? t("ENROLLMENT_AADHAR_POPUP_MESSAGE")
-                : t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
-            </FrontEndTypo.H3>
+            <VStack space="2" alignItems="center">
+              {notMatched && notMatched?.includes("enrollment_aadhaar_no") && (
+                <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
+                  {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
+                </FrontEndTypo.H3>
+              )}
+              {notMatched && notMatched?.includes("enrollment_number") && (
+                <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
+                  {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
+                </FrontEndTypo.H3>
+              )}
+            </VStack>
           </Modal.Body>
           <Modal.Footer
             flexDirection={["column", "row"]}
@@ -570,7 +599,7 @@ export default function App() {
           >
             <FrontEndTypo.Secondarybutton
               shadow="BlueFillShadow"
-              onPress={() => setNotMatched(false)}
+              onPress={() => setNotMatched()}
             >
               {t("EDIT_ENROLLMENT_NUMBER")}
             </FrontEndTypo.Secondarybutton>
