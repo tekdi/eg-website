@@ -71,7 +71,9 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   React.useEffect(() => {
-    getImage();
+    if (page && credentials) {
+      getImage();
+    }
   }, [page, credentials]);
 
   const uiSchema = {
