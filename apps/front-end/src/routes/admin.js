@@ -1,5 +1,6 @@
 import React from "react";
 
+const LearnerAdminHome = React.lazy(() =>  import ("pages/admin/learner/AdminHome"));
 const FacilitatorView = React.lazy(() =>
   import("pages/admin/facilitator/View")
 );
@@ -25,6 +26,7 @@ export default [
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: AdminHome },
+  { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
 

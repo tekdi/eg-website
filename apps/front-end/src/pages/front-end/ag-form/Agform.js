@@ -248,25 +248,30 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         errors?.dob?.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (key === "first_name" && data?.first_name?.replace(/ /g, "") === "") {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+    ["grampanchayat", "first_name", "middle_name", "last_name"].forEach(
+      (key) => {
+        if (
+          key === "first_name" &&
+          data?.first_name?.replace(/ /g, "") === ""
+        ) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
 
-      if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+        if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
+        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
       }
-    });
+    );
 
     return errors;
   };

@@ -103,6 +103,9 @@ const AadhaarDetails = React.lazy(() =>
   import("pages/front-end/facilitator/AadhaarDetails")
 );
 
+const EnrollmentForm = React.lazy(() =>  import ("../pages/front-end/ag-edit/enrollment/EnrollmentForm"));
+const BenificiaryAddress = React.lazy(() => import ("pages/front-end/BenificiaryAddress"));
+
 export default [
   { path: "/form", component: Home },
   {
@@ -145,7 +148,7 @@ export default [
   },
   {
     path: "/beneficiary/edit/:id/enrollment-details",
-    component: subjectDetails,
+    component: EnrollmentForm,
   },
   {
     path: "/beneficiary/edit/:id/reference-details",
@@ -195,6 +198,10 @@ export default [
     component: BenificiaryAadhaarDetails,
   },
   {
+    path: "/beneficiary/:id/addressdetails",
+    component: BenificiaryAddress,
+  },
+  {
     path: "/beneficiary/:id/upload/:photoNo",
     component: BenificiaryProfilePhoto,
   },
@@ -215,8 +222,4 @@ export default [
     component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
-  {
-    path: "/beneficiary/edit/:id/enrollment-receipt",
-    component: EnrollmentReceipt,
-  },
 ];
