@@ -58,7 +58,7 @@ export default function FacilitatorBasicDetails({
         onPressBackButton: (e) => navigate(`/profile`),
       }}
     >
-      {["quit", "rejected", "rusticate"].includes(facilitator?.status) ? (
+      {["quit"].includes(facilitator?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
