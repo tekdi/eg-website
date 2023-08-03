@@ -6,9 +6,9 @@ import {
   AdminTypo,
   enumRegistryService,
   enrollmentDateOfBirth,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
-import Clipboard from "component/Clipboard";
 import moment from "moment";
 import {
   HStack,
@@ -23,38 +23,7 @@ import {
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
-const customStyles = {
-  rows: {
-    style: {
-      minHeight: "72px", // override the row height
-    },
-    style: {
-      minHeight: "72px", // override the row height
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-  },
-};
+
 const columns = (e) => [
   {
     name: t("NAME"),
@@ -118,6 +87,8 @@ const columns = (e) => [
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
+  const navigate = useNavigate();
+
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
@@ -167,6 +138,21 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           }}
         /> */}
         <HStack space={2}>
+          <AdminTypo.Secondarybutton
+            onPress={() => {
+              navigate("/admin/facilitator/duplicatelist");
+            }}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("DUPLICATE")}
+          </AdminTypo.Secondarybutton>
           <AdminTypo.Secondarybutton
             onPress={() => {
               exportBeneficiaryCSV();
@@ -234,7 +220,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         </HStack>
       </ScrollView>
       <DataTable
-        customStyles={customStyles}
+        customStyles={tableCustomStyles}
         columns={[...columns()]}
         data={data}
         persistTableHead

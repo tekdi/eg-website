@@ -9,6 +9,7 @@ import {
   authRegistryService,
   ImageView,
   AdminTypo,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -25,7 +26,6 @@ import {
 } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
-import { tableCustomStyles } from "../../../component/BaseInput";
 
 export default function DuplicateView({ footerLinks }) {
   const toast = useToast();
@@ -92,7 +92,7 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("REASON_OF_DUPLICATION"),
-      selector: (row) => row?.duplicate_reason,
+      selector: (row) => (row?.duplicate_reason ? row?.duplicate_reason : "-"),
       sortable: true,
       attr: "email",
     },
@@ -110,6 +110,7 @@ export default function DuplicateView({ footerLinks }) {
   const assignToPrerak = async (id) => {
     const activeId = { activeId: id };
     const result = await facilitatorRegistryService?.assignToPrerak(activeId);
+    navigate("/admin/facilitator/duplicatelist");
     setModalVisible(false);
   };
 
@@ -248,7 +249,7 @@ export default function DuplicateView({ footerLinks }) {
                     <AdminTypo.H6 color="textGreyColor.100">
                       {`${t("MOBILE_NUMBER")}:`}{" "}
                       {
-                        viewData?.program_beneficiaries[0]?.facilitator_user
+                        viewData?.program_beneficiaries?.facilitator_user
                           ?.mobile
                       }
                     </AdminTypo.H6>

@@ -5,6 +5,7 @@ import {
   AdminTypo,
   debounce,
   GetEnumValue,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -22,38 +23,6 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-const customStyles = {
-  rows: {
-    style: {
-      minHeight: "72px", // override the row height
-    },
-    style: {
-      minHeight: "72px", // override the row height
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-  },
-};
 
 // Table component
 function Table({
@@ -171,21 +140,6 @@ function Table({
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
-              navigate("/admin/facilitator/duplicatelist");
-            }}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("DUPLICATE")}
-          </AdminTypo.Secondarybutton>
-          <AdminTypo.Secondarybutton
-            onPress={() => {
               exportPrerakCSV();
             }}
             rightIcon={
@@ -289,7 +243,7 @@ function Table({
         </HStack>
       </ScrollView>
       <DataTable
-        customStyles={customStyles}
+        customStyles={tableCustomStyles}
         columns={[
           ...columns(),
           {

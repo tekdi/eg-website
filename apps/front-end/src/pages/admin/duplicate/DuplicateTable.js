@@ -5,6 +5,7 @@ import {
   AdminTypo,
   debounce,
   GetEnumValue,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -15,8 +16,6 @@ import {
   ScrollView,
   Input,
 } from "native-base";
-
-import { tableCustomStyles } from "../../../component/BaseInput";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -55,7 +54,16 @@ function Table({ facilitator, paginationTotalRows, loading, duplicateData }) {
             size={"xs"}
             resizeMode="contain"
           />
-          <AdminTypo.H1 px="5">{t("DUPLICATE")}</AdminTypo.H1>
+          <AdminTypo.H1 color="Activatedcolor.400">
+            {" "}
+            {t("LEARNERS")}
+          </AdminTypo.H1>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate("/admin/learner")}
+          />
+          <AdminTypo.H1 px="5">{t("DUPLICATE_LIST")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",
