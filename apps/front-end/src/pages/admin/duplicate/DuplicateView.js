@@ -2,34 +2,17 @@ import React from "react";
 import {
   IconByName,
   AdminLayout as Layout,
-  ProgressBar,
   facilitatorRegistryService,
-  Loading,
   t,
-  authRegistryService,
-  ImageView,
   AdminTypo,
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Box,
-  Center,
-  HStack,
-  Text,
-  VStack,
-  Modal,
-  FormControl,
-  Input,
-  Image,
-  useToast,
-} from "native-base";
+import { HStack, VStack, Modal, Image } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 
 export default function DuplicateView({ footerLinks }) {
-  const toast = useToast();
-
   const { adhaarNo } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -45,7 +28,7 @@ export default function DuplicateView({ footerLinks }) {
         <HStack alignItems={"center"} space="2">
           <AdminTypo.H5>
             {row?.first_name + " "}
-            {row?.last_name && row?.last_name}
+            {row?.last_name ? row?.last_name : ""}
           </AdminTypo.H5>
         </HStack>
       ),
@@ -76,8 +59,9 @@ export default function DuplicateView({ footerLinks }) {
         <HStack alignItems={"center"} space="2">
           <AdminTypo.H5 bold>
             {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
-            {row?.program_beneficiaries?.facilitator_user?.last_name &&
-              row?.program_beneficiaries?.facilitator_user?.last_name}
+            {row?.program_beneficiaries?.facilitator_user?.last_name
+              ? row?.program_beneficiaries?.facilitator_user?.last_name
+              : ""}
           </AdminTypo.H5>
         </HStack>
       ),
@@ -234,9 +218,10 @@ export default function DuplicateView({ footerLinks }) {
                       {viewData?.program_beneficiaries?.facilitator_user
                         ?.first_name + " "}
                       {viewData?.program_beneficiaries?.facilitator_user
-                        ?.last_name &&
-                        viewData?.program_beneficiaries?.facilitator_user
-                          ?.last_name}
+                        ?.last_name
+                        ? viewData?.program_beneficiaries?.facilitator_user
+                            ?.last_name
+                        : ""}
                     </AdminTypo.H6>
                   </HStack>
                   <HStack>

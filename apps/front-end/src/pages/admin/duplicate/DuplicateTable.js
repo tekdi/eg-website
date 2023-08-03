@@ -1,21 +1,5 @@
-import {
-  IconByName,
-  facilitatorRegistryService,
-  ImageView,
-  AdminTypo,
-  debounce,
-  GetEnumValue,
-  tableCustomStyles,
-} from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Modal,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-} from "native-base";
+import { IconByName, AdminTypo, tableCustomStyles } from "@shiksha/common-lib";
+import { HStack, VStack, Image } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";

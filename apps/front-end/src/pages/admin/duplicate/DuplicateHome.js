@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { Box, HStack, VStack, ScrollView, Button } from "native-base";
+import React from "react";
+import { Box, HStack, ScrollView } from "native-base";
 import {
-  IconByName,
   AdminLayout as Layout,
   useWindowSize,
   facilitatorRegistryService,
@@ -10,12 +9,9 @@ import Table from "../duplicate/DuplicateTable";
 import { useTranslation } from "react-i18next";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
-  const { t } = useTranslation();
-  const [width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const [duplicateData, setduplicateData] = React.useState();
-
-  const ref = React.useRef(null);
   const [loading, setLoading] = React.useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
