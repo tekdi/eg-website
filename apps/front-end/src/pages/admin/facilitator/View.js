@@ -163,7 +163,7 @@ export default function FacilitatorView({ footerLinks }) {
             description: resetPassword?.message,
           });
 
-          navigate("/");
+          navigate(`/admin/view/${id}`);
           return { status: true };
         } else if (resetPassword.success === false) {
           setCredentials();
@@ -364,7 +364,7 @@ export default function FacilitatorView({ footerLinks }) {
                 leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
-                  handleSendOtp();
+                  // handleSendOtp(); If you want to send otp on click then uncomment it.
                 }}
               >
                 {t("USER_RESET_PASSWORD")}
@@ -531,6 +531,7 @@ export default function FacilitatorView({ footerLinks }) {
                         credentials?.password,
                         credentials?.confirmPassword
                       );
+
                       /* toast.show({
                         title: "Error",
                         variant: "solid",
