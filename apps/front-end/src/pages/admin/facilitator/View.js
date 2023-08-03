@@ -190,17 +190,8 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-            <Image
-              source={{
-                uri: "/profile.svg",
-              }}
-              alt="Prerak Orientation"
-              size="30px"
-              resizeMode="contain"
-            />
-
+            <IconByName name="UserLineIcon" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">
-              {" "}
               {t("ALL_PRERAK")}
             </AdminTypo.H1>
             <IconByName
@@ -786,6 +777,52 @@ export default function FacilitatorView({ footerLinks }) {
                 </VStack>
               </VStack>
             </HStack>
+
+            {data?.aadhar_verified === "in_progress" && (
+              <VStack space={"5"} w="100%" bg="light.100" p="6" rounded="xl">
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderColor="light.400"
+                  pb="1"
+                  borderBottomWidth="1"
+                >
+                  <AdminTypo.H5 color="textGreyColor" bold>
+                    {t("AADHAAR_DETAILS")}
+                  </AdminTypo.H5>
+                </HStack>
+                <HStack justifyContent={"space-between"}>
+                  <ImageView
+                    source={{ document_id: data?.aadhaar_front?.id }}
+                    alt="aadhaar_front"
+                    width="40vw"
+                    height="45vh"
+                    borderRadius="5px"
+                    borderWidth="1px"
+                    borderColor="worksheetBoxText.100"
+                    alignSelf="Center"
+                  />
+                  <ImageView
+                    source={{ document_id: data?.aadhaar_back?.id }}
+                    alt="aadhaar_front"
+                    width="40vw"
+                    height="45vh"
+                    borderRadius="5px"
+                    borderWidth="1px"
+                    borderColor="worksheetBoxText.100"
+                    alignSelf="Center"
+                  />
+                </HStack>
+                <HStack width={"100%"}>
+                  <AdminTypo.PrimaryButton>
+                    {t("FACILITATOR_STATUS_QUIT")}
+                  </AdminTypo.PrimaryButton>
+                  <AdminTypo.Secondarybutton mx={5}>
+                    {t("FACILITATOR_STATUS_REJECTED")}
+                  </AdminTypo.Secondarybutton>
+                </HStack>
+              </VStack>
+            )}
           </VStack>
           <StatusButton {...{ data, setData }} />
         </VStack>
