@@ -12,6 +12,7 @@ import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
 import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
 import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
 import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
+import ReciptView from "pages/admin/learner/ReciptView";
 // import { CheatSheet } from "@shiksha/common-lib";
 
 export default [
@@ -22,7 +23,7 @@ export default [
   { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
-
+  { path: "/admin/view/enrollmentRecipt/:id", component: ReciptView },
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,

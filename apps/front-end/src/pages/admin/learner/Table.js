@@ -23,6 +23,8 @@ import {
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+
+
 const customStyles = {
   rows: {
     style: {
@@ -131,6 +133,8 @@ const columns = (e) => [
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
+  const navigate = useNavigate();
+
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
@@ -248,7 +252,23 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={customStyles}
-        columns={[...columns()]}
+        columns={[
+          ...columns(),
+          {
+            name: t("ACTION"),
+            selector: (row) =>
+              row?.program_beneficiaries?.status === "enrolled" && (
+                <AdminTypo.Secondarybutton
+                  my="3"
+                  onPress={() => {
+                    navigate(`/admin/view/enrollmentRecipt/${row?.id}`);
+                  }}
+                >
+                  {t("VIEW")}
+                </AdminTypo.Secondarybutton>
+              ),
+          },
+        ]}
         data={data}
         persistTableHead
         progressPending={loading}
