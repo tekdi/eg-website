@@ -91,9 +91,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("BASIC_DETAILS")}
                 </FrontEndTypo.H3>
-                {["quit", "rejected", "rusticate"].includes(
-                  facilitator?.status
-                ) ? (
+                {["quit"].includes(facilitator?.status) ? (
                   <React.Fragment></React.Fragment>
                 ) : (
                   <IconByName
@@ -159,9 +157,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("QUALIFICATION_DETAILS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {["quit", "rejected", "rusticate"].includes(
-                    facilitator?.status
-                  ) ? (
+                  {["quit"].includes(facilitator?.status) ? (
                     <React.Fragment></React.Fragment>
                   ) : (
                     <IconByName
@@ -186,9 +182,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("VOLUNTEER_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {["quit", "rejected", "rusticate"].includes(
-                    facilitator?.status
-                  ) ? (
+                  {["quit"].includes(facilitator?.status) ? (
                     <React.Fragment></React.Fragment>
                   ) : (
                     <IconByName
@@ -215,9 +209,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("WORK_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {["quit", "rejected", "rusticate"].includes(
-                    facilitator?.status
-                  ) ? (
+                  {["quit"].includes(facilitator?.status) ? (
                     <React.Fragment></React.Fragment>
                   ) : (
                     <IconByName
@@ -245,9 +237,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
-                {["quit", "rejected", "rusticate"].includes(
-                  facilitator?.status
-                ) ? (
+                {["quit"].includes(facilitator?.status) ? (
                   <React.Fragment></React.Fragment>
                 ) : (
                   <IconByName

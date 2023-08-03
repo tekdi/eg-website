@@ -29,7 +29,7 @@ export default function AadhaarDetails() {
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
       }}
     >
-      {["quit", "rejected", "rusticate"].includes(facilitator?.status) ? (
+      {["quit"].includes(facilitator?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
