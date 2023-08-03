@@ -6,7 +6,6 @@ import {
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import Table from "../duplicate/DuplicateTable";
-import { useTranslation } from "react-i18next";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [Height] = useWindowSize();
