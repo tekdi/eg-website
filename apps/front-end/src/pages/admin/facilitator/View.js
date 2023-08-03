@@ -190,17 +190,8 @@ export default function FacilitatorView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-            <Image
-              source={{
-                uri: "/profile.svg",
-              }}
-              alt="Prerak Orientation"
-              size="30px"
-              resizeMode="contain"
-            />
-
+            <IconByName name="UserLineIcon" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">
-              {" "}
               {t("ALL_PRERAK")}
             </AdminTypo.H1>
             <IconByName
