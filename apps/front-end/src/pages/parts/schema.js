@@ -17,7 +17,7 @@ export default {
           title: "MIDDLE_NAME",
         },
         last_name: {
-          type: ["string", "null"],
+          type: "string",
           title: "LAST_NAME",
         },
       },
@@ -31,9 +31,10 @@ export default {
         mobile: {
           type: "number",
           title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
         // email_id: {
-        //   type: ['string', 'null'],
+        //   type: 'string',
         //   format: "email",
         //   title: "EMAIL_ID",
         // },
@@ -108,7 +109,7 @@ export default {
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
-          type: ["string", "null"],
+          type: "string",
         },
       },
     },
@@ -162,7 +163,7 @@ export default {
               },
               description: {
                 title: "DESCRIPTION",
-                type: ["string", "null"],
+                type: "string",
                 format: "textarea",
                 rows: 5,
               },
@@ -176,7 +177,7 @@ export default {
               },
               related_to_teaching: {
                 label: "IS_THE_JOB_RELATED_TO_TEACHING",
-                type: ["string", "null"],
+                type: "string",
                 format: "RadioBtn",
                 enumNames: ["YES", "NO"],
                 enum: ["yes", "no"],
@@ -206,7 +207,7 @@ export default {
               },
               description: {
                 title: "DESCRIPTION",
-                type: ["string", "null"],
+                type: "string",
                 format: "textarea",
                 rows: 5,
               },
@@ -220,7 +221,7 @@ export default {
               },
               related_to_teaching: {
                 label: "IS_THE_JOB_RELATED_TO_TEACHING",
-                type: ["string", "null"],
+                type: "string",
                 format: "RadioBtn",
                 enumNames: ["Yes", "No"],
                 enum: ["yes", "no"],

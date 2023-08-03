@@ -197,7 +197,7 @@ export default function agFormEdit({ ip }) {
       }
       if (
         !(
-          data?.referencefullname?.contact_number > 6666666666 &&
+          data?.referencefullname?.contact_number > 6000000000 &&
           data?.referencefullname?.contact_number < 9999999999
         )
       ) {

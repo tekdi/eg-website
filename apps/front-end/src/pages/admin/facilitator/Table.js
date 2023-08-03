@@ -135,17 +135,17 @@ function Table({
 
   return (
     <VStack>
-      <HStack my="1" mb="3" justifyContent="space-between">
+      <HStack
+        space={[0, 0, "2"]}
+        my="1"
+        mb="3"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gridGap="2"
+      >
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
-          <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
+          <IconByName name="UserLineIcon" size="md" />
+          <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",
@@ -156,8 +156,16 @@ function Table({
           />
         </HStack>
         <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
           placeholder="search"
           variant="outline"
@@ -296,8 +304,10 @@ function Table({
         progressPending={loading}
         pagination
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+        paginationPerPage={filter?.limit ? filter?.limit : 15}
         paginationServer
         paginationTotalRows={paginationTotalRows}
+        paginationDefaultPage={filter?.page}
         onChangeRowsPerPage={(e) => {
           setFilter({ ...filter, limit: e });
         }}

@@ -99,16 +99,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       district: {
         type: "array",
         title: "DISTRICT",
-        label: "DISTRICT",
+        grid: 1,
+        _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
-
-          enumNames: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
-          enum: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
+          // enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
+          enum: getDistrictsAll?.map((item, i) => item?.district_name),
         },
         uniqueItems: true,
       },
@@ -116,20 +112,18 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         type: "array",
         title: "QUALIFICATION",
         grid: 1,
+        _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
-          enumNames: getQualificationAll?.map((item, i) => {
-            return item?.name;
-          }),
-          enum: getQualificationAll?.map((item, i) => {
-            return item?.id;
-          }),
+          enumNames: getQualificationAll?.map((item, i) => item?.name),
+          enum: getQualificationAll?.map((item, i) => item?.id),
         },
         uniqueItems: true,
       },
       work_experience: {
         type: "array",
         title: "WORK  EXPERIENCE",
+        _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
           enumNames: [
@@ -150,7 +144,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const uiSchema = {
     district: {
-      "ui:widget": "checkboxes",
+      "ui:widget": MultiCheck,
       "ui:options": {},
     },
     qualificationIds: {
@@ -177,12 +171,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilterObject({});
   };
 
-  function CustomFieldTemplate({ id, classNames, label, required, children }) {
+  function CustomFieldTemplate({ id, label, children }) {
     return (
-      <VStack
-        className={classNames}
-        style={{ borderTopColor: "#EEEEEE", borderTopWidth: "1px" }}
-      >
+      <VStack>
         <HStack style={{ justifyContent: "space-between" }}>
           {id !== "root" && (
             <HStack style={{ justifyContent: "space-between" }} width="100%">
@@ -194,7 +185,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 }}
               >
                 {label}
-                {required ? "*" : null}
               </label>
               <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
             </HStack>
@@ -213,7 +203,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     >
       <HStack>
         <Box
-          width="18%"
+          flex={[2, 2, 1]}
           style={{ borderRightColor: "#EEEEEE", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
@@ -222,53 +212,60 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
           >
-            <VStack space={8} py="5">
-              <VStack space={3}>
-                <HStack alignItems="center" justifyContent="space-between">
-                  <HStack>
-                    <IconByName isDisabled name="FilterLineIcon" />
-                    <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-                  </HStack>
-                  <Button variant="link" pt="3" onPress={clearFilter}>
-                    <AdminTypo.H6 color="blueText.400" underline bold>
-                      {t("CLEAR_FILTER")}
-                    </AdminTypo.H6>
-                  </Button>
+            <VStack space={3} py="5">
+              <HStack
+                alignItems="center"
+                justifyContent="space-between"
+                borderBottomWidth="2"
+                borderColor="#eee"
+                flexWrap="wrap"
+              >
+                <HStack>
+                  <IconByName isDisabled name="FilterLineIcon" />
+                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
                 </HStack>
+                <Button variant="link" pt="3" onPress={clearFilter}>
+                  <AdminTypo.H6 color="blueText.400" underline bold>
+                    {t("CLEAR_FILTER")}
+                  </AdminTypo.H6>
+                </Button>
+              </HStack>
+              <Box p={[0, 0, 3]} pr="3">
                 <Form
                   schema={schema}
                   uiSchema={uiSchema}
                   onChange={onChange}
                   validator={validator}
                   formData={filter}
-                  // widget={{ MultiCheck }}
                   templates={{
                     FieldTemplate: CustomFieldTemplate,
                   }}
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
-              </VStack>
+              </Box>
             </VStack>
           </ScrollView>
         </Box>
-        <ScrollView
-          maxH={Height - refAppBar?.clientHeight}
-          minH={Height - refAppBar?.clientHeight}
-        >
-          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table
-              filter={filter}
-              setFilter={setFilterObject}
-              facilitator={userTokenInfo?.authUser}
-              facilitaorStatus={facilitaorStatus}
-              paginationTotalRows={paginationTotalRows}
-              data={data}
-              loading={loading}
-              enumOptions={enumOptions}
-            />
-          </Box>
-        </ScrollView>
+        <Box flex={[5, 5, 4]}>
+          <ScrollView
+            maxH={Height - refAppBar?.clientHeight}
+            minH={Height - refAppBar?.clientHeight}
+          >
+            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+              <Table
+                filter={filter}
+                setFilter={setFilterObject}
+                facilitator={userTokenInfo?.authUser}
+                facilitaorStatus={facilitaorStatus}
+                paginationTotalRows={paginationTotalRows}
+                data={data}
+                loading={loading}
+                enumOptions={enumOptions}
+              />
+            </Box>
+          </ScrollView>
+        </Box>
       </HStack>
     </Layout>
   );
