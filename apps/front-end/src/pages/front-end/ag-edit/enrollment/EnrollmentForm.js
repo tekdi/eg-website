@@ -483,10 +483,15 @@ export default function App() {
     setFormData(newData);
   };
 
+  // form submit
   const onSubmit = async () => {
     setBtnLoading(true);
     const keys = Object.keys(errors ? errors : {});
-    if (keys?.length < 1 && page === "edit_enrollement") {
+    if (
+      keys?.length < 1 &&
+      formData?.enrollment_number &&
+      page === "edit_enrollement"
+    ) {
       const resulten = await enrollmentNumberExist(formData?.enrollment_number);
       if (!resulten) {
         setNotMatched(["enrollment_number"]);

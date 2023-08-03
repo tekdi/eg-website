@@ -33,17 +33,8 @@ export default function App({ footerLinks, userTokenInfo }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-            <Image
-              source={{
-                uri: "/profile.svg",
-              }}
-              alt=""
-              size={"29px"}
-              resizeMode="contain"
-              color="Activatedcolor.400"
-            />
+            <IconByName name="UserLineIcon" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">
-              {" "}
               {t("PRERAK_BIO")}
             </AdminTypo.H1>
             <IconByName
