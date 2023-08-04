@@ -2,7 +2,7 @@ name: Deploy to DEV
 on: 
   push: 
     branches:
-      - release-1.1.0
+      - release-1.1.0 
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
@@ -58,3 +58,11 @@ jobs:
             #rm -rf *
             #cp ../eg-website.tar ./
             #tar -xvf eg-website.tar .
+
+      - name: Notify on Slack channel
+        uses: iRoachie/slack-github-actions@v2.3.2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+        if: ${{ always() }}
