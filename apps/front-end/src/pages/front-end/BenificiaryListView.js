@@ -72,6 +72,8 @@ const List = ({ data }) => {
                 <Box maxW="121px">
                   <ChipStatus
                     status={item?.program_beneficiaries?.status}
+                    is_duplicate={item?.is_duplicate}
+                    is_deactivated={item?.is_deactivated}
                     rounded={"sm"}
                   />
                 </Box>
