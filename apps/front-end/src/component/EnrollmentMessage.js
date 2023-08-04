@@ -10,7 +10,7 @@ export default function EnrollmentMessage({ status, enrollment_status }) {
     enrollment_status === "enrolled" && (
       <Alert status="warning" py="2px" px="2" flexDirection="row" gap="2">
         <Alert.Icon size="3" />
-        <FrontEndTypo.H4>{t("ENROLLMENT_INCOMPLET_MESSAGE")}</FrontEndTypo.H4>
+        <FrontEndTypo.H4>{t("ENROLLMENT_INCOMPLETE_MESSAGE")}</FrontEndTypo.H4>
       </Alert>
     )
   );
