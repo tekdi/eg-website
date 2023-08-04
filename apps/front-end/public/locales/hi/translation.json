@@ -274,6 +274,7 @@
   "ENROLLMENT_BOARD": "नामांकन बोर्ड",
   "ENROLLMENT_DATE": "नामांकन तारीख",
   "ENROLLMENT_DETAILS": " नामांकन विवरण",
+  "ENROLLMENT_INCOMPLET_MESSAGE": "दर्ज की गई जानकारी की समीक्षा करें और सुनिश्चित करें कि सभी जानकारी सटीक है और किसी भी शेष अनुभाग को पूरा करें।",
   "ENROLLMENT_NUMBER": "नामांकन नम्बर",
   "ENROLLMENT_NUMBER_ALREADY_EXISTS": "नामांकन नम्बर पहले से मौजूद है",
   "ENROLLMENT_NUMBER_POPUP_MESSAGE": "नामांकन संख्या पहले से मौजूद. सही नामांकन संख्या दर्ज करें",

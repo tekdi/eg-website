@@ -9,7 +9,7 @@ import {
   ImageView,
   Loading,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable, CheckIcon } from "native-base";
+import { HStack, VStack, Box, Select, Pressable } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
@@ -22,13 +22,7 @@ const List = ({ data }) => {
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
-          <VStack
-            bg="white"
-            p="2"
-            shadow="FooterShadow"
-            borderRadius="4px"
-            space="2"
-          >
+          <VStack bg="white" p="2" shadow="FooterShadow" rounded="sm" space="1">
             <Pressable
               onPress={async () => {
                 navigate(`/beneficiary/${item?.id}`);
@@ -41,7 +35,7 @@ const List = ({ data }) => {
                       source={{
                         document_id: item?.profile_photo_1?.id,
                       }}
-                      // alt="Alternate Text"
+                      alt="Alternate Text"
                       width={"45px"}
                       height={"45px"}
                     />
@@ -50,19 +44,18 @@ const List = ({ data }) => {
                       isDisabled
                       name="AccountCircleLineIcon"
                       color="gray.300"
-                      _icon={{ size: "50px" }}
+                      _icon={{ size: "45px" }}
                     />
                   )}
-                  <VStack pl="2">
-                    <FrontEndTypo.H3
-                      bold
-                      color="textGreyColor.800"
-                      wordWrap="break-word"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      width="150px"
-                    >
+                  <VStack
+                    pl="2"
+                    flex="1"
+                    wordWrap="break-word"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    <FrontEndTypo.H3 bold color="textGreyColor.800">
                       {item?.first_name}
                       {item?.middle_name &&
                         item?.middle_name !== "null" &&
@@ -92,6 +85,7 @@ const List = ({ data }) => {
                   </FrontEndTypo.H4>
                   <IconByName
                     name="ArrowRightSLineIcon"
+                    py="0"
                     onPress={() => {
                       navigate(`/beneficiary/${item?.id}/docschecklist`);
                     }}
@@ -193,11 +187,18 @@ const select2 = [
   { label: "SORT_DESC", value: "desc" },
 ];
 
+const styles = {
+  inforBox: {
+    style: {
+      background:
+        "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
+    },
+  },
+};
+
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [facilitator, setFacilitator] = React.useState({});
   const navigate = useNavigate();
-  const { form_step_number } = facilitator;
-  const [service, setService] = React.useState("");
   const [sort, setSort] = React.useState("sort");
   const [sortValue, setSortValue] = React.useState("");
   const [statusValue, setStatusValue] = React.useState("");
@@ -209,7 +210,9 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [loadingList, setLoadingList] = React.useState(true);
   const [hasMore, setHasMore] = React.useState(true);
   const [totalCount, setTotalCount] = React.useState();
+  const [bodyHeight, setBodyHeight] = React.useState(0);
   const [loadingHeight, setLoadingHeight] = React.useState(0);
+  const ref = React.useRef(null);
 
   const fa_id = localStorage.getItem("id");
   React.useEffect(async () => {
@@ -220,6 +223,14 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   }, []);
 
   React.useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
+
+  React.useEffect(() => {
     const reqBody = {
       limit: limit,
       status: statusValue,
@@ -228,6 +239,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     };
     aglist(reqBody);
   }, [limit, statusValue, sortValue, searchBenficiary]);
+
   const aglist = async (reqBody) => {
     const result = await benificiaryRegistoryService.getBeneficiariesList(
       reqBody
@@ -241,29 +253,13 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const styles = {
-    inforBox: {
-      style: {
-        background:
-          "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
-      },
-    },
-  };
-
-  const [record, setRecord] = React.useState(data);
-  function handleFilter(e) {
-    const newData = data.filter((row) => {
-      return row.name.toLowerCase().includes(e.target.value.toLowerCase());
-    });
-    setRecord(newData);
-  }
-
   React.useEffect(async () => {
     if (userTokenInfo) {
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
     }
   }, []);
+
   const fetchMoreData = () => {
     if (limit >= totalCount) {
       setHasMore(false);
@@ -273,9 +269,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       setLimit((prevLimit) => prevLimit + 10);
     }, 500);
   };
+
   return (
     <Layout
-      getBodyHeight={(e) => setLoadingHeight(e)}
+      getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
         onlyIconsShow: ["userInfo"],
         isEnableSearchBtn: "true",
@@ -288,7 +285,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack>
+      <VStack ref={ref}>
         <Pressable
           onPress={(e) => {
             [
@@ -328,70 +325,70 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             </VStack>
           </HStack>
         </Pressable>
-      </VStack>
-      <HStack
-        justifyContent="space-between"
-        space="2"
-        alignItems="Center"
-        p="4"
-      >
-        <Box flex="2">
-          <SelectStyle
-            overflowX="hidden"
-            selectedValue={status}
-            placeholder={t("STATUS_ALL")}
-            onValueChange={(nextValue) => {
-              setStatus(nextValue);
-              setStatusValue(nextValue);
-            }}
-            _selectedItem={{
-              bg: "cyan.600",
-              endIcon: <IconByName name="ArrowDownSLineIcon" />,
-            }}
-            accessibilityLabel="Select a position for Menu"
-          >
-            <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-            {Array.isArray(selectStatus) &&
-              selectStatus.map((option, index) => (
+        <HStack
+          justifyContent="space-between"
+          space="2"
+          alignItems="Center"
+          p="4"
+        >
+          <Box flex="2">
+            <SelectStyle
+              overflowX="hidden"
+              selectedValue={status}
+              placeholder={t("STATUS_ALL")}
+              onValueChange={(nextValue) => {
+                setStatus(nextValue);
+                setStatusValue(nextValue);
+              }}
+              _selectedItem={{
+                bg: "cyan.600",
+                endIcon: <IconByName name="ArrowDownSLineIcon" />,
+              }}
+              accessibilityLabel="Select a position for Menu"
+            >
+              <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
+              {Array.isArray(selectStatus) &&
+                selectStatus.map((option, index) => (
+                  <Select.Item
+                    key={index}
+                    label={t(option.title)}
+                    value={option.value}
+                  />
+                ))}
+            </SelectStyle>
+          </Box>
+          <Box flex="2">
+            <SelectStyle
+              overflowX="hidden"
+              selectedValue={sort}
+              placeholder={t("SORT_BY")}
+              onValueChange={(nextValue) => {
+                setSort(nextValue);
+                setSortValue(nextValue);
+              }}
+              _selectedItem={{
+                bg: "secondary.700",
+              }}
+              accessibilityLabel="Select a position for Menu"
+            >
+              {select2.map((option, index) => (
                 <Select.Item
                   key={index}
-                  label={t(option.title)}
+                  label={t(option.label)}
                   value={option.value}
                 />
               ))}
-          </SelectStyle>
-        </Box>
-        <Box flex="2">
-          <SelectStyle
-            overflowX="hidden"
-            selectedValue={sort}
-            placeholder={t("SORT_BY")}
-            onValueChange={(nextValue) => {
-              setSort(nextValue);
-              setSortValue(nextValue);
-            }}
-            _selectedItem={{
-              bg: "secondary.700",
-            }}
-            accessibilityLabel="Select a position for Menu"
-          >
-            {select2.map((option, index) => (
-              <Select.Item
-                key={index}
-                label={t(option.label)}
-                value={option.value}
-              />
-            ))}
-          </SelectStyle>
-        </Box>
-      </HStack>
+            </SelectStyle>
+          </Box>
+        </HStack>
+      </VStack>
       {!loadingList ? (
         <InfiniteScroll
           dataLength={data?.length || limit}
           next={fetchMoreData}
           hasMore={hasMore}
           height={loadingHeight}
-          loader={<Loading />}
+          loader={<Loading height="100" />}
           endMessage={
             <p style={{ textAlign: "center" }}>
               <b>{t("COMMON_NO_MORE_RECORDS")}</b>

@@ -275,6 +275,7 @@
   "ENROLLMENT_BOARD": "Enrollment Board",
   "ENROLLMENT_DATE": "Enrollment Date",
   "ENROLLMENT_DETAILS": "Enrollment Details",
+  "ENROLLMENT_INCOMPLET_MESSAGE": "Review the entered information and make sure all information is accurate and Complete any remaining section",
   "ENROLLMENT_NUMBER": "Enrollment Number",
   "ENROLLMENT_NUMBER_ALREADY_EXISTS": "Enrollment Number already exists",
   "ENROLLMENT_NUMBER_POPUP_MESSAGE": "Enrollment number already exists. Enter correct enrollment number",
