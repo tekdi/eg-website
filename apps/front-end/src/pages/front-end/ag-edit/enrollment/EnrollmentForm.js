@@ -351,7 +351,12 @@ export default function App() {
             getUiSchema(uiSchema, {
               key: "enrollment_dob",
               extra: {
-                "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+                "ui:help": (
+                  <VStack>
+                    {age?.age?.message}
+                    <AlertCustom alert={age?.enrollment_dob} />,
+                  </VStack>
+                ),
               },
             })
           );
@@ -460,7 +465,12 @@ export default function App() {
             getUiSchema(uiSchema, {
               key: "enrollment_dob",
               extra: {
-                "ui:help": <AlertCustom alert={age?.enrollment_dob} />,
+                "ui:help": (
+                  <VStack>
+                    {age?.age?.message}
+                    <AlertCustom alert={age?.enrollment_dob} />,
+                  </VStack>
+                ),
               },
             })
           );

@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import schema1 from "./ag-edit/enrollment/schema";
 import moment from "moment";
+import EnrollmentMessage from "component/EnrollmentMessage";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
@@ -51,6 +52,12 @@ export default function BenificiaryEnrollment() {
       }}
     >
       <VStack p="5" space={4}>
+        <EnrollmentMessage
+          status={benificiary?.program_beneficiaries?.status}
+          enrollment_status={
+            benificiary?.program_beneficiaries?.enrollment_status
+          }
+        />
         <ItemComponent
           title={t("ENROLLMENT_DETAILS")}
           schema={schema1?.properties["edit_enrollement"]}
