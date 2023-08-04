@@ -35,7 +35,7 @@ export default {
         },
         enrollment_aadhaar_no: {
           title: "AADHAAR_NUMBER",
-          description: "AS_PER_ENROLLMENT",
+          description: "AS_PER_ENROLLMENT_RECEIPT",
           label: "AADHAAR_NUMBER",
           type: "string",
           regex: /^\d{0,12}$/,
@@ -73,7 +73,7 @@ export default {
           type: "string",
           title: "FIRST_NAME",
           label: "FIRST_NAME",
-          description: "AS_PER_ENROLLMENT",
+          description: "AS_PER_ENROLLMENT_RECEIPT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],
