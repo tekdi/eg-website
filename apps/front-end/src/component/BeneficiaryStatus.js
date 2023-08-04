@@ -1,6 +1,7 @@
 import { Box, Text } from "native-base";
 import React from "react";
-import { FrontEndTypo, t } from "@shiksha/common-lib";
+import { FrontEndTypo } from "@shiksha/common-lib";
+import { useTranslation } from "react-i18next";
 
 export default function Chip({
   label,
@@ -10,6 +11,7 @@ export default function Chip({
   isActive,
   ...props
 }) {
+  const { t } = useTranslation();
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
@@ -45,6 +47,7 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
   const [color, setColor] = React.useState("identifiedColor");
   const [textColor, setTextColor] = React.useState("textGreyColor.800");
   const [newStatus, setNewStatus] = React.useState(status);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
