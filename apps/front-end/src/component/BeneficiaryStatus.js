@@ -10,7 +10,6 @@ export default function Chip({
   isActive,
   ...props
 }) {
-  console.log("is_deactivated", is_deactivated);
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
@@ -24,7 +23,7 @@ export default function Chip({
       {...props}
     >
       <Text>
-        {children ? children : label}{" "}
+        {children ? children : label}
         {is_deactivated ? (
           <FrontEndTypo.H3>{`(${t("DEACTIVATE")})`}</FrontEndTypo.H3>
         ) : is_deactivated === false ? (
