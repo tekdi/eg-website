@@ -4,7 +4,8 @@ import { eventBus } from '../services/EventBus'
 import AppRoutesContainer from './AppRoutesContainer'
 import { getAppshellData } from './helper'
 
-const replaySampleRateString = process.env.REACT_APP_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE;
+const replaySampleRateString =
+  process.env.REACT_APP_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE
 
 if (process.env.REACT_APP_SENTRY_ENV) {
   Sentry.init({
@@ -16,8 +17,8 @@ if (process.env.REACT_APP_SENTRY_ENV) {
     // Session Replay
     replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
     replaysOnErrorSampleRate: replaySampleRateString
-    ? parseInt(replaySampleRateString) 
-    : undefined // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+      ? parseInt(replaySampleRateString)
+      : undefined // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
   })
 }
 function AppShell({
@@ -88,7 +89,7 @@ function AppShell({
         theme,
         routes: accessRoutes,
         basename,
-        appName: 'Teacher App',
+        appName,
         alert,
         setAlert,
         ...otherProps

@@ -6,19 +6,19 @@ import {
   getTokernUserInfo,
   facilitatorRegistryService,
   setLocalUser,
-  t,
   logout,
 } from "@shiksha/common-lib";
+
 import guestRoutes from "./routes/guestRoutes";
 import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
-
 //TODO: separate out the theme related code from App
+
 initializeI18n(["translation"]);
 
 function App() {
   const [accessRoutes, setAccessRoutes] = React.useState([]);
-  const [token, setToken] = React.useState(localStorage.getItem("token"));
+  const token = localStorage.getItem("token");
   const [userTokenInfo, setUserTokenInfo] = React.useState();
 
   React.useEffect(async () => {
@@ -66,7 +66,6 @@ function App() {
           route: "/table",
         },
       ]}
-      appName="Teacher App"
       userTokenInfo={userTokenInfo}
     />
   );

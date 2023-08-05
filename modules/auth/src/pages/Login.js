@@ -93,7 +93,7 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/images/logos/educate-girls.png",
+            uri: "/images/logos/educate-girls200X200.png",
           }}
           alt="Educate Girls"
           resizeMode="contain"

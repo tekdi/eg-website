@@ -1,18 +1,23 @@
-import Dashboard from "pages/front-end/Dashboard";
-import Profile from "pages/admin/facilitator/Profile";
-import FacilitatorView from "pages/admin/facilitator/View";
-import AdminHome from "pages/admin/AdminHome";
-import LearnerAdminHome from "pages/admin/learner/AdminHome";
-import FacilitatorForm from "../pages/admin/FacilitatorForm";
-import NotFound from "pages/NotFound";
-import Orientation from "pages/front-end/orientation/Orientation";
-import Attendence from "pages/front-end/Attendence/Attendence";
-
-import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
-import AadhaarStartKyc from "pages/front-end/AadhaarKyc/AadhaarStartKyc";
-import ManualUpload from "pages/front-end/AadhaarKyc/ManualUpload/ManualUpload";
-import QrScannerKyc from "pages/front-end/AadhaarKyc/QrScannerKyc/QrScannerKyc";
-// import { CheatSheet } from "@shiksha/common-lib";
+import React from "react";
+const Profile = React.lazy(() => import("pages/admin/facilitator/Profile"));
+const FacilitatorView = React.lazy(() =>
+  import("pages/admin/facilitator/View")
+);
+const AdminHome = React.lazy(() => import("pages/admin/AdminHome"));
+const LearnerAdminHome = React.lazy(() =>
+  import("pages/admin/learner/AdminHome")
+);
+const FacilitatorForm = React.lazy(() => import("pages/admin/FacilitatorForm"));
+const NotFound = React.lazy(() => import("pages/NotFound"));
+const Orientation = React.lazy(() =>
+  import("pages/front-end/orientation/Orientation")
+);
+const Attendence = React.lazy(() =>
+  import("pages/front-end/Attendence/Attendence")
+);
+const AdharKyc = React.lazy(() =>
+  import("pages/front-end/AadhaarKyc/AadhaarKyc")
+);
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -22,7 +27,6 @@ export default [
   { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
-
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
@@ -31,10 +35,6 @@ export default [
     path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
   },
-
   { path: "/", component: Orientation },
-
   { path: "*", component: NotFound },
-
-  // { path: "/cheatsheet", component: CheatSheet },
 ];
