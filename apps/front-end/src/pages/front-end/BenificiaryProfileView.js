@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
+import EnrollmentMessage from "component/EnrollmentMessage";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
