@@ -7,7 +7,14 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 // Table component
-function Table({ facilitator, paginationTotalRows, loading, duplicateData }) {
+function Table({
+  facilitator,
+  paginationTotalRows,
+  loading,
+  duplicateData,
+  setFilter,
+  Filter,
+}) {
   const { t } = useTranslation();
   const columns = (e) => [
     {
@@ -83,6 +90,12 @@ function Table({ facilitator, paginationTotalRows, loading, duplicateData }) {
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
+        onChangeRowsPerPage={(e) => {
+          setFilter({ ...Filter, limit: e });
+        }}
+        onChangePage={(e) => {
+          setFilter({ ...Filter, page: e });
+        }}
       />
     </VStack>
   );
