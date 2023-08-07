@@ -92,7 +92,7 @@ export default function ReciptView({ footerLinks }) {
     }
   };
 
-  console.log("data", scale);
+  console.log("data", data);
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -132,14 +132,38 @@ export default function ReciptView({ footerLinks }) {
             </AdminTypo.H4>
 
             <VStack space={"5"} w="100%" bg="light.100" p="6" rounded="xl">
-              <HStack
-                justifyContent="space-between"
-                alignItems="center"
-                borderColor="light.400"
-                pb="1"
-                borderBottomWidth="1"
-              ></HStack>
               <HStack justifyContent={"space-between"}>
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="top"
+                  borderColor="light.400"
+                  pb="1"
+                >
+                  <VStack>
+                    <AdminTypo.H4 color={"light.400"}>
+                      {t("TYPE_OF_ENROLLMENT")}
+                    </AdminTypo.H4>
+                    <AdminTypo.H3>
+                      {data?.program_beneficiaries?.enrollment_status}
+                    </AdminTypo.H3>
+                  </VStack>
+                  <VStack mx={3}>
+                    <AdminTypo.H4 color={"light.400"}>
+                      {t("ENROLLMENT_STATUS")}
+                    </AdminTypo.H4>
+                    <AdminTypo.H3>
+                      {data?.program_beneficiaries?.enrollment_status}
+                    </AdminTypo.H3>
+                  </VStack>
+                  <VStack>
+                    <AdminTypo.H4 color={"light.400"}>
+                      {t("ENROLLMENT_BOARD")}
+                    </AdminTypo.H4>
+                    <AdminTypo.H3>
+                      {data?.program_beneficiaries?.enrolled_for_board}
+                    </AdminTypo.H3>
+                  </VStack>
+                </HStack>
                 <ImageView
                   source={{
                     document_id:
