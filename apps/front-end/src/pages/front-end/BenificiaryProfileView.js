@@ -470,31 +470,27 @@ export default function BenificiaryProfileView(props) {
                     )}
                 </HStack>
               ) : (
-                <VStack p="3">
-                  <HStack justifyContent="space-between" alignItems="Center">
-                    <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                      {t("ENROLLMENT_DETAILS")}
-                    </FrontEndTypo.H3>
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="Center"
+                  p="3"
+                >
+                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                    {t("ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H3>
 
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/enrollmentdetails`);
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      )}
-                  </HStack>
-                  <EnrollmentMessage
-                    status={benificiary?.program_beneficiaries?.status}
-                    enrollment_status={
-                      benificiary?.program_beneficiaries?.enrollment_status
-                    }
-                  />
-                </VStack>
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/enrollmentdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
+                </HStack>
               )}
               <HStack justifyContent="space-between" alignItems="Center" p="3">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
