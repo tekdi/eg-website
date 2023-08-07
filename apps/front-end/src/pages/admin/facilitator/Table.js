@@ -144,15 +144,8 @@ function Table({
         gridGap="2"
       >
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
-          <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
+          <IconByName name="UserLineIcon" size="md" />
+          <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",

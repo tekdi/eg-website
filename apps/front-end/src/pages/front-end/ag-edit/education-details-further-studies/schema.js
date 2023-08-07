@@ -32,7 +32,7 @@ export default {
         },
         reason_of_leaving_education: {
           type: "string",
-          title: "REASON_FOR_LEAVING_STUDIES",
+          title: "REASON_FOR_BEING_DEPRIVED_OF_EDUCATION",
         },
         learning_level: {
           label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
