@@ -15,9 +15,15 @@
     "clean": "lerna run --parallel clean",
     "cls-dep": "npx rimraf ./**/node_modules",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint \"**/*.{js,jsx}\"",
+    "lint:fix": "eslint \"**/*.{js,jsx}\" --fix"
   },
   "devDependencies": {
+    "eslint": "^8.46.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.33.1",
     "lerna": "4.0.0",
     "prettier": "^2.6.0"
   },

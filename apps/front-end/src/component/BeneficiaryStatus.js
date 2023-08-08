@@ -31,9 +31,9 @@ export default function Chip({
         ) : is_deactivated === false ? (
           <React.Fragment></React.Fragment>
         ) : is_duplicate === "yes" ? (
-          <FrontEndTypo.H3>{`(${t(
-            "BENEFICIARY_STATUS_DUPLICATED"
-          )})`}</FrontEndTypo.H3>
+          <FrontEndTypo.H3>
+            {`${"-"}(${t("BENEFICIARY_STATUS_DUPLICATED")})`}
+          </FrontEndTypo.H3>
         ) : (
           <React.Fragment></React.Fragment>
         )}
