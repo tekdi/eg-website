@@ -15,7 +15,9 @@
     "clean": "lerna run --parallel clean",
     "cls-dep": "npx rimraf ./**/node_modules",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint \"**/*.{js,jsx}\"",
+    "lint:fix": "eslint \"**/*.{js,jsx}\" --fix"
   },
   "devDependencies": {
     "eslint": "^8.46.0",
