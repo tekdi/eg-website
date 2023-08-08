@@ -17,6 +17,11 @@ export default function DuplicateView({ footerLinks }) {
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [filter, setFilter] = React.useState({
+    limit: 10,
+    page: 1,
+    aadhar_no: adhaarNo,
+  });
   const [loading, setLoading] = React.useState(true);
   const [viewData, setViewData] = React.useState();
   const navigate = useNavigate();
@@ -83,13 +88,11 @@ export default function DuplicateView({ footerLinks }) {
   ];
 
   React.useEffect(async () => {
-    const aadhar_no = { aadhar_no: adhaarNo };
-    const result = await facilitatorRegistryService?.getDetailsByadhaar(
-      aadhar_no
-    );
-    setData(result?.data);
+    const result = await facilitatorRegistryService?.getDetailsByadhaar(filter);
+    setPaginationTotalRows(result?.count || 0);
+    setData(result?.result);
     setLoading(false);
-  }, []);
+  }, [filter]);
 
   const assignToPrerak = async (id) => {
     const activeId = { activeId: id };
@@ -156,6 +159,12 @@ export default function DuplicateView({ footerLinks }) {
             paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
             paginationServer
             paginationTotalRows={paginationTotalRows}
+            onChangeRowsPerPage={(e) => {
+              setFilter({ ...filter, limit: e });
+            }}
+            onChangePage={(e) => {
+              setFilter({ ...filter, page: e });
+            }}
           />
           <Modal
             isOpen={modalVisible}

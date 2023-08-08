@@ -19,7 +19,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   React.useEffect(async () => {
     const dupliData = await facilitatorRegistryService.getDuplicateList(filter);
-    setduplicateData(dupliData);
+    setPaginationTotalRows(dupliData?.count || 0);
+    setduplicateData(dupliData?.data);
     setLoading(false);
   }, [filter]);
 

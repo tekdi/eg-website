@@ -13,7 +13,7 @@ function Table({
   loading,
   duplicateData,
   setFilter,
-  Filter,
+  filter,
 }) {
   const { t } = useTranslation();
   const columns = (e) => [
@@ -91,10 +91,10 @@ function Table({
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {
-          setFilter({ ...Filter, limit: e });
+          setFilter({ ...filter, limit: e });
         }}
         onChangePage={(e) => {
-          setFilter({ ...Filter, page: e });
+          setFilter({ ...filter, page: e });
         }}
       />
     </VStack>
