@@ -3,7 +3,6 @@ import {
   IconByName,
   AdminLayout as Layout,
   facilitatorRegistryService,
-  t,
   AdminTypo,
   tableCustomStyles,
 } from "@shiksha/common-lib";
@@ -11,8 +10,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack, Modal, Image } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
 
 export default function DuplicateView({ footerLinks }) {
+  const { t } = useTranslation();
   const { adhaarNo } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -32,8 +33,8 @@ export default function DuplicateView({ footerLinks }) {
       selector: (row) => (
         <HStack alignItems={"center"} space="2">
           <AdminTypo.H5>
-            {row?.first_name + " "}
-            {row?.last_name ? row?.last_name : ""}
+            {row?.first_name}
+            {row?.last_name ? +" " + row?.last_name : ""}
           </AdminTypo.H5>
         </HStack>
       ),
@@ -52,10 +53,8 @@ export default function DuplicateView({ footerLinks }) {
       sortable: true,
       attr: "email",
     },
-
     {
       name: t("ADDRESS"),
-
       selector: (row) => (row?.district ? row?.district : "-"),
     },
     {
@@ -106,7 +105,7 @@ export default function DuplicateView({ footerLinks }) {
       <HStack>
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
-            <Image
+            <IconByName
               source={{
                 uri: "/profile.svg",
               }}
@@ -116,7 +115,6 @@ export default function DuplicateView({ footerLinks }) {
             />
 
             <AdminTypo.H1 color="Activatedcolor.400">
-              {" "}
               {t("DUPLICATE")}
             </AdminTypo.H1>
             <IconByName
@@ -198,7 +196,7 @@ export default function DuplicateView({ footerLinks }) {
                       size="xs"
                     />
                     <AdminTypo.H6 color="textGreyColor.100">
-                      {`${t("LEARNERS")} ${t("NAME")}:`}{" "}
+                      {`${t("LEARNERS")} ${t("NAME")}:`}
                       {viewData?.first_name + " "} {viewData?.last_name}
                     </AdminTypo.H6>
                   </HStack>
@@ -223,7 +221,7 @@ export default function DuplicateView({ footerLinks }) {
                       size="xs"
                     />
                     <AdminTypo.H6 color="textGreyColor.100">
-                      {`${t("PRERAK_NAME")}:`}{" "}
+                      {`${t("PRERAK_NAME")}:`}
                       {viewData?.program_beneficiaries?.facilitator_user
                         ?.first_name + " "}
                       {viewData?.program_beneficiaries?.facilitator_user
@@ -241,7 +239,7 @@ export default function DuplicateView({ footerLinks }) {
                       size="xs"
                     />
                     <AdminTypo.H6 color="textGreyColor.100">
-                      {`${t("MOBILE_NUMBER")}:`}{" "}
+                      {`${t("MOBILE_NUMBER")}:`}
                       {
                         viewData?.program_beneficiaries?.facilitator_user
                           ?.mobile

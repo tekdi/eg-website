@@ -161,8 +161,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             }}
             rightIcon={
               <IconByName
-                color="#084B82"
-                _icon={{}}
+                color="textGreyColor.100"
                 size="15px"
                 name="ShareLineIcon"
               />

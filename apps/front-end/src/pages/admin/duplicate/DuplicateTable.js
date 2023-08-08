@@ -46,7 +46,6 @@ function Table({
             resizeMode="contain"
           />
           <AdminTypo.H1 color="Activatedcolor.400">
-            {" "}
             {t("LEARNERS")}
           </AdminTypo.H1>
           <IconByName
@@ -55,7 +54,7 @@ function Table({
             onPress={(e) => navigate("/admin/learner")}
           />
           <AdminTypo.H1 px="5">{t("DUPLICATE_LIST")}</AdminTypo.H1>
-          <Image
+          <IconByName
             source={{
               uri: "/box.svg",
             }}
