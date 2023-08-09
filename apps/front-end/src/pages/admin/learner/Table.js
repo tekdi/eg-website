@@ -8,6 +8,7 @@ import {
   enrollmentDateOfBirth,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
+import Chip from "component/Chip";
 import Clipboard from "component/Clipboard";
 import moment from "moment";
 import {
@@ -57,6 +58,7 @@ const customStyles = {
     },
   },
 };
+
 const columns = (e) => [
   {
     name: t("NAME"),
@@ -109,7 +111,6 @@ const columns = (e) => [
         ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
         : moment().diff(row?.dob, "years"),
   },
-
   {
     name: t("DISTRICT"),
 
@@ -124,7 +125,12 @@ const columns = (e) => [
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <ChipStatus key={index} status={row?.program_beneficiaries?.status} />
+      <ChipStatus
+        key={index}
+        is_duplicate={row?.is_duplicate}
+        is_deactivated={row?.is_deactivated}
+        status={row?.program_beneficiaries?.status}
+      />
     ),
     sortable: true,
     attr: "email",
