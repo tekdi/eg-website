@@ -33,7 +33,7 @@ export default function DuplicateView({ footerLinks }) {
 
   const columns = (e) => [
     {
-      name: t("LEARNERS") + " " + t("Name"),
+      name: t("LEARNERS_NAME"),
       selector: (row) => (
         <HStack alignItems={"center"} space="2">
           <AdminTypo.H5>
@@ -204,7 +204,7 @@ export default function DuplicateView({ footerLinks }) {
                   <AdminTypo.H1
                     marginLeft="10px"
                     color="textGreyColor.500"
-                  >{`${t("ASSIGN")} ${t("TO")} ${t("PRERAK")}`}</AdminTypo.H1>
+                  >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
                 </HStack>
               </Modal.Header>
               <Modal.Body>
@@ -217,7 +217,7 @@ export default function DuplicateView({ footerLinks }) {
                       size="xs"
                     />
                     <AdminTypo.H6 color="textGreyColor.100">
-                      {`${t("LEARNERS")} ${t("NAME")}:`}
+                      {`${t("LEARNERS_NAME")}:`}
                       {viewData?.first_name + " "} {viewData?.last_name}
                     </AdminTypo.H6>
                   </HStack>
