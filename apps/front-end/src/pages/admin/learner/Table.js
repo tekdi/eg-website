@@ -5,7 +5,6 @@ import {
   ImageView,
   AdminTypo,
   enumRegistryService,
-  enrollmentDateOfBirth,
   tableCustomStyles,
   debounce,
 } from "@shiksha/common-lib";

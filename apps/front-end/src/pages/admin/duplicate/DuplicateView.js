@@ -8,7 +8,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Image, Alert } from "native-base";
+import { HStack, VStack, Modal, Alert } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
