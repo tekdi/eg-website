@@ -135,15 +135,6 @@ export default function FacilitatorView({ footerLinks }) {
     }
   };
 
-  const handleSendOtp = async () => {
-    const sendotpBody = {
-      mobile: data?.mobile?.toString(),
-      reason: "verify_mobile",
-    };
-    const datas = await authRegistryService.sendOtp(sendotpBody);
-    setotpData(datas);
-  };
-
   const handleResetPassword = async (password, confirm_password) => {
     if (validate()) {
       if (password === confirm_password) {
@@ -363,7 +354,6 @@ export default function FacilitatorView({ footerLinks }) {
                 leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
-                  // handleSendOtp(); If you want to send otp on click then uncomment it.
                 }}
               >
                 {t("USER_RESET_PASSWORD")}
