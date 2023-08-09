@@ -414,18 +414,17 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
-                {!["dropout", "rejected"].includes(
+                {!["dropout", "rejected", "ready_to_enroll"].includes(
                   benificiary?.program_beneficiaries?.status
-                ) &&
-                  !getBeneficaryDocumentationStatus(docStatus) && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/docschecklist`);
-                      }}
-                      color="textMaroonColor.400"
-                    />
-                  )}
+                ) && (
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/docschecklist`);
+                    }}
+                    color="textMaroonColor.400"
+                  />
+                )}
               </HStack>
               <HStack justifyContent="space-between" alignItems="Center" p="3">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
