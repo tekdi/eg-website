@@ -157,14 +157,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
+          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
