@@ -454,7 +454,7 @@ export default function agFormEdit({ ip }) {
     if (id === "root_district") {
       await setBlock({
         district: data?.district,
-        block: data?.block,
+        block: null,
         schemaData: schema,
       });
     }
@@ -500,7 +500,7 @@ export default function agFormEdit({ ip }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    navigate(`/beneficiary/${userId}/addressdetails`);
   };
 
   return (
