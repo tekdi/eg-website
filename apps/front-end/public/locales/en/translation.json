@@ -284,6 +284,7 @@
   "ENROLLMENT_RECEIPT": "Details of the learner as per the enrolment receipt",
   "ENROLLMENT_REJECTED": "Enrollment Rejected",
   "ENROLLMENT_STATUS": "Enrollment Status",
+  "ENROLLMENT_DETAILS_VERIFICATION": "Enrollment Details Verification Checklist(Cross verify the information on Enrollment receipt)",
   "ENTER": "Enter",
   "ENTER_6_DIGIT_OTP": "Enter 6 digit OTP",
   "ENTER_SECURITY_CODE": "Enter Security Code",
