@@ -9,10 +9,10 @@
     ]
   },
   "scripts": {
-    "start": "lerna run --parallel start",
+    "start": "lerna run --parallel start --stream",
     "build": "lerna run build --stream",
-    "serve": "lerna run --parallel serve",
-    "clean": "lerna run --parallel clean",
+    "serve": "lerna run --parallel serve --stream",
+    "clean": "lerna run --parallel clean --stream",
     "cls-dep": "npx rimraf ./**/node_modules",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
