@@ -529,7 +529,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (id === "root_district") {
       await setBlock({
         district: data?.district,
-        block: data?.block,
+        block: null,
         schemaData: schema,
       });
     }

@@ -7,18 +7,11 @@ import {
   enumRegistryService,
   enrollmentDateOfBirth,
   tableCustomStyles,
+  debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import {
-  HStack,
-  VStack,
-  Modal,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-} from "native-base";
+import { HStack, VStack, Image, Text, ScrollView, Input } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -126,14 +119,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
+          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
@@ -144,16 +130,27 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
           placeholder="search"
           variant="outline"
           onChange={(e) => {
-            searchName(e);
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              2000
+            );
           }}
-        /> */}
+        />
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {

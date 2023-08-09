@@ -113,7 +113,7 @@ function Table({
         gridGap="2"
       >
         <HStack justifyContent="space-between" alignItems="center">
-          <IconByName name="UserLineIcon" size="md" />
+          <IconByName name="GroupLineIcon" size="md" />
           <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
           <Image
             source={{

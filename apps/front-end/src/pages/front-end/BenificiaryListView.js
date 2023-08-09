@@ -22,7 +22,14 @@ const List = ({ data }) => {
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
-          <VStack bg="white" p="2" shadow="FooterShadow" rounded="sm" space="1">
+          <VStack
+            key={item?.id}
+            bg="white"
+            p="2"
+            shadow="FooterShadow"
+            rounded="sm"
+            space="1"
+          >
             <Pressable
               onPress={async () => {
                 navigate(`/beneficiary/${item?.id}`);
@@ -201,22 +208,16 @@ const styles = {
 export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [facilitator, setFacilitator] = React.useState({});
   const navigate = useNavigate();
-  const [sort, setSort] = React.useState("sort");
-  const [sortValue, setSortValue] = React.useState("");
-  const [statusValue, setStatusValue] = React.useState("");
-  const [limit, setLimit] = React.useState(10);
-  const [status, setStatus] = React.useState("status");
-  const [data, setData] = React.useState();
+  const [filter, setFilter] = React.useState({ limit: 6 });
+  const [data, setData] = React.useState([]);
   const [selectStatus, setSelectStatus] = React.useState([]);
-  const [searchBenficiary, setSearchBenficiary] = React.useState("");
   const [loadingList, setLoadingList] = React.useState(true);
   const [hasMore, setHasMore] = React.useState(true);
-  const [totalCount, setTotalCount] = React.useState();
   const [bodyHeight, setBodyHeight] = React.useState(0);
   const [loadingHeight, setLoadingHeight] = React.useState(0);
   const ref = React.useRef(null);
-
   const fa_id = localStorage.getItem("id");
+
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
     if (data.length > 0) {
@@ -233,27 +234,23 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   }, [bodyHeight, ref]);
 
   React.useEffect(() => {
-    const reqBody = {
-      limit: limit,
-      status: statusValue,
-      sortType: sortValue,
-      search: searchBenficiary,
-    };
-    aglist(reqBody);
-  }, [limit, statusValue, sortValue, searchBenficiary]);
-
-  const aglist = async (reqBody) => {
-    const result = await benificiaryRegistoryService.getBeneficiariesList(
-      reqBody
-    );
-    setTotalCount(result?.totalCount);
-    if (!result?.error) {
+    const aglist = async () => {
+      const { currentPage, totalPages, error, ...result } =
+        await benificiaryRegistoryService.getBeneficiariesList(filter);
+      if (!error) {
+        setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+        if (filter?.page > 1) {
+          setData([...data, ...(result.data ? result.data : [])]);
+        } else {
+          setData(result.data ? result.data : []);
+        }
+      } else {
+        setData([]);
+      }
       setLoadingList(false);
-      setData(result?.data);
-    } else {
-      setData([]);
-    }
-  };
+    };
+    aglist();
+  }, [filter]);
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -262,24 +259,14 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     }
   }, []);
 
-  const fetchMoreData = () => {
-    if (limit >= totalCount) {
-      setHasMore(false);
-      return;
-    }
-    setTimeout(() => {
-      setLimit((prevLimit) => prevLimit + 10);
-    }, 500);
-  };
-
   return (
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
-        onlyIconsShow: ["userInfo"],
+        onlyIconsShow: ["userInfo", "loginBtn"],
         isEnableSearchBtn: "true",
         setSearch: (value) => {
-          setSearchBenficiary(value);
+          setFilter({ ...filter, search: value, page: 1 });
         },
         _box: { bg: "white", shadow: "appBarShadow" },
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
@@ -336,11 +323,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
-              selectedValue={status}
+              selectedValue={filter?.status}
               placeholder={t("STATUS_ALL")}
               onValueChange={(nextValue) => {
-                setStatus(nextValue);
-                setStatusValue(nextValue);
+                setFilter({ ...filter, status: nextValue, page: 1 });
               }}
               _selectedItem={{
                 bg: "cyan.600",
@@ -362,11 +348,10 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
-              selectedValue={sort}
+              selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}
               onValueChange={(nextValue) => {
-                setSort(nextValue);
-                setSortValue(nextValue);
+                setFilter({ ...filter, sortType: nextValue, page: 1 });
               }}
               _selectedItem={{
                 bg: "secondary.700",
@@ -386,21 +371,30 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
       </VStack>
       {!loadingList ? (
         <InfiniteScroll
-          dataLength={data?.length || limit}
-          next={fetchMoreData}
+          dataLength={data?.length}
+          next={(e) =>
+            setFilter({
+              ...filter,
+              page: (filter?.page ? filter?.page : 1) + 1,
+            })
+          }
           hasMore={hasMore}
           height={loadingHeight}
           loader={<Loading height="100" />}
           endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>{t("COMMON_NO_MORE_RECORDS")}</b>
-            </p>
+            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
+              {data?.length > 0
+                ? t("COMMON_NO_MORE_RECORDS")
+                : t("DATA_NOT_FOUND")}
+            </FrontEndTypo.H3>
           }
+          // below props only if you need pull down functionality
+          pullDownToRefreshThreshold={50}
         >
           <List data={data} />
         </InfiniteScroll>
       ) : (
-        <Loading />
+        <Loading height={loadingHeight} />
       )}
     </Layout>
   );

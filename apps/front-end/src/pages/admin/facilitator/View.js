@@ -135,15 +135,6 @@ export default function FacilitatorView({ footerLinks }) {
     }
   };
 
-  const handleSendOtp = async () => {
-    const sendotpBody = {
-      mobile: data?.mobile?.toString(),
-      reason: "verify_mobile",
-    };
-    const datas = await authRegistryService.sendOtp(sendotpBody);
-    setotpData(datas);
-  };
-
   const handleResetPassword = async (password, confirm_password) => {
     if (validate()) {
       if (password === confirm_password) {
@@ -162,8 +153,7 @@ export default function FacilitatorView({ footerLinks }) {
             variant: "solid",
             description: resetPassword?.message,
           });
-
-          navigate("/");
+          setModalVisible(false);
           return { status: true };
         } else if (resetPassword.success === false) {
           setCredentials();
@@ -355,7 +345,6 @@ export default function FacilitatorView({ footerLinks }) {
                 leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
-                  handleSendOtp();
                 }}
               >
                 {t("USER_RESET_PASSWORD")}
@@ -384,7 +373,7 @@ export default function FacilitatorView({ footerLinks }) {
               </Modal.Header>
               <Modal.Body>
                 <HStack justifyContent="space-between">
-                  <HStack>
+                  <HStack flex={1}>
                     <IconByName
                       isDisabled
                       name="UserLineIcon"
@@ -395,10 +384,8 @@ export default function FacilitatorView({ footerLinks }) {
                       Username
                     </AdminTypo.H6>
                   </HStack>
-                  <ChipStatus status={data?.status}>
-                    <AdminTypo.H6 bold>
-                      {data?.first_name} {data?.last_name}
-                    </AdminTypo.H6>
+                  <ChipStatus status={data?.status} flex={1}>
+                    <AdminTypo.H6 bold>{data?.username}</AdminTypo.H6>
                   </ChipStatus>
                 </HStack>
                 <FormControl isRequired isInvalid mt="4">
@@ -522,6 +509,7 @@ export default function FacilitatorView({ footerLinks }) {
                         credentials?.password,
                         credentials?.confirmPassword
                       );
+
                       /* toast.show({
                         title: "Error",
                         variant: "solid",
