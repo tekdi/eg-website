@@ -162,8 +162,7 @@ export default function FacilitatorView({ footerLinks }) {
             variant: "solid",
             description: resetPassword?.message,
           });
-
-          navigate(`/admin/view/${id}`);
+          setModalVisible(false);
           return { status: true };
         } else if (resetPassword.success === false) {
           setCredentials();
