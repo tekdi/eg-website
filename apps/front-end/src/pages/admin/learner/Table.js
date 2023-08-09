@@ -181,7 +181,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           onChange={(e) => {
             debounce(
               setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              4000
+              2000
             );
           }}
         />
