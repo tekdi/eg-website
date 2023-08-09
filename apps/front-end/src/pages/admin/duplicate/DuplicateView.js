@@ -5,18 +5,22 @@ import {
   facilitatorRegistryService,
   AdminTypo,
   tableCustomStyles,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Image } from "native-base";
+import { HStack, VStack, Modal, Image, Alert } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
+import { ChipStatus } from "component/BeneficiaryStatus";
 
 export default function DuplicateView({ footerLinks }) {
   const { t } = useTranslation();
   const { adhaarNo } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
+  const [errormsg, seterrormsg] = React.useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [filter, setFilter] = React.useState({
     limit: 10,
@@ -55,7 +59,10 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("ADDRESS"),
-      selector: (row) => (row?.district ? row?.district : "-"),
+      selector: (row) =>
+        row?.district
+          ? `${row?.district}, ${row?.block}, ${row?.village}, ${row?.grampanchayat}`
+          : "-",
     },
     {
       name: t("PRERAK_NAME"),
@@ -84,6 +91,19 @@ export default function DuplicateView({ footerLinks }) {
       sortable: true,
       attr: "email",
     },
+    {
+      name: t("STATUS"),
+      selector: (row, index) => (
+        <ChipStatus
+          key={index}
+          is_duplicate={row?.is_duplicate}
+          is_deactivated={row?.is_deactivated}
+          status={row?.program_beneficiaries?.status}
+        />
+      ),
+      sortable: true,
+      attr: "email",
+    },
   ];
 
   React.useEffect(async () => {
@@ -96,8 +116,11 @@ export default function DuplicateView({ footerLinks }) {
   const assignToPrerak = async (id) => {
     const activeId = { activeId: id };
     const result = await facilitatorRegistryService?.assignToPrerak(activeId);
-    navigate("/admin/facilitator/duplicatelist");
+    if (!result) {
+      seterrormsg(true);
+    }
     setModalVisible(false);
+    setModalConfirmVisible(true);
   };
 
   return (
@@ -106,9 +129,7 @@ export default function DuplicateView({ footerLinks }) {
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName
-              source={{
-                uri: "/profile.svg",
-              }}
+              name="Home4LineIcon"
               alt="Prerak Orientation"
               size="30px"
               resizeMode="contain"
@@ -247,6 +268,12 @@ export default function DuplicateView({ footerLinks }) {
                     </AdminTypo.H6>
                   </HStack>
                 </HStack>
+                <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                  <HStack alignItems="center" space="2" color>
+                    <Alert.Icon />
+                    <BodyMedium>{t("DEACTIVATE_MSG")}</BodyMedium>
+                  </HStack>
+                </Alert>
               </Modal.Body>
               <Modal.Footer>
                 <HStack justifyContent="space-between" width="100%">
@@ -262,8 +289,57 @@ export default function DuplicateView({ footerLinks }) {
                       assignToPrerak(viewData?.id);
                     }}
                   >
-                    {t("ASSIGN")}
+                    {t("CONFIRM")}
                   </AdminTypo.PrimaryButton>
+                </HStack>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <Modal
+            isOpen={modalConfirmVisible}
+            onClose={() => setModalConfirmVisible(false)}
+            avoidKeyboard
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Body>
+                {errormsg ? (
+                  <Alert status="danger" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{t("FAILED_TO_ASSIGN")}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                ) : (
+                  <Alert status="success" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{t("ASSIGN_SUCCESS")}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                )}
+              </Modal.Body>
+              <Modal.Footer>
+                <HStack justifyContent="center" width="100%">
+                  {errormsg ? (
+                    <AdminTypo.Secondarybutton
+                      onPress={() => {
+                        setModalConfirmVisible(false);
+                      }}
+                    >
+                      {t("RETRY")}
+                    </AdminTypo.Secondarybutton>
+                  ) : (
+                    <AdminTypo.Secondarybutton
+                      onPress={() => {
+                        setModalConfirmVisible(false),
+                          navigate("/admin/learner/duplicatelist");
+                      }}
+                    >
+                      {t("OK")}
+                    </AdminTypo.Secondarybutton>
+                  )}
                 </HStack>
               </Modal.Footer>
             </Modal.Content>

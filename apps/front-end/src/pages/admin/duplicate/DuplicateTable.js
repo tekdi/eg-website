@@ -20,15 +20,14 @@ function Table({
     {
       name: t("AADHAAR_NUMBER"),
       selector: (row) => row?.aadhar_no,
-
       sortable: true,
-      attr: "aadhaar ",
+      attr: "aadhaar",
     },
     {
       name: t("COUNT"),
       selector: (row) => row?.count,
       sortable: true,
-      attr: "Count",
+      attr: "count",
     },
   ];
   const navigate = useNavigate();
@@ -37,16 +36,14 @@ function Table({
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
+          <IconByName
+            name="Home4LineIcon"
             alt=""
-            size={"xs"}
+            size={"sm"}
             resizeMode="contain"
           />
           <AdminTypo.H1 color="Activatedcolor.400">
-            {t("LEARNERS")}
+            {t("All_AG_LEARNERS")}
           </AdminTypo.H1>
           <IconByName
             size="sm"
@@ -54,7 +51,7 @@ function Table({
             onPress={(e) => navigate("/admin/learner")}
           />
           <AdminTypo.H1 px="5">{t("DUPLICATE_LIST")}</AdminTypo.H1>
-          <IconByName
+          <Image
             source={{
               uri: "/box.svg",
             }}

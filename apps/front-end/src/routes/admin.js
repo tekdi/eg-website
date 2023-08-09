@@ -23,7 +23,7 @@ export default [
   { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
-  { path: "/admin/facilitator/duplicatelist", component: DuplicateHome },
+  { path: "/admin/learner/duplicatelist", component: DuplicateHome },
   { path: "/admin/view/duplicate/:adhaarNo", component: DuplicateView },
 
   {
