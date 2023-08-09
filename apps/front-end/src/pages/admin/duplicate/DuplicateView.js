@@ -333,8 +333,8 @@ export default function DuplicateView({ footerLinks }) {
                   ) : (
                     <AdminTypo.Secondarybutton
                       onPress={() => {
-                        setModalConfirmVisible(false),
-                          navigate("/admin/learner/duplicatelist");
+                        setModalConfirmVisible(false);
+                        navigate("/admin/learner/duplicatelist");
                       }}
                     >
                       {t("OK")}
