@@ -116,7 +116,7 @@ export default function DuplicateView({ footerLinks }) {
   const assignToPrerak = async (id) => {
     const activeId = { activeId: id };
     const result = await facilitatorRegistryService?.assignToPrerak(activeId);
-    if (!result) {
+    if (!result?.success) {
       seterrormsg(true);
     }
     setModalVisible(false);
