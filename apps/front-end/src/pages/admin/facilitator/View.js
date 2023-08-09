@@ -373,7 +373,7 @@ export default function FacilitatorView({ footerLinks }) {
               </Modal.Header>
               <Modal.Body>
                 <HStack justifyContent="space-between">
-                  <HStack>
+                  <HStack flex={1}>
                     <IconByName
                       isDisabled
                       name="UserLineIcon"
@@ -384,10 +384,8 @@ export default function FacilitatorView({ footerLinks }) {
                       Username
                     </AdminTypo.H6>
                   </HStack>
-                  <ChipStatus status={data?.status}>
-                    <AdminTypo.H6 bold>
-                      {data?.first_name} {data?.last_name}
-                    </AdminTypo.H6>
+                  <ChipStatus status={data?.status} flex={1}>
+                    <AdminTypo.H6 bold>{data?.username}</AdminTypo.H6>
                   </ChipStatus>
                 </HStack>
                 <FormControl isRequired isInvalid mt="4">
