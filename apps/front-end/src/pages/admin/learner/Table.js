@@ -5,24 +5,14 @@ import {
   ImageView,
   AdminTypo,
   enumRegistryService,
-  enrollmentDateOfBirth,
+  debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
-import Clipboard from "component/Clipboard";
 import moment from "moment";
-import {
-  HStack,
-  VStack,
-  Modal,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-} from "native-base";
+import { HStack, VStack, Image, Text, ScrollView, Input } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
     style: {
@@ -169,16 +159,27 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
           placeholder="search"
           variant="outline"
           onChange={(e) => {
-            searchName(e);
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              4000
+            );
           }}
-        /> */}
+        />
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
