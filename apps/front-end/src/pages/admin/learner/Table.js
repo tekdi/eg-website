@@ -208,10 +208,10 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             {t("BENEFICIARY_ALL")}
             {!filter?.status && `(${paginationTotalRows})`}
           </Text>
-          {beneficiaryStatus?.map((item, i) => {
+          {beneficiaryStatus?.map((item) => {
             return (
               <Text
-                key={i}
+                key={item}
                 color={filter?.status == t(item?.value) ? "blueText.400" : ""}
                 bold={filter?.status == t(item?.value)}
                 cursor={"pointer"}
