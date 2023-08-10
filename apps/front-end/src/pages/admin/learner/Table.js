@@ -5,24 +5,14 @@ import {
   ImageView,
   AdminTypo,
   enumRegistryService,
-  enrollmentDateOfBirth,
+  debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
-import Clipboard from "component/Clipboard";
 import moment from "moment";
-import {
-  HStack,
-  VStack,
-  Modal,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-} from "native-base";
+import { HStack, VStack, Image, Text, ScrollView, Input } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
 const customStyles = {
   rows: {
     style: {
@@ -55,6 +45,7 @@ const customStyles = {
     },
   },
 };
+
 const columns = (e) => [
   {
     name: t("NAME"),
@@ -107,14 +98,13 @@ const columns = (e) => [
         ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
         : moment().diff(row?.dob, "years"),
   },
-
   {
     name: t("DISTRICT"),
 
     selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
-    name: t("BLOCK"),
+    name: t("BLOCKS"),
 
     selector: (row) => (row?.block ? row?.block : "-"),
   },
@@ -122,7 +112,12 @@ const columns = (e) => [
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <ChipStatus key={index} status={row?.program_beneficiaries?.status} />
+      <ChipStatus
+        key={index}
+        is_duplicate={row?.is_duplicate}
+        is_deactivated={row?.is_deactivated}
+        status={row?.program_beneficiaries?.status}
+      />
     ),
     sortable: true,
     attr: "email",
@@ -151,14 +146,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
+          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
@@ -169,16 +157,27 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
           placeholder="search"
           variant="outline"
           onChange={(e) => {
-            searchName(e);
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              2000
+            );
           }}
-        /> */}
+        />
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {

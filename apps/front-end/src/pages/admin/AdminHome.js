@@ -115,7 +115,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     properties: {
       district: {
         type: "array",
-        title: "DISTRICT",
+        title: t("DISTRICT"),
         grid: 1,
         _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
@@ -127,7 +127,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       },
       block: {
         type: "array",
-        title: "BLOCKS",
+        title: t("BLOCKS"),
         grid: 1,
         _hstack: {
           maxH: 130,
@@ -146,7 +146,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       },
       qualificationIds: {
         type: "array",
-        title: "QUALIFICATION",
+        title: t("QUALIFICATION"),
         grid: 1,
         _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
@@ -158,7 +158,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       },
       work_experience: {
         type: "array",
-        title: "WORK  EXPERIENCE",
+        title: t("WORK_EXPERIENCES"),
         _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
