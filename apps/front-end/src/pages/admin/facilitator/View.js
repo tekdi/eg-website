@@ -62,7 +62,6 @@ export default function FacilitatorView({ footerLinks }) {
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [otpData, setotpData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
@@ -198,7 +197,7 @@ export default function FacilitatorView({ footerLinks }) {
               {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
           </HStack>
-          <HStack flexWrap="wrap">
+          <HStack justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
               <ChipStatus status={data?.status} />
               <HStack
