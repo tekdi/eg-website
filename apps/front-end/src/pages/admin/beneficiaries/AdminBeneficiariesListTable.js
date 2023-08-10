@@ -5,57 +5,16 @@ import {
   ImageView,
   AdminTypo,
   enumRegistryService,
-  enrollmentDateOfBirth,
+  tableCustomStyles,
+  debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
-import Chip from "component/Chip";
-import Clipboard from "component/Clipboard";
 import moment from "moment";
-import {
-  HStack,
-  VStack,
-  Modal,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-} from "native-base";
+import { HStack, VStack, Image, Text, ScrollView, Input } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
-const customStyles = {
-  rows: {
-    style: {
-      minHeight: "72px", // override the row height
-    },
-    style: {
-      minHeight: "72px", // override the row height
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-  },
-};
 
 const columns = (e) => [
   {
@@ -96,9 +55,7 @@ const columns = (e) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name
-        ? `${first_name}${last_name ? ` ${last_name}` : ""}`
-        : "-";
+      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
   },
   {
@@ -115,7 +72,7 @@ const columns = (e) => [
     selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
-    name: t("BLOCK"),
+    name: t("BLOCKS"),
 
     selector: (row) => (row?.block ? row?.block : "-"),
   },
@@ -137,34 +94,26 @@ const columns = (e) => [
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
+  const navigate = useNavigate();
+
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
   const exportBeneficiaryCSV = async () => {
-    const result = await benificiaryRegistoryService.exportBeneficiariesCsv(
-      filter
-    );
+    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
   };
 
   const exportSubjectCSV = async () => {
-    const result =
-      await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
   };
 
   return (
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
+          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
@@ -175,17 +124,42 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
           placeholder="search"
           variant="outline"
           onChange={(e) => {
-            searchName(e);
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              2000
+            );
           }}
-        /> */}
+        />
         <HStack space={2}>
+          <AdminTypo.Secondarybutton
+            onPress={() => {
+              navigate("/admin/learners/duplicates");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("DUPLICATE")}
+          </AdminTypo.Secondarybutton>
           <AdminTypo.Secondarybutton
             onPress={() => {
               exportBeneficiaryCSV();
@@ -223,7 +197,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         <HStack pb="2">
           <Text
             color={!filter?.status ? "blueText.400" : ""}
-            bold={!filter?.status ? true : false}
+            bold={!filter?.status}
             cursor={"pointer"}
             mx={3}
             onPress={() => {
@@ -237,8 +211,9 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           {beneficiaryStatus?.map((item) => {
             return (
               <Text
+                key={item}
                 color={filter?.status == t(item?.value) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.value) ? true : false}
+                bold={filter?.status == t(item?.value)}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
@@ -253,7 +228,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         </HStack>
       </ScrollView>
       <DataTable
-        customStyles={customStyles}
+        customStyles={tableCustomStyles}
         columns={[...columns()]}
         data={data}
         persistTableHead
