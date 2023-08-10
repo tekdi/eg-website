@@ -22,7 +22,7 @@ import {
   setQueryParameters,
   debounce,
 } from "@shiksha/common-lib";
-import Table from "./Table";
+import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 
