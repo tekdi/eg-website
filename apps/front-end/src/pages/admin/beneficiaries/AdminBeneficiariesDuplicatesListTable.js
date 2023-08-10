@@ -6,12 +6,12 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-const action = (row, t) => {
+const action = (row, t, navigate) => {
   return (
     <AdminTypo.Secondarybutton
       my="3"
       onPress={() => {
-        navigate(`/admin/view/duplicate/${row?.aadhar_no}`);
+        navigate(`/admin/view/duplicates/${row?.aadhar_no}`);
       }}
     >
       {t("VIEW")}
@@ -80,7 +80,7 @@ function Table({
           ...columns(),
           {
             name: t("ACTION"),
-            selector: (row) => action(row, t),
+            selector: (row) => action(row, t, navigate),
           },
         ]}
         data={duplicateData}

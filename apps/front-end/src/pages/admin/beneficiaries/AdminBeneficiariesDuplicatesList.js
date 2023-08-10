@@ -3,9 +3,9 @@ import { Box, HStack, ScrollView } from "native-base";
 import {
   AdminLayout as Layout,
   useWindowSize,
-  facilitatorRegistryService,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import Table from "../duplicate/DuplicateTable";
+import Table from "./AdminBeneficiariesDuplicatesListTable";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [Height] = useWindowSize();
@@ -18,7 +18,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   // facilitator pagination
 
   React.useEffect(async () => {
-    const dupliData = await facilitatorRegistryService.getDuplicateList(filter);
+    const dupliData =
+      await benificiaryRegistoryService.getDuplicateBeneficiariesList(filter);
     setPaginationTotalRows(dupliData?.count || 0);
     setduplicateData(dupliData?.data);
     setLoading(false);

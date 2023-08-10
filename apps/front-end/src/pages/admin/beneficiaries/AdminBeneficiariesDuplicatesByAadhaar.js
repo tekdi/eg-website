@@ -6,6 +6,7 @@ import {
   AdminTypo,
   tableCustomStyles,
   BodyMedium,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack, Modal, Alert } from "native-base";
@@ -133,7 +134,10 @@ export default function DuplicateView({ footerLinks }) {
   ];
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService?.getDetailsByadhaar(filter);
+    const result =
+      await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
+        filter
+      );
     setPaginationTotalRows(result?.count || 0);
     setData(result?.result);
     setLoading(false);
@@ -141,7 +145,9 @@ export default function DuplicateView({ footerLinks }) {
 
   const assignToPrerak = async (id) => {
     const activeId = { activeId: id };
-    const result = await facilitatorRegistryService?.assignToPrerak(activeId);
+    const result = await benificiaryRegistoryService?.deactivateDuplicates(
+      activeId
+    );
     if (!result?.success) {
       seterrormsg(true);
     }
@@ -350,7 +356,7 @@ export default function DuplicateView({ footerLinks }) {
                     <AdminTypo.Secondarybutton
                       onPress={() => {
                         setModalConfirmVisible(false);
-                        navigate("/admin/learner/duplicatelist");
+                        navigate("/admin/learner/duplicates");
                       }}
                     >
                       {t("OK")}

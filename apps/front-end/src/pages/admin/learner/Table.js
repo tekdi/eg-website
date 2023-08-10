@@ -55,9 +55,7 @@ const columns = (e) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name
-        ? `${first_name}${last_name ? ` ${last_name}` : ""}`
-        : "-";
+      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
   },
   {
@@ -104,14 +102,11 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   }, []);
 
   const exportBeneficiaryCSV = async () => {
-    const result = await benificiaryRegistoryService.exportBeneficiariesCsv(
-      filter
-    );
+    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
   };
 
   const exportSubjectCSV = async () => {
-    const result =
-      await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
   };
 
   return (
@@ -153,7 +148,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
-              navigate("/admin/learner/duplicatelist");
+              navigate("/admin/learner/duplicates");
             }}
             rightIcon={
               <IconByName
@@ -202,7 +197,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         <HStack pb="2">
           <Text
             color={!filter?.status ? "blueText.400" : ""}
-            bold={!filter?.status ? true : false}
+            bold={!filter?.status}
             cursor={"pointer"}
             mx={3}
             onPress={() => {
@@ -213,11 +208,12 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             {t("BENEFICIARY_ALL")}
             {!filter?.status && `(${paginationTotalRows})`}
           </Text>
-          {beneficiaryStatus?.map((item) => {
+          {beneficiaryStatus?.map((item, i) => {
             return (
               <Text
+                key={i}
                 color={filter?.status == t(item?.value) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.value) ? true : false}
+                bold={filter?.status == t(item?.value)}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
