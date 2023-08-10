@@ -636,7 +636,7 @@ export default function FacilitatorView({ footerLinks }) {
                     {t("AADHAAR_NO")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
-                    {showData(data?.aadhar_token)}
+                    {showData(data?.aadhar_no)}
                   </AdminTypo.H5>
                 </HStack>
               </VStack>
