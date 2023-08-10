@@ -800,14 +800,6 @@ export default function FacilitatorView({ footerLinks }) {
                     alignSelf="Center"
                   />
                 </HStack>
-                <HStack width={"100%"}>
-                  <AdminTypo.PrimaryButton>
-                    {t("FACILITATOR_STATUS_QUIT")}
-                  </AdminTypo.PrimaryButton>
-                  <AdminTypo.Secondarybutton mx={5}>
-                    {t("FACILITATOR_STATUS_REJECTED")}
-                  </AdminTypo.Secondarybutton>
-                </HStack>
               </VStack>
             )}
           </VStack>
