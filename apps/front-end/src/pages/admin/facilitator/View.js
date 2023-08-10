@@ -198,53 +198,51 @@ export default function FacilitatorView({ footerLinks }) {
               {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
           </HStack>
-          <HStack alignItems="center" flexWrap="wrap">
-            <VStack flex="0.6" direction="column">
-              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <ChipStatus status={data?.status} />
-                <HStack
-                  bg="badgeColor.400"
-                  rounded={"md"}
-                  alignItems="center"
-                  p="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="CellphoneLineIcon"
-                    color="textGreyColor.300"
-                  />
-                  <AdminTypo.H6 color="textGreyColor.600" bold>
-                    {data?.mobile}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack
-                  bg="badgeColor.400"
-                  rounded={"md"}
-                  p="2"
-                  alignItems="center"
-                  space="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="MapPinLineIcon"
-                    color="textGreyColor.300"
-                  />
-                  <AdminTypo.H6 color="textGreyColor.600" bold>
-                    {[
-                      data?.state,
-                      data?.district,
-                      data?.block,
-                      data?.village,
-                      data?.grampanchayat,
-                    ]
-                      .filter((e) => e)
-                      .join(",")}
-                  </AdminTypo.H6>
-                </HStack>
+          <HStack flexWrap="wrap">
+            <VStack space="4" flexWrap="wrap">
+              <ChipStatus status={data?.status} />
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                alignItems="center"
+                p="2"
+              >
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="CellphoneLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {data?.mobile}
+                </AdminTypo.H6>
               </HStack>
-              <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                p="2"
+                alignItems="center"
+                space="2"
+              >
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="MapPinLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {[
+                    data?.state,
+                    data?.district,
+                    data?.block,
+                    data?.village,
+                    data?.grampanchayat,
+                  ]
+                    .filter((e) => e)
+                    .join(",")}
+                </AdminTypo.H6>
+              </HStack>
+              {/* <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
                 {t("ELIGIBILITY_CRITERIA").toUpperCase()}
               </AdminTypo.H4>
               <HStack width={"100%"}>
@@ -309,17 +307,17 @@ export default function FacilitatorView({ footerLinks }) {
                     />
                   </HStack>
                 </VStack>
-              </HStack>
+              </HStack> */}
             </VStack>
-            <HStack flex="0.4" pl="5" justifyContent="center">
+            <HStack flex="0.5" justifyContent="center">
               {data?.profile_photo_1?.name ? (
                 <ImageView
                   source={{
                     uri: data?.profile_photo_1?.name,
                   }}
                   // alt="Alternate Text"
-                  width={"190px"}
-                  height={"190px"}
+                  width={"180px"}
+                  height={"180px"}
                 />
               ) : (
                 <IconByName
@@ -332,7 +330,7 @@ export default function FacilitatorView({ footerLinks }) {
             </HStack>
           </HStack>
 
-          <HStack alignItems={Center} space="9" pt="5">
+          <HStack alignItems={Center} space="9">
             {/* <VStack>
               <AdminTypo.PrimaryButton
                 leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
