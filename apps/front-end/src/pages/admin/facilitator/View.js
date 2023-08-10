@@ -343,13 +343,13 @@ export default function FacilitatorView({ footerLinks }) {
           </HStack>
 
           <HStack alignItems={Center} space="9" pt="5">
-            <VStack>
+            {/* <VStack>
               <AdminTypo.PrimaryButton
                 leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
               >
                 {t("SEND_MESSAGE")}
               </AdminTypo.PrimaryButton>
-            </VStack>
+            </VStack> */}
             <VStack>
               <AdminTypo.Secondarybutton
                 leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
