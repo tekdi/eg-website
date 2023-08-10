@@ -113,7 +113,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     properties: {
       district: {
         type: "array",
-        title: "DISTRICT",
+        title: t("DISTRICT"),
         grid: 1,
         _hstack: {
           maxH: 130,
@@ -132,7 +132,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       },
       block: {
         type: "array",
-        title: "BLOCKS",
+        title: t("BLOCKS"),
         grid: 1,
         _hstack: {
           maxH: 130,
