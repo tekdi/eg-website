@@ -5,7 +5,7 @@ import AdminBeneficiariesDuplicatesList from "pages/admin/beneficiaries/AdminBen
 import AdminBeneficiariesDuplicatesByAadhaar from "pages/admin/beneficiaries/AdminBeneficiariesDuplicatesByAadhaar";
 import FacilitatorView from "pages/admin/facilitator/View";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
-import AdminBeneficiariesList from "pages/admin/learner/AdminBeneficiariesList";
+import AdminBeneficiariesList from "pages/admin/beneficiaries/AdminBeneficiariesList";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/Orientation";
 import Profile from "pages/admin/facilitator/Profile";
