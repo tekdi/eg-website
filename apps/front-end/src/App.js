@@ -24,7 +24,8 @@ function App() {
   React.useEffect(async () => {
     if (token) {
       const tokenData = getTokernUserInfo();
-      const { hasura } = tokenData?.resource_access;
+      const resourceAccess = tokenData?.resource_access;
+      const { hasura } = resourceAccess;
       const { status, ...user } = await facilitatorRegistryService.getInfo();
       if (`${status}` === "401") {
         logout();
