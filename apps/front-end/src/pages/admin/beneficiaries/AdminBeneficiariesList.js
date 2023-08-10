@@ -22,13 +22,42 @@ import {
   setQueryParameters,
   debounce,
 } from "@shiksha/common-lib";
-import Table from "./Table";
+import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 
+function CustomFieldTemplate({ id, classNames, label, required, children }) {
+  return (
+    <VStack
+      className={classNames}
+      style={{ borderTopColor: "dividerColor", borderTopWidth: "1px" }}
+    >
+      <HStack style={{ justifyContent: "space-between" }}>
+        {id !== "root" && (
+          <HStack style={{ justifyContent: "space-between" }} width="100%">
+            <label
+              style={{
+                fontWeight: "bold",
+                color: "textGreyColor.400",
+                paddingBottom: "12px",
+              }}
+            >
+              {label}
+              {required ? "*" : null}
+            </label>
+
+            <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
+          </HStack>
+        )}
+      </HStack>
+      {children}
+    </VStack>
+  );
+}
+
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const [width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
@@ -164,7 +193,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   };
 
   const onChange = async (data) => {
-    const { district, block } = data?.formData;
+    const { district, block } = data?.formData || {};
     setFilterObject({
       ...filter,
       ...(district ? { district } : {}),
@@ -176,35 +205,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilter({});
     setFilterObject({});
   };
-
-  function CustomFieldTemplate({ id, classNames, label, required, children }) {
-    return (
-      <VStack
-        className={classNames}
-        style={{ borderTopColor: "dividerColor", borderTopWidth: "1px" }}
-      >
-        <HStack style={{ justifyContent: "space-between" }}>
-          {id !== "root" && (
-            <HStack style={{ justifyContent: "space-between" }} width="100%">
-              <label
-                style={{
-                  fontWeight: "bold",
-                  color: "textGreyColor.400",
-                  paddingBottom: "12px",
-                }}
-              >
-                {label}
-                {required ? "*" : null}
-              </label>
-
-              <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
-            </HStack>
-          )}
-        </HStack>
-        {children}
-      </VStack>
-    );
-  }
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
