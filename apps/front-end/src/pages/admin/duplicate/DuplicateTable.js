@@ -6,6 +6,19 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+const action = (row, t) => {
+  return (
+    <AdminTypo.Secondarybutton
+      my="3"
+      onPress={() => {
+        navigate(`/admin/view/duplicate/${row?.aadhar_no}`);
+      }}
+    >
+      {t("VIEW")}
+    </AdminTypo.Secondarybutton>
+  );
+};
+
 // Table component
 function Table({
   facilitator,
@@ -67,16 +80,7 @@ function Table({
           ...columns(),
           {
             name: t("ACTION"),
-            selector: (row) => (
-              <AdminTypo.Secondarybutton
-                my="3"
-                onPress={() => {
-                  navigate(`/admin/view/duplicate/${row?.aadhar_no}`);
-                }}
-              >
-                {t("VIEW")}
-              </AdminTypo.Secondarybutton>
-            ),
+            selector: (row) => action(row, t),
           },
         ]}
         data={duplicateData}
