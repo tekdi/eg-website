@@ -14,6 +14,55 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { ChipStatus } from "component/BeneficiaryStatus";
 
+const Name = (row) => {
+  return (
+    <HStack alignItems={"center"} space="2">
+      <AdminTypo.H5>
+        {row?.first_name}
+        {row?.last_name ? +" " + row?.last_name : ""}
+      </AdminTypo.H5>
+    </HStack>
+  );
+};
+
+const PrerakName = (row) => {
+  return (
+    <HStack alignItems={"center"} space="2">
+      <AdminTypo.H5 bold>
+        {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
+        {row?.program_beneficiaries?.facilitator_user?.last_name
+          ? row?.program_beneficiaries?.facilitator_user?.last_name
+          : ""}
+      </AdminTypo.H5>
+    </HStack>
+  );
+};
+
+const status = (row, index) => {
+  return (
+    <ChipStatus
+      key={index}
+      is_duplicate={row?.is_duplicate}
+      is_deactivated={row?.is_deactivated}
+      status={row?.program_beneficiaries?.status}
+    />
+  );
+};
+
+const action = (row, setViewData, setModalVisible, t) => {
+  return (
+    <AdminTypo.Secondarybutton
+      my="3"
+      onPress={() => {
+        setModalVisible(true);
+        setViewData(row);
+      }}
+    >
+      {t("ASSIGN")}
+    </AdminTypo.Secondarybutton>
+  );
+};
+
 export default function DuplicateView({ footerLinks }) {
   const { t } = useTranslation();
   const { adhaarNo } = useParams();
@@ -34,14 +83,7 @@ export default function DuplicateView({ footerLinks }) {
   const columns = (e) => [
     {
       name: t("LEARNERS_NAME"),
-      selector: (row) => (
-        <HStack alignItems={"center"} space="2">
-          <AdminTypo.H5>
-            {row?.first_name}
-            {row?.last_name ? +" " + row?.last_name : ""}
-          </AdminTypo.H5>
-        </HStack>
-      ),
+      selector: (row) => Name(row),
       sortable: true,
       attr: "name",
     },
@@ -66,16 +108,7 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("PRERAK_NAME"),
-      selector: (row) => (
-        <HStack alignItems={"center"} space="2">
-          <AdminTypo.H5 bold>
-            {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
-            {row?.program_beneficiaries?.facilitator_user?.last_name
-              ? row?.program_beneficiaries?.facilitator_user?.last_name
-              : ""}
-          </AdminTypo.H5>
-        </HStack>
-      ),
+      selector: (row) => PrerakName(row),
       sortable: true,
       attr: "name",
     },
@@ -93,14 +126,7 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("STATUS"),
-      selector: (row, index) => (
-        <ChipStatus
-          key={index}
-          is_duplicate={row?.is_duplicate}
-          is_deactivated={row?.is_deactivated}
-          status={row?.program_beneficiaries?.status}
-        />
-      ),
+      selector: (row, index) => status(row, index),
       sortable: true,
       attr: "email",
     },
@@ -158,17 +184,7 @@ export default function DuplicateView({ footerLinks }) {
               ...columns(),
               {
                 name: t("ACTION"),
-                selector: (row) => (
-                  <AdminTypo.Secondarybutton
-                    my="3"
-                    onPress={() => {
-                      setModalVisible(true);
-                      setViewData(row);
-                    }}
-                  >
-                    {t("ASSIGN")}
-                  </AdminTypo.Secondarybutton>
-                ),
+                selector: (row) => action(row, setViewData, setModalVisible, t),
               },
             ]}
             data={data}
