@@ -593,6 +593,7 @@ const InfoBox = ({ status, progress }) => {
     case "rusticate":
     case "quit":
     case "rejected":
+    case "on_hold":
       infoBox = (
         <HStack
           // {...styles.inforBox}
