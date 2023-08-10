@@ -65,7 +65,7 @@ const action = (row, setViewData, setModalVisible, t) => {
 
 export default function DuplicateView({ footerLinks }) {
   const { t } = useTranslation();
-  const { adhaarNo } = useParams();
+  const { aadhaarNo } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
@@ -74,7 +74,7 @@ export default function DuplicateView({ footerLinks }) {
   const [filter, setFilter] = React.useState({
     limit: 10,
     page: 1,
-    aadhar_no: adhaarNo,
+    aadhar_no: aadhaarNo,
   });
   const [loading, setLoading] = React.useState(true);
   const [viewData, setViewData] = React.useState();
@@ -180,7 +180,7 @@ export default function DuplicateView({ footerLinks }) {
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              {adhaarNo}
+              {aadhaarNo}
             </AdminTypo.H1>
           </HStack>
           <DataTable
@@ -355,7 +355,7 @@ export default function DuplicateView({ footerLinks }) {
                     <AdminTypo.Secondarybutton
                       onPress={() => {
                         setModalConfirmVisible(false);
-                        navigate("/admin/learner/duplicates");
+                        navigate("/admin/learners/duplicates");
                       }}
                     >
                       {t("OK")}

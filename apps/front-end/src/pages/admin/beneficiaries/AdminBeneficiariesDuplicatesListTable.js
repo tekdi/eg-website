@@ -11,7 +11,7 @@ const action = (row, t, navigate) => {
     <AdminTypo.Secondarybutton
       my="3"
       onPress={() => {
-        navigate(`/admin/view/duplicates/${row?.aadhar_no}`);
+        navigate(`/admin/learners/duplicates/${row?.aadhar_no}`);
       }}
     >
       {t("VIEW")}
@@ -61,7 +61,7 @@ function Table({
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate("/admin/learner")}
+            onPress={(e) => navigate("/admin/learners")}
           />
           <AdminTypo.H1 px="5">{t("DUPLICATE_LIST")}</AdminTypo.H1>
           <Image

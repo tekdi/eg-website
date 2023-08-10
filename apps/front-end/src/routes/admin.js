@@ -5,7 +5,7 @@ import AdminBeneficiariesDuplicatesList from "pages/admin/beneficiaries/AdminBen
 import AdminBeneficiariesDuplicatesByAadhaar from "pages/admin/beneficiaries/AdminBeneficiariesDuplicatesByAadhaar";
 import FacilitatorView from "pages/admin/facilitator/View";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
-import LearnerAdminHome from "pages/admin/learner/AdminHome";
+import AdminBeneficiariesList from "pages/admin/learner/AdminBeneficiariesList";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/Orientation";
 import Profile from "pages/admin/facilitator/Profile";
@@ -15,18 +15,17 @@ export default [
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: AdminHome },
-  { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
+  { path: "/admin/learners", component: AdminBeneficiariesList },
   {
-    path: "/admin/learner/duplicates",
+    path: "/admin/learners/duplicates",
     component: AdminBeneficiariesDuplicatesList,
   },
   {
-    path: "/admin/view/duplicates/:adhaarNo",
+    path: "/admin/learners/duplicates/:aadhaarNo",
     component: AdminBeneficiariesDuplicatesByAadhaar,
   },
-
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,

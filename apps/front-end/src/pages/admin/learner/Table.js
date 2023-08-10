@@ -148,7 +148,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         <HStack space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
-              navigate("/admin/learner/duplicates");
+              navigate("/admin/learners/duplicates");
             }}
             rightIcon={
               <IconByName
