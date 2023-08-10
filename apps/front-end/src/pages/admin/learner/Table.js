@@ -72,7 +72,7 @@ const columns = (e) => [
     selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
-    name: t("BLOCK"),
+    name: t("BLOCKS"),
 
     selector: (row) => (row?.block ? row?.block : "-"),
   },
