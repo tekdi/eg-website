@@ -117,7 +117,10 @@ export default function DuplicateView({ footerLinks }) {
     },
     {
       name: t("REASON_OF_DUPLICATION"),
-      selector: (row) => (row?.duplicate_reason ? row?.duplicate_reason : "-"),
+      selector: (row) =>
+        row?.duplicate_reason === "FIRST_TIME_REGISTRATION"
+          ? t("FIRST_TIME_REGISTRATION")
+          : row?.duplicate_reason,
       sortable: true,
       attr: "email",
       wrap: true,
