@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -38,22 +38,16 @@ import {
 export default function agFormEdit({ ip, id }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
-  const [cameraSelection, setCameraSelection] = React.useState(0);
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState(id);
+  const [userId] = React.useState(id);
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
@@ -262,7 +256,7 @@ export default function agFormEdit({ ip, id }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ RadioBtn, CustomR }}
             templates={{
