@@ -16,25 +16,29 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 
 const Name = (row) => {
   return (
-    <HStack alignItems={"center"} space="2">
+    <VStack alignItems={"center"} space="2">
       <AdminTypo.H5>
         {row?.first_name}
-        {row?.last_name ? +" " + row?.last_name : ""}
+        {row?.last_name ? " " + row?.last_name : ""}
       </AdminTypo.H5>
-    </HStack>
+      <AdminTypo.H5>({row?.mobile})</AdminTypo.H5>
+    </VStack>
   );
 };
 
 const PrerakName = (row) => {
   return (
-    <HStack alignItems={"center"} space="2">
-      <AdminTypo.H5 bold>
+    <VStack alignItems={"center"} space="2">
+      <AdminTypo.H5>
         {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
         {row?.program_beneficiaries?.facilitator_user?.last_name
           ? row?.program_beneficiaries?.facilitator_user?.last_name
           : ""}
       </AdminTypo.H5>
-    </HStack>
+      <AdminTypo.H5>
+        ({row?.program_beneficiaries?.facilitator_user?.mobile})
+      </AdminTypo.H5>
+    </VStack>
   );
 };
 
@@ -86,6 +90,7 @@ export default function DuplicateView({ footerLinks }) {
       selector: (row) => Name(row),
       sortable: true,
       attr: "name",
+      wrap: true,
     },
     {
       name: t("DATE_OF_ENTRY_IN_PMS"),
@@ -94,41 +99,33 @@ export default function DuplicateView({ footerLinks }) {
       attr: "name",
     },
     {
-      name: t("MOBILE_NUMBER"),
-      selector: (row) => row?.mobile,
-      sortable: true,
-      attr: "email",
-    },
-    {
       name: t("ADDRESS"),
       selector: (row) =>
         row?.district
           ? `${row?.district}, ${row?.block}, ${row?.village}, ${row?.grampanchayat}`
           : "-",
+      wrap: true,
     },
     {
       name: t("PRERAK_NAME"),
       selector: (row) => PrerakName(row),
       sortable: true,
       attr: "name",
-    },
-    {
-      name: t("PRERAK_NUMBER"),
-      selector: (row) => row?.program_beneficiaries?.facilitator_user?.mobile,
-      sortable: true,
-      attr: "email",
+      wrap: true,
     },
     {
       name: t("REASON_OF_DUPLICATION"),
       selector: (row) => (row?.duplicate_reason ? row?.duplicate_reason : "-"),
       sortable: true,
       attr: "email",
+      wrap: true,
     },
     {
       name: t("STATUS"),
       selector: (row, index) => status(row, index),
       sortable: true,
       attr: "email",
+      wrap: true,
     },
   ];
 

@@ -1,10 +1,33 @@
-import { IconByName, AdminTypo, tableCustomStyles } from "@shiksha/common-lib";
+import { IconByName, AdminTypo } from "@shiksha/common-lib";
 import { HStack, VStack, Image } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+
+export const CustomStyles = {
+  rows: {
+    style: {
+      minHeight: "72px",
+    },
+  },
+  headCells: {
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+};
 
 const action = (row, t, navigate) => {
   return (
@@ -35,6 +58,7 @@ function Table({
       selector: (row) => row?.aadhar_no,
       sortable: true,
       attr: "aadhaar",
+      wrap: true,
     },
     {
       name: t("COUNT"),
@@ -75,7 +99,7 @@ function Table({
         </HStack>
       </HStack>
       <DataTable
-        customStyles={tableCustomStyles}
+        customStyles={CustomStyles}
         columns={[
           ...columns(),
           {
