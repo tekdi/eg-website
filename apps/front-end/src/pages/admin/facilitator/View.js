@@ -746,6 +746,7 @@ export default function FacilitatorView({ footerLinks }) {
                       )}
                     </AdminTypo.H5>
                   </HStack>
+                  {console.log("data", data)}
                   <HStack>
                     <AdminTypo.H5 color="textGreyColor.550">
                       {t("DEVICE_OWNERSHIP")}:{" "}

@@ -136,7 +136,7 @@ function Table({
               pl="2"
             />
           }
-          placeholder="search"
+          placeholder={t("SEARCH_BY_PRERAK_NAME")}
           variant="outline"
           onChange={(e) => {
             debounce(
