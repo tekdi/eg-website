@@ -12,6 +12,7 @@ import {
   facilitatorRegistryService,
   enumRegistryService,
   setQueryParameters,
+  filterObject,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
@@ -27,6 +28,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getBlocksAll, setGetBlocksAll] = React.useState();
+
   const [filter, setFilter] = React.useState({});
 
   const [loading, setLoading] = React.useState(true);
@@ -46,7 +49,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       .map((p) => p.split("="))
       .reduce((obj, pair) => {
         const [key, value] = pair.map(decodeURIComponent);
-        if (["district", "qualificationIds", "work_experience"].includes(key)) {
+        if (
+          ["district", "block", "qualificationIds", "work_experience"].includes(
+            key
+          )
+        ) {
           const newValue = value.split(",");
           obj[key] = newValue;
         } else {
@@ -66,6 +73,16 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     });
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
+
+  React.useEffect(async () => {
+    let blockData = [];
+    if (filter?.district?.length > 0) {
+      blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filter?.district,
+      });
+    }
+    setGetBlocksAll(blockData);
+  }, [filter?.district]);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.statuswiseCount();
@@ -98,7 +115,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     properties: {
       district: {
         type: "array",
-        title: "DISTRICT",
+        title: t("DISTRICT"),
         grid: 1,
         _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
@@ -108,9 +125,28 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
+          }),
+          enum: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
+          }),
+        },
+        uniqueItems: true,
+      },
       qualificationIds: {
         type: "array",
-        title: "QUALIFICATION",
+        title: t("QUALIFICATION"),
         grid: 1,
         _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
@@ -122,7 +158,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       },
       work_experience: {
         type: "array",
-        title: "WORK  EXPERIENCE",
+        title: t("WORK_EXPERIENCES"),
         _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
@@ -154,15 +190,21 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     work_experience: {
       "ui:widget": CustomRadio,
     },
+    block: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
   };
 
   const onChange = async (data) => {
-    const { district, qualificationIds, work_experience } = data?.formData;
+    const { district, qualificationIds, work_experience, block } =
+      data?.formData;
     setFilterObject({
       ...filter,
       ...(district ? { district } : {}),
       ...(qualificationIds ? { qualificationIds } : {}),
       ...(work_experience ? { work_experience } : {}),
+      ...(block ? { block } : {}),
     });
   };
 

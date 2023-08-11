@@ -1,8 +1,17 @@
-import { Box } from "native-base";
+import { Box, Text } from "native-base";
 import React from "react";
-import { t } from "@shiksha/common-lib";
+import { FrontEndTypo } from "@shiksha/common-lib";
+import { useTranslation } from "react-i18next";
 
-export default function Chip({ label, children, isActive, ...props }) {
+export default function Chip({
+  label,
+  children,
+  is_duplicate,
+  is_deactivated,
+  isActive,
+  ...props
+}) {
+  const { t } = useTranslation();
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
@@ -15,16 +24,30 @@ export default function Chip({ label, children, isActive, ...props }) {
       m="1"
       {...props}
     >
-      {children ? children : label}
+      <Text>
+        {children ? children : label}
+        {is_deactivated ? (
+          <FrontEndTypo.H3>{`(${t("DEACTIVATE")})`}</FrontEndTypo.H3>
+        ) : is_deactivated === false ? (
+          <React.Fragment></React.Fragment>
+        ) : is_duplicate === "yes" ? (
+          <FrontEndTypo.H3>
+            {`${"-"}(${t("BENEFICIARY_STATUS_DUPLICATED")})`}
+          </FrontEndTypo.H3>
+        ) : (
+          <React.Fragment></React.Fragment>
+        )}
+      </Text>
     </Box>
   );
 }
 
 // ChipStatus
-export function ChipStatus({ status, ...props }) {
+export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
   const [color, setColor] = React.useState("identifiedColor");
   const [textColor, setTextColor] = React.useState("textGreyColor.800");
   const [newStatus, setNewStatus] = React.useState(status);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
@@ -96,6 +119,8 @@ export function ChipStatus({ status, ...props }) {
       bg={color}
       color={textColor}
       label={newStatus}
+      is_duplicate={is_duplicate}
+      is_deactivated={is_deactivated}
       _text={{ textTransform: "capitalize" }}
       rounded="sm"
       {...props}

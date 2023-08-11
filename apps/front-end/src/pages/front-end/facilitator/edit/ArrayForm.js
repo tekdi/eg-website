@@ -336,7 +336,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      {["quit", "rejected", "rusticate"].includes(facilitator?.status) ? (
+      {["quit"].includes(facilitator?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
