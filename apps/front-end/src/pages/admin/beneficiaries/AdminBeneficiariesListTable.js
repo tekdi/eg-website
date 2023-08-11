@@ -139,7 +139,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
               pl="2"
             />
           }
-          placeholder="search"
+          placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
           onChange={(e) => {
             debounce(

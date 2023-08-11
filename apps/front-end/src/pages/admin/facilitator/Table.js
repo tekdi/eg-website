@@ -83,6 +83,7 @@ function Table({
         <ChipStatus key={index} status={row?.program_faciltators?.status} />
       ),
       sortable: true,
+      wrap: true,
       attr: "email",
     },
     {
@@ -136,7 +137,7 @@ function Table({
               pl="2"
             />
           }
-          placeholder="search"
+          placeholder={t("SEARCH_BY_PRERAK_NAME")}
           variant="outline"
           onChange={(e) => {
             debounce(

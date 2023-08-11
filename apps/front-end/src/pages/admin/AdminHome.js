@@ -228,7 +228,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               >
                 {label}
               </label>
-              <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
+              <IconByName
+                name="SearchLineIcon"
+                isDisabled
+                _icon={{ size: "15px" }}
+              />
             </HStack>
           )}
         </HStack>
