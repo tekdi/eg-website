@@ -385,6 +385,7 @@
   "FILE_SIZE": "file size must be less then 10MB",
   "FILTERS": "Filters",
   "FINISH": "Finish",
+  "FIRST_TIME_REGISTRATION": "first-time-registration",
   "FIRST_NAME": "First Name",
   "FIRST_NAME_AS_PER_ENROLLMENT": "First Name (As per Enrollment)",
   "FOLLOW_UP_WITH_IP": "Follow up with IP for verification",
