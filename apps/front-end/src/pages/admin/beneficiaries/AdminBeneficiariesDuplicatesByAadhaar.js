@@ -8,7 +8,7 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Alert } from "native-base";
+import { HStack, VStack, Modal, Alert, Box, Text } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -17,11 +17,13 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 const Name = (row) => {
   return (
     <VStack alignItems={"center"} space="2">
-      <AdminTypo.H5>
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
         {row?.first_name}
         {row?.last_name ? " " + row?.last_name : ""}
-      </AdminTypo.H5>
-      <AdminTypo.H5>({row?.mobile})</AdminTypo.H5>
+      </Text>
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
+        ({row?.mobile})
+      </Text>
     </VStack>
   );
 };
@@ -29,15 +31,15 @@ const Name = (row) => {
 const PrerakName = (row) => {
   return (
     <VStack alignItems={"center"} space="2">
-      <AdminTypo.H5>
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
         {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
         {row?.program_beneficiaries?.facilitator_user?.last_name
           ? row?.program_beneficiaries?.facilitator_user?.last_name
           : ""}
-      </AdminTypo.H5>
-      <AdminTypo.H5>
+      </Text>
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
         ({row?.program_beneficiaries?.facilitator_user?.mobile})
-      </AdminTypo.H5>
+      </Text>
     </VStack>
   );
 };
@@ -86,7 +88,7 @@ export default function DuplicateView({ footerLinks }) {
 
   const columns = (e) => [
     {
-      name: t("LEARNERS_NAME"),
+      name: t("LEARNERS_INFO"),
       selector: (row) => Name(row),
       sortable: true,
       attr: "name",
@@ -107,7 +109,7 @@ export default function DuplicateView({ footerLinks }) {
       wrap: true,
     },
     {
-      name: t("PRERAK_NAME"),
+      name: t("PRERAK_INFO"),
       selector: (row) => PrerakName(row),
       sortable: true,
       attr: "name",
