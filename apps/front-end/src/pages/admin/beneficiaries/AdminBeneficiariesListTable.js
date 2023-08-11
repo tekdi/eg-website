@@ -45,6 +45,7 @@ const columns = (e) => [
     ),
     sortable: true,
     attr: "name",
+    wrap: true,
   },
   {
     name: t("PRERAK"),
@@ -57,6 +58,7 @@ const columns = (e) => [
       } = row;
       return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
+    wrap: true,
   },
   {
     name: t("AGE"),
@@ -89,6 +91,7 @@ const columns = (e) => [
     ),
     sortable: true,
     attr: "email",
+    wrap: true,
   },
 ];
 // Table component
