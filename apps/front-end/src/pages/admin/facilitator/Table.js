@@ -83,6 +83,7 @@ function Table({
         <ChipStatus key={index} status={row?.program_faciltators?.status} />
       ),
       sortable: true,
+      wrap: true,
       attr: "email",
     },
     {
