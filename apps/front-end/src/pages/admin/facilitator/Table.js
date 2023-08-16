@@ -63,7 +63,6 @@ function Table({
           </AdminTypo.H5>
         </HStack>
       ),
-      sortable: true,
       attr: "name",
     },
     {
@@ -74,7 +73,7 @@ function Table({
     {
       name: t("MOBILE_NUMBER"),
       selector: (row) => row?.mobile,
-      sortable: true,
+
       attr: "email",
     },
     {
@@ -82,14 +81,14 @@ function Table({
       selector: (row, index) => (
         <ChipStatus key={index} status={row?.program_faciltators?.status} />
       ),
-      sortable: true,
+
       wrap: true,
       attr: "email",
     },
     {
       name: t("GENDER"),
       selector: (row) => row?.gender,
-      sortable: true,
+
       attr: "city",
     },
   ];
