@@ -231,6 +231,7 @@ function Table({
           {facilitaorStatus?.map((item) => {
             return (
               <Text
+                key={""}
                 color={filter?.status == t(item?.status) ? "blueText.400" : ""}
                 bold={filter?.status == t(item?.status) ? true : false}
                 cursor={"pointer"}
@@ -239,12 +240,16 @@ function Table({
                   setFilter({ ...filter, status: item?.status, page: 1 });
                 }}
               >
-                <GetEnumValue
-                  t={t}
-                  enumType={"FACILITATOR_STATUS"}
-                  enumOptionValue={item?.status}
-                  enumApiData={enumOptions}
-                />
+                {item.status === "all" ? (
+                  <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                ) : (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"FACILITATOR_STATUS"}
+                    enumOptionValue={item?.status}
+                    enumApiData={enumOptions}
+                  />
+                )}
                 {`(${item?.count})`}
               </Text>
             );
