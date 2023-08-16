@@ -212,7 +212,7 @@ export default function BenificiaryProfileView(props) {
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+            <BodyMedium>{t("DEACTIVATED_PAGE_MSG")}</BodyMedium>
           </HStack>
         </Alert>
       ) : (

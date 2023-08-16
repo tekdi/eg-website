@@ -8,7 +8,7 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Alert } from "native-base";
+import { HStack, VStack, Modal, Alert, Text } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -16,25 +16,31 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 
 const Name = (row) => {
   return (
-    <HStack alignItems={"center"} space="2">
-      <AdminTypo.H5>
+    <VStack alignItems={"center"} space="2">
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
         {row?.first_name}
-        {row?.last_name ? +" " + row?.last_name : ""}
-      </AdminTypo.H5>
-    </HStack>
+        {row?.last_name ? " " + row?.last_name : ""}
+      </Text>
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
+        ({row?.mobile})
+      </Text>
+    </VStack>
   );
 };
 
 const PrerakName = (row) => {
   return (
-    <HStack alignItems={"center"} space="2">
-      <AdminTypo.H5 bold>
+    <VStack alignItems={"center"} space="2">
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
         {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
         {row?.program_beneficiaries?.facilitator_user?.last_name
           ? row?.program_beneficiaries?.facilitator_user?.last_name
           : ""}
-      </AdminTypo.H5>
-    </HStack>
+      </Text>
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
+        ({row?.program_beneficiaries?.facilitator_user?.mobile})
+      </Text>
+    </VStack>
   );
 };
 
@@ -82,10 +88,11 @@ export default function DuplicateView({ footerLinks }) {
 
   const columns = (e) => [
     {
-      name: t("LEARNERS_NAME"),
+      name: t("LEARNERS_INFO"),
       selector: (row) => Name(row),
       sortable: true,
       attr: "name",
+      wrap: true,
     },
     {
       name: t("DATE_OF_ENTRY_IN_PMS"),
@@ -94,41 +101,36 @@ export default function DuplicateView({ footerLinks }) {
       attr: "name",
     },
     {
-      name: t("MOBILE_NUMBER"),
-      selector: (row) => row?.mobile,
-      sortable: true,
-      attr: "email",
-    },
-    {
       name: t("ADDRESS"),
       selector: (row) =>
         row?.district
           ? `${row?.district}, ${row?.block}, ${row?.village}, ${row?.grampanchayat}`
           : "-",
+      wrap: true,
     },
     {
-      name: t("PRERAK_NAME"),
+      name: t("PRERAK_INFO"),
       selector: (row) => PrerakName(row),
       sortable: true,
       attr: "name",
-    },
-    {
-      name: t("PRERAK_NUMBER"),
-      selector: (row) => row?.program_beneficiaries?.facilitator_user?.mobile,
-      sortable: true,
-      attr: "email",
+      wrap: true,
     },
     {
       name: t("REASON_OF_DUPLICATION"),
-      selector: (row) => (row?.duplicate_reason ? row?.duplicate_reason : "-"),
+      selector: (row) =>
+        row?.duplicate_reason === "FIRST_TIME_REGISTRATION"
+          ? t("FIRST_TIME_REGISTRATION")
+          : row?.duplicate_reason,
       sortable: true,
       attr: "email",
+      wrap: true,
     },
     {
       name: t("STATUS"),
       selector: (row, index) => status(row, index),
       sortable: true,
       attr: "email",
+      wrap: true,
     },
   ];
 
