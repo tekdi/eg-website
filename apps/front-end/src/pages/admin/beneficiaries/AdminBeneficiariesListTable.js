@@ -1,7 +1,6 @@
 import {
   IconByName,
   benificiaryRegistoryService,
-  t,
   ImageView,
   AdminTypo,
   enumRegistryService,
@@ -23,8 +22,9 @@ import {
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-const columns = (e) => [
+const columns = (t) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
@@ -97,7 +97,7 @@ const columns = (e) => [
   },
 ];
 
-const dropDown = (triggerProps) => {
+const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
       <HStack space={4}>
@@ -111,6 +111,7 @@ const dropDown = (triggerProps) => {
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -177,7 +178,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           <Menu
             w="190"
             placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps)}
+            trigger={(triggerProps) => dropDown(triggerProps, t)}
           >
             <Menu.Item onPress={(item) => setMenu("export_learner")}>
               {t("LEARNERS_LIST")}
@@ -238,7 +239,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[...columns()]}
+        columns={columns(t)}
         data={data}
         persistTableHead
         progressPending={loading}
