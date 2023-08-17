@@ -6,6 +6,7 @@ import {
   debounce,
   GetEnumValue,
   tableCustomStyles,
+  t,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -24,6 +25,76 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+const columns = (t, navigate) => [
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        {row?.profile_photo_1?.name ? (
+          <ImageView
+            source={{
+              uri: row?.profile_photo_1?.name,
+            }}
+            // alt="Alternate Text"
+            width={"35px"}
+            height={"35px"}
+          />
+        ) : (
+          <IconByName
+            isDisabled
+            name="AccountCircleLineIcon"
+            color="gray.300"
+            _icon={{ size: "35" }}
+          />
+        )}
+        <AdminTypo.H5 bold>
+          {row?.first_name + " " + row.last_name}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+  },
+  {
+    name: t("DISTRICT"),
+    selector: (row) => (row?.district ? row?.district : "-"),
+  },
+  {
+    name: t("QUALIFICATION"),
+    selector: (row) => row?.qualifications?.qualification_master?.name || "-",
+  },
+  {
+    name: t("MOBILE_NUMBER"),
+    selector: (row) => row?.mobile,
+
+    attr: "email",
+  },
+  {
+    name: t("STATUS"),
+    selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
+
+    wrap: true,
+    attr: "email",
+  },
+  {
+    name: t("GENDER"),
+    selector: (row) => row?.gender,
+
+    attr: "city",
+  },
+  {
+    name: t("ACTION"),
+    selector: (row) => (
+      <AdminTypo.Secondarybutton
+        my="3"
+        onPress={() => {
+          navigate(`/admin/view/${row?.id}`);
+        }}
+      >
+        {t("VIEW")}
+      </AdminTypo.Secondarybutton>
+    ),
+  },
+];
 // Table component
 function Table({
   filter,
@@ -36,70 +107,7 @@ function Table({
   enumOptions,
 }) {
   const { t } = useTranslation();
-  const columns = (e) => [
-    {
-      name: t("NAME"),
-      selector: (row) => (
-        <HStack alignItems={"center"} space="2">
-          {row?.profile_photo_1?.name ? (
-            <ImageView
-              source={{
-                uri: row?.profile_photo_1?.name,
-              }}
-              // alt="Alternate Text"
-              width={"35px"}
-              height={"35px"}
-            />
-          ) : (
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              color="gray.300"
-              _icon={{ size: "35" }}
-            />
-          )}
-          <AdminTypo.H5 bold>
-            {row?.first_name + " " + row.last_name}
-          </AdminTypo.H5>
-        </HStack>
-      ),
-      attr: "name",
-    },
-    {
-      name: t("DISTRICT"),
 
-      selector: (row) => (row?.district ? row?.district : "-"),
-    },
-    {
-      name: t("QUALIFICATION"),
-
-      selector: (row) =>
-        row?.qualifications?.qualification_master?.name
-          ? row?.qualifications?.qualification_master?.name
-          : "-",
-    },
-    {
-      name: t("MOBILE_NUMBER"),
-      selector: (row) => row?.mobile,
-
-      attr: "email",
-    },
-    {
-      name: t("STATUS"),
-      selector: (row, index) => (
-        <ChipStatus key={index} status={row?.program_faciltators?.status} />
-      ),
-
-      wrap: true,
-      attr: "email",
-    },
-    {
-      name: t("GENDER"),
-      selector: (row) => row?.gender,
-
-      attr: "city",
-    },
-  ];
   const [modal, setModal] = React.useState(false);
 
   const navigate = useNavigate();
@@ -265,22 +273,7 @@ function Table({
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[
-          ...columns(),
-          {
-            name: t("ACTION"),
-            selector: (row) => (
-              <AdminTypo.Secondarybutton
-                my="3"
-                onPress={() => {
-                  navigate(`/admin/view/${row?.id}`);
-                }}
-              >
-                {t("VIEW")}
-              </AdminTypo.Secondarybutton>
-            ),
-          },
-        ]}
+        columns={columns(t, navigate)}
         data={data}
         persistTableHead
         progressPending={loading}
