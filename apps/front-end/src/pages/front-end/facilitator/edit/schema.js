@@ -45,7 +45,7 @@ export default {
           type: "string",
           format: "RadioBtn",
           enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
-          enum: ["yes", "no"],
+          enum: ["self", "family"],
         },
         device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
@@ -149,6 +149,7 @@ export default {
           type: "string",
           title: "NAME",
           help: "NAME_OF_YOUR_EMPLOYER",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         designation: {
           type: "string",

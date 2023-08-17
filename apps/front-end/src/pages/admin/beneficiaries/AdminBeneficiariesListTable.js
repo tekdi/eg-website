@@ -43,7 +43,7 @@ const columns = (e) => [
         </AdminTypo.H5>
       </HStack>
     ),
-    sortable: true,
+
     attr: "name",
     wrap: true,
   },
@@ -89,7 +89,7 @@ const columns = (e) => [
         status={row?.program_beneficiaries?.status}
       />
     ),
-    sortable: true,
+
     attr: "email",
     wrap: true,
   },
