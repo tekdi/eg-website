@@ -55,8 +55,9 @@ const columns = (e) => [
         </AdminTypo.H5>
       </HStack>
     ),
-    sortable: true,
+
     attr: "name",
+    wrap: true,
   },
   {
     name: t("PRERAK_ID"),
@@ -73,6 +74,7 @@ const columns = (e) => [
       } = row;
       return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
+    wrap: true,
   },
   {
     name: t("AGE"),
@@ -92,8 +94,9 @@ const columns = (e) => [
         status={row?.program_beneficiaries?.status}
       />
     ),
-    sortable: true,
+
     attr: "email",
+    wrap: true,
   },
 ];
 // Table component
