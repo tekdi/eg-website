@@ -79,10 +79,7 @@ const columns = (e) => [
   {
     name: t("AGE"),
 
-    selector: (row) =>
-      row?.program_beneficiaries?.enrollment_dob
-        ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
-        : moment().diff(row?.dob, "years"),
+    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
   },
   {
     name: t("STATUS"),
