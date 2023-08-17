@@ -99,6 +99,17 @@ const columns = (e) => [
     wrap: true,
   },
 ];
+
+const dropDown = (triggerProps) => {
+  return (
+    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+      <HStack space={4}>
+        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
+        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
+    </Pressable>
+  );
+};
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
@@ -169,23 +180,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           <Menu
             w="190"
             placement="bottom right"
-            trigger={(triggerProps) => {
-              return (
-                <Pressable
-                  accessibilityLabel="More options menu"
-                  {...triggerProps}
-                >
-                  <HStack space={4}>
-                    <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
-                    <IconByName
-                      pr="0"
-                      name="ArrowDownSLineIcon"
-                      isDisabled={true}
-                    />
-                  </HStack>
-                </Pressable>
-              );
-            }}
+            trigger={(triggerProps) => dropDown(triggerProps)}
           >
             <Menu.Item onPress={(item) => setMenu("export_learner")}>
               {t("LEARNERS_LIST")}
