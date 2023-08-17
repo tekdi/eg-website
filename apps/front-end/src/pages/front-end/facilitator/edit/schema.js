@@ -45,7 +45,7 @@ export default {
           type: "string",
           format: "RadioBtn",
           enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
-          enum: ["yes", "no"],
+          enum: ["self", "family"],
         },
         device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
