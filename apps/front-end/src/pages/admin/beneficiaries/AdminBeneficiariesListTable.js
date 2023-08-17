@@ -10,13 +10,25 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import { HStack, VStack, Image, Text, ScrollView, Input } from "native-base";
-
+import {
+  HStack,
+  VStack,
+  Image,
+  Text,
+  ScrollView,
+  Input,
+  Menu,
+  Pressable,
+} from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 
 const columns = (e) => [
+  {
+    name: t("LEARNERS_ID"),
+    selector: (row) => row?.id,
+  },
   {
     name: t("NAME"),
     selector: (row) => (
@@ -47,6 +59,10 @@ const columns = (e) => [
     attr: "name",
   },
   {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.program_beneficiaries?.id,
+  },
+  {
     name: t("PRERAK"),
 
     selector: (row) => {
@@ -66,17 +82,6 @@ const columns = (e) => [
         ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
         : moment().diff(row?.dob, "years"),
   },
-  {
-    name: t("DISTRICT"),
-
-    selector: (row) => (row?.district ? row?.district : "-"),
-  },
-  {
-    name: t("BLOCKS"),
-
-    selector: (row) => (row?.block ? row?.block : "-"),
-  },
-
   {
     name: t("STATUS"),
     selector: (row, index) => (
@@ -107,6 +112,14 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
 
   const exportSubjectCSV = async () => {
     await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+  };
+
+  const setMenu = (e) => {
+    if (e === "export_subject") {
+      exportSubjectCSV();
+    } else {
+      exportBeneficiaryCSV();
+    }
   };
 
   return (
@@ -145,8 +158,40 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             );
           }}
         />
-        <HStack space={2}>
-          <AdminTypo.Secondarybutton
+        <HStack
+          space={6}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Menu
+            w="190"
+            placement="bottom right"
+            trigger={(triggerProps) => {
+              return (
+                <Pressable
+                  accessibilityLabel="More options menu"
+                  {...triggerProps}
+                >
+                  <HStack space={4}>
+                    <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
+                    <IconByName
+                      pr="0"
+                      name="ArrowDownSLineIcon"
+                      isDisabled={true}
+                    />
+                  </HStack>
+                </Pressable>
+              );
+            }}
+          >
+            <Menu.Item onPress={(item) => setMenu("export_learner")}>
+              {t("LEARNERS_LIST")}
+            </Menu.Item>
+            <Menu.Item onPress={(item) => setMenu("export_subject")}>
+              {t("LEARNERS_SUBJECT_CSV")}
+            </Menu.Item>
+          </Menu>
+          <AdminTypo.Dangerbutton
             onPress={() => {
               navigate("/admin/learners/duplicates");
             }}
@@ -158,39 +203,8 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
               />
             }
           >
-            {t("DUPLICATE")}
-          </AdminTypo.Secondarybutton>
-          <AdminTypo.Secondarybutton
-            onPress={() => {
-              exportBeneficiaryCSV();
-            }}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("EXPORT")}
-          </AdminTypo.Secondarybutton>
-
-          <AdminTypo.Secondarybutton
-            onPress={() => {
-              exportSubjectCSV();
-            }}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("EXPORT_SUBJECT_CSV")}
-          </AdminTypo.Secondarybutton>
+            {t("RESOLVE_DUPLICATION")}
+          </AdminTypo.Dangerbutton>
         </HStack>
       </HStack>
       <ScrollView horizontal={true} mb="2">
