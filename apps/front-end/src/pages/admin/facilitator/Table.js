@@ -72,6 +72,14 @@ function Table({
       selector: (row) => (row?.district ? row?.district : "-"),
     },
     {
+      name: t("QUALIFICATION"),
+
+      selector: (row) =>
+        row?.qualifications?.qualification_master?.name
+          ? row?.qualifications?.qualification_master?.name
+          : "-",
+    },
+    {
       name: t("MOBILE_NUMBER"),
       selector: (row) => row?.mobile,
       sortable: true,
