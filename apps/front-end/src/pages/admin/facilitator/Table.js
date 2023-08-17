@@ -230,7 +230,7 @@ function Table({
           {facilitaorStatus?.map((item) => {
             return (
               <Text
-                key={""}
+                key={"table"}
                 color={filter?.status == t(item?.status) ? "blueText.400" : ""}
                 bold={filter?.status == t(item?.status) ? true : false}
                 cursor={"pointer"}
