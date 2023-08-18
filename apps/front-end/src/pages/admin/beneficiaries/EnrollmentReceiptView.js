@@ -2,63 +2,16 @@ import React from "react";
 import {
   IconByName,
   AdminLayout as Layout,
-  ProgressBar,
-  facilitatorRegistryService,
-  Loading,
-  t,
-  authRegistryService,
   ImageView,
   AdminTypo,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Box,
-  Center,
-  HStack,
-  Text,
-  VStack,
-  Modal,
-  FormControl,
-  Input,
-  Image,
-  useToast,
-  Checkbox,
-} from "native-base";
-import { ChipStatus } from "component/Chip";
-import NotFound from "../../NotFound";
-import Steper from "component/Steper";
-const Experience = (obj) => {
-  return (
-    <VStack>
-      {obj?.role_title ? (
-        <Text>
-          {t("ROLE")} : {obj?.role_title}
-        </Text>
-      ) : (
-        <React.Fragment />
-      )}
-      {obj?.experience_in_years ? (
-        <Text>
-          {t("YEARS_OF_EX")} : {obj?.experience_in_years}
-        </Text>
-      ) : (
-        <React.Fragment />
-      )}
-      {obj?.description ? (
-        <Text>
-          {t("DESCRIPTION")} : {obj?.description}
-        </Text>
-      ) : (
-        <React.Fragment />
-      )}
-    </VStack>
-  );
-};
+import { HStack, VStack, Image, Checkbox } from "native-base";
+import { useTranslation } from "react-i18next";
 
 export default function EnrollmentReceiptView({ footerLinks }) {
-  const toast = useToast();
-
+  const { t } = useTranslation();
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [scale, setScale] = React.useState({

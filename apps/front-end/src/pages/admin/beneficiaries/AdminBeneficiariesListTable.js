@@ -95,6 +95,20 @@ const columns = (t) => [
     attr: "email",
     wrap: true,
   },
+  {
+    name: t("ACTION"),
+    selector: (row) =>
+      row?.program_beneficiaries?.status === "enrolled" && (
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => {
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+          }}
+        >
+          {t("VIEW")}
+        </AdminTypo.Secondarybutton>
+      ),
+  },
 ];
 
 const dropDown = (triggerProps, t) => {
@@ -239,23 +253,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[
-          ...columns(t),
-          {
-            name: t("ACTION"),
-            selector: (row) =>
-              row?.program_beneficiaries?.status === "enrolled" && (
-                <AdminTypo.Secondarybutton
-                  my="3"
-                  onPress={() => {
-                    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
-                  }}
-                >
-                  {t("VIEW")}
-                </AdminTypo.Secondarybutton>
-              ),
-          },
-        ]}
+        columns={[...columns(t)]}
         data={data}
         persistTableHead
         progressPending={loading}
