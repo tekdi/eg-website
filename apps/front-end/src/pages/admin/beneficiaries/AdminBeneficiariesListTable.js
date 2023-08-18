@@ -248,7 +248,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
                 <AdminTypo.Secondarybutton
                   my="3"
                   onPress={() => {
-                    navigate(`/admin/view/enrollmentRecipt/${row?.id}`);
+                    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
                   }}
                 >
                   {t("VIEW")}

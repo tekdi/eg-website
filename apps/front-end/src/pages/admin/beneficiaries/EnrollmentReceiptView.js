@@ -56,7 +56,7 @@ const Experience = (obj) => {
   );
 };
 
-export default function ReciptView({ footerLinks }) {
+export default function EnrollmentReceiptView({ footerLinks }) {
   const toast = useToast();
 
   const { id } = useParams();
