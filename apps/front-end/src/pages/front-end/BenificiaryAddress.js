@@ -158,7 +158,7 @@ export default function BenificiaryAddress() {
                 borderBottomColor="appliedColor"
               >
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("BLOCK")}
+                  {t("BLOCKS")}
                 </FrontEndTypo.H3>
 
                 <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
