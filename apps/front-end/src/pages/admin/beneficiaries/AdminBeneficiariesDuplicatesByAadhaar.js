@@ -88,6 +88,10 @@ export default function DuplicateView({ footerLinks }) {
 
   const columns = (e) => [
     {
+      name: t("LEARNERS_ID"),
+      selector: (row) => row?.id,
+    },
+    {
       name: t("LEARNERS_INFO"),
       selector: (row) => Name(row),
       sortable: true,
