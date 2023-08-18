@@ -8,7 +8,7 @@ import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import AdminBeneficiariesList from "pages/admin/beneficiaries/AdminBeneficiariesList";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/Orientation";
-import ReciptView from "pages/admin/learner/ReciptView";
+import ReciptView from "pages/admin/beneficiaries/ReciptView";
 import Profile from "pages/admin/facilitator/Profile";
 
 export default [

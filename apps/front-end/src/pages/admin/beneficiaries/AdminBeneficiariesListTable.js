@@ -239,7 +239,23 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={columns(t)}
+        columns={[
+          ...columns(t),
+          {
+            name: t("ACTION"),
+            selector: (row) =>
+              row?.program_beneficiaries?.status === "enrolled" && (
+                <AdminTypo.Secondarybutton
+                  my="3"
+                  onPress={() => {
+                    navigate(`/admin/view/enrollmentRecipt/${row?.id}`);
+                  }}
+                >
+                  {t("VIEW")}
+                </AdminTypo.Secondarybutton>
+              ),
+          },
+        ]}
         data={data}
         persistTableHead
         progressPending={loading}
