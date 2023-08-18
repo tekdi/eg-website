@@ -15,14 +15,17 @@ export default {
             father_first_name: {
               type: "string",
               title: "FIRST_NAME",
+              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
             },
             father_middle_name: {
               type: ["string", "null"],
               title: "MIDDLE_NAME",
+              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
             },
             father_last_name: {
               type: ["string", "null"],
               title: "LAST_NAME",
+              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
             },
           },
         },
@@ -35,14 +38,17 @@ export default {
             mother_first_name: {
               type: "string",
               title: "FIRST_NAME",
+              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
             },
             mother_middle_name: {
               type: ["string", "null"],
               title: "MIDDLE_NAME",
+              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
             },
             mother_last_name: {
               type: ["string", "null"],
               title: "LAST_NAME",
+              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
             },
           },
         },
