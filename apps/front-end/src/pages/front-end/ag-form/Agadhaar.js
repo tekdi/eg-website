@@ -213,11 +213,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         if (result.underSameFacilitator) {
           setunderSameFacilitator(false);
           setisExistflag(true);
-        } else if (!result?.underSameFacilitator) {
-          setunderSameFacilitator(true);
-          setisExistflag(true);
-        } else {
+        } else if (!result?.success) {
           setisExistflag(false);
+        } else  if(result?.underSameFacilitator === false){
+          setisExistflag(true);
+          setunderSameFacilitator(true);
         }
       }
     }
