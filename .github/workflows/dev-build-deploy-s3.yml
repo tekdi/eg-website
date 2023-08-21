@@ -1,4 +1,4 @@
-name: Deploy to PROD S3 Test
+name: Deploy to DEV S3 Test
 on: 
   push: 
     branches:
@@ -10,8 +10,8 @@ defaults:
     
 jobs:
   build:
-    name: Build Deploy To PROD S3 Test2
-    environment: PROD
+    name: Build Deploy To DEV S3 Test2
+    environment: DEV
     runs-on: ubuntu-latest
     steps:
       - name: List contents
@@ -56,7 +56,7 @@ jobs:
 #           folder: build
 #           bucket: ${{ secrets.S3_BUCKET }}
 #           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
-#           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+#           dist-id: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
 #           invalidation: /*
 #           delete-removed: true
 #           no-cache: true
