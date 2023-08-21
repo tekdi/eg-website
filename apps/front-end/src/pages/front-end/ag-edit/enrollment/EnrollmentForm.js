@@ -517,8 +517,8 @@ export default function App() {
       }
     }
     if (keys?.length > 0) {
-      const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
-        (e) => keys.includes(e)
+      const errorData = ["enrollment_aadhaar_no"].filter((e) =>
+        keys.includes(e)
       );
       if (errorData.length > 0) {
         setNotMatched(errorData);
@@ -540,6 +540,8 @@ export default function App() {
     }
     setBtnLoading(false);
   };
+
+  console.log("notMatched", notMatched);
 
   return (
     <Layout
