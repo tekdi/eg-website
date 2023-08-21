@@ -517,11 +517,20 @@ export default function App() {
       }
     }
     if (keys?.length > 0) {
-      const errorData = ["enrollment_aadhaar_no"].filter((e) =>
-        keys.includes(e)
+      const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
+        (e) => keys.includes(e)
       );
       if (errorData.length > 0) {
-        setNotMatched(errorData);
+        if (
+          errorData.includes("enrollment_number") &&
+          !errors.enrollment_number?.__errors?.includes(
+            t("ENROLLMENT_NUMBER_ALREADY_EXISTS")
+          )
+        ) {
+          setNotMatched(errorData.filter((e) => e !== "enrollment_number"));
+        } else {
+          setNotMatched(errorData);
+        }
       }
       scrollToField({ property: keys?.[0] });
     } else {
