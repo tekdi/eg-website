@@ -1,25 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -28,14 +12,10 @@ import {
   IconByName,
   BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
-  uploadRegistryService,
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
@@ -59,16 +39,11 @@ import {
 export default function agFormEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
-  const [cameraSelection, setCameraSelection] = React.useState(0);
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
@@ -88,10 +63,6 @@ export default function agFormEdit({ ip }) {
     var FileSaver = require("file-saver");
     FileSaver.saveAs(`${image}`, "image.png");
   };
-
-  // React.useEffect(() => {
-  //   getImage();
-  // }, [page, credentials]);
 
   //getting data
   React.useEffect(async () => {
@@ -362,6 +333,52 @@ export default function agFormEdit({ ip }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+
+    if (id === "root_father_details_father_middle_name") {
+      if (data?.father_details?.father_middle_name === undefined) {
+        setFormData({
+          ...formData,
+          father_details: {
+            ...formData.father_details, // Spread the existing properties of father_details
+            father_middle_name: "", // Add the father_middle_name field with an empty string
+          },
+        });
+      }
+    }
+    if (id === "root_father_details_father_last_name") {
+      if (data?.father_details?.father_last_name === undefined) {
+        setFormData({
+          ...formData,
+          father_details: {
+            ...formData.father_details,
+            father_last_name: "",
+          },
+        });
+      }
+    }
+
+    if (id === "root_mother_details_mother_middle_name") {
+      if (data?.mother_details?.mother_middle_name === undefined) {
+        setFormData({
+          ...formData,
+          mother_details: {
+            ...formData.mother_details,
+            mother_middle_name: "",
+          },
+        });
+      }
+    }
+    if (id === "root_mother_details_mother_last_name") {
+      if (data?.mother_details?.mother_last_name === undefined) {
+        setFormData({
+          ...formData,
+          mother_details: {
+            ...formData.mother_details,
+            mother_last_name: "",
+          },
+        });
       }
     }
   };

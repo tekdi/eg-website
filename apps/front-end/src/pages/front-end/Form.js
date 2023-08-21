@@ -564,6 +564,14 @@ export default function App({ facilitator, ip, onClick }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
+    
+    if (id === "root_otp") {
+      if (errors?.otp) {
+        const newErrors = {};
+        setErrors(newErrors);
+      }
+    }
+    
   };
 
   const onError = (data) => {

@@ -209,21 +209,18 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({ aadhar_no: data?.aadhar_no });
-        console.log("result", result);
         if (result.underSameFacilitator) {
           setunderSameFacilitator(false);
           setisExistflag(true);
         } else if (!result?.success) {
           setisExistflag(false);
-        } else  if(result?.underSameFacilitator === false){
+        } else if (result?.underSameFacilitator === false) {
           setisExistflag(true);
           setunderSameFacilitator(true);
         }
       }
     }
   };
-
-  console.log("585792178117", underSameFacilitator);
   const onError = (data) => {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
