@@ -709,6 +709,7 @@
   "SELECT_MAXIMUM": "Select maximum {0} {1}",
   "SELECT_MESSAGE": "Please select a valid option",
   "SELECT_MESSAGE_NEVER_ENROLLED": "Please select a different field as the beneficiary has never enrolled.",
+  "SELECT_MESSAGE_DROPOUT": "Please select a different field as the beneficiary has Dropout.",
   "SELECT_MINIMUM": "Select minimum {0} {1}",
   "SELECT_PRERAK": "Select prerak",
   "SELECT_SUBJECTS": "Select Subjects",
