@@ -50,12 +50,19 @@ const columns = (t) => [
             _icon={{ size: "35" }}
           />
         )}
-        <AdminTypo.H5 bold>
-          {row?.program_beneficiaries?.enrollment_first_name + " "}
-          {row?.program_beneficiaries?.enrollment_last_name
-            ? row?.program_beneficiaries?.enrollment_last_name
-            : ""}
-        </AdminTypo.H5>
+        {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+          <AdminTypo.H5 bold>
+            {row?.program_beneficiaries?.enrollment_first_name + " "}
+            {row?.program_beneficiaries?.enrollment_last_name
+              ? row?.program_beneficiaries?.enrollment_last_name
+              : ""}
+          </AdminTypo.H5>
+        ) : (
+          <AdminTypo.H5 bold>
+            {row?.first_name + " "}
+            {row?.last_name ? row?.last_name : ""}
+          </AdminTypo.H5>
+        )}
       </HStack>
     ),
 
@@ -82,10 +89,24 @@ const columns = (t) => [
   {
     name: t("AGE"),
 
-    selector: (row) =>
-      row?.program_beneficiaries_enrollment_dob
-        ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
-        : "-",
+    selector: (row) => {
+      if (row?.program_beneficiaries?.status === "enrolled_ip_verified") {
+        if (row?.program_beneficiaries_enrollment_dob) {
+          return moment().diff(
+            row?.program_beneficiaries.enrollment_dob,
+            "years"
+          );
+        } else {
+          return "-";
+        }
+      } else {
+        if (row?.dob) {
+          return moment().diff(row?.dob, "years");
+        } else {
+          return "-";
+        }
+      }
+    },
   },
   {
     name: t("STATUS"),
