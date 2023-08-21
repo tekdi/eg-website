@@ -321,7 +321,26 @@ export default function App({ facilitator, ip, onClick, id }) {
             __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
           },
         };
-
+        setErrors(newErrors);
+      } else if (newData?.previous_school_type !== "na") {
+        const newErrors = {
+          previous_school_type: {
+            __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        const newErrors = {};
+        setErrors(newErrors);
+      }
+    } else if (newData?.type_of_learner === "dropout") {
+      setErrors({});
+      if (newData?.previous_school_type === "never_studied") {
+        const newErrors = {
+          previous_school_type: {
+            __errors: [t("SELECT_MESSAGE_DROPOUT")],
+          },
+        };
         setErrors(newErrors);
       } else {
         const newErrors = {};

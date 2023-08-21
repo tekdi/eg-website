@@ -26,14 +26,10 @@ export default function Chip({
     >
       <Text>
         {children ? children : label}
-        {(!is_deactivated && is_duplicate === "yes") || is_deactivated ? (
-          <React.Fragment></React.Fragment>
-        ) : (
-          is_duplicate === "yes" && (
-            <FrontEndTypo.H3>
-              {`${"-"}(${t("BENEFICIARY_STATUS_DUPLICATED")})`}
-            </FrontEndTypo.H3>
-          )
+        {is_duplicate === "yes" && is_deactivated === null && (
+          <FrontEndTypo.H3>
+            {`${"-"}(${t("BENEFICIARY_STATUS_DUPLICATED")})`}
+          </FrontEndTypo.H3>
         )}
       </Text>
     </Box>
