@@ -227,7 +227,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                     <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
                   </HStack>
                   <Button variant="link" pt="3" onPress={clearFilter}>
-                    <AdminTypo.H6 color="blueText.400" underline bold>
+                    <AdminTypo.H6
+                      isDisabled
+                      color="blueText.400"
+                      underline
+                      bold
+                    >
                       {t("CLEAR_FILTER")}
                     </AdminTypo.H6>
                   </Button>

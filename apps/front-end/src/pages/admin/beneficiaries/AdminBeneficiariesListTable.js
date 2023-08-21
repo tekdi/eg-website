@@ -51,7 +51,10 @@ const columns = (t) => [
           />
         )}
         <AdminTypo.H5 bold>
-          {row?.first_name + " "} {row?.last_name ? row?.last_name : ""}
+          {row?.program_beneficiaries?.enrollment_first_name + " "}
+          {row?.program_beneficiaries?.enrollment_last_name
+            ? row?.program_beneficiaries?.enrollment_last_name
+            : ""}
         </AdminTypo.H5>
       </HStack>
     ),
@@ -79,7 +82,10 @@ const columns = (t) => [
   {
     name: t("AGE"),
 
-    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
+    selector: (row) =>
+      row?.program_beneficiaries_enrollment_dob
+        ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
+        : "-",
   },
   {
     name: t("STATUS"),
@@ -138,7 +144,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
