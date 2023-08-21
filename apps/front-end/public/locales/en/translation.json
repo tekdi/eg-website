@@ -289,6 +289,7 @@
   "ENROLLMENT_INCOMPLETE_MESSAGE": "Review the entered information and make sure all information is accurate and Complete any remaining section",
   "ENROLLMENT_NUMBER": "Enrollment Number",
   "ENROLLMENT_NUMBER_ALREADY_EXISTS": "Enrollment Number already exists",
+  "ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT": "Enrollment number should be of 11 digit",
   "ENROLLMENT_NUMBER_POPUP_MESSAGE": "Enrollment number already exists. Enter correct enrollment number",
   "ENROLLMENT_PENDING": "Enrollment Pending",
   "ENROLLMENT_RECEIPT": "Details of the learner as per the enrolment receipt",
