@@ -502,14 +502,6 @@ export default function FacilitatorView({ footerLinks }) {
                         credentials?.password,
                         credentials?.confirmPassword
                       );
-
-                      /* toast.show({
-                        title: "Error",
-                        variant: "solid",
-                        description: t(
-                          "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-                        ),
-                      }); */
                     }}
                   >
                     {t("USER_SET_NEW_PASSWORD")}
@@ -548,6 +540,15 @@ export default function FacilitatorView({ footerLinks }) {
                   </AdminTypo.H5>
                   <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
                     {showData(data?.first_name)}
+                  </AdminTypo.H5>
+                </HStack>
+
+                <HStack>
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("MIDDLE_NAME")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {showData(data?.middle_name)}
                   </AdminTypo.H5>
                 </HStack>
 
