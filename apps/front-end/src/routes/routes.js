@@ -11,7 +11,7 @@ import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
 import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
 import otherdetails from "../pages/front-end/ag-edit/other-details/otherdetails";
 
-import subjectDetails from "../pages/front-end/ag-edit/choose-subjects/subjectDetails";
+import EnrollmentForm from "../pages/front-end/ag-edit/enrollment/EnrollmentForm";
 import Agduplicate from "pages/front-end/ag-form/Agduplicate";
 import Agform from "pages/front-end/ag-form/Agform";
 import Docschecklist from "pages/front-end/ag-form/Docschecklist";
@@ -34,9 +34,8 @@ import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
 import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
 import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
 import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
-
-import EnrollmentReceipt from "../pages/front-end/ag-edit/choose-subjects/ErollmentReceipt";
 import AadhaarDetails from "pages/front-end/facilitator/AadhaarDetails";
+import BenificiaryAddress from "pages/front-end/BenificiaryAddress";
 
 export default [
   { path: "/form", component: Home },
@@ -80,7 +79,7 @@ export default [
   },
   {
     path: "/beneficiary/edit/:id/enrollment-details",
-    component: subjectDetails,
+    component: EnrollmentForm,
   },
   {
     path: "/beneficiary/edit/:id/reference-details",
@@ -130,6 +129,10 @@ export default [
     component: BenificiaryAadhaarDetails,
   },
   {
+    path: "/beneficiary/:id/addressdetails",
+    component: BenificiaryAddress,
+  },
+  {
     path: "/beneficiary/:id/upload/:photoNo",
     component: BenificiaryProfilePhoto,
   },
@@ -150,8 +153,4 @@ export default [
     component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
-  {
-    path: "/beneficiary/edit/:id/enrollment-receipt",
-    component: EnrollmentReceipt,
-  },
 ];

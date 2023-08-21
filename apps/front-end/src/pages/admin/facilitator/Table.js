@@ -1,10 +1,11 @@
 import {
   IconByName,
   facilitatorRegistryService,
-  t,
   ImageView,
   AdminTypo,
-  enumRegistryService,
+  debounce,
+  GetEnumValue,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import Clipboard from "component/Clipboard";
@@ -20,40 +21,10 @@ import {
 
 import React from "react";
 import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-const customStyles = {
-  rows: {
-    style: {
-      minHeight: "72px", // override the row height
-    },
-    style: {
-      minHeight: "72px", // override the row height
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-  },
-};
-const columns = (e) => [
+
+const columns = (t, navigate) => [
   {
     name: t("NAME"),
     selector: (row) => (
@@ -80,179 +51,85 @@ const columns = (e) => [
         </AdminTypo.H5>
       </HStack>
     ),
-    sortable: true,
     attr: "name",
   },
   {
     name: t("DISTRICT"),
-
     selector: (row) => (row?.district ? row?.district : "-"),
+  },
+  {
+    name: t("QUALIFICATION"),
+    selector: (row) => row?.qualifications?.qualification_master?.name || "-",
   },
   {
     name: t("MOBILE_NUMBER"),
     selector: (row) => row?.mobile,
-    sortable: true,
+
     attr: "email",
   },
   {
     name: t("STATUS"),
-    selector: (row, index) => (
-      <ChipStatus key={index} status={row?.program_faciltators?.status} />
-    ),
-    sortable: true,
+    selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
+
+    wrap: true,
     attr: "email",
   },
   {
     name: t("GENDER"),
     selector: (row) => row?.gender,
-    sortable: true,
+
     attr: "city",
   },
+  {
+    name: t("ACTION"),
+    selector: (row) => (
+      <AdminTypo.Secondarybutton
+        my="3"
+        onPress={() => {
+          navigate(`/admin/view/${row?.id}`);
+        }}
+      >
+        {t("VIEW")}
+      </AdminTypo.Secondarybutton>
+    ),
+  },
 ];
-
-const filters = (data, filter) => {
-  return data.filter((item) => {
-    for (let key in filter) {
-      if (
-        item[key] === undefined ||
-        !filter[key].includes(
-          `${
-            item[key] && typeof item[key] === "string"
-              ? item[key].trim()
-              : item[key]
-          }`
-        )
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-};
-
 // Table component
 function Table({
+  filter,
+  setFilter,
   facilitator,
-  setadminPage,
-  setadminLimit,
-  setadminStatus,
-  adminStatus,
-  adminSearchValue,
-  setadminSearchValue,
-  admindata,
-  formData,
-  totalCount,
+  facilitaorStatus,
+  paginationTotalRows,
+  data,
+  loading,
+  enumOptions,
 }) {
-  const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState();
-  const [paginationTotalRows, setPaginationTotalRows] =
-    React.useState(totalCount);
-  // const [filterObj, setFilterObj] = React.useState();
+  const { t } = useTranslation();
+
   const [modal, setModal] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const [facilitaorStatus, setfacilitaorStatus] = React.useState();
-  const [status, setstatus] = React.useState("ALL");
 
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
-    setLoading(true);
-    setData(admindata);
-    setLoading(false);
-    setPaginationTotalRows(totalCount);
-  }, [admindata]);
-
-  React.useEffect(async () => {
-    setPaginationTotalRows(totalCount);
-  }, [totalCount]);
-
-  React.useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setfacilitaorStatus(result?.data?.FACILITATOR_STATUS);
-  }, []);
-
-  React.useEffect(async () => {
-    setLoading(true);
-
-    let _formData = formData;
-    let adminpage = page;
-    let adminlimit = limit;
-    let searchValue = adminSearchValue;
-
-    const result = await facilitatorRegistryService.filter(
-      _formData,
-      adminpage,
-      adminlimit,
-      status,
-      searchValue
-    );
-    setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount);
-    setLoading(false);
-  }, [page, limit, formData]);
-
   const exportPrerakCSV = async () => {
-    const result = await facilitatorRegistryService.exportFacilitatorsCsv();
-  };
-
-  const filterByStatus = async (value) => {
-    setLoading(true);
-    setstatus(value);
-    setadminStatus(value);
-    let _formData = formData;
-    let adminpage = page;
-    let adminlimit = limit;
-    let adminStatus = value;
-    let searchValue = adminSearchValue;
-
-    const result = await facilitatorRegistryService.filter(
-      _formData,
-      adminpage,
-      adminlimit,
-      adminStatus,
-      searchValue
+    const result = await facilitatorRegistryService.exportFacilitatorsCsv(
+      filter
     );
-    setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount);
-    // setLimit(result?.limit);
-    setLoading(false);
-  };
-
-  const searchName = async (e) => {
-    let searchValue = e?.nativeEvent?.text;
-    setadminSearchValue(searchValue);
-    let _formData = formData;
-    let adminpage = page;
-    let adminlimit = limit;
-    let status = adminStatus;
-    const result = await facilitatorRegistryService.filter(
-      _formData,
-      adminpage,
-      adminlimit,
-      status,
-      searchValue
-    );
-    setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount);
-    // setLimit(result?.limit);
-    setLoading(false);
   };
 
   return (
     <VStack>
-      <HStack my="1" mb="3" justifyContent="space-between">
+      <HStack
+        space={[0, 0, "2"]}
+        my="1"
+        mb="3"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gridGap="2"
+      >
         <HStack justifyContent="space-between" alignItems="center">
-          <Image
-            source={{
-              uri: "/profile.svg",
-            }}
-            alt=""
-            size={"xs"}
-            resizeMode="contain"
-          />
-          <AdminTypo.H1 px="5">{t("ALL_PRERAKS")}</AdminTypo.H1>
+          <IconByName name="GroupLineIcon" size="md" />
+          <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",
@@ -263,22 +140,27 @@ function Table({
           />
         </HStack>
         <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
           InputLeftElement={
-            <IconByName color="coolGray.500" name="SearchLineIcon" />
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
           }
-          placeholder="search"
+          placeholder={t("SEARCH_BY_PRERAK_NAME")}
           variant="outline"
           onChange={(e) => {
-            searchName(e);
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              3000
+            );
           }}
         />
         <HStack space={2}>
-          {/* <Button
-            variant={"primary"}
-            onPress={(e) => navigate("/admin/facilitator-onbording")}
-          >
-            {t("REGISTER_PRERAK")}
-          </Button> */}
           <AdminTypo.Secondarybutton
             onPress={() => {
               exportPrerakCSV();
@@ -352,16 +234,6 @@ function Table({
                       </HStack>
                     </Clipboard>
                   </HStack>
-                  {/* <HStack space="5" pt="5">
-                    <Input
-                      isDisabled
-                      flex={0.7}
-                      placeholder={t("EMAIL_ID_OR_PHONE_NUMBER")}
-                    />
-                    <AdminTypo.PrimaryButton isDisabled flex={0.3}>
-                      {t("SEND")}
-                    </AdminTypo.PrimaryButton>
-                  </HStack> */}
                 </VStack>
               </Modal.Body>
             </Modal.Content>
@@ -370,69 +242,51 @@ function Table({
       </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-          <Text
-            cursor={"pointer"}
-            mx={3}
-            onPress={() => {
-              filterByStatus("ALL");
-            }}
-          >
-            {t("BENEFICIARY_ALL")}
-            {status == "ALL" && `(${paginationTotalRows})`}
-          </Text>
           {facilitaorStatus?.map((item) => {
             return (
               <Text
-                color={status == t(item?.value) ? "blueText.400" : ""}
-                bold={status == t(item?.value) ? true : false}
+                key={"table"}
+                color={filter?.status == t(item?.status) ? "blueText.400" : ""}
+                bold={filter?.status == t(item?.status) ? true : false}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
-                  filterByStatus(item?.value);
+                  setFilter({ ...filter, status: item?.status, page: 1 });
                 }}
               >
-                {t(item?.title)}
-                {status == t(item?.value) && `(${paginationTotalRows})`}
+                {item.status === "all" ? (
+                  <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                ) : (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"FACILITATOR_STATUS"}
+                    enumOptionValue={item?.status}
+                    enumApiData={enumOptions}
+                  />
+                )}
+                {`(${item?.count})`}
               </Text>
             );
           })}
-          {/* <Text mx={5}>{t("Applied")}</Text>
-        <Text mx={5}>{t("Screened")}</Text>
-        <Text mx={5}>{t("ALL")}</Text> */}
         </HStack>
       </ScrollView>
       <DataTable
-        customStyles={customStyles}
-        columns={[
-          ...columns(),
-          {
-            name: t("ACTION"),
-            selector: (row) => (
-              <AdminTypo.Secondarybutton
-                my="3"
-                onPress={() => {
-                  navigate(`/admin/view/${row?.id}`);
-                }}
-              >
-                {t("VIEW")}
-              </AdminTypo.Secondarybutton>
-            ),
-          },
-        ]}
+        customStyles={tableCustomStyles}
+        columns={columns(t, navigate)}
         data={data}
         persistTableHead
         progressPending={loading}
         pagination
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+        paginationPerPage={filter?.limit ? filter?.limit : 15}
         paginationServer
         paginationTotalRows={paginationTotalRows}
+        paginationDefaultPage={filter?.page}
         onChangeRowsPerPage={(e) => {
-          setLimit(e);
-          setadminLimit(e);
+          setFilter({ ...filter, limit: e });
         }}
         onChangePage={(e) => {
-          setPage(e);
-          setadminPage(e);
+          setFilter({ ...filter, page: e });
         }}
       />
     </VStack>

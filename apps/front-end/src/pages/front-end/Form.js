@@ -2,57 +2,32 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  VStack,
-} from "native-base";
+import { Alert, Box, Center, HStack, Image, Modal, VStack } from "native-base";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
-  authRegistryService,
   geolocationRegistryService,
   uploadRegistryService,
   Camera,
   Layout,
   H1,
-  t,
   login,
   H3,
   IconByName,
   BodySmall,
-  filtersByObject,
   H2,
   getBase64,
   BodyMedium,
   sendAndVerifyOtp,
   FrontEndTypo,
+  getOptions,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Clipboard from "component/Clipboard.js";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  CustomR,
-  RadioBtn,
-  Aadhaar,
-  BaseInputTemplate,
-  ArrayFieldTemplate,
-  CustomOTPBox,
-  select,
-  AddButton,
-  RemoveButton,
-} from "../../component/BaseInput";
+import { widgets, templates } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
+import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -76,6 +51,7 @@ export default function App({ facilitator, ip, onClick }) {
   const [otpButton, setOtpButton] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
+  const { t } = useTranslation();
   if (form_step_number && parseInt(form_step_number) >= 10) {
     navigate("/dashboard");
   }
@@ -95,7 +71,9 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   React.useEffect(() => {
-    getImage();
+    if (page && credentials) {
+      getImage();
+    }
   }, [page, credentials]);
 
   const uiSchema = {
@@ -143,36 +121,6 @@ export default function App({ facilitator, ip, onClick }) {
         nextPreviewStep();
       }
     }
-  };
-
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
   };
 
   React.useEffect(async () => {
@@ -336,73 +284,81 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-      }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
-    }
-    if (data?.aadhar_no) {
-      if (
-        data?.aadhar_no &&
-        !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_no?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
-      }
-    }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 18) {
-        errors?.dob?.addError(t("MINIMUM_AGE_18_YEAR_OLD"));
-      }
-    }
-    ["grampanchayat", "first_name", "last_name", "middle_name"].forEach(
-      (key) => {
+  const validate = (data, key) => {
+    let error = {};
+    switch (key) {
+      case "mobile":
+        if (data?.mobile?.toString()?.length !== 10) {
+          error = { mobile: t("MINIMUM_LENGTH_IS_10") };
+        }
+        if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
+          error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+        }
+        break;
+      case "aadhar_no":
         if (
-          key === "first_name" &&
-          data?.first_name?.replaceAll(" ", "") === ""
+          data?.aadhar_no &&
+          !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
         ) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
+          error = { aadhar_no: t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER") };
         }
-
-        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
+        break;
+      case "dob":
+        const years = moment().diff(data?.dob, "years");
+        if (years < 18) {
+          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
         }
-      }
-    );
-    ["vo_experience", "experience"].forEach((keyex) => {
-      data?.[keyex]?.map((item, index) => {
-        ["role_title", "organization", "description"].forEach((key) => {
-          if (item?.[key]) {
-            if (
-              !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
-              item?.[key]?.replaceAll(" ", "") === ""
-            ) {
-              errors[keyex][index]?.[key]?.addError(
-                `${t("REQUIRED_MESSAGE")} ${t(
-                  schema?.properties?.[key]?.title
-                )}`
-              );
-            } else if (key === "description" && item?.[key].length > 200) {
-              errors[keyex][index]?.[key]?.addError(
-                `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
-              );
-            }
-          }
+        break;
+      case "grampanchayat":
+      case "first_name":
+      case "last_name":
+      case "middle_name":
+        // do some thing
+        break;
+      case "vo_experience":
+      case "experience":
+        ["vo_experience", "experience"].forEach((keyex) => {
+          data?.[keyex]?.map((item, index) => {
+            ["role_title", "organization", "description"].forEach((key) => {
+              if (item?.[key]) {
+                if (
+                  !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
+                  item?.[key]?.replaceAll(" ", "") === ""
+                ) {
+                  errors[keyex][index]?.[key]?.addError(
+                    `${t("REQUIRED_MESSAGE")} ${t(
+                      schema?.properties?.[key]?.title
+                    )}`
+                  );
+                } else if (key === "description" && item?.[key].length > 200) {
+                  errors[keyex][index]?.[key]?.addError(
+                    `${t("MAX_LENGHT_200")} ${t(
+                      schema?.properties?.[key]?.title
+                    )}`
+                  );
+                }
+              }
+            });
+          });
         });
-      });
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  const customValidate = (data, err) => {
+    const arr = Object.keys(err);
+    arr.forEach((key) => {
+      const isValid = validate(data, key);
+      if (isValid?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValid[key]))
+          err?.[key]?.addError(isValid[key]);
+      }
     });
 
-    return errors;
+    return err;
   };
 
   const transformErrors = (errors, uiSchema) => {
@@ -509,22 +465,29 @@ export default function App({ facilitator, ip, onClick }) {
     return newSchema;
   };
 
+  const checkMobileExist = async (mobile) => {
+    const result = await userExist({ mobile });
+    if (result.isUserExist) {
+      const newErrors = {
+        mobile: {
+          __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+        },
+      };
+      setErrors(newErrors);
+      return true;
+    }
+    return false;
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
-    setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
+      let { mobile, ...otherError } = errors ? errors : {};
+      setErrors(otherError);
       if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
+        await checkMobileExist(data?.mobile);
       }
       if (schema?.properties?.otp) {
         const { otp, ...properties } = schema?.properties;
@@ -538,6 +501,8 @@ export default function App({ facilitator, ip, onClick }) {
       }
     }
     if (id === "root_aadhar_no") {
+      let { aadhar_no, ...otherError } = errors ? errors : {};
+      setErrors(otherError);
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
@@ -630,6 +595,7 @@ export default function App({ facilitator, ip, onClick }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
+
     if (_.isEmpty(errors)) {
       const { id } = facilitator;
       let success = false;
@@ -639,40 +605,46 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "2") {
-        const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-          ...newFormData,
-          hash: localStorage.getItem("hash"),
-        });
-        setverifyOtpData(otpData);
-        if (status === true) {
-          const data = await formSubmitCreate(newFormData);
-          if (data?.error) {
+        const resultCheck = await checkMobileExist(newFormData?.mobile);
+        if (!resultCheck) {
+          const { status, otpData, newSchema } = await sendAndVerifyOtp(
+            schema,
+            {
+              ...newFormData,
+              hash: localStorage.getItem("hash"),
+            }
+          );
+          setverifyOtpData(otpData);
+          if (status === true) {
+            const data = await formSubmitCreate(newFormData);
+            if (data?.error) {
+              const newErrors = {
+                mobile: {
+                  __errors:
+                    data?.error?.constructor?.name === "String"
+                      ? [data?.error]
+                      : data?.error?.constructor?.name === "Array"
+                      ? data?.error
+                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                },
+              };
+              setErrors(newErrors);
+            } else {
+              if (data?.username && data?.password) {
+                setCredentials(data);
+              }
+            }
+          } else if (status === false) {
             const newErrors = {
-              mobile: {
-                __errors:
-                  data?.error?.constructor?.name === "String"
-                    ? [data?.error]
-                    : data?.error?.constructor?.name === "Array"
-                    ? data?.error
-                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              otp: {
+                __errors: [t("USER_ENTER_VALID_OTP")],
               },
             };
             setErrors(newErrors);
           } else {
-            if (data?.username && data?.password) {
-              setCredentials(data);
-            }
+            setSchema(newSchema);
+            setOtpButton(true);
           }
-        } else if (status === false) {
-          const newErrors = {
-            otp: {
-              __errors: [t("USER_ENTER_VALID_OTP")],
-            },
-          };
-          setErrors(newErrors);
-        } else {
-          setSchema(newSchema);
-          setOtpButton(true);
         }
       } else if (page <= 1) {
         success = true;
@@ -893,21 +865,12 @@ export default function App({ facilitator, ip, onClick }) {
           <Form
             key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, Aadhaar, select, CustomOTPBox }}
-            templates={{
-              ButtonTemplates: { AddButton, RemoveButton },
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-              ArrayFieldTemplate,
-            }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
             {...{
+              widgets,
+              templates,
               validator,
               schema: schema ? schema : {},
               uiSchema,

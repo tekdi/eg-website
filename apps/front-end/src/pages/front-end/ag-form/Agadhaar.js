@@ -63,6 +63,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
   const [isExistflag, setisExistflag] = React.useState(false);
+  const [underSameFacilitator, setunderSameFacilitator] = React.useState(true);
+
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
   const id = useParams();
@@ -207,15 +209,21 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({ aadhar_no: data?.aadhar_no });
-        if (result.isUserExist) {
+        console.log("result", result);
+        if (result.underSameFacilitator) {
+          setunderSameFacilitator(false);
           setisExistflag(true);
-        } else {
+        } else if (!result?.success) {
           setisExistflag(false);
+        } else  if(result?.underSameFacilitator === false){
+          setisExistflag(true);
+          setunderSameFacilitator(true);
         }
       }
     }
   };
 
+  console.log("585792178117", underSameFacilitator);
   const onError = (data) => {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
@@ -309,7 +317,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
-              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -346,14 +353,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
               </FrontEndTypo.Primarybutton>
             )}
-            {/* <Button
-              mt="5"
-              variant={"primary"}
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
-            >
-              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-            </Button> */}
           </Form>
         ) : (
           <React.Fragment />
@@ -377,29 +376,44 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 {t("AG_LEARNER_ALREADY_IDENTIFIED")}
               </FrontEndTypo.H2>
             </HStack>
-            <VStack pt="3">
-              <FrontEndTypo.H5 color="textGreyColor.600">
-                {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-              </FrontEndTypo.H5>
-            </VStack>
-            <FrontEndTypo.Primarybutton
-              py="2"
-              width="100%"
-              marginTop={"2em"}
-              onPress={() => {
-                setaddmodal(!addmodal);
-                setModalVisible(!modalVisible);
-              }}
-            >
-              {t("CONTINUE_ADDING")}
-            </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton
-              width="100%"
-              marginTop={"1em"}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              {t("CANCEL_AND_GO_BACK")}
-            </FrontEndTypo.Secondarybutton>
+            {underSameFacilitator && (
+              <React.Fragment>
+                <VStack pt="3">
+                  <FrontEndTypo.H5 color="textGreyColor.600">
+                    {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
+                  </FrontEndTypo.H5>
+                </VStack>
+                <FrontEndTypo.Primarybutton
+                  py="2"
+                  width="100%"
+                  marginTop={"2em"}
+                  onPress={() => {
+                    setaddmodal(!addmodal);
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  {t("CONTINUE_ADDING")}
+                </FrontEndTypo.Primarybutton>
+              </React.Fragment>
+            )}
+
+            {underSameFacilitator ? (
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                marginTop={"1em"}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                {t("CANCEL_AND_GO_BACK")}
+              </FrontEndTypo.Secondarybutton>
+            ) : (
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                marginTop={"1em"}
+                onPress={() => navigate(`/beneficiary/${userId}`)}
+              >
+                {t("CANCEL_AND_GO_TO_PROFILE")}
+              </FrontEndTypo.Secondarybutton>
+            )}
           </Modal.Body>
         </Modal.Content>
       </Modal>

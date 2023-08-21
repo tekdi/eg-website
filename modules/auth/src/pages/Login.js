@@ -81,7 +81,9 @@ export default function Login() {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: location?.state ? ["backBtn", "helpBtn"] : ["helpBtn"],
+        onlyIconsShow: location?.state
+          ? ["backBtn", "helpBtn"]
+          : ["helpBtn", "langBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
@@ -93,9 +95,9 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/splash1.png",
+            uri: "/images/logos/educate-girls.png",
           }}
-          alt=""
+          alt="Educate Girls"
           resizeMode="contain"
           size={200}
         />

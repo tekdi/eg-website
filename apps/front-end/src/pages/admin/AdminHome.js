@@ -1,51 +1,67 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-import {
-  Box,
-  HStack,
-  Select,
-  CheckIcon,
-  Text,
-  Checkbox,
-  VStack,
-  ScrollView,
-  Flex,
-  Button,
-} from "native-base";
+import { Box, HStack, VStack, ScrollView, Button } from "native-base";
 import {
   IconByName,
   AdminLayout as Layout,
-  H2,
   useWindowSize,
-  H3,
-  t,
-  facilitatorRegistryService,
   AdminTypo,
   geolocationRegistryService,
+  facilitatorRegistryService,
+  enumRegistryService,
+  setQueryParameters,
+  filterObject,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
-import Chip from "component/Chip";
+import { useTranslation } from "react-i18next";
 import CustomRadio from "component/CustomRadio";
+import { useLocation } from "react-router-dom";
+import { MultiCheck } from "../../component/BaseInput";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
+  const { t } = useTranslation();
+  const location = useLocation();
+
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-  const [formData, setFormData] = React.useState({});
-  const [getQualificationAll, setgetQualificationAll] = React.useState();
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getBlocksAll, setGetBlocksAll] = React.useState();
 
-  const [service, setService] = React.useState();
-  const [adminlimit, setadminLimit] = React.useState();
-  const [adminpage, setadminPage] = React.useState(1);
-  const [admindata, setadminData] = React.useState();
-  const [totalCount, settotalCount] = React.useState();
-  const [adminStatus, setadminStatus] = React.useState();
-  const [adminSearchValue, setadminSearchValue] = React.useState();
+  const [filter, setFilter] = React.useState({});
 
-  let finalData;
+  const [loading, setLoading] = React.useState(true);
+  const [facilitaorStatus, setfacilitaorStatus] = React.useState();
+
+  const [data, setData] = React.useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [enumOptions, setEnumOptions] = React.useState({});
+
+  // facilitator pagination
+  const [getQualificationAll, setgetQualificationAll] = React.useState();
+
+  const urlData = () => {
+    return location.search
+      .slice(1)
+      .split("&")
+      .map((p) => p.split("="))
+      .reduce((obj, pair) => {
+        const [key, value] = pair.map(decodeURIComponent);
+        if (
+          ["district", "block", "qualificationIds", "work_experience"].includes(
+            key
+          )
+        ) {
+          const newValue = value.split(",");
+          obj[key] = newValue;
+        } else {
+          obj[key] = value;
+        }
+        return obj;
+      }, {});
+  };
 
   React.useEffect(async () => {
     const getQualification =
@@ -58,41 +74,92 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
 
+  React.useEffect(async () => {
+    let blockData = [];
+    if (filter?.district?.length > 0) {
+      blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filter?.district,
+      });
+    }
+    setGetBlocksAll(blockData);
+  }, [filter?.district]);
+
+  React.useEffect(async () => {
+    const result = await enumRegistryService.statuswiseCount();
+    setfacilitaorStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, []);
+
+  React.useEffect(async () => {
+    setLoading(true);
+    const result = await facilitatorRegistryService.filter(filter);
+    setData(result.data?.data);
+    setPaginationTotalRows(
+      result?.data?.totalCount ? result?.data?.totalCount : 0
+    );
+    setLoading(false);
+  }, [filter]);
+
+  const setFilterObject = (data) => {
+    setFilter(data);
+    setQueryParameters(data);
+  };
+
+  useEffect(() => {
+    setFilter(urlData());
+  }, []);
+
   const schema = {
     type: "object",
     properties: {
-      DISTRICT: {
+      district: {
         type: "array",
-        label: "DISTRICT",
+        title: t("DISTRICT"),
+        grid: 1,
+        _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
-
-          enumNames: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
+          // enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
+          enum: getDistrictsAll?.map((item, i) => item?.district_name),
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
           }),
-          enum: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
+          enum: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
           }),
         },
         uniqueItems: true,
       },
-      QUALIFICATION: {
+      qualificationIds: {
         type: "array",
-        label: "QUALIFICATION",
+        title: t("QUALIFICATION"),
+        grid: 1,
+        _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
-          enumNames: getQualificationAll?.map((item, i) => {
-            return item?.name;
-          }),
-          enum: getQualificationAll?.map((item, i) => {
-            return item?.id;
-          }),
+          enumNames: getQualificationAll?.map((item, i) => item?.name),
+          enum: getQualificationAll?.map((item, i) => item?.id),
         },
         uniqueItems: true,
       },
-      WORK_EXPERIENCE: {
+      work_experience: {
         type: "array",
-        title: "WORK  EXPERIENCE",
+        title: t("WORK_EXPERIENCES"),
+        _hstack: { maxH: 135, overflowY: "scroll" },
         items: {
           type: "string",
           enumNames: [
@@ -112,56 +179,43 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   };
 
   const uiSchema = {
-    DISTRICT: {
-      "ui:widget": "checkboxes",
+    district: {
+      "ui:widget": MultiCheck,
       "ui:options": {},
     },
-    QUALIFICATION: {
-      "ui:widget": "checkboxes",
+    qualificationIds: {
+      "ui:widget": MultiCheck,
       "ui:options": {},
     },
-    WORK_EXPERIENCE: {
+    work_experience: {
       "ui:widget": CustomRadio,
+    },
+    block: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
     },
   };
 
-  const onChange = async (formData) => {
-    const _formData = formData?.formData;
-    let searchValue = adminSearchValue;
-    const result = await facilitatorRegistryService.filter(
-      _formData,
-      adminpage,
-      adminlimit,
-      adminStatus,
-      searchValue
-    );
-    setadminData(result?.data?.data);
-    settotalCount(result?.data?.totalCount);
-    setFormData(_formData);
+  const onChange = async (data) => {
+    const { district, qualificationIds, work_experience, block } =
+      data?.formData;
+    setFilterObject({
+      ...filter,
+      ...(district ? { district } : {}),
+      ...(qualificationIds ? { qualificationIds } : {}),
+      ...(work_experience ? { work_experience } : {}),
+      ...(block ? { block } : {}),
+    });
   };
 
   const clearFilter = () => {
-    setadminData("");
-    setFormData("");
+    setFilter({});
+    setFilterObject({});
   };
 
-  function CustomFieldTemplate(props) {
-    const {
-      id,
-      classNames,
-      style,
-      label,
-      help,
-      required,
-      description,
-      errors,
-      children,
-    } = props;
+  function CustomFieldTemplate({ id, label, children }) {
     return (
-      <VStack
-        className={classNames}
-        style={{ borderTopColor: "#EEEEEE", borderTopWidth: "1px" }}
-      >
+      <VStack>
         <HStack style={{ justifyContent: "space-between" }}>
           {id !== "root" && (
             <HStack style={{ justifyContent: "space-between" }} width="100%">
@@ -173,9 +227,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 }}
               >
                 {label}
-                {required ? "*" : null}
               </label>
-              <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
+              <IconByName
+                name="SearchLineIcon"
+                isDisabled
+                _icon={{ size: "15px" }}
+              />
             </HStack>
           )}
         </HStack>
@@ -185,10 +242,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   }
 
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+      loading={loading}
+    >
       <HStack>
         <Box
-          width="18%"
+          flex={[2, 2, 1]}
           style={{ borderRightColor: "#EEEEEE", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
@@ -197,71 +258,60 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
           >
-            <VStack space={8} py="5">
-              {/* <HStack alignItems="center" space={1} width="200px" height="24px">
-                <IconByName isDisabled name="SortDescIcon" />
-                <Text>{t("SORT_BY")}</Text>
-              </HStack> */}
-              {/* <Select
-                minWidth="20"
-                placeholder="Recent"
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) => setService(itemValue)}
+            <VStack space={3} py="5">
+              <HStack
+                alignItems="center"
+                justifyContent="space-between"
+                borderBottomWidth="2"
+                borderColor="#eee"
+                flexWrap="wrap"
               >
-                <Select.Item label="abc" value="ux" /> 
-              </Select>*/}
-
-              <VStack space={3}>
-                <HStack alignItems="center" justifyContent="space-between">
-                  <HStack>
-                    <IconByName isDisabled name="FilterLineIcon" />
-                    <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-                  </HStack>
-                  <Button variant="link" pt="3" onPress={clearFilter}>
-                    <AdminTypo.H6 color="blueText.400" underline bold>
-                      {t("CLEAR_FILTER")}
-                    </AdminTypo.H6>
-                  </Button>
+                <HStack>
+                  <IconByName isDisabled name="FilterLineIcon" />
+                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
                 </HStack>
+                <Button variant="link" pt="3" onPress={clearFilter}>
+                  <AdminTypo.H6 color="blueText.400" underline bold>
+                    {t("CLEAR_FILTER")}
+                  </AdminTypo.H6>
+                </Button>
+              </HStack>
+              <Box p={[0, 0, 3]} pr="3">
                 <Form
                   schema={schema}
                   uiSchema={uiSchema}
                   onChange={onChange}
                   validator={validator}
-                  formData={formData}
+                  formData={filter}
                   templates={{
                     FieldTemplate: CustomFieldTemplate,
                   }}
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
-              </VStack>
+              </Box>
             </VStack>
           </ScrollView>
         </Box>
-        <ScrollView
-          maxH={Height - refAppBar?.clientHeight}
-          minH={Height - refAppBar?.clientHeight}
-        >
-          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table
-              formData={formData}
-              admindata={admindata}
-              totalCount={totalCount}
-              setadminLimit={setadminLimit}
-              setadminPage={setadminPage}
-              setadminStatus={setadminStatus}
-              adminStatus={adminStatus}
-              setadminSearchValue={setadminSearchValue}
-              adminSearchValue={adminSearchValue}
-              facilitator={userTokenInfo?.authUser}
-            />
-          </Box>
-        </ScrollView>
+        <Box flex={[5, 5, 4]}>
+          <ScrollView
+            maxH={Height - refAppBar?.clientHeight}
+            minH={Height - refAppBar?.clientHeight}
+          >
+            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+              <Table
+                filter={filter}
+                setFilter={setFilterObject}
+                facilitator={userTokenInfo?.authUser}
+                facilitaorStatus={facilitaorStatus}
+                paginationTotalRows={paginationTotalRows}
+                data={data}
+                loading={loading}
+                enumOptions={enumOptions}
+              />
+            </Box>
+          </ScrollView>
+        </Box>
       </HStack>
     </Layout>
   );
