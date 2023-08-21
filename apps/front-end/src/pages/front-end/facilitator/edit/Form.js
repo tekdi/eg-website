@@ -694,9 +694,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         Object.keys(schema?.properties),
         {},
         ""
-      );
-      console.log("newdata", newdata);
-  
+      );  
       const data = await formSubmitUpdate(newdata);
       // }
       if (localStorage.getItem("backToProfile") === "false") {
