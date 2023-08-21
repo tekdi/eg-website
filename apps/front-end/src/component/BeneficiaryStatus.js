@@ -26,7 +26,7 @@ export default function Chip({
     >
       <Text>
         {children ? children : label}
-        {is_deactivated ? (
+        {(!is_deactivated && is_duplicate === "yes") || is_deactivated ? (
           <React.Fragment></React.Fragment>
         ) : (
           is_duplicate === "yes" && (
