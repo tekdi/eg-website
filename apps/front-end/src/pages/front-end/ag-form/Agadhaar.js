@@ -1,27 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/SchemaAdhaar.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-  Text,
-  TextArea,
-} from "native-base";
-import CustomRadio from "../../../component/CustomRadio";
-import Steper from "../../../component/Steper";
+import { Alert, Box, HStack, Modal, VStack, TextArea } from "native-base";
 import {
   facilitatorRegistryService,
   Layout,
-  t,
   BodyMedium,
   CustomOTPBox,
   FrontEndTypo,
@@ -30,9 +14,7 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 
-import moment from "moment";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -44,12 +26,12 @@ import {
   CustomR,
   Aadhaar,
 } from "../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-import Success from "../Success.js";
+import { useTranslation } from "react-i18next";
 
 // App
 
 export default function Agform({ userTokenInfo, footerLinks }) {
+  const { t } = useTranslation();
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -64,7 +46,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [userId, setuserId] = React.useState();
   const [isExistflag, setisExistflag] = React.useState(false);
   const [underSameFacilitator, setunderSameFacilitator] = React.useState(true);
-
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
   const id = useParams();
