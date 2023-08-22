@@ -380,7 +380,7 @@ export default function App() {
   }, [page]);
 
   const enrollmentNumberExist = async (enrollment_number) => {
-    if (enrollment_number) {
+    if (enrollment_number.length === 11) {
       const result = await benificiaryRegistoryService.isExistEnrollment(
         userId,
         {
@@ -397,6 +397,13 @@ export default function App() {
       } else {
         return true;
       }
+    } else {
+      setErrors({
+        ...errors,
+        enrollment_number: {
+          __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
+        },
+      });
     }
     return false;
   };
@@ -514,7 +521,16 @@ export default function App() {
         (e) => keys.includes(e)
       );
       if (errorData.length > 0) {
-        setNotMatched(errorData);
+        if (
+          errorData.includes("enrollment_number") &&
+          !errors.enrollment_number?.__errors?.includes(
+            t("ENROLLMENT_NUMBER_ALREADY_EXISTS")
+          )
+        ) {
+          setNotMatched(errorData.filter((e) => e !== "enrollment_number"));
+        } else {
+          setNotMatched(errorData);
+        }
       }
       scrollToField({ property: keys?.[0] });
     } else {
