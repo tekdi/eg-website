@@ -4,9 +4,7 @@ const FacilitatorView = React.lazy(() =>
   import("pages/admin/facilitator/View")
 );
 const AdminHome = React.lazy(() => import("pages/admin/AdminHome"));
-const LearnerAdminHome = React.lazy(() =>
-  import("pages/admin/learner/AdminHome")
-);
+const LearnerAdminHome = React.lazy(() => import("pages/admin/AdminHome"));
 const FacilitatorForm = React.lazy(() => import("pages/admin/FacilitatorForm"));
 const NotFound = React.lazy(() => import("pages/NotFound"));
 const Orientation = React.lazy(() =>
