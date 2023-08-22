@@ -250,7 +250,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       <HStack>
         <Box
           flex={[2, 2, 1]}
-          style={{ borderRightColor: "#EEEEEE", borderRightWidth: "2px" }}
+          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
           <ScrollView

@@ -1,5 +1,4 @@
 import React from "react";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Button, Text, Image, HStack } from "native-base";
 import { FrontEndTypo, IconByName, Layout, t } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
@@ -79,7 +78,6 @@ const AadhaarStartKyc = () => {
             gap="1"
             mt="2"
           >
-            <ErrorOutlineIcon fontSize="small" />
             <span style={{ fontSize: "13px" }}>
               {t("UNABLE_TO_SCAN_THE_QR_CODE")}
             </span>

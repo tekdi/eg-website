@@ -30,7 +30,7 @@ const columns = (t, navigate) => [
     selector: (row) => row?.id,
   },
   {
-    name: t("NAME"),
+    name: t("LEARNERS_NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         {row?.profile_photo_1?.name ? (
@@ -55,17 +55,19 @@ const columns = (t, navigate) => [
         </AdminTypo.H5>
       </HStack>
     ),
-
     attr: "name",
     wrap: true,
+  },
+  {
+    name: t("LEARNERS_AGE"),
+    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
   },
   {
-    name: t("PRERAK"),
-
+    name: t("PRERAK_NAME"),
     selector: (row) => {
       const {
         program_beneficiaries: {
@@ -75,11 +77,6 @@ const columns = (t, navigate) => [
       return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
     wrap: true,
-  },
-  {
-    name: t("AGE"),
-
-    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
   },
   {
     name: t("STATUS"),

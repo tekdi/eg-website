@@ -57,7 +57,7 @@ function CustomFieldTemplate({ id, classNames, label, required, children }) {
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const [Height] = useWindowSize();
+  const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
@@ -210,7 +210,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
         <Box
-          width="18%"
+          flex={[2, 2, 1]}
           style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
@@ -296,20 +296,22 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             </VStack>
           </ScrollView>
         </Box>
-        <ScrollView
-          maxH={Height - refAppBar?.clientHeight}
-          minH={Height - refAppBar?.clientHeight}
-        >
-          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table
-              filter={filter}
-              setFilter={setFilterObject}
-              paginationTotalRows={paginationTotalRows}
-              data={data}
-              loading={loading}
-            />
-          </Box>
-        </ScrollView>
+        <Box flex={[5, 5, 4]}>
+          <ScrollView
+            maxH={Height - refAppBar?.clientHeight}
+            minH={Height - refAppBar?.clientHeight}
+          >
+            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+              <Table
+                filter={filter}
+                setFilter={setFilterObject}
+                paginationTotalRows={paginationTotalRows}
+                data={data}
+                loading={loading}
+              />
+            </Box>
+          </ScrollView>
+        </Box>
       </HStack>
     </Layout>
   );
