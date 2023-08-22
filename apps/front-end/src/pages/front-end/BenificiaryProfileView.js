@@ -212,7 +212,7 @@ export default function BenificiaryProfileView(props) {
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+            <BodyMedium>{t("DEACTIVATED_PAGE_MSG")}</BodyMedium>
           </HStack>
         </Alert>
       ) : (
@@ -414,18 +414,17 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
-                {!["dropout", "rejected"].includes(
+                {!["dropout", "rejected", "ready_to_enroll"].includes(
                   benificiary?.program_beneficiaries?.status
-                ) &&
-                  !getBeneficaryDocumentationStatus(docStatus) && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/docschecklist`);
-                      }}
-                      color="textMaroonColor.400"
-                    />
-                  )}
+                ) && (
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/docschecklist`);
+                    }}
+                    color="textMaroonColor.400"
+                  />
+                )}
               </HStack>
               <HStack justifyContent="space-between" alignItems="Center" p="3">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
@@ -470,31 +469,27 @@ export default function BenificiaryProfileView(props) {
                     )}
                 </HStack>
               ) : (
-                <VStack p="3">
-                  <HStack justifyContent="space-between" alignItems="Center">
-                    <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                      {t("ENROLLMENT_DETAILS")}
-                    </FrontEndTypo.H3>
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="Center"
+                  p="3"
+                >
+                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                    {t("ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H3>
 
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/enrollmentdetails`);
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      )}
-                  </HStack>
-                  <EnrollmentMessage
-                    status={benificiary?.program_beneficiaries?.status}
-                    enrollment_status={
-                      benificiary?.program_beneficiaries?.enrollment_status
-                    }
-                  />
-                </VStack>
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/enrollmentdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
+                </HStack>
               )}
               <HStack justifyContent="space-between" alignItems="Center" p="3">
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>

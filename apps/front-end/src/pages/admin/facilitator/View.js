@@ -2,7 +2,6 @@ import React from "react";
 import {
   IconByName,
   AdminLayout as Layout,
-  ProgressBar,
   facilitatorRegistryService,
   Loading,
   t,
@@ -12,7 +11,6 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Box,
   Center,
   HStack,
   Text,
@@ -20,13 +18,11 @@ import {
   Modal,
   FormControl,
   Input,
-  Image,
   useToast,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
-import Steper from "component/Steper";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -62,7 +58,6 @@ export default function FacilitatorView({ footerLinks }) {
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [otpData, setotpData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
@@ -135,15 +130,6 @@ export default function FacilitatorView({ footerLinks }) {
     }
   };
 
-  const handleSendOtp = async () => {
-    const sendotpBody = {
-      mobile: data?.mobile?.toString(),
-      reason: "verify_mobile",
-    };
-    const datas = await authRegistryService.sendOtp(sendotpBody);
-    setotpData(datas);
-  };
-
   const handleResetPassword = async (password, confirm_password) => {
     if (validate()) {
       if (password === confirm_password) {
@@ -162,8 +148,7 @@ export default function FacilitatorView({ footerLinks }) {
             variant: "solid",
             description: resetPassword?.message,
           });
-
-          navigate("/");
+          setModalVisible(false);
           return { status: true };
         } else if (resetPassword.success === false) {
           setCredentials();
@@ -208,53 +193,51 @@ export default function FacilitatorView({ footerLinks }) {
               {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
           </HStack>
-          <HStack alignItems="center" flexWrap="wrap">
-            <VStack flex="0.6" direction="column">
-              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <ChipStatus status={data?.status} />
-                <HStack
-                  bg="badgeColor.400"
-                  rounded={"md"}
-                  alignItems="center"
-                  p="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="CellphoneLineIcon"
-                    color="textGreyColor.300"
-                  />
-                  <AdminTypo.H6 color="textGreyColor.600" bold>
-                    {data?.mobile}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack
-                  bg="badgeColor.400"
-                  rounded={"md"}
-                  p="2"
-                  alignItems="center"
-                  space="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="MapPinLineIcon"
-                    color="textGreyColor.300"
-                  />
-                  <AdminTypo.H6 color="textGreyColor.600" bold>
-                    {[
-                      data?.state,
-                      data?.district,
-                      data?.block,
-                      data?.village,
-                      data?.grampanchayat,
-                    ]
-                      .filter((e) => e)
-                      .join(",")}
-                  </AdminTypo.H6>
-                </HStack>
+          <HStack justifyContent={"space-between"} flexWrap="wrap">
+            <VStack space="4" flexWrap="wrap">
+              <ChipStatus status={data?.status} />
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                alignItems="center"
+                p="2"
+              >
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="CellphoneLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {data?.mobile}
+                </AdminTypo.H6>
               </HStack>
-              <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                p="2"
+                alignItems="center"
+                space="2"
+              >
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="MapPinLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {[
+                    data?.state,
+                    data?.district,
+                    data?.block,
+                    data?.village,
+                    data?.grampanchayat,
+                  ]
+                    .filter((e) => e)
+                    .join(",")}
+                </AdminTypo.H6>
+              </HStack>
+              {/* <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
                 {t("ELIGIBILITY_CRITERIA").toUpperCase()}
               </AdminTypo.H4>
               <HStack width={"100%"}>
@@ -264,7 +247,7 @@ export default function FacilitatorView({ footerLinks }) {
                 <VStack flex={0.7} space="2">
                   <HStack alignItems={"center"} space={"2"}>
                     <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {" "}
+                        
                       {t("QUALIFICATION")}
                     </AdminTypo.H7>
                     <ProgressBar
@@ -319,17 +302,17 @@ export default function FacilitatorView({ footerLinks }) {
                     />
                   </HStack>
                 </VStack>
-              </HStack>
+              </HStack> */}
             </VStack>
-            <HStack flex="0.4" pl="5" justifyContent="center">
+            <HStack flex="0.5" justifyContent="center">
               {data?.profile_photo_1?.name ? (
                 <ImageView
                   source={{
                     uri: data?.profile_photo_1?.name,
                   }}
                   // alt="Alternate Text"
-                  width={"190px"}
-                  height={"190px"}
+                  width={"180px"}
+                  height={"180px"}
                 />
               ) : (
                 <IconByName
@@ -342,20 +325,19 @@ export default function FacilitatorView({ footerLinks }) {
             </HStack>
           </HStack>
 
-          <HStack alignItems={Center} space="9" pt="5">
-            <VStack>
+          <HStack alignItems={Center} space="9">
+            {/* <VStack>
               <AdminTypo.PrimaryButton
                 leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
               >
                 {t("SEND_MESSAGE")}
               </AdminTypo.PrimaryButton>
-            </VStack>
+            </VStack> */}
             <VStack>
               <AdminTypo.Secondarybutton
                 leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
-                  handleSendOtp();
                 }}
               >
                 {t("USER_RESET_PASSWORD")}
@@ -384,7 +366,7 @@ export default function FacilitatorView({ footerLinks }) {
               </Modal.Header>
               <Modal.Body>
                 <HStack justifyContent="space-between">
-                  <HStack>
+                  <HStack flex={1}>
                     <IconByName
                       isDisabled
                       name="UserLineIcon"
@@ -395,10 +377,8 @@ export default function FacilitatorView({ footerLinks }) {
                       Username
                     </AdminTypo.H6>
                   </HStack>
-                  <ChipStatus status={data?.status}>
-                    <AdminTypo.H6 bold>
-                      {data?.first_name} {data?.last_name}
-                    </AdminTypo.H6>
+                  <ChipStatus status={data?.status} flex={1}>
+                    <AdminTypo.H6 bold>{data?.username}</AdminTypo.H6>
                   </ChipStatus>
                 </HStack>
                 <FormControl isRequired isInvalid mt="4">
@@ -522,13 +502,6 @@ export default function FacilitatorView({ footerLinks }) {
                         credentials?.password,
                         credentials?.confirmPassword
                       );
-                      /* toast.show({
-                        title: "Error",
-                        variant: "solid",
-                        description: t(
-                          "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"
-                        ),
-                      }); */
                     }}
                   >
                     {t("USER_SET_NEW_PASSWORD")}
@@ -562,55 +535,69 @@ export default function FacilitatorView({ footerLinks }) {
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("FIRST_NAME")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" pl="1" bold>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
                     {showData(data?.first_name)}
                   </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
-                    {t("LAST_NAME")}:{" "}
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("MIDDLE_NAME")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {showData(data?.middle_name)}
+                  </AdminTypo.H5>
+                </HStack>
+
+                <HStack>
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("LAST_NAME")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
                     {showData(data?.last_name)}
                   </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
-                    {t("MOBILE_NO")}:{" "}
+                  <AdminTypo.H5 bold flex="0.7" color="textGreyColor.550">
+                    {t("MOBILE_NO")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
                     {showData(data?.mobile)}
                   </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
-                    {t("DATE_OF_BIRTH")}:{" "}
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("DATE_OF_BIRTH")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
                     {showData(data?.dob)}
                   </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
-                    {t("GENDER")}:{" "}
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("GENDER")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
                     {showData(data?.gender)}
                   </AdminTypo.H5>
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
-                    {t("ADDRESS")}:{" "}
+                  <AdminTypo.H5 bold flex="0.4" color="textGreyColor.550">
+                    {t("ADDRESS")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" pl="1" bold>
+                  <AdminTypo.H5
+                    color="textGreyColor.800"
+                    flex="0.4"
+                    pl="1"
+                    bold
+                  >
                     {[
                       data?.state,
                       data?.district,
@@ -632,11 +619,11 @@ export default function FacilitatorView({ footerLinks }) {
                 </HStack>
 
                 <HStack>
-                  <AdminTypo.H5 color="textGreyColor.550">
-                    {t("AADHAAR_NO")}:{" "}
+                  <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
+                    {t("AADHAAR_NO")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 color="textGreyColor.800" bold>
-                    {showData(data?.aadhar_token)}
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
+                    {showData(data?.aadhar_no)}
                   </AdminTypo.H5>
                 </HStack>
               </VStack>
@@ -659,7 +646,7 @@ export default function FacilitatorView({ footerLinks }) {
                         borderBottomWidth="1"
                       >
                         <AdminTypo.H5 color="textGreyColor" bold>
-                          {t("EDUCATION")}{" "}
+                          {t("EDUCATION")}
                         </AdminTypo.H5>
                         {/* <IconByName
                           color="editIcon.300"
@@ -668,10 +655,10 @@ export default function FacilitatorView({ footerLinks }) {
                         /> */}
                       </HStack>
                       <HStack>
-                        <AdminTypo.H5 color="textGreyColor.550">
-                          {t("QUALIFICATION")}:{" "}
+                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                          {t("QUALIFICATION")}:
                         </AdminTypo.H5>
-                        <AdminTypo.H5 color="textGreyColor.800" bold>
+                        <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
                           {
                             <AdminTypo.H5 color="textGreyColor.800" bold>
                               {data?.qualifications?.qualification_master?.name}
@@ -681,11 +668,15 @@ export default function FacilitatorView({ footerLinks }) {
                       </HStack>
 
                       <HStack space="2">
-                        <AdminTypo.H5 color="textGreyColor.550">
-                          {t("TEACHING_QUALIFICATION")}:{" "}
+                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                          {t("TEACHING_QUALIFICATION")}:
                         </AdminTypo.H5>
                         {
-                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                          <AdminTypo.H5
+                            flex="0.7"
+                            color="textGreyColor.800"
+                            bold
+                          >
                             {qualifications?.map((e) => e?.name).join(", ")}
                           </AdminTypo.H5>
                         }
@@ -693,35 +684,47 @@ export default function FacilitatorView({ footerLinks }) {
 
                       <VStack space="4">
                         <HStack space="2">
-                          <AdminTypo.H5 color="textGreyColor.550">
-                            {t("WORK_EXPERIENCE")}:{" "}
+                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                            {t("WORK_EXPERIENCE")}:
                           </AdminTypo.H5>
-                          <VStack space={5} width="70%">
-                            {data?.experience ? (
-                              data?.experience?.map((e, key) => (
-                                <Experience key={key} {...e} />
-                              ))
-                            ) : (
-                              <AdminTypo.H5 color="textGreyColor.800" bold>
-                                {"-"}
-                              </AdminTypo.H5>
-                            )}
+                          <VStack flex="0.7" space={5} width="70%">
+                            <AdminTypo.H5 bold>
+                              {data?.experience ? (
+                                data?.experience?.map((e, key) => (
+                                  <Experience key={key} {...e} />
+                                ))
+                              ) : (
+                                <AdminTypo.H5
+                                  flex="0.7"
+                                  color="textGreyColor.800"
+                                  bold
+                                >
+                                  {"-"}
+                                </AdminTypo.H5>
+                              )}
+                            </AdminTypo.H5>
                           </VStack>
                         </HStack>
                         <HStack space="2">
-                          <AdminTypo.H5 color="textGreyColor.550">
+                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
                             {t("VOLUNTEER_EXPERIENCE")}:
                           </AdminTypo.H5>
-                          <VStack space={5} width="70%" pl="1">
-                            {data?.vo_experience ? (
-                              data?.vo_experience?.map((e, key) => (
-                                <Experience key={key} {...e} />
-                              ))
-                            ) : (
-                              <AdminTypo.H5 color="textGreyColor.800" bold>
-                                {"-"}
-                              </AdminTypo.H5>
-                            )}
+                          <VStack flex="0.7" space={5} width="70%" pl="1">
+                            <AdminTypo.H5 bold>
+                              {data?.vo_experience ? (
+                                data?.vo_experience?.map((e, key) => (
+                                  <Experience key={key} {...e} />
+                                ))
+                              ) : (
+                                <AdminTypo.H5
+                                  flex="0.7"
+                                  color="textGreyColor.800"
+                                  bold
+                                >
+                                  {"-"}
+                                </AdminTypo.H5>
+                              )}
+                            </AdminTypo.H5>
                           </VStack>
                         </HStack>
                       </VStack>
@@ -746,10 +749,10 @@ export default function FacilitatorView({ footerLinks }) {
                     /> */}
                   </HStack>
                   <HStack>
-                    <AdminTypo.H5 color="textGreyColor.550">
-                      {t("AVAILABILITY")}:{" "}
+                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                      {t("AVAILABILITY")}:
                     </AdminTypo.H5>
-                    <AdminTypo.H5 color="textGreyColor.800" bold>
+                    <AdminTypo.H5 flex="0.69" color="textGreyColor.800" bold>
                       {showData(
                         data?.program_faciltators?.availability?.replaceAll(
                           "_",
@@ -759,24 +762,62 @@ export default function FacilitatorView({ footerLinks }) {
                     </AdminTypo.H5>
                   </HStack>
                   <HStack>
-                    <AdminTypo.H5 color="textGreyColor.550">
-                      {t("DEVICE_OWNERSHIP")}:{" "}
+                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                      {t("DEVICE_OWNERSHIP")}:
                     </AdminTypo.H5>
-                    <AdminTypo.H5 color="textGreyColor.800" bold>
+                    <AdminTypo.H5 flex="0.69" color="textGreyColor.800" bold>
                       {showData(data?.device_ownership)}
                     </AdminTypo.H5>
                   </HStack>
                   <HStack>
-                    <AdminTypo.H5 color="textGreyColor.550">
-                      {t("TYPE_OF_DEVICE")}:{" "}
+                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                      {t("TYPE_OF_DEVICE")}:
                     </AdminTypo.H5>
-                    <AdminTypo.H5 color="textGreyColor.800" bold>
+                    <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
                       {showData(data?.device_type)}
                     </AdminTypo.H5>
                   </HStack>
                 </VStack>
               </VStack>
             </HStack>
+
+            {data?.aadhar_verified === "in_progress" && (
+              <VStack space={"5"} w="100%" bg="light.100" p="6" rounded="xl">
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderColor="light.400"
+                  pb="1"
+                  borderBottomWidth="1"
+                >
+                  <AdminTypo.H5 color="textGreyColor" bold>
+                    {t("AADHAAR_DETAILS")}
+                  </AdminTypo.H5>
+                </HStack>
+                <HStack justifyContent={"space-between"}>
+                  <ImageView
+                    source={{ document_id: data?.aadhaar_front?.id }}
+                    alt="aadhaar_front"
+                    width="40vw"
+                    height="45vh"
+                    borderRadius="5px"
+                    borderWidth="1px"
+                    borderColor="worksheetBoxText.100"
+                    alignSelf="Center"
+                  />
+                  <ImageView
+                    source={{ document_id: data?.aadhaar_back?.id }}
+                    alt="aadhaar_front"
+                    width="40vw"
+                    height="45vh"
+                    borderRadius="5px"
+                    borderWidth="1px"
+                    borderColor="worksheetBoxText.100"
+                    alignSelf="Center"
+                  />
+                </HStack>
+              </VStack>
+            )}
           </VStack>
           <StatusButton {...{ data, setData }} />
         </VStack>
