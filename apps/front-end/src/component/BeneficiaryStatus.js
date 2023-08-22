@@ -26,16 +26,10 @@ export default function Chip({
     >
       <Text>
         {children ? children : label}
-        {is_deactivated ? (
-          <FrontEndTypo.H3>{`(${t("DEACTIVATE")})`}</FrontEndTypo.H3>
-        ) : is_deactivated === false ? (
-          <React.Fragment></React.Fragment>
-        ) : is_duplicate === "yes" ? (
+        {is_duplicate === "yes" && is_deactivated === null && (
           <FrontEndTypo.H3>
             {`${"-"}(${t("BENEFICIARY_STATUS_DUPLICATED")})`}
           </FrontEndTypo.H3>
-        ) : (
-          <React.Fragment></React.Fragment>
         )}
       </Text>
     </Box>
@@ -53,6 +47,11 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
     switch (status && status?.toLowerCase()) {
       case "rejected":
         setNewStatus(t("REJECTED"));
+        setTextColor("textMaroonColor.400");
+        setColor("textMaroonColor.100");
+        break;
+      case "deactivated":
+        setNewStatus(t("DEACTIVATE"));
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;

@@ -30,7 +30,7 @@ export default {
         enrollment_number: {
           type: "string",
           label: "ENROLLMENT_NUMBER",
-          regex: /^\d+$/,
+          regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
         enrollment_aadhaar_no: {

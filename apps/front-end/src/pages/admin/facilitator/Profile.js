@@ -12,6 +12,7 @@ import { Heading, HStack, Text, VStack, Box, Image } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate } from "react-router-dom";
 import Steper from "component/Steper";
+import { ChipStatus } from "component/BeneficiaryStatus";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
@@ -35,7 +36,7 @@ export default function App({ footerLinks, userTokenInfo }) {
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">
-              {t("PRERAK_BIO")}
+              {t("PROFILE")}
             </AdminTypo.H1>
             <IconByName
               size="sm"
@@ -51,105 +52,31 @@ export default function App({ footerLinks, userTokenInfo }) {
               {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
           </HStack>
-          <HStack alignItems="center" flexWrap="wrap">
-            <VStack flex="0.6">
-              <HStack alignItems="center" mb="6" space="4" flexWrap="wrap">
-                <Box>
-                  {data?.status ? (
-                    <Chip>{data?.status}</Chip>
-                  ) : (
-                    <React.Fragment />
-                  )}
-                </Box>
-                <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="CellphoneLineIcon"
-                    color="textGreyColor.300"
-                    pt="1"
-                  />
-                  <AdminTypo.H6 color="textGreyColor.600" bold>
-                    {data?.mobile}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="MapPinLineIcon"
-                    color="textGreyColor.300"
-                  />
-                  <AdminTypo.H6 color="textGreyColor.600" bold>
-                    {data?.address}
-                  </AdminTypo.H6>
-                </HStack>
+          {/* <HStack justifyContent={"spcae-between"} flexWrap="wrap">
+            <VStack space="4">
+              <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="CellphoneLineIcon"
+                  color="textGreyColor.300"
+                  pt="1"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {data?.mobile}
+                </AdminTypo.H6>
               </HStack>
-              <AdminTypo.H4 color="textGreyColor.800" pb="2" bold>
-                {" "}
-                {t("ELIGIBILITY_CRITERIA").toUpperCase()}
-              </AdminTypo.H4>
-              <HStack width={"100%"}>
-                <Box flex={0.3}>
-                  <Steper size={100} type="circle" progress={75} bg="white" />
-                </Box>
-                <VStack flex={0.7} space="2">
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("QUALIFICATION")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        {
-                          value: 135,
-                          color: "progressBarColor.200",
-                        },
-                        { value: 80, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("WORK_EXPERIENCE")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("VOLUNTEER_EXPERIENCE")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("AVAILABILITY")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                </VStack>
+
+              <HStack bg="badgeColor.400" rounded={"md"} ml="4" py="1" px="1">
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="MapPinLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {data?.address}
+                </AdminTypo.H6>
               </HStack>
             </VStack>
             <HStack flex="0.4" pl="5">
@@ -168,6 +95,70 @@ export default function App({ footerLinks, userTokenInfo }) {
                   name="AccountCircleLineIcon"
                   color="gray.300"
                   _icon={{ size: "190px" }}
+                />
+              )}
+            </HStack>
+          </HStack> */}
+          <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
+            <VStack space="4" flexWrap="wrap">
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                alignItems="center"
+                p="2"
+              >
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="CellphoneLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {data?.mobile}
+                </AdminTypo.H6>
+              </HStack>
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                p="2"
+                alignItems="center"
+                space="2"
+              >
+                <IconByName
+                  isDisabled
+                  _icon={{ size: "20px" }}
+                  name="MapPinLineIcon"
+                  color="textGreyColor.300"
+                />
+                <AdminTypo.H6 color="textGreyColor.600" bold>
+                  {[
+                    data?.state,
+                    data?.district,
+                    data?.block,
+                    data?.village,
+                    data?.grampanchayat,
+                  ]
+                    .filter((e) => e)
+                    .join(",")}
+                </AdminTypo.H6>
+              </HStack>
+            </VStack>
+            <HStack flex="0.5" mt={"-5"} justifyContent="center">
+              {data?.profile_photo_1?.name ? (
+                <ImageView
+                  source={{
+                    uri: data?.profile_photo_1?.name,
+                  }}
+                  // alt="Alternate Text"
+                  width={"180px"}
+                  height={"180px"}
+                />
+              ) : (
+                <IconByName
+                  isDisabled
+                  name="AccountCircleLineIcon"
+                  color="textGreyColor.300"
+                  _icon={{ size: "180px" }}
                 />
               )}
             </HStack>
@@ -211,15 +202,15 @@ export default function App({ footerLinks, userTokenInfo }) {
                   </AdminTypo.H5>
                 </HStack>
 
-                <HStack>
+                {/* <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("MOBILE_NO")}:{" "}
                   </AdminTypo.H5>
                   <AdminTypo.H5 color="textGreyColor.800" bold>
                     {data?.mobile}
                   </AdminTypo.H5>
-                </HStack>
-
+                </HStack> */}
+                {/* 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("DATE_OF_BIRTH")}:{" "}
@@ -228,8 +219,8 @@ export default function App({ footerLinks, userTokenInfo }) {
                     {" "}
                     {data?.dob}
                   </AdminTypo.H5>
-                </HStack>
-
+                </HStack> */}
+                {/* 
                 <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("GENDER")}:{" "}
@@ -238,9 +229,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                     {" "}
                     {data?.gender}
                   </AdminTypo.H5>
-                </HStack>
+                </HStack> */}
 
-                <HStack>
+                {/* <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("ADDRESS")}:{"  "}
                   </AdminTypo.H5>
@@ -263,9 +254,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                           .join(", ")
                       : "-"}
                   </AdminTypo.H5>
-                </HStack>
+                </HStack> */}
 
-                <HStack>
+                {/* <HStack>
                   <AdminTypo.H5 color="textGreyColor.550">
                     {t("AADHAAR_NO")}:{" "}
                   </AdminTypo.H5>
@@ -273,9 +264,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                     {" "}
                     {data?.aadhar_token}
                   </AdminTypo.H5>
-                </HStack>
+                </HStack> */}
               </VStack>
-              <VStack
+              {/* <VStack
                 space={"5"}
                 w="50%"
                 bg="light.100"
@@ -399,7 +390,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                     </AdminTypo.H5>
                   </HStack>
                 </VStack>
-              </VStack>
+              </VStack> */}
             </HStack>
           </VStack>
         </VStack>

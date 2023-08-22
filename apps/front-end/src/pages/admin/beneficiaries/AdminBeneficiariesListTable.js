@@ -1,52 +1,34 @@
 import {
   IconByName,
   benificiaryRegistoryService,
-  t,
   ImageView,
   AdminTypo,
   enumRegistryService,
+  tableCustomStyles,
   debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import { HStack, VStack, Image, Text, ScrollView, Input } from "native-base";
-
+import {
+  HStack,
+  VStack,
+  Image,
+  Text,
+  ScrollView,
+  Input,
+  Menu,
+  Pressable,
+} from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
-const customStyles = {
-  rows: {
-    style: {
-      minHeight: "72px", // override the row height
-    },
-    style: {
-      minHeight: "72px", // override the row height
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-    style: {
-      color: "#616161",
-      size: "19px",
-    },
-  },
-};
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-const columns = (e) => [
+const columns = (t) => [
+  {
+    name: t("LEARNERS_ID"),
+    selector: (row) => row?.id,
+  },
   {
     name: t("NAME"),
     selector: (row) => (
@@ -73,8 +55,13 @@ const columns = (e) => [
         </AdminTypo.H5>
       </HStack>
     ),
-    sortable: true,
+
     attr: "name",
+    wrap: true,
+  },
+  {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.program_beneficiaries?.id,
   },
   {
     name: t("PRERAK"),
@@ -85,30 +72,15 @@ const columns = (e) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name
-        ? `${first_name}${last_name ? ` ${last_name}` : ""}`
-        : "-";
+      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
+    wrap: true,
   },
   {
     name: t("AGE"),
 
-    selector: (row) =>
-      row?.program_beneficiaries?.enrollment_dob
-        ? moment().diff(row?.program_beneficiaries?.enrollment_dob, "years")
-        : moment().diff(row?.dob, "years"),
+    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
   },
-  {
-    name: t("DISTRICT"),
-
-    selector: (row) => (row?.district ? row?.district : "-"),
-  },
-  {
-    name: t("BLOCKS"),
-
-    selector: (row) => (row?.block ? row?.block : "-"),
-  },
-
   {
     name: t("STATUS"),
     selector: (row, index) => (
@@ -119,27 +91,47 @@ const columns = (e) => [
         status={row?.program_beneficiaries?.status}
       />
     ),
-    sortable: true,
+
     attr: "email",
+    wrap: true,
   },
 ];
+
+const dropDown = (triggerProps, t) => {
+  return (
+    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+      <HStack space={4}>
+        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
+        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
+    </Pressable>
+  );
+};
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
   const exportBeneficiaryCSV = async () => {
-    const result = await benificiaryRegistoryService.exportBeneficiariesCsv(
-      filter
-    );
+    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
   };
 
   const exportSubjectCSV = async () => {
-    const result =
-      await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+  };
+
+  const setMenu = (e) => {
+    if (e === "export_subject") {
+      exportSubjectCSV();
+    } else {
+      exportBeneficiaryCSV();
+    }
   };
 
   return (
@@ -169,7 +161,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
               pl="2"
             />
           }
-          placeholder="search"
+          placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
           onChange={(e) => {
             debounce(
@@ -178,45 +170,44 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             );
           }}
         />
-        <HStack space={2}>
-          <AdminTypo.Secondarybutton
+        <HStack
+          space={6}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Menu
+            w="190"
+            placement="bottom right"
+            trigger={(triggerProps) => dropDown(triggerProps, t)}
+          >
+            <Menu.Item onPress={(item) => setMenu("export_learner")}>
+              {t("LEARNERS_LIST")}
+            </Menu.Item>
+            <Menu.Item onPress={(item) => setMenu("export_subject")}>
+              {t("LEARNERS_SUBJECT_CSV")}
+            </Menu.Item>
+          </Menu>
+          <AdminTypo.Dangerbutton
             onPress={() => {
-              exportBeneficiaryCSV();
+              navigate("/admin/learners/duplicates");
             }}
             rightIcon={
               <IconByName
-                color="#084B82"
-                _icon={{}}
+                color="textGreyColor.100"
                 size="15px"
                 name="ShareLineIcon"
               />
             }
           >
-            {t("EXPORT")}
-          </AdminTypo.Secondarybutton>
-
-          <AdminTypo.Secondarybutton
-            onPress={() => {
-              exportSubjectCSV();
-            }}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("EXPORT_SUBJECT_CSV")}
-          </AdminTypo.Secondarybutton>
+            {t("RESOLVE_DUPLICATION")}
+          </AdminTypo.Dangerbutton>
         </HStack>
       </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
           <Text
             color={!filter?.status ? "blueText.400" : ""}
-            bold={!filter?.status ? true : false}
+            bold={!filter?.status}
             cursor={"pointer"}
             mx={3}
             onPress={() => {
@@ -230,8 +221,9 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           {beneficiaryStatus?.map((item) => {
             return (
               <Text
+                key={item}
                 color={filter?.status == t(item?.value) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.value) ? true : false}
+                bold={filter?.status == t(item?.value)}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
@@ -246,8 +238,8 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         </HStack>
       </ScrollView>
       <DataTable
-        customStyles={customStyles}
-        columns={[...columns()]}
+        customStyles={tableCustomStyles}
+        columns={columns(t)}
         data={data}
         persistTableHead
         progressPending={loading}

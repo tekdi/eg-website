@@ -19,6 +19,16 @@ const AdharKyc = React.lazy(() =>
   import("pages/front-end/AadhaarKyc/AadhaarKyc")
 );
 
+const AdminBeneficiariesDuplicatesList = React.lazy(() =>
+  import("pages/admin/beneficiaries/AdminBeneficiariesDuplicatesList")
+);
+const AdminBeneficiariesDuplicatesByAadhaar = React.lazy(() =>
+  import("pages/admin/beneficiaries/AdminBeneficiariesDuplicatesByAadhaar")
+);
+const AdminBeneficiariesList = React.lazy(() =>
+  import("pages/admin/beneficiaries/AdminBeneficiariesList")
+);
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
@@ -27,6 +37,15 @@ export default [
   { path: "/admin/learner", component: LearnerAdminHome },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
+  { path: "/admin/learners", component: AdminBeneficiariesList },
+  {
+    path: "/admin/learners/duplicates",
+    component: AdminBeneficiariesDuplicatesList,
+  },
+  {
+    path: "/admin/learners/duplicates/:aadhaarNo",
+    component: AdminBeneficiariesDuplicatesByAadhaar,
+  },
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
