@@ -296,6 +296,8 @@
   "ENROLLMENT_RECEIPT": "Details of the learner as per the enrolment receipt",
   "ENROLLMENT_REJECTED": "Enrollment Rejected",
   "ENROLLMENT_STATUS": "Enrollment Status",
+  "ENROLLMENT_VERIFICATION": "Enrollment verification",
+  "ENROLLMENT_CHANGE_REQUIRED": "Enrollment change required",
   "CORRECT_ENROLLMENT_DETAILS": "Correct enrollment details",
   "CORRECT_ENROLLMENT_LEARNER_DETAILS": "Correct learner enrollment details",
   "ENROLLMENT_DETAILS_VERIFICATION": "Enrollment Details Verification Checklist(Cross verify the information on Enrollment receipt)",

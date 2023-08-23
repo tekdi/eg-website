@@ -293,6 +293,8 @@
   "ENROLLMENT_RECEIPT": "शिक्षार्थी का विवरण नामांकन रसीद के अनुसार",
   "ENROLLMENT_REJECTED": "नामांकन रिजेक्टेड",
   "ENROLLMENT_STATUS": "नामांकन स्थिति",
+  "ENROLLMENT_VERIFICATION": "नामांकन वेरिफिकेशन",
+  "ENROLLMENT_CHANGE_REQUIRED": "नामांकन बदल आवश्यक है",
   "ENROLLMENT_DETAILS_VERIFICATION": "नामांकन विवरण सत्यापन सूची (नामांकन रसीद पर जानकारी को क्रॉस सत्यापित करें)",
   "CORRECT_ENROLLMENT_DETAILS": "नामांकन विवरण सही करें",
   "CORRECT_ENROLLMENT_LEARNER_DETAILS": "नामांकन शिक्षार्थी विवरण सही करें",

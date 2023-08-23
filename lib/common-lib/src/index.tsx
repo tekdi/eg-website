@@ -33,6 +33,7 @@ import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
+import Breadcrumb from './components/Breadcrumb'
 
 // export
 export {
@@ -72,7 +73,8 @@ export {
   aadhaarService,
   Alert,
   GetEnumValue,
-  ItemComponent
+  ItemComponent,
+  Breadcrumb
 }
 
 export * from './services/RestClient'

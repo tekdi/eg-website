@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -8,17 +8,10 @@ import {
   enumRegistryService,
   jsonParse,
   uploadRegistryService,
+  Breadcrumb,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  HStack,
-  VStack,
-  Image,
-  Checkbox,
-  Button,
-  Stack,
-  Modal,
-} from "native-base";
+import { useParams } from "react-router-dom";
+import { HStack, VStack, Stack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import CustomRadio from "component/CustomRadio";
@@ -71,263 +64,315 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     return !Object.keys(data).length;
   };
 
-  const submit = (status) => {
+  const submit = async (status) => {
     if (checkValidation()) {
-      console.log({ status, reason });
+      const data = await benificiaryRegistoryService.verifyEnrollment({
+        user_id: id,
+        enrollment_verification_status: status,
+        enrollment_verification_reason: reason,
+      });
+
+      if (data?.success) {
+        setOpenModal(false);
+      }
     }
   };
 
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
-        <AdminTypo.H4 color="textGreyColor.800" bold>
-          {t("ENROLLMENT_DETAILS_VERIFICATION")}
-        </AdminTypo.H4>
-        <HStack space="2">
-          <VStack flex="2" pb="1" space={2}>
-            <HStack flexWrap={"wrap"}>
-              <TextInfo
-                _box={{ pr: "2", alignItems: "center" }}
-                data={data?.program_beneficiaries}
-                arr={[
-                  { label: "ENROLLMENT_STATUS", keyArr: "enrollment_status" },
-                  { label: "ENROLLMENT_BOARD", keyArr: "enrolled_for_board" },
-                ]}
-              />
+        <HStack space={"2"} justifyContent="space-between">
+          <Breadcrumb
+            drawer={
+              <IconByName size="sm" name="ArrowRightSLineIcon" isDisabled />
+            }
+            data={[
+              <AdminTypo.H1>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>,
+              <AdminTypo.H2>{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
+              <AdminTypo.H3>{`${data?.id}`}</AdminTypo.H3>,
+            ]}
+          />
+          {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
+        </HStack>
+        {data?.program_beneficiaries?.enrollment_status === "not_enrolled" ? (
+          <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <AdminTypo.H1>
+                {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
+              </AdminTypo.H1>
             </HStack>
-            <ValidationBox error={error?.enrollment_details}>
-              <CustomRadio
-                options={{
-                  enumOptions: [{ value: "yes" }, { value: "no" }],
-                }}
-                schema={{
-                  grid: 1,
-                  icons: checkboxIcons,
-                  _box: { flex: "1", gap: "2" },
-                  _hstack: { space: "2" },
-                  _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
-                }}
-                value={reason?.enrollment_details}
-                onChange={(e) => {
-                  setReason({ ...reason, enrollment_details: e });
-                }}
-              />
-              <VStack flex={4}>
-                <TextInfo
-                  data={data?.program_beneficiaries}
-                  arr={[
-                    {
-                      label: "NAME",
-                      value: (
-                        <AdminTypo.H5>
-                          {data?.program_beneficiaries?.enrollment_first_name}
-                          {data?.program_beneficiaries?.enrollment_last_name &&
-                            " " +
-                              data?.program_beneficiaries?.enrollment_last_name}
-                          {data?.program_beneficiaries
-                            ?.enrollment_middle_name &&
-                            " " +
-                              data?.program_beneficiaries
-                                ?.enrollment_middle_name}
-                        </AdminTypo.H5>
-                      ),
-                    },
-                    {
-                      label: "DOB",
-                      value: (
-                        <AdminTypo.H5>
-                          {moment(
-                            data?.program_beneficiaries?.enrollment_dob
-                          ).format("DD-MM-YYYY")}
-                        </AdminTypo.H5>
-                      ),
-                    },
-                    {
-                      label: "AADHAAR_NUMBER",
-                      keyArr: "enrollment_aadhaar_no",
-                    },
-                  ]}
-                />
+          </Alert>
+        ) : (
+          <VStack>
+            <AdminTypo.H5 color="textGreyColor.800" bold>
+              {t("ENROLLMENT_DETAILS_VERIFICATION")}
+            </AdminTypo.H5>
+            <HStack space="2">
+              <VStack flex="2" pb="1" space={2}>
+                <HStack flexWrap={"wrap"}>
+                  <TextInfo
+                    _box={{ pr: "2", alignItems: "center" }}
+                    data={data?.program_beneficiaries}
+                    arr={[
+                      {
+                        label: "ENROLLMENT_STATUS",
+                        keyArr: "enrollment_status",
+                      },
+                      {
+                        label: "ENROLLMENT_BOARD",
+                        keyArr: "enrolled_for_board",
+                      },
+                    ]}
+                  />
+                </HStack>
+                <ValidationBox error={error?.enrollment_details}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: [{ value: "yes" }, { value: "no" }],
+                    }}
+                    schema={{
+                      grid: 1,
+                      icons: checkboxIcons,
+                      _box: { flex: "1", gap: "2" },
+                      _hstack: { space: "2" },
+                      _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+                    }}
+                    value={reason?.enrollment_details}
+                    onChange={(e) => {
+                      setReason({ ...reason, enrollment_details: e });
+                    }}
+                  />
+                  <VStack flex={4}>
+                    <TextInfo
+                      data={data?.program_beneficiaries}
+                      arr={[
+                        {
+                          label: "NAME",
+                          value: (
+                            <AdminTypo.H5>
+                              {
+                                data?.program_beneficiaries
+                                  ?.enrollment_first_name
+                              }
+                              {data?.program_beneficiaries
+                                ?.enrollment_last_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_last_name}
+                              {data?.program_beneficiaries
+                                ?.enrollment_middle_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_middle_name}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "DOB",
+                          value: (
+                            <AdminTypo.H5>
+                              {moment(
+                                data?.program_beneficiaries?.enrollment_dob
+                              ).format("DD-MM-YYYY")}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "AADHAAR_NUMBER",
+                          keyArr: "enrollment_aadhaar_no",
+                        },
+                      ]}
+                    />
+                  </VStack>
+                </ValidationBox>
+                <ValidationBox error={error?.learner_enrollment_details}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: [{ value: "yes" }, { value: "no" }],
+                    }}
+                    schema={{
+                      grid: 1,
+                      icons: checkboxIcons,
+                      _box: { flex: "1", gap: "2" },
+                      _hstack: { space: "2" },
+                      _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+                    }}
+                    value={reason?.learner_enrollment_details}
+                    onChange={(e) => {
+                      setReason({ ...reason, learner_enrollment_details: e });
+                    }}
+                  />
+                  <VStack flex={4}>
+                    <TextInfo
+                      data={data?.program_beneficiaries}
+                      arr={[
+                        {
+                          label: "ENROLLMENT_NUMBER",
+                          keyArr: "enrollment_number",
+                        },
+                        {
+                          label: "DATE",
+                          value: (
+                            <AdminTypo.H5>
+                              {moment(
+                                data?.program_beneficiaries?.enrollment_date
+                              ).format("DD-MM-YYYY")}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "SELECTED_SUBJECTS",
+                          value: subjects?.map((e) => (
+                            <AdminTypo.H5 key={e?.name}>{e?.name}</AdminTypo.H5>
+                          )),
+                        },
+                      ]}
+                    />
+                  </VStack>
+                </ValidationBox>
               </VStack>
-            </ValidationBox>
-            <ValidationBox error={error?.learner_enrollment_details}>
-              <CustomRadio
-                options={{
-                  enumOptions: [{ value: "yes" }, { value: "no" }],
-                }}
-                schema={{
-                  grid: 1,
-                  icons: checkboxIcons,
-                  _box: { flex: "1", gap: "2" },
-                  _hstack: { space: "2" },
-                  _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
-                }}
-                value={reason?.learner_enrollment_details}
-                onChange={(e) => {
-                  setReason({ ...reason, learner_enrollment_details: e });
-                }}
-              />
-              <VStack flex={4}>
-                <TextInfo
-                  data={data?.program_beneficiaries}
-                  arr={[
-                    {
-                      label: "ENROLLMENT_NUMBER",
-                      keyArr: "enrollment_number",
-                    },
-                    {
-                      label: "DATE",
-                      value: (
-                        <AdminTypo.H5>
-                          {moment(
-                            data?.program_beneficiaries?.enrollment_date
-                          ).format("DD-MM-YYYY")}
-                        </AdminTypo.H5>
-                      ),
-                    },
-                    {
-                      label: "SELECTED_SUBJECTS",
-                      value: subjects?.map((e) => (
-                        <AdminTypo.H5 key={e?.name}>{e?.name}</AdminTypo.H5>
-                      )),
-                    },
-                  ]}
-                />
-              </VStack>
-            </ValidationBox>
-          </VStack>
 
-          <VStack flex="5">
-            {fileType === "pdf" ? (
-              <ImageView
-                frameborder="0"
-                _box={{ flex: 1 }}
-                height="100%"
-                width="100%"
-                urlObject={receiptUrl}
-                alt="aadhaar_front"
-              />
-            ) : (
-              fileType && (
-                <TransformWrapper>
-                  {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                    <VStack space="3">
-                      <HStack
-                        space="2"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
-                        <IconByName
-                          p="0"
-                          color="light.400"
-                          _icon={{ size: "30" }}
-                          name="AddCircleLineIcon"
-                          onPress={(e) => zoomIn()}
-                        />
-                        <IconByName
-                          p="0"
-                          color="light.400"
-                          _icon={{ size: "30" }}
-                          name="IndeterminateCircleLineIcon"
-                          onPress={(e) => zoomOut()}
-                        />
-                        <IconByName
-                          p="0"
-                          color="light.400"
-                          _icon={{ size: "30" }}
-                          name="RefreshLineIcon"
-                          onPress={(e) => resetTransform()}
-                        />
-                      </HStack>
-                      <VStack justifyContent="center" alignItems="center">
-                        <TransformComponent>
+              <VStack flex="5">
+                {fileType === "pdf" ? (
+                  <ImageView
+                    frameborder="0"
+                    _box={{ flex: 1 }}
+                    height="100%"
+                    width="100%"
+                    urlObject={receiptUrl}
+                    alt="aadhaar_front"
+                  />
+                ) : (
+                  fileType && (
+                    <TransformWrapper>
+                      {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                        <VStack space="3">
+                          <HStack
+                            space="2"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <IconByName
+                              p="0"
+                              color="light.400"
+                              _icon={{ size: "30" }}
+                              name="AddCircleLineIcon"
+                              onPress={(e) => zoomIn()}
+                            />
+                            <IconByName
+                              p="0"
+                              color="light.400"
+                              _icon={{ size: "30" }}
+                              name="IndeterminateCircleLineIcon"
+                              onPress={(e) => zoomOut()}
+                            />
+                            <IconByName
+                              p="0"
+                              color="light.400"
+                              _icon={{ size: "30" }}
+                              name="RefreshLineIcon"
+                              onPress={(e) => resetTransform()}
+                            />
+                          </HStack>
                           <VStack
                             justifyContent="center"
                             alignItems="center"
-                            rounded="sm"
                             borderWidth="1px"
                             borderColor="light.400"
-                            {...{
-                              width: "100vh",
-                              height: "100vh",
-                            }}
                           >
-                            <ImageView
-                              isImageTag
-                              {...{
-                                width: "100%",
-                                height: "100%",
-                              }}
-                              style={{
-                                filter: "none",
-                                objectFit: "contain",
-                              }}
-                              urlObject={receiptUrl}
-                              alt="aadhaar_front"
-                            />
+                            <TransformComponent
+                              wrapperStyle={{ width: "100%" }}
+                            >
+                              <VStack
+                                justifyContent="center"
+                                alignItems="center"
+                                rounded="sm"
+                                borderWidth="1px"
+                                borderColor="light.100"
+                                {...{
+                                  width: "100%",
+                                  height: "100vh",
+                                }}
+                              >
+                                <ImageView
+                                  isImageTag
+                                  {...{
+                                    width: "100%",
+                                    height: "100%",
+                                  }}
+                                  style={{
+                                    filter: "none",
+                                    objectFit: "contain",
+                                  }}
+                                  urlObject={receiptUrl}
+                                  alt="aadhaar_front"
+                                />
+                              </VStack>
+                            </TransformComponent>
                           </VStack>
-                        </TransformComponent>
-                      </VStack>
-                    </VStack>
-                  )}
-                </TransformWrapper>
-              )
-            )}
+                        </VStack>
+                      )}
+                    </TransformWrapper>
+                  )
+                )}
+              </VStack>
+            </HStack>
+            <HStack>
+              <AdminTypo.Successbutton
+                isDisabled={
+                  reason?.enrollment_details === "no" ||
+                  reason?.learner_enrollment_details === "no"
+                }
+                onPress={(e) => submit("verified")}
+              >
+                {t("FACILITATOR_STATUS_VERIFY")}
+              </AdminTypo.Successbutton>
+              <AdminTypo.Dangerbutton
+                mx={5}
+                isDisabled={
+                  reason?.enrollment_details === "yes" &&
+                  reason?.learner_enrollment_details === "yes"
+                }
+                onPress={(e) => submit("pending")}
+              >
+                {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
+              </AdminTypo.Dangerbutton>
+              <AdminTypo.Secondarybutton
+                isDisabled={
+                  reason?.enrollment_details === "yes" &&
+                  reason?.learner_enrollment_details === "yes"
+                }
+                onPress={(e) => {
+                  if (checkValidation()) {
+                    setOpenModal(true);
+                  }
+                }}
+              >
+                {t("CHANGE_REQUIRED")}
+              </AdminTypo.Secondarybutton>
+            </HStack>
+            <Modal isOpen={openModal} size="xl">
+              <Modal.Content>
+                <Modal.Header>{t("ARE_YOU_SURE")}</Modal.Header>
+                <Modal.Body p="5">
+                  <LearnerInfo item={data} reason={reason} />
+                </Modal.Body>
+                <Modal.Footer justifyContent={"space-between"}>
+                  <AdminTypo.PrimaryButton onPress={(e) => setOpenModal(false)}>
+                    {t("CANCEL")}
+                  </AdminTypo.PrimaryButton>
+                  <AdminTypo.Secondarybutton
+                    onPress={(e) => submit("change_required")}
+                  >
+                    {t("CONFIRM")}
+                  </AdminTypo.Secondarybutton>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
           </VStack>
-        </HStack>
-        <HStack>
-          <AdminTypo.Successbutton
-            isDisabled={
-              reason?.enrollment_details === "no" ||
-              reason?.learner_enrollment_details === "no"
-            }
-            onPress={(e) => submit("verified")}
-          >
-            {t("FACILITATOR_STATUS_VERIFY")}
-          </AdminTypo.Successbutton>
-          <AdminTypo.Dangerbutton
-            mx={5}
-            isDisabled={
-              reason?.enrollment_details === "yes" &&
-              reason?.learner_enrollment_details === "yes"
-            }
-            onPress={(e) => submit("cancel_enrollment")}
-          >
-            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-          </AdminTypo.Dangerbutton>
-          <AdminTypo.Secondarybutton
-            isDisabled={
-              reason?.enrollment_details === "yes" &&
-              reason?.learner_enrollment_details === "yes"
-            }
-            onPress={(e) => {
-              if (checkValidation()) {
-                setOpenModal(true);
-              }
-            }}
-          >
-            {t("CHANGE_REQUIRED")}
-          </AdminTypo.Secondarybutton>
-        </HStack>
+        )}
       </VStack>
-      <Modal isOpen={openModal} size="xl">
-        <Modal.Content>
-          <Modal.Header>{t("ARE_YOU_SURE")}</Modal.Header>
-          <Modal.Body p="5">
-            <LearnerInfo item={data} reason={reason} />
-          </Modal.Body>
-          <Modal.Footer justifyContent={"space-between"}>
-            <AdminTypo.PrimaryButton onPress={(e) => setOpenModal(false)}>
-              {t("CANCEL")}
-            </AdminTypo.PrimaryButton>
-            <AdminTypo.Secondarybutton
-              onPress={(e) => submit("cancel_enrollment")}
-            >
-              {t("CONFIRM")}
-            </AdminTypo.Secondarybutton>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

@@ -21,6 +21,7 @@ import {
   facilitatorRegistryService,
   setQueryParameters,
   debounce,
+  urlData,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -64,7 +65,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [getBlocksAll, setGetBlocksAll] = React.useState();
 
   const [facilitator, setFacilitator] = React.useState([]);
-  const [filter, setFilter] = React.useState({});
+  const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
 
   const [data, setData] = React.useState([]);
@@ -92,6 +93,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     }
     setGetBlocksAll(blockData);
   }, [filter?.district]);
+
   React.useEffect(async () => {
     setLoading(true);
     const result = await benificiaryRegistoryService.beneficiariesFilter(
@@ -136,6 +138,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilter(data);
     setQueryParameters(data);
   };
+
+  // React.useEffect(() => {
+  //   setFilter(urlData(["district", "facilitator", "block"]));
+  // }, []);
 
   const schema = {
     type: "object",
@@ -218,6 +224,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
+            pr="2"
           >
             <VStack space={8} py="5">
               <VStack space={3}>
