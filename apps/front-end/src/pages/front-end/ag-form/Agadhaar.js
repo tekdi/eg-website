@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/SchemaAdhaar.js";
@@ -50,6 +50,8 @@ import Success from "../Success.js";
 // App
 
 export default function Agform({ userTokenInfo, footerLinks }) {
+  const textAreaRef = useRef();
+  const [textVisible, settextVisible] = React.useState(false);
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -271,10 +273,20 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const addAdhaarduplicate = async () => {
-    const adhaarduplicate = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/aadhaar-kyc/${userId}`, {
-      state: { aadhar_no: formData?.aadhar_no },
-    });
+    const text = textAreaRef.current.value;
+    if (text !== "") {
+      const adhaarduplicate = await AgRegistryService.updateAg(
+        formData,
+        userId
+      );
+      navigate(`/aadhaar-kyc/${userId}`, {
+        state: { aadhar_no: formData?.aadhar_no },
+      });
+      settextVisible(false);
+      setaddmodal(!addmodal);
+    } else {
+      settextVisible(true);
+    }
   };
 
   return (
@@ -428,17 +440,23 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 {t("AG_ADDED_SUCCESSFULLY")}
               </FrontEndTypo.H1>
               <TextArea
+                ref={textAreaRef}
                 placeholder="Explain your claim of the AG Learner*"
                 w="100%"
                 onChange={(e) => {
                   getReason(e);
+                  settextVisible(false);
                 }}
               />
+              {textVisible && (
+                <FrontEndTypo.H2 color={"danger.500"}>
+                  {t("REQUIRED_MESSAGE")}
+                </FrontEndTypo.H2>
+              )}
               <FrontEndTypo.Primarybutton
                 width={250}
                 marginTop={"1em"}
                 onPress={() => {
-                  setaddmodal(!addmodal);
                   addAdhaarduplicate();
                 }}
               >
