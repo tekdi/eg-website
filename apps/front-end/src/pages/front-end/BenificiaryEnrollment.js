@@ -35,9 +35,6 @@ export default function BenificiaryEnrollment() {
     setbenificiary(result?.result);
     setLoading(false);
   };
-  {
-    console.log(benificiary?.program_beneficiaries?.enrollment_status);
-  }
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
