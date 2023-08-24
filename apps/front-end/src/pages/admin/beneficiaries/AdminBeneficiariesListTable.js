@@ -24,13 +24,13 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const columns = (t) => [
+const columns = (t, navigate) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
   },
   {
-    name: t("NAME"),
+    name: t("LEARNERS_NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         {row?.profile_photo_1?.name ? (
@@ -65,30 +65,11 @@ const columns = (t) => [
         )}
       </HStack>
     ),
-
     attr: "name",
     wrap: true,
   },
   {
-    name: t("PRERAK_ID"),
-    selector: (row) => row?.program_beneficiaries?.id,
-  },
-  {
-    name: t("PRERAK"),
-
-    selector: (row) => {
-      const {
-        program_beneficiaries: {
-          facilitator_user: { first_name, last_name },
-        },
-      } = row;
-      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
-    },
-    wrap: true,
-  },
-  {
-    name: t("AGE"),
-
+    name: t("LEARNERS_AGE"),
     selector: (row) => {
       if (row?.program_beneficiaries?.status === "enrolled_ip_verified") {
         if (row?.program_beneficiaries_enrollment_dob) {
@@ -109,6 +90,22 @@ const columns = (t) => [
     },
   },
   {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.program_beneficiaries?.id,
+  },
+  {
+    name: t("PRERAK_NAME"),
+    selector: (row) => {
+      const {
+        program_beneficiaries: {
+          facilitator_user: { first_name, last_name },
+        },
+      } = row;
+      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
+    },
+    wrap: true,
+  },
+  {
     name: t("STATUS"),
     selector: (row, index) => (
       <ChipStatus
@@ -121,6 +118,20 @@ const columns = (t) => [
 
     attr: "email",
     wrap: true,
+  },
+  {
+    name: t("ACTION"),
+    selector: (row) =>
+      row?.program_beneficiaries?.status === "enrolled" && (
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => {
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+          }}
+        >
+          {t("VIEW")}
+        </AdminTypo.Secondarybutton>
+      ),
   },
 ];
 
@@ -266,7 +277,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={columns(t)}
+        columns={[...columns(t, navigate)]}
         data={data}
         persistTableHead
         progressPending={loading}
