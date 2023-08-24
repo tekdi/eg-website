@@ -104,11 +104,9 @@ export default function BenificiaryEnrollment() {
             ? {
                 onlyField: ["enrollment_status"],
               }
-            : [
-                "applied_but_pending",
-                "enrollment_rejected",
-                "enrollment_rejected",
-              ].includes(benificiary?.program_beneficiaries?.enrollment_status)
+            : ["enrollment_awaited", "enrollment_rejected"].includes(
+                benificiary?.program_beneficiaries?.enrollment_status
+              )
             ? {
                 onlyField: ["enrollment_status", "enrolled_for_board"],
               }
@@ -117,7 +115,7 @@ export default function BenificiaryEnrollment() {
         />
         {![
           "not_enrolled",
-          "applied_but_pending",
+          "enrollment_awaited",
           "enrollment_rejected",
         ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
           <ItemComponent
