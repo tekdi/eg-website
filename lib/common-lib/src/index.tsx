@@ -33,6 +33,7 @@ import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
+import PoAdminLayout from './components/Po_admin_layout/Layout'
 
 // export
 export {
@@ -43,6 +44,7 @@ export {
   Footer,
   Layout,
   AdminLayout,
+  PoAdminLayout,
   SearchLayout,
   IconByName,
   FilterButton,
