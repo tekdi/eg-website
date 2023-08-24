@@ -10,7 +10,7 @@ import {
   uploadRegistryService,
   Breadcrumb,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack, Stack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -25,6 +25,7 @@ const checkboxIcons = [
 
 export default function EnrollmentReceiptView({ footerLinks }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [subjects, setSubjects] = React.useState();
@@ -74,6 +75,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       if (data?.success) {
         setOpenModal(false);
+        navigate("/admin/learners");
       }
     }
   };
