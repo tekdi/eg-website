@@ -76,7 +76,11 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack space={2} alignItems="Center">
+            <HStack
+              space={2}
+              justifyContent={"space-between"}
+              alignItems="Center"
+            >
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("EDUCATION_DETAILS")}
               </FrontEndTypo.H3>
@@ -268,7 +272,11 @@ export default function BenificiaryEducation() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack space={2} alignItems="Center">
+            <HStack
+              space={2}
+              justifyContent={"space-between"}
+              alignItems="Center"
+            >
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("LEARNER_ASPIRATION")}
               </FrontEndTypo.H3>
