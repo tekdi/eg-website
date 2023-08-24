@@ -569,6 +569,7 @@ const DEFAULT_THEME = {
     textMaroonColor: {
       50: 'FDCAB5',
       100: '#FFACAF',
+      300:'#DF3A40',
       400: '#790000',
       500: '#A93505'
     },
@@ -648,7 +649,12 @@ const DEFAULT_THEME = {
     dividerColor: '#EEEEEE',
     textGreen: {
       300: '#BCF6DB',
+      500:'#14b269',
       700: '#0F6C41'
+    },
+    textWhite: {
+      300: '#FFFFFF',
+      
     }
   }
 }

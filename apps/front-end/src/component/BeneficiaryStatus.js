@@ -50,10 +50,15 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
+      case "enrollment_rejected":
+        setNewStatus(t("BENEFICIARY_STATUS_REJECTED"));
+        setTextColor("textMaroonColor.400");
+        setColor("textMaroonColor.100");
+        break;
       case "deactivated":
         setNewStatus(t("DEACTIVATE"));
         setTextColor("textMaroonColor.400");
-        setColor("textMaroonColor.100");
+        setColor("textMaroonColor.300");
         break;
       case "dropout":
         setNewStatus(t("BENEFICIARY_STATUS_DROPOUT"));
@@ -85,6 +90,11 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
         setTextColor("textGreen.700");
         setColor("textGreen.300");
         break;
+      case "not_enrolled":
+        setNewStatus(t("BENEFICIARY_STATUS_NOT_ENROLLED"));
+        setTextColor("textMaroonColor.400");
+        setColor("danger.400");
+        break;
       case "activate":
         setNewStatus(t("BENEFICIARY_STATUS_ACTIVATE"));
         setTextColor("textGreen.700");
@@ -95,10 +105,15 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
         setTextColor("textGreen.700");
         setColor("textGreen.300");
         break;
-      case "approved_ip":
+      case "enrolled_ip_verified":
         setNewStatus(t("BENEFICIARY_STATUS_APPROVED_IP"));
-        setTextColor("textGreen.700");
-        setColor("textGreen.300");
+        setTextColor("textWhite.300");
+        setColor("textGreen.500");
+        break;
+      case "enrollment_awaited":
+        setNewStatus(t("BENEFICIARY_STATUS_ENROLLMENT_AWAITED"));
+        setTextColor("textWhite.300");
+        setColor("#01FDFF");
         break;
       case "ineligible_for_pragati_camp":
         setNewStatus(t("BENEFICIARY_STATUS_INELIGIBLE_FOR_PRAGATI_CAMP"));
