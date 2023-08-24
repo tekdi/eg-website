@@ -16,39 +16,29 @@ export default function Header({
 }: any) {
   let newAvatar = localStorage.getItem('firstName')
   return !isDisabledHeader ? (
-    !customeComponent ? (
+    customeComponent || (
       <Box {..._box} py={7} px={5}>
         <HStack justifyContent='space-between' alignItems='center'>
           <VStack>
-            {subHeadingComponent ? (
-              subHeadingComponent
-            ) : (
+            {subHeadingComponent || (
               <Text fontSize='12px' {..._subHeading}>
                 {subHeading}
               </Text>
             )}
-            {headingComponent ? (
-              headingComponent
-            ) : (
+
+            {headingComponent || (
               <Text bold fontSize='24px' {..._heading}>
                 {title}
               </Text>
             )}
           </VStack>
-          {iconComponent ? (
-            iconComponent
-          ) : avatar ? (
+          {iconComponent || (
             <Avatar bg='amber.500' borderRadius='5px'>
               {newAvatar?.toUpperCase().substr(0, 2)}
-              {/* <Avatar.Badge bg='green.500'  /> */}
             </Avatar>
-          ) : (
-            <React.Fragment />
           )}
         </HStack>
       </Box>
-    ) : (
-      customeComponent
     )
   ) : (
     <React.Fragment />
