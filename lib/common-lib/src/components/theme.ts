@@ -1,5 +1,3 @@
-import { BorderColor } from '@mui/icons-material'
-
 const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '' : ''
 
