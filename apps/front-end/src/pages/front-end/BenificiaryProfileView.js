@@ -410,7 +410,12 @@ export default function BenificiaryProfileView(props) {
                 />
               }
             >
-              <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="0"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
@@ -426,7 +431,12 @@ export default function BenificiaryProfileView(props) {
                   />
                 )}
               </HStack>
-              <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                pr="0"
+                p="3"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("EDUCATION_DETAILS")}
                 </FrontEndTypo.H3>
@@ -473,6 +483,7 @@ export default function BenificiaryProfileView(props) {
                   justifyContent="space-between"
                   alignItems="Center"
                   p="3"
+                  pr="0"
                 >
                   <FrontEndTypo.H3 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
@@ -491,7 +502,12 @@ export default function BenificiaryProfileView(props) {
                     )}
                 </HStack>
               )}
-              <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="1"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("JOURNEY_IN_PROJECT_PRAGATI")}
                 </FrontEndTypo.H3>
