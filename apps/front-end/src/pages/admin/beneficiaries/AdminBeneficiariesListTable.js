@@ -50,9 +50,19 @@ const columns = (t, navigate) => [
             _icon={{ size: "35" }}
           />
         )}
-        <AdminTypo.H5 bold>
-          {row?.first_name + " "} {row?.last_name ? row?.last_name : ""}
-        </AdminTypo.H5>
+        {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+          <AdminTypo.H5 bold>
+            {row?.program_beneficiaries?.enrollment_first_name + " "}
+            {row?.program_beneficiaries?.enrollment_last_name
+              ? row?.program_beneficiaries?.enrollment_last_name
+              : ""}
+          </AdminTypo.H5>
+        ) : (
+          <AdminTypo.H5 bold>
+            {row?.first_name + " "}
+            {row?.last_name ? row?.last_name : ""}
+          </AdminTypo.H5>
+        )}
       </HStack>
     ),
     attr: "name",
@@ -60,7 +70,24 @@ const columns = (t, navigate) => [
   },
   {
     name: t("LEARNERS_AGE"),
-    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
+    selector: (row) => {
+      if (row?.program_beneficiaries?.status === "enrolled_ip_verified") {
+        if (row?.program_beneficiaries_enrollment_dob) {
+          return moment().diff(
+            row?.program_beneficiaries.enrollment_dob,
+            "years"
+          );
+        } else {
+          return "-";
+        }
+      } else {
+        if (row?.dob) {
+          return moment().diff(row?.dob, "years");
+        } else {
+          return "-";
+        }
+      }
+    },
   },
   {
     name: t("PRERAK_ID"),
@@ -149,7 +176,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     <VStack>
       <HStack my="1" mb="3" justifyContent="space-between">
         <HStack justifyContent="space-between" alignItems="center">
-          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
