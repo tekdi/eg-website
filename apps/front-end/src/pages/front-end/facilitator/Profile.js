@@ -47,7 +47,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       ]);
     setProgress(percentage);
     setLoading(false);
-  }, []);
+  }, [facilitator]);
 
   React.useEffect(async () => {
     const result = await facilitatorRegistryService.getOne({ id });
