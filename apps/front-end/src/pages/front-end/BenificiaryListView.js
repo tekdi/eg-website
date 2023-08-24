@@ -62,15 +62,30 @@ const List = ({ data }) => {
                     overflow="hidden"
                     textOverflow="ellipsis"
                   >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.first_name}
-                      {item?.middle_name &&
-                        item?.middle_name !== "null" &&
-                        ` ${item.middle_name}`}
-                      {item?.last_name &&
-                        item?.last_name !== "null" &&
-                        ` ${item.last_name}`}
-                    </FrontEndTypo.H3>
+                    {item?.program_beneficiaries?.status ===
+                    "enrolled_ip_verified" ? (
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                        {item?.program_beneficiaries?.enrollment_first_name}
+                        {item?.program_beneficiaries?.enrollment_middle_name &&
+                          item?.program_beneficiaries
+                            ?.enrollment_middle_name !== "null" &&
+                          ` ${item?.program_beneficiaries?.enrollment_middle_name}`}
+                        {item?.program_beneficiaries?.enrollment_last_name &&
+                          item?.program_beneficiaries?.enrollment_last_name !==
+                            "null" &&
+                          ` ${item?.program_beneficiaries?.enrollment_last_name}`}
+                      </FrontEndTypo.H3>
+                    ) : (
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                        {item?.first_name}
+                        {item?.middle_name &&
+                          item?.middle_name !== "null" &&
+                          ` ${item.middle_name}`}
+                        {item?.last_name &&
+                          item?.last_name !== "null" &&
+                          ` ${item.last_name}`}
+                      </FrontEndTypo.H3>
+                    )}
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
                     </FrontEndTypo.H5>
