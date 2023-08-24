@@ -12,7 +12,7 @@ import {
   facilitatorRegistryService,
   enumRegistryService,
   setQueryParameters,
-  filterObject,
+  urlData,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
@@ -41,27 +41,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   // facilitator pagination
   const [getQualificationAll, setgetQualificationAll] = React.useState();
-
-  const urlData = () => {
-    return location.search
-      .slice(1)
-      .split("&")
-      .map((p) => p.split("="))
-      .reduce((obj, pair) => {
-        const [key, value] = pair.map(decodeURIComponent);
-        if (
-          ["district", "block", "qualificationIds", "work_experience"].includes(
-            key
-          )
-        ) {
-          const newValue = value.split(",");
-          obj[key] = newValue;
-        } else {
-          obj[key] = value;
-        }
-        return obj;
-      }, {});
-  };
 
   React.useEffect(async () => {
     const getQualification =
@@ -107,7 +86,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   };
 
   useEffect(() => {
-    setFilter(urlData());
+    setFilter(
+      urlData(["district", "block", "qualificationIds", "work_experience"])
+    );
   }, []);
 
   const schema = {
@@ -198,7 +179,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const onChange = async (data) => {
     const { district, qualificationIds, work_experience, block } =
-      data?.formData;
+      data?.formData || {};
     setFilterObject({
       ...filter,
       ...(district ? { district } : {}),
@@ -250,7 +231,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       <HStack>
         <Box
           flex={[2, 2, 1]}
-          style={{ borderRightColor: "#EEEEEE", borderRightWidth: "2px" }}
+          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
           <ScrollView

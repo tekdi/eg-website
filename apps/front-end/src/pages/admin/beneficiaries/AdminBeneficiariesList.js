@@ -21,6 +21,7 @@ import {
   facilitatorRegistryService,
   setQueryParameters,
   debounce,
+  urlData,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -57,14 +58,14 @@ function CustomFieldTemplate({ id, classNames, label, required, children }) {
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const [Height] = useWindowSize();
+  const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
 
   const [facilitator, setFacilitator] = React.useState([]);
-  const [filter, setFilter] = React.useState({});
+  const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
 
   const [data, setData] = React.useState([]);
@@ -92,6 +93,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     }
     setGetBlocksAll(blockData);
   }, [filter?.district]);
+
   React.useEffect(async () => {
     setLoading(true);
     const result = await benificiaryRegistoryService.beneficiariesFilter(
@@ -136,6 +138,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilter(data);
     setQueryParameters(data);
   };
+
+  // React.useEffect(() => {
+  //   setFilter(urlData(["district", "facilitator", "block"]));
+  // }, []);
 
   const schema = {
     type: "object",
@@ -210,7 +216,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack>
         <Box
-          width="18%"
+          flex={[2, 2, 1]}
           style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
         >
           <HStack ref={ref}></HStack>
@@ -218,6 +224,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
+            pr="2"
           >
             <VStack space={8} py="5">
               <VStack space={3}>
@@ -296,20 +303,22 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             </VStack>
           </ScrollView>
         </Box>
-        <ScrollView
-          maxH={Height - refAppBar?.clientHeight}
-          minH={Height - refAppBar?.clientHeight}
-        >
-          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table
-              filter={filter}
-              setFilter={setFilterObject}
-              paginationTotalRows={paginationTotalRows}
-              data={data}
-              loading={loading}
-            />
-          </Box>
-        </ScrollView>
+        <Box flex={[5, 5, 4]}>
+          <ScrollView
+            maxH={Height - refAppBar?.clientHeight}
+            minH={Height - refAppBar?.clientHeight}
+          >
+            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+              <Table
+                filter={filter}
+                setFilter={setFilterObject}
+                paginationTotalRows={paginationTotalRows}
+                data={data}
+                loading={loading}
+              />
+            </Box>
+          </ScrollView>
+        </Box>
       </HStack>
     </Layout>
   );

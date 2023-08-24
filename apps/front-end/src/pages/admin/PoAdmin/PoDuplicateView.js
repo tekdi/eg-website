@@ -48,8 +48,7 @@ const IpName = (row) => {
   return (
     <VStack alignItems={"center"} space="2">
       <Text color={"textGreyColor.100"} fontSize={"13px"}>
-        {row?.IP_first_name + " "}
-        {row?.IP_last_name ? row?.IP_last_name : ""}
+        {row?.IP_name + " "}
       </Text>
     </VStack>
   );
@@ -266,8 +265,7 @@ export default function PoDuplicateView({ footerLinks }) {
                     />
                     <AdminTypo.H6 color="textGreyColor.100">
                       {`${t("IP_NAME")}:`}
-                      {viewData?.IP_first_name + " "}
-                      {viewData?.IP_last_name ? row?.IP_last_name : ""}
+                      {viewData?.IP_name + " "}
                     </AdminTypo.H6>
                   </HStack>
                 </HStack>

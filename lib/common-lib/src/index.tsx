@@ -34,6 +34,7 @@ import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
 import PoAdminLayout from './components/Po_admin_layout/Layout'
+import Breadcrumb from './components/Breadcrumb'
 
 // export
 export {
@@ -74,7 +75,8 @@ export {
   aadhaarService,
   Alert,
   GetEnumValue,
-  ItemComponent
+  ItemComponent,
+  Breadcrumb
 }
 
 export * from './services/RestClient'

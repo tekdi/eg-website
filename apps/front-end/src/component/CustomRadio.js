@@ -20,29 +20,28 @@ export default function CustomRadio({
   ...props
 }) {
   const { t } = useTranslation();
-  const { _hstack, icons, _pressable, grid, label, format } = schema
-    ? schema
-    : {};
-  const { enumOptions } = options ? options : {};
+  const { _hstack, icons, _pressable, grid, label, _box, format } =
+    schema || {};
+  const { enumOptions } = options || {};
   let items = [enumOptions];
   if (grid && enumOptions?.constructor.name === "Array") {
     items = chunk(enumOptions, grid);
   }
 
   return (
-    <FormControl gap="6">
+    <FormControl gap="6" {..._box}>
       {label && !format && (
         <FormControl.Label>
           <H2 color="textMaroonColor.400">{t(label)}</H2>
           {required && <H2 color="textMaroonColor.400">*</H2>}
         </FormControl.Label>
       )}
-      <Stack flexDirection={grid ? "column" : ""} {...(_hstack ? _hstack : {})}>
+      <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
-          <Box gap={"2"} key={subKey} flexDirection="row" flexWrap="wrap">
+          <Box gap={"2"} key={subKey || ""} flexDirection="row" flexWrap="wrap">
             {subItem?.map((item, key) => (
               <Pressable
-                key={key}
+                key={key || ""}
                 style={{
                   background:
                     value == item?.value
@@ -58,40 +57,41 @@ export default function CustomRadio({
                 borderColor={
                   value == item?.value ? "secondaryBlue.500" : "gray.400"
                 }
-                {...(icons?.[key]?.["_pressable"]
-                  ? icons?.[key]?.["_pressable"]
-                  : _pressable
-                  ? _pressable
-                  : {})}
-                onPress={() => onChange(item?.value)}
                 mb="2"
+                {...(icons?.[key]?.["_pressable"] || _pressable || {})}
+                onPress={() => onChange(item?.value)}
               >
                 <VStack alignItems="center" space="3" flex="1">
-                  {icons?.[key] && icons?.[key].name && (
+                  {icons?.[subKey + key] && icons?.[subKey + key].name && (
                     <IconByName
-                      {...icons[key]}
+                      {...icons[subKey + key]}
                       isDisabled
                       color={
-                        value === item?.value ? "secondaryBlue.500" : "gray.500"
+                        value === item?.value
+                          ? icons?.[subKey + key]?.activeColor ||
+                            "secondaryBlue.500"
+                          : icons?.[subKey + key]?.color || "gray.500"
                       }
                       _icon={{
-                        ...(icons?.[key]?.["_icon"]
-                          ? icons?.[key]?.["_icon"]
+                        ...(icons?.[subKey + key]?.["_icon"]
+                          ? icons?.[subKey + key]?.["_icon"]
                           : {}),
                       }}
                     />
                   )}
-                  <Text
-                    textAlign="center"
-                    {...{
-                      color:
-                        value === item?.value
-                          ? "secondaryBlue.500"
-                          : "gray.500",
-                    }}
-                  >
-                    {t(item?.label)}
-                  </Text>
+                  {item?.label && (
+                    <Text
+                      textAlign="center"
+                      {...{
+                        color:
+                          value === item?.value
+                            ? "secondaryBlue.500"
+                            : "gray.500",
+                      }}
+                    >
+                      {t(item?.label)}
+                    </Text>
+                  )}
                 </VStack>
               </Pressable>
             ))}

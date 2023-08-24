@@ -80,7 +80,7 @@ export default function PhotoUpload({
 
   const onPressBackButton = () => {
     if (page === 1) {
-      navigate(`/profile/edit/qualification_details`);
+      navigate(`/facilitatorbasicdetail`);
     } else {
       navigate(`/profile/edit/upload/${page - 1}`);
     }
