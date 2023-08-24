@@ -127,7 +127,7 @@ export default function BenificiaryBasicDetails() {
                 colorScheme="info"
               />
             </Box>
-            <VStack space="2" pt="5">
+            <VStack space="4" pt="5">
               <HStack
                 alignItems="Center"
                 justifyContent="space-between"
@@ -145,15 +145,6 @@ export default function BenificiaryBasicDetails() {
                 >
                   {benificiary?.mobile ? benificiary?.mobile : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="CellphoneLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/contact-info`);
-                  }}
-                />
               </HStack>
 
               <HStack
@@ -179,12 +170,6 @@ export default function BenificiaryBasicDetails() {
                     ? benificiary?.alternative_mobile_number
                     : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="SmartphoneLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                />
               </HStack>
 
               <HStack alignItems="Center" justifyContent="space-between">
@@ -197,12 +182,6 @@ export default function BenificiaryBasicDetails() {
                     ? benificiary?.email_id
                     : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="MailLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                />
               </HStack>
             </VStack>
           </VStack>
