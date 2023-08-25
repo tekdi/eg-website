@@ -75,7 +75,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       if (data?.success) {
         setOpenModal(false);
-        navigate("/admin/learners");
+        navigate("/admin/learners/enrollmentVerificationList");
       }
     }
   };

@@ -14,8 +14,38 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
+
+const LearnerMessage = ({ program_beneficiaries }) => {
+  const [reason, setReason] = React.useState({});
+  React.useEffect(() => {
+    if (
+      program_beneficiaries?.enrollment_verification_status ===
+      "change_required"
+    ) {
+      setReason(
+        JSON.parse(program_beneficiaries?.enrollment_verification_reason)
+      );
+    }
+  }, []);
+  return (
+    <HStack color="blueText.450" alignItems="center">
+      <FrontEndTypo.H4 color="blueText.450" underline>
+        {reason?.learner_enrollment_details === "no" &&
+        reason?.enrollment_details === "no"
+          ? t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")
+          : reason?.learner_enrollment_details === "no"
+          ? t("CORRECT_ENROLLMENT_DETAILS")
+          : reason?.enrollment_details === "no"
+          ? t("CORRECT_ENROLLMENT_LEARNER_DETAILS")
+          : t("FOLLOW_UP_WITH_IP")}
+      </FrontEndTypo.H4>
+    </HStack>
+  );
+};
+
 const List = ({ data }) => {
   const navigate = useNavigate();
+
   return (
     <VStack space="4" p="4" alignContent="center">
       {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
@@ -146,11 +176,9 @@ const List = ({ data }) => {
               )}
 
               {item?.program_beneficiaries?.status === "enrolled" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("FOLLOW_UP_WITH_IP")}
-                  </FrontEndTypo.H4>
-                </HStack>
+                <LearnerMessage
+                  program_beneficiaries={item?.program_beneficiaries}
+                />
               )}
 
               {item?.program_beneficiaries?.status === "dropout" && (
