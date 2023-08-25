@@ -63,7 +63,7 @@ jobs:
 #           private: true
 #           filesToInclude: prod-build/*
 
-      # S3 sync
+      ### S3 sync
       - name: S3 Sync
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
@@ -75,7 +75,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           SOURCE_DIR: prod-build
 
-      # Invalidate Cloudfront
+      ### Invalidate Cloudfront
       - name: Cloudfront Invalidation
         uses: chetan/invalidate-cloudfront-action@master
         env:
