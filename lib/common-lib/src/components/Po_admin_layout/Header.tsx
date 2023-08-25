@@ -34,7 +34,7 @@ export default function Header({
           </VStack>
           {iconComponent || (
             <Avatar bg='amber.500' borderRadius='5px'>
-              {newAvatar?.toUpperCase().substr(0, 2)}
+              {newAvatar?.toUpperCase().substring(0, 2)}
             </Avatar>
           )}
         </HStack>
