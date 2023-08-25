@@ -62,10 +62,6 @@ export default function BenificiaryBasicDetails() {
                 &nbsp;
                 {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
               </FrontEndTypo.H1>
-              {console.log(
-                "enrolled_ip_verified",
-                benificiary?.program_beneficiaries?.status
-              )}
               {benificiary?.program_beneficiaries?.status ===
               "enrolled_ip_verified" ? (
                 <></>
