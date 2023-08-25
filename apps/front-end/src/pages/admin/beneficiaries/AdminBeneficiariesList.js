@@ -143,6 +143,10 @@ export const Filter = ({ filter, setFilter }) => {
     setQueryParameters(data);
   };
 
+  // React.useEffect(() => {
+  //   setFilter(urlData(["district", "facilitator", "block"]));
+  // }, []);
+
   const schema = {
     type: "object",
     properties: {
@@ -324,6 +328,7 @@ export const Filter = ({ filter, setFilter }) => {
                     : 1) + 1,
               })
             }
+            pr="2"
           >
             {t("MORE")}
           </Button>

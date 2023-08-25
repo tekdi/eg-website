@@ -119,6 +119,20 @@ const columns = (t, navigate) => [
     attr: "email",
     wrap: true,
   },
+  {
+    name: t("ACTION"),
+    selector: (row) =>
+      row?.program_beneficiaries?.status === "enrolled" && (
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => {
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+          }}
+        >
+          {t("VIEW")}
+        </AdminTypo.Secondarybutton>
+      ),
+  },
 ];
 
 const dropDown = (triggerProps, t) => {

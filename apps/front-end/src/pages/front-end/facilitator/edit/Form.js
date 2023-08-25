@@ -398,7 +398,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
 
     if (step === "basic_details") {
-      ["first_name"].forEach((key) => {
+      ["first_name", "middle_name", "last_name"].forEach((key) => {
         validation({
           data:
             typeof data?.[key] === "string"
@@ -410,6 +410,11 @@ export default function App({ userTokenInfo, footerLinks }) {
             schema?.properties?.[key]?.title
           )}`,
         });
+        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
       });
       if (data?.dob) {
         validation({
@@ -694,7 +699,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         Object.keys(schema?.properties),
         {},
         ""
-      );  
+      );
       const data = await formSubmitUpdate(newdata);
       // }
       if (localStorage.getItem("backToProfile") === "false") {

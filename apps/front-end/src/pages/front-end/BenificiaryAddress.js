@@ -44,7 +44,11 @@ export default function BenificiaryAddress() {
             bg="white"
             borderColor="appliedColor"
           >
-            <HStack space={2} alignItems="Center">
+            <HStack
+              justifyContent={"space-between"}
+              space={2}
+              alignItems="Center"
+            >
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
