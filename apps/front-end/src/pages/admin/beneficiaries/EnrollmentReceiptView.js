@@ -50,7 +50,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       setReceiptUrl(newResult);
       setFileType(newResult?.key?.split(".").pop());
       const subject = jsonParse(result?.program_beneficiaries.subjects, []);
-      setSubjects(newData?.filter((e) => subject.includes(`${e.id}`)));
+      setSubjects(newData?.filter((e) => subject?.includes(`${e.id}`)));
       setLoading(false);
     };
     await profileDetails();
@@ -173,9 +173,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                           label: "DOB",
                           value: (
                             <AdminTypo.H5>
-                              {moment(
-                                data?.program_beneficiaries?.enrollment_dob
-                              ).format("DD-MM-YYYY")}
+                              {data?.program_beneficiaries?.enrollment_dob
+                                ? moment(
+                                    data?.program_beneficiaries?.enrollment_dob
+                                  ).format("DD-MM-YYYY")
+                                : "-"}
                             </AdminTypo.H5>
                           ),
                         },
@@ -216,9 +218,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                           label: "DATE",
                           value: (
                             <AdminTypo.H5>
-                              {moment(
-                                data?.program_beneficiaries?.enrollment_date
-                              ).format("DD-MM-YYYY")}
+                              {data?.program_beneficiaries?.enrollment_date
+                                ? moment(
+                                    data?.program_beneficiaries?.enrollment_date
+                                  ).format("DD-MM-YYYY")
+                                : "-"}
                             </AdminTypo.H5>
                           ),
                         },
