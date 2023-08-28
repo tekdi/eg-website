@@ -374,20 +374,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          {["lead", "applied", ""]?.includes(facilitator.status) &&
-            progress !== 100 && (
-              <Stack>
-                <VStack p="5" pt={1}>
-                  <FrontEndTypo.Primarybutton
-                    onPress={(e) => navigate("/profile/edit/basic_details")}
-                    bold
-                    flex="1"
-                  >
-                    {t("COMPLETE_FORM")}
-                  </FrontEndTypo.Primarybutton>
-                </VStack>
-              </Stack>
-            )}
+          {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
+            <Stack>
+              <VStack p="5" pt={1}>
+                <FrontEndTypo.Primarybutton
+                  onPress={(e) => navigate("/profile/edit/basic_details")}
+                  bold
+                  flex="1"
+                >
+                  {t("COMPLETE_FORM")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
+            </Stack>
+          )}
           {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
