@@ -75,7 +75,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       if (data?.success) {
         setOpenModal(false);
-        navigate("/admin/learners");
+        navigate("/admin/learners/enrollmentVerificationList");
       }
     }
   };
@@ -89,23 +89,22 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <IconByName size="sm" name="ArrowRightSLineIcon" isDisabled />
             }
             data={[
-              <AdminTypo.H1>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>,
-              <AdminTypo.H2>{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
-              <AdminTypo.H3>{`${data?.id}`}</AdminTypo.H3>,
+              <AdminTypo.H1 key="1">
+                {t("ENROLLMENT_VERIFICATION")}
+              </AdminTypo.H1>,
+              <AdminTypo.H2 key="2">{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
+              <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
+              <ChipStatus
+                key={"4"}
+                is_duplicate={data?.is_duplicate}
+                is_deactivated={data?.is_deactivated}
+                status={data?.program_beneficiaries?.status}
+              />,
             ]}
           />
           {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
         </HStack>
-        {data?.program_beneficiaries?.enrollment_status === "not_enrolled" ? (
-          <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <AdminTypo.H1>
-                {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-              </AdminTypo.H1>
-            </HStack>
-          </Alert>
-        ) : (
+        <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
               {t("ENROLLMENT_DETAILS_VERIFICATION")}
@@ -373,11 +372,49 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               </Modal.Content>
             </Modal>
           </VStack>
-        )}
+        </Body>
       </VStack>
     </Layout>
   );
 }
+
+const Body = ({ data, children }) => {
+  const { t } = useTranslation();
+  if (data?.program_beneficiaries?.status !== "enrolled") {
+    return (
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <AdminTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</AdminTypo.H1>
+        </HStack>
+      </Alert>
+    );
+  } else if (
+    data?.program_beneficiaries?.enrollment_status === "not_enrolled"
+  ) {
+    return (
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <AdminTypo.H1>
+            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
+          </AdminTypo.H1>
+        </HStack>
+      </Alert>
+    );
+  } else if (data?.is_duplicate === "yes" && data?.is_deactivated === null) {
+    return (
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <AdminTypo.H1>{t("RESOLVE_DUPLICATION")}</AdminTypo.H1>
+        </HStack>
+      </Alert>
+    );
+  } else {
+    return children;
+  }
+};
 
 const TextInfo = ({ data, _box, arr }) => {
   const { t } = useTranslation();

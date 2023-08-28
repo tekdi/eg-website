@@ -120,20 +120,6 @@ const columns = (t, navigate) => [
     attr: "email",
     wrap: true,
   },
-  {
-    name: t("ACTION"),
-    selector: (row) =>
-      row?.program_beneficiaries?.status === "enrolled" && (
-        <AdminTypo.Secondarybutton
-          my="3"
-          onPress={() => {
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
-          }}
-        >
-          {t("VIEW")}
-        </AdminTypo.Secondarybutton>
-      ),
-  },
 ];
 
 const dropDown = (triggerProps, t) => {
@@ -175,7 +161,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
 
   return (
     <VStack>
-      <HStack my="1" mb="3" justifyContent="space-between">
+      <HStack my="1" mb="3" space={"4"} flexWrap={"wrap"}>
         <HStack justifyContent="space-between" alignItems="center">
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
@@ -209,38 +195,46 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             );
           }}
         />
-        <HStack
-          space={6}
-          alignItems={"center"}
-          justifyContent={"space-between"}
+        <Menu
+          w="190"
+          placement="bottom right"
+          trigger={(triggerProps) => dropDown(triggerProps, t)}
         >
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps, t)}
-          >
-            <Menu.Item onPress={(item) => setMenu("export_learner")}>
-              {t("LEARNERS_LIST")}
-            </Menu.Item>
-            <Menu.Item onPress={(item) => setMenu("export_subject")}>
-              {t("LEARNERS_SUBJECT_CSV")}
-            </Menu.Item>
-          </Menu>
-          <AdminTypo.Dangerbutton
-            onPress={() => {
-              navigate("/admin/learners/duplicates");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("RESOLVE_DUPLICATION")}
-          </AdminTypo.Dangerbutton>
-        </HStack>
+          <Menu.Item onPress={(item) => setMenu("export_learner")}>
+            {t("LEARNERS_LIST")}
+          </Menu.Item>
+          <Menu.Item onPress={(item) => setMenu("export_subject")}>
+            {t("LEARNERS_SUBJECT_CSV")}
+          </Menu.Item>
+        </Menu>
+        <AdminTypo.Successbutton
+          onPress={() => {
+            navigate("/admin/learners/enrollmentVerificationList");
+          }}
+          rightIcon={
+            <IconByName
+              color="textGreyColor.100"
+              size="15px"
+              name="ShareLineIcon"
+            />
+          }
+        >
+          {t("ENROLLMENT_VERIFICATION")}
+        </AdminTypo.Successbutton>
+        <AdminTypo.Dangerbutton
+          onPress={() => {
+            navigate("/admin/learners/duplicates");
+          }}
+          rightIcon={
+            <IconByName
+              color="textGreyColor.100"
+              size="15px"
+              name="ShareLineIcon"
+            />
+          }
+        >
+          {t("RESOLVE_DUPLICATION")}
+        </AdminTypo.Dangerbutton>
       </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
