@@ -11,6 +11,7 @@ import {
 import guestRoutes from "./routes/guestRoutes";
 import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
+import PoAdminRoutes from "./routes/PoAdminRoutes";
 
 //TODO: separate out the theme related code from App
 initializeI18n(["translation"]);
@@ -34,6 +35,8 @@ function App() {
 
       if (hasura?.roles?.includes("facilitator")) {
         setAccessRoutes(routes);
+      } else if (hasura?.roles?.includes("program_owner")) {
+        setAccessRoutes(PoAdminRoutes);
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
       } else {

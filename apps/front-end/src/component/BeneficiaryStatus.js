@@ -9,22 +9,20 @@ export default function Chip({
   is_duplicate,
   is_deactivated,
   isActive,
+  _text,
   ...props
 }) {
   const { t } = useTranslation();
   return (
     <Box
       bg={isActive ? "primary.500" : "primary.100"}
-      _text={{
-        color: isActive ? "white" : "black",
-      }}
       rounded={"full"}
       py="1"
       px="2"
       m="1"
       {...props}
     >
-      <Text>
+      <Text color={isActive ? "white" : "black"} {..._text}>
         {children || label}
         {is_duplicate === "yes" && is_deactivated === null && (
           <FrontEndTypo.H3>
@@ -37,9 +35,16 @@ export default function Chip({
 }
 
 // ChipStatus
-export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
+export function ChipStatus({
+  status,
+  sufix,
+  prefix,
+  is_duplicate,
+  is_deactivated,
+  ...props
+}) {
   const [color, setColor] = React.useState("identifiedColor");
-  const [textColor, setTextColor] = React.useState("textGreyColor.800");
+  const [textColor, setTextColor] = React.useState("black");
   const [newStatus, setNewStatus] = React.useState(status);
   const { t } = useTranslation();
 
@@ -47,18 +52,18 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
     switch (status && status?.toLowerCase()) {
       case "rejected":
         setNewStatus(t("REJECTED"));
-        setTextColor("textMaroonColor.400");
-        setColor("textMaroonColor.100");
+        setTextColor("#fff");
+        setColor("textRed.400");
         break;
       case "deactivated":
         setNewStatus(t("DEACTIVATE"));
-        setTextColor("textMaroonColor.400");
-        setColor("textMaroonColor.100");
+        setTextColor("white");
+        setColor("textRed.100");
         break;
       case "dropout":
         setNewStatus(t("BENEFICIARY_STATUS_DROPOUT"));
-        setTextColor("textMaroonColor.400");
-        setColor("textMaroonColor.100");
+        setTextColor("white");
+        setColor("textRed.200");
         break;
       case "duplicated":
         setNewStatus(t("BENEFICIARY_STATUS_DUPLICATED"));
@@ -82,8 +87,8 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
         break;
       case "enrolled":
         setNewStatus(t("ENROLLED"));
-        setTextColor("textGreen.700");
-        setColor("textGreen.300");
+        setTextColor("#fff");
+        setColor("textGreen.100");
         break;
       case "activate":
         setNewStatus(t("BENEFICIARY_STATUS_ACTIVATE"));
@@ -92,18 +97,43 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
         break;
       case "registered_in_camp":
         setNewStatus(t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP"));
-        setTextColor("textGreen.700");
+        setTextColor("textGreen.900");
         setColor("textGreen.300");
         break;
       case "approved_ip":
         setNewStatus(t("BENEFICIARY_STATUS_APPROVED_IP"));
         setTextColor("textGreen.700");
-        setColor("textGreen.300");
+        setColor("textGreen.200");
         break;
       case "ineligible_for_pragati_camp":
         setNewStatus(t("BENEFICIARY_STATUS_INELIGIBLE_FOR_PRAGATI_CAMP"));
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
+        break;
+      case "not_enrolled":
+        setNewStatus(t("BENEFICIARY_STATUS_NOT_ENROLLED"));
+        setTextColor("textMaroonColor.400");
+        setColor("textMaroonColor.100");
+        break;
+      case "enrollment_awaited":
+        setNewStatus(t("BENEFICIARY_STATUS_ENROLLMENT_AWAITED"));
+        setTextColor("textMaroonColor.400");
+        setColor("textBlue.100");
+        break;
+      case "enrollment_rejected":
+        setNewStatus(t("BENEFICIARY_STATUS_ENROLLMENT_REJECTED"));
+        setTextColor("#fff");
+        setColor("textRed.400");
+        break;
+      case "enrolled_ip_verified":
+        setNewStatus(t("BENEFICIARY_STATUS_APPROVED_IP"));
+        setTextColor("textGreen.400");
+        setColor("textGreen.50");
+        break;
+      case "10th_passed":
+        setNewStatus(t("BENEFICIARY_STATUS_10TH_PASSED"));
+        setTextColor("#fff");
+        setColor("textGreen.600");
         break;
       default:
         setNewStatus(t("IDENTIFIED"));
@@ -116,11 +146,16 @@ export function ChipStatus({ status, is_duplicate, is_deactivated, ...props }) {
     <Chip
       px="4"
       bg={color}
-      color={textColor}
-      label={newStatus}
+      label={
+        <>
+          <>{prefix}</>
+          {newStatus}
+          <>{sufix}</>
+        </>
+      }
       is_duplicate={is_duplicate}
       is_deactivated={is_deactivated}
-      _text={{ textTransform: "capitalize" }}
+      _text={{ color: textColor, textTransform: "capitalize" }}
       rounded="sm"
       {...props}
     />
