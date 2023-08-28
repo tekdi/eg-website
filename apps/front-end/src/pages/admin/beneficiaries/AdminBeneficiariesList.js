@@ -156,12 +156,8 @@ export const Filter = ({ filter, setFilter }) => {
         },
         items: {
           type: "string",
-          enumNames: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
-          enum: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
+          enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
+          enum: getDistrictsAll?.map((item, i) => item?.district_name),
         },
         uniqueItems: true,
       },
@@ -175,16 +171,8 @@ export const Filter = ({ filter, setFilter }) => {
         },
         items: {
           type: "string",
-          enumNames:
-            getBlocksAll &&
-            getBlocksAll?.map((item, i) => {
-              return item?.block_name;
-            }),
-          enum:
-            getBlocksAll &&
-            getBlocksAll?.map((item, i) => {
-              return item?.block_name;
-            }),
+          enumNames: getBlocksAll?.map((item, i) => item?.block_name),
+          enum: getBlocksAll?.map((item, i) => item?.block_name),
         },
         uniqueItems: true,
       },

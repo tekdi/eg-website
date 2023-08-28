@@ -27,17 +27,21 @@ const LearnerMessage = ({ program_beneficiaries }) => {
       );
     }
   }, []);
+
+  const getTitle = () =>
+    reason?.learner_enrollment_details === "no" &&
+    reason?.enrollment_details === "no"
+      ? t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")
+      : reason?.learner_enrollment_details === "no"
+      ? t("CORRECT_ENROLLMENT_DETAILS")
+      : reason?.enrollment_details === "no"
+      ? t("CORRECT_ENROLLMENT_LEARNER_DETAILS")
+      : t("FOLLOW_UP_WITH_IP");
+
   return (
     <HStack color="blueText.450" alignItems="center">
       <FrontEndTypo.H4 color="blueText.450" underline>
-        {reason?.learner_enrollment_details === "no" &&
-        reason?.enrollment_details === "no"
-          ? t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")
-          : reason?.learner_enrollment_details === "no"
-          ? t("CORRECT_ENROLLMENT_DETAILS")
-          : reason?.enrollment_details === "no"
-          ? t("CORRECT_ENROLLMENT_LEARNER_DETAILS")
-          : t("FOLLOW_UP_WITH_IP")}
+        {getTitle()}
       </FrontEndTypo.H4>
     </HStack>
   );

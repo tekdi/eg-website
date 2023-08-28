@@ -83,12 +83,10 @@ const columns = (t, navigate) => [
         } else {
           return "-";
         }
+      } else if (row?.dob) {
+        return moment().diff(row?.dob, "years");
       } else {
-        if (row?.dob) {
-          return moment().diff(row?.dob, "years");
-        } else {
-          return "-";
-        }
+        return "-";
       }
     },
   },
@@ -177,7 +175,11 @@ function EnrollmentVerificationList({ footerLinks }) {
   }, []);
 
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      w={Width}
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+    >
       <HStack>
         <Box
           flex={[2, 2, 1]}
@@ -270,7 +272,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                     ?.map((item, key) => {
                       return (
                         <Text
-                          key={key}
+                          key={item?.title}
                           color={
                             filter?.enrollment_verification_status ==
                             t(item?.value)
