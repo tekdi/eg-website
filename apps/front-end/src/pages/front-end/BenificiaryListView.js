@@ -28,15 +28,20 @@ const LearnerMessage = ({ program_beneficiaries }) => {
     }
   }, []);
 
-  const getTitle = () =>
-    reason?.learner_enrollment_details === "no" &&
-    reason?.enrollment_details === "no"
-      ? t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")
-      : reason?.learner_enrollment_details === "no"
-      ? t("CORRECT_ENROLLMENT_DETAILS")
-      : reason?.enrollment_details === "no"
-      ? t("CORRECT_ENROLLMENT_LEARNER_DETAILS")
-      : t("FOLLOW_UP_WITH_IP");
+  const getTitle = () => {
+    if (
+      reason?.learner_enrollment_details === "no" &&
+      reason?.enrollment_details === "no"
+    ) {
+      return t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH");
+    } else if (reason?.learner_enrollment_details === "no") {
+      return t("CORRECT_ENROLLMENT_DETAILS");
+    } else if (reason?.enrollment_details === "no") {
+      return t("CORRECT_ENROLLMENT_LEARNER_DETAILS");
+    } else {
+      return t("FOLLOW_UP_WITH_IP");
+    }
+  };
 
   return (
     <HStack color="blueText.450" alignItems="center">
