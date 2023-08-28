@@ -1,6 +1,5 @@
 import React from "react";
-import { useState } from "react";
-import { HStack, VStack, Box, Progress, Center } from "native-base";
+import { HStack, VStack, Box, Progress } from "native-base";
 import {
   arrList,
   FrontEndTypo,
