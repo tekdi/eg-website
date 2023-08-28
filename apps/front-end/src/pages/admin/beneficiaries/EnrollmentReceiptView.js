@@ -94,11 +94,25 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               </AdminTypo.H1>,
               <AdminTypo.H2 key="2">{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
               <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
+              <ChipStatus
+                key={"4"}
+                is_duplicate={data?.is_duplicate}
+                is_deactivated={data?.is_deactivated}
+                status={data?.program_beneficiaries?.status}
+              />,
             ]}
           />
           {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
         </HStack>
-        {data?.program_beneficiaries?.enrollment_status === "not_enrolled" ? (
+        {data?.program_beneficiaries?.enrollment_status !== "enrolled" ? (
+          <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <AdminTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</AdminTypo.H1>
+            </HStack>
+          </Alert>
+        ) : data?.program_beneficiaries?.enrollment_status ===
+          "not_enrolled" ? (
           <Alert status="warning" alignItems={"start"} mb="3" mt="4">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />

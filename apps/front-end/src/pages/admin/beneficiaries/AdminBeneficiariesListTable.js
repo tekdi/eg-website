@@ -219,7 +219,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             />
           }
         >
-          {t("RESOLVE_ENROLLMENT")}
+          {t("ENROLLMENT_VERIFICATION")}
         </AdminTypo.Successbutton>
         <AdminTypo.Dangerbutton
           onPress={() => {
