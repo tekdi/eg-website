@@ -35,7 +35,6 @@ export default function BenificiaryEnrollment() {
     setbenificiary(result?.result);
     setLoading(false);
   };
-
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
@@ -102,7 +101,7 @@ export default function BenificiaryEnrollment() {
             ? {
                 onlyField: ["enrollment_status"],
               }
-            : ["applied_but_pending", "enrollment_rejected"].includes(
+            : ["enrollment_awaited", "enrollment_rejected"].includes(
                 benificiary?.program_beneficiaries?.enrollment_status
               )
             ? {
@@ -113,7 +112,7 @@ export default function BenificiaryEnrollment() {
         />
         {![
           "not_enrolled",
-          "applied_but_pending",
+          "enrollment_awaited",
           "enrollment_rejected",
         ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
           <ItemComponent
