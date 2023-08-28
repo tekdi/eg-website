@@ -27,31 +27,31 @@ import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 
-function CustomFieldTemplate({ id, classNames, label, required, children }) {
+function CustomFieldTemplate({ id, schema, label, required, children }) {
+  const { t } = useTranslation();
   return (
-    <VStack
-      className={classNames}
-      style={{ borderTopColor: "dividerColor", borderTopWidth: "1px" }}
-    >
-      <HStack style={{ justifyContent: "space-between" }}>
-        {id !== "root" && (
-          <HStack style={{ justifyContent: "space-between" }} width="100%">
-            <label
-              style={{
-                fontWeight: "bold",
-                color: "textGreyColor.400",
-                paddingBottom: "12px",
-              }}
-            >
-              {label}
-              {required ? "*" : null}
-            </label>
-
-            <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
-          </HStack>
+    <VStack borderTopWidth="1" borderTopColor="dividerColor">
+      {(!schema?.format || schema?.format !== "hidden") &&
+        (label || schema?.label) && (
+          <Box>
+            {(id !== "root" || schema?.label) && (
+              <HStack justifyContent="space-between" width="100%">
+                <label
+                  style={{
+                    fontWeight: "bold",
+                    color: "textGreyColor.400",
+                    paddingBottom: "12px",
+                  }}
+                >
+                  {t(label)}
+                  {required ? "*" : null}
+                </label>
+                {/* <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} /> */}
+              </HStack>
+            )}
+          </Box>
         )}
-      </HStack>
-      {children}
+      <Box>{children}</Box>
     </VStack>
   );
 }
@@ -79,9 +79,9 @@ export default function AdminHome({ footerLinks }) {
     setLoading(false);
   }, [filter]);
 
-  // React.useEffect(() => {
-  //   setFilter(urlData(["district", "facilitator", "block"]));
-  // }, []);
+  React.useEffect(() => {
+    setFilter({ ...filter, ...urlData(["district", "facilitator", "block"]) });
+  }, []);
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
@@ -143,16 +143,12 @@ export const Filter = ({ filter, setFilter }) => {
     setQueryParameters(data);
   };
 
-  // React.useEffect(() => {
-  //   setFilter(urlData(["district", "facilitator", "block"]));
-  // }, []);
-
   const schema = {
     type: "object",
     properties: {
       district: {
         type: "array",
-        title: t("DISTRICT"),
+        title: "DISTRICT",
         grid: 1,
         _hstack: {
           maxH: 130,
@@ -171,7 +167,7 @@ export const Filter = ({ filter, setFilter }) => {
       },
       block: {
         type: "array",
-        title: t("BLOCKS"),
+        title: "BLOCKS",
         grid: 1,
         _hstack: {
           maxH: 130,
@@ -179,12 +175,16 @@ export const Filter = ({ filter, setFilter }) => {
         },
         items: {
           type: "string",
-          enumNames: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
-          enum: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
+          enumNames:
+            getBlocksAll &&
+            getBlocksAll?.map((item, i) => {
+              return item?.block_name;
+            }),
+          enum:
+            getBlocksAll &&
+            getBlocksAll?.map((item, i) => {
+              return item?.block_name;
+            }),
         },
         uniqueItems: true,
       },
@@ -217,7 +217,9 @@ export const Filter = ({ filter, setFilter }) => {
         districts: filter?.district,
       });
     }
-    setGetBlocksAll(blockData);
+    if (Array.isArray(blockData)) {
+      setGetBlocksAll(blockData);
+    }
   }, [filter?.district]);
 
   React.useEffect(() => {

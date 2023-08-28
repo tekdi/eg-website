@@ -8,6 +8,7 @@ import {
   debounce,
   useWindowSize,
   AdminLayout as Layout,
+  urlData,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -124,7 +125,8 @@ const columns = (t, navigate) => [
   {
     name: t("ACTION"),
     selector: (row) =>
-      row?.program_beneficiaries?.status === "enrolled" && (
+      row?.program_beneficiaries?.status === "enrolled" &&
+      !(row?.is_duplicate === "yes" && row?.is_deactivated === null) && (
         <AdminTypo.Secondarybutton
           my="3"
           onPress={() => {
@@ -146,7 +148,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
 
-  const [filter, setFilter] = React.useState({ limit: 10, status: "enrolled" });
+  const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
 
   const [data, setData] = React.useState([]);
@@ -154,9 +156,10 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      filter
-    );
+    const result = await benificiaryRegistoryService.beneficiariesFilter({
+      ...filter,
+      status: "enrolled",
+    });
     setData(result.data?.data);
     setPaginationTotalRows(
       result?.data?.totalCount ? result?.data?.totalCount : 0
@@ -164,9 +167,9 @@ function EnrollmentVerificationList({ footerLinks }) {
     setLoading(false);
   }, [filter]);
 
-  // React.useEffect(() => {
-  //   setFilter(urlData(["district", "facilitator", "block"]));
-  // }, []);
+  React.useEffect(() => {
+    setFilter(urlData(["district", "facilitator", "block"]));
+  }, []);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -195,127 +198,127 @@ function EnrollmentVerificationList({ footerLinks }) {
             maxH={Height - refAppBar?.clientHeight}
             minH={Height - refAppBar?.clientHeight}
           >
-            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-              <VStack>
-                <HStack my="1" mb="3" justifyContent="space-between">
-                  <HStack justifyContent="space-between" alignItems="center">
-                    <IconByName
-                      isDisabled
-                      name="GraduationCap"
-                      _icon={{ size: "35" }}
-                    />
-                    <AdminTypo.H1 px="5">
-                      {t("ENROLLMENT_VERIFICATION")}
-                    </AdminTypo.H1>
-                    <Image
-                      source={{
-                        uri: "/box.svg",
-                      }}
-                      alt=""
-                      size={"28px"}
-                      resizeMode="contain"
-                    />
-                  </HStack>
-                  <Input
-                    size={"xs"}
-                    minH="49px"
-                    maxH="49px"
-                    InputLeftElement={
-                      <IconByName
-                        color="coolGray.500"
-                        name="SearchLineIcon"
-                        isDisabled
-                        pl="2"
-                      />
-                    }
-                    placeholder={t("SEARCH_BY_LEARNER_NAME")}
-                    variant="outline"
-                    onChange={(e) => {
-                      debounce(
-                        setFilter({
-                          ...filter,
-                          search: e.nativeEvent.text,
-                          page: 1,
-                        }),
-                        2000
-                      );
+            <VStack py={6} px={4} mb={5}>
+              <HStack my="1" mb="3" justifyContent="space-between">
+                <HStack justifyContent="space-between" alignItems="center">
+                  <IconByName
+                    isDisabled
+                    name="GraduationCap"
+                    _icon={{ size: "35" }}
+                  />
+                  <AdminTypo.H1 px="5">
+                    {t("ENROLLMENT_VERIFICATION")}
+                  </AdminTypo.H1>
+                  <Image
+                    source={{
+                      uri: "/box.svg",
                     }}
+                    alt=""
+                    size={"28px"}
+                    resizeMode="contain"
                   />
                 </HStack>
-                <ScrollView horizontal={true} mb="2">
-                  <HStack pb="2">
-                    <Text
-                      color={
-                        !filter?.enrollment_verification_status
-                          ? "blueText.400"
-                          : ""
-                      }
-                      bold={!filter?.enrollment_verification_status}
-                      cursor={"pointer"}
-                      mx={3}
-                      onPress={() => {
-                        const { enrollment_verification_status, ...newFilter } =
-                          filter;
-                        setFilter(newFilter);
-                      }}
-                    >
-                      {t("BENEFICIARY_ALL")}
-                      {!filter?.enrollment_verification_status &&
-                        `(${paginationTotalRows})`}
-                    </Text>
-                    {beneficiaryStatus
-                      ?.filter((e) => e?.value !== "verified")
-                      ?.map((item) => {
-                        return (
-                          <Text
-                            key={item}
-                            color={
-                              filter?.enrollment_verification_status ==
-                              t(item?.value)
-                                ? "blueText.400"
-                                : ""
-                            }
-                            bold={
-                              filter?.enrollment_verification_status ==
-                              t(item?.value)
-                            }
-                            cursor={"pointer"}
-                            mx={3}
-                            onPress={() => {
-                              setFilter({
-                                ...filter,
-                                enrollment_verification_status: item?.value,
-                                page: 1,
-                              });
-                            }}
-                          >
-                            {t(`${item?.title}_LIST`)}
-                            {filter?.enrollment_verification_status ==
-                              t(item?.value) && `(${paginationTotalRows})`}
-                          </Text>
-                        );
-                      })}
-                  </HStack>
-                </ScrollView>
-                <DataTable
-                  customStyles={tableCustomStyles}
-                  columns={[...columns(t, navigate)]}
-                  data={data}
-                  persistTableHead
-                  progressPending={loading}
-                  pagination
-                  paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-                  paginationServer
-                  paginationTotalRows={paginationTotalRows}
-                  onChangeRowsPerPage={(e) => {
-                    setFilter({ ...filter, limit: e });
-                  }}
-                  onChangePage={(e) => {
-                    setFilter({ ...filter, page: e });
+                <Input
+                  size={"xs"}
+                  minH="49px"
+                  maxH="49px"
+                  InputLeftElement={
+                    <IconByName
+                      color="coolGray.500"
+                      name="SearchLineIcon"
+                      isDisabled
+                      pl="2"
+                    />
+                  }
+                  placeholder={t("SEARCH_BY_LEARNER_NAME")}
+                  variant="outline"
+                  onChange={(e) => {
+                    debounce(
+                      setFilter({
+                        ...filter,
+                        search: e.nativeEvent.text,
+                        page: 1,
+                      }),
+                      2000
+                    );
                   }}
                 />
-              </VStack>
-            </Box>
+              </HStack>
+              <ScrollView horizontal={true} mb="2">
+                <HStack pb="2">
+                  <Text
+                    color={
+                      !filter?.enrollment_verification_status
+                        ? "blueText.400"
+                        : ""
+                    }
+                    bold={!filter?.enrollment_verification_status}
+                    cursor={"pointer"}
+                    mx={3}
+                    onPress={() => {
+                      const { enrollment_verification_status, ...newFilter } =
+                        filter;
+                      setFilter(newFilter);
+                    }}
+                  >
+                    {t("BENEFICIARY_ALL")}
+                    {!filter?.enrollment_verification_status &&
+                      `(${paginationTotalRows})`}
+                  </Text>
+                  {beneficiaryStatus
+                    ?.filter((e) => e?.value !== "verified")
+                    ?.map((item, key) => {
+                      return (
+                        <Text
+                          key={key}
+                          color={
+                            filter?.enrollment_verification_status ==
+                            t(item?.value)
+                              ? "blueText.400"
+                              : ""
+                          }
+                          bold={
+                            filter?.enrollment_verification_status ==
+                            t(item?.value)
+                          }
+                          cursor={"pointer"}
+                          mx={3}
+                          onPress={() => {
+                            const newFilter = {
+                              ...filter,
+                              enrollment_verification_status: item?.value,
+                              page: 1,
+                            };
+                            setFilter(newFilter);
+                            setQueryParameters(newFilter);
+                          }}
+                        >
+                          {t(`${item?.title}_LIST`)}
+                          {filter?.enrollment_verification_status ==
+                            t(item?.value) && `(${paginationTotalRows})`}
+                        </Text>
+                      );
+                    })}
+                </HStack>
+              </ScrollView>
+              <DataTable
+                customStyles={tableCustomStyles}
+                columns={[...columns(t, navigate)]}
+                data={data}
+                persistTableHead
+                progressPending={loading}
+                pagination
+                paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+                paginationServer
+                paginationTotalRows={paginationTotalRows}
+                onChangeRowsPerPage={(e) => {
+                  setFilter({ ...filter, limit: e });
+                }}
+                onChangePage={(e) => {
+                  setFilter({ ...filter, page: e });
+                }}
+              />
+            </VStack>
           </ScrollView>
         </Box>
       </HStack>

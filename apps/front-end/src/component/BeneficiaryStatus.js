@@ -25,7 +25,7 @@ export default function Chip({
       {...props}
     >
       <Text>
-        {children ? children : label}
+        {children || label}
         {is_duplicate === "yes" && is_deactivated === null && (
           <FrontEndTypo.H3>
             {`${"-"}(${t("BENEFICIARY_STATUS_DUPLICATED")})`}

@@ -89,9 +89,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <IconByName size="sm" name="ArrowRightSLineIcon" isDisabled />
             }
             data={[
-              <AdminTypo.H1>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>,
-              <AdminTypo.H2>{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
-              <AdminTypo.H3>{`${data?.id}`}</AdminTypo.H3>,
+              <AdminTypo.H1 key="1">
+                {t("ENROLLMENT_VERIFICATION")}
+              </AdminTypo.H1>,
+              <AdminTypo.H2 key="2">{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
+              <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
             ]}
           />
           {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
@@ -103,6 +105,13 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <AdminTypo.H1>
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
               </AdminTypo.H1>
+            </HStack>
+          </Alert>
+        ) : data?.is_duplicate === "yes" && data?.is_deactivated === null ? (
+          <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <AdminTypo.H1>{t("RESOLVE_DUPLICATION")}</AdminTypo.H1>
             </HStack>
           </Alert>
         ) : (
