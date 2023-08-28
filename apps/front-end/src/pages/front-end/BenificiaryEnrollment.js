@@ -1,11 +1,12 @@
 import React from "react";
-import { VStack } from "native-base";
+import { Alert, HStack, VStack } from "native-base";
 import {
   ItemComponent,
   benificiaryRegistoryService,
   Layout,
   enumRegistryService,
   GetEnumValue,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -50,95 +51,170 @@ export default function BenificiaryEnrollment() {
         _box: { bg: "white" },
       }}
     >
-      <VStack p="5" space={4}>
-        <EnrollmentMessage
-          status={benificiary?.program_beneficiaries?.status}
-          enrollment_status={
-            benificiary?.program_beneficiaries?.enrollment_status
-          }
-        />
-        <ItemComponent
-          title={t("ENROLLMENT_DETAILS")}
-          schema={schema1?.properties["edit_enrollement"]}
-          notShow={["subjects"]}
-          item={{
-            ...benificiary?.program_beneficiaries,
-            enrollment_date: benificiary?.program_beneficiaries?.enrollment_date
-              ? moment(
-                  benificiary?.program_beneficiaries?.enrollment_date
-                ).format("DD-MM-YYYY")
-              : "-",
-            enrollment_status: benificiary?.program_beneficiaries
-              ?.enrollment_status ? (
-              <GetEnumValue
-                enumType="ENROLLEMENT_STATUS"
-                enumOptionValue={
-                  benificiary?.program_beneficiaries?.enrollment_status
-                }
-                enumApiData={enumOptions}
-                t={t}
-              />
-            ) : (
-              "-"
-            ),
-            enrolled_for_board: benificiary?.program_beneficiaries
-              ?.enrolled_for_board ? (
-              <GetEnumValue
-                t={t}
-                enumType={"ENROLLED_FOR_BOARD"}
-                enumOptionValue={
-                  benificiary?.program_beneficiaries?.enrolled_for_board
-                }
-                enumApiData={enumOptions}
-              />
-            ) : (
-              "-"
-            ),
-          }}
-          {...(["not_enrolled"].includes(
-            benificiary?.program_beneficiaries?.enrollment_status
-          )
-            ? {
-                onlyField: ["enrollment_status"],
-              }
-            : ["enrollment_awaited", "enrollment_rejected"].includes(
-                benificiary?.program_beneficiaries?.enrollment_status
-              )
-            ? {
-                onlyField: ["enrollment_status", "enrolled_for_board"],
-              }
-            : {})}
-          onEdit={(e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)}
-        />
-        {![
-          "not_enrolled",
-          "enrollment_awaited",
-          "enrollment_rejected",
-        ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
+      {benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
+        <VStack p="5" space={4}>
+          <EnrollmentMessage
+            status={benificiary?.program_beneficiaries?.status}
+            enrollment_status={
+              benificiary?.program_beneficiaries?.enrollment_status
+            }
+          />
           <ItemComponent
-            title={t("ENROLLMENT_RECEIPT")}
-            schema={schema1?.properties["edit_enrollement_details"]}
+            title={t("ENROLLMENT_DETAILS")}
+            schema={schema1?.properties["edit_zenrollement"]}
+            notShow={["subjects"]}
             item={{
               ...benificiary?.program_beneficiaries,
-              enrollment_dob: benificiary?.program_beneficiaries?.enrollment_dob
+              enrollment_date: benificiary?.program_beneficiaries
+                ?.enrollment_date
                 ? moment(
-                    benificiary?.program_beneficiaries?.enrollment_dob
+                    benificiary?.program_beneficiaries?.enrollment_date
                   ).format("DD-MM-YYYY")
                 : "-",
-              enrollment_status: (
+              enrollment_status: benificiary?.program_beneficiaries
+                ?.enrollment_status ? (
                 <GetEnumValue
-                  enumType="BENEFICIARY_STATUS"
+                  enumType="ENROLLEMENT_STATUS"
                   enumOptionValue={
                     benificiary?.program_beneficiaries?.enrollment_status
                   }
                   enumApiData={enumOptions}
                   t={t}
                 />
+              ) : (
+                "-"
+              ),
+              enrolled_for_board: benificiary?.program_beneficiaries
+                ?.enrolled_for_board ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"ENROLLED_FOR_BOARD"}
+                  enumOptionValue={
+                    benificiary?.program_beneficiaries?.enrolled_for_board
+                  }
+                  enumApiData={enumOptions}
+                />
+              ) : (
+                "-"
               ),
             }}
+            {...(["not_enrolled"].includes(
+              benificiary?.program_beneficiaries?.enrollment_status
+            )
+              ? {
+                  onlyField: ["enrollment_status"],
+                }
+              : ["enrollment_awaited", "enrollment_rejected"].includes(
+                  benificiary?.program_beneficiaries?.enrollment_status
+                )
+              ? {
+                  onlyField: ["enrollment_status", "enrolled_for_board"],
+                }
+              : {})}
+            onEdit={(e) =>
+              navigate(`/beneficiary/edit/${id}/enrollment-details`)
+            }
           />
-        )}
-      </VStack>
+          {![
+            "not_enrolled",
+            "enrollment_awaited",
+            "enrollment_rejected",
+          ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
+            <ItemComponent
+              title={t("ENROLLMENT_DETAILS")}
+              schema={schema1?.properties["edit_enrollement"]}
+              notShow={["subjects"]}
+              item={{
+                ...benificiary?.program_beneficiaries,
+                enrollment_date: benificiary?.program_beneficiaries
+                  ?.enrollment_date
+                  ? moment(
+                      benificiary?.program_beneficiaries?.enrollment_date
+                    ).format("DD-MM-YYYY")
+                  : "-",
+                enrollment_status: benificiary?.program_beneficiaries
+                  ?.enrollment_status ? (
+                  <GetEnumValue
+                    enumType="ENROLLEMENT_STATUS"
+                    enumOptionValue={
+                      benificiary?.program_beneficiaries?.enrollment_status
+                    }
+                    enumApiData={enumOptions}
+                    t={t}
+                  />
+                ) : (
+                  "-"
+                ),
+                enrolled_for_board: benificiary?.program_beneficiaries
+                  ?.enrolled_for_board ? (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"ENROLLED_FOR_BOARD"}
+                    enumOptionValue={
+                      benificiary?.program_beneficiaries?.enrolled_for_board
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ) : (
+                  "-"
+                ),
+              }}
+              {...(["not_enrolled"].includes(
+                benificiary?.program_beneficiaries?.enrollment_status
+              )
+                ? {
+                    onlyField: ["enrollment_status"],
+                  }
+                : ["applied_but_pending", "enrollment_rejected"].includes(
+                    benificiary?.program_beneficiaries?.enrollment_status
+                  )
+                ? {
+                    onlyField: ["enrollment_status", "enrolled_for_board"],
+                  }
+                : {})}
+              onEdit={(e) =>
+                navigate(`/beneficiary/edit/${id}/enrollment-details`)
+              }
+            />
+          )}
+          {![
+            "not_enrolled",
+            "applied_but_pending",
+            "enrollment_rejected",
+          ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
+            <ItemComponent
+              title={t("ENROLLMENT_RECEIPT")}
+              schema={schema1?.properties["edit_enrollement_details"]}
+              item={{
+                ...benificiary?.program_beneficiaries,
+                enrollment_dob: benificiary?.program_beneficiaries
+                  ?.enrollment_dob
+                  ? moment(
+                      benificiary?.program_beneficiaries?.enrollment_dob
+                    ).format("DD-MM-YYYY")
+                  : "-",
+                enrollment_status: (
+                  <GetEnumValue
+                    enumType="BENEFICIARY_STATUS"
+                    enumOptionValue={
+                      benificiary?.program_beneficiaries?.enrollment_status
+                    }
+                    enumApiData={enumOptions}
+                    t={t}
+                  />
+                ),
+              }}
+            />
+          )}
+        </VStack>
+      )}
     </Layout>
   );
 }

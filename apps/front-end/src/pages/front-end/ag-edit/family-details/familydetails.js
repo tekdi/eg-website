@@ -405,58 +405,67 @@ export default function agFormEdit({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      <Box py={6} px={4} mb={5}>
-        {/* Box */}
-        {alert ? (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        ) : (
-          <React.Fragment />
-        )}
-        {page && page !== "" ? (
-          <Form
-            key={lang + addBtn}
-            ref={formRef}
-            widgets={{ RadioBtn, CustomR }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-            }}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              validator,
-              schema: schema ? schema : {},
-              uiSchema,
-              formData,
-              customValidate,
-              onChange,
-              onError,
-              onSubmit,
-              transformErrors,
-            }}
-          >
-            <FrontEndTypo.Primarybutton
-              mt="5"
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
+      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {/* Box */}
+          {alert ? (
+            <Alert status="warning" alignItems={"start"} mb="3">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{alert}</BodyMedium>
+              </HStack>
+            </Alert>
+          ) : (
+            <React.Fragment />
+          )}
+          {page && page !== "" ? (
+            <Form
+              key={lang + addBtn}
+              ref={formRef}
+              widgets={{ RadioBtn, CustomR }}
+              templates={{
+                FieldTemplate,
+                ArrayFieldTitleTemplate,
+                ObjectFieldTemplate,
+                TitleFieldTemplate,
+                DescriptionFieldTemplate,
+                BaseInputTemplate,
+              }}
+              extraErrors={errors}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                validator,
+                schema: schema ? schema : {},
+                uiSchema,
+                formData,
+                customValidate,
+                onChange,
+                onError,
+                onSubmit,
+                transformErrors,
+              }}
             >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </FrontEndTypo.Primarybutton>
-          </Form>
-        ) : (
-          <React.Fragment />
-        )}
-      </Box>
+              <FrontEndTypo.Primarybutton
+                mt="5"
+                type="submit"
+                onPress={() => formRef?.current?.submit()}
+              >
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            </Form>
+          ) : (
+            <React.Fragment />
+          )}
+        </Box>
+      )}
       <Modal
         isOpen={credentials}
         onClose={() => setCredentials(false)}

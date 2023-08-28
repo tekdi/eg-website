@@ -394,7 +394,6 @@ export default function BenificiaryProfileView(props) {
                         {t("AADHAAR_DETAILS")}
                       </FrontEndTypo.H3>
                     </HStack>
-
                     {benificiary?.program_beneficiaries?.status !== "dropout" &&
                       benificiary?.program_beneficiaries?.status !==
                         "rejected" && (
@@ -436,9 +435,12 @@ export default function BenificiaryProfileView(props) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
-                {!["dropout", "rejected", "ready_to_enroll"].includes(
-                  benificiary?.program_beneficiaries?.status
-                ) && (
+                {![
+                  "dropout",
+                  "rejected",
+                  "ready_to_enroll",
+                  "enrolled_ip_verified",
+                ].includes(benificiary?.program_beneficiaries?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     onPress={(e) => {
@@ -507,8 +509,9 @@ export default function BenificiaryProfileView(props) {
                   </FrontEndTypo.H3>
 
                   {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !== "rejected" &&
                     benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
+                      "enrolled_ip_verified" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
