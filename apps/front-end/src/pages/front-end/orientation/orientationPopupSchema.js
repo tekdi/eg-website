@@ -15,7 +15,7 @@ export default {
   ],
   properties: {
     type: {
-      icons: "VidiconLine",
+      icons: "VidiconLineIcon",
       type: "string",
       label: "EVENT_TYPE",
       format: "select",

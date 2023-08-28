@@ -20,14 +20,13 @@ import {
   t,
   ImageView,
   BodyMedium,
-  getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
+
 import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
-import EnrollmentMessage from "component/EnrollmentMessage";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -144,6 +143,7 @@ export default function BenificiaryProfileView(props) {
       case "registered_in_camp":
       case "pragati_syc":
       case "activate":
+      case "enrolled_ip_verified":
       case null:
         return (
           <FrontEndTypo.Secondarybutton
@@ -184,6 +184,7 @@ export default function BenificiaryProfileView(props) {
       case "registered_in_camp":
       case "pragati_syc":
       case "activate":
+      case "enrolled_ip_verified":
       case null:
         return (
           <FrontEndTypo.Secondarybutton
@@ -236,15 +237,31 @@ export default function BenificiaryProfileView(props) {
                   _icon={{ size: "190px" }}
                 />
               )}
-              <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                {benificiary?.first_name}
-                {benificiary?.middle_name &&
-                  benificiary?.middle_name !== "null" &&
-                  ` ${benificiary.middle_name}`}
-                {benificiary?.last_name &&
-                  benificiary?.last_name !== "null" &&
-                  ` ${benificiary?.last_name}`}
-              </FrontEndTypo.H2>
+
+              {benificiary?.program_beneficiaries?.status !==
+              "enrolled_ip_verified" ? (
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {benificiary?.first_name}
+                  {benificiary?.middle_name &&
+                    benificiary?.middle_name !== "null" &&
+                    ` ${benificiary.middle_name}`}
+                  {benificiary?.last_name &&
+                    benificiary?.last_name !== "null" &&
+                    ` ${benificiary?.last_name}`}
+                </FrontEndTypo.H2>
+              ) : (
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {benificiary?.program_beneficiaries?.enrollment_first_name}
+                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
+                    benificiary?.program_beneficiaries
+                      ?.enrollment_middle_name !== "null" &&
+                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
+                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
+                    benificiary?.program_beneficiaries?.enrollment_last_name !==
+                      "null" &&
+                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                </FrontEndTypo.H2>
+              )}
 
               <ChipStatus
                 status={benificiary?.program_beneficiaries?.status}
@@ -377,7 +394,6 @@ export default function BenificiaryProfileView(props) {
                         {t("AADHAAR_DETAILS")}
                       </FrontEndTypo.H3>
                     </HStack>
-
                     {benificiary?.program_beneficiaries?.status !== "dropout" &&
                       benificiary?.program_beneficiaries?.status !==
                         "rejected" && (
@@ -410,13 +426,21 @@ export default function BenificiaryProfileView(props) {
                 />
               }
             >
-              <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="0"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
-                {!["dropout", "rejected", "ready_to_enroll"].includes(
-                  benificiary?.program_beneficiaries?.status
-                ) && (
+                {![
+                  "dropout",
+                  "rejected",
+                  "ready_to_enroll",
+                  "enrolled_ip_verified",
+                ].includes(benificiary?.program_beneficiaries?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     onPress={(e) => {
@@ -426,7 +450,12 @@ export default function BenificiaryProfileView(props) {
                   />
                 )}
               </HStack>
-              <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                pr="0"
+                p="3"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("EDUCATION_DETAILS")}
                 </FrontEndTypo.H3>
@@ -469,33 +498,36 @@ export default function BenificiaryProfileView(props) {
                     )}
                 </HStack>
               ) : (
-                <VStack p="3">
-                  <HStack justifyContent="space-between" alignItems="Center">
-                    <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                      {t("ENROLLMENT_DETAILS")}
-                    </FrontEndTypo.H3>
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="Center"
+                  p="3"
+                  pr="0"
+                >
+                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                    {t("ENROLLMENT_DETAILS")}
+                  </FrontEndTypo.H3>
 
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/enrollmentdetails`);
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      )}
-                  </HStack>
-                  <EnrollmentMessage
-                    status={benificiary?.program_beneficiaries?.status}
-                    enrollment_status={
-                      benificiary?.program_beneficiaries?.enrollment_status
-                    }
-                  />
-                </VStack>
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !== "rejected" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "enrolled_ip_verified" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/enrollmentdetails`);
+                        }}
+                        color="textMaroonColor.400"
+                      />
+                    )}
+                </HStack>
               )}
-              <HStack justifyContent="space-between" alignItems="Center" p="3">
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="1"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("JOURNEY_IN_PROJECT_PRAGATI")}
                 </FrontEndTypo.H3>

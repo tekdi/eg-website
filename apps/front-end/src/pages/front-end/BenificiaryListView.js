@@ -14,8 +14,47 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
+
+const LearnerMessage = ({ program_beneficiaries }) => {
+  const [reason, setReason] = React.useState({});
+  React.useEffect(() => {
+    if (
+      program_beneficiaries?.enrollment_verification_status ===
+      "change_required"
+    ) {
+      setReason(
+        JSON.parse(program_beneficiaries?.enrollment_verification_reason)
+      );
+    }
+  }, []);
+
+  const getTitle = () => {
+    if (
+      reason?.learner_enrollment_details === "no" &&
+      reason?.enrollment_details === "no"
+    ) {
+      return t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH");
+    } else if (reason?.learner_enrollment_details === "no") {
+      return t("CORRECT_ENROLLMENT_DETAILS");
+    } else if (reason?.enrollment_details === "no") {
+      return t("CORRECT_ENROLLMENT_LEARNER_DETAILS");
+    } else {
+      return t("FOLLOW_UP_WITH_IP");
+    }
+  };
+
+  return (
+    <HStack color="blueText.450" alignItems="center">
+      <FrontEndTypo.H4 color="blueText.450" underline>
+        {getTitle()}
+      </FrontEndTypo.H4>
+    </HStack>
+  );
+};
+
 const List = ({ data }) => {
   const navigate = useNavigate();
+
   return (
     <VStack space="4" p="4" alignContent="center">
       {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
@@ -62,15 +101,30 @@ const List = ({ data }) => {
                     overflow="hidden"
                     textOverflow="ellipsis"
                   >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.first_name}
-                      {item?.middle_name &&
-                        item?.middle_name !== "null" &&
-                        ` ${item.middle_name}`}
-                      {item?.last_name &&
-                        item?.last_name !== "null" &&
-                        ` ${item.last_name}`}
-                    </FrontEndTypo.H3>
+                    {item?.program_beneficiaries?.status ===
+                    "enrolled_ip_verified" ? (
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                        {item?.program_beneficiaries?.enrollment_first_name}
+                        {item?.program_beneficiaries?.enrollment_middle_name &&
+                          item?.program_beneficiaries
+                            ?.enrollment_middle_name !== "null" &&
+                          ` ${item?.program_beneficiaries?.enrollment_middle_name}`}
+                        {item?.program_beneficiaries?.enrollment_last_name &&
+                          item?.program_beneficiaries?.enrollment_last_name !==
+                            "null" &&
+                          ` ${item?.program_beneficiaries?.enrollment_last_name}`}
+                      </FrontEndTypo.H3>
+                    ) : (
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                        {item?.first_name}
+                        {item?.middle_name &&
+                          item?.middle_name !== "null" &&
+                          ` ${item.middle_name}`}
+                        {item?.last_name &&
+                          item?.last_name !== "null" &&
+                          ` ${item.last_name}`}
+                      </FrontEndTypo.H3>
+                    )}
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
                     </FrontEndTypo.H5>
@@ -131,11 +185,9 @@ const List = ({ data }) => {
               )}
 
               {item?.program_beneficiaries?.status === "enrolled" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("FOLLOW_UP_WITH_IP")}
-                  </FrontEndTypo.H4>
-                </HStack>
+                <LearnerMessage
+                  program_beneficiaries={item?.program_beneficiaries}
+                />
               )}
 
               {item?.program_beneficiaries?.status === "dropout" && (

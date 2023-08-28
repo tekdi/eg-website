@@ -809,7 +809,7 @@ export default function Attendence({ footerLinks }) {
                         >
                           <IconByName
                             isDisabled
-                            name="VidiconLine"
+                            name="VidiconLineIcon"
                             color="textGreyColor.800"
                             _icon={{ size: "20" }}
                             px="2"

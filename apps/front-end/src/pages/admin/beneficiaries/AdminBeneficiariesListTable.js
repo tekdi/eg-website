@@ -23,14 +23,15 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Chip from "component/Chip";
 
-const columns = (t) => [
+const columns = (t, navigate) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
   },
   {
-    name: t("NAME"),
+    name: t("LEARNERS_NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         {row?.profile_photo_1?.name ? (
@@ -50,22 +51,51 @@ const columns = (t) => [
             _icon={{ size: "35" }}
           />
         )}
-        <AdminTypo.H5 bold>
-          {row?.first_name + " "} {row?.last_name ? row?.last_name : ""}
-        </AdminTypo.H5>
+        {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+          <AdminTypo.H5 bold>
+            {row?.program_beneficiaries?.enrollment_first_name + " "}
+            {row?.program_beneficiaries?.enrollment_last_name
+              ? row?.program_beneficiaries?.enrollment_last_name
+              : ""}
+          </AdminTypo.H5>
+        ) : (
+          <AdminTypo.H5 bold>
+            {row?.first_name + " "}
+            {row?.last_name ? row?.last_name : ""}
+          </AdminTypo.H5>
+        )}
       </HStack>
     ),
-
     attr: "name",
     wrap: true,
+  },
+  {
+    name: t("LEARNERS_AGE"),
+    selector: (row) => {
+      if (row?.program_beneficiaries?.status === "enrolled_ip_verified") {
+        if (row?.program_beneficiaries_enrollment_dob) {
+          return moment().diff(
+            row?.program_beneficiaries.enrollment_dob,
+            "years"
+          );
+        } else {
+          return "-";
+        }
+      } else {
+        if (row?.dob) {
+          return moment().diff(row?.dob, "years");
+        } else {
+          return "-";
+        }
+      }
+    },
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
   },
   {
-    name: t("PRERAK"),
-
+    name: t("PRERAK_NAME"),
     selector: (row) => {
       const {
         program_beneficiaries: {
@@ -75,11 +105,6 @@ const columns = (t) => [
       return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
     },
     wrap: true,
-  },
-  {
-    name: t("AGE"),
-
-    selector: (row) => (row?.dob ? moment().diff(row?.dob, "years") : "-"),
   },
   {
     name: t("STATUS"),
@@ -136,9 +161,9 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
 
   return (
     <VStack>
-      <HStack my="1" mb="3" justifyContent="space-between">
+      <HStack my="1" mb="3" space={"4"} flexWrap={"wrap"}>
         <HStack justifyContent="space-between" alignItems="center">
-          <IconByName name="GroupLineIcon" _icon={{ size: "30px" }} />
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
           <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
@@ -170,38 +195,46 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             );
           }}
         />
-        <HStack
-          space={6}
-          alignItems={"center"}
-          justifyContent={"space-between"}
+        <Menu
+          w="190"
+          placement="bottom right"
+          trigger={(triggerProps) => dropDown(triggerProps, t)}
         >
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps, t)}
-          >
-            <Menu.Item onPress={(item) => setMenu("export_learner")}>
-              {t("LEARNERS_LIST")}
-            </Menu.Item>
-            <Menu.Item onPress={(item) => setMenu("export_subject")}>
-              {t("LEARNERS_SUBJECT_CSV")}
-            </Menu.Item>
-          </Menu>
-          <AdminTypo.Dangerbutton
-            onPress={() => {
-              navigate("/admin/learners/duplicates");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("RESOLVE_DUPLICATION")}
-          </AdminTypo.Dangerbutton>
-        </HStack>
+          <Menu.Item onPress={(item) => setMenu("export_learner")}>
+            {t("LEARNERS_LIST")}
+          </Menu.Item>
+          <Menu.Item onPress={(item) => setMenu("export_subject")}>
+            {t("LEARNERS_SUBJECT_CSV")}
+          </Menu.Item>
+        </Menu>
+        <AdminTypo.Successbutton
+          onPress={() => {
+            navigate("/admin/learners/enrollmentVerificationList");
+          }}
+          rightIcon={
+            <IconByName
+              color="textGreyColor.100"
+              size="15px"
+              name="ShareLineIcon"
+            />
+          }
+        >
+          {t("ENROLLMENT_VERIFICATION")}
+        </AdminTypo.Successbutton>
+        <AdminTypo.Dangerbutton
+          onPress={() => {
+            navigate("/admin/learners/duplicates");
+          }}
+          rightIcon={
+            <IconByName
+              color="textGreyColor.100"
+              size="15px"
+              name="ShareLineIcon"
+            />
+          }
+        >
+          {t("RESOLVE_DUPLICATION")}
+        </AdminTypo.Dangerbutton>
       </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
@@ -215,14 +248,19 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
               setFilter(newFilter);
             }}
           >
-            {t("BENEFICIARY_ALL")}
-            {!filter?.status && `(${paginationTotalRows})`}
+            <Chip>
+              <HStack space={1}>
+                {t("BENEFICIARY_ALL")}
+                {!filter?.status && `(${paginationTotalRows})`}
+              </HStack>
+            </Chip>
           </Text>
           {beneficiaryStatus?.map((item) => {
             return (
               <Text
                 key={item}
-                color={filter?.status == t(item?.value) ? "blueText.400" : ""}
+                borderWidth={filter?.status == t(item?.value) ? "1" : "0"}
+                rounded={filter?.status == t(item?.value) ? "xl" : "0"}
                 bold={filter?.status == t(item?.value)}
                 cursor={"pointer"}
                 mx={3}
@@ -230,8 +268,13 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
                   setFilter({ ...filter, status: item?.value, page: 1 });
                 }}
               >
-                {t(item?.title)}
-                {filter?.status == t(item?.value) && `(${paginationTotalRows})`}
+                <ChipStatus
+                  sufix={
+                    filter?.status == t(item?.value) &&
+                    `(${paginationTotalRows})`
+                  }
+                  status={item?.value}
+                />
               </Text>
             );
           })}
@@ -239,7 +282,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={columns(t)}
+        columns={[...columns(t, navigate)]}
         data={data}
         persistTableHead
         progressPending={loading}

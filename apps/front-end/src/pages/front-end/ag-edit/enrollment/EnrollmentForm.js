@@ -64,7 +64,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       };
       break;
 
-    case "applied_but_pending":
+    case "enrollment_awaited":
     case "enrollment_rejected":
       const { enrolled_for_board, subjects } = constantSchema?.properties;
       const required = constantSchema?.required.filter(

@@ -111,7 +111,7 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
             ) : (
               <IconByName
                 color="gray.500"
-                name="FileTextLine"
+                name="FileTextLineIcon"
                 _icon={{ size: "150" }}
                 isDisabled
               />

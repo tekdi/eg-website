@@ -27,6 +27,14 @@ const AdminBeneficiariesList = React.lazy(() =>
   import("pages/admin/beneficiaries/AdminBeneficiariesList")
 );
 
+const EnrollmentVerificationList = React.lazy(() =>
+  import("pages/admin/beneficiaries/enrollment/EnrollmentVerificationList")
+);
+
+const EnrollmentReceiptView = React.lazy(() =>
+  import("pages/admin/beneficiaries/EnrollmentReceiptView")
+);
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
@@ -36,6 +44,14 @@ export default [
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
   { path: "/admin/learners", component: AdminBeneficiariesList },
+  {
+    path: "/admin/learners/enrollmentVerificationList",
+    component: EnrollmentVerificationList,
+  },
+  {
+    path: "/admin/learners/enrollmentReceipt/:id",
+    component: EnrollmentReceiptView,
+  },
   {
     path: "/admin/learners/duplicates",
     component: AdminBeneficiariesDuplicatesList,
