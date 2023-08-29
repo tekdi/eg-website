@@ -10,7 +10,7 @@ import moment from "moment";
 import { HStack, VStack, Text, ScrollView } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
+
 import { useTranslation } from "react-i18next";
 
 const columns = (t) => [
@@ -113,7 +113,7 @@ const columns = (t) => [
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
-  const navigate = useNavigate();
+
   const { t } = useTranslation();
 
   React.useEffect(async () => {
