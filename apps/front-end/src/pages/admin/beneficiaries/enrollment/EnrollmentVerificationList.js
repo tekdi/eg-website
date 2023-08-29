@@ -68,7 +68,6 @@ const columns = (t, navigate) => [
         )}
       </HStack>
     ),
-    attr: "name",
     wrap: true,
   },
   {
@@ -102,7 +101,7 @@ const columns = (t, navigate) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
+      return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
   },
@@ -116,8 +115,6 @@ const columns = (t, navigate) => [
         status={row?.program_beneficiaries?.status}
       />
     ),
-
-    attr: "email",
     wrap: true,
   },
   {

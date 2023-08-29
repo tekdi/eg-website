@@ -90,7 +90,7 @@ const columns = (t) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
+      return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
   },
