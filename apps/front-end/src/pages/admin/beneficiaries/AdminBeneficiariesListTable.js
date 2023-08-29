@@ -5,20 +5,10 @@ import {
   AdminTypo,
   enumRegistryService,
   tableCustomStyles,
-  debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import {
-  HStack,
-  VStack,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-  Menu,
-  Pressable,
-} from "native-base";
+import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -121,16 +111,6 @@ const columns = (t, navigate) => [
   },
 ];
 
-const dropDown = (triggerProps, t) => {
-  return (
-    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack space={4}>
-        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
-        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
-      </HStack>
-    </Pressable>
-  );
-};
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
@@ -160,81 +140,6 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
 
   return (
     <VStack>
-      <HStack my="1" mb="3" space={"4"} flexWrap={"wrap"}>
-        <HStack justifyContent="space-between" alignItems="center">
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
-        </HStack>
-        <Input
-          size={"xs"}
-          minH="49px"
-          maxH="49px"
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-            />
-          }
-          placeholder={t("SEARCH_BY_LEARNER_NAME")}
-          variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              2000
-            );
-          }}
-        />
-        <Menu
-          w="190"
-          placement="bottom right"
-          trigger={(triggerProps) => dropDown(triggerProps, t)}
-        >
-          <Menu.Item onPress={(item) => setMenu("export_learner")}>
-            {t("LEARNERS_LIST")}
-          </Menu.Item>
-          <Menu.Item onPress={(item) => setMenu("export_subject")}>
-            {t("LEARNERS_SUBJECT_CSV")}
-          </Menu.Item>
-        </Menu>
-        <AdminTypo.Successbutton
-          onPress={() => {
-            navigate("/admin/learners/enrollmentVerificationList");
-          }}
-          rightIcon={
-            <IconByName
-              color="textGreyColor.100"
-              size="15px"
-              name="ShareLineIcon"
-            />
-          }
-        >
-          {t("ENROLLMENT_VERIFICATION")}
-        </AdminTypo.Successbutton>
-        <AdminTypo.Dangerbutton
-          onPress={() => {
-            navigate("/admin/learners/duplicates");
-          }}
-          rightIcon={
-            <IconByName
-              color="textGreyColor.100"
-              size="15px"
-              name="ShareLineIcon"
-            />
-          }
-        >
-          {t("RESOLVE_DUPLICATION")}
-        </AdminTypo.Dangerbutton>
-      </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
           <Text

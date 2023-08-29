@@ -180,6 +180,45 @@ function EnrollmentVerificationList({ footerLinks }) {
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
     >
+      <HStack p="4" my="1" mb="3" justifyContent="space-between">
+        <HStack justifyContent="space-between" alignItems="center">
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
+          <AdminTypo.H1 px="5">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
+          InputLeftElement={
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
+          }
+          placeholder={t("SEARCH_BY_LEARNER_NAME")}
+          variant="outline"
+          onChange={(e) => {
+            debounce(
+              setFilter({
+                ...filter,
+                search: e.nativeEvent.text,
+                page: 1,
+              }),
+              2000
+            );
+          }}
+        />
+      </HStack>
       <HStack>
         <Box
           flex={[2, 2, 1]}
@@ -201,51 +240,6 @@ function EnrollmentVerificationList({ footerLinks }) {
             minH={Height - refAppBar?.clientHeight}
           >
             <VStack py={6} px={4} mb={5}>
-              <HStack my="1" mb="3" justifyContent="space-between">
-                <HStack justifyContent="space-between" alignItems="center">
-                  <IconByName
-                    isDisabled
-                    name="GraduationCap"
-                    _icon={{ size: "35" }}
-                  />
-                  <AdminTypo.H1 px="5">
-                    {t("ENROLLMENT_VERIFICATION")}
-                  </AdminTypo.H1>
-                  <Image
-                    source={{
-                      uri: "/box.svg",
-                    }}
-                    alt=""
-                    size={"28px"}
-                    resizeMode="contain"
-                  />
-                </HStack>
-                <Input
-                  size={"xs"}
-                  minH="49px"
-                  maxH="49px"
-                  InputLeftElement={
-                    <IconByName
-                      color="coolGray.500"
-                      name="SearchLineIcon"
-                      isDisabled
-                      pl="2"
-                    />
-                  }
-                  placeholder={t("SEARCH_BY_LEARNER_NAME")}
-                  variant="outline"
-                  onChange={(e) => {
-                    debounce(
-                      setFilter({
-                        ...filter,
-                        search: e.nativeEvent.text,
-                        page: 1,
-                      }),
-                      2000
-                    );
-                  }}
-                />
-              </HStack>
               <ScrollView horizontal={true} mb="2">
                 <HStack pb="2">
                   <Text
