@@ -250,9 +250,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         flexWrap="wrap"
         gridGap="2"
       >
-        <HStack justifyContent="space-between" alignItems="center">
-          <IconByName name="GroupLineIcon" size="md" />
-          <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
+        <HStack
+          justifyContent={"space-between"}
+          space={"4"}
+          alignItems="center"
+        >
+          <HStack justifyContent="space-between" alignItems="center">
+            <IconByName name="GroupLineIcon" size="md" />
+            <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
+          </HStack>
           <Image
             source={{
               uri: "/box.svg",
