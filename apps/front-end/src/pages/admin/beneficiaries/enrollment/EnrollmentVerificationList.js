@@ -9,6 +9,7 @@ import {
   useWindowSize,
   AdminLayout as Layout,
   urlData,
+  setQueryParameters,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -173,6 +174,12 @@ function EnrollmentVerificationList({ footerLinks }) {
     setBeneficiaryStatus(result?.data?.ENROLLEMENT_VERIFICATION_STATUS);
   }, []);
 
+  const setFilterObject = (data) => {
+    setFilter(data);
+    setQueryParameters(data);
+    return data;
+  };
+
   return (
     <Layout
       w={Width}
@@ -208,7 +215,7 @@ function EnrollmentVerificationList({ footerLinks }) {
           variant="outline"
           onChange={(e) => {
             debounce(
-              setFilter({
+              setFilterObject({
                 ...filter,
                 search: e.nativeEvent.text,
                 page: 1,
@@ -293,8 +300,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                               enrollment_verification_status: item?.value,
                               page: 1,
                             };
-                            setFilter(newFilter);
-                            setQueryParameters(newFilter);
+                            setFilterObject(newFilter);
                           }}
                         >
                           {t(`${item?.title}_LIST`)}
@@ -315,10 +321,10 @@ function EnrollmentVerificationList({ footerLinks }) {
                 paginationServer
                 paginationTotalRows={paginationTotalRows}
                 onChangeRowsPerPage={(e) => {
-                  setFilter({ ...filter, limit: e, page: 1 });
+                  setFilterObject({ ...filter, limit: e, page: 1 });
                 }}
                 onChangePage={(e) => {
-                  setFilter({ ...filter, page: e });
+                  setFilterObject({ ...filter, page: e });
                 }}
               />
             </VStack>
