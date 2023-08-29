@@ -68,16 +68,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setfacilitaorStatus(result);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
+    setLoading(false);
   }, []);
 
   React.useEffect(async () => {
-    setLoading(true);
     const result = await facilitatorRegistryService.filter(filter);
     setData(result.data?.data);
     setPaginationTotalRows(
       result?.data?.totalCount ? result?.data?.totalCount : 0
     );
-    setLoading(false);
   }, [filter]);
 
   const setFilterObject = (data) => {
