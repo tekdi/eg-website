@@ -159,7 +159,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[...columns(t, navigate)]}
+        columns={[...columns(t)]}
         data={data}
         persistTableHead
         progressPending={loading}
