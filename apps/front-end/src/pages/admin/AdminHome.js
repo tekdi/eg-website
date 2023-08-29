@@ -68,6 +68,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setfacilitaorStatus(result);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
+    setLoading(false);
   }, []);
 
   React.useEffect(async () => {
