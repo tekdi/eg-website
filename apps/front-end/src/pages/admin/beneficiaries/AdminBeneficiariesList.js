@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   HStack,
@@ -10,6 +10,9 @@ import {
   Button,
   Input,
   Text,
+  Image,
+  Menu,
+  Pressable,
 } from "native-base";
 import {
   IconByName,
@@ -55,8 +58,28 @@ function CustomFieldTemplate({ id, schema, label, required, children }) {
     </VStack>
   );
 }
-
+const dropDown = (triggerProps, t) => {
+  return (
+    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+      <HStack
+        rounded={"full"}
+        background="white"
+        shadow="BlueOutlineShadow"
+        borderRadius="full"
+        borderWidth="1px"
+        borderColor="#084B82"
+        p="2"
+        space={4}
+      >
+        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
+        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
+    </Pressable>
+  );
+};
 export default function AdminHome({ footerLinks }) {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
@@ -85,6 +108,92 @@ export default function AdminHome({ footerLinks }) {
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+      <HStack
+        p="2"
+        justifyContent="space-between"
+        my="1"
+        mb="3"
+        space={["0", "0", "0", "4"]}
+        flexWrap={"wrap"}
+      >
+        <HStack justifyContent="space-between" alignItems="center">
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
+          <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
+          InputLeftElement={
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+              // height="2"
+            />
+          }
+          placeholder={t("SEARCH_BY_LEARNER_NAME")}
+          variant="outline"
+          onChange={(e) => {
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              2000
+            );
+          }}
+        />
+        <HStack alignSelf={"center"} space="4" height={"6vh"}>
+          <Menu
+            w="190"
+            placement="bottom right"
+            trigger={(triggerProps) => dropDown(triggerProps, t)}
+          >
+            <Menu.Item onPress={(item) => setMenu("export_learner")}>
+              {t("LEARNERS_LIST")}
+            </Menu.Item>
+            <Menu.Item onPress={(item) => setMenu("export_subject")}>
+              {t("LEARNERS_SUBJECT_CSV")}
+            </Menu.Item>
+          </Menu>
+
+          <AdminTypo.Successbutton
+            onPress={() => {
+              navigate("/admin/learners/enrollmentVerificationList");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("ENROLLMENT_VERIFICATION")}
+          </AdminTypo.Successbutton>
+          <AdminTypo.Dangerbutton
+            onPress={() => {
+              navigate("/admin/learners/duplicates");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("RESOLVE_DUPLICATION")}
+          </AdminTypo.Dangerbutton>
+        </HStack>
+      </HStack>
       <HStack>
         <Box
           flex={[2, 2, 1]}
