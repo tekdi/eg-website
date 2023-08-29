@@ -396,7 +396,7 @@ export default function PoDuplicateView({ footerLinks }) {
                     <AdminTypo.Secondarybutton
                       onPress={() => {
                         setModalConfirmVisible(false);
-                        navigate("/poadmin/view/duplicate/");
+                        navigate("/poadmin");
                       }}
                     >
                       {t("OK")}
