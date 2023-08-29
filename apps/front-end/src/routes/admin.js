@@ -6,10 +6,12 @@ import AdminBeneficiariesDuplicatesByAadhaar from "pages/admin/beneficiaries/Adm
 import FacilitatorView from "pages/admin/facilitator/View";
 import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import AdminBeneficiariesList from "pages/admin/beneficiaries/AdminBeneficiariesList";
+import ReassignBeneficiariesList from "pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/Orientation";
 import EnrollmentReceiptView from "pages/admin/beneficiaries/EnrollmentReceiptView";
 import Profile from "pages/admin/facilitator/Profile";
+import ReassignBeneficiaries from "pages/admin/ReassignBeneficiaries/ReassignBeneficiaries";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -30,6 +32,14 @@ export default [
   {
     path: "/admin/learners/duplicates/:aadhaarNo",
     component: AdminBeneficiariesDuplicatesByAadhaar,
+  },
+  {
+    path: "/admin/learners/reassignList",
+    component: ReassignBeneficiariesList,
+  },
+  {
+    path: "/admin/learners/reassignList/learnerList/:aadhaarNo",
+    component: ReassignBeneficiaries,
   },
   {
     path: "/aadhaar-kyc/:id",
