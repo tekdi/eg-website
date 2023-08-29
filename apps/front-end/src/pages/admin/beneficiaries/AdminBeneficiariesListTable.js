@@ -8,7 +8,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
+import { HStack, VStack, Text, ScrollView } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -128,14 +128,6 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
 
   const exportSubjectCSV = async () => {
     await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
-  };
-
-  const setMenu = (e) => {
-    if (e === "export_subject") {
-      exportSubjectCSV();
-    } else {
-      exportBeneficiaryCSV();
-    }
   };
 
   return (

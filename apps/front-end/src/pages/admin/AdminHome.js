@@ -205,9 +205,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const [modal, setModal] = React.useState(false);
   const exportPrerakCSV = async () => {
-    const result = await facilitatorRegistryService.exportFacilitatorsCsv(
-      filter
-    );
+    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
   function CustomFieldTemplate({ id, label, children }) {
     return (

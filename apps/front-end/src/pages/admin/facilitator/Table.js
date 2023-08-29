@@ -97,9 +97,7 @@ function Table({
   const { t } = useTranslation();
 
   const navigate = useNavigate();
-  // {
-  //   console.log("facilitator", facilitator);
-  // }
+  //
   return (
     <VStack>
       <ScrollView horizontal={true} mb="2">
