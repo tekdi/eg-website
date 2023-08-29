@@ -13,7 +13,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [duplicateData, setduplicateData] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({});
+  const [filter, setFilter] = React.useState({ limit: 10 });
 
   // facilitator pagination
 
