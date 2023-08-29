@@ -23,7 +23,6 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Chip from "component/Chip";
 
 const columns = (t, navigate) => [
   {
@@ -254,19 +253,14 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
               setFilter(newFilter);
             }}
           >
-            <Chip>
-              <HStack space={1}>
-                {t("BENEFICIARY_ALL")}
-                {!filter?.status && `(${paginationTotalRows})`}
-              </HStack>
-            </Chip>
+            {t("BENEFICIARY_ALL")}
+            {!filter?.status && `(${paginationTotalRows})`}
           </Text>
           {beneficiaryStatus?.map((item) => {
             return (
               <Text
                 key={item}
-                borderWidth={filter?.status == t(item?.value) ? "1" : "0"}
-                rounded={filter?.status == t(item?.value) ? "xl" : "0"}
+                color={filter?.status == t(item?.value) ? "blueText.400" : ""}
                 bold={filter?.status == t(item?.value)}
                 cursor={"pointer"}
                 mx={3}
@@ -274,13 +268,8 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
                   setFilter({ ...filter, status: item?.value, page: 1 });
                 }}
               >
-                <ChipStatus
-                  sufix={
-                    filter?.status == t(item?.value) &&
-                    `(${paginationTotalRows})`
-                  }
-                  status={item?.value}
-                />
+                {t(item?.title)}
+                {filter?.status == t(item?.value) && `(${paginationTotalRows})`}
               </Text>
             );
           })}
