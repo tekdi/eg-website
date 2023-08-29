@@ -90,7 +90,7 @@ const columns = (t) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
+      return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
   },
@@ -164,11 +164,10 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         persistTableHead
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {
-          setFilter({ ...filter, limit: e });
+          setFilter({ ...filter, limit: e, page: 1 });
         }}
         onChangePage={(e) => {
           setFilter({ ...filter, page: e });
