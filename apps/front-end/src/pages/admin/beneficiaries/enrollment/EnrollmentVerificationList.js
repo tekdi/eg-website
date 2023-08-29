@@ -145,6 +145,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
+  const refSubHeader = React.useRef(null);
 
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
@@ -166,7 +167,8 @@ function EnrollmentVerificationList({ footerLinks }) {
   }, [filter]);
 
   React.useEffect(() => {
-    setFilter(urlData(["district", "facilitator", "block"]));
+    const urlFilter = urlData(["district", "facilitator", "block"]);
+    setFilter({ ...filter, ...urlFilter });
   }, []);
 
   React.useEffect(async () => {
@@ -180,7 +182,7 @@ function EnrollmentVerificationList({ footerLinks }) {
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
     >
-      <HStack p="4" my="1" mb="3" justifyContent="space-between">
+      <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
         <HStack justifyContent="space-between" alignItems="center">
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
           <AdminTypo.H1 px="5">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
@@ -227,7 +229,10 @@ function EnrollmentVerificationList({ footerLinks }) {
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+              Height -
+              (refAppBar?.clientHeight +
+                ref?.current?.clientHeight +
+                refSubHeader?.current?.clientHeight)
             }
             pr="2"
           >
@@ -236,8 +241,14 @@ function EnrollmentVerificationList({ footerLinks }) {
         </Box>
         <Box flex={[5, 5, 4]}>
           <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
+            maxH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
+            minH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
           >
             <VStack py={6} px={4} mb={5}>
               <ScrollView horizontal={true} mb="2">
@@ -304,11 +315,10 @@ function EnrollmentVerificationList({ footerLinks }) {
                 persistTableHead
                 progressPending={loading}
                 pagination
-                paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
                 paginationServer
                 paginationTotalRows={paginationTotalRows}
                 onChangeRowsPerPage={(e) => {
-                  setFilter({ ...filter, limit: e });
+                  setFilter({ ...filter, limit: e, page: 1 });
                 }}
                 onChangePage={(e) => {
                   setFilter({ ...filter, page: e });

@@ -83,6 +83,7 @@ export default function AdminHome({ footerLinks }) {
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
+  const refSubHeader = React.useRef(null);
 
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
@@ -103,18 +104,22 @@ export default function AdminHome({ footerLinks }) {
   }, [filter]);
 
   React.useEffect(() => {
-    setFilter({ ...filter, ...urlData(["district", "facilitator", "block"]) });
+    const urlFilter = urlData(["district", "facilitator", "block"]);
+    setFilter({ ...filter, ...urlFilter });
   }, []);
 
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      w={Width}
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+    >
       <HStack
-        p="2"
+        p="4"
         justifyContent="space-between"
-        my="1"
-        mb="3"
         space={["0", "0", "0", "4"]}
         flexWrap={"wrap"}
+        ref={refSubHeader}
       >
         <HStack justifyContent="space-between" alignItems="center">
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
@@ -202,7 +207,10 @@ export default function AdminHome({ footerLinks }) {
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+              Height -
+              (refAppBar?.clientHeight +
+                ref?.current?.clientHeight +
+                refSubHeader?.current?.clientHeight)
             }
             pr="2"
           >
@@ -211,8 +219,14 @@ export default function AdminHome({ footerLinks }) {
         </Box>
         <Box flex={[5, 5, 4]}>
           <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
+            maxH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
+            minH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
