@@ -2,24 +2,9 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -27,15 +12,10 @@ import {
   H3,
   IconByName,
   BodySmall,
-  filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
-  uploadRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -166,20 +146,17 @@ export default function agFormEdit({ ip }) {
   }, []);
 
   const formSubmitUpdate = async (formData) => {
-    console.log("sent data");
     if (id) {
       const data = await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
-      console.log(data, "sent data");
     }
   };
 
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        console.log(e);
         const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
@@ -306,59 +283,68 @@ export default function agFormEdit({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      <Box py={6} px={4} mb={5}>
-        {/* Box */}
-        {alert ? (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        ) : (
-          <React.Fragment />
-        )}
-        {page && page !== "" ? (
-          <Form
-            key={lang + addBtn}
-            ref={formRef}
-            widgets={{ RadioBtn, CustomR }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-            }}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              validator,
-              schema: schema ? schema : {},
-              uiSchema,
-              formData,
-              customValidate,
-              onChange,
-              onError,
-              onSubmit,
-              transformErrors,
-            }}
-          >
-            <Button
-              mt="3"
-              variant={"primary"}
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
+      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {/* Box */}
+          {alert ? (
+            <Alert status="warning" alignItems={"start"} mb="3">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{alert}</BodyMedium>
+              </HStack>
+            </Alert>
+          ) : (
+            <React.Fragment />
+          )}
+          {page && page !== "" ? (
+            <Form
+              key={lang + addBtn}
+              ref={formRef}
+              widgets={{ RadioBtn, CustomR }}
+              templates={{
+                FieldTemplate,
+                ArrayFieldTitleTemplate,
+                ObjectFieldTemplate,
+                TitleFieldTemplate,
+                DescriptionFieldTemplate,
+                BaseInputTemplate,
+              }}
+              extraErrors={errors}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                validator,
+                schema: schema ? schema : {},
+                uiSchema,
+                formData,
+                customValidate,
+                onChange,
+                onError,
+                onSubmit,
+                transformErrors,
+              }}
             >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </Button>
-          </Form>
-        ) : (
-          <React.Fragment />
-        )}
-      </Box>
+              <Button
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={() => formRef?.current?.submit()}
+              >
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              </Button>
+            </Form>
+          ) : (
+            <React.Fragment />
+          )}
+        </Box>
+      )}
       <Modal
         isOpen={credentials}
         onClose={() => setCredentials(false)}

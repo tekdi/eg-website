@@ -1,30 +1,19 @@
 import {
   IconByName,
-  benificiaryRegistoryService,
   ImageView,
   AdminTypo,
   enumRegistryService,
   tableCustomStyles,
-  debounce,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import {
-  HStack,
-  VStack,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-  Menu,
-  Pressable,
-} from "native-base";
+import { HStack, VStack, Text, ScrollView } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
+
 import { useTranslation } from "react-i18next";
 
-const columns = (t, navigate) => [
+const columns = (t) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
@@ -119,36 +108,12 @@ const columns = (t, navigate) => [
     attr: "email",
     wrap: true,
   },
-  {
-    name: t("ACTION"),
-    selector: (row) =>
-      row?.program_beneficiaries?.status === "enrolled" && (
-        <AdminTypo.Secondarybutton
-          my="3"
-          onPress={() => {
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
-          }}
-        >
-          {t("VIEW")}
-        </AdminTypo.Secondarybutton>
-      ),
-  },
 ];
 
-const dropDown = (triggerProps, t) => {
-  return (
-    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack space={4}>
-        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
-        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
-      </HStack>
-    </Pressable>
-  );
-};
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
-  const navigate = useNavigate();
+
   const { t } = useTranslation();
 
   React.useEffect(async () => {
@@ -156,91 +121,8 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
-  const exportBeneficiaryCSV = async () => {
-    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
-  };
-
-  const exportSubjectCSV = async () => {
-    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
-  };
-
-  const setMenu = (e) => {
-    if (e === "export_subject") {
-      exportSubjectCSV();
-    } else {
-      exportBeneficiaryCSV();
-    }
-  };
-
   return (
     <VStack>
-      <HStack my="1" mb="3" justifyContent="space-between">
-        <HStack justifyContent="space-between" alignItems="center">
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
-        </HStack>
-        <Input
-          size={"xs"}
-          minH="49px"
-          maxH="49px"
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-            />
-          }
-          placeholder={t("SEARCH_BY_LEARNER_NAME")}
-          variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              2000
-            );
-          }}
-        />
-        <HStack
-          space={6}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps, t)}
-          >
-            <Menu.Item onPress={(item) => setMenu("export_learner")}>
-              {t("LEARNERS_LIST")}
-            </Menu.Item>
-            <Menu.Item onPress={(item) => setMenu("export_subject")}>
-              {t("LEARNERS_SUBJECT_CSV")}
-            </Menu.Item>
-          </Menu>
-          <AdminTypo.Dangerbutton
-            onPress={() => {
-              navigate("/admin/learners/duplicates");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("RESOLVE_DUPLICATION")}
-          </AdminTypo.Dangerbutton>
-        </HStack>
-      </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
           <Text
@@ -277,7 +159,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[...columns(t, navigate)]}
+        columns={[...columns(t)]}
         data={data}
         persistTableHead
         progressPending={loading}
