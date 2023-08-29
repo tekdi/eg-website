@@ -1,6 +1,5 @@
 import {
   IconByName,
-  benificiaryRegistoryService,
   ImageView,
   AdminTypo,
   enumRegistryService,
@@ -14,7 +13,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const columns = (t, navigate) => [
+const columns = (t) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
