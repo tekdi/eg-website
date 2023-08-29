@@ -122,14 +122,6 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
-  const exportBeneficiaryCSV = async () => {
-    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
-  };
-
-  const exportSubjectCSV = async () => {
-    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
-  };
-
   return (
     <VStack>
       <ScrollView horizontal={true} mb="2">
