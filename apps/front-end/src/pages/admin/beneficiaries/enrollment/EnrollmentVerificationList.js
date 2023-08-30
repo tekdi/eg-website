@@ -144,6 +144,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const refSubHeader = React.useRef(null);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
 
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
@@ -152,21 +153,24 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(async () => {
-    setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter({
-      ...filter,
-      status: "enrolled",
-    });
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
-    setLoading(false);
+    if (urlFilterApply) {
+      setLoading(true);
+      const result = await benificiaryRegistoryService.beneficiariesFilter({
+        ...filter,
+        status: "enrolled",
+      });
+      setData(result.data?.data);
+      setPaginationTotalRows(
+        result?.data?.totalCount ? result?.data?.totalCount : 0
+      );
+      setLoading(false);
+    }
   }, [filter]);
 
   React.useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
     setFilter({ ...filter, ...urlFilter });
+    setUrlFilterApply(true);
   }, []);
 
   React.useEffect(async () => {
@@ -269,7 +273,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                     onPress={() => {
                       const { enrollment_verification_status, ...newFilter } =
                         filter;
-                      setFilter(newFilter);
+                      setFilterObject(newFilter);
                     }}
                   >
                     {t("BENEFICIARY_ALL")}
