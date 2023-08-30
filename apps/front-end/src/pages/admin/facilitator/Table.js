@@ -1,23 +1,12 @@
 import {
   IconByName,
-  facilitatorRegistryService,
   ImageView,
   AdminTypo,
-  debounce,
   GetEnumValue,
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import Clipboard from "component/Clipboard";
-import {
-  HStack,
-  VStack,
-  Modal,
-  Image,
-  Text,
-  ScrollView,
-  Input,
-} from "native-base";
+import { HStack, VStack, Text, ScrollView } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -98,148 +87,19 @@ const columns = (t, navigate) => [
 function Table({
   filter,
   setFilter,
-  facilitator,
   facilitaorStatus,
   paginationTotalRows,
   data,
   loading,
   enumOptions,
+  facilitator,
 }) {
   const { t } = useTranslation();
 
-  const [modal, setModal] = React.useState(false);
-
   const navigate = useNavigate();
-
-  const exportPrerakCSV = async () => {
-    const result = await facilitatorRegistryService.exportFacilitatorsCsv(
-      filter
-    );
-  };
-
+  //
   return (
     <VStack>
-      <HStack
-        space={[0, 0, "2"]}
-        my="1"
-        mb="3"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        gridGap="2"
-      >
-        <HStack justifyContent="space-between" alignItems="center">
-          <IconByName name="GroupLineIcon" size="md" />
-          <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
-        </HStack>
-        <Input
-          size={"xs"}
-          minH="49px"
-          maxH="49px"
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-            />
-          }
-          placeholder={t("SEARCH_BY_PRERAK_NAME")}
-          variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              3000
-            );
-          }}
-        />
-        <HStack space={2}>
-          <AdminTypo.Secondarybutton
-            onPress={() => {
-              exportPrerakCSV();
-            }}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("EXPORT")}
-          </AdminTypo.Secondarybutton>
-          <AdminTypo.Secondarybutton
-            onPress={() => setModal(true)}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("SEND_AN_INVITE")}
-          </AdminTypo.Secondarybutton>
-
-          <Modal
-            isOpen={modal}
-            onClose={() => setModal(false)}
-            safeAreaTop={true}
-            size="xl"
-          >
-            <Modal.Content>
-              <Modal.CloseButton />
-              <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center">
-                  {" "}
-                  {t("SEND_AN_INVITE")}
-                </AdminTypo.H1>
-              </Modal.Header>
-              <Modal.Body p="5" pb="10">
-                <VStack space="5">
-                  <HStack
-                    space="5"
-                    borderBottomWidth={1}
-                    borderBottomColor="gray.300"
-                    pb="5"
-                  >
-                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
-                    <Clipboard
-                      text={`${
-                        process.env.REACT_APP_BASE_URL
-                      }/facilitator-self-onboarding/${
-                        facilitator?.program_users[0]?.organisation_id ?? ""
-                      }`}
-                    >
-                      <HStack space="3">
-                        <IconByName
-                          name="FileCopyLineIcon"
-                          isDisabled
-                          rounded="full"
-                          color="blue.300"
-                        />
-                        <AdminTypo.H3 color="blue.300">
-                          {" "}
-                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                        </AdminTypo.H3>
-                      </HStack>
-                    </Clipboard>
-                  </HStack>
-                </VStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-        </HStack>
-      </HStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
           {facilitaorStatus?.map((item) => {

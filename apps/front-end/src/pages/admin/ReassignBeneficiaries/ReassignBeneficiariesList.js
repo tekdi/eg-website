@@ -7,6 +7,7 @@ import {
   Button,
   Input,
   Text,
+  Image,
 } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -191,12 +192,40 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+      <HStack ref={ref}>
+        <HStack my="1" mb="3" justifyContent="space-between">
+          <HStack justifyContent="space-between" alignItems="center">
+            <IconByName
+              name="Home4LineIcon"
+              alt=""
+              size={"sm"}
+              resizeMode="contain"
+            />
+            <AdminTypo.H1 color="Activatedcolor.400">
+              {t("All_AG_LEARNERS")}
+            </AdminTypo.H1>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate("/admin/learners")}
+            />
+            <AdminTypo.H1 px="5">{t("REASSIGN_LEARNERS")}</AdminTypo.H1>
+            <Image
+              source={{
+                uri: "/box.svg",
+              }}
+              alt=""
+              size={"28px"}
+              resizeMode="contain"
+            />
+          </HStack>
+        </HStack>
+      </HStack>
       <HStack>
         <Box
           flex={[2, 2, 1]}
           style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
         >
-          <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
