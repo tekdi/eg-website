@@ -217,20 +217,6 @@ export default function AdminHome({ footerLinks }) {
           >
             {t("RESOLVE_DUPLICATION")}
           </AdminTypo.Dangerbutton>
-          <AdminTypo.Dangerbutton
-            onPress={() => {
-              navigate("/admin/learners/reassignList");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="10px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("REASSIGN_LEARNERS")}
-          </AdminTypo.Dangerbutton>
         </HStack>
       </HStack>
       <HStack>
