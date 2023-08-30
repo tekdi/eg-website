@@ -252,7 +252,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
               />
             }
           >
-            {t("TRANSFER_LEARNERS")}
+            {t("REASSIGN_LEARNERS")}
           </AdminTypo.Dangerbutton>
         </HStack>
       </HStack>

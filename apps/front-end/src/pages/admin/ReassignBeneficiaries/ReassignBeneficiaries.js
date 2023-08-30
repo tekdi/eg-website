@@ -5,7 +5,10 @@ import {
   AdminTypo,
   tableCustomStyles,
   BodyMedium,
+  getOptions,
   benificiaryRegistoryService,
+  facilitatorRegistryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack, Modal, Alert, Text } from "native-base";
@@ -13,6 +16,10 @@ import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { ChipStatus } from "component/BeneficiaryStatus";
+import schema1 from "./Schema";
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
+import { FieldTemplate, select } from "../../../component/BaseInput.js";
 
 const Name = (row) => {
   return (
@@ -68,9 +75,16 @@ const action = (row, handleCheckboxChange, selectedRows) => {
 export default function ReassignBeneficiaries({ footerLinks }) {
   const { t } = useTranslation();
   const { aadhaarNo } = useParams();
+  const [schema, setSchema] = React.useState({});
+  const [formData, setFormData] = React.useState({});
+  const formRef = React.useRef();
+  const [errors, setErrors] = React.useState({});
+  const [lang] = React.useState(localStorage.getItem("lang"));
+
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [selectedRowsData, setSelectedRowsData] = React.useState([]);
-
+  const [viewData, setviewData] = React.useState([]);
+  const [selectData, setselectData] = React.useState();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
@@ -83,6 +97,53 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   });
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
+
+  // Type Of Student
+
+  React.useEffect(async () => {
+    const result = await facilitatorRegistryService.filter();
+    setselectData(result?.data?.data);
+    if (schema1.type === "step") {
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      setSchema(properties[newSteps[0]]);
+    }
+  }, []);
+
+  React.useEffect(async () => {
+    const ListOfEnum = await enumRegistryService.listOfEnum();
+    console.log(ListOfEnum, "ListOfEnum");
+    let newSchema = schema;
+    if (schema["properties"]["PRERAK_LIST"]) {
+      newSchema = getOptions(newSchema, {
+        key: "PRERAK_LIST",
+        arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
+        title: "title",
+        value: "value",
+      });
+    }
+    setSchema(newSchema);
+  }, [modalVisible]);
+
+  const onChange = async (e, id) => {
+    const data = e.formData;
+    setErrors();
+    const newData = { ...formData, ...data };
+    setFormData(newData);
+    if (id === "root_mobile") {
+      if (data?.mobile?.toString()?.length === 10) {
+        const result = await userExist({ mobile: data?.mobile });
+        if (result.isUserExist) {
+          const newErrors = {
+            mobile: {
+              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            },
+          };
+          setErrors(newErrors);
+        }
+      }
+    }
+  };
 
   const handleCheckboxChange = (event, row) => {
     const selectedRowIds = [...selectedRows];
@@ -101,9 +162,13 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     setSelectedRowsData(updatedSelectedRowsData);
   };
 
-  console.log("selectedData", selectedRowsData);
+  // console.log("selectedData", selectedRowsData);
 
   const columns = (e) => [
+    {
+      name: t("ACTION"),
+      selector: (row) => action(row, handleCheckboxChange, selectedRows),
+    },
     {
       name: t("LEARNERS_ID"),
       selector: (row) => row?.id,
@@ -177,6 +242,8 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     setModalConfirmVisible(true);
   };
 
+  console.log("form", formData);
+
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -224,14 +291,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
           </HStack>
           <DataTable
             customStyles={tableCustomStyles}
-            columns={[
-              ...columns(),
-              {
-                name: t("ACTION"),
-                selector: (row) =>
-                  action(row, handleCheckboxChange, selectedRows),
-              },
-            ]}
+            columns={[...columns()]}
             data={data}
             persistTableHead
             progressPending={loading}
@@ -269,22 +329,42 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                 </HStack>
               </Modal.Header>
               <Modal.Body>
-                <HStack justifyContent="space-between">
-                  <HStack>
-                    <IconByName
-                      isDisabled
-                      name="UserLineIcon"
-                      color="textGreyColor.100"
-                      size="xs"
-                    />
-                    <AdminTypo.H6 color="textGreyColor.100">
+                <HStack justifyContent="space-between"></HStack>
+                <Form
+                  key={lang}
+                  ref={formRef}
+                  widgets={{ select }}
+                  extraErrors={errors}
+                  showErrorList={false}
+                  noHtml5Validate={true}
+                  templates={{
+                    FieldTemplate,
+                  }}
+                  {...{
+                    validator,
+                    schema: schema || {},
+                    formData,
+                    onChange,
+                  }}
+                >
+                  <HStack alignItems={"center"}>
+                    <Text
+                      color="textMaroonColor.400"
+                      fontSize="16px"
+                      fontWeight="600"
+                      mt={5}
+                    >
                       {`${t("LEARNERS_NAME")}:`}
-                      {selectedRowsData?.map((item) => {
-                        return <Text key={item?.id}>{item?.id}</Text>;
-                      })}
-                    </AdminTypo.H6>
+                    </Text>
+                    {selectedRowsData?.map((item) => {
+                      return (
+                        <Text mt={5} key={item?.id}>
+                          {item?.first_name} {item?.last_name}({item?.id}),
+                        </Text>
+                      );
+                    })}
                   </HStack>
-                </HStack>
+                </Form>
 
                 <Alert status="warning" alignItems={"start"} mb="3" mt="4">
                   <HStack alignItems="center" space="2" color>
