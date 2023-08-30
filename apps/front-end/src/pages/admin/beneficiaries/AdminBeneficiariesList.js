@@ -84,6 +84,7 @@ export default function AdminHome({ footerLinks }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const refSubHeader = React.useRef(null);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
 
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
@@ -92,21 +93,40 @@ export default function AdminHome({ footerLinks }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(async () => {
-    setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      filter
-    );
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
-    setLoading(false);
+    if (urlFilterApply) {
+      setLoading(true);
+      const result = await benificiaryRegistoryService.beneficiariesFilter(
+        filter
+      );
+      setData(result.data?.data);
+      setPaginationTotalRows(
+        result?.data?.totalCount ? result?.data?.totalCount : 0
+      );
+      setLoading(false);
+    }
   }, [filter]);
 
   React.useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
     setFilter({ ...filter, ...urlFilter });
+    setUrlFilterApply(true);
   }, []);
+
+  const exportBeneficiaryCSV = async () => {
+    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
+  };
+
+  const exportSubjectCSV = async () => {
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+  };
+
+  const setMenu = (e) => {
+    if (e === "export_subject") {
+      exportSubjectCSV();
+    } else {
+      exportBeneficiaryCSV();
+    }
+  };
 
   return (
     <Layout
@@ -381,7 +401,13 @@ export const Filter = ({ filter, setFilter }) => {
           </HStack>
           <Button variant="link" pt="3" onPress={clearFilter}>
             <AdminTypo.H6 color="blueText.400" underline bold>
-              {t("CLEAR_FILTER")}
+              {t("CLEAR_FILTER")} (
+              {
+                Object.keys(filter || {}).filter(
+                  (e) => !["limit", "page"].includes(e)
+                ).length
+              }
+              )
             </AdminTypo.H6>
           </Button>
         </HStack>
