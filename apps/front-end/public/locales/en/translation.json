@@ -388,6 +388,7 @@
   "FACILITATOR_STATUS_APPLICATION_SCREENED": "Application Screened",
   "FACILITATOR_STATUS_APPLIED": "Applied",
   "FACILITATOR_STATUS_CANCEL_ENROLMENT": "Cancel Enrolment",
+  "FACILITATOR_STATUS_CANCEL_ENROLMENT_MESSAGE": "After canceling enrolment, all enrolment details of this learner will be removed from the system. And enrolment status will be changed to \"Not Enrolled\". Do you want to continue if yes press \"Confirm\" if no press \"Cancel\".",
   "FACILITATOR_STATUS_ON_HOLD": "On hold",
   "FACILITATOR_STATUS_POTENTIAL_PRERAK": "Potential Prerak",
   "FACILITATOR_STATUS_PRAGATI_MOBILIZER": "Pragati Mobilizer",

@@ -387,6 +387,7 @@
   "FACILITATOR_STATUS_APPLICATION_SCREENED": "आवेदन स्क्रीन्ड",
   "FACILITATOR_STATUS_APPLIED": "एप्लाइड",
   "FACILITATOR_STATUS_CANCEL_ENROLMENT": "नामांकन रद्द करें",
+  "FACILITATOR_STATUS_CANCEL_ENROLMENT_MESSAGE": "नामांकन रद्द करने के बाद, इस शिक्षार्थी के सभी नामांकन विवरण सिस्टम से हटा दिए जाएंगे। और नामांकन की स्थिति \"अनामांकित\" में बदल दी जाएगी। क्या आप जारी रखना चाहते हैं यदि हाँ तो \"पुष्टि करें\" दबाएँ यदि नहीं तो \"रद्द करें\" दबाएँ।",
   "FACILITATOR_STATUS_ON_HOLD": "होल्ड पर",
   "FACILITATOR_STATUS_POTENTIAL_PRERAK": "संभावित प्रेरक",
   "FACILITATOR_STATUS_PRAGATI_MOBILIZER": "प्रगति मोबिलाइजर",
