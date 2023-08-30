@@ -450,6 +450,7 @@ const ValidationBox = ({ children, error }) => (
 );
 
 const Message = ({ status, reason }) => {
+  const { t } = useTranslation();
   if (status === "pending") {
     return <React.Fragment />;
   } else if (
