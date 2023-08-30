@@ -449,36 +449,36 @@ const ValidationBox = ({ children, error }) => (
   </VStack>
 );
 
+const Message = ({ status, reason }) => {
+  if (status === "pending") {
+    return <React.Fragment />;
+  } else if (
+    reason?.learner_enrollment_details === "no" &&
+    reason?.enrollment_details === "no"
+  ) {
+    return (
+      <AdminTypo.H4 color="blueText.450" underline>
+        {t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")}
+      </AdminTypo.H4>
+    );
+  } else if (reason?.learner_enrollment_details === "no") {
+    return (
+      <AdminTypo.H4 color="blueText.450" underline>
+        {t("CORRECT_ENROLLMENT_DETAILS")}
+      </AdminTypo.H4>
+    );
+  } else if (reason?.enrollment_details === "no") {
+    return (
+      <AdminTypo.H4 color="blueText.450" underline>
+        {t("CORRECT_ENROLLMENT_LEARNER_DETAILS")}
+      </AdminTypo.H4>
+    );
+  }
+  return <React.Fragment />;
+};
+
 const LearnerInfo = ({ item, reason, status }) => {
   const { t } = useTranslation();
-
-  const Message = () => {
-    if (status === "pending") {
-      return <React.Fragment />;
-    } else if (
-      reason?.learner_enrollment_details === "no" &&
-      reason?.enrollment_details === "no"
-    ) {
-      return (
-        <AdminTypo.H4 color="blueText.450" underline>
-          {t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")}
-        </AdminTypo.H4>
-      );
-    } else if (reason?.learner_enrollment_details === "no") {
-      return (
-        <AdminTypo.H4 color="blueText.450" underline>
-          {t("CORRECT_ENROLLMENT_DETAILS")}
-        </AdminTypo.H4>
-      );
-    } else if (reason?.enrollment_details === "no") {
-      return (
-        <AdminTypo.H4 color="blueText.450" underline>
-          {t("CORRECT_ENROLLMENT_LEARNER_DETAILS")}
-        </AdminTypo.H4>
-      );
-    }
-    return <React.Fragment />;
-  };
 
   return (
     <VStack space={4}>
@@ -537,7 +537,7 @@ const LearnerInfo = ({ item, reason, status }) => {
             />
           </VStack>
         </HStack>
-        <Message />
+        <Message {...{ reason, status }} />
       </VStack>
       {status === "pending" && (
         <Alert status="warning" py="2px" px="2" flexDirection="row" gap="2">
