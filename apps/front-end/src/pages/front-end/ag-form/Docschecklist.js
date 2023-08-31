@@ -107,9 +107,12 @@ const Docschecklist = ({ footerLinks }) => {
       }}
       _footer={{ menues: footerLinks }}
     >
-      {["dropout", "rejected", "ready_to_enroll"].includes(
-        benificiary?.program_beneficiaries?.status
-      ) ? (
+      {[
+        "dropout",
+        "rejected",
+        "ready_to_enroll",
+        "enrolled_ip_verified",
+      ].includes(benificiary?.program_beneficiaries?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />

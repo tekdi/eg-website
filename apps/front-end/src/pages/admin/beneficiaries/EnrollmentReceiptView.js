@@ -50,7 +50,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       setReceiptUrl(newResult);
       setFileType(newResult?.key?.split(".").pop());
       const subject = jsonParse(result?.program_beneficiaries.subjects, []);
-      setSubjects(newData?.filter((e) => subject.includes(`${e.id}`)));
+      setSubjects(newData?.filter((e) => subject?.includes(`${e.id}`)));
       setLoading(false);
     };
     await profileDetails();
@@ -75,7 +75,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       if (data?.success) {
         setOpenModal(false);
-        navigate("/admin/learners");
+        navigate("/admin/learners/enrollmentVerificationList");
       }
     }
   };
@@ -89,23 +89,22 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <IconByName size="sm" name="ArrowRightSLineIcon" isDisabled />
             }
             data={[
-              <AdminTypo.H1>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>,
-              <AdminTypo.H2>{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
-              <AdminTypo.H3>{`${data?.id}`}</AdminTypo.H3>,
+              <AdminTypo.H1 key="1">
+                {t("ENROLLMENT_VERIFICATION")}
+              </AdminTypo.H1>,
+              <AdminTypo.H2 key="2">{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
+              <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
+              <ChipStatus
+                key={"4"}
+                is_duplicate={data?.is_duplicate}
+                is_deactivated={data?.is_deactivated}
+                status={data?.program_beneficiaries?.status}
+              />,
             ]}
           />
           {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
         </HStack>
-        {data?.program_beneficiaries?.enrollment_status === "not_enrolled" ? (
-          <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <AdminTypo.H1>
-                {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-              </AdminTypo.H1>
-            </HStack>
-          </Alert>
-        ) : (
+        <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
               {t("ENROLLMENT_DETAILS_VERIFICATION")}
@@ -174,9 +173,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                           label: "DOB",
                           value: (
                             <AdminTypo.H5>
-                              {moment(
-                                data?.program_beneficiaries?.enrollment_dob
-                              ).format("DD-MM-YYYY")}
+                              {data?.program_beneficiaries?.enrollment_dob
+                                ? moment(
+                                    data?.program_beneficiaries?.enrollment_dob
+                                  ).format("DD-MM-YYYY")
+                                : "-"}
                             </AdminTypo.H5>
                           ),
                         },
@@ -217,9 +218,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                           label: "DATE",
                           value: (
                             <AdminTypo.H5>
-                              {moment(
-                                data?.program_beneficiaries?.enrollment_date
-                              ).format("DD-MM-YYYY")}
+                              {data?.program_beneficiaries?.enrollment_date
+                                ? moment(
+                                    data?.program_beneficiaries?.enrollment_date
+                                  ).format("DD-MM-YYYY")
+                                : "-"}
                             </AdminTypo.H5>
                           ),
                         },
@@ -336,7 +339,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   reason?.enrollment_details === "yes" &&
                   reason?.learner_enrollment_details === "yes"
                 }
-                onPress={(e) => submit("pending")}
+                onPress={(e) => {
+                  if (checkValidation()) {
+                    setOpenModal("pending");
+                  }
+                }}
               >
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
               </AdminTypo.Dangerbutton>
@@ -347,7 +354,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 }
                 onPress={(e) => {
                   if (checkValidation()) {
-                    setOpenModal(true);
+                    setOpenModal("change_required");
                   }
                 }}
               >
@@ -358,26 +365,62 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <Modal.Content>
                 <Modal.Header>{t("ARE_YOU_SURE")}</Modal.Header>
                 <Modal.Body p="5">
-                  <LearnerInfo item={data} reason={reason} />
+                  <LearnerInfo item={data} reason={reason} status={openModal} />
                 </Modal.Body>
                 <Modal.Footer justifyContent={"space-between"}>
-                  <AdminTypo.PrimaryButton onPress={(e) => setOpenModal(false)}>
+                  <AdminTypo.PrimaryButton onPress={(e) => setOpenModal()}>
                     {t("CANCEL")}
                   </AdminTypo.PrimaryButton>
-                  <AdminTypo.Secondarybutton
-                    onPress={(e) => submit("change_required")}
-                  >
+                  <AdminTypo.Secondarybutton onPress={(e) => submit(openModal)}>
                     {t("CONFIRM")}
                   </AdminTypo.Secondarybutton>
                 </Modal.Footer>
               </Modal.Content>
             </Modal>
           </VStack>
-        )}
+        </Body>
       </VStack>
     </Layout>
   );
 }
+
+const Body = ({ data, children }) => {
+  const { t } = useTranslation();
+  if (data?.program_beneficiaries?.status !== "enrolled") {
+    return (
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <AdminTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</AdminTypo.H1>
+        </HStack>
+      </Alert>
+    );
+  } else if (
+    data?.program_beneficiaries?.enrollment_status === "not_enrolled"
+  ) {
+    return (
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <AdminTypo.H1>
+            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
+          </AdminTypo.H1>
+        </HStack>
+      </Alert>
+    );
+  } else if (data?.is_duplicate === "yes" && data?.is_deactivated === null) {
+    return (
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <AdminTypo.H1>{t("RESOLVE_DUPLICATION")}</AdminTypo.H1>
+        </HStack>
+      </Alert>
+    );
+  } else {
+    return children;
+  }
+};
 
 const TextInfo = ({ data, _box, arr }) => {
   const { t } = useTranslation();
@@ -406,75 +449,104 @@ const ValidationBox = ({ children, error }) => (
   </VStack>
 );
 
-const LearnerInfo = ({ item, reason }) => {
+const Message = ({ status, reason }) => {
   const { t } = useTranslation();
+  if (status === "pending") {
+    return <React.Fragment />;
+  } else if (
+    reason?.learner_enrollment_details === "no" &&
+    reason?.enrollment_details === "no"
+  ) {
+    return (
+      <AdminTypo.H4 color="blueText.450" underline>
+        {t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")}
+      </AdminTypo.H4>
+    );
+  } else if (reason?.learner_enrollment_details === "no") {
+    return (
+      <AdminTypo.H4 color="blueText.450" underline>
+        {t("CORRECT_ENROLLMENT_DETAILS")}
+      </AdminTypo.H4>
+    );
+  } else if (reason?.enrollment_details === "no") {
+    return (
+      <AdminTypo.H4 color="blueText.450" underline>
+        {t("CORRECT_ENROLLMENT_LEARNER_DETAILS")}
+      </AdminTypo.H4>
+    );
+  }
+  return <React.Fragment />;
+};
+
+const LearnerInfo = ({ item, reason, status }) => {
+  const { t } = useTranslation();
+
   return (
-    <VStack bg="white" p="2" shadow="FooterShadow" rounded="sm" space="1">
-      <HStack justifyContent="space-between">
-        <HStack alignItems="Center" flex="5">
-          {item?.profile_photo_1?.id ? (
-            <ImageView
-              source={{
-                document_id: item?.profile_photo_1?.id,
-              }}
-              alt="Alternate Text"
-              width={"45px"}
-              height={"45px"}
+    <VStack space={4}>
+      <VStack bg="white" p="2" shadow="FooterShadow" rounded="sm" space="1">
+        <HStack justifyContent="space-between">
+          <HStack alignItems="Center" flex="5">
+            {item?.profile_photo_1?.id ? (
+              <ImageView
+                source={{
+                  document_id: item?.profile_photo_1?.id,
+                }}
+                alt="Alternate Text"
+                width={"45px"}
+                height={"45px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "45px" }}
+              />
+            )}
+            <VStack
+              pl="2"
+              flex="1"
+              wordWrap="break-word"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              <AdminTypo.H4 bold color="textGreyColor.800">
+                {item?.first_name}
+                {item?.middle_name &&
+                  item?.middle_name !== "null" &&
+                  ` ${item.middle_name}`}
+                {item?.last_name &&
+                  item?.last_name !== "null" &&
+                  ` ${item.last_name}`}
+              </AdminTypo.H4>
+              <AdminTypo.H5 color="textGreyColor.800">
+                {item?.mobile}
+              </AdminTypo.H5>
+            </VStack>
+          </HStack>
+          <VStack flex="2">
+            <ChipStatus
+              status={
+                status === "pending"
+                  ? "not_enrolled"
+                  : item?.program_beneficiaries?.status
+              }
+              is_duplicate={item?.is_duplicate}
+              is_deactivated={item?.is_deactivated}
+              rounded={"sm"}
             />
-          ) : (
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              color="gray.300"
-              _icon={{ size: "45px" }}
-            />
-          )}
-          <VStack
-            pl="2"
-            flex="1"
-            wordWrap="break-word"
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-          >
-            <AdminTypo.H4 bold color="textGreyColor.800">
-              {item?.first_name}
-              {item?.middle_name &&
-                item?.middle_name !== "null" &&
-                ` ${item.middle_name}`}
-              {item?.last_name &&
-                item?.last_name !== "null" &&
-                ` ${item.last_name}`}
-            </AdminTypo.H4>
-            <AdminTypo.H5 color="textGreyColor.800">
-              {item?.mobile}
-            </AdminTypo.H5>
           </VStack>
         </HStack>
-        <VStack flex="2">
-          <ChipStatus
-            status={item?.program_beneficiaries?.status}
-            is_duplicate={item?.is_duplicate}
-            is_deactivated={item?.is_deactivated}
-            rounded={"sm"}
-          />
-        </VStack>
-      </HStack>
-      {reason?.learner_enrollment_details === "no" &&
-      reason?.enrollment_details === "no" ? (
-        <AdminTypo.H4 color="blueText.450" underline>
-          {t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")}
-        </AdminTypo.H4>
-      ) : reason?.learner_enrollment_details === "no" ? (
-        <AdminTypo.H4 color="blueText.450" underline>
-          {t("CORRECT_ENROLLMENT_DETAILS")}
-        </AdminTypo.H4>
-      ) : (
-        reason?.enrollment_details === "no" && (
-          <AdminTypo.H4 color="blueText.450" underline>
-            {t("CORRECT_ENROLLMENT_LEARNER_DETAILS")}
+        <Message {...{ reason, status }} />
+      </VStack>
+      {status === "pending" && (
+        <Alert status="warning" py="2px" px="2" flexDirection="row" gap="2">
+          <Alert.Icon size="3" />
+          <AdminTypo.H4>
+            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT_MESSAGE")}
           </AdminTypo.H4>
-        )
+        </Alert>
       )}
     </VStack>
   );

@@ -2,7 +2,16 @@ import React, { useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-import { Box, HStack, VStack, ScrollView, Button } from "native-base";
+import {
+  Box,
+  HStack,
+  VStack,
+  ScrollView,
+  Button,
+  Input,
+  Modal,
+  Image,
+} from "native-base";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -13,6 +22,7 @@ import {
   enumRegistryService,
   setQueryParameters,
   urlData,
+  debounce,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
@@ -68,16 +78,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setfacilitaorStatus(result);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
+    setLoading(false);
   }, []);
 
   React.useEffect(async () => {
-    setLoading(true);
     const result = await facilitatorRegistryService.filter(filter);
     setData(result.data?.data);
     setPaginationTotalRows(
       result?.data?.totalCount ? result?.data?.totalCount : 0
     );
-    setLoading(false);
   }, [filter]);
 
   const setFilterObject = (data) => {
@@ -194,6 +203,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilterObject({});
   };
 
+  const [modal, setModal] = React.useState(false);
+  const exportPrerakCSV = async () => {
+    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
+  };
   function CustomFieldTemplate({ id, label, children }) {
     return (
       <VStack>
@@ -228,6 +241,134 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       _sidebar={footerLinks}
       loading={loading}
     >
+      <HStack
+        space={[0, 0, "2"]}
+        p="2"
+        my="1"
+        mb="3"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gridGap="2"
+      >
+        <HStack
+          justifyContent={"space-between"}
+          space={"4"}
+          alignItems="center"
+        >
+          <HStack justifyContent="space-between" alignItems="center">
+            <IconByName name="GroupLineIcon" size="md" />
+            <AdminTypo.H1>{t("ALL_PRERAKS")}</AdminTypo.H1>
+          </HStack>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
+          onScroll={false}
+          InputLeftElement={
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
+          }
+          placeholder={t("SEARCH_BY_PRERAK_NAME")}
+          variant="outline"
+          onChange={(e) => {
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              3000
+            );
+          }}
+        />
+
+        <HStack height={"6vh"} space={2}>
+          <AdminTypo.Secondarybutton
+            onPress={() => {
+              exportPrerakCSV();
+            }}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("EXPORT")}
+          </AdminTypo.Secondarybutton>
+          <AdminTypo.Secondarybutton
+            onPress={() => setModal(true)}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("SEND_AN_INVITE")}
+          </AdminTypo.Secondarybutton>
+
+          <Modal
+            isOpen={modal}
+            onClose={() => setModal(false)}
+            safeAreaTop={true}
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header p="5" borderBottomWidth="0">
+                <AdminTypo.H1 textAlign="center">
+                  {t("SEND_AN_INVITE")}
+                </AdminTypo.H1>
+              </Modal.Header>
+              <Modal.Body p="5" pb="10">
+                <VStack space="5">
+                  <HStack
+                    space="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="gray.300"
+                    pb="5"
+                  >
+                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
+                    {/* <Clipboard
+                      text={`${
+                        process.env.REACT_APP_BASE_URL
+                      }/facilitator-self-onboarding/${
+                        facilitator?.program_users[0]?.organisation_id ?? ""
+                      }`}
+                    > */}
+                    <HStack space="3">
+                      <IconByName
+                        name="FileCopyLineIcon"
+                        isDisabled
+                        rounded="full"
+                        color="blue.300"
+                      />
+                      <AdminTypo.H3 color="blue.300">
+                        {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                      </AdminTypo.H3>
+                    </HStack>
+                    {/* </Clipboard> */}
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        </HStack>
+      </HStack>
       <HStack>
         <Box
           flex={[2, 2, 1]}
