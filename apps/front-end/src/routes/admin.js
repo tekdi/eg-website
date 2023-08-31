@@ -8,7 +8,9 @@ import FacilitatorForm from "../pages/admin/FacilitatorForm";
 import AdminBeneficiariesList from "pages/admin/beneficiaries/AdminBeneficiariesList";
 import NotFound from "pages/NotFound";
 import Orientation from "pages/front-end/orientation/Orientation";
+import EnrollmentReceiptView from "pages/admin/beneficiaries/EnrollmentReceiptView";
 import Profile from "pages/admin/facilitator/Profile";
+import EnrollmentVerificationList from "pages/admin/beneficiaries/enrollment/EnrollmentVerificationList";
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -18,6 +20,14 @@ export default [
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
   { path: "/admin/learners", component: AdminBeneficiariesList },
+  {
+    path: "/admin/learners/enrollmentVerificationList",
+    component: EnrollmentVerificationList,
+  },
+  {
+    path: "/admin/learners/enrollmentReceipt/:id",
+    component: EnrollmentReceiptView,
+  },
   {
     path: "/admin/learners/duplicates",
     component: AdminBeneficiariesDuplicatesList,

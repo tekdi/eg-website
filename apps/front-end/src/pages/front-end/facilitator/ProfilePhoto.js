@@ -14,7 +14,7 @@ export default function ProfilePhoto({
     <VStack alignItems="center">
       <VStack position="relative" p="4">
         <IconByName
-          right="0"
+          right="-20"
           top="0"
           p="2"
           position="absolute"

@@ -1,6 +1,5 @@
 import React from "react";
-import { useState } from "react";
-import { HStack, VStack, Box, Progress, Center } from "native-base";
+import { HStack, VStack, Box, Progress } from "native-base";
 import {
   arrList,
   FrontEndTypo,
@@ -62,14 +61,19 @@ export default function BenificiaryBasicDetails() {
                 &nbsp;
                 {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
               </FrontEndTypo.H1>
-              <IconByName
-                name="PencilLineIcon"
-                color="iconColor.200"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/basic-info`);
-                }}
-              />
+              {benificiary?.program_beneficiaries?.status ===
+              "enrolled_ip_verified" ? (
+                <></>
+              ) : (
+                <IconByName
+                  name="PencilLineIcon"
+                  color="iconColor.200"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/basic-info`);
+                  }}
+                />
+              )}
             </HStack>
             <HStack alignItems="Center">
               <IconByName name="Cake2LineIcon" color="iconColor.300" />
@@ -127,7 +131,7 @@ export default function BenificiaryBasicDetails() {
                 colorScheme="info"
               />
             </Box>
-            <VStack space="2" pt="5">
+            <VStack space="4" pt="5">
               <HStack
                 alignItems="Center"
                 justifyContent="space-between"
@@ -145,15 +149,6 @@ export default function BenificiaryBasicDetails() {
                 >
                   {benificiary?.mobile ? benificiary?.mobile : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="CellphoneLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/contact-info`);
-                  }}
-                />
               </HStack>
 
               <HStack
@@ -179,12 +174,6 @@ export default function BenificiaryBasicDetails() {
                     ? benificiary?.alternative_mobile_number
                     : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="SmartphoneLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                />
               </HStack>
 
               <HStack alignItems="Center" justifyContent="space-between">
@@ -197,12 +186,6 @@ export default function BenificiaryBasicDetails() {
                     ? benificiary?.email_id
                     : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="MailLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                />
               </HStack>
             </VStack>
           </VStack>
@@ -220,14 +203,19 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("FAMILY_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/family-details`);
-                }}
-              />
+              {benificiary?.program_beneficiaries?.status ===
+              "enrolled_ip_verified" ? (
+                <></>
+              ) : (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/family-details`);
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
@@ -401,14 +389,19 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("REFERENCE_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/reference-details`);
-                }}
-              />
+              {benificiary?.program_beneficiaries?.status ===
+              "enrolled_ip_verified" ? (
+                <></>
+              ) : (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/reference-details`);
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
