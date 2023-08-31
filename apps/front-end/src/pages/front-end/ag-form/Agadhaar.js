@@ -47,7 +47,10 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
   const [isExistflag, setisExistflag] = React.useState(false);
-  const [underSameFacilitator, setunderSameFacilitator] = React.useState(true);
+  const [underSameFacilitator, setunderSameFacilitator] = React.useState(false);
+  const [aadhaarRegisteredForFacilitator, setaadhaarRegisteredForFacilitator] =
+    React.useState(false);
+  const [differentaadhaar, setdifferentaadhaar] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
   const id = useParams();
@@ -192,14 +195,19 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({ aadhar_no: data?.aadhar_no });
-        if (result.underSameFacilitator) {
-          setunderSameFacilitator(false);
+        if (result?.underSameFacilitator) {
+          setunderSameFacilitator(true);
+          setisExistflag(true);
+        } else if (result?.aadhaarRegisteredForFacilitator) {
+          setaadhaarRegisteredForFacilitator(true);
           setisExistflag(true);
         } else if (!result?.success) {
           setisExistflag(false);
         } else if (result?.underSameFacilitator === false) {
           setisExistflag(true);
-          setunderSameFacilitator(true);
+          setdifferentaadhaar(true);
+          setunderSameFacilitator(false);
+          setaadhaarRegisteredForFacilitator(false);
         }
       }
     }
@@ -356,18 +364,18 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Body py={10}>
-            <HStack mx={"auto"} alignItems={"top"}>
-              <IconByName
-                name="ErrorWarningLineIcon"
-                color="textRed.300"
-                size="20px"
-              ></IconByName>
-              <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
-                {t("AG_LEARNER_ALREADY_IDENTIFIED")}
-              </FrontEndTypo.H2>
-            </HStack>
-            {underSameFacilitator && (
+            {differentaadhaar ? (
               <React.Fragment>
+                <HStack mx={"auto"} alignItems={"top"}>
+                  <IconByName
+                    name="ErrorWarningLineIcon"
+                    color="textRed.300"
+                    size="20px"
+                  ></IconByName>
+                  <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                    {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+                  </FrontEndTypo.H2>
+                </HStack>
                 <VStack pt="3">
                   <FrontEndTypo.H5 color="textGreyColor.600">
                     {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
@@ -384,25 +392,53 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 >
                   {t("CONTINUE_ADDING")}
                 </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  marginTop={"1em"}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  {t("CANCEL_AND_GO_BACK")}
+                </FrontEndTypo.Secondarybutton>
               </React.Fragment>
+            ) : (
+              <React.Fragment></React.Fragment>
             )}
 
-            {underSameFacilitator ? (
-              <FrontEndTypo.Secondarybutton
-                width="100%"
-                marginTop={"1em"}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                {t("CANCEL_AND_GO_BACK")}
-              </FrontEndTypo.Secondarybutton>
-            ) : (
-              <FrontEndTypo.Secondarybutton
-                width="100%"
-                marginTop={"1em"}
-                onPress={() => navigate(`/beneficiary/${userId}`)}
-              >
-                {t("CANCEL_AND_GO_TO_PROFILE")}
-              </FrontEndTypo.Secondarybutton>
+            {aadhaarRegisteredForFacilitator && (
+              <VStack>
+                <FrontEndTypo.H2 color="textRed.400">
+                  {t("AADHAR_ALREADY_REGISTERED_WITH_PRERAK")}
+                </FrontEndTypo.H2>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  marginTop={"1em"}
+                  onPress={() => navigate(`/beneficiary/${userId}`)}
+                >
+                  {t("CANCEL_AND_GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </VStack>
+            )}
+
+            {underSameFacilitator && (
+              <VStack>
+                <HStack mx={"auto"} alignItems={"top"}>
+                  <IconByName
+                    name="ErrorWarningLineIcon"
+                    color="textRed.300"
+                    size="20px"
+                  ></IconByName>
+                  <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                    {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+                  </FrontEndTypo.H2>
+                </HStack>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  marginTop={"1em"}
+                  onPress={() => navigate(`/beneficiary/${userId}`)}
+                >
+                  {t("CANCEL_AND_GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </VStack>
             )}
           </Modal.Body>
         </Modal.Content>
@@ -447,6 +483,29 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           </Modal.Body>
         </Modal.Content>
       </Modal>
+
+      {/* <Modal isOpen={true} onClose={() => setRegisteredModal(false)} size="md">
+        <Modal.Content py={4}>
+          <Modal.Body>
+            {aadhaarRegisteredForFacilitator ? (
+              <VStack>
+                <FrontEndTypo.H2 color="textRed.400">
+                  {t("AADHAR_ALREADY_REGISTERED_WITH_PRERAK")}
+                </FrontEndTypo.H2>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  marginTop={"1em"}
+                  onPress={() => setRegisteredModal(!registeredModal)}
+                >
+                  {t("CANCEL_AND_GO_BACK")}
+                </FrontEndTypo.Secondarybutton>
+              </VStack>
+            ) : (
+              <text>reached in else</text>
+            )}
+          </Modal.Body>
+        </Modal.Content>
+      </Modal> */}
     </Layout>
   );
 }

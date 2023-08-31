@@ -427,7 +427,7 @@ export const Filter = ({ filter, setFilter }) => {
         <Input
           w="100%"
           height="32px"
-          placeholder="search"
+          placeholder={t("SEARCH")}
           variant="outline"
           onChange={(e) => {
             debounce(
