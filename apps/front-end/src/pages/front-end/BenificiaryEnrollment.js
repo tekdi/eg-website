@@ -66,62 +66,7 @@ export default function BenificiaryEnrollment() {
               benificiary?.program_beneficiaries?.enrollment_status
             }
           />
-          <ItemComponent
-            title={t("ENROLLMENT_DETAILS")}
-            schema={schema1?.properties["edit_zenrollement"]}
-            notShow={["subjects"]}
-            item={{
-              ...benificiary?.program_beneficiaries,
-              enrollment_date: benificiary?.program_beneficiaries
-                ?.enrollment_date
-                ? moment(
-                    benificiary?.program_beneficiaries?.enrollment_date
-                  ).format("DD-MM-YYYY")
-                : "-",
-              enrollment_status: benificiary?.program_beneficiaries
-                ?.enrollment_status ? (
-                <GetEnumValue
-                  enumType="ENROLLEMENT_STATUS"
-                  enumOptionValue={
-                    benificiary?.program_beneficiaries?.enrollment_status
-                  }
-                  enumApiData={enumOptions}
-                  t={t}
-                />
-              ) : (
-                "-"
-              ),
-              enrolled_for_board: benificiary?.program_beneficiaries
-                ?.enrolled_for_board ? (
-                <GetEnumValue
-                  t={t}
-                  enumType={"ENROLLED_FOR_BOARD"}
-                  enumOptionValue={
-                    benificiary?.program_beneficiaries?.enrolled_for_board
-                  }
-                  enumApiData={enumOptions}
-                />
-              ) : (
-                "-"
-              ),
-            }}
-            {...(["not_enrolled"].includes(
-              benificiary?.program_beneficiaries?.enrollment_status
-            )
-              ? {
-                  onlyField: ["enrollment_status"],
-                }
-              : ["enrollment_awaited", "enrollment_rejected"].includes(
-                  benificiary?.program_beneficiaries?.enrollment_status
-                )
-              ? {
-                  onlyField: ["enrollment_status", "enrolled_for_board"],
-                }
-              : {})}
-            onEdit={(e) =>
-              navigate(`/beneficiary/edit/${id}/enrollment-details`)
-            }
-          />
+
           {![
             "not_enrolled",
             "enrollment_awaited",

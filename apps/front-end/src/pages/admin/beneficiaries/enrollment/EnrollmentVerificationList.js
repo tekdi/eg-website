@@ -9,6 +9,7 @@ import {
   useWindowSize,
   AdminLayout as Layout,
   urlData,
+  setQueryParameters,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -68,7 +69,6 @@ const columns = (t, navigate) => [
         )}
       </HStack>
     ),
-    attr: "name",
     wrap: true,
   },
   {
@@ -102,7 +102,7 @@ const columns = (t, navigate) => [
           facilitator_user: { first_name, last_name },
         },
       } = row;
-      return first_name || last_name ? `${first_name}${last_name || ""}` : "-";
+      return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
   },
@@ -116,8 +116,6 @@ const columns = (t, navigate) => [
         status={row?.program_beneficiaries?.status}
       />
     ),
-
-    attr: "email",
     wrap: true,
   },
   {
@@ -145,6 +143,8 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
+  const refSubHeader = React.useRef(null);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
 
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
@@ -153,20 +153,24 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(async () => {
-    setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter({
-      ...filter,
-      status: "enrolled",
-    });
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
-    setLoading(false);
+    if (urlFilterApply) {
+      setLoading(true);
+      const result = await benificiaryRegistoryService.beneficiariesFilter({
+        ...filter,
+        status: "enrolled",
+      });
+      setData(result.data?.data);
+      setPaginationTotalRows(
+        result?.data?.totalCount ? result?.data?.totalCount : 0
+      );
+      setLoading(false);
+    }
   }, [filter]);
 
   React.useEffect(() => {
-    setFilter(urlData(["district", "facilitator", "block"]));
+    const urlFilter = urlData(["district", "facilitator", "block"]);
+    setFilter({ ...filter, ...urlFilter });
+    setUrlFilterApply(true);
   }, []);
 
   React.useEffect(async () => {
@@ -174,12 +178,57 @@ function EnrollmentVerificationList({ footerLinks }) {
     setBeneficiaryStatus(result?.data?.ENROLLEMENT_VERIFICATION_STATUS);
   }, []);
 
+  const setFilterObject = (data) => {
+    setFilter(data);
+    setQueryParameters(data);
+    return data;
+  };
+
   return (
     <Layout
       w={Width}
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
     >
+      <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
+        <HStack justifyContent="space-between" alignItems="center">
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
+          <AdminTypo.H1 px="5">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
+          InputLeftElement={
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
+          }
+          placeholder={t("SEARCH_BY_LEARNER_NAME")}
+          variant="outline"
+          onChange={(e) => {
+            debounce(
+              setFilterObject({
+                ...filter,
+                search: e.nativeEvent.text,
+                page: 1,
+              }),
+              2000
+            );
+          }}
+        />
+      </HStack>
       <HStack>
         <Box
           flex={[2, 2, 1]}
@@ -188,7 +237,10 @@ function EnrollmentVerificationList({ footerLinks }) {
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+              Height -
+              (refAppBar?.clientHeight +
+                ref?.current?.clientHeight +
+                refSubHeader?.current?.clientHeight)
             }
             pr="2"
           >
@@ -197,55 +249,16 @@ function EnrollmentVerificationList({ footerLinks }) {
         </Box>
         <Box flex={[5, 5, 4]}>
           <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
+            maxH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
+            minH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
           >
             <VStack py={6} px={4} mb={5}>
-              <HStack my="1" mb="3" justifyContent="space-between">
-                <HStack justifyContent="space-between" alignItems="center">
-                  <IconByName
-                    isDisabled
-                    name="GraduationCap"
-                    _icon={{ size: "35" }}
-                  />
-                  <AdminTypo.H1 px="5">
-                    {t("ENROLLMENT_VERIFICATION")}
-                  </AdminTypo.H1>
-                  <Image
-                    source={{
-                      uri: "/box.svg",
-                    }}
-                    alt=""
-                    size={"28px"}
-                    resizeMode="contain"
-                  />
-                </HStack>
-                <Input
-                  size={"xs"}
-                  minH="49px"
-                  maxH="49px"
-                  InputLeftElement={
-                    <IconByName
-                      color="coolGray.500"
-                      name="SearchLineIcon"
-                      isDisabled
-                      pl="2"
-                    />
-                  }
-                  placeholder={t("SEARCH_BY_LEARNER_NAME")}
-                  variant="outline"
-                  onChange={(e) => {
-                    debounce(
-                      setFilter({
-                        ...filter,
-                        search: e.nativeEvent.text,
-                        page: 1,
-                      }),
-                      2000
-                    );
-                  }}
-                />
-              </HStack>
               <ScrollView horizontal={true} mb="2">
                 <HStack pb="2">
                   <Text
@@ -260,7 +273,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                     onPress={() => {
                       const { enrollment_verification_status, ...newFilter } =
                         filter;
-                      setFilter(newFilter);
+                      setFilterObject(newFilter);
                     }}
                   >
                     {t("BENEFICIARY_ALL")}
@@ -291,8 +304,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                               enrollment_verification_status: item?.value,
                               page: 1,
                             };
-                            setFilter(newFilter);
-                            setQueryParameters(newFilter);
+                            setFilterObject(newFilter);
                           }}
                         >
                           {t(`${item?.title}_LIST`)}
@@ -310,14 +322,13 @@ function EnrollmentVerificationList({ footerLinks }) {
                 persistTableHead
                 progressPending={loading}
                 pagination
-                paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
                 paginationServer
                 paginationTotalRows={paginationTotalRows}
                 onChangeRowsPerPage={(e) => {
-                  setFilter({ ...filter, limit: e });
+                  setFilterObject({ ...filter, limit: e, page: 1 });
                 }}
                 onChangePage={(e) => {
-                  setFilter({ ...filter, page: e });
+                  setFilterObject({ ...filter, page: e });
                 }}
               />
             </VStack>

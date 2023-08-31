@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   HStack,
@@ -10,6 +10,9 @@ import {
   Button,
   Input,
   Text,
+  Image,
+  Menu,
+  Pressable,
 } from "native-base";
 import {
   IconByName,
@@ -55,11 +58,33 @@ function CustomFieldTemplate({ id, schema, label, required, children }) {
     </VStack>
   );
 }
-
+const dropDown = (triggerProps, t) => {
+  return (
+    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+      <HStack
+        rounded={"full"}
+        background="white"
+        shadow="BlueOutlineShadow"
+        borderRadius="full"
+        borderWidth="1px"
+        borderColor="#084B82"
+        p="2"
+        space={4}
+      >
+        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
+        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
+    </Pressable>
+  );
+};
 export default function AdminHome({ footerLinks }) {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
+  const refSubHeader = React.useRef(null);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
 
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [loading, setLoading] = React.useState(true);
@@ -68,23 +93,132 @@ export default function AdminHome({ footerLinks }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(async () => {
-    setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      filter
-    );
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
-    setLoading(false);
+    if (urlFilterApply) {
+      setLoading(true);
+      const result = await benificiaryRegistoryService.beneficiariesFilter(
+        filter
+      );
+      setData(result.data?.data);
+      setPaginationTotalRows(
+        result?.data?.totalCount ? result?.data?.totalCount : 0
+      );
+      setLoading(false);
+    }
   }, [filter]);
 
   React.useEffect(() => {
-    setFilter({ ...filter, ...urlData(["district", "facilitator", "block"]) });
+    const urlFilter = urlData(["district", "facilitator", "block"]);
+    setFilter({ ...filter, ...urlFilter });
+    setUrlFilterApply(true);
   }, []);
 
+  const exportBeneficiaryCSV = async () => {
+    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
+  };
+
+  const exportSubjectCSV = async () => {
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+  };
+
+  const setMenu = (e) => {
+    if (e === "export_subject") {
+      exportSubjectCSV();
+    } else {
+      exportBeneficiaryCSV();
+    }
+  };
+
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      w={Width}
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+    >
+      <HStack
+        p="4"
+        justifyContent="space-between"
+        space={["0", "0", "0", "4"]}
+        flexWrap={"wrap"}
+        ref={refSubHeader}
+      >
+        <HStack justifyContent="space-between" alignItems="center">
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
+          <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
+        <Input
+          size={"xs"}
+          minH="49px"
+          maxH="49px"
+          InputLeftElement={
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+              // height="2"
+            />
+          }
+          placeholder={t("SEARCH_BY_LEARNER_NAME")}
+          variant="outline"
+          onChange={(e) => {
+            debounce(
+              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
+              2000
+            );
+          }}
+        />
+        <HStack alignSelf={"center"} space="4" height={"6vh"}>
+          <Menu
+            w="190"
+            placement="bottom right"
+            trigger={(triggerProps) => dropDown(triggerProps, t)}
+          >
+            <Menu.Item onPress={(item) => setMenu("export_learner")}>
+              {t("LEARNERS_LIST")}
+            </Menu.Item>
+            <Menu.Item onPress={(item) => setMenu("export_subject")}>
+              {t("LEARNERS_SUBJECT_CSV")}
+            </Menu.Item>
+          </Menu>
+
+          <AdminTypo.Successbutton
+            onPress={() => {
+              navigate("/admin/learners/enrollmentVerificationList");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("ENROLLMENT_VERIFICATION")}
+          </AdminTypo.Successbutton>
+          <AdminTypo.Dangerbutton
+            onPress={() => {
+              navigate("/admin/learners/duplicates");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("RESOLVE_DUPLICATION")}
+          </AdminTypo.Dangerbutton>
+        </HStack>
+      </HStack>
       <HStack>
         <Box
           flex={[2, 2, 1]}
@@ -93,7 +227,10 @@ export default function AdminHome({ footerLinks }) {
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+              Height -
+              (refAppBar?.clientHeight +
+                ref?.current?.clientHeight +
+                refSubHeader?.current?.clientHeight)
             }
             pr="2"
           >
@@ -102,8 +239,14 @@ export default function AdminHome({ footerLinks }) {
         </Box>
         <Box flex={[5, 5, 4]}>
           <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
+            maxH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
+            minH={
+              Height -
+              (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
+            }
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
@@ -258,7 +401,13 @@ export const Filter = ({ filter, setFilter }) => {
           </HStack>
           <Button variant="link" pt="3" onPress={clearFilter}>
             <AdminTypo.H6 color="blueText.400" underline bold>
-              {t("CLEAR_FILTER")}
+              {t("CLEAR_FILTER")} (
+              {
+                Object.keys(filter || {}).filter(
+                  (e) => !["limit", "page"].includes(e)
+                ).length
+              }
+              )
             </AdminTypo.H6>
           </Button>
         </HStack>

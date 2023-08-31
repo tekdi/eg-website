@@ -110,7 +110,7 @@ function Table({
         paginationServer
         paginationTotalRows={paginationTotalRows}
         onChangeRowsPerPage={(e) => {
-          setFilter({ ...filter, limit: e });
+          setFilter({ ...filter, limit: e, page: 1 });
         }}
         onChangePage={(e) => {
           setFilter({ ...filter, page: e });
