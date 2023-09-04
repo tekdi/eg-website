@@ -6,7 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
-    "@react-navigation/drawer": "^6.1.8",
+    "@react-navigation/drawer": "^6.6.3",
     "@shiksha/common-lib": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^11.2.7",
