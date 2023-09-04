@@ -22,7 +22,7 @@
     "file-saver": "^2.0.5",
     "fullcalendar": "^6.1.8",
     "i18next": "^21.6.7",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "native-base": "^3.2.2",
     "react": "^17.0.2",
     "react-calendar": "^4.3.0",
