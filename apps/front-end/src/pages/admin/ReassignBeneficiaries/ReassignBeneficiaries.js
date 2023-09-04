@@ -5,21 +5,59 @@ import {
   AdminTypo,
   tableCustomStyles,
   BodyMedium,
-  getOptions,
   benificiaryRegistoryService,
   facilitatorRegistryService,
-  enumRegistryService,
+  geolocationRegistryService,
+  debounce,
+  setQueryParameters,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Alert, Text } from "native-base";
+import {
+  HStack,
+  VStack,
+  Modal,
+  Alert,
+  Text,
+  Button,
+  Input,
+  Box,
+} from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
-import { ChipStatus } from "component/BeneficiaryStatus";
-import schema1 from "./Schema";
+import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { FieldTemplate, select } from "../../../component/BaseInput.js";
+import { MultiCheck, RadioBtn } from "../../../component/BaseInput.js";
+
+function CustomFieldTemplate({ id, schema, label, required, children }) {
+  const { t } = useTranslation();
+  return (
+    <VStack borderTopWidth="1" borderTopColor="dividerColor">
+      {(!schema?.format || schema?.format !== "hidden") &&
+        (label || schema?.label) && (
+          <Box>
+            {(id !== "root" || schema?.label) && (
+              <HStack justifyContent="space-between" width="100%">
+                <label
+                  style={{
+                    fontWeight: "bold",
+                    color: "textGreyColor.400",
+                    paddingBottom: "12px",
+                  }}
+                >
+                  {t(label)}
+                  {required ? "*" : null}
+                </label>
+                {/* <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} /> */}
+              </HStack>
+            )}
+          </Box>
+        )}
+      <HStack>{children}</HStack>
+    </VStack>
+  );
+}
 
 const Name = (row) => {
   return (
@@ -52,123 +90,66 @@ const PrerakName = (row) => {
 };
 
 const status = (row, index) => {
-  return (
+  return row?.program_beneficiaries?.status ? (
     <ChipStatus
       key={index}
       is_duplicate={row?.is_duplicate}
       is_deactivated={row?.is_deactivated}
       status={row?.program_beneficiaries?.status}
     />
-  );
-};
-
-const action = (row, handleCheckboxChange, selectedRows) => {
-  return (
-    <input
-      type="checkbox"
-      checked={selectedRows.includes(row.id)}
-      onChange={(e) => handleCheckboxChange(e, row)}
-    />
+  ) : (
+    "-"
   );
 };
 
 export default function ReassignBeneficiaries({ footerLinks }) {
   const { t } = useTranslation();
-  const { aadhaarNo } = useParams();
-  const [schema, setSchema] = React.useState({});
-  const [formData, setFormData] = React.useState({});
-  const formRef = React.useRef();
-  const [errors, setErrors] = React.useState({});
-  const [lang] = React.useState(localStorage.getItem("lang"));
+  const { prerakId } = useParams();
+
+  const [filterfunction, setFilterfunction] = React.useState({
+    limit: 10,
+    page: 1,
+  });
+  const [clearvalue, setclearvalue] = React.useState(false);
 
   const [selectedRows, setSelectedRows] = React.useState([]);
-  const [selectedRowsData, setSelectedRowsData] = React.useState([]);
-  const [viewData, setviewData] = React.useState([]);
-  const [selectData, setselectData] = React.useState();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
   const [errormsg, seterrormsg] = React.useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({
-    limit: 10,
-    page: 1,
-    aadhar_no: aadhaarNo,
-  });
+  const [filter, setFilter] = React.useState({});
   const [loading, setLoading] = React.useState(true);
+  const [prerak, setPrerak] = React.useState({});
+
   const navigate = useNavigate();
 
-  // Type Of Student
+  const handleSelectRow = (state) => {
+    seterrormsg(false);
+    const arr = state?.selectedRows;
+    let newObj = {};
+    arr.forEach((e) => {
+      newObj = { ...newObj, [e.id]: e };
+    });
+    setSelectedRows(arr);
+  };
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.filter();
-    setselectData(result?.data?.data);
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      setSchema(properties[newSteps[0]]);
-    }
+    const result = await facilitatorRegistryService.getOne({ id: prerakId });
+    setPrerak(result);
   }, []);
 
-  React.useEffect(async () => {
-    const ListOfEnum = await enumRegistryService.listOfEnum();
-    console.log(ListOfEnum, "ListOfEnum");
-    let newSchema = schema;
-    if (schema["properties"]["PRERAK_LIST"]) {
-      newSchema = getOptions(newSchema, {
-        key: "PRERAK_LIST",
-        arr: ListOfEnum?.data?.LEARNING_MOTIVATION,
-        title: "title",
-        value: "value",
-      });
-    }
-    setSchema(newSchema);
-  }, [modalVisible]);
+  console.log("prerak", prerak);
 
-  const onChange = async (e, id) => {
-    const data = e.formData;
-    setErrors();
-    const newData = { ...formData, ...data };
-    setFormData(newData);
-    if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
-  };
-
-  const handleCheckboxChange = (event, row) => {
-    const selectedRowIds = [...selectedRows];
-    const updatedSelectedRowsData = [...selectedRowsData];
-    if (event.target.checked) {
-      selectedRowIds.push(row.id);
-      updatedSelectedRowsData.push(row);
+  const openModal = () => {
+    if (selectedRows.length !== 0) {
+      setModalVisible(true);
     } else {
-      const index = selectedRowIds.indexOf(row.id);
-      if (index !== -1) {
-        selectedRowIds.splice(index, 1);
-      }
-      updatedSelectedRowsData.splice(index, 1);
+      seterrormsg(true);
     }
-    setSelectedRows(selectedRowIds);
-    setSelectedRowsData(updatedSelectedRowsData);
   };
-
-  // console.log("selectedData", selectedRowsData);
 
   const columns = (e) => [
-    {
-      name: t("ACTION"),
-      selector: (row) => action(row, handleCheckboxChange, selectedRows),
-    },
     {
       name: t("LEARNERS_ID"),
       selector: (row) => row?.id,
@@ -190,25 +171,10 @@ export default function ReassignBeneficiaries({ footerLinks }) {
       name: t("ADDRESS"),
       selector: (row) =>
         row?.district
-          ? `${row?.district}, ${row?.block}, ${row?.village}, ${row?.grampanchayat}`
+          ? `${row?.district}, ${row?.block}${
+              row?.address === null ? "" : `, ${row?.address}`
+            }`
           : "-",
-      wrap: true,
-    },
-    {
-      name: t("PRERAK_INFO"),
-      selector: (row) => PrerakName(row),
-      sortable: true,
-      attr: "name",
-      wrap: true,
-    },
-    {
-      name: t("REASON_OF_DUPLICATION"),
-      selector: (row) =>
-        row?.duplicate_reason === "FIRST_TIME_REGISTRATION"
-          ? t("FIRST_TIME_REGISTRATION")
-          : row?.duplicate_reason,
-      sortable: true,
-      attr: "email",
       wrap: true,
     },
     {
@@ -221,12 +187,13 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   ];
 
   React.useEffect(async () => {
-    const result =
-      await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
-        filter
-      );
-    setPaginationTotalRows(result?.count || 0);
-    setData(result?.result);
+    const result = await facilitatorRegistryService.getPrerakLearnerList(
+      prerakId,
+      filter
+    );
+    console.log("result", result?.data);
+    setPaginationTotalRows(result?.totalCount || 0);
+    setData(result?.data);
     setLoading(false);
   }, [filter]);
 
@@ -241,8 +208,6 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     setModalVisible(false);
     setModalConfirmVisible(true);
   };
-
-  console.log("form", formData);
 
   return (
     <Layout _sidebar={footerLinks}>
@@ -262,7 +227,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
-              onPress={(e) => navigate(-1)}
+              onPress={(e) => navigate("/admin/learners/reassignList")}
             />
             <AdminTypo.H1
               color="textGreyColor.800"
@@ -275,7 +240,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
 
             <AdminTypo.PrimaryButton
               onPress={() => {
-                setModalVisible(true);
+                openModal();
               }}
               marginLeft="30px"
               rightIcon={
@@ -289,10 +254,17 @@ export default function ReassignBeneficiaries({ footerLinks }) {
               {t("ASSIGN_TO_PRERAK")}
             </AdminTypo.PrimaryButton>
           </HStack>
+          {errormsg && (
+            <AdminTypo.H4 color="textMaroonColor.400">
+              {t("PLEASE_SELECT_A_LEARNER")}
+            </AdminTypo.H4>
+          )}
           <DataTable
             customStyles={tableCustomStyles}
             columns={[...columns()]}
             data={data}
+            selectableRows
+            onSelectedRowsChange={handleSelectRow}
             persistTableHead
             progressPending={loading}
             pagination
@@ -315,63 +287,79 @@ export default function ReassignBeneficiaries({ footerLinks }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header textAlign={"left"}>
-                <HStack alignItems={"center"}>
-                  <IconByName
-                    isDisabled
-                    name="Chat4LineIcon"
-                    color="textGreyColor.100"
-                    size="xs"
-                  />
-                  <AdminTypo.H1
-                    marginLeft="10px"
-                    color="textGreyColor.500"
-                  >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
+                <HStack alignItems={"center"} justifyContent={"space-between"}>
+                  <HStack alignItems={"center"}>
+                    <IconByName
+                      isDisabled
+                      name="Chat4LineIcon"
+                      color="textGreyColor.100"
+                      size="xs"
+                    />
+                    <AdminTypo.H1
+                      marginLeft="10px"
+                      color="textGreyColor.500"
+                    >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
+                  </HStack>
+                  <Button
+                    variant="link"
+                    marginRight={10}
+                    onPress={() => setclearvalue(true)}
+                  >
+                    <AdminTypo.H6 color="blueText.400" underline bold>
+                      {t("CLEAR_FILTER")}
+                    </AdminTypo.H6>
+                  </Button>
                 </HStack>
               </Modal.Header>
               <Modal.Body>
-                <HStack justifyContent="space-between"></HStack>
-                <Form
-                  key={lang}
-                  ref={formRef}
-                  widgets={{ select }}
-                  extraErrors={errors}
-                  showErrorList={false}
-                  noHtml5Validate={true}
-                  templates={{
-                    FieldTemplate,
-                  }}
-                  {...{
-                    validator,
-                    schema: schema || {},
-                    formData,
-                    onChange,
-                  }}
-                >
-                  <HStack alignItems={"center"}>
-                    <Text
-                      color="textMaroonColor.400"
-                      fontSize="16px"
-                      fontWeight="600"
-                      mt={5}
-                    >
-                      {`${t("LEARNERS_NAME")}:`}
-                    </Text>
-                    {selectedRowsData?.map((item) => {
+                <HStack alignItems={"center"}>
+                  <Text
+                    color="textMaroonColor.400"
+                    fontSize="16px"
+                    fontWeight="600"
+                  >
+                    {`${t("CURRENT_PRERAK")}: `}
+                  </Text>
+
+                  <Text color="black" fontSize="16px" fontWeight="600">
+                    {prerak?.first_name} {prerak?.last_name}
+                    {prerak?.district
+                      ? `(${prerak?.district}, ${prerak?.block})`
+                      : ""}
+                  </Text>
+                </HStack>
+
+                <HStack alignItems={"flex-start"}>
+                  <Text
+                    color="textMaroonColor.400"
+                    fontSize="16px"
+                    fontWeight="600"
+                    mt={5}
+                  >
+                    {`${t("LEARNERS_NAME")}:`}
+                  </Text>
+                  <HStack flex={"Auto"} flexWrap={"wrap"}>
+                    {selectedRows?.map((item) => {
                       return (
-                        <Text mt={5} key={item?.id}>
-                          {item?.first_name} {item?.last_name}({item?.id}),
-                        </Text>
+                        <Chip key={item?.id} mt={5}>
+                          {item?.first_name} {item?.last_name}
+                          {item?.district
+                            ? `(${item?.district}, ${item?.block})`
+                            : ""}
+                        </Chip>
                       );
                     })}
                   </HStack>
-                </Form>
-
-                <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{t("DEACTIVATE_MSG")}</BodyMedium>
-                  </HStack>
-                </Alert>
+                </HStack>
+                <Filter
+                  {...{
+                    filterfunction,
+                    setFilterfunction,
+                    clearvalue,
+                    setclearvalue,
+                  }}
+                />
+                <HStack justifyContent="space-between"></HStack>
               </Modal.Body>
               <Modal.Footer>
                 <HStack justifyContent="space-between" width="100%">
@@ -384,7 +372,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
                     onPress={() => {
-                      assignToPrerak(viewData?.id);
+                      assignToPrerak();
                     }}
                   >
                     {t("CONFIRM")}
@@ -447,3 +435,207 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     </Layout>
   );
 }
+
+export const Filter = ({
+  filterfunction,
+  setFilterfunction,
+  clearvalue,
+  setclearvalue,
+}) => {
+  const { t } = useTranslation();
+  const [facilitator, setFacilitator] = React.useState([]);
+  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
+
+  // facilitator pagination
+  const [isMore, setIsMore] = React.useState("");
+
+  const setFilterObject = (data) => {
+    if (data?.district) {
+      const { district } = data;
+      const { block } = data;
+      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+    }
+    setFilterfunction(data);
+    setQueryParameters(data);
+  };
+
+  const schema = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: "DISTRICT",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
+          enum: getDistrictsAll?.map((item, i) => item?.district_name),
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: "BLOCKS",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getBlocksAll?.map((item, i) => item?.block_name),
+          enum: getBlocksAll?.map((item, i) => item?.block_name),
+        },
+        uniqueItems: true,
+      },
+    },
+  };
+
+  const uiSchema = {
+    district: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+    block: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+  };
+
+  React.useEffect(async () => {
+    let name = "RAJASTHAN";
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name,
+    });
+    setgetDistrictsAll(getDistricts?.districts);
+  }, []);
+
+  React.useEffect(async () => {
+    let blockData = [];
+    if (filterfunction?.district?.length > 0) {
+      blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filterfunction?.district,
+      });
+    }
+    if (Array.isArray(blockData)) {
+      setGetBlocksAll(blockData);
+    }
+  }, [filterfunction?.district]);
+
+  React.useEffect(() => {
+    const facilitatorDetails = async () => {
+      const result = await facilitatorRegistryService.filter(facilitatorFilter);
+      const newData = result?.data?.data?.map((e) => ({
+        value: e?.id,
+        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+      }));
+      setIsMore(
+        parseInt(`${result?.data?.currentPage}`) <
+          parseInt(`${result?.data?.totalPages}`)
+      );
+      setFacilitator(newData);
+    };
+    facilitatorDetails();
+  }, [facilitatorFilter]);
+
+  const onChange = async (data) => {
+    const { district, block } = data?.formData || {};
+    setFilterObject({
+      ...filterfunction,
+      ...(district ? { district } : {}),
+      ...(block ? { block } : {}),
+    });
+  };
+
+  React.useEffect(() => {
+    setFacilitatorFilter({});
+    setFilterfunction({});
+    setFilterObject({});
+    setclearvalue(false);
+  }, [clearvalue]);
+
+  return (
+    <VStack space={8} py="5">
+      <HStack space={3}>
+        <Form
+          schema={schema}
+          uiSchema={uiSchema}
+          onChange={onChange}
+          validator={validator}
+          formData={filterfunction}
+          templates={{
+            FieldTemplate: CustomFieldTemplate,
+          }}
+        >
+          <Button display={"none"} type="submit"></Button>
+        </Form>
+        <VStack
+          borderLeftColor={"dividerColor"}
+          borderLeftWidth={"2px"}
+          pl={2}
+          flex={1}
+          space={4}
+        >
+          <Text bold>{t("PRERAK_LIST")}</Text>
+          <Input
+            w="100%"
+            height="32px"
+            placeholder="search"
+            variant="outline"
+            onChange={(e) => {
+              debounce(
+                setFacilitatorFilter({
+                  ...facilitatorFilter,
+                  search: e.nativeEvent.text,
+                  page: 1,
+                }),
+                3000
+              );
+            }}
+          />
+          <RadioBtn
+            directionColumn={"column"}
+            value={
+              filterfunction?.facilitator ? filterfunction?.facilitator : []
+            }
+            onChange={(e) => {
+              setFilterfunction({ ...filterfunction, facilitator: e });
+            }}
+            schema={{
+              grid: 1,
+              _hstack: {
+                maxH: 130,
+                overflowY: "scroll",
+              },
+            }}
+            options={{
+              enumOptions: facilitator,
+            }}
+          />
+          {isMore && (
+            <Button
+              onPress={(e) =>
+                setFacilitatorFilter({
+                  ...facilitatorFilter,
+                  page:
+                    (facilitatorFilter?.page
+                      ? parseInt(facilitatorFilter?.page)
+                      : 1) + 1,
+                })
+              }
+              pr="2"
+            >
+              {t("MORE")}
+            </Button>
+          )}
+        </VStack>
+      </HStack>
+    </VStack>
+  );
+};

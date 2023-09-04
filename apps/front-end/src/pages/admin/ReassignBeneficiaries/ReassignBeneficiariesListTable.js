@@ -3,13 +3,36 @@ import {
   AdminTypo,
   enumRegistryService,
 } from "@shiksha/common-lib";
-import { ChipStatus } from "component/BeneficiaryStatus";
+import Chip, { ChipStatus, ChipStatusCount } from "component/BeneficiaryStatus";
 import { HStack, VStack, Image, ScrollView, Text } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+
+const PrerakName = (row) => {
+  return (
+    <VStack alignItems={"center"} space="2">
+      <Text color={"textGreyColor.100"} fontSize={"13px"}>
+        {row?.first_name + " "}
+        {row?.last_name ? row?.last_name : ""}
+      </Text>
+    </VStack>
+  );
+};
+
+const statusCount = (row) => {
+  return row?.status_count.map((item) => {
+    return (
+      <Text key={item} cursor={"pointer"} mx={2}>
+        <ChipStatus statusCount={item?.status}>
+          {item?.count === 0 ? "0" : item?.count}
+        </ChipStatus>
+      </Text>
+    );
+  });
+};
 
 export const CustomStyles = {
   rows: {
@@ -39,7 +62,7 @@ const action = (row, t, navigate) => {
     <AdminTypo.Secondarybutton
       my="3"
       onPress={() => {
-        navigate(`/admin/learners/reassignList/learnerList/${row?.aadhar_no}`);
+        navigate(`/admin/learners/reassignList/learnerList/${row?.id}`);
       }}
     >
       {t("VIEW")}
@@ -52,32 +75,32 @@ function Table({
   facilitator,
   paginationTotalRows,
   loading,
-  duplicateData,
+  data,
   setFilter,
   filter,
 }) {
   const { t } = useTranslation();
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
 
-  console.log("aadhar_no");
+  console.log("data", data);
 
   const columns = (e) => [
     {
       name: t("PRERAK_NAME"),
-      selector: (row) => row?.aadhar_no,
+      selector: (row) => PrerakName(row),
       sortable: true,
       attr: "aadhaar",
       wrap: true,
     },
     {
       name: t("LEARNER_COUNT"),
-      selector: (row) => row?.count,
+      selector: (row) => row?.learner_total_count,
       sortable: true,
       attr: "count",
     },
     {
       name: t("LEARNER_DISTRIBUTION"),
-      selector: (row) => row?.count,
+      selector: (row) => statusCount(row),
       sortable: true,
       attr: "count",
     },
@@ -112,7 +135,7 @@ function Table({
             selector: (row) => action(row, t, navigate),
           },
         ]}
-        data={duplicateData}
+        data={data}
         persistTableHead
         progressPending={loading}
         pagination

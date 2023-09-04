@@ -43,7 +43,7 @@ export default [
     component: ReassignBeneficiariesList,
   },
   {
-    path: "/admin/learners/reassignList/learnerList/:aadhaarNo",
+    path: "/admin/learners/reassignList/learnerList/:prerakId",
     component: ReassignBeneficiaries,
   },
   {

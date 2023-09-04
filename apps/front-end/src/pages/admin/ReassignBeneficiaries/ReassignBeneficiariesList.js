@@ -19,10 +19,14 @@ import {
   useWindowSize,
   benificiaryRegistoryService,
   geolocationRegistryService,
+  facilitatorRegistryService,
+  setQueryParameters,
+  debounce,
 } from "@shiksha/common-lib";
 import Table from "./ReassignBeneficiariesListTable";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
+import { useNavigate } from "react-router-dom";
 
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
@@ -58,28 +62,24 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const ref = React.useRef(null);
   const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
-  const [duplicateData, setduplicateData] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [filter, setFilter] = React.useState({});
-  const [data, setData] = React.useState([]);
-  const [facilitator, setFacilitator] = React.useState([]);
-  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
+  const [data, setData] = React.useState();
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
+
+  const navigate = useNavigate();
 
   // facilitator pagination
 
   React.useEffect(async () => {
-    const dupliData =
-      await benificiaryRegistoryService.getDuplicateBeneficiariesList(filter);
-    console.log("filter", dupliData?.data);
-    setPaginationTotalRows(dupliData?.count || 0);
-    setduplicateData(dupliData?.data);
+    const learnerStatus =
+      await facilitatorRegistryService.learnerStatusDistribution(filter);
+    setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
+    setData(learnerStatus?.data?.data);
     setLoading(false);
   }, [filter]);
-
-  console.log("data", duplicateData);
 
   React.useEffect(async () => {
     let name = "RAJASTHAN";
@@ -99,27 +99,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setGetBlocksAll(blockData);
   }, [filter?.district]);
 
-  React.useEffect(async () => {
-    setLoading(true);
-    const result = await benificiaryRegistoryService.beneficiariesFilter(
-      filter
-    );
-    console.log("result", result);
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
-    setLoading(false);
-  }, [filter]);
-
   const setFilterObject = (data) => {
-    if (data?.district) {
-      const { district } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district });
-    }
     setFilter(data);
     setQueryParameters(data);
   };
+
+  console.log("filter", filter);
 
   const schema = {
     type: "object",
@@ -207,7 +192,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
-              onPress={(e) => navigate("/admin/learners")}
+              onPress={() => navigate("/admin/learners")}
             />
             <AdminTypo.H1 px="5">{t("REASSIGN_LEARNERS")}</AdminTypo.H1>
             <Image
@@ -253,8 +238,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   variant="outline"
                   onChange={(e) => {
                     debounce(
-                      setFacilitatorFilter({
-                        ...facilitatorFilter,
+                      setFilter({
+                        ...filter,
                         search: e.nativeEvent.text,
                         page: 1,
                       }),
@@ -279,20 +264,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
-          <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
-          >
-            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-              <Table
-                filter={filter}
-                setFilter={setFilterObject}
-                paginationTotalRows={paginationTotalRows}
-                duplicateData={duplicateData}
-                loading={loading}
-              />
-            </Box>
-          </ScrollView>
+          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+            <Table
+              filter={filter}
+              setFilter={setFilterObject}
+              paginationTotalRows={paginationTotalRows}
+              data={data}
+              loading={loading}
+            />
+          </Box>
         </Box>
       </HStack>
     </Layout>

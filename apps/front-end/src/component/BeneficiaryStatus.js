@@ -37,6 +37,7 @@ export default function Chip({
 // ChipStatus
 export function ChipStatus({
   status,
+  statusCount,
   sufix,
   prefix,
   is_duplicate,
@@ -49,7 +50,13 @@ export function ChipStatus({
   const { t } = useTranslation();
 
   React.useEffect(() => {
-    switch (status && status?.toLowerCase()) {
+    switch (
+      status
+        ? status?.toLowerCase()
+        : statusCount
+        ? statusCount?.toLowerCase()
+        : ""
+    ) {
       case "rejected":
         setNewStatus(t("REJECTED"));
         setTextColor("#fff");
@@ -149,7 +156,7 @@ export function ChipStatus({
       label={
         <>
           <>{prefix}</>
-          {newStatus}
+          {status ? newStatus : ""}
           <>{sufix}</>
         </>
       }
