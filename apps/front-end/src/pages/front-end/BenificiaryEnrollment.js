@@ -133,6 +133,7 @@ export default function BenificiaryEnrollment() {
             "not_enrolled",
             "applied_but_pending",
             "enrollment_rejected",
+            "enrollment_awaited",
           ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
             <ItemComponent
               title={t("ENROLLMENT_RECEIPT")}
