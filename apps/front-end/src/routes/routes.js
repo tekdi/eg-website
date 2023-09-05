@@ -105,6 +105,13 @@ const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
 
+const CampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/CampDashboard")
+);
+const CampRegistration = React.lazy(() =>
+  import("pages/front-end/Camp/CampRegistration")
+);
+
 export default [
   { path: "/form", component: Home },
   {
@@ -219,6 +226,14 @@ export default [
   {
     path: "/facilitatorqualification",
     component: FacilitatorQualification,
+  },
+  {
+    path: "/CampDashboard",
+    component: CampDashboard,
+  },
+  {
+    path: "/CampDashboard/CampRegistration",
+    component: CampRegistration,
   },
   { path: "*", component: Dashboard },
 ];
