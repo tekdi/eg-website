@@ -17,7 +17,6 @@ import EnrollmentMessage from "component/EnrollmentMessage";
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  // const [subject, setSubject] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
@@ -67,7 +66,8 @@ export default function BenificiaryEnrollment() {
             }
           />
 
-          {![
+          {[
+            "enrolled",
             "not_enrolled",
             "enrollment_awaited",
             "enrollment_rejected",
