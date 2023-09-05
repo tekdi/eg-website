@@ -421,7 +421,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               <Table
                 filter={filter}
                 setFilter={setFilterObject}
-                facilitator={userTokenInfo}
+                facilitator={userTokenInfo?.authUser}
                 facilitaorStatus={facilitaorStatus}
                 paginationTotalRows={paginationTotalRows}
                 data={data}
