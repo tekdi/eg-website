@@ -17,7 +17,6 @@ import EnrollmentMessage from "component/EnrollmentMessage";
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  // const [subject, setSubject] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
@@ -67,7 +66,8 @@ export default function BenificiaryEnrollment() {
             }
           />
 
-          {![
+          {[
+            "enrolled",
             "not_enrolled",
             "enrollment_awaited",
             "enrollment_rejected",
@@ -117,7 +117,11 @@ export default function BenificiaryEnrollment() {
                 ? {
                     onlyField: ["enrollment_status"],
                   }
-                : ["applied_but_pending", "enrollment_rejected"].includes(
+                : [
+                    "applied_but_pending",
+                    "enrollment_rejected",
+                    "enrollment_awaited",
+                  ].includes(
                     benificiary?.program_beneficiaries?.enrollment_status
                   )
                 ? {
@@ -133,6 +137,7 @@ export default function BenificiaryEnrollment() {
             "not_enrolled",
             "applied_but_pending",
             "enrollment_rejected",
+            "enrollment_awaited",
           ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
             <ItemComponent
               title={t("ENROLLMENT_RECEIPT")}
