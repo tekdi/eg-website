@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 
-const columns = (t, navigate) => [
+const columns = (t, navigate, filter) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
@@ -126,7 +126,9 @@ const columns = (t, navigate) => [
         <AdminTypo.Secondarybutton
           my="3"
           onPress={() => {
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
+              state: filter,
+            });
           }}
         >
           {t("VIEW")}
@@ -317,7 +319,7 @@ function EnrollmentVerificationList({ footerLinks }) {
               </ScrollView>
               <DataTable
                 customStyles={tableCustomStyles}
-                columns={[...columns(t, navigate)]}
+                columns={[...columns(t, navigate, filter)]}
                 data={data}
                 persistTableHead
                 progressPending={loading}
