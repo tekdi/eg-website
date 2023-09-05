@@ -117,7 +117,11 @@ export default function BenificiaryEnrollment() {
                 ? {
                     onlyField: ["enrollment_status"],
                   }
-                : ["applied_but_pending", "enrollment_rejected"].includes(
+                : [
+                    "applied_but_pending",
+                    "enrollment_rejected",
+                    "enrollment_awaited",
+                  ].includes(
                     benificiary?.program_beneficiaries?.enrollment_status
                   )
                 ? {
