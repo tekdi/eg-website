@@ -67,11 +67,16 @@ export default function BenificiaryEnrollment() {
           />
 
           {[
+            "identified",
+            "ready_to_enroll",
             "enrolled",
             "not_enrolled",
             "enrollment_awaited",
             "enrollment_rejected",
-          ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
+          ].includes(
+            benificiary?.program_beneficiaries?.enrollment_status ||
+              benificiary?.program_beneficiaries?.status
+          ) && (
             <ItemComponent
               title={t("ENROLLMENT_DETAILS")}
               schema={schema1?.properties["edit_enrollement"]}
@@ -118,6 +123,7 @@ export default function BenificiaryEnrollment() {
                     onlyField: ["enrollment_status"],
                   }
                 : [
+                    "identified",
                     "applied_but_pending",
                     "enrollment_rejected",
                     "enrollment_awaited",
