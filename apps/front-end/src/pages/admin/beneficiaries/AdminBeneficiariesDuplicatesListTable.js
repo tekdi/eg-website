@@ -52,9 +52,7 @@ const District = (row) => {
     <VStack alignItems={"center"} space="2">
       {uniqueDistrictsArray.map((item) => {
         return (
-          <Text key={item} color={"textGreyColor.100"} fontSize={"13px"}>
-            {item || ""}
-          </Text>
+          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
         );
       })}
     </VStack>
@@ -69,9 +67,7 @@ const Block = (row) => {
     <VStack alignItems={"center"} space="2">
       {uniqueblockArray.map((item) => {
         return (
-          <Text key={item} color={"textGreyColor.100"} fontSize={"13px"}>
-            {item || ""}
-          </Text>
+          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
         );
       })}
     </VStack>
