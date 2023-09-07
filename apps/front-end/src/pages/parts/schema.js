@@ -16,12 +16,12 @@ export default {
         middle_name: {
           type: "string",
           title: "MIDDLE_NAME",
-          // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         last_name: {
           type: "string",
           title: "LAST_NAME",
-          // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
       },
     },
