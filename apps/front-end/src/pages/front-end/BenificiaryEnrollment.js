@@ -17,7 +17,6 @@ import EnrollmentMessage from "component/EnrollmentMessage";
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  // const [subject, setSubject] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
@@ -67,11 +66,17 @@ export default function BenificiaryEnrollment() {
             }
           />
 
-          {![
+          {[
+            "identified",
+            "ready_to_enroll",
+            "enrolled",
             "not_enrolled",
             "enrollment_awaited",
             "enrollment_rejected",
-          ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
+          ].includes(
+            benificiary?.program_beneficiaries?.enrollment_status ||
+              benificiary?.program_beneficiaries?.status
+          ) && (
             <ItemComponent
               title={t("ENROLLMENT_DETAILS")}
               schema={schema1?.properties["edit_enrollement"]}
@@ -117,7 +122,12 @@ export default function BenificiaryEnrollment() {
                 ? {
                     onlyField: ["enrollment_status"],
                   }
-                : ["applied_but_pending", "enrollment_rejected"].includes(
+                : [
+                    "identified",
+                    "applied_but_pending",
+                    "enrollment_rejected",
+                    "enrollment_awaited",
+                  ].includes(
                     benificiary?.program_beneficiaries?.enrollment_status
                   )
                 ? {
@@ -133,6 +143,7 @@ export default function BenificiaryEnrollment() {
             "not_enrolled",
             "applied_but_pending",
             "enrollment_rejected",
+            "enrollment_awaited",
           ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
             <ItemComponent
               title={t("ENROLLMENT_RECEIPT")}

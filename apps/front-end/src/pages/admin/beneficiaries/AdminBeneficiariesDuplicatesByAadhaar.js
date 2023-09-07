@@ -322,12 +322,7 @@ export default function DuplicateView({ footerLinks }) {
               </Modal.Footer>
             </Modal.Content>
           </Modal>
-          <Modal
-            isOpen={modalConfirmVisible}
-            onClose={() => setModalConfirmVisible(false)}
-            avoidKeyboard
-            size="xl"
-          >
+          <Modal isOpen={modalConfirmVisible} avoidKeyboard size="xl">
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Body>
