@@ -435,15 +435,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 {t("SCAN_QR_CODE")}
               </FrontEndTypo.Secondarybutton> */}
-              {/* <FrontEndTypo.Primarybutton
-                onPress={() => {
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`, {
-                    state: "/",
-                  });
-                }}
-              >
-                {t("AADHAR_UPLOAD_KYC")}
-              </FrontEndTypo.Primarybutton> */}
             </Stack>
           )}
           {isDocumentUpload() && (
