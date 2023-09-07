@@ -1,5 +1,5 @@
 import { IconByName, AdminTypo } from "@shiksha/common-lib";
-import { HStack, VStack, Image } from "native-base";
+import { HStack, VStack, Image, Text } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -42,6 +42,38 @@ const action = (row, t, navigate) => {
   );
 };
 
+const District = (row) => {
+  const districtsString = row?.districts;
+  const districtsArray = districtsString
+    .split(",")
+    .map((districts) => districts.trim());
+  const uniqueDistrictsArray = [...new Set(districtsArray)];
+  return (
+    <VStack alignItems={"center"} space="2">
+      {uniqueDistrictsArray.map((item) => {
+        return (
+          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
+        );
+      })}
+    </VStack>
+  );
+};
+
+const Block = (row) => {
+  const blockString = row?.block;
+  const blockArray = blockString.split(",").map((block) => block.trim());
+  const uniqueblockArray = [...new Set(blockArray)];
+  return (
+    <VStack alignItems={"center"} space="2">
+      {uniqueblockArray.map((item) => {
+        return (
+          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
+        );
+      })}
+    </VStack>
+  );
+};
+
 // Table component
 function Table({
   facilitator,
@@ -58,6 +90,20 @@ function Table({
       selector: (row) => row?.aadhar_no,
       sortable: true,
       attr: "aadhaar",
+      wrap: true,
+    },
+    {
+      name: t("DISTRICT"),
+      selector: (row) => District(row),
+
+      attr: "name",
+      wrap: true,
+    },
+    {
+      name: t("BLOCK"),
+      selector: (row) => Block(row),
+
+      attr: "name",
       wrap: true,
     },
     {

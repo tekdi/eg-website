@@ -80,7 +80,7 @@ const columns = (t, navigate) => [
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.program_beneficiaries?.id,
+    selector: (row) => row?.program_beneficiaries?.facilitator_id,
   },
   {
     name: t("PRERAK_NAME"),

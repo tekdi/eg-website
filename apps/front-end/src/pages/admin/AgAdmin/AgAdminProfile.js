@@ -170,7 +170,6 @@ export default function AgAdminProfile({ footerLinks }) {
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
-        {/* header profile */}
         <Box>
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
@@ -291,9 +290,7 @@ export default function AgAdminProfile({ footerLinks }) {
             <Button rounded={"full"}>{t("Assign to Other Prerak")}</Button>
           </HStack>
         </Box>
-        {/* header profile end*/}
 
-        {/* Profle box */}
         <Box
           borderWidth={"1px"}
           borderColor={"primary.200"}
