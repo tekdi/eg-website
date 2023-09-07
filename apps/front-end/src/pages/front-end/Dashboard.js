@@ -367,12 +367,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </RedOutlineButton>
               <Stack px="3">
                 {facilitator?.program_faciltators?.status ===
-                "pragati_mobilizer" ? (
+                  "pragati_mobilizer" && (
                   <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
                     {t("ITS_TIME_TO_START_MOBILIZING")}
                   </FrontEndTypo.H2>
-                ) : (
-                  <React.Fragment />
                 )}
                 {/* <Alert mx={"3"} status="info" colorScheme="info" my="4">
                   <VStack space={"2"} flexShrink={"1"}>
@@ -408,12 +406,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
-              <FrontEndTypo.H1 color="textRed.300" bold>
-                {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
-              </FrontEndTypo.H1>
-              <FrontEndTypo.H2 bold>
-                {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-              </FrontEndTypo.H2>
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>
+                    {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
+                  </BodyMedium>
+                </HStack>
+              </Alert>
+
               <FrontEndTypo.Primarybutton
                 onPress={(e) =>
                   navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
