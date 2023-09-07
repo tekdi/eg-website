@@ -281,14 +281,14 @@ export default function AgAdminProfile({ footerLinks }) {
               )}
             </HStack>
           </HStack>
-          <HStack mt="6" justifyContent={"space-between"}>
+          {/* <HStack mt="6" justifyContent={"space-between"}>
             <AdminTypo.Secondarybutton
               rightIcon={<IconByName name="MessageLineIcon" />}
             >
               {t("Add Comment For Prerak")}
             </AdminTypo.Secondarybutton>
             <Button rounded={"full"}>{t("Assign to Other Prerak")}</Button>
-          </HStack>
+          </HStack> */}
         </Box>
 
         <Box
