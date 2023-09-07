@@ -919,5 +919,10 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "ENROLLMENT_RECIEPT":"Enrollment Reciept",
+  "DOCUMENTATION_DETAILS":"Documentation Details",
+  "FATHER_NAME":"Father Name",
+  "MOTHER_NAME":"Mother Name",
+  "VIEW_JOURNEY":"View Journey"
 }
