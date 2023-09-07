@@ -6,8 +6,9 @@ import {
   FrontEndTypo,
   objProps,
   arrList,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image } from "native-base";
+import { HStack, VStack, Stack, Image, Alert } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -140,12 +141,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         <VStack space="5">
           <InfoBox status={facilitator?.status} progress={progress} />
           <Stack>
-            {console.log("facilitator", progress)}
             {facilitator?.program_faciltators?.status ===
               "selected_for_onboarding" && progress !== 100 ? (
-              <FrontEndTypo.H2 pl="3" color="textRed.400" bold>
-                {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
-              </FrontEndTypo.H2>
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>
+                    {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+                  </BodyMedium>
+                </HStack>
+              </Alert>
             ) : (
               ""
             )}
@@ -406,7 +411,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <FrontEndTypo.H1 color="textRed.300" bold>
                 {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
               </FrontEndTypo.H1>
-
               <FrontEndTypo.H2 bold>
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
               </FrontEndTypo.H2>
