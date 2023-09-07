@@ -140,6 +140,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         <VStack space="5">
           <InfoBox status={facilitator?.status} progress={progress} />
           <Stack>
+            {console.log("facilitator", progress)}
+            {facilitator?.program_faciltators?.status ===
+              "selected_for_onboarding" && progress !== 100 ? (
+              <FrontEndTypo.H2 pl="3" color="textRed.400" bold>
+                {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+              </FrontEndTypo.H2>
+            ) : (
+              ""
+            )}
             <HStack py="6" flex="1" px="4">
               <Image
                 source={{
@@ -352,9 +361,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </FrontEndTypo.H4>
               </RedOutlineButton>
               <Stack px="3">
-                <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
-                  {t("ITS_TIME_TO_START_MOBILIZING")}
-                </FrontEndTypo.H2>
+                {facilitator?.program_faciltators?.status ===
+                "pragati_mobilizer" ? (
+                  <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
+                    {t("ITS_TIME_TO_START_MOBILIZING")}
+                  </FrontEndTypo.H2>
+                ) : (
+                  <React.Fragment />
+                )}
                 {/* <Alert mx={"3"} status="info" colorScheme="info" my="4">
                   <VStack space={"2"} flexShrink={"1"}>
                     <HStack
@@ -389,6 +403,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
+              <FrontEndTypo.H1 color="textRed.300" bold>
+                {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
+              </FrontEndTypo.H1>
+
               <FrontEndTypo.H2 bold>
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
               </FrontEndTypo.H2>
@@ -412,7 +430,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 {t("SCAN_QR_CODE")}
               </FrontEndTypo.Secondarybutton> */}
-              <FrontEndTypo.Primarybutton
+              {/* <FrontEndTypo.Primarybutton
                 onPress={() => {
                   navigate(`/aadhaar-kyc/${facilitator?.id}/upload`, {
                     state: "/",
@@ -420,7 +438,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 }}
               >
                 {t("AADHAR_UPLOAD_KYC")}
-              </FrontEndTypo.Primarybutton>
+              </FrontEndTypo.Primarybutton> */}
             </Stack>
           )}
           {isDocumentUpload() && (
