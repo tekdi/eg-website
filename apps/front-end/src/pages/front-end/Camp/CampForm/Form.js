@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack } from "native-base";
+import { Alert, Box, HStack, TextArea } from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -13,6 +13,7 @@ import {
   getOptions,
   validation,
   sendAndVerifyOtp,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +25,6 @@ import {
   onError,
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
-// import PhotoUpload from "";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -91,21 +91,6 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     getLocation();
-    // const qData = await benificiaryRegistoryService.getOne(id);
-    // const finalData = qData.result;
-    // setFormData(qData.result);
-    // setFormData({
-    //   ...formData,
-    //   lat: finalData?.lat,
-    //   long: finalData?.long,
-    //   address: finalData?.address == "null" ? "" : finalData?.address,
-    //   state: finalData?.state,
-    //   district: finalData?.district,
-    //   block: finalData?.block,
-    //   village: finalData?.village,
-    //   grampanchayat:
-    //     finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
-    // });
   }, []);
 
   const onPressBackButton = async () => {
@@ -115,19 +100,11 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  console.log("formData", formData);
+  // console.log("formData", formData);
 
   const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-    qualification_ids: {
-      "ui:widget": "checkboxes",
+    facilities: {
+      "ui:widget": "MultiCheck",
     },
   };
 
@@ -145,14 +122,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (nextIndex === "qualification_details") {
           navigate("/profile");
         } else {
-          navigate("/CampDashboard/CampRegistration");
+          navigate("/camp/campRegistration");
         }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
       } else if (nextIndex === "aadhaar_details") {
-        navigate(`/profile/edit/upload`);
+        navigate(`/camp/campRegistration/edit/photos`);
       } else if (nextIndex !== undefined) {
-        navigate(`/CampDashboard/CampRegistration/edit/${nextIndex}`);
+        navigate(`/camp/campRegistration/edit/${nextIndex}`);
       } else {
         navigate(`/aadhaar-kyc/${facilitator?.id}`, {
           state: "/profile",
@@ -179,46 +156,18 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "id",
           filters: { type: "qualification" },
         });
-        if (newSchema?.properties?.qualification_master_id) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex =
-                  newSchema?.properties?.qualification_master_id?.enum[index];
-              }
-            }
-          );
-          if (
-            valueIndex !== "" &&
-            formData?.qualification_master_id == valueIndex
-          ) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
-        }
       }
-      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
-        const { id } = userTokenInfo?.authUser;
-        newSchema = getOptions(newSchema, {
-          key: "qualification_reference_document_id",
-          extra: {
-            userId: id,
-            document_type: formData?.type_of_document,
-          },
-        });
-      }
+    }
 
-      if (schema?.["properties"]?.["qualification_ids"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_ids",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
+    if (schema?.["properties"]?.["facilities"]) {
+      setLoading(true);
+      newSchema = getOptions(newSchema, {
+        key: "facilities",
+        arr: qualifications,
+        title: "name",
+        value: "id",
+      });
+      setLoading(false);
     }
 
     if (schema?.properties?.state) {
@@ -238,81 +187,42 @@ export default function App({ userTokenInfo, footerLinks }) {
         block: formData?.block,
       });
     }
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
-    }
-    if (schema?.properties?.designation) {
-      newSchema = getOptions(newSchema, {
-        key: "designation",
-        arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
-        title: "title",
-        value: "value",
-      });
-    }
-    if (schema?.["properties"]?.["marital_status"]) {
-      newSchema = getOptions(newSchema, {
-        key: "social_category",
-        arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-
-      newSchema = getOptions(newSchema, {
-        key: "marital_status",
-        arr: enumObj?.MARITAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-    }
-
-    if (schema?.["properties"]?.["device_type"]) {
-      newSchema = getOptions(newSchema, {
-        key: "device_type",
-        arr: enumObj?.MOBILE_TYPE,
-        title: "title",
-        value: "value",
-      });
-    }
-
-    if (schema?.["properties"]?.["document_id"]) {
-      const { id } = userTokenInfo?.authUser;
-      newSchema = getOptions(newSchema, {
-        key: "document_id",
-        extra: { userId: id },
-      });
-    }
     setLoading(false);
-    setSchema(newSchema);
   }, [page, formData, qualifications]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      const newStep = step ? step : newSteps[0];
+      const newStep = step || newSteps[0];
+      let schemaData = properties[newStep];
       setPage(newStep);
-      setSchema(properties[newStep]);
+      setSchema(schemaData);
       setPages(newSteps);
-      console.log("pageee", {
-        newSteps,
-        newStep,
-        schema: properties[newStep],
-      });
+
+      if (step === "kit") {
+        const { kit_received } = schemaData.properties;
+        const required = schemaData?.required.filter((item) =>
+          ["kit_received"].includes(item)
+        );
+        const newSchema = {
+          ...schemaData,
+          properties: { kit_received },
+          required: required,
+        };
+        setSchema(newSchema);
+      }
     }
   }, [step]);
 
   const formSubmitUpdate = async (data, overide) => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || "";
     if (id) {
       setLoading(true);
       const result = await facilitatorRegistryService.profileStapeUpdate({
         ...data,
         page_type: step,
-        ...(overide ? overide : {}),
+        ...(overide || {}),
         id: id,
       });
       setLoading(false);
@@ -325,35 +235,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (data?.OWNER_OF_THE_PROPERTY?.mobile) {
         validation({
           data: data?.OWNER_OF_THE_PROPERTY?.mobile,
-          key: "mobile",
+          key: "OWNER_OF_THE_PROPERTY",
           errors,
           message: `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
           type: "mobile",
         });
       }
     }
-
-    if (step === "basic_details") {
-      ["first_name", "middle_name", "last_name"].forEach((key) => {
-        validation({
-          data:
-            typeof data?.[key] === "string"
-              ? data?.[key].replaceAll(" ", "")
-              : data?.[key],
-          key,
-          errors,
-          message: `${t("REQUIRED_MESSAGE")} ${t(
-            schema?.properties?.[key]?.title
-          )}`,
-        });
-        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
-        }
-      });
-    }
-
     return errors;
   };
 
@@ -448,64 +336,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_mobile") {
-      if (
-        data?.mobile?.toString()?.length === 10 &&
-        facilitator?.mobile !== data?.mobile
-      ) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-          setMobileConditon(false);
-        } else {
-          setMobileConditon(true);
-        }
-        if (schema?.properties?.otp) {
-          const { otp, ...properties } = schema?.properties;
-          const required = schema?.required.filter((item) => item !== "otp");
-          setSchema({ ...schema, properties, required });
-          setFormData((e) => {
-            const { otp, ...fData } = e;
-            return fData;
-          });
-          setOtpButton(false);
-        }
-      }
-    }
-    setFormData(newData);
-    if (id === "root_contact_number") {
-      if (data?.contact_number?.toString()?.length < 10) {
-        const newErrors = {
-          contact_number: {
-            __errors: [t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")],
-          },
-        };
-        setErrors(newErrors);
-      }
-      if (userTokenInfo?.authUser?.mobile === data?.contact_number) {
-        const newErrors = {
-          contact_number: {
-            __errors: [t("REFERENCE_NUMBER_SHOULD_NOT_BE_SAME")],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
-    if (id === "root_name") {
-      if (!data?.name?.length) {
-        const newErrors = {
-          name: {
-            __errors: [t("NAME_CANNOT_BE_EMPTY")],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
 
     if (id === "root_state") {
       await setDistric({
@@ -527,7 +357,32 @@ export default function App({ userTokenInfo, footerLinks }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
+
+    if (id === "root_kit_received") {
+      if (data?.kit_received === "yes") {
+        const newSchema = schema1?.properties?.kit;
+        setSchema(newSchema);
+      } else if (data?.kit_received === "no") {
+        console.log("reached");
+        const properties = schema1.properties;
+        const newSteps = Object.keys(properties);
+        const newStep = step || newSteps[0];
+        let schemaData = properties[newStep];
+        const { kit_received } = schemaData.properties;
+        const required = schemaData?.required.filter((item) =>
+          ["kit_received"].includes(item)
+        );
+        const newSchema = {
+          ...schemaData,
+          properties: { kit_received },
+          required: required,
+        };
+        setSchema(newSchema);
+      }
+    }
   };
+
+  console.log("kit", schema);
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
@@ -550,9 +405,8 @@ export default function App({ userTokenInfo, footerLinks }) {
           ),
         };
       }
-      console.log("newdata", newdata);
       const data = await formSubmitUpdate(newdata);
-      // }
+
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
@@ -560,19 +414,6 @@ export default function App({ userTokenInfo, footerLinks }) {
       }
     }
   };
-
-  // if (page === "upload") {
-  //   return (
-  //     <PhotoUpload
-  //       {...{
-  //         formData,
-  //         cameraFile,
-  //         setCameraFile,
-  //         aadhar_no: facilitator?.aadhar_no,
-  //       }}
-  //     />
-  //   );
-  // }
 
   const onClickSubmit = (backToProfile) => {
     if (formRef.current.validateForm()) {
@@ -617,7 +458,7 @@ export default function App({ userTokenInfo, footerLinks }) {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               customValidate,
@@ -627,27 +468,16 @@ export default function App({ userTokenInfo, footerLinks }) {
               transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
-            {mobileConditon && step === "contact_details" ? (
+            <Box>
               <FrontEndTypo.Primarybutton
-                mt="3"
-                variant={"primary"}
-                type="submit"
-                onPress={otpfunction}
+                isLoading={loading}
+                p="4"
+                mt="4"
+                onPress={() => onClickSubmit(false)}
               >
-                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+                {t("SAVE_AND_NEXT")}
               </FrontEndTypo.Primarybutton>
-            ) : (
-              <Box>
-                <FrontEndTypo.Primarybutton
-                  isLoading={loading}
-                  p="4"
-                  mt="4"
-                  onPress={() => onClickSubmit(false)}
-                >
-                  {t("SAVE_AND_NEXT")}
-                </FrontEndTypo.Primarybutton>
-              </Box>
-            )}
+            </Box>
           </Form>
         )}
       </Box>

@@ -17,12 +17,91 @@ import {
   Text,
   Progress,
   Center,
+  Avatar,
 } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function PrerakListView({ userTokenInfo, footerLinks }) {
+const Example = () => {
+  return (
+    <Center>
+      <Avatar.Group
+        _avatar={{
+          size: "lg",
+        }}
+        max={3}
+      >
+        <Avatar
+          bg="green.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+          }}
+        >
+          AJ
+        </Avatar>
+        <Avatar
+          bg="cyan.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+          }}
+        >
+          TE
+        </Avatar>
+        <Avatar
+          bg="indigo.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+          }}
+        >
+          JB
+        </Avatar>
+        <Avatar
+          bg="amber.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+          }}
+        >
+          TS
+        </Avatar>
+        <Avatar
+          bg="green.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+          }}
+        >
+          AJ
+        </Avatar>
+        <Avatar
+          bg="cyan.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+          }}
+        >
+          TE
+        </Avatar>
+        <Avatar
+          bg="indigo.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+          }}
+        >
+          JB
+        </Avatar>
+        <Avatar
+          bg="amber.500"
+          source={{
+            uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+          }}
+        >
+          TS
+        </Avatar>
+      </Avatar.Group>
+    </Center>
+  );
+};
+
+export default function CampDashboard({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const fa_id = localStorage.getItem("id");
   const { t } = useTranslation();
@@ -67,39 +146,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               14 {t("LEARNERS")}
             </AdminTypo.H2>
           </VStack>
-          <HStack>
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              _icon={{ size: "40px" }}
-            ></IconByName>
-            <IconByName
-              isDisabled
-              marginLeft={"-20px"}
-              name="AccountCircleLineIcon"
-              _icon={{ size: "40px" }}
-            ></IconByName>
-            <IconByName
-              marginLeft={"-20px"}
-              isDisabled
-              name="AccountCircleLineIcon"
-              _icon={{ size: "40px" }}
-            ></IconByName>
-            <IconByName
-              isDisabled
-              marginLeft={"-20px"}
-              name="AccountCircleLineIcon"
-              _icon={{ size: "40px" }}
-            ></IconByName>
-            <ImageView
-              source={{
-                uri: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-              }}
-              alt="Alternate Text"
-              width={"35px"}
-              height={"35px"}
-            />
-          </HStack>
+          <HStack>{Example()}</HStack>
         </HStack>
         <VStack mt={5}>
           <Center w="100%">
@@ -111,7 +158,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
         </VStack>
         <FrontEndTypo.Secondarybutton
           onPress={() => {
-            navigate(`/CampDashboard/CampRegistration`);
+            navigate(`/camp/CampRegistration`);
           }}
         >
           {t("START_CAMP_REGISTER")}

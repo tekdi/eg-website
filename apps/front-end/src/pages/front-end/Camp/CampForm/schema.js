@@ -3,7 +3,7 @@ export default {
   properties: {
     camp_location: {
       title: "CAMP_LOCATION",
-      step_name: "camp_location",
+      step_name: "CAMP_LOCATION",
       type: "object",
       required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
@@ -54,7 +54,7 @@ export default {
       },
     },
     property_details: {
-      step_name: "property_details",
+      step_name: "PROPERTY_DETAILS",
       title: "PROPERTY_TYPE",
       type: "object",
       required: ["property_type", "OWNER_OF_THE_PROPERTY"],
@@ -94,26 +94,14 @@ export default {
       },
     },
     facilities: {
-      step_name: "Facilities",
-      title: "FACILITIES_AT_CAMP",
+      step_name: "FACILITIES",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["facilities"],
       properties: {
-        learning_motivation: {
-          minItems: 1,
-          maxItems: 3,
-          label: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
+        facilities: {
+          label: "FACILITIES_AT_CAMP",
           type: "array",
           grid: 1,
-          format: "MultiCheck",
-          uniqueItems: true,
-        },
-        type_of_support_needed: {
-          minItems: 1,
-          maxItems: 3,
-          label: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
-          grid: 1,
-          type: "array",
           format: "MultiCheck",
           uniqueItems: true,
         },
@@ -122,26 +110,79 @@ export default {
     kit: {
       step_name: "KIT",
       type: "object",
-      required: ["gender", "marital_status", "social_category"],
+      required: [
+        "kit_received",
+        "kit_sufficient",
+        "kit_suggestion",
+        "kit_rating",
+      ],
       properties: {
-        gender: {
+        kit_received: {
           label: "DID_YOU_RECEIVE_A_KIT",
           type: "string",
           format: "radio",
           enumNames: ["YES", "NO"],
-          enum: ["Yes", "no"],
+          enum: ["yes", "no"],
         },
-        marital_status: {
-          label: "MARITAL_STATUS",
+        kit_sufficient: {
+          label: "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT",
           type: "string",
-          format: "CustomR",
           grid: 2,
+          format: "radio",
+          enumNames: ["YES", "NO"],
+          enum: ["yes", "no"],
         },
-        social_category: {
-          label: "SOCIAL_CATEGORY",
+        kit_suggestion: {
+          label: "KIT_SUGGESTION",
           type: "string",
-          format: "CustomR",
           grid: 2,
+          format: "textarea",
+        },
+        kit_rating: {
+          label: "RATE_KIT",
+          type: ["string", "number"],
+          format: "StarRating",
+          totalStars: 5,
+          ratingLabels: ["Poor", "Not Bad", "Average", "Good", "Amazing"],
+        },
+      },
+    },
+    photos: {
+      step_name: "photos",
+      type: "object",
+      required: ["building_view", "classroom_view", "other_view"],
+      properties: {
+        building_view: {
+          label: "BUILDING_VIEW",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          document_type: "camp_photos",
+          format: "FileUpload",
+        },
+        classroom_view: {
+          label: "CLASSROOM_VIEW",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          format: "FileUpload",
+        },
+        other_view: {
+          label: "OTHER",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          format: "FileUpload",
+        },
+      },
+    },
+    permission_documents: {
+      step_name: "PERMISSION_DOCUMENTS",
+      type: "object",
+      required: ["permission_documents"],
+      properties: {
+        permission_documents: {
+          label: "CAMP_PERMISSION",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          format: "FileUpload",
         },
       },
     },

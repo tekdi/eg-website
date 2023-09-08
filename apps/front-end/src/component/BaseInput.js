@@ -28,6 +28,7 @@ import {
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
+import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
@@ -651,7 +652,6 @@ const validator = customizeValidator({
   },
 });
 
-
 const widgets = {
   RadioBtn,
   CustomR,
@@ -663,6 +663,7 @@ const widgets = {
   MobileNumber,
   MultiCheck,
   readOnly,
+  StarRating,
 };
 
 const templates = {
@@ -777,4 +778,5 @@ export {
   MobileNumber,
   onError,
   transformErrors,
+  StarRating,
 };

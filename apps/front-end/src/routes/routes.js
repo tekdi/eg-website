@@ -112,6 +112,8 @@ const CampRegistration = React.lazy(() =>
   import("pages/front-end/Camp/CampRegistration")
 );
 
+const CampForm = React.lazy(() => import("pages/front-end/Camp/CampForm/Form"));
+
 export default [
   { path: "/form", component: Home },
   {
@@ -228,12 +230,17 @@ export default [
     component: FacilitatorQualification,
   },
   {
-    path: "/CampDashboard",
+    path: "/camp",
     component: CampDashboard,
   },
   {
-    path: "/CampDashboard/CampRegistration",
+    path: "/camp/campRegistration",
     component: CampRegistration,
   },
+  {
+    path: "/camp/campRegistration/edit/:step",
+    component: CampForm,
+  },
+
   { path: "*", component: Dashboard },
 ];
