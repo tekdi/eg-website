@@ -115,7 +115,9 @@ function Table({
                 }}
               >
                 {item.status === "all" ? (
-                  <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                  <AdminTypo.H5>
+                    {t("ALL")} {!filter?.status && `(${paginationTotalRows})`}
+                  </AdminTypo.H5>
                 ) : (
                   <GetEnumValue
                     t={t}
@@ -124,7 +126,9 @@ function Table({
                     enumApiData={enumOptions}
                   />
                 )}
-                {`(${item?.count})`}
+                {console.log("filter", item?.value)}
+                {filter?.status == t(item?.status) &&
+                  `(${paginationTotalRows})`}
               </Text>
             );
           })}
