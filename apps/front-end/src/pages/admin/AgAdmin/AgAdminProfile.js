@@ -53,6 +53,7 @@ export default function AgAdminProfile({ footerLinks }) {
         {getUniqueArray(array)?.map((item) => (
           <Chip
             textAlign="center"
+            key={i}
             lineHeight="15px"
             label={
               <GetEnumValue
@@ -663,6 +664,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             selectData.map((item) => {
                               return (
                                 <Select.Item
+                                  key={i}
                                   label={`${t(item.title)}`}
                                   value={item.value}
                                 />
@@ -701,6 +703,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item) => {
                             return (
                               <Select.Item
+                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -740,6 +743,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item) => {
                             return (
                               <Select.Item
+                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -779,6 +783,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item) => {
                             return (
                               <Select.Item
+                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -818,6 +823,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item) => {
                             return (
                               <Select.Item
+                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -857,6 +863,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item) => {
                             return (
                               <Select.Item
+                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -897,6 +904,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item) => {
                             return (
                               <Select.Item
+                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
