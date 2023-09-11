@@ -107,6 +107,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const fa_id = localStorage.getItem("id");
   const { t } = useTranslation();
   const [facilitator, setfacilitator] = React.useState();
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(async () => {
     const result = await facilitatorRegistryService.getOne({ id: fa_id });
@@ -144,10 +145,19 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     },
   ];
 
+  const onPressBackButton = async () => {
+    navigate("/camp");
+  };
+
   return (
     <Layout
-      _appBar={{ name: t("CAMP_REGISTER") }}
-      _footer={{ menues: footerLinks }}
+      loading={loading}
+      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
+      _appBar={{
+        name: t("CAMP_REGISTER"),
+        onPressBackButton,
+        _box: { bg: "white" },
+      }}
     >
       <VStack w={"90%"} marginTop={2} margin={"auto"}>
         <AdminTypo.H3 textAlign={"center"} color={"textMaroonColor.400"}>
@@ -163,7 +173,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
             margin: "0 auto",
             width: "auto",
           }}
-          to={"/camp"}
+          to={"/camp/camplist"}
         >
           <Text>{t("VIEW_ALL")} </Text>
           <IconByName

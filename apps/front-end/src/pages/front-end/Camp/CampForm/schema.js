@@ -186,5 +186,9 @@ export default {
         },
       },
     },
+    parents_and_learners_consent: {
+      step_name: "LEARNER_CONSENT_FORM",
+      type: "object",
+    },
   },
 };

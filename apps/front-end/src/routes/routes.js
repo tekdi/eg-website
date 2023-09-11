@@ -108,6 +108,7 @@ const BenificiaryAddress = React.lazy(() =>
 const CampDashboard = React.lazy(() =>
   import("pages/front-end/Camp/CampDashboard")
 );
+const CampList = React.lazy(() => import("pages/front-end/Camp/CampList"));
 const CampRegistration = React.lazy(() =>
   import("pages/front-end/Camp/CampRegistration")
 );
@@ -232,6 +233,10 @@ export default [
   {
     path: "/camp",
     component: CampDashboard,
+  },
+  {
+    path: "/camp/camplist",
+    component: CampList,
   },
   {
     path: "/camp/campRegistration",

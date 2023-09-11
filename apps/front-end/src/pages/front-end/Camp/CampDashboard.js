@@ -1,5 +1,6 @@
 import {
   AdminTypo,
+  BodyMedium,
   FrontEndTypo,
   IconByName,
   ImageView,
@@ -18,6 +19,7 @@ import {
   Progress,
   Center,
   Avatar,
+  Alert,
 } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -163,27 +165,19 @@ export default function CampDashboard({ userTokenInfo, footerLinks }) {
         >
           {t("START_CAMP_REGISTER")}
         </FrontEndTypo.Secondarybutton>
-        <Box
-          bg="boxBackgroundColour.100"
-          borderColor="btnGray.100"
-          borderRadius="10px"
-          borderWidth="1px"
-          padding="6"
-          margin={"20px"}
-          background={"amber.100"}
+
+        <Alert
+          status="warning"
+          alignItems={"start"}
+          mb="3"
+          mt="4"
+          width={"100%"}
         >
-          <HStack alignItems={"center"} justifyContent={"center"}>
-            <IconByName
-              isDisabled
-              name="ErrorWarningLineIcon"
-              color="amber.400"
-              _icon={{ size: "30px" }}
-            />
-            <Text ml={2} fontSize={"16px"}>
-              {t("CAMP_WARNING")}
-            </Text>
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("CAMP_WARNING")}</BodyMedium>
           </HStack>
-        </Box>
+        </Alert>
       </Box>
       <Box padding="6">
         <AdminTypo.H2>{t("HOW_TO_START_CAMP")}</AdminTypo.H2>

@@ -25,6 +25,7 @@ import {
   onError,
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
+import ConsentForm from "./ConsentForm.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -100,8 +101,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  // console.log("formData", formData);
-
   const uiSchema = {
     facilities: {
       "ui:widget": "MultiCheck",
@@ -168,6 +167,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         value: "id",
       });
       setLoading(false);
+      setSchema(newSchema);
     }
 
     if (schema?.properties?.state) {
@@ -363,7 +363,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         const newSchema = schema1?.properties?.kit;
         setSchema(newSchema);
       } else if (data?.kit_received === "no") {
-        console.log("reached");
+        setFormData({
+          ...formData,
+          kit_rating: "",
+          kit_received: "no",
+          kit_sufficient: "",
+          kit_suggestion: "",
+        });
         const properties = schema1.properties;
         const newSteps = Object.keys(properties);
         const newStep = step || newSteps[0];
@@ -382,7 +388,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  console.log("kit", schema);
+  console.log("kit", formData);
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
@@ -421,6 +427,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
     localStorage.setItem("backToProfile", backToProfile);
   };
+
+  if (page === "parents_and_learners_consent") {
+    return <ConsentForm />;
+  }
 
   return (
     <Layout
