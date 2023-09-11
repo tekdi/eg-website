@@ -900,6 +900,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           onValueChange={(itemValue) =>
                             setStatus({ ...status, birth: itemValue })
                           }
+                          key={i}
                         >
                           {selectData?.map((item) => {
                             return (
@@ -1052,6 +1053,7 @@ export default function AgAdminProfile({ footerLinks }) {
                   p="6"
                   mt="6"
                   rounded="xl"
+                  key={i}
                 >
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("SUBJECTS")}
@@ -1127,7 +1129,7 @@ function BeneficiaryJourney({
         <AdminTypo.H2 bold color="textMaroonColor.400" marginLeft={"5px"}>
           {t("STATUS_FLOW_OF")}
           <br />
-          <Text>
+          <Text key={i}>
             {data?.first_name}
             {data?.middle_name &&
               data?.middle_name !== "null" &&
@@ -1151,11 +1153,12 @@ function BeneficiaryJourney({
                     borderLeftWidth="2px"
                     mr="5"
                     alignItems="center"
+                    key={i}
                   ></HStack>
                 </HStack>
                 {auditMonth.map((month) => {
                   return (
-                    <React.Fragment>
+                    <React.Fragment key={i}>
                       <HStack alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
