@@ -50,7 +50,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
       <VStack>
-        {getUniqueArray(array)?.map((item) => (
+        {getUniqueArray(array)?.map((item, i) => (
           <Chip
             textAlign="center"
             key={i}
@@ -661,7 +661,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           }
                         >
                           {Array.isArray(selectData) &&
-                            selectData.map((item) => {
+                            selectData.map((item, i) => {
                               return (
                                 <Select.Item
                                   key={i}
@@ -700,7 +700,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, aadhaar: itemValue })
                           }
                         >
-                          {selectData?.map((item) => {
+                          {selectData?.map((item, i) => {
                             return (
                               <Select.Item
                                 key={i}
@@ -740,7 +740,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, photo: itemValue })
                           }
                         >
-                          {selectData?.map((item) => {
+                          {selectData?.map((item, i) => {
                             return (
                               <Select.Item
                                 key={i}
@@ -780,7 +780,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, mobile: itemValue })
                           }
                         >
-                          {selectData?.map((item) => {
+                          {selectData?.map((item, i) => {
                             return (
                               <Select.Item
                                 key={i}
@@ -820,7 +820,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, marksheet: itemValue })
                           }
                         >
-                          {selectData?.map((item) => {
+                          {selectData?.map((item, i) => {
                             return (
                               <Select.Item
                                 key={i}
@@ -860,7 +860,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, bank: itemValue })
                           }
                         >
-                          {selectData?.map((item) => {
+                          {selectData?.map((item, i) => {
                             return (
                               <Select.Item
                                 key={i}
@@ -902,7 +902,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           }
                           key={i}
                         >
-                          {selectData?.map((item) => {
+                          {selectData?.map((item, i) => {
                             return (
                               <Select.Item
                                 key={i}
@@ -1053,7 +1053,7 @@ export default function AgAdminProfile({ footerLinks }) {
                   p="6"
                   mt="6"
                   rounded="xl"
-                  key={i}
+                  key={""}
                 >
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("SUBJECTS")}
@@ -1129,7 +1129,7 @@ function BeneficiaryJourney({
         <AdminTypo.H2 bold color="textMaroonColor.400" marginLeft={"5px"}>
           {t("STATUS_FLOW_OF")}
           <br />
-          <Text key={i}>
+          <Text key={""}>
             {data?.first_name}
             {data?.middle_name &&
               data?.middle_name !== "null" &&
@@ -1142,7 +1142,7 @@ function BeneficiaryJourney({
       </HStack>
       <HStack mt={5} left={"30px"} width={"80%"}>
         <VStack width={"100%"}>
-          {auditYear.map((item) => {
+          {auditYear.map((item, i) => {
             return (
               <React.Fragment>
                 <HStack alignItems={"center"}>
