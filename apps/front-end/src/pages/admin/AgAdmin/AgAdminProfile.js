@@ -661,10 +661,10 @@ export default function AgAdminProfile({ footerLinks }) {
                           }
                         >
                           {Array.isArray(selectData) &&
-                            selectData.map((item, i) => {
+                            selectData.map((item) => {
                               return (
                                 <Select.Item
-                                  key={i}
+                                  key={item}
                                   label={`${t(item.title)}`}
                                   value={item.value}
                                 />
@@ -743,7 +743,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item, i) => {
                             return (
                               <Select.Item
-                                key={i}
+                                key={item}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -783,7 +783,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item, i) => {
                             return (
                               <Select.Item
-                                key={i}
+                                key={item}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -823,7 +823,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           {selectData?.map((item, i) => {
                             return (
                               <Select.Item
-                                key={i}
+                                key={item}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
