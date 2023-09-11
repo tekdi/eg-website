@@ -12,7 +12,6 @@ import {
 } from "@shiksha/common-lib";
 import {
   Box,
-  Button,
   CheckIcon,
   HStack,
   Modal,
@@ -51,14 +50,13 @@ export default function AgAdminProfile({ footerLinks }) {
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
       <VStack>
-        {getUniqueArray(array)?.map((item, index) => (
+        {getUniqueArray(array)?.map((item) => (
           <Chip
             textAlign="center"
             lineHeight="15px"
             label={
               <GetEnumValue
                 fontSize="14px"
-                key={index}
                 t={t}
                 enumOptionValue={item}
                 {...{ enumType, enumApiData }}
@@ -70,7 +68,7 @@ export default function AgAdminProfile({ footerLinks }) {
     );
   };
 
-  const getSubjects = async (schemaData, value, page) => {
+  const getSubjects = async (value) => {
     let { data } = await enumRegistryService.getSubjects({
       board: value,
     });
@@ -662,10 +660,9 @@ export default function AgAdminProfile({ footerLinks }) {
                           }
                         >
                           {Array.isArray(selectData) &&
-                            selectData.map((item, i) => {
+                            selectData.map((item) => {
                               return (
                                 <Select.Item
-                                  key={i}
                                   label={`${t(item.title)}`}
                                   value={item.value}
                                 />
@@ -701,10 +698,9 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, aadhaar: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -741,10 +737,9 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, photo: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -781,10 +776,9 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, mobile: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -821,10 +815,9 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, marksheet: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -861,10 +854,9 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, bank: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -902,10 +894,9 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, birth: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -1141,10 +1132,10 @@ function BeneficiaryJourney({
       </HStack>
       <HStack mt={5} left={"30px"} width={"80%"}>
         <VStack width={"100%"}>
-          {auditYear.map((item, i) => {
+          {auditYear.map((item) => {
             return (
               <React.Fragment>
-                <HStack key={i} alignItems={"center"}>
+                <HStack alignItems={"center"}>
                   <Text width={"50px"}>{JSON.parse(item)}</Text>
                   <HStack
                     height="50px"
@@ -1154,10 +1145,10 @@ function BeneficiaryJourney({
                     alignItems="center"
                   ></HStack>
                 </HStack>
-                {auditMonth.map((month, i) => {
+                {auditMonth.map((month) => {
                   return (
                     <React.Fragment>
-                      <HStack key={i} alignItems={"center"}>
+                      <HStack alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
                           height="25px"
@@ -1170,7 +1161,7 @@ function BeneficiaryJourney({
                       {auditLogs.map((logs, i) => {
                         return (
                           <React.Fragment>
-                            <HStack key={i} alignItems={"center"}>
+                            <HStack alignItems={"center"}>
                               <Text width={"50px"}>{logs?.date}</Text>;
                               <FrontEndTypo.Timeline
                                 status={logs?.status?.status}
