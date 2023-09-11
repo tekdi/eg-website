@@ -35,7 +35,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const { id } = useParams();
   const [data, setData] = React.useState();
   const navigate = useNavigate();
-  const [msgshow, setmsgshow] = React.useState(false);
+  const [, setmsgshow] = React.useState(false);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [benificiary, setBeneficiary] = React.useState();
   const [contextId, setcontextId] = React.useState();
