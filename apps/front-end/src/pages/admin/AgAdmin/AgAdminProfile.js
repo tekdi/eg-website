@@ -700,10 +700,10 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, aadhaar: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
+                                key={item}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -740,7 +740,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, photo: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
                                 key={item}
@@ -780,7 +780,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, mobile: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
                                 key={item}
@@ -820,7 +820,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, marksheet: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
                                 key={item}
@@ -860,10 +860,10 @@ export default function AgAdminProfile({ footerLinks }) {
                             setStatus({ ...status, bank: itemValue })
                           }
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
+                                key={item}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -902,10 +902,10 @@ export default function AgAdminProfile({ footerLinks }) {
                           }
                           key={item}
                         >
-                          {selectData?.map((item, i) => {
+                          {selectData?.map((item) => {
                             return (
                               <Select.Item
-                                key={i}
+                                key={item}
                                 label={`${t(item.title)}`}
                                 value={item.value}
                               />
@@ -1059,7 +1059,7 @@ export default function AgAdminProfile({ footerLinks }) {
                   </AdminTypo.H5>
                   <AdminTypo.H5 flex="0.69" color="textGreyColor.800" bold>
                     {numberArray?.map((item) => {
-                      return <Text>{item},</Text>;
+                      return <Text key={item}>{item},</Text>;
                     })}
                   </AdminTypo.H5>
                 </VStack>
