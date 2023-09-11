@@ -50,10 +50,10 @@ export default function AgAdminProfile({ footerLinks }) {
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
       <VStack>
-        {getUniqueArray(array)?.map((item, i) => (
+        {getUniqueArray(array)?.map((item) => (
           <Chip
             textAlign="center"
-            key={i}
+            key={item}
             lineHeight="15px"
             label={
               <GetEnumValue
