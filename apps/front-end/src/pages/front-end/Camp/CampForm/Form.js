@@ -51,16 +51,16 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [mobileConditon, setMobileConditon] = React.useState(false);
 
   const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    if (navigator?.geolocation) {
+      navigator?.geolocation?.getCurrentPosition(showPosition, showError);
     } else {
       setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
     }
   };
 
   const showPosition = async (position) => {
-    let lati = position.coords.latitude;
-    let longi = position.coords.longitude;
+    let lati = position?.coords?.latitude;
+    let longi = position?.coords?.longitude;
 
     setFormData({
       ...formData,
