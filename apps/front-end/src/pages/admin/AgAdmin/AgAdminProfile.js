@@ -189,10 +189,10 @@ export default function AgAdminProfile({ footerLinks }) {
               textOverflow="ellipsis"
             >
               {data?.program_beneficiaries?.status === "enrolled_ip_verified"
-                ? data?.program_beneficiaries?.enrollment_first_name +
-                  " " +
-                  data?.program_beneficiaries?.enrollment_last_name
-                : data?.first_name + " " + data?.last_name ?? "-"}
+                ? `${
+                    data?.program_beneficiaries?.enrollment_first_name ?? "-"
+                  } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
+                : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
             </AdminTypo.H1>
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
@@ -1188,8 +1188,9 @@ function BeneficiaryJourney({
                                 <FrontEndTypo.H4>
                                   <Text>By &nbsp;</Text>
                                   {logs?.first_name}&nbsp;
-                                  {logs?.middle_name && logs?.middle_name}&nbsp;
-                                  {logs?.last_name && logs?.last_name}
+                                  {logs?.middle_name && `${logs?.middle_name}`}
+                                  &nbsp;
+                                  {logs?.last_name && `${logs?.last_name}`}
                                 </FrontEndTypo.H4>
                               </FrontEndTypo.Timeline>
                             </HStack>
