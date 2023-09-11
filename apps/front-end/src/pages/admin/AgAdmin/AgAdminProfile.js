@@ -900,7 +900,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           onValueChange={(itemValue) =>
                             setStatus({ ...status, birth: itemValue })
                           }
-                          key={i}
+                          key={item}
                         >
                           {selectData?.map((item, i) => {
                             return (
@@ -1053,7 +1053,6 @@ export default function AgAdminProfile({ footerLinks }) {
                   p="6"
                   mt="6"
                   rounded="xl"
-                  key={""}
                 >
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("SUBJECTS")}
@@ -1129,7 +1128,7 @@ function BeneficiaryJourney({
         <AdminTypo.H2 bold color="textMaroonColor.400" marginLeft={"5px"}>
           {t("STATUS_FLOW_OF")}
           <br />
-          <Text key={""}>
+          <Text>
             {data?.first_name}
             {data?.middle_name &&
               data?.middle_name !== "null" &&
@@ -1144,7 +1143,7 @@ function BeneficiaryJourney({
         <VStack width={"100%"}>
           {auditYear.map((item, i) => {
             return (
-              <React.Fragment>
+              <React.Fragment key={item}>
                 <HStack alignItems={"center"}>
                   <Text width={"50px"}>{JSON.parse(item)}</Text>
                   <HStack
@@ -1153,12 +1152,12 @@ function BeneficiaryJourney({
                     borderLeftWidth="2px"
                     mr="5"
                     alignItems="center"
-                    key={i}
+                    key={item}
                   ></HStack>
                 </HStack>
                 {auditMonth.map((month) => {
                   return (
-                    <React.Fragment key={i}>
+                    <React.Fragment key={item}>
                       <HStack alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
@@ -1171,7 +1170,7 @@ function BeneficiaryJourney({
                       </HStack>
                       {auditLogs.map((logs, i) => {
                         return (
-                          <React.Fragment>
+                          <React.Fragment key={item}>
                             <HStack alignItems={"center"}>
                               <Text width={"50px"}>{logs?.date}</Text>;
                               <FrontEndTypo.Timeline
