@@ -73,16 +73,19 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    // if (file.size <= 1048576 * 25) {
-    //   const data = await getBase64(file);
-    //   if (isFront) {
-    //     setImage((prev) => ({ ...prev, front: data, front_file: file }));
-    //   } else {
-    //     setImage((prev) => ({ ...prev, back: data, back_file: file }));
-    //   }
-    // } else {
-    //   setError({ top: t("FILE_SIZE") });
-    // }
+    setLoading(true);
+    const form_data = new FormData();
+    const item = {
+      file: file,
+      document_type: "profile_photo",
+      document_sub_type,
+      user_id: id,
+    };
+    for (let key in item) {
+      form_data.append(key, item[key]);
+    }
+    const result = await uploadRegistryService.uploadFile(form_data);
+    setLoading(false);
     setModal(false);
   };
 

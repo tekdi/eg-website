@@ -91,8 +91,21 @@ export default function App({ userTokenInfo, footerLinks }) {
   }
 
   React.useEffect(async () => {
+    const facilitatorId = localStorage.getItem("id");
+    const data = await facilitatorRegistryService.getOne({ id: facilitatorId });
+    setFacilitator(data);
     getLocation();
   }, []);
+
+  React.useEffect(async () => {
+    setFormData({
+      ...formData,
+      lat: formData?.lat,
+      long: formData?.long,
+      state: facilitator?.state,
+      district: facilitator?.district,
+    });
+  }, [formData?.lat]);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -118,21 +131,9 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        if (nextIndex === "qualification_details") {
-          navigate("/profile");
-        } else {
-          navigate("/camp/campRegistration");
-        }
-      } else if (nextIndex === "qualification_details") {
-        navigate(`/profile/edit/array-form/vo_experience`);
-      } else if (nextIndex === "aadhaar_details") {
-        navigate(`/camp/campRegistration/edit/photos`);
+        navigate("/camp/campRegistration");
       } else if (nextIndex !== undefined) {
         navigate(`/camp/campRegistration/edit/${nextIndex}`);
-      } else {
-        navigate(`/aadhaar-kyc/${facilitator?.id}`, {
-          state: "/profile",
-        });
       }
     }
   };
@@ -156,6 +157,7 @@ export default function App({ userTokenInfo, footerLinks }) {
           filters: { type: "qualification" },
         });
       }
+      setSchema(newSchema);
     }
 
     if (schema?.["properties"]?.["facilities"]) {
@@ -388,8 +390,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  console.log("kit", formData);
-
   const onSubmit = async (data) => {
     let newFormData = data.formData;
 
@@ -416,7 +416,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
-        navigate("/profile");
+        navigate("/camp/CampRegistration");
       }
     }
   };
@@ -487,6 +487,14 @@ export default function App({ userTokenInfo, footerLinks }) {
               >
                 {t("SAVE_AND_NEXT")}
               </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                isLoading={loading}
+                p="4"
+                mt="4"
+                onPress={() => onClickSubmit(true)}
+              >
+                {t("SAVE_AND_PROFILE")}
+              </FrontEndTypo.Secondarybutton>
             </Box>
           </Form>
         )}

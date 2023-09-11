@@ -131,10 +131,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       Icon: "MapPinLineIcon",
       Name: "KIT",
     },
-    {
-      Icon: "CheckboxLineIcon",
-      Name: "PARENTS_AND_LEARNERS_CONSENT",
-    },
+
     {
       Icon: "CameraLineIcon",
       Name: "PHOTOS",
@@ -142,6 +139,10 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     {
       Icon: "FileTextLineIcon",
       Name: "PERMISSION_DOCUMENTS",
+    },
+    {
+      Icon: "CheckboxLineIcon",
+      Name: "PARENTS_AND_LEARNERS_CONSENT",
     },
   ];
 

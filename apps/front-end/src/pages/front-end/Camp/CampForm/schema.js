@@ -8,28 +8,24 @@ export default {
       required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         lat: {
-          type: ["number", "string"],
-          label: "LATITUDE",
+          type: "string",
+          title: "LATITUDE",
           format: "readOnly",
         },
         long: {
-          type: ["number", "string"],
-          label: "LONGITUDE",
+          type: "string",
+          title: "LONGITUDE",
           format: "readOnly",
-        },
-        address: {
-          title: "STREET_ADDRESS",
-          type: ["string", "null"],
         },
         state: {
           title: "STATE",
           type: "string",
-          format: "select",
+          format: "readOnly",
         },
         district: {
           title: "DISTRICT",
           type: "string",
-          format: "select",
+          format: "readOnly",
         },
         block: {
           title: "BLOCK",
@@ -44,6 +40,10 @@ export default {
         grampanchayat: {
           title: "GRAMPANCHAYAT",
           type: "string",
+        },
+        address: {
+          title: "STREET_ADDRESS",
+          type: ["string", "null"],
         },
 
         edit_page_type: {
@@ -97,6 +97,7 @@ export default {
       step_name: "FACILITIES",
       type: "object",
       required: ["facilities"],
+      format: "MultiCheck",
       properties: {
         facilities: {
           label: "FACILITIES_AT_CAMP",
@@ -150,7 +151,7 @@ export default {
     photos: {
       step_name: "photos",
       type: "object",
-      required: ["building_view", "classroom_view", "other_view"],
+      // required: ["building_view", "classroom_view", "other_view"],
       properties: {
         building_view: {
           label: "BUILDING_VIEW",
