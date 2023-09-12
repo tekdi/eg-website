@@ -401,13 +401,14 @@ export const Filter = ({ filter, setFilter }) => {
           </HStack>
           <Button variant="link" pt="3" onPress={clearFilter}>
             <AdminTypo.H6 color="blueText.400" underline bold>
-              {t("CLEAR_FILTER")} (
+              {t("CLEAR_FILTER")}
+              {/* (
               {
                 Object.keys(filter || {}).filter(
                   (e) => !["limit", "page"].includes(e)
                 ).length
               }
-              )
+              ) */}
             </AdminTypo.H6>
           </Button>
         </HStack>

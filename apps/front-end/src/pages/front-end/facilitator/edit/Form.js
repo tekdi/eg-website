@@ -133,10 +133,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
+        console.log(nextIndex);
         if (nextIndex === "qualification_details") {
           navigate("/profile");
-        } else {
+        } else if (nextIndex === "work_availability_details") {
           navigate("/facilitatorqualification");
+        } else {
+          navigate("/facilitatorbasicdetail");
         }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
