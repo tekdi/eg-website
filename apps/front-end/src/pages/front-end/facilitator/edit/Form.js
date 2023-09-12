@@ -683,6 +683,14 @@ export default function App({ userTokenInfo, footerLinks }) {
         setLoading(false);
       }
     }
+    if (data?.qualification_reference_document_id === null) {
+      const newErrors = {
+        qualification_reference_document_id: {
+          __errors: [t("REQUIRED_MESSAGE_UPLOAD")],
+        },
+      };
+      setErrors(newErrors);
+    }
   };
 
   const onSubmit = async (data) => {

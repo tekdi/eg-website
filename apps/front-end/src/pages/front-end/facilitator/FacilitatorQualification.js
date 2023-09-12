@@ -57,7 +57,6 @@ export default function FacilitatorQualification({
     setEnumOptions(data?.data ? data?.data : {});
   }, [facilitator]);
 
-  console.log(facilitator);
   const onPressBackButton = () => {
     navigate("/profile");
   };
