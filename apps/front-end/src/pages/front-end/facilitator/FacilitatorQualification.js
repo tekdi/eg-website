@@ -58,7 +58,9 @@ export default function FacilitatorQualification({
   }, [facilitator]);
 
   console.log(facilitator);
-
+  const onPressBackButton = () => {
+    navigate("/profile");
+  };
   return (
     <Layout
       _appBar={{
@@ -67,6 +69,7 @@ export default function FacilitatorQualification({
         leftIcon: (
           <FrontEndTypo.H2>{t("QUALIFICATION_DETAILS")}</FrontEndTypo.H2>
         ),
+        onPressBackButton,
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >

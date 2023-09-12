@@ -136,7 +136,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (nextIndex === "qualification_details") {
           navigate("/profile");
         } else {
-          navigate("/facilitatorbasicdetail");
+          navigate("/facilitatorqualification");
         }
       } else if (nextIndex === "qualification_details") {
         navigate(`/profile/edit/array-form/vo_experience`);
