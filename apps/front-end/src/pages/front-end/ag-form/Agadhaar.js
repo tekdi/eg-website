@@ -292,18 +292,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
 
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang + addBtn}
             ref={formRef}
@@ -352,8 +350,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             )}
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
 
@@ -364,14 +360,14 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Body py={10}>
-            {differentaadhaar ? (
+            {differentaadhaar && (
               <React.Fragment>
                 <HStack mx={"auto"} alignItems={"top"}>
                   <IconByName
                     name="ErrorWarningLineIcon"
                     color="textRed.300"
                     size="20px"
-                  ></IconByName>
+                  />
                   <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
                     {t("AG_LEARNER_ALREADY_IDENTIFIED")}
                   </FrontEndTypo.H2>
@@ -400,8 +396,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                   {t("CANCEL_AND_GO_BACK")}
                 </FrontEndTypo.Secondarybutton>
               </React.Fragment>
-            ) : (
-              <React.Fragment></React.Fragment>
             )}
 
             {aadhaarRegisteredForFacilitator && (
@@ -426,7 +420,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                     name="ErrorWarningLineIcon"
                     color="textRed.300"
                     size="20px"
-                  ></IconByName>
+                  />
                   <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
                     {t("AG_LEARNER_ALREADY_IDENTIFIED")}
                   </FrontEndTypo.H2>
