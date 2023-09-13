@@ -35,7 +35,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const { id } = useParams();
   const [data, setData] = React.useState();
   const navigate = useNavigate();
-  const [, setmsgshow] = React.useState(false);
+
   const [enumOptions, setEnumOptions] = React.useState({});
   const [benificiary, setBeneficiary] = React.useState();
   const [contextId, setcontextId] = React.useState();
@@ -43,7 +43,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const [auditMonth, setauditMonth] = React.useState([]);
   const [auditYear, setauditYear] = React.useState([]);
   const [subjectLists, setSubjectLits] = React.useState([]);
-  const [numberArray, setNumberArray] = React.useState();
+  const [enrollmentSubjects, setEnrollmentSubjects] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
 
@@ -88,7 +88,7 @@ export default function AgAdminProfile({ footerLinks }) {
       );
       return matchingSubject ? matchingSubject.name : "Subject not found";
     });
-    setNumberArray(subjectNames);
+    setEnrollmentSubjects(subjectNames);
   };
 
   const getAuditData = async () => {
@@ -153,7 +153,6 @@ export default function AgAdminProfile({ footerLinks }) {
     let docStatus = newData?.result?.program_beneficiaries?.documents_status;
     setcontextId(newData?.result?.program_beneficiaries?.id);
     setBeneficiary(newData);
-    setmsgshow(getBeneficaryDocumentationStatus(docStatus));
     if (newData.result?.program_beneficiaries?.documents_status) {
       setStatus(
         JSON.parse(newData.result?.program_beneficiaries?.documents_status)
@@ -900,7 +899,6 @@ export default function AgAdminProfile({ footerLinks }) {
                           onValueChange={(itemValue) =>
                             setStatus({ ...status, birth: itemValue })
                           }
-                          key={item}
                         >
                           {selectData?.map((item) => {
                             return (
@@ -1058,7 +1056,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     {t("SUBJECTS")}
                   </AdminTypo.H5>
                   <AdminTypo.H5 flex="0.69" color="textGreyColor.800" bold>
-                    {numberArray?.map((item) => {
+                    {enrollmentSubjects?.map((item) => {
                       return <Text key={item}>{item},</Text>;
                     })}
                   </AdminTypo.H5>
