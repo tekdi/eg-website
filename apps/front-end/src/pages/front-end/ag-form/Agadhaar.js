@@ -477,29 +477,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
-      {/* <Modal isOpen={true} onClose={() => setRegisteredModal(false)} size="md">
-        <Modal.Content py={4}>
-          <Modal.Body>
-            {aadhaarRegisteredForFacilitator ? (
-              <VStack>
-                <FrontEndTypo.H2 color="textRed.400">
-                  {t("AADHAR_ALREADY_REGISTERED_WITH_PRERAK")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.Secondarybutton
-                  width="100%"
-                  marginTop={"1em"}
-                  onPress={() => setRegisteredModal(!registeredModal)}
-                >
-                  {t("CANCEL_AND_GO_BACK")}
-                </FrontEndTypo.Secondarybutton>
-              </VStack>
-            ) : (
-              <text>reached in else</text>
-            )}
-          </Modal.Body>
-        </Modal.Content>
-      </Modal> */}
     </Layout>
   );
 }
