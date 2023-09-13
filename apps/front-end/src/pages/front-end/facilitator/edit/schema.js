@@ -208,7 +208,7 @@ export default {
       },
     },
     aadhaar_details: {
-      step_name: "QUALIFICATION_DETAILS",
+      step_name: "AADHAAR_DETAILS",
       title: "ID_VERIFICATION",
       description: "ENTER_THE_12_DIGIT_AADHAAR_CARD",
       type: "object",

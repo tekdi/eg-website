@@ -609,7 +609,8 @@ export default function App({ userTokenInfo, footerLinks }) {
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
-        if (result.isUserExist) {
+
+        if (result.isUserExist || result?.message === "User exist") {
           const newErrors = {
             aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
