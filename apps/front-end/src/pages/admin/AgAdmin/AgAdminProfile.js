@@ -936,7 +936,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     {t("ENROLLMENT_DETAILS")}
                   </AdminTypo.H4>
 
-                  {data?.program_beneficiaries?.status === "enrolled" ? (
+                  {data?.program_beneficiaries?.status === "enrolled" && (
                     <AdminTypo.StatusButton
                       width={"25%"}
                       status={"success"}
@@ -946,8 +946,6 @@ export default function AgAdminProfile({ footerLinks }) {
                     >
                       {t("VERIFY")}
                     </AdminTypo.StatusButton>
-                  ) : (
-                    <React.Fragment />
                   )}
                 </HStack>
                 <HStack justifyContent="space-between" space={2}>
@@ -958,7 +956,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     p="6"
                     rounded="xl"
                   >
-                    <VStack space={"16"}>
+                    <VStack space={"8"}>
                       <HStack alignItems={"Center"}>
                         <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                           {t("TYPE_OF_ENROLLMENT")} :-
