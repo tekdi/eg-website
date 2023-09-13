@@ -69,26 +69,24 @@ export default function AgAdminProfile({ footerLinks }) {
     );
   };
 
-  const getSubjects = async (value) => {
-    let { data } = await enumRegistryService.getSubjects({
-      board: value,
-    });
-    setSubjectLits(data);
-  };
-
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setData(result?.result);
     const subjectId = JSON.parse(
       result?.result?.program_beneficiaries?.subjects
     );
-    const subjectNames = subjectId.map((id) => {
-      const matchingSubject = subjectLists.find(
-        (subject) => subject.id === parseInt(id)
-      );
-      return matchingSubject ? matchingSubject.name : "Subject not found";
-    });
-    setEnrollmentSubjects(subjectNames);
+    if (subjectId?.length > 0) {
+      let subjectResult = await enumRegistryService.getSubjects({
+        board: result?.result?.program_beneficiaries?.enrolled_for_board,
+      });
+      const subjectNames = subjectId.map((id) => {
+        const matchingSubject = subjectResult?.data?.find(
+          (subject) => subject.id === parseInt(id)
+        );
+        return matchingSubject ? matchingSubject.name : "Subject not found";
+      });
+      setEnrollmentSubjects(subjectNames);
+    }
   };
 
   const getAuditData = async () => {
@@ -142,7 +140,6 @@ export default function AgAdminProfile({ footerLinks }) {
   }, [status]);
 
   React.useEffect(() => {
-    getSubjects();
     getAuditData();
     benificiaryDetails();
   }, [contextId, benificiary]);
