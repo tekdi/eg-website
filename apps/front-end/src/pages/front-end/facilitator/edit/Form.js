@@ -538,7 +538,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         facilitator?.mobile !== data?.mobile
       ) {
         const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
+        if (result?.isUserExist || result?.message === "User exist") {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
