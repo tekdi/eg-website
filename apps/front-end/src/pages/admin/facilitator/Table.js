@@ -107,7 +107,7 @@ function Table({
               <Text
                 key={"table"}
                 color={filter?.status == t(item?.status) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.status) ? true : false}
+                bold={filter?.status == t(item?.status)}
                 cursor={"pointer"}
                 mx={3}
                 onPress={() => {
@@ -124,7 +124,9 @@ function Table({
                     enumApiData={enumOptions}
                   />
                 )}
-                {`(${item?.count})`}
+                {filter?.status == t(item?.status)
+                  ? `(${paginationTotalRows})`
+                  : `(${item?.count})`}
               </Text>
             );
           })}

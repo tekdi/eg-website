@@ -61,6 +61,9 @@ export default function App({ facilitator, ip, onClick }) {
     if (data && onClick) {
       onClick("SplashScreen");
     }
+    if (page === "2") {
+      window.location.reload();
+    }
   };
   const ref = React.createRef(null);
   const { image, takeScreenshot } = useScreenshot();
