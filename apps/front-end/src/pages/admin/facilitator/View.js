@@ -19,6 +19,7 @@ import {
   FormControl,
   Input,
   useToast,
+  Pressable,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -57,6 +58,9 @@ export default function FacilitatorView({ footerLinks }) {
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [adhaarModalVisible, setAdhaarModalVisible] = React.useState(false);
+  const [aadhaarValue, setAadhaarValue] = React.useState();
+  const [aadhaarerror, setAadhaarError] = React.useState();
   const [credentials, setCredentials] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
@@ -76,6 +80,7 @@ export default function FacilitatorView({ footerLinks }) {
     const profileDetails = async () => {
       const result = await facilitatorRegistryService.getOne({ id });
       setData(result);
+      setAadhaarValue(result?.aadhar_no);
       const qualificationList =
         await facilitatorRegistryService.getQualificationAll();
       const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
@@ -170,6 +175,31 @@ export default function FacilitatorView({ footerLinks }) {
   } else if (_.isEmpty(data) || data.error) {
     return <NotFound goBack={(e) => navigate(-1)} />;
   }
+
+  const handleAadhaarUpdate = (event) => {
+    const inputValue = event.target.value;
+    const numericValue = inputValue.replace(/[^0-9]/g, "");
+    const maxLength = 12;
+    const truncatedValue = numericValue.slice(0, maxLength);
+    setAadhaarValue(truncatedValue);
+  };
+
+  const updateAadhaar = async () => {
+    const aadhaar_no = {
+      id: id,
+      aadhar_no: aadhaarValue,
+    };
+    const data = await facilitatorRegistryService.updateAadhaarNumber(
+      aadhaar_no
+    );
+    if (aadhaarValue.length < 12) {
+      setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
+    } else {
+      setAdhaarModalVisible(false);
+      navigate("/admin/facilitator");
+    }
+  };
+
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -622,8 +652,26 @@ export default function FacilitatorView({ footerLinks }) {
                   <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
                     {t("AADHAAR_NO")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
+                  <AdminTypo.H5
+                    flex="1"
+                    justifyContent="center"
+                    alignItems={"center"}
+                    color="textGreyColor.800"
+                    bold
+                  >
                     {showData(data?.aadhar_no)}
+                    <HStack alignItems={"center"} mt={2}>
+                      <Pressable>
+                        <IconByName
+                          p="0"
+                          color="textMaroonColor.400"
+                          name="PencilLineIcon"
+                          onPress={(e) => {
+                            setAdhaarModalVisible(!adhaarModalVisible);
+                          }}
+                        />
+                      </Pressable>
+                    </HStack>
                   </AdminTypo.H5>
                 </HStack>
               </VStack>
@@ -861,6 +909,39 @@ export default function FacilitatorView({ footerLinks }) {
             ))}
           </VStack>
         </VStack> */}
+        <Modal
+          isOpen={adhaarModalVisible}
+          onClose={() => setAdhaarModalVisible(false)}
+          avoidKeyboard
+          size="xl"
+        >
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header textAlign={"Center"}>
+              <AdminTypo.H1 color="textGreyColor.500">
+                {t("UPDATE_AADHAAR")}
+              </AdminTypo.H1>
+            </Modal.Header>
+            <Modal.Body>
+              <HStack alignItems={"center"} justifyContent={"space-evenly"}>
+                {t("AADHAAR_NO")}:
+                <Input
+                  value={aadhaarValue}
+                  maxLength={12}
+                  name="numberInput"
+                  onChange={handleAadhaarUpdate}
+                />
+                <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+                  {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+              <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
+                {aadhaarerror ? t(aadhaarerror) : ""}
+              </AdminTypo.H5>
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </HStack>
     </Layout>
   );
