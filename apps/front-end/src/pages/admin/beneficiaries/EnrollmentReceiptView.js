@@ -9,8 +9,14 @@ import {
   jsonParse,
   uploadRegistryService,
   Breadcrumb,
+  jsonToQueryString,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  createSearchParams,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { HStack, VStack, Stack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -26,6 +32,8 @@ const checkboxIcons = [
 export default function EnrollmentReceiptView({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const filter = jsonToQueryString(location?.state);
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [subjects, setSubjects] = React.useState();
@@ -75,7 +83,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       if (data?.success) {
         setOpenModal(false);
-        navigate("/admin/learners/enrollmentVerificationList");
+
+        navigate({
+          pathname: "/admin/learners/enrollmentVerificationList",
+          search: `?${createSearchParams(filter)}`,
+        });
       }
     }
   };
