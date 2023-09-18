@@ -406,14 +406,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
-              <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>
-                    {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
-                  </BodyMedium>
-                </HStack>
-              </Alert>
               {[undefined].includes(facilitator?.aadhar_no) && (
                 <Stack bg="white" space="5">
                   <Alert status="warning" alignItems={"start"}>
@@ -434,16 +426,26 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Stack>
               )}
               {facilitator?.aadhar_no !== undefined && (
-                <FrontEndTypo.Primarybutton
-                  onPress={(e) =>
-                    navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
-                      state: "/",
-                    })
-                  }
-                  width="100%"
-                >
-                  {t("AADHAR_NUMBER_KYC")}
-                </FrontEndTypo.Primarybutton>
+                <Stack bg="white" space="5">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) =>
+                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                        state: "/",
+                      })
+                    }
+                    width="100%"
+                  >
+                    {t("AADHAR_NUMBER_KYC")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
               )}
               {/* <FrontEndTypo.Secondarybutton
                 width="100%"

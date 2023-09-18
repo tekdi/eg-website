@@ -19,7 +19,7 @@ export default function AadhaarSuccess({
     setData(aadhaarCompare?.data);
     setIsVerified(aadhaarCompare?.isVerified);
   }, []);
-
+  console.log("user", user);
   return (
     <VStack px="4" space="4">
       <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
@@ -126,7 +126,9 @@ export default function AadhaarSuccess({
           if (location?.state) {
             navigate(location?.state);
           } else {
-            if (id) {
+            if (user?.program_faciltators?.id) {
+              navigate(`/profile/${id}/aadhaardetails`);
+            } else if (id) {
               navigate(`/beneficiary/${id}`);
             } else {
               navigate("/beneficiary/list");
