@@ -983,11 +983,11 @@ export default function FacilitatorView({ footerLinks }) {
             </Modal.Body>
             <Modal.Footer>
               <HStack justifyContent={"space-between"} width={"100%"}>
-                <AdminTypo.PrimaryButton
+                <AdminTypo.Secondarybutton
                   onPress={() => setAdhaarModalVisible(false)}
                 >
                   {t("CANCEL")}
-                </AdminTypo.PrimaryButton>
+                </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton onPress={updateAadhaar}>
                   {t("SAVE")}
                 </AdminTypo.PrimaryButton>
