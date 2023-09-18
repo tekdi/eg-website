@@ -8,6 +8,7 @@ import {
   authRegistryService,
   ImageView,
   AdminTypo,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -24,6 +25,8 @@ import {
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import Table from "./Table";
+import DataTable from "react-data-table-component";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -52,6 +55,42 @@ const Experience = (obj) => {
   );
 };
 
+const columns = (t) => [
+  {
+    name: t("ID"),
+    selector: (row) => row?.id,
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        <AdminTypo.H5 bold>
+          {row?.first_name + " "}
+          {row?.last_name ? row?.last_name : ""}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+    wrap: true,
+  },
+  {
+    name: t("ROLE"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        <AdminTypo.H5 bold>
+          {row?.program_faciltators.length > 0
+            ? t("PRERAK")
+            : row?.program_beneficiaries.length > 0
+            ? t("LEARNER")
+            : ""}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+    wrap: true,
+  },
+];
+
 export default function FacilitatorView({ footerLinks }) {
   const toast = useToast();
 
@@ -60,6 +99,7 @@ export default function FacilitatorView({ footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [adhaarModalVisible, setAdhaarModalVisible] = React.useState(false);
   const [aadhaarValue, setAadhaarValue] = React.useState();
+  const [duplicateUserList, setDuplicateUserList] = React.useState();
   const [aadhaarerror, setAadhaarError] = React.useState();
   const [credentials, setCredentials] = React.useState();
   const [errors, setErrors] = React.useState({});
@@ -196,6 +236,7 @@ export default function FacilitatorView({ footerLinks }) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
     } else if (!data?.success) {
       setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
+      setDuplicateUserList(data?.data?.users);
     } else {
       setAdhaarModalVisible(false);
       navigate("/admin/facilitator");
@@ -650,19 +691,19 @@ export default function FacilitatorView({ footerLinks }) {
                   </AdminTypo.H5>
                 </HStack>
 
-                <HStack>
+                <HStack alignItems={"center"}>
                   <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
                     {t("AADHAAR_NO")}:
                   </AdminTypo.H5>
                   <AdminTypo.H5
                     flex="1"
-                    justifyContent="center"
+                    justifyContent={"center"}
                     alignItems={"center"}
                     color="textGreyColor.800"
                     bold
                   >
                     {showData(data?.aadhar_no)}
-                    <HStack alignItems={"center"} mt={2}>
+                    <HStack alignItems={"center"}>
                       <Pressable>
                         <IconByName
                           p="0"
@@ -940,6 +981,15 @@ export default function FacilitatorView({ footerLinks }) {
               <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
                 {aadhaarerror ? t(aadhaarerror) : ""}
               </AdminTypo.H5>
+
+              {aadhaarerror === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
+                <DataTable
+                  customStyles={tableCustomStyles}
+                  columns={[...columns(t)]}
+                  data={duplicateUserList}
+                  persistTableHead
+                />
+              )}
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
           </Modal.Content>
