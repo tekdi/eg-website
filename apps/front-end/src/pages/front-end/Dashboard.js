@@ -417,9 +417,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </HStack>
                   </Alert>
                   <FrontEndTypo.Primarybutton
-                    onPress={(e) =>
-                      navigate(`/profile/edit/aadhaar_details`, {})
-                    }
+                    onPress={(e) => navigate(`/profile/edit/aadhaar_details`)}
                   >
                     {t("ADD_AADHAAR_NUMBER")}
                   </FrontEndTypo.Primarybutton>
