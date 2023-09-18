@@ -145,7 +145,7 @@ export default function CampDashboard({ userTokenInfo, footerLinks }) {
               {facilitator?.first_name} {facilitator?.last_name}
             </Text>
             <AdminTypo.H2 color="textMaroonColor.400">
-              14 {t("LEARNERS")}
+              14 {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")} {t("LEARNERS")}
             </AdminTypo.H2>
           </VStack>
           <HStack>{Example()}</HStack>
@@ -160,7 +160,7 @@ export default function CampDashboard({ userTokenInfo, footerLinks }) {
         </VStack>
         <FrontEndTypo.Secondarybutton
           onPress={() => {
-            navigate(`/camp/CampRegistration`);
+            navigate(`/camp/learnerList`);
           }}
         >
           {t("START_CAMP_REGISTER")}
@@ -181,6 +181,17 @@ export default function CampDashboard({ userTokenInfo, footerLinks }) {
       </Box>
       <Box padding="6">
         <AdminTypo.H2>{t("HOW_TO_START_CAMP")}</AdminTypo.H2>
+        <HStack mt={2}>
+          <iframe
+            width="100%"
+            height="315"
+            src="https://www.youtube.com/embed/_Tbo0cATRGM?si=G7KEFIkHPLg1mFQy"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </HStack>
       </Box>
     </Layout>
   );

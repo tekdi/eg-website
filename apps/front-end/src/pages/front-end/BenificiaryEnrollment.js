@@ -69,6 +69,7 @@ export default function BenificiaryEnrollment() {
           {[
             "identified",
             "ready_to_enroll",
+            "applied_but_pending",
             "enrolled",
             "not_enrolled",
             "enrollment_awaited",

@@ -2,10 +2,10 @@ export default {
   type: "step",
   properties: {
     camp_location: {
-      title: "CAMP_LOCATION",
+      // title: "CAMP_LOCATION",
       step_name: "CAMP_LOCATION",
       type: "object",
-      required: ["state", "district", "block", "village", "grampanchayat"],
+      // required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         lat: {
           type: "string",
@@ -17,15 +17,20 @@ export default {
           title: "LONGITUDE",
           format: "readOnly",
         },
+        property_type: {
+          title: "PROPERTY_TYPE",
+          type: "string",
+          format: "select",
+        },
         state: {
           title: "STATE",
           type: "string",
-          format: "readOnly",
+          format: "select",
         },
         district: {
           title: "DISTRICT",
           type: "string",
-          format: "readOnly",
+          format: "select",
         },
         block: {
           title: "BLOCK",
@@ -53,58 +58,103 @@ export default {
         },
       },
     },
-    property_details: {
-      step_name: "PROPERTY_DETAILS",
-      title: "PROPERTY_TYPE",
+    camp_venue_photos: {
+      step_name: "CAMP_VENUE_PHOTOS",
       type: "object",
-      required: ["property_type", "OWNER_OF_THE_PROPERTY"],
+      // required: ["building_view", "classroom_view", "other_view"],
       properties: {
-        property_type: {
-          title: "PROPERTY_TYPE",
-          type: "string",
-          format: "select",
+        camp_front_view: {
+          label: "CAMP_FRONT_VIEW",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          document_type: "camp_photos",
+          format: "FileUpload",
         },
-        OWNER_OF_THE_PROPERTY: {
-          label: "OWNER_OF_THE_PROPERTY",
-          type: "object",
-          required: ["first_name", "mobile"],
-          properties: {
-            first_name: {
-              type: "string",
-              title: "FIRST_NAME",
-              regex: /^[a-zA-Z]+$/,
-            },
-            middle_name: {
-              type: ["string", "null"],
-              title: "MIDDLE_NAME",
-              regex: /^[a-zA-Z]+$/,
-            },
-            last_name: {
-              type: ["string", "null"],
-              title: "LAST_NAME",
-              regex: /^[a-zA-Z]+$/,
-            },
-            mobile: {
-              type: "number",
-              title: "MOBILE_NUMBER",
-              format: "MobileNumber",
-            },
-          },
+        study_room: {
+          label: "STUDY_ROOM",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          format: "FileUpload",
+        },
+        other_view: {
+          label: "OTHER",
+          uploadTitle: "ADD_PHOTOS",
+          type: ["string", "number"],
+          format: "FileUpload",
         },
       },
     },
+    // property_details: {
+    //   step_name: "PROPERTY_DETAILS",
+    //   title: "PROPERTY_TYPE",
+    //   type: "object",
+    //   required: ["property_type", "OWNER_OF_THE_PROPERTY"],
+    //   properties: {
+    //     property_type: {
+    //       title: "PROPERTY_TYPE",
+    //       type: "string",
+    //       format: "select",
+    //     },
+    //     OWNER_OF_THE_PROPERTY: {
+    //       label: "OWNER_OF_THE_PROPERTY",
+    //       type: "object",
+    //       required: ["first_name", "mobile"],
+    //       properties: {
+    //         first_name: {
+    //           type: "string",
+    //           title: "FIRST_NAME",
+    //           regex: /^[a-zA-Z]+$/,
+    //         },
+    //         middle_name: {
+    //           type: ["string", "null"],
+    //           title: "MIDDLE_NAME",
+    //           regex: /^[a-zA-Z]+$/,
+    //         },
+    //         last_name: {
+    //           type: ["string", "null"],
+    //           title: "LAST_NAME",
+    //           regex: /^[a-zA-Z]+$/,
+    //         },
+    //         mobile: {
+    //           type: "number",
+    //           title: "MOBILE_NUMBER",
+    //           format: "MobileNumber",
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
     facilities: {
       step_name: "FACILITIES",
       type: "object",
-      required: ["facilities"],
-      format: "MultiCheck",
       properties: {
+        // facilities: {
+        //   label: "FACILITIES_AT_CAMP",
+        //   type: "array",
+        //   grid: 1,
+        //   format: "MultiCheck",
+        //   uniqueItems: true,
+        // },
         facilities: {
           label: "FACILITIES_AT_CAMP",
-          type: "array",
-          grid: 1,
-          format: "MultiCheck",
-          uniqueItems: true,
+          type: "object",
+          properties: {
+            // facilities0: {
+            //   label: "asd",
+            //   type: "string",
+            //   format: "CheckUncheck",
+            // },
+            // facilities1: {
+            //   label: "sasdfgar",
+            //   type: "string",
+            //   format: "CheckUncheck",
+            // },
+            // facilities2: {
+            //   label: "sagar",
+            //   type: "string",
+            //   format: "CheckUncheck",
+            // },
+          },
         },
       },
     },
@@ -133,12 +183,6 @@ export default {
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
-        kit_suggestion: {
-          label: "KIT_SUGGESTION",
-          type: "string",
-          grid: 2,
-          format: "textarea",
-        },
         kit_rating: {
           label: "RATE_KIT",
           type: ["string", "number"],
@@ -146,48 +190,28 @@ export default {
           totalStars: 5,
           ratingLabels: ["Poor", "Not Bad", "Average", "Good", "Amazing"],
         },
-      },
-    },
-    photos: {
-      step_name: "photos",
-      type: "object",
-      // required: ["building_view", "classroom_view", "other_view"],
-      properties: {
-        building_view: {
-          label: "BUILDING_VIEW",
-          uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
-          document_type: "camp_photos",
-          format: "FileUpload",
-        },
-        classroom_view: {
-          label: "CLASSROOM_VIEW",
-          uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
-          format: "FileUpload",
-        },
-        other_view: {
-          label: "OTHER",
-          uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
-          format: "FileUpload",
+        kit_suggestion: {
+          label: "KIT_SUGGESTION",
+          type: "string",
+          grid: 2,
+          format: "textarea",
         },
       },
     },
-    permission_documents: {
-      step_name: "PERMISSION_DOCUMENTS",
-      type: "object",
-      required: ["permission_documents"],
-      properties: {
-        permission_documents: {
-          label: "CAMP_PERMISSION",
-          uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
-          format: "FileUpload",
-        },
-      },
-    },
-    parents_and_learners_consent: {
+    // permission_documents: {
+    //   step_name: "PERMISSION_DOCUMENTS",
+    //   type: "object",
+    //   required: ["permission_documents"],
+    //   properties: {
+    //     permission_documents: {
+    //       label: "CAMP_PERMISSION",
+    //       uploadTitle: "ADD_PHOTOS",
+    //       type: ["string", "number"],
+    //       format: "FileUpload",
+    //     },
+    //   },
+    // },
+    family_consent: {
       step_name: "LEARNER_CONSENT_FORM",
       type: "object",
     },

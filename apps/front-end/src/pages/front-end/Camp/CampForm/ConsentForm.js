@@ -185,7 +185,7 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
     >
       <Box py={6} px={4} mb={5}>
         <AdminTypo.H3 color={"textMaroonColor.400"}>
-          {t("LEARNER_CONSENT_FORM")}
+          {t("FAMILY_CONSENT")}
         </AdminTypo.H3>
         <Center w="100%" my={5}>
           <Box w="100%" maxW="700">
@@ -236,7 +236,7 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
             </HStack>
           </HStack>
 
-          <ImageView
+          {/* <ImageView
             source={{
               document_id: 1304,
             }}
@@ -251,7 +251,7 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
                 ></IconByName>
               </HStack>
             }
-          />
+          /> */}
           <Pressable
             onPress={() => {
               setModal(true);

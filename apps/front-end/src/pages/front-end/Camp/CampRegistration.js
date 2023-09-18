@@ -116,12 +116,16 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   const Navdata = [
     {
+      Icon: "GraduationCap",
+      Name: "ADD_AN_AG_LEARNER",
+    },
+    {
       Icon: "MapPinLineIcon",
       Name: "CAMP_LOCATION",
     },
     {
-      Icon: "FileTextLineIcon",
-      Name: "PROPERTY_DETAILS",
+      Icon: "CameraLineIcon",
+      Name: "CAMP_VENUE_PHOTOS",
     },
     {
       Icon: "StarLineIcon",
@@ -133,16 +137,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     },
 
     {
-      Icon: "CameraLineIcon",
-      Name: "PHOTOS",
-    },
-    {
-      Icon: "FileTextLineIcon",
-      Name: "PERMISSION_DOCUMENTS",
-    },
-    {
       Icon: "CheckboxLineIcon",
-      Name: "PARENTS_AND_LEARNERS_CONSENT",
+      Name: "FAMILY_CONSENT",
     },
   ];
 
@@ -160,7 +156,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         _box: { bg: "white" },
       }}
     >
-      <VStack w={"90%"} marginTop={2} margin={"auto"}>
+      {/* <VStack w={"90%"} marginTop={2} margin={"auto"}>
         <AdminTypo.H3 textAlign={"center"} color={"textMaroonColor.400"}>
           {t("VERIFIED_LEARNERS_IN_THIS_CAMP")}
         </AdminTypo.H3>
@@ -184,7 +180,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
             _icon={{ size: "30px" }}
           />
         </Link>
-      </VStack>
+      </VStack> */}
 
       {Navdata.map((item) => {
         return (
@@ -195,6 +191,11 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           />
         );
       })}
+      <HStack my={3} mx={"auto"} w={"90%"}>
+        <FrontEndTypo.Primarybutton width={"100%"}>
+          {t("SUBMIT_FOR_REGISTRATION")}
+        </FrontEndTypo.Primarybutton>
+      </HStack>
     </Layout>
   );
 }
@@ -205,7 +206,6 @@ const NavigationBox = ({ IconName, NavName }) => {
 
   const navToForm = (NavName) => {
     const name = NavName.toLowerCase();
-    console.log("navName", name);
     navigate(`/camp/campRegistration/edit/${name}`);
   };
 

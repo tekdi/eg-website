@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, TextArea } from "native-base";
+import { Alert, Box, HStack } from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
@@ -12,10 +12,7 @@ import {
   enumRegistryService,
   getOptions,
   validation,
-  sendAndVerifyOtp,
-  AdminTypo,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   templates,
@@ -26,6 +23,7 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
+import CampLearnerList from "../CampLearnerList.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -33,22 +31,17 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraFile, setCameraFile] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState();
   const [facilitator, setFacilitator] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [qualifications, setQualifications] = React.useState([]);
-  const [enumObj, setEnumObj] = React.useState();
-  const [verifyOtpData, setverifyOtpData] = React.useState();
-  const [otpButton, setOtpButton] = React.useState(false);
-  const [mobileConditon, setMobileConditon] = React.useState(false);
+  const [propertyType, setPropertyType] = React.useState();
+  const [isEdit] = React.useState(true);
 
   const getLocation = () => {
     if (navigator?.geolocation) {
@@ -114,12 +107,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const uiSchema = {
-    facilities: {
-      "ui:widget": "MultiCheck",
-    },
-  };
-
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
@@ -139,41 +126,39 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(async () => {
-    const qData = await facilitatorRegistryService.getQualificationAll();
-    setQualifications(qData);
-  }, []);
+    const qData = await enumRegistryService.listOfEnum();
+    setPropertyType(qData?.data?.CAMP_PROPERTY_TYPE);
+    const facilitiesData = qData?.data?.CAMP_PROPERTY_FACILITIES;
+    if (step === "facilities") {
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      const newStep = step || newSteps[0];
+      const newSchema = properties[newStep];
+      facilitiesData?.map((element) => {
+        const propertyName = element?.value;
+        newSchema.properties.facilities.properties[propertyName] = {
+          label: element?.title,
+          type: "string",
+          format: "CheckUncheck",
+        };
+      });
+    }
+  }, [step, schema]);
 
   // update schema
   React.useEffect(async () => {
     let newSchema = schema;
-    if (schema?.properties) {
-      setLoading(true);
+    setLoading(true);
+    if (schema?.properties?.state) {
+      const qData = await geolocationRegistryService.getStates();
       if (schema?.["properties"]?.["property_type"]) {
         newSchema = getOptions(newSchema, {
           key: "property_type",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
+          arr: propertyType,
+          title: "title",
+          value: "value",
         });
       }
-      setSchema(newSchema);
-    }
-
-    if (schema?.["properties"]?.["facilities"]) {
-      setLoading(true);
-      newSchema = getOptions(newSchema, {
-        key: "facilities",
-        arr: qualifications,
-        title: "name",
-        value: "id",
-      });
-      setLoading(false);
-      setSchema(newSchema);
-    }
-
-    if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
       if (schema?.["properties"]?.["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
@@ -190,7 +175,24 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
     setLoading(false);
-  }, [page, formData, qualifications]);
+  }, [page, formData]);
+
+  const FacilitiesProperty = async () => {
+    const qData = await enumRegistryService.listOfEnum();
+    const facilitiesData = qData?.data?.CAMP_PROPERTY_FACILITIES;
+    const properties = schema1.properties;
+    const newSteps = Object.keys(properties);
+    const newStep = step || newSteps[0];
+    const newSchema = properties[newStep];
+    for (const element of facilitiesData) {
+      const propertyName = element?.value;
+      newSchema.properties.facilities.properties[propertyName] = {
+        label: element?.title,
+        type: "string",
+        format: "CheckUncheck",
+      };
+    }
+  };
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -213,6 +215,8 @@ export default function App({ userTokenInfo, footerLinks }) {
           required: required,
         };
         setSchema(newSchema);
+      } else {
+        setSchema(schemaData);
       }
     }
   }, [step]);
@@ -400,19 +404,19 @@ export default function App({ userTokenInfo, footerLinks }) {
         {},
         ""
       );
-      if (step === "property_details") {
-        newdata = {
-          ...newdata,
-          OWNER_OF_THE_PROPERTY: filterObject(
-            newFormData?.OWNER_OF_THE_PROPERTY,
-            Object.keys(schema?.properties?.OWNER_OF_THE_PROPERTY?.properties),
-            {},
-            ""
-          ),
-        };
-      }
-      const data = await formSubmitUpdate(newdata);
-
+      // if (step === "property_details") {
+      //   newdata = {
+      //     ...newdata,
+      //     OWNER_OF_THE_PROPERTY: filterObject(
+      //       newFormData?.OWNER_OF_THE_PROPERTY,
+      //       Object.keys(schema?.properties?.OWNER_OF_THE_PROPERTY?.properties),
+      //       {},
+      //       ""
+      //     ),
+      //   };
+      // }
+      console.log("newdata", newdata);
+      await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
@@ -428,8 +432,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     localStorage.setItem("backToProfile", backToProfile);
   };
 
-  if (page === "parents_and_learners_consent") {
+  if (page === "family_consent") {
     return <ConsentForm />;
+  } else if (page === "add_an_ag_learner") {
+    return <CampLearnerList isEdit={isEdit} />;
   }
 
   return (
@@ -469,7 +475,6 @@ export default function App({ userTokenInfo, footerLinks }) {
               templates,
               validator,
               schema: schema || {},
-              uiSchema,
               formData,
               customValidate,
               onChange,
@@ -493,7 +498,7 @@ export default function App({ userTokenInfo, footerLinks }) {
                 mt="4"
                 onPress={() => onClickSubmit(true)}
               >
-                {t("SAVE_AND_PROFILE")}
+                {t("SAVE_AND_CAMP_PROFILE")}
               </FrontEndTypo.Secondarybutton>
             </Box>
           </Form>

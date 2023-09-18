@@ -20,7 +20,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // App
-export default function CampList({ userTokenInfo, footerLinks }) {
+export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState(false);
   const navigate = useNavigate();
@@ -42,7 +42,11 @@ export default function CampList({ userTokenInfo, footerLinks }) {
   const [selectedIds, setSelectedIds] = React.useState([]);
   const selectAllChecked = selectedIds.length === data.length;
   const onPressBackButton = async () => {
-    navigate("/camp/campRegistration");
+    if (!isEdit) {
+      navigate("/camp");
+    } else {
+      navigate("/camp/campRegistration");
+    }
   };
 
   const handleCheckboxChange = (id) => {
@@ -63,7 +67,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       setSelectedIds(newSelectedIds);
     }
   };
-  console.log("selectedItems", selectedIds);
+  // console.log("selectedItems", selectedIds);
 
   const createCamp = () => {
     if (selectedIds.length !== 0) {
@@ -170,9 +174,15 @@ export default function CampList({ userTokenInfo, footerLinks }) {
             </HStack>
           );
         })}
-        <FrontEndTypo.Primarybutton onPress={createCamp}>
-          {t("CREATE_CAMP")}
-        </FrontEndTypo.Primarybutton>
+        {!isEdit ? (
+          <FrontEndTypo.Primarybutton onPress={createCamp}>
+            {t("CREATE_CAMP")}
+          </FrontEndTypo.Primarybutton>
+        ) : (
+          <FrontEndTypo.Primarybutton onPress={createCamp}>
+            {t("SAVE_AND_CAMP_PROFILE")}
+          </FrontEndTypo.Primarybutton>
+        )}
       </Box>
     </Layout>
   );
