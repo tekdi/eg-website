@@ -967,12 +967,6 @@ export default function FacilitatorView({ footerLinks }) {
                   name="numberInput"
                   onChange={handleAadhaarUpdate}
                 />
-                <AdminTypo.PrimaryButton onPress={updateAadhaar}>
-                  {t("SAVE")}
-                </AdminTypo.PrimaryButton>
-                <AdminTypo.PrimaryButton onPress={()=> setAdhaarModalVisible(false)}>
-                  {t("CANCEL")}
-                </AdminTypo.PrimaryButton>
               </HStack>
               <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
                 {aadhaarerror ? t(aadhaarerror) : ""}
@@ -987,7 +981,18 @@ export default function FacilitatorView({ footerLinks }) {
                 />
               )}
             </Modal.Body>
-            <Modal.Footer></Modal.Footer>
+            <Modal.Footer>
+              <HStack justifyContent={"space-between"} width={"100%"}>
+                <AdminTypo.PrimaryButton
+                  onPress={() => setAdhaarModalVisible(false)}
+                >
+                  {t("CANCEL")}
+                </AdminTypo.PrimaryButton>
+                <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+                  {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+            </Modal.Footer>
           </Modal.Content>
         </Modal>
       </HStack>
