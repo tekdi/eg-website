@@ -194,6 +194,8 @@ export default function FacilitatorView({ footerLinks }) {
     );
     if (aadhaarValue.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
+    } else if (!data?.success) {
+      setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
     } else {
       setAdhaarModalVisible(false);
       navigate("/admin/facilitator");
