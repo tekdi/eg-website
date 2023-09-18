@@ -104,6 +104,12 @@ const AadhaarDetails = React.lazy(() =>
 const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
+const CommunityView = React.lazy(() =>
+  import("pages/front-end/Community/CommunityView")
+);
+const CommunityForm = React.lazy(() =>
+  import("pages/front-end/Community/CommunityForm")
+);
 
 export default [
   { path: "/form", component: Home },
@@ -221,4 +227,9 @@ export default [
     component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
+  {
+    path: "/community/list",
+    component: CommunityView,
+  },
+  { path: "/community/communityform", component: CommunityForm },
 ];
