@@ -20,12 +20,10 @@ import {
   FormControl,
   Input,
   useToast,
-  Pressable,
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
-import Table from "./Table";
 import DataTable from "react-data-table-component";
 const Experience = (obj) => {
   return (
@@ -229,17 +227,17 @@ export default function FacilitatorView({ footerLinks }) {
       id: id,
       aadhar_no: aadhaarValue,
     };
-    const data = await facilitatorRegistryService.updateAadhaarNumber(
+    const result = await facilitatorRegistryService.updateAadhaarNumber(
       aadhaar_no
     );
     if (aadhaarValue.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
-    } else if (!data?.success) {
+    } else if (!result?.success) {
       setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
-      setDuplicateUserList(data?.data?.users);
+      setDuplicateUserList(result?.data?.users);
     } else {
+      setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
-      navigate("/admin/facilitator");
     }
   };
 
@@ -953,14 +951,8 @@ export default function FacilitatorView({ footerLinks }) {
             ))}
           </VStack>
         </VStack> */}
-        <Modal
-          isOpen={adhaarModalVisible}
-          onClose={() => setAdhaarModalVisible(false)}
-          avoidKeyboard
-          size="xl"
-        >
+        <Modal isOpen={adhaarModalVisible} avoidKeyboard size="xl">
           <Modal.Content>
-            <Modal.CloseButton />
             <Modal.Header textAlign={"Center"}>
               <AdminTypo.H1 color="textGreyColor.500">
                 {t("UPDATE_AADHAAR")}
@@ -977,6 +969,9 @@ export default function FacilitatorView({ footerLinks }) {
                 />
                 <AdminTypo.PrimaryButton onPress={updateAadhaar}>
                   {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+                <AdminTypo.PrimaryButton onPress={()=> setAdhaarModalVisible(false)}>
+                  {t("CANCEL")}
                 </AdminTypo.PrimaryButton>
               </HStack>
               <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
