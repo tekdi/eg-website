@@ -16,6 +16,7 @@ import {
   facilitatorRegistryService,
   Loading,
   IconByName,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import AadhaarOTP from "./AadhaarOTP";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -149,7 +150,20 @@ export default function AdharKyc({ footerLinks }) {
   if (loading) {
     return <Loading />;
   }
-
+  if (user?.aadhar_verified === "yes") {
+    return (
+      <Layout _footer={{ menues: footerLinks }}>
+        <Alert status="warning" alignItems={"start"}>
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>
+              {t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}
+            </BodyMedium>
+          </HStack>
+        </Alert>
+      </Layout>
+    );
+  }
   return (
     <Box>
       {page === "okyc2" ? (

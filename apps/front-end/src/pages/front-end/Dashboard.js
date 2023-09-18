@@ -391,40 +391,61 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
-            <Stack>
-              <VStack p="5" pt={1}>
-                <FrontEndTypo.Primarybutton
-                  onPress={(e) => navigate("/profile/edit/basic_details")}
-                  bold
-                  flex="1"
-                >
-                  {t("COMPLETE_FORM")}
-                </FrontEndTypo.Primarybutton>
-              </VStack>
-            </Stack>
-          )}
-          {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
+          {["applied", ""]?.includes(facilitator.status) &&
+            progress !== 100 && (
+              <Stack>
+                <VStack p="5" pt={1}>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) => navigate("/profile/edit/basic_details")}
+                    bold
+                    flex="1"
+                  >
+                    {t("COMPLETE_FORM")}
+                  </FrontEndTypo.Primarybutton>
+                </VStack>
+              </Stack>
+            )}
+          {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
-              <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>
-                    {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
-                  </BodyMedium>
-                </HStack>
-              </Alert>
-
-              <FrontEndTypo.Primarybutton
-                onPress={(e) =>
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
-                    state: "/",
-                  })
-                }
-                width="100%"
-              >
-                {t("AADHAR_NUMBER_KYC")}
-              </FrontEndTypo.Primarybutton>
+              {[undefined].includes(facilitator?.aadhar_no) && (
+                <Stack bg="white" space="5">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("ADD_AADHAAR_NUMBER_ERROR_MESSAGE")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) => navigate(`/profile/edit/aadhaar_details`)}
+                  >
+                    {t("ADD_AADHAAR_NUMBER")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
+              )}
+              {facilitator?.aadhar_no !== undefined && (
+                <Stack bg="white" space="5">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) =>
+                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                        state: "/",
+                      })
+                    }
+                    width="100%"
+                  >
+                    {t("AADHAR_NUMBER_KYC")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
+              )}
               {/* <FrontEndTypo.Secondarybutton
                 width="100%"
                 onPress={(e) =>
