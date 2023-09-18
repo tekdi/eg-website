@@ -690,32 +690,33 @@ export default function FacilitatorView({ footerLinks }) {
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
-
-                <HStack alignItems={"center"}>
+                <HStack>
                   <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
                     {t("AADHAAR_NO")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5
+                  <HStack
                     flex="1"
-                    justifyContent={"center"}
                     alignItems={"center"}
-                    color="textGreyColor.800"
-                    bold
+                    space={"4"}
+                    justifyContent={"space-between"}
                   >
-                    {showData(data?.aadhar_no)}
-                    <HStack alignItems={"center"}>
-                      <Pressable>
-                        <IconByName
-                          p="0"
-                          color="textMaroonColor.400"
-                          name="PencilLineIcon"
-                          onPress={(e) => {
-                            setAdhaarModalVisible(!adhaarModalVisible);
-                          }}
-                        />
-                      </Pressable>
-                    </HStack>
-                  </AdminTypo.H5>
+                    <AdminTypo.H5
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      color="textGreyColor.800"
+                      bold
+                    >
+                      {showData(data?.aadhar_no)}
+                    </AdminTypo.H5>
+                    <IconByName
+                      bg="white"
+                      color="textMaroonColor.400"
+                      name="PencilLineIcon"
+                      onPress={(e) => {
+                        setAdhaarModalVisible(!adhaarModalVisible);
+                      }}
+                    />
+                  </HStack>
                 </HStack>
               </VStack>
               <VStack
