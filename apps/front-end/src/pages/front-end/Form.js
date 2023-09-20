@@ -21,7 +21,6 @@ import {
   sendAndVerifyOtp,
   FrontEndTypo,
   getOptions,
-  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -230,9 +229,6 @@ export default function App({ facilitator, ip, onClick }) {
     return await facilitatorRegistryService.isExist(filters);
   };
 
-  const CheckMobileExist = async (mobile) => {
-    return await benificiaryRegistoryService.isExist(mobile);
-  };
   const formSubmitUpdate = async (formData) => {
     const { id } = facilitator;
     if (id) {
@@ -470,7 +466,8 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await CheckMobileExist({ mobile });
+    const result = await facilitatorRegistryService.isExist(mobile);
+    console.log(result);
     if (result?.isUserExist) {
       const newErrors = {
         mobile: {
