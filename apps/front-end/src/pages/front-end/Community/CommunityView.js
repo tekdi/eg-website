@@ -68,7 +68,7 @@ export default function CommunityView({ footerLinks }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack p="4">
+      <VStack p="4" space="4">
         <HStack justifyContent={"right"}>
           <FrontEndTypo.Primarybutton>
             <FrontEndTypo.H2
