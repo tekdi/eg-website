@@ -7,8 +7,9 @@ import {
   objProps,
   arrList,
   BodyMedium,
+  AdminTypo,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image, Alert } from "native-base";
+import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -391,20 +392,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          {["applied", ""]?.includes(facilitator.status) &&
-            progress !== 100 && (
-              <Stack>
-                <VStack p="5" pt={1}>
-                  <FrontEndTypo.Primarybutton
-                    onPress={(e) => navigate("/profile/edit/basic_details")}
-                    bold
-                    flex="1"
-                  >
-                    {t("COMPLETE_FORM")}
-                  </FrontEndTypo.Primarybutton>
-                </VStack>
-              </Stack>
-            )}
+          {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
+            <Stack>
+              <VStack p="5" pt={1}>
+                <FrontEndTypo.Primarybutton
+                  onPress={(e) => navigate("/profile/edit/basic_details")}
+                  bold
+                  flex="1"
+                >
+                  {t("COMPLETE_FORM")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
+            </Stack>
+          )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               {[undefined].includes(facilitator?.aadhar_no) && (
@@ -434,16 +434,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       </BodyMedium>
                     </HStack>
                   </Alert>
-                  <FrontEndTypo.Primarybutton
-                    onPress={(e) =>
-                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
-                        state: "/",
-                      })
-                    }
-                    width="100%"
-                  >
-                    {t("AADHAR_NUMBER_KYC")}
-                  </FrontEndTypo.Primarybutton>
+                  <AadhaarNumberOKYC
+                    {...{
+                      facilitator,
+                    }}
+                  />
                 </Stack>
               )}
               {/* <FrontEndTypo.Secondarybutton
@@ -683,4 +678,104 @@ const InfoBox = ({ status, progress }) => {
   }
 
   return infoBox;
+};
+
+const AadhaarNumberOKYC = ({ facilitator }) => {
+  const { t } = useTranslation();
+  const [openModal, setOpenModal] = React.useState(false);
+  const navigate = useNavigate();
+
+  return (
+    <VStack>
+      <FrontEndTypo.Primarybutton
+        onPress={() => setOpenModal(true)}
+        width="100%"
+      >
+        {t("AADHAR_NUMBER_KYC")}
+      </FrontEndTypo.Primarybutton>
+
+      <Modal isOpen={openModal} size="lg">
+        <Modal.Content>
+          <Modal.Header>
+            <FrontEndTypo.H1>{t("AADHAR_NUMBER_KYC")}</FrontEndTypo.H1>
+          </Modal.Header>
+          <Modal.Body p="5">
+            <VStack space="4">
+              <VStack>
+                <HStack space="4" alignItems={"center"}>
+                  <FrontEndTypo.H2 bold color="textGreyColor.550">
+                    {t("NAME")}:
+                  </FrontEndTypo.H2>
+                  <FrontEndTypo.H2 color="textGreyColor.800" bold>
+                    {`${facilitator?.first_name || "-"} ${
+                      facilitator?.middle_name || "-"
+                    } ${facilitator?.last_name || "-"}`}
+                  </FrontEndTypo.H2>
+                </HStack>
+              </VStack>
+              <VStack space="4">
+                <HStack space="4">
+                  <FrontEndTypo.H2 bold color="textGreyColor.550">
+                    {t("DATE_OF_BIRTH")}:
+                  </FrontEndTypo.H2>
+                  <FrontEndTypo.H2 color="textGreyColor.800" bold>
+                    {facilitator?.dob}
+                  </FrontEndTypo.H2>
+                </HStack>
+              </VStack>
+              <HStack space="4">
+                <FrontEndTypo.H2 bold color="textGreyColor.550">
+                  {t("AADHAAR_NUMBER")}:
+                </FrontEndTypo.H2>
+                <FrontEndTypo.H2 color="textGreyColor.800" bold>
+                  {facilitator?.aadhar_no}
+                </FrontEndTypo.H2>
+              </HStack>
+
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+
+                  <VStack space="4" width={"100%"}>
+                    <HStack width="95%">
+                      {t("AADHAAR_OKYC_MODAL_ALERT_EDIT_MESSSAGE")}
+                      <FrontEndTypo.Primarybutton
+                        ml="1"
+                        size="md"
+                        height="15px"
+                        onPress={(e) => {
+                          navigate(`profile/edit/basic_details`);
+                        }}
+                      >
+                        <FrontEndTypo.H4 bold color="white">
+                          {t("EDIT")}
+                        </FrontEndTypo.H4>
+                      </FrontEndTypo.Primarybutton>
+                    </HStack>
+                    <HStack width="98%">
+                      {t("AADHAAR_OKYC_MODAL_ALERT_MESSSAGE")}
+                    </HStack>
+                  </VStack>
+                </HStack>
+              </Alert>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <FrontEndTypo.Secondarybutton onPress={(e) => setOpenModal()}>
+              {t("CANCEL")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton
+              onPress={(e) =>
+                navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                  state: "/",
+                })
+              }
+            >
+              {t("CONFIRM")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </VStack>
+  );
 };
