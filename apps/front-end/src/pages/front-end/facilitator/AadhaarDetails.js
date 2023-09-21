@@ -52,7 +52,7 @@ export default function AadhaarDetails() {
                 <FrontEndTypo.H3 bold color="textGreyColor.800">
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
-                {!facilitator?.aadhar_no && (
+                {!facilitator?.aadhar_no ? (
                   <IconByName
                     name="EditBoxLineIcon"
                     _icon={{ size: "20" }}
@@ -63,6 +63,21 @@ export default function AadhaarDetails() {
                       });
                     }}
                   />
+                ) : (
+                  facilitator?.aadhar_verified !== "yes" && (
+                    <FrontEndTypo.Primarybutton
+                      onPress={(e) =>
+                        navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                          state: "/",
+                        })
+                      }
+                      size="xs"
+                      height="35px"
+                      mb="2"
+                    >
+                      {t("OKYC")}
+                    </FrontEndTypo.Primarybutton>
+                  )
                 )}
               </HStack>
               <Box>

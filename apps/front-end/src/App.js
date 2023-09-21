@@ -62,7 +62,7 @@ function App() {
         {
           title: "LEARNERS",
           route: "/beneficiary/list",
-          icon: "PencilRulerLineIcon",
+          icon: "GraduationCap",
         },
         {
           title: "MY_CAMP",
