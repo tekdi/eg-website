@@ -339,7 +339,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 )}
               </VStack>
             </HStack>
-            <HStack>
+            <HStack space="4">
               <AdminTypo.Successbutton
                 isDisabled={
                   reason?.enrollment_details === "no" ||
@@ -349,7 +349,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               >
                 {t("FACILITATOR_STATUS_VERIFY")}
               </AdminTypo.Successbutton>
-              <AdminTypo.Dangerbutton
+              {/* <AdminTypo.Dangerbutton
                 mx={5}
                 isDisabled={
                   reason?.enrollment_details === "yes" &&
@@ -362,7 +362,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 }}
               >
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-              </AdminTypo.Dangerbutton>
+              </AdminTypo.Dangerbutton> */}
               <AdminTypo.Secondarybutton
                 isDisabled={
                   reason?.enrollment_details === "yes" &&
