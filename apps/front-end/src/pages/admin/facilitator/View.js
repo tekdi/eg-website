@@ -8,6 +8,7 @@ import {
   authRegistryService,
   ImageView,
   AdminTypo,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -23,6 +24,7 @@ import {
 import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import DataTable from "react-data-table-component";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -51,12 +53,52 @@ const Experience = (obj) => {
   );
 };
 
+const columns = (t) => [
+  {
+    name: t("ID"),
+    selector: (row) => row?.id,
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        <AdminTypo.H5 bold>
+          {row?.first_name + " "}
+          {row?.last_name ? row?.last_name : ""}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+    wrap: true,
+  },
+  {
+    name: t("ROLE"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        <AdminTypo.H5 bold>
+          {row?.program_faciltators.length > 0
+            ? t("PRERAK")
+            : row?.program_beneficiaries.length > 0
+            ? t("LEARNER")
+            : ""}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+    wrap: true,
+  },
+];
+
 export default function FacilitatorView({ footerLinks }) {
   const toast = useToast();
 
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [adhaarModalVisible, setAdhaarModalVisible] = React.useState(false);
+  const [aadhaarValue, setAadhaarValue] = React.useState();
+  const [duplicateUserList, setDuplicateUserList] = React.useState();
+  const [aadhaarerror, setAadhaarError] = React.useState();
   const [credentials, setCredentials] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
@@ -76,6 +118,7 @@ export default function FacilitatorView({ footerLinks }) {
     const profileDetails = async () => {
       const result = await facilitatorRegistryService.getOne({ id });
       setData(result);
+      setAadhaarValue(result?.aadhar_no);
       const qualificationList =
         await facilitatorRegistryService.getQualificationAll();
       const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
@@ -170,6 +213,34 @@ export default function FacilitatorView({ footerLinks }) {
   } else if (_.isEmpty(data) || data.error) {
     return <NotFound goBack={(e) => navigate(-1)} />;
   }
+
+  const handleAadhaarUpdate = (event) => {
+    const inputValue = event.target.value;
+    const numericValue = inputValue.replace(/[^0-9]/g, "");
+    const maxLength = 12;
+    const truncatedValue = numericValue.slice(0, maxLength);
+    setAadhaarValue(truncatedValue);
+  };
+
+  const updateAadhaar = async () => {
+    const aadhaar_no = {
+      id: id,
+      aadhar_no: aadhaarValue,
+    };
+    const result = await facilitatorRegistryService.updateAadhaarNumber(
+      aadhaar_no
+    );
+    if (aadhaarValue.length < 12) {
+      setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
+    } else if (!result?.success) {
+      setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
+      setDuplicateUserList(result?.data?.users);
+    } else {
+      setData({ ...data, aadhar_no: aadhaarValue });
+      setAdhaarModalVisible(false);
+    }
+  };
+
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -617,14 +688,33 @@ export default function FacilitatorView({ footerLinks }) {
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
-
                 <HStack>
                   <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
                     {t("AADHAAR_NO")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
-                    {showData(data?.aadhar_no)}
-                  </AdminTypo.H5>
+                  <HStack
+                    flex="1"
+                    alignItems={"center"}
+                    space={"4"}
+                    justifyContent={"space-between"}
+                  >
+                    <AdminTypo.H5
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      color="textGreyColor.800"
+                      bold
+                    >
+                      {showData(data?.aadhar_no)}
+                    </AdminTypo.H5>
+                    <IconByName
+                      bg="white"
+                      color="textMaroonColor.400"
+                      name="PencilLineIcon"
+                      onPress={(e) => {
+                        setAdhaarModalVisible(!adhaarModalVisible);
+                      }}
+                    />
+                  </HStack>
                 </HStack>
               </VStack>
               <VStack
@@ -861,6 +951,50 @@ export default function FacilitatorView({ footerLinks }) {
             ))}
           </VStack>
         </VStack> */}
+        <Modal isOpen={adhaarModalVisible} avoidKeyboard size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"Center"}>
+              <AdminTypo.H1 color="textGreyColor.500">
+                {t("UPDATE_AADHAAR")}
+              </AdminTypo.H1>
+            </Modal.Header>
+            <Modal.Body>
+              <HStack alignItems={"center"} justifyContent={"space-evenly"}>
+                {t("AADHAAR_NO")}:
+                <Input
+                  value={aadhaarValue}
+                  maxLength={12}
+                  name="numberInput"
+                  onChange={handleAadhaarUpdate}
+                />
+              </HStack>
+              <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
+                {aadhaarerror ? t(aadhaarerror) : ""}
+              </AdminTypo.H5>
+
+              {aadhaarerror === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
+                <DataTable
+                  customStyles={tableCustomStyles}
+                  columns={[...columns(t)]}
+                  data={duplicateUserList}
+                  persistTableHead
+                />
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <HStack justifyContent={"space-between"} width={"100%"}>
+                <AdminTypo.Secondarybutton
+                  onPress={() => setAdhaarModalVisible(false)}
+                >
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+                  {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </HStack>
     </Layout>
   );

@@ -126,7 +126,9 @@ export default function AadhaarSuccess({
           if (location?.state) {
             navigate(location?.state);
           } else {
-            if (id) {
+            if (user?.program_faciltators?.id) {
+              navigate(`/profile/${id}/aadhaardetails`);
+            } else if (id) {
               navigate(`/beneficiary/${id}`);
             } else {
               navigate("/beneficiary/list");
