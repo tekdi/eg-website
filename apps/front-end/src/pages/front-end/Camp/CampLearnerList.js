@@ -14,6 +14,9 @@ import {
   FrontEndTypo,
   AdminTypo,
   IconByName,
+  benificiaryRegistoryService,
+  ImageView,
+  campRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -21,31 +24,20 @@ import { useTranslation } from "react-i18next";
 
 // App
 export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
+  const camp_id = useParams();
+  console.log("camp_id", camp_id);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const data = [
-    {
-      name: "abc",
-      id: 1,
-    },
-    {
-      name: "qwerty",
-      id: 2,
-    },
-    {
-      name: "Swapnil",
-      id: 3,
-    },
-  ];
+  const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
-  const selectAllChecked = selectedIds.length === data.length;
+  const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
     if (!isEdit) {
       navigate("/camp");
     } else {
-      navigate("/camp/campRegistration");
+      navigate(`/camp/campRegistration/${camp_id?.id}`);
     }
   };
 
@@ -63,19 +55,33 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
     if (selectAllChecked) {
       setSelectedIds([]);
     } else {
-      const newSelectedIds = data.map((item) => item.id);
+      const newSelectedIds = nonRegisteredUser?.map((item) => item.id);
       setSelectedIds(newSelectedIds);
     }
   };
-  // console.log("selectedItems", selectedIds);
 
-  const createCamp = () => {
+  const createCamp = async () => {
     if (selectedIds.length !== 0) {
-      navigate(`/camp/campRegistration`);
+      const ids = {
+        learner_ids: selectedIds,
+      };
+      const result = await campRegistoryService.campRegister(ids);
+      const camp_id = result?.data?.camp?.id;
+      navigate(`/camp/campRegistration/${camp_id}`);
     } else {
       setAlert(true);
     }
   };
+
+  React.useEffect(async () => {
+    const result = await campRegistoryService.campNonRegisteredUser();
+    console.log("result", result);
+    setNonRegisteredUser(result?.data?.user);
+    setLoading(false);
+  }, []);
+
+  console.log("nonRegisteredUser", nonRegisteredUser);
+
   return (
     <Layout
       loading={loading}
@@ -86,104 +92,125 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
         _box: { bg: "white" },
       }}
     >
-      <Box py={6} px={4} mb={5}>
-        <AdminTypo.H3 color={"textMaroonColor.400"}>
-          {alert ? (
-            <Alert
-              status="warning"
-              alignItems={"start"}
-              mb="3"
-              mt="4"
-              width={"100%"}
-            >
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <BodyMedium>{t("SELECT_LEARNER")}</BodyMedium>
-              </HStack>
-            </Alert>
-          ) : (
-            <></>
-          )}
-        </AdminTypo.H3>
-
-        <HStack
-          space={2}
-          paddingRight={2}
-          alignItems={"center"}
-          justifyContent={"flex-end"}
-        >
-          {t("SELECT_ALL")}
-          <Checkbox
-            isChecked={selectAllChecked}
-            onChange={handleSelectAllChange}
-          />
-        </HStack>
-        {data.map((item) => {
-          return (
-            <HStack
-              key={item}
-              w={"100%"}
-              bg="white"
-              p="2"
-              my={2}
-              shadow="FooterShadow"
-              rounded="sm"
-              space="1"
-              alignItems={"center"}
-              justifyContent={"space-between"}
-            >
-              <HStack justifyContent="space-between">
-                <HStack alignItems="Center" flex="5">
-                  {/* <ImageView
-                          source={{
-                            document_id: 11,
-                          }}
-                          alt="Alternate Text"
-                          width={"45px"}
-                          height={"45px"}
-                        /> */}
-
-                  <IconByName
-                    isDisabled
-                    name="AccountCircleLineIcon"
-                    color="gray.300"
-                    _icon={{ size: "45px" }}
-                  />
-
-                  <VStack
-                    pl="2"
-                    flex="1"
-                    wordWrap="break-word"
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.name}
-                    </FrontEndTypo.H3>
-                  </VStack>
+      {nonRegisteredUser.length > 0 ? (
+        <Box py={6} px={4} mb={5}>
+          <AdminTypo.H3 color={"textMaroonColor.400"}>
+            {alert ? (
+              <Alert
+                status="warning"
+                alignItems={"start"}
+                mb="3"
+                mt="4"
+                width={"100%"}
+              >
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{t("SELECT_LEARNER")}</BodyMedium>
                 </HStack>
-              </HStack>
+              </Alert>
+            ) : (
+              <></>
+            )}
+          </AdminTypo.H3>
 
-              <Box maxW="121px">
-                <Checkbox
-                  isChecked={selectedIds.includes(item.id)}
-                  onChange={() => handleCheckboxChange(item.id)}
-                />
-              </Box>
-            </HStack>
-          );
-        })}
-        {!isEdit ? (
-          <FrontEndTypo.Primarybutton onPress={createCamp}>
-            {t("CREATE_CAMP")}
-          </FrontEndTypo.Primarybutton>
-        ) : (
-          <FrontEndTypo.Primarybutton onPress={createCamp}>
-            {t("SAVE_AND_CAMP_PROFILE")}
-          </FrontEndTypo.Primarybutton>
-        )}
-      </Box>
+          <HStack
+            space={2}
+            paddingRight={2}
+            alignItems={"center"}
+            justifyContent={"flex-end"}
+          >
+            {t("SELECT_ALL")}
+            <Checkbox
+              isChecked={selectAllChecked}
+              onChange={handleSelectAllChange}
+            />
+          </HStack>
+          {nonRegisteredUser?.map((item) => {
+            return (
+              <HStack
+                key={item}
+                w={"100%"}
+                bg="white"
+                p="2"
+                my={2}
+                shadow="FooterShadow"
+                rounded="sm"
+                space="1"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <HStack justifyContent="space-between">
+                  <HStack alignItems="Center" flex="5">
+                    {item?.profile_photo_1?.id ? (
+                      <ImageView
+                        source={{
+                          uri: item?.profile_photo_1?.name,
+                        }}
+                        // alt="Alternate Text"
+                        width={"45px"}
+                        height={"45px"}
+                      />
+                    ) : (
+                      <IconByName
+                        isDisabled
+                        name="AccountCircleLineIcon"
+                        color="gray.300"
+                        _icon={{ size: "51px" }}
+                      />
+                    )}
+                    <VStack
+                      pl="2"
+                      flex="1"
+                      wordWrap="break-word"
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                    >
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                        {item?.program_beneficiaries[0]?.enrollment_first_name}
+                        {item?.program_beneficiaries[0]
+                          ?.enrollment_middle_name &&
+                          ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
+                        {item?.program_beneficiaries[0]?.enrollment_last_name &&
+                          ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
+                      </FrontEndTypo.H3>
+                    </VStack>
+                  </HStack>
+                </HStack>
+
+                <Box maxW="121px">
+                  <Checkbox
+                    isChecked={selectedIds.includes(item.id)}
+                    onChange={() => handleCheckboxChange(item.id)}
+                  />
+                </Box>
+              </HStack>
+            );
+          })}
+          {!isEdit ? (
+            <FrontEndTypo.Primarybutton onPress={createCamp}>
+              {t("CREATE_CAMP")}
+            </FrontEndTypo.Primarybutton>
+          ) : (
+            <FrontEndTypo.Primarybutton onPress={createCamp}>
+              {t("SAVE_AND_CAMP_PROFILE")}
+            </FrontEndTypo.Primarybutton>
+          )}
+        </Box>
+      ) : (
+        <Alert
+          status="warning"
+          alignItems={"start"}
+          mb="3"
+          mt="4"
+          width={"100%"}
+        >
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("LEARNER_NOT_AVAILABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      )}
     </Layout>
   );
 }

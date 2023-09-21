@@ -2,10 +2,16 @@ export default {
   type: "step",
   properties: {
     camp_location: {
-      // title: "CAMP_LOCATION",
       step_name: "CAMP_LOCATION",
       type: "object",
-      // required: ["state", "district", "block", "village", "grampanchayat"],
+      required: [
+        "property_type",
+        "state",
+        "district",
+        "block",
+        "village",
+        "grampanchayat",
+      ],
       properties: {
         lat: {
           type: "string",
@@ -21,6 +27,10 @@ export default {
           title: "PROPERTY_TYPE",
           type: "string",
           format: "select",
+        },
+        street: {
+          title: "STREET_ADDRESS",
+          type: ["string", "null"],
         },
         state: {
           title: "STATE",
@@ -46,41 +56,41 @@ export default {
           title: "GRAMPANCHAYAT",
           type: "string",
         },
-        address: {
-          title: "STREET_ADDRESS",
-          type: ["string", "null"],
-        },
-
         edit_page_type: {
           type: "string",
           format: "hidden",
-          default: "edit_address",
+          default: "edit_photo_details",
         },
       },
     },
     camp_venue_photos: {
       step_name: "CAMP_VENUE_PHOTOS",
       type: "object",
-      // required: ["building_view", "classroom_view", "other_view"],
+      required: ["property_photo_building", "property_photo_classroom"],
       properties: {
-        camp_front_view: {
+        property_photo_building: {
           label: "CAMP_FRONT_VIEW",
           uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
+          type: ["string", "number", "null"],
           document_type: "camp_photos",
           format: "FileUpload",
         },
-        study_room: {
+        property_photo_classroom: {
           label: "STUDY_ROOM",
           uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
+          type: ["string", "number", "null"],
           format: "FileUpload",
         },
-        other_view: {
+        property_photo_other: {
           label: "OTHER",
           uploadTitle: "ADD_PHOTOS",
-          type: ["string", "number"],
+          type: ["string", "number", "null"],
           format: "FileUpload",
+        },
+        edit_page_type: {
+          type: "string",
+          format: "hidden",
+          default: "edit_property_facilities",
         },
       },
     },
@@ -127,34 +137,17 @@ export default {
     facilities: {
       step_name: "FACILITIES",
       type: "object",
+      required: ["property_facilities"],
       properties: {
-        // facilities: {
-        //   label: "FACILITIES_AT_CAMP",
-        //   type: "array",
-        //   grid: 1,
-        //   format: "MultiCheck",
-        //   uniqueItems: true,
-        // },
-        facilities: {
+        property_facilities: {
           label: "FACILITIES_AT_CAMP",
           type: "object",
-          properties: {
-            // facilities0: {
-            //   label: "asd",
-            //   type: "string",
-            //   format: "CheckUncheck",
-            // },
-            // facilities1: {
-            //   label: "sasdfgar",
-            //   type: "string",
-            //   format: "CheckUncheck",
-            // },
-            // facilities2: {
-            //   label: "sagar",
-            //   type: "string",
-            //   format: "CheckUncheck",
-            // },
-          },
+          properties: {},
+        },
+        edit_page_type: {
+          type: "string",
+          format: "hidden",
+          default: "edit_property_facilities",
         },
       },
     },
@@ -163,9 +156,9 @@ export default {
       type: "object",
       required: [
         "kit_received",
-        "kit_sufficient",
-        "kit_suggestion",
-        "kit_rating",
+        "kit_was_sufficient",
+        "kit_feedback",
+        "kit_ratings",
       ],
       properties: {
         kit_received: {
@@ -175,26 +168,31 @@ export default {
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
-        kit_sufficient: {
+        kit_was_sufficient: {
           label: "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT",
-          type: "string",
+          type: ["string", "null"],
           grid: 2,
           format: "radio",
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
-        kit_rating: {
+        kit_ratings: {
           label: "RATE_KIT",
-          type: ["string", "number"],
+          type: ["string", "number", "null"],
           format: "StarRating",
           totalStars: 5,
           ratingLabels: ["Poor", "Not Bad", "Average", "Good", "Amazing"],
         },
-        kit_suggestion: {
+        kit_feedback: {
           label: "KIT_SUGGESTION",
-          type: "string",
+          type: ["string", "null"],
           grid: 2,
           format: "textarea",
+        },
+        edit_page_type: {
+          type: "string",
+          format: "hidden",
+          default: "edit_kit_details",
         },
       },
     },

@@ -242,11 +242,11 @@ export default [
     component: CampList,
   },
   {
-    path: "/camp/campRegistration",
+    path: "/camp/campRegistration/:id",
     component: CampRegistration,
   },
   {
-    path: "/camp/campRegistration/edit/:step",
+    path: "/camp/campRegistration/:id/edit/:step",
     component: CampForm,
   },
   {

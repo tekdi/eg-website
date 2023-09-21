@@ -2,19 +2,19 @@ import { IconByName } from "@shiksha/common-lib";
 import { HStack, Pressable, Text, VStack } from "native-base";
 import React, { useState } from "react";
 
-const StarRating = ({ options, value, onChange, required, schema }) => {
+const StarRating = ({ value, onChange, required, schema }) => {
   const { ratingLabels, totalStars } = schema || {};
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(value);
 
   const handleStarClick = (starIndex) => {
     const starvalue = starIndex + 1;
-    setRating(starvalue);
-    onChange(starvalue);
+    setRating(`${starvalue}`);
+    onChange(`${starvalue}`);
   };
 
   React.useEffect(() => {
-    setRating(value);
-  }, []);
+      setRating(`${value}`);
+    }, [value]);
 
   return (
     <HStack width={"80%"} mx={"auto"} my={4} justifyContent={"space-evenly"}>
@@ -37,6 +37,6 @@ const StarRating = ({ options, value, onChange, required, schema }) => {
       ))}
     </HStack>
   );
-};
+};;
 
 export default StarRating;

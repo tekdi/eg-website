@@ -29,6 +29,8 @@ import {
   ImageView,
   IconByName,
   Camera,
+  campRegistoryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -44,30 +46,25 @@ import { useTranslation } from "react-i18next";
 // App
 export default function ConsentForm({ userTokenInfo, footerLinks }) {
   const { step } = useParams();
+  const { id } = useParams();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
   const [cameraFile, setCameraFile] = React.useState();
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState();
-  const [facilitator, setFacilitator] = React.useState();
+
   const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [qualifications, setQualifications] = React.useState([]);
-  const [enumObj, setEnumObj] = React.useState();
-  const [verifyOtpData, setverifyOtpData] = React.useState();
-  const [otpButton, setOtpButton] = React.useState(false);
-  const [mobileConditon, setMobileConditon] = React.useState(false);
+
+  console.log("id", id);
 
   const [modal, setModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
   const [cameraModal, setCameraModal] = React.useState(false);
   const [image, setImage] = React.useState();
+  const [groupUsers, setGroupUsers] = React.useState();
 
   const uplodInputRef = React.useRef();
 
@@ -89,6 +86,15 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
     setModal(false);
   };
 
+  React.useEffect(async () => {
+    const result = await campRegistoryService.getCampDetails({ id });
+    console.log("resultresult", result);
+    setGroupUsers(result?.data?.group_users);
+    setLoading(false);
+  }, []);
+
+  console.log("result", groupUsers);
+
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {
@@ -97,7 +103,6 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
     const index = pages.indexOf(page);
     if (index !== undefined) {
       let nextIndex = "";
@@ -107,13 +112,12 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        navigate("/camp/campRegistration");
+        navigate(`/camp/campRegistration/${id}`);
       }
     }
   };
 
   const handleCheckbox = (e) => {
-    console.log("e", e);
     const checked = e;
     if (checked) {
       console.log("checked");
@@ -187,87 +191,94 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
         <AdminTypo.H3 color={"textMaroonColor.400"}>
           {t("FAMILY_CONSENT")}
         </AdminTypo.H3>
-        <Center w="100%" my={5}>
-          <Box w="100%" maxW="700">
-            <Progress value={45} size="xs" colorScheme="info" />
-          </Box>
-        </Center>
-        <HStack
-          bg="white"
-          p="2"
-          my={2}
-          shadow="FooterShadow"
-          rounded="sm"
-          space="1"
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <HStack justifyContent="space-between">
-            <HStack alignItems="Center" flex="5">
-              {/* <ImageView
-                    source={{
-                      document_id: 11,
-                    }}
-                    alt="Alternate Text"
-                    width={"45px"}
-                    height={"45px"}
-                  /> */}
 
-              <IconByName
-                isDisabled
-                name="AccountCircleLineIcon"
-                color="gray.300"
-                _icon={{ size: "45px" }}
-              />
+        {groupUsers?.map((item) => {
+          return (
+            <HStack
+              key={item}
+              bg="white"
+              p="2"
+              my={2}
+              shadow="FooterShadow"
+              rounded="sm"
+              space="1"
+              alignItems={"center"}
+              justifyContent={"space-between"}
+            >
+              <HStack justifyContent="space-between">
+                <HStack alignItems="Center" flex="5">
+                  {item?.profile_photo_1?.id ? (
+                    <ImageView
+                      source={{
+                        uri: item?.profile_photo_1?.name,
+                      }}
+                      // alt="Alternate Text"
+                      width={"45px"}
+                      height={"45px"}
+                    />
+                  ) : (
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="gray.300"
+                      _icon={{ size: "51px" }}
+                    />
+                  )}
 
-              <VStack
-                pl="2"
-                flex="1"
-                wordWrap="break-word"
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-              >
-                <FrontEndTypo.H3
-                  bold
-                  color="textGreyColor.800"
-                ></FrontEndTypo.H3>
-              </VStack>
-            </HStack>
-          </HStack>
-
-          {/* <ImageView
-            source={{
-              document_id: 1304,
-            }}
-            text={
-              <HStack alignItems={"center"} justifyContent={"space-evenly"}>
-                {t("VIEW")}
-                <IconByName
-                  isDisabled
-                  name="FileTextLineIcon"
-                  color="blueText.450"
-                  _icon={{ size: "25px" }}
-                ></IconByName>
+                  <VStack
+                    pl="2"
+                    flex="1"
+                    wordWrap="break-word"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    <FrontEndTypo.H3 bold color="textGreyColor.800">
+                      {item?.program_beneficiaries[0]?.enrollment_first_name}
+                      {item?.program_beneficiaries[0]?.enrollment_middle_name &&
+                        ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
+                      {item?.program_beneficiaries[0]?.enrollment_last_name &&
+                        ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
+                    </FrontEndTypo.H3>
+                  </VStack>
+                </HStack>
               </HStack>
-            }
-          /> */}
-          <Pressable
-            onPress={() => {
-              setModal(true);
-            }}
-          >
-            <HStack alignItems={"center"} justifyContent={"space-evenly"}>
-              {t("UPLOAD")}
-              <IconByName
-                isDisabled
-                name="Upload2FillIcon"
-                color="blueText.450"
-                _icon={{ size: "25px" }}
-              ></IconByName>
+
+              {/* <ImageView
+                source={{
+                  document_id: 1304,
+                }}
+                text={
+                  <HStack alignItems={"center"} justifyContent={"space-evenly"}>
+                    {t("VIEW")}
+                    <IconByName
+                      isDisabled
+                      name="FileTextLineIcon"
+                      color="blueText.450"
+                      _icon={{ size: "25px" }}
+                    ></IconByName>
+                  </HStack>
+                }
+              /> */}
+              <Pressable
+                onPress={() => {
+                  setModal(true);
+                }}
+              >
+                <HStack alignItems={"center"} justifyContent={"space-evenly"}>
+                  {t("UPLOAD")}
+                  <IconByName
+                    isDisabled
+                    name="Upload2FillIcon"
+                    color="blueText.450"
+                    _icon={{ size: "25px" }}
+                  ></IconByName>
+                </HStack>
+              </Pressable>
             </HStack>
-          </Pressable>
-        </HStack>
+          );
+        })}
+
         <HStack space={4} alignItems={"center"}>
           <Checkbox
             checked={false}

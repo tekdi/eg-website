@@ -3,17 +3,14 @@ import {
   BodyMedium,
   FrontEndTypo,
   IconByName,
-  ImageView,
   Layout,
-  arrList,
   benificiaryRegistoryService,
-  facilitatorRegistryService,
+  campRegistoryService,
 } from "@shiksha/common-lib";
 import {
   HStack,
   VStack,
   Box,
-  Select,
   Pressable,
   Text,
   Progress,
@@ -25,99 +22,31 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-const Example = () => {
-  return (
-    <Center>
-      <Avatar.Group
-        _avatar={{
-          size: "lg",
-        }}
-        max={3}
-      >
-        <Avatar
-          bg="green.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          }}
-        >
-          AJ
-        </Avatar>
-        <Avatar
-          bg="cyan.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-          }}
-        >
-          TE
-        </Avatar>
-        <Avatar
-          bg="indigo.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          }}
-        >
-          JB
-        </Avatar>
-        <Avatar
-          bg="amber.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-          }}
-        >
-          TS
-        </Avatar>
-        <Avatar
-          bg="green.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          }}
-        >
-          AJ
-        </Avatar>
-        <Avatar
-          bg="cyan.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-          }}
-        >
-          TE
-        </Avatar>
-        <Avatar
-          bg="indigo.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          }}
-        >
-          JB
-        </Avatar>
-        <Avatar
-          bg="amber.500"
-          source={{
-            uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-          }}
-        >
-          TS
-        </Avatar>
-      </Avatar.Group>
-    </Center>
-  );
-};
-
-export default function CampDashboard({ userTokenInfo, footerLinks }) {
+export default function CampDashboard({ footerLinks }) {
   const navigate = useNavigate();
-  const fa_id = localStorage.getItem("id");
   const { t } = useTranslation();
-  const [facilitator, setfacilitator] = React.useState();
+  const [loading, setLoading] = React.useState(true);
+  const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
+  const [campList, setCampList] = React.useState();
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.getOne({ id: fa_id });
-    setfacilitator(result);
+    const result = await campRegistoryService.campNonRegisteredUser();
+    const campList = await campRegistoryService.campList();
+    setNonRegisteredUser(result.data.user || []);
+    setCampList(campList?.data?.camps);
+    setLoading(false);
   }, []);
 
+  console.log("nonRegisteredUser", nonRegisteredUser);
+
   return (
-    <Layout _appBar={{ name: t("MY_CAMP") }} _footer={{ menues: footerLinks }}>
+    <Layout
+      _appBar={{ name: t("MY_CAMP") }}
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+    >
       <Box
-        bg="boxBackgroundColour.100"
+        bg="boxBackgroundColour.200"
         borderColor="btnGray.100"
         borderRadius="10px"
         borderWidth="1px"
@@ -125,46 +54,107 @@ export default function CampDashboard({ userTokenInfo, footerLinks }) {
         margin={"20px"}
         shadow="AlertShadow"
       >
-        <HStack justifyContent={"space-between"}>
-          <Text>{t("CAMP")}</Text>
-          <HStack>
-            <IconByName
-              isDisabled
-              name="ErrorWarningLineIcon"
-              color="textMaroonColor.400"
-              _icon={{ size: "20px" }}
-            />
-            <Text ml={2} color="textMaroonColor.400">
-              {t("NOT_REGISTER")}
-            </Text>
-          </HStack>
-        </HStack>
         <HStack justifyContent={"space-between"} alignItems={"center"} mt={5}>
           <VStack>
-            <Text>
-              {facilitator?.first_name} {facilitator?.last_name}
-            </Text>
             <AdminTypo.H2 color="textMaroonColor.400">
-              14 {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")} {t("LEARNERS")}
+              {`${nonRegisteredUser?.length} `}
+              {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")} {t("LEARNERS")}
             </AdminTypo.H2>
           </VStack>
-          <HStack>{Example()}</HStack>
+          <HStack>
+            <Center>
+              {nonRegisteredUser.length > 0 && (
+                <Avatar.Group
+                  _avatar={{
+                    size: "lg",
+                  }}
+                  max={3}
+                >
+                  {nonRegisteredUser?.map((item) => {
+                    return (
+                      <Avatar
+                        key={item}
+                        bg="red.500"
+                        {...(item?.profile_photo_1?.fileUrl
+                          ? {
+                              source: {
+                                uri: item?.profile_photo_1?.fileUrl,
+                              },
+                            }
+                          : {})}
+                      >
+                        {item?.program_beneficiaries[0]?.enrollment_first_name
+                          ? item?.program_beneficiaries[0]?.enrollment_first_name?.substring(
+                              0,
+                              2
+                            )
+                          : "NA"}
+                      </Avatar>
+                    );
+                  })}
+                </Avatar.Group>
+              )}
+            </Center>
+          </HStack>
         </HStack>
         <VStack mt={5}>
-          <Center w="100%">
-            <Box w="100%" maxW="700">
-              <Progress value={45} size="xs" colorScheme="info" />
-            </Box>
-          </Center>
-          <AdminTypo.H6 my={3}>{t("START_CAMP_REGISTER")}</AdminTypo.H6>
+          <Box w={"100%"}>
+            <Progress value={45} size="xs" colorScheme="info" />
+          </Box>
+          <VStack my={3} space={2}>
+            {campList?.map((item) => {
+              return (
+                <Pressable
+                  key={item}
+                  onPress={() => {
+                    navigate(`/camp/campRegistration/${item?.id}`);
+                  }}
+                >
+                  <HStack
+                    bg="white"
+                    p="2"
+                    my={2}
+                    shadow="FooterShadow"
+                    rounded="sm"
+                    space="1"
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                  >
+                    <VStack>
+                      <AdminTypo.H3>{item?.group?.name}</AdminTypo.H3>
+                      {item?.group?.description && (
+                        <Text>{item?.group?.description}</Text>
+                      )}
+                    </VStack>
+                    <HStack>
+                      <IconByName
+                        isDisabled
+                        name="ErrorWarningLineIcon"
+                        color="textMaroonColor.400"
+                        _icon={{ size: "20px" }}
+                      />
+                      <Text ml={2} color="textMaroonColor.400">
+                        {t("NOT_REGISTER")}
+                      </Text>
+                    </HStack>
+                  </HStack>
+                </Pressable>
+              );
+            })}
+          </VStack>
         </VStack>
-        <FrontEndTypo.Secondarybutton
-          onPress={() => {
-            navigate(`/camp/learnerList`);
-          }}
-        >
-          {t("START_CAMP_REGISTER")}
-        </FrontEndTypo.Secondarybutton>
+
+        {campList?.length !== 2 && (
+          <FrontEndTypo.Secondarybutton
+            onPress={() => {
+              navigate(`/camp/learnerList`);
+            }}
+          >
+            {campList?.length !== 0
+              ? t("START_SECOND_CAMP_REGISTER")
+              : t("START_FIRST_CAMP_REGISTER")}
+          </FrontEndTypo.Secondarybutton>
+        )}
 
         <Alert
           status="warning"

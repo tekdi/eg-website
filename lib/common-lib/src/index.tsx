@@ -20,6 +20,7 @@ import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
+import * as campRegistoryService from './services/campRegistoryService'
 import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
@@ -69,6 +70,7 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
+  campRegistoryService,
   CheatSheet,
   CustomOTPBox,
   eventService,
