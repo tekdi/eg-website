@@ -1,89 +1,50 @@
 import React from "react";
-import Form from "@rjsf/core";
-import schema1 from "./schema.js";
+import { Box, Checkbox, HStack, Pressable, VStack } from "native-base";
 import {
-  Actionsheet,
-  Alert,
-  Box,
-  Center,
-  Checkbox,
-  HStack,
-  Pressable,
-  Progress,
-  Text,
-  TextArea,
-  VStack,
-} from "native-base";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
   Layout,
-  BodyMedium,
-  filterObject,
   FrontEndTypo,
-  enumRegistryService,
-  getOptions,
-  validation,
-  sendAndVerifyOtp,
   AdminTypo,
   ImageView,
   IconByName,
-  Camera,
   campRegistoryService,
   uploadRegistryService,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  templates,
-  widgets,
-  validator,
-  transformErrors,
-  onError,
-} from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 
 // App
-export default function ConsentForm({ userTokenInfo, footerLinks }) {
-  const { step } = useParams();
+export default function ConsentForm() {
   const { id } = useParams();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [cameraFile, setCameraFile] = React.useState();
-
-  const [errors, setErrors] = React.useState({});
-
   const [loading, setLoading] = React.useState(false);
+  const [isDisabled, setIsDisabled] = React.useState(true);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  console.log("id", id);
-
-  const [modal, setModal] = React.useState(false);
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [image, setImage] = React.useState();
   const [groupUsers, setGroupUsers] = React.useState();
 
   const uplodInputRef = React.useRef();
 
-  const handleFileInputChange = async (e) => {
+  const handleFileInputChange = async (e, campLearnerId) => {
     let file = e.target.files[0];
     setLoading(true);
     const form_data = new FormData();
     const item = {
       file: file,
-      document_type: "profile_photo",
-      document_sub_type,
-      user_id: id,
+      document_type: "camp",
+      document_sub_type: "consent_form",
+      user_id: campLearnerId,
     };
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadFile(form_data);
+    const data = await uploadRegistryService.uploadFile(form_data);
+    const docId = data?.data?.insert_documents?.returning[0]?.id || "";
+    const obj = {
+      document_id: `${docId}`,
+      id: id,
+    };
+    await campRegistoryService.createConsent(obj);
     setLoading(false);
-    setModal(false);
   };
 
   React.useEffect(async () => {
@@ -96,86 +57,24 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
   console.log("result", groupUsers);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
-  };
-
-  const nextPreviewStep = async (pageStape = "n") => {
-    const index = pages.indexOf(page);
-    if (index !== undefined) {
-      let nextIndex = "";
-      if (pageStape.toLowerCase() === "n") {
-        nextIndex = pages[index + 1];
-      } else {
-        nextIndex = pages[index - 1];
-      }
-      if (pageStape === "p") {
-        navigate(`/camp/campRegistration/${id}`);
-      }
-    }
+    navigate(`/camp/campRegistration/${id}`);
   };
 
   const handleCheckbox = (e) => {
     const checked = e;
     if (checked) {
       console.log("checked");
+      setIsDisabled(false);
     } else {
-      console.log("unchecked");
+      setIsDisabled(true);
     }
   };
 
   // update schema
 
-  React.useEffect(() => {
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      const newStep = step || newSteps[0];
-      let schemaData = properties[newStep];
-      setPage(newStep);
-      setSchema(schemaData);
-      setPages(newSteps);
-
-      if (step === "kit") {
-        const { kit_received } = schemaData.properties;
-        const required = schemaData?.required.filter((item) =>
-          ["kit_received"].includes(item)
-        );
-        const newSchema = {
-          ...schemaData,
-          properties: { kit_received },
-          required: required,
-        };
-        setSchema(newSchema);
-      }
-    }
-  }, [step]);
-
-  const onClickSubmit = (backToProfile) => {
-    localStorage.setItem("backToProfile", backToProfile);
+  const onClickSubmit = () => {
+    navigate(`/camp/campRegistration/${id}`);
   };
-
-  if (cameraModal) {
-    const handleSetCameraUrl = async (url, file) => {
-      setCameraUrl(url);
-
-      setImage((prev) => ({ ...prev, back: url, back_file: file }));
-
-      setCameraModal(false);
-      setModal(false);
-    };
-
-    return (
-      <Camera
-        cameraModal={cameraModal}
-        setCameraModal={setCameraModal}
-        cameraUrl={cameraUrl}
-        setCameraUrl={handleSetCameraUrl}
-      />
-    );
-  }
 
   return (
     <Layout
@@ -260,9 +159,18 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
                   </HStack>
                 }
               /> */}
+              <input
+                accept="image/*"
+                type="file"
+                style={{ display: "none" }}
+                ref={uplodInputRef}
+                onChange={(e) => {
+                  handleFileInputChange(e, item?.id);
+                }}
+              />
               <Pressable
-                onPress={() => {
-                  setModal(true);
+                onPress={(e) => {
+                  uplodInputRef?.current?.click();
                 }}
               >
                 <HStack alignItems={"center"} justifyContent={"space-evenly"}>
@@ -289,55 +197,14 @@ export default function ConsentForm({ userTokenInfo, footerLinks }) {
         </HStack>
         <FrontEndTypo.Primarybutton
           isLoading={loading}
+          isDisabled={isDisabled}
           p="4"
           mt="4"
-          onPress={() => onClickSubmit(false)}
+          onPress={() => onClickSubmit()}
         >
-          {t("SAVE_AND_NEXT")}
+          {t("SAVE")}
         </FrontEndTypo.Primarybutton>
       </Box>
-      {modal && (
-        <Actionsheet isOpen={modal} onClose={(e) => setModal(false)}>
-          <Actionsheet.Content alignItems={"left"}>
-            <HStack justifyContent={"space-between"} alignItems="strat">
-              <FrontEndTypo.H1 color="textGreyColor.800" p="2">
-                {t("AADHAR_KYC_VERIFICATION_FAILED")}
-              </FrontEndTypo.H1>
-              <IconByName
-                name="CloseCircleLineIcon"
-                onPress={(e) => setModal(false)}
-              />
-            </HStack>
-          </Actionsheet.Content>
-          <VStack bg="white" width={"100%"} space="5" p="5">
-            <FrontEndTypo.Secondarybutton
-              onPress={() => {
-                setCameraUrl();
-                setCameraModal(true);
-              }}
-            >
-              {t("TAKE_A_PHOTO")}
-            </FrontEndTypo.Secondarybutton>
-            <Box>
-              <input
-                accept="image/*"
-                type="file"
-                style={{ display: "none" }}
-                ref={uplodInputRef}
-                onChange={handleFileInputChange}
-              />
-              <FrontEndTypo.Secondarybutton
-                leftIcon={<IconByName name="Download2LineIcon" isDisabled />}
-                onPress={(e) => {
-                  uplodInputRef?.current?.click();
-                }}
-              >
-                {t("UPLOAD_FROM_GALLERY")}
-              </FrontEndTypo.Secondarybutton>
-            </Box>
-          </VStack>
-        </Actionsheet>
-      )}
     </Layout>
   );
 }

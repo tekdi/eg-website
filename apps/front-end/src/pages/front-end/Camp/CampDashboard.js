@@ -4,7 +4,6 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  benificiaryRegistoryService,
   campRegistoryService,
 } from "@shiksha/common-lib";
 import {
@@ -32,7 +31,7 @@ export default function CampDashboard({ footerLinks }) {
   React.useEffect(async () => {
     const result = await campRegistoryService.campNonRegisteredUser();
     const campList = await campRegistoryService.campList();
-    setNonRegisteredUser(result.data.user || []);
+    setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
   }, []);

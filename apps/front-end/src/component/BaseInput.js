@@ -578,7 +578,6 @@ export const MultiCheck = ({
 
 const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { label } = schema || {};
-  // console.log("value", value);
 
   const checkboxIcons = [
     { name: "CheckboxCircleLineIcon", activeColor: "success.500" },

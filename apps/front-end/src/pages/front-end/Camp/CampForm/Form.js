@@ -162,12 +162,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
       const facilities = {
         property_facilities: jsonParse(
-          campDetails.properties?.property_facilities
+          campDetails?.properties?.property_facilities
         ),
       };
+      console.log("facilities", facilities);
       setFormData(facilities);
     }
-  }, [step, schema]);
+  }, [step, schema, campDetails]);
 
   // update schema
   React.useEffect(async () => {

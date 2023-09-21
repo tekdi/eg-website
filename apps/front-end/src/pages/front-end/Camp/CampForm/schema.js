@@ -59,7 +59,7 @@ export default {
         edit_page_type: {
           type: "string",
           format: "hidden",
-          default: "edit_photo_details",
+          default: "edit_camp_location",
         },
       },
     },
@@ -90,50 +90,10 @@ export default {
         edit_page_type: {
           type: "string",
           format: "hidden",
-          default: "edit_property_facilities",
+          default: "edit_photo_details",
         },
       },
     },
-    // property_details: {
-    //   step_name: "PROPERTY_DETAILS",
-    //   title: "PROPERTY_TYPE",
-    //   type: "object",
-    //   required: ["property_type", "OWNER_OF_THE_PROPERTY"],
-    //   properties: {
-    //     property_type: {
-    //       title: "PROPERTY_TYPE",
-    //       type: "string",
-    //       format: "select",
-    //     },
-    //     OWNER_OF_THE_PROPERTY: {
-    //       label: "OWNER_OF_THE_PROPERTY",
-    //       type: "object",
-    //       required: ["first_name", "mobile"],
-    //       properties: {
-    //         first_name: {
-    //           type: "string",
-    //           title: "FIRST_NAME",
-    //           regex: /^[a-zA-Z]+$/,
-    //         },
-    //         middle_name: {
-    //           type: ["string", "null"],
-    //           title: "MIDDLE_NAME",
-    //           regex: /^[a-zA-Z]+$/,
-    //         },
-    //         last_name: {
-    //           type: ["string", "null"],
-    //           title: "LAST_NAME",
-    //           regex: /^[a-zA-Z]+$/,
-    //         },
-    //         mobile: {
-    //           type: "number",
-    //           title: "MOBILE_NUMBER",
-    //           format: "MobileNumber",
-    //         },
-    //       },
-    //     },
-    //   },
-    // },
     facilities: {
       step_name: "FACILITIES",
       type: "object",
@@ -196,19 +156,7 @@ export default {
         },
       },
     },
-    // permission_documents: {
-    //   step_name: "PERMISSION_DOCUMENTS",
-    //   type: "object",
-    //   required: ["permission_documents"],
-    //   properties: {
-    //     permission_documents: {
-    //       label: "CAMP_PERMISSION",
-    //       uploadTitle: "ADD_PHOTOS",
-    //       type: ["string", "number"],
-    //       format: "FileUpload",
-    //     },
-    //   },
-    // },
+
     family_consent: {
       step_name: "LEARNER_CONSENT_FORM",
       type: "object",
