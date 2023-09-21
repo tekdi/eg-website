@@ -6,8 +6,9 @@ import {
   FrontEndTypo,
   objProps,
   arrList,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image } from "native-base";
+import { HStack, VStack, Stack, Image, Alert } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -140,6 +141,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         <VStack space="5">
           <InfoBox status={facilitator?.status} progress={progress} />
           <Stack>
+            {facilitator?.program_faciltators?.status ===
+              "selected_for_onboarding" && progress !== 100 ? (
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>
+                    {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+                  </BodyMedium>
+                </HStack>
+              </Alert>
+            ) : (
+              ""
+            )}
             <HStack py="6" flex="1" px="4">
               <Image
                 source={{
@@ -352,9 +366,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </FrontEndTypo.H4>
               </RedOutlineButton>
               <Stack px="3">
-                <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
-                  {t("ITS_TIME_TO_START_MOBILIZING")}
-                </FrontEndTypo.H2>
+                {facilitator?.program_faciltators?.status ===
+                  "pragati_mobilizer" && (
+                  <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
+                    {t("ITS_TIME_TO_START_MOBILIZING")}
+                  </FrontEndTypo.H2>
+                )}
                 {/* <Alert mx={"3"} status="info" colorScheme="info" my="4">
                   <VStack space={"2"} flexShrink={"1"}>
                     <HStack
@@ -374,34 +391,61 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
-            <Stack>
-              <VStack p="5" pt={1}>
-                <FrontEndTypo.Primarybutton
-                  onPress={(e) => navigate("/profile/edit/basic_details")}
-                  bold
-                  flex="1"
-                >
-                  {t("COMPLETE_FORM")}
-                </FrontEndTypo.Primarybutton>
-              </VStack>
-            </Stack>
-          )}
-          {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
+          {["applied", ""]?.includes(facilitator.status) &&
+            progress !== 100 && (
+              <Stack>
+                <VStack p="5" pt={1}>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) => navigate("/profile/edit/basic_details")}
+                    bold
+                    flex="1"
+                  >
+                    {t("COMPLETE_FORM")}
+                  </FrontEndTypo.Primarybutton>
+                </VStack>
+              </Stack>
+            )}
+          {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
-              <FrontEndTypo.H2 bold>
-                {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-              </FrontEndTypo.H2>
-              <FrontEndTypo.Primarybutton
-                onPress={(e) =>
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
-                    state: "/",
-                  })
-                }
-                width="100%"
-              >
-                {t("AADHAR_NUMBER_KYC")}
-              </FrontEndTypo.Primarybutton>
+              {[undefined].includes(facilitator?.aadhar_no) && (
+                <Stack bg="white" space="5">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("ADD_AADHAAR_NUMBER_ERROR_MESSAGE")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) => navigate(`/profile/edit/aadhaar_details`)}
+                  >
+                    {t("ADD_AADHAAR_NUMBER")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
+              )}
+              {facilitator?.aadhar_no !== undefined && (
+                <Stack bg="white" space="5">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) =>
+                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                        state: "/",
+                      })
+                    }
+                    width="100%"
+                  >
+                    {t("AADHAR_NUMBER_KYC")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
+              )}
               {/* <FrontEndTypo.Secondarybutton
                 width="100%"
                 onPress={(e) =>
@@ -412,15 +456,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 {t("SCAN_QR_CODE")}
               </FrontEndTypo.Secondarybutton> */}
-              <FrontEndTypo.Primarybutton
-                onPress={() => {
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`, {
-                    state: "/",
-                  });
-                }}
-              >
-                {t("AADHAR_UPLOAD_KYC")}
-              </FrontEndTypo.Primarybutton>
             </Stack>
           )}
           {isDocumentUpload() && (
