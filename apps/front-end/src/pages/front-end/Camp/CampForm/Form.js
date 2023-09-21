@@ -191,7 +191,7 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "state_name",
         });
       }
-      newSchema = await setDistric({
+      await setDistric({
         schemaData: newSchema,
         state: formData?.state,
         district: formData?.district,
