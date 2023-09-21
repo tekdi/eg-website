@@ -74,16 +74,19 @@ export default {
           title: "FIRST_NAME",
           label: "FIRST_NAME",
           description: "AS_PER_ENROLLMENT_RECEIPT",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         enrollment_middle_name: {
           type: ["string", "null"],
           title: "MIDDLE_NAME",
           label: "MIDDLE_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         enrollment_last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
           label: "LAST_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         enrollment_dob: {
           type: "string",
