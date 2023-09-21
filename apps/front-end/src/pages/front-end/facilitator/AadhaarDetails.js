@@ -1,5 +1,13 @@
 import React from "react";
-import { HStack, VStack, Box, Progress, Image, Alert } from "native-base";
+import {
+  HStack,
+  VStack,
+  Box,
+  Progress,
+  Image,
+  Alert,
+  Stack,
+} from "native-base";
 import {
   arrList,
   IconByName,
@@ -11,6 +19,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
+import AadhaarNumberOKYC from "component/AadhaarNumberOKYC";
 
 export default function AadhaarDetails() {
   const { id } = useParams();
@@ -52,7 +61,7 @@ export default function AadhaarDetails() {
                 <FrontEndTypo.H3 bold color="textGreyColor.800">
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
-                {!facilitator?.aadhar_no ? (
+                {!facilitator?.aadhar_no && (
                   <IconByName
                     name="EditBoxLineIcon"
                     _icon={{ size: "20" }}
@@ -63,21 +72,6 @@ export default function AadhaarDetails() {
                       });
                     }}
                   />
-                ) : (
-                  facilitator?.aadhar_verified !== "yes" && (
-                    <FrontEndTypo.Primarybutton
-                      onPress={(e) =>
-                        navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
-                          state: "/",
-                        })
-                      }
-                      size="xs"
-                      height="35px"
-                      mb="2"
-                    >
-                      {t("OKYC")}
-                    </FrontEndTypo.Primarybutton>
-                  )
                 )}
               </HStack>
               <Box>
@@ -152,10 +146,9 @@ export default function AadhaarDetails() {
                 borderWidth="1px"
                 bg="white"
                 borderColor="appliedColor"
+                space="4"
               >
-                {!["yes", "in_progress"].includes(
-                  facilitator?.aadhar_verified
-                ) &&
+                {!["yes"].includes(facilitator?.aadhar_verified) &&
                   facilitator?.aadhar_no !== "" &&
                   facilitator?.aadhar_no !== null &&
                   facilitator?.aadhar_no !== undefined && (
@@ -163,13 +156,12 @@ export default function AadhaarDetails() {
                       <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="5">
                         {t("COMPLETE_AADHAAR_VERIFICATION")}
                       </FrontEndTypo.H2>
-                      <FrontEndTypo.Secondarybutton
-                        onPress={() => {
-                          navigate(`/aadhaar-kyc/${id}/okyc2`);
+
+                      <AadhaarNumberOKYC
+                        {...{
+                          user: facilitator,
                         }}
-                      >
-                        {t("AADHAAR_NUMBER_KYC")}
-                      </FrontEndTypo.Secondarybutton>
+                      />
                       {/* <FrontEndTypo.Secondarybutton
                               my="4"
                               onPress={() => {
@@ -178,15 +170,17 @@ export default function AadhaarDetails() {
                             >
                               {t("SCAN_QR_CODE")}
                             </FrontEndTypo.Secondarybutton> */}
-                      <FrontEndTypo.Secondarybutton
-                        onPress={() => {
-                          navigate(`/aadhaar-kyc/${id}/upload`, {
-                            state: `/beneficiary/${id}/aadhaardetails`,
-                          });
-                        }}
-                      >
-                        {t("AADHAR_UPLOAD_KYC")}
-                      </FrontEndTypo.Secondarybutton>
+                      {facilitator?.aadhaar_verification_mode !== "upload" && (
+                        <FrontEndTypo.Secondarybutton
+                          onPress={() => {
+                            navigate(`/aadhaar-kyc/${id}/upload`, {
+                              state: `/beneficiary/${id}/aadhaardetails`,
+                            });
+                          }}
+                        >
+                          {t("AADHAR_UPLOAD_KYC")}
+                        </FrontEndTypo.Secondarybutton>
+                      )}
                     </VStack>
                   )}
                 {facilitator?.aadhaar_verification_mode === "upload" && (
