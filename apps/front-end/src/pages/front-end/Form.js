@@ -48,7 +48,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [verifyOtpData, setverifyOtpData] = React.useState();
   const [loading, setLoading] = React.useState(false);
-  const [otpButton, setOtpButton] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   const { t } = useTranslation();
@@ -484,24 +483,23 @@ export default function App({ facilitator, ip, onClick }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      let { mobile, ...otherError } = errors ? errors : {};
+      let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
       if (data?.mobile?.toString()?.length === 10) {
         await checkMobileExist(data?.mobile);
       }
       if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties;
+        const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
         setFormData((e) => {
           const { otp, ...fData } = e;
           return fData;
         });
-        setOtpButton(false);
       }
     }
     if (id === "root_aadhar_no") {
-      let { aadhar_no, ...otherError } = errors ? errors : {};
+      let { aadhar_no, ...otherError } = errors || {};
       setErrors(otherError);
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({
@@ -564,14 +562,13 @@ export default function App({ facilitator, ip, onClick }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
-    
+
     if (id === "root_otp") {
       if (errors?.otp) {
         const newErrors = {};
         setErrors(newErrors);
       }
     }
-    
   };
 
   const onError = (data) => {
@@ -604,7 +601,7 @@ export default function App({ facilitator, ip, onClick }) {
     };
     setFormData(newData);
 
-    if (_.isEmpty(errors)) {
+    if (_.isEmpty(errors) || errors?.otp) {
       const { id } = facilitator;
       let success = false;
       if (id) {
@@ -615,6 +612,13 @@ export default function App({ facilitator, ip, onClick }) {
       } else if (page === "2") {
         const resultCheck = await checkMobileExist(newFormData?.mobile);
         if (!resultCheck) {
+          if (!schema?.properties?.otp) {
+            const { otp: data, ...allData } = newFormData || {};
+            setFormData(allData);
+            newFormData = allData;
+            let { mobile, otp, ...otherError } = errors || {};
+            setErrors(otherError);
+          }
           const { status, otpData, newSchema } = await sendAndVerifyOtp(
             schema,
             {
@@ -651,7 +655,6 @@ export default function App({ facilitator, ip, onClick }) {
             setErrors(newErrors);
           } else {
             setSchema(newSchema);
-            setOtpButton(true);
           }
         }
       } else if (page <= 1) {
@@ -880,7 +883,7 @@ export default function App({ facilitator, ip, onClick }) {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               customValidate,
@@ -899,7 +902,7 @@ export default function App({ facilitator, ip, onClick }) {
                   formRef?.current?.submit();
                 }}
               >
-                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+                {schema?.properties?.otp ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
@@ -1000,7 +1003,7 @@ export default function App({ facilitator, ip, onClick }) {
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
+                    await login(cData);
                     navigate("/");
                     navigate(0);
                   }}

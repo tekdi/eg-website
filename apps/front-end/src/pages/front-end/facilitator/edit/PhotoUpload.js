@@ -46,10 +46,11 @@ export default function PhotoUpload({
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file && file.size <= 1048576 * 25) {
+    if (file && file.size <= 1048576 * 10) {
+      setErrors({});
       if (page < 4) {
         const result = await uploadProfile(file, `profile_photo_${page}`);
-        setCameraFile([...(cameraFile ? cameraFile : []), result]);
+        setCameraFile([...(cameraFile || []), result]);
         const data = result?.data?.insert_documents?.returning?.[0];
         setFile(data);
       }
@@ -87,7 +88,7 @@ export default function PhotoUpload({
   };
 
   React.useEffect(() => {
-    if (!(page < 4)) {
+    if (page >= 4) {
       if (!aadhar_no || aadhar_no === "") {
         navigate(`/profile/edit/aadhaar_details`);
       } else {
@@ -109,7 +110,13 @@ export default function PhotoUpload({
       <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
         <H2 color="textMaroonColor.400">{t("ADD_ID_PHOTOS")}</H2>
         <VStack space={2}>
-          <Box>
+          <Box
+            variant="outline"
+            borderWidth="3px"
+            borderColor="textGreyColor.100"
+            rounded="lg"
+            borderStyle="dashed"
+          >
             <input
               accept="image/*"
               type="file"
@@ -117,58 +124,51 @@ export default function PhotoUpload({
               ref={uplodInputRef}
               onChange={handleFileInputChange}
             />
+            <VStack py={file?.id ? "4" : "20"} alignItems="center" space="2">
+              {file?.id ? (
+                <ImageView
+                  w={"150"}
+                  h="250"
+                  borderRadius="0"
+                  source={{
+                    document_id: file?.id,
+                  }}
+                  _image={{ rounded: 0 }}
+                />
+              ) : (
+                <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
+              )}
+            </VStack>
+
             <Pressable
+              flex="1"
               isLoading={loading}
               onPress={(e) => {
                 uplodInputRef?.current?.click();
               }}
-              variant="outline"
-              borderWidth="3px"
-              borderColor="textGreyColor.100"
-              rounded="lg"
-              borderStyle="dashed"
               alignItems="center"
-              gap="4"
               p="4"
+              bg="gray.200"
+              shadow={2}
             >
-              <VStack alignItems="center" py={file?.id ? "0" : "20"} space="2">
-                {file?.id ? (
-                  <ImageView
-                    w={"150"}
-                    h="250"
-                    borderRadius="0"
-                    source={{
-                      document_id: file?.id,
-                    }}
-                  />
-                ) : (
-                  <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
-                )}
+              <HStack alignItems="center" space="2">
                 <IconByName name="Upload2FillIcon" isDisabled />
                 {page === 1 ? (
                   <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
                     {t("ADD_FRONT_VIEW_1")}
                   </FrontEndTypo.H2>
-                ) : <></> ? (
-                  page === 2 ? (
-                    <FrontEndTypo.H2
-                      color="textGreyColor.100"
-                      textAlign="center"
-                    >
-                      {t("ADD_FRONT_VIEW_2")}
-                    </FrontEndTypo.H2>
-                  ) : (
-                    <FrontEndTypo.H2
-                      color="textGreyColor.100"
-                      textAlign="center"
-                    >
-                      {t("ADD_FRONT_VIEW_3")}
-                    </FrontEndTypo.H2>
-                  )
+                ) : page === 2 ? (
+                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
+                    {t("ADD_FRONT_VIEW_2")}
+                  </FrontEndTypo.H2>
+                ) : page === 3 ? (
+                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
+                    {t("ADD_FRONT_VIEW_3")}
+                  </FrontEndTypo.H2>
                 ) : (
                   <></>
                 )}
-              </VStack>
+              </HStack>
             </Pressable>
           </Box>
           {errors?.fileSize ? (

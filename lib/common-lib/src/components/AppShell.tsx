@@ -1,6 +1,5 @@
 import React from 'react'
 import * as Sentry from '@sentry/react'
-import { eventBus } from '../services/EventBus'
 import AppRoutesContainer from './AppRoutesContainer'
 import { getAppshellData } from './helper'
 
