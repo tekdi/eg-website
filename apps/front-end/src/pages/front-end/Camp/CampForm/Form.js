@@ -3,7 +3,6 @@ import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
 import {
-  facilitatorRegistryService,
   geolocationRegistryService,
   Layout,
   BodyMedium,
@@ -36,7 +35,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [schema, setSchema] = React.useState({});
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState();
-  const [facilitator, setFacilitator] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
@@ -414,17 +412,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         {},
         ""
       );
-      // if (step === "property_details") {
-      //   newdata = {
-      //     ...newdata,
-      //     OWNER_OF_THE_PROPERTY: filterObject(
-      //       newFormData?.OWNER_OF_THE_PROPERTY,
-      //       Object.keys(schema?.properties?.OWNER_OF_THE_PROPERTY?.properties),
-      //       {},
-      //       ""
-      //     ),
-      //   };
-      // }
+
       console.log("newdata", newdata);
       await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {

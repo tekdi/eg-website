@@ -1,41 +1,24 @@
 import {
-  AdminTypo,
   FrontEndTypo,
   IconByName,
-  ImageView,
   Layout,
-  arrList,
-  benificiaryRegistoryService,
   campRegistoryService,
-  facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Box,
-  Select,
-  Pressable,
-  Text,
-  Progress,
-  Center,
-  Image,
-  Avatar,
-} from "native-base";
+import { HStack, Box, Pressable, Text, Image } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const camp_id = useParams();
   const { t } = useTranslation();
-  const [campDetails, setCampDetails] = React.useState();
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(async () => {
+    setLoading(true);
     const result = await campRegistoryService.getCampDetails(camp_id);
-    console.log("result", result?.data);
-    setCampDetails(result?.data);
+    console.log("result", result);
     setLoading(false);
   }, []);
 

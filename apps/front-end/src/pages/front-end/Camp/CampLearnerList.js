@@ -1,20 +1,11 @@
 import React from "react";
-import {
-  Alert,
-  Box,
-  Center,
-  Checkbox,
-  HStack,
-  Progress,
-  VStack,
-} from "native-base";
+import { Alert, Box, Checkbox, HStack, VStack } from "native-base";
 import {
   Layout,
   BodyMedium,
   FrontEndTypo,
   AdminTypo,
   IconByName,
-  benificiaryRegistoryService,
   ImageView,
   campRegistoryService,
 } from "@shiksha/common-lib";

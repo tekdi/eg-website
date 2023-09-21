@@ -7,14 +7,14 @@ import {
   AdminTypo,
   IconByName,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 import { ChipStatus } from "component/BeneficiaryStatus";
 
 // App
 export default function CampList({ userTokenInfo, footerLinks }) {
-  const [loading, setLoading] = React.useState(false);
+  const [loading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
