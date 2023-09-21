@@ -169,15 +169,15 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                   ?.enrollment_first_name
                               }
                               {data?.program_beneficiaries
-                                ?.enrollment_last_name &&
-                                " " +
-                                  data?.program_beneficiaries
-                                    ?.enrollment_last_name}
-                              {data?.program_beneficiaries
                                 ?.enrollment_middle_name &&
                                 " " +
                                   data?.program_beneficiaries
                                     ?.enrollment_middle_name}
+                              {data?.program_beneficiaries
+                                ?.enrollment_last_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_last_name}
                             </AdminTypo.H5>
                           ),
                         },

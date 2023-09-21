@@ -35,8 +35,8 @@ const EnrollmentReceiptView = React.lazy(() =>
   import("pages/admin/beneficiaries/EnrollmentReceiptView")
 );
 
-const AgAdminProfile = React.lazy(() =>
-  import("pages/admin/AgAdmin/AgAdminProfile")
+const BeneficiaryAdminProfile = React.lazy(() =>
+  import("pages/admin/beneficiaries/Profile")
 );
 
 export default [
@@ -73,8 +73,8 @@ export default [
     component: AdharKyc,
   },
   {
-    path: "/admin/AgAdmin/AgAdminProfile/:id",
-    component: AgAdminProfile,
+    path: "/admin/beneficiary/:id",
+    component: BeneficiaryAdminProfile,
   },
   { path: "/", component: Orientation },
   { path: "*", component: NotFound },

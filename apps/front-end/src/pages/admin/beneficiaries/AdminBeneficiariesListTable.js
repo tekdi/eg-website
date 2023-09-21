@@ -114,7 +114,7 @@ const columns = (t, navigate) => [
       <AdminTypo.Secondarybutton
         my="3"
         onPress={() => {
-          navigate(`/admin/AgAdmin/AgAdminProfile/${row?.id}`);
+          navigate(`/admin/beneficiary/${row?.id}`);
         }}
       >
         {t("VIEW")}

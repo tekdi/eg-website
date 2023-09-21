@@ -239,7 +239,6 @@ export default function FacilitatorView({ footerLinks }) {
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
     }
-    console.log("result", result);
   };
 
   return (
