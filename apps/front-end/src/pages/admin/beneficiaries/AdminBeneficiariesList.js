@@ -355,7 +355,16 @@ export const Filter = ({ filter, setFilter }) => {
 
   React.useEffect(() => {
     const facilitatorDetails = async () => {
-      const result = await facilitatorRegistryService.filter(facilitatorFilter);
+      let newFilter = {};
+      ["district", "block", "status"].forEach((e) => {
+        if (filter[e]) {
+          newFilter = { ...newFilter, [e]: filter[e] };
+        }
+      });
+      const result = await facilitatorRegistryService.searchByBeneficiary({
+        ...facilitatorFilter,
+        ...newFilter,
+      });
       setIsMore(
         parseInt(`${result?.data?.currentPage}`) <
           parseInt(`${result?.data?.totalPages}`)
@@ -375,7 +384,7 @@ export const Filter = ({ filter, setFilter }) => {
       }
     };
     facilitatorDetails();
-  }, [facilitatorFilter]);
+  }, [facilitatorFilter, filter]);
 
   const onChange = async (data) => {
     const { district, block } = data?.formData || {};
@@ -427,7 +436,7 @@ export const Filter = ({ filter, setFilter }) => {
         <Input
           w="100%"
           height="32px"
-          placeholder="search"
+          placeholder={t("SEARCH")}
           variant="outline"
           onChange={(e) => {
             debounce(
