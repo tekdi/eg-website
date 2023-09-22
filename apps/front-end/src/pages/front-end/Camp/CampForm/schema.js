@@ -145,7 +145,7 @@ export default {
         },
         kit_feedback: {
           label: "KIT_SUGGESTION",
-          type: ["string", "null"],
+          type: ["string", "number", "null"],
           grid: 2,
           format: "textarea",
         },

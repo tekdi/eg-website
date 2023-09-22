@@ -1,8 +1,10 @@
-import { IconByName } from "@shiksha/common-lib";
-import { HStack, Pressable, Text, VStack } from "native-base";
+import { H2, IconByName } from "@shiksha/common-lib";
+import { FormControl, HStack, Pressable, Text, VStack } from "native-base";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const StarRating = ({ value, onChange, required, schema }) => {
+  const { t } = useTranslation();
   const { ratingLabels, totalStars } = schema || {};
   const [rating, setRating] = useState(value);
 
@@ -13,8 +15,8 @@ const StarRating = ({ value, onChange, required, schema }) => {
   };
 
   React.useEffect(() => {
-      setRating(`${value}`);
-    }, [value]);
+    setRating(`${value}`);
+  }, [value]);
 
   return (
     <HStack width={"80%"} mx={"auto"} my={4} justifyContent={"space-evenly"}>
@@ -35,8 +37,13 @@ const StarRating = ({ value, onChange, required, schema }) => {
           </VStack>
         </Pressable>
       ))}
+      {!rating && (
+        <FormControl.Label>
+          {required && <H2 color="textMaroonColor.400">*</H2>}
+        </FormControl.Label>
+      )}
     </HStack>
   );
-};;
+};
 
 export default StarRating;

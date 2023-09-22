@@ -25,6 +25,7 @@ import {
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
 import CampLearnerList from "../CampLearnerList.js";
+import CampSelectedLearners from "../CampSelectedLearners.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -60,13 +61,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       ...formData,
       lat: lati.toString(),
       long: longi.toString(),
-      property_type: campDetails?.properties?.property_type || "",
-      state: campDetails?.properties?.state || "",
-      district: campDetails?.properties?.district || "",
-      block: campDetails?.properties?.block || "",
-      village: campDetails?.properties?.village || "",
-      grampanchayat: campDetails?.properties?.grampanchayat || "",
-      street: campDetails?.properties?.street || "",
+      property_type: campDetails?.properties?.property_type || undefined,
+      state: campDetails?.properties?.state || undefined,
+      district: campDetails?.properties?.district || undefined,
+      block: campDetails?.properties?.block || undefined,
+      village: campDetails?.properties?.village || undefined,
+      grampanchayat: campDetails?.properties?.grampanchayat || undefined,
+      street: campDetails?.properties?.street || undefined,
     });
     setLoading(false);
   };
@@ -100,17 +101,29 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, []);
 
   React.useEffect(async () => {
-    console.log("campppp", campDetails);
     setLoading(true);
     if (step === "camp_location") {
       getLocation();
     } else if (step === "camp_venue_photos") {
       const camp_venue_photos = campDetails?.properties;
-      console.log("camp_venue_photos", camp_venue_photos);
-      setFormData(camp_venue_photos);
+      setFormData({
+        ...formData,
+        property_photo_building:
+          camp_venue_photos?.property_photo_building || undefined,
+        property_photo_classroom:
+          camp_venue_photos?.property_photo_classroom || undefined,
+        property_photo_other:
+          camp_venue_photos?.property_photo_other || undefined,
+      });
     } else if (step === "kit") {
       const kit = campDetails;
-      setFormData(kit);
+      setFormData({
+        ...formData,
+        kit_was_sufficient: kit?.kit_was_sufficient || undefined,
+        kit_received: kit?.kit_received || undefined,
+        kit_ratings: kit?.kit_ratings || undefined,
+        kit_feedback: kit?.kit_feedback || undefined,
+      });
     }
     setLoading(false);
   }, [step, campDetails]);
@@ -163,7 +176,6 @@ export default function App({ userTokenInfo, footerLinks }) {
           campDetails?.properties?.property_facilities
         ),
       };
-      console.log("facilities", facilities);
       setFormData(facilities);
     }
   }, [step, schema, campDetails]);
@@ -214,7 +226,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (formData?.kit_received == "yes") {
           setSchema(schemaData);
         } else if (formData?.kit_received === "no") {
-          console.log("reached here");
           const { kit_received, edit_page_type } = schemaData.properties;
           const required = schemaData?.required.filter((item) =>
             ["kit_received"].includes(item)
@@ -233,7 +244,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, [step, formData]);
 
   const formSubmitUpdate = async (data, overide) => {
-    console.log("called");
     if (id) {
       setLoading(true);
       const result = await campRegistoryService.updateCampDetails({
@@ -378,13 +388,12 @@ export default function App({ userTokenInfo, footerLinks }) {
       } else if (data?.kit_received === "no") {
         setFormData({
           ...formData,
-          kit_ratings: "",
-          kit_received: "no",
-          kit_was_sufficient: "",
-          kit_feedback: "",
+          kit_ratings: undefined,
+          kit_received: data?.kit_received,
+          kit_was_sufficient: undefined,
+          kit_feedback: undefined,
         });
         const properties = schema1.properties;
-        console.log("newSchema", properties);
         const newSteps = Object.keys(properties);
         const newStep = step || newSteps[0];
         let schemaData = properties[newStep];
@@ -400,6 +409,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         setSchema(newSchema);
       }
     }
+
+    if (id === "root_kit_feedback") {
+      console.log("data", data?.kit_feedback);
+      if (data?.kit_feedback === "") {
+        setFormData({ ...formData, kit_feedback: undefined });
+      }
+    }
   };
 
   const onSubmit = async (data) => {
@@ -412,8 +428,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         {},
         ""
       );
-
-      console.log("newdata", newdata);
       await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
@@ -432,8 +446,8 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   if (page === "family_consent") {
     return <ConsentForm />;
-  } else if (page === "add_an_ag_learner") {
-    return <CampLearnerList isEdit={isEdit} />;
+  } else if (page === "camp_selected_learners") {
+    return <CampSelectedLearners isEdit={isEdit} />;
   }
 
   return (

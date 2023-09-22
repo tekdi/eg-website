@@ -3,45 +3,107 @@ import {
   IconByName,
   Layout,
   campRegistoryService,
+  arrList,
 } from "@shiksha/common-lib";
 import { HStack, Box, Pressable, Text, Image } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
+const getColor = (obj, arr) => {
+  const result = arrList(obj, arr);
+  let color = "gray.300";
+  if (result === 100) {
+    color = "green.300";
+  } else if (result > 33) {
+    color = "warning.300";
+  }
+  return color;
+};
+
 export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const camp_id = useParams();
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(true);
+  const [campLocation, setCampLocation] = React.useState();
+  const [campVenue, setCampVenue] = React.useState();
 
   React.useEffect(async () => {
     setLoading(true);
     const result = await campRegistoryService.getCampDetails(camp_id);
-    console.log("result", result);
+    console.log("result", result?.data?.properties);
+    const data = result?.data?.properties;
+    setCampLocation({
+      lat: data?.lat,
+      long: data?.long,
+      property_type: data?.property_type,
+      state: data?.state,
+      district: data?.district,
+      block: data?.block,
+      village: data?.village,
+      grampanchayat: data?.grampanchayat,
+    });
+
     setLoading(false);
   }, []);
 
   const Navdata = [
     {
-      Icon: "GraduationCap",
-      Name: "ADD_AN_AG_LEARNER",
-    },
-    {
       Icon: "MapPinLineIcon",
       Name: "CAMP_LOCATION",
+      color: getColor(campLocation, [
+        "lat",
+        "long",
+        "property_type",
+        "state",
+        "district",
+        "block",
+        "village",
+        "grampanchayat",
+      ]),
     },
     {
       Icon: "CameraLineIcon",
       Name: "CAMP_VENUE_PHOTOS",
+      color: getColor(campLocation, [
+        "lat",
+        "long",
+        "property_type",
+        "state",
+        "district",
+        "block",
+        "village",
+        "grampanchayat",
+      ]),
     },
     {
       Icon: "StarLineIcon",
       Name: "FACILITIES",
+      color: getColor(campLocation, [
+        "lat",
+        "long",
+        "property_type",
+        "state",
+        "district",
+        "block",
+        "village",
+        "grampanchayat",
+      ]),
     },
     {
       Icon: "MapPinLineIcon",
       Name: "KIT",
+      color: getColor(campLocation, [
+        "lat",
+        "long",
+        "property_type",
+        "state",
+        "district",
+        "block",
+        "village",
+        "grampanchayat",
+      ]),
     },
 
     {
@@ -64,33 +126,49 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         _box: { bg: "white" },
       }}
     >
-      {/* <VStack w={"90%"} marginTop={2} margin={"auto"}>
-        <AdminTypo.H3 textAlign={"center"} color={"textMaroonColor.400"}>
-          {t("VERIFIED_LEARNERS_IN_THIS_CAMP")}
-        </AdminTypo.H3>
-        {Example()}
-        <Link
-          style={{
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            textAlign: "center",
-            margin: "0 auto",
-            width: "auto",
-          }}
-          to={"/camp/camplist"}
+      <HStack w={"90%"} marginTop={3} marginBottom={2} margin={"auto"}>
+        <Box
+          bg="boxBackgroundColour.100"
+          borderColor="btnGray.100"
+          borderRadius="10px"
+          borderWidth="1px"
+          shadow="AlertShadow"
+          w={"95%"}
+          paddingX={5}
+          paddingY={3}
+          ml={5}
         >
-          <Text>{t("VIEW_ALL")} </Text>
-          <IconByName
-            isDisabled
-            name={"ArrowRightSLineIcon"}
-            //color="amber.400"
-            _icon={{ size: "30px" }}
-          />
-        </Link>
-      </VStack> */}
+          <Pressable
+            onPress={async () => {
+              navigate(
+                `/camp/campRegistration/${camp_id?.id}/edit/camp_selected_learners`
+              );
+            }}
+          >
+            <HStack justifyContent={"space-between"}>
+              <HStack alignItems={"center"}>
+                <IconByName
+                  isDisabled
+                  name={"GraduationCap"}
+                  _icon={{ size: "30px" }}
+                />
 
+                <Text ml={5}>
+                  {t("UPDATE_LEARNER")}
+                  <Text color={"textMaroonColor.400"}>*</Text>
+                </Text>
+              </HStack>
+              <IconByName
+                isDisabled
+                name="ArrowRightSLineIcon"
+                _icon={{ size: "30px" }}
+              />
+            </HStack>
+          </Pressable>
+        </Box>
+      </HStack>
       {Navdata.map((item) => {
+        console.log("item", item);
         return (
           <NavigationBox
             key={item}
