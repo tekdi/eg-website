@@ -12,7 +12,7 @@ import { HStack, VStack, Stack, Image, Alert } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
+import AadhaarNumberOKYC from "../../component/AadhaarNumberOKYC";
 // styles
 const styles = {
   inforBox: {
@@ -391,20 +391,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          {["applied", ""]?.includes(facilitator.status) &&
-            progress !== 100 && (
-              <Stack>
-                <VStack p="5" pt={1}>
-                  <FrontEndTypo.Primarybutton
-                    onPress={(e) => navigate("/profile/edit/basic_details")}
-                    bold
-                    flex="1"
-                  >
-                    {t("COMPLETE_FORM")}
-                  </FrontEndTypo.Primarybutton>
-                </VStack>
-              </Stack>
-            )}
+          {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
+            <Stack>
+              <VStack p="5" pt={1}>
+                <FrontEndTypo.Primarybutton
+                  onPress={(e) => navigate("/profile/edit/basic_details")}
+                  bold
+                  flex="1"
+                >
+                  {t("COMPLETE_FORM")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
+            </Stack>
+          )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               {[undefined].includes(facilitator?.aadhar_no) && (
@@ -434,16 +433,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       </BodyMedium>
                     </HStack>
                   </Alert>
-                  <FrontEndTypo.Primarybutton
-                    onPress={(e) =>
-                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
-                        state: "/",
-                      })
-                    }
-                    width="100%"
-                  >
-                    {t("AADHAR_NUMBER_KYC")}
-                  </FrontEndTypo.Primarybutton>
+                  <AadhaarNumberOKYC
+                    {...{
+                      user: facilitator,
+                    }}
+                  />
                 </Stack>
               )}
               {/* <FrontEndTypo.Secondarybutton
