@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const StarRating = ({ value, onChange, required, schema }) => {
-  const { t } = useTranslation();
   const { ratingLabels, totalStars } = schema || {};
   const [rating, setRating] = useState(value);
 

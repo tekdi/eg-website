@@ -55,9 +55,7 @@ export default function CampSelectedLearners({
       const ids = {
         learner_ids: selectedIds,
       };
-      // const result = await campRegistoryService.campRegister(ids);
-      // const camp_id = result?.data?.camp?.id;
-      // navigate(`/camp/campRegistration/${camp_id}`);
+      console.log("ids", ids);
     } else {
       setAlert(true);
     }

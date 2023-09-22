@@ -14,7 +14,6 @@ import {
   ImageView,
   IconByName,
   campRegistoryService,
-  uploadRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";

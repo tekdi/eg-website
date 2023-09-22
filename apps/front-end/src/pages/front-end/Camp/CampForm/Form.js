@@ -24,7 +24,6 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
-import CampLearnerList from "../CampLearnerList.js";
 import CampSelectedLearners from "../CampSelectedLearners.js";
 
 // App
