@@ -564,6 +564,17 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         setErrors(newErrors);
       }
     }
+
+    if (data?.previous_school_type === "never_studied") {
+      if (data?.type_of_learner === "dropout") {
+        const newErrors = {
+          type_of_learner: {
+            __errors: [t("SELECT_MESSAGE_DROPOUT")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
   };
 
   const onError = (data) => {
