@@ -274,10 +274,6 @@ export default function agFormEdit({ ip }) {
     updateBtnText();
   }, [formData, page, lang]);
 
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
-
   const formSubmitUpdate = async (formData) => {
     if (id) {
       const data = await enumRegistryService.editProfileById({
