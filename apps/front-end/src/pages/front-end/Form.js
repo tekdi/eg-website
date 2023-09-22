@@ -466,7 +466,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await facilitatorRegistryService.isExist(mobile);
+    const result = await facilitatorRegistryService.isExist({ mobile });
     if (result?.registeredAsFacilitator) {
       const newErrors = {
         mobile: {
