@@ -33,10 +33,10 @@ export default function ConsentForm() {
   React.useEffect(async () => {
     const result = await campRegistoryService.getCampDetails({ id });
     const campConsent = await campRegistoryService.getConsent({ camp_id: id });
-    setConsents(campConsent?.data?.consents || []);
+    setConsents(campConsent?.data || []);
     setGroupUsers(result?.data?.group_users);
     setLoading(false);
-  }, []);
+  }, [uploadData]);
 
   const onPressBackButton = async () => {
     navigate(`/camp/${id}`);
@@ -59,6 +59,7 @@ export default function ConsentForm() {
 
   const handleUpload = async (data) => {
     await campRegistoryService.createConsent(data);
+    setUploadData();
     // api call
   };
 
@@ -120,7 +121,6 @@ export default function ConsentForm() {
                     textOverflow="ellipsis"
                   >
                     <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.id}
                       {item?.program_beneficiaries[0]?.enrollment_first_name}
                       {item?.program_beneficiaries[0]?.enrollment_middle_name &&
                         ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}

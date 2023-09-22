@@ -31,10 +31,19 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [facilities, setFacilities] = React.useState();
   const [kit, setKit] = React.useState();
   const [kitarr, setKitarr] = React.useState([]);
+  const [consent, setConsent] = React.useState("amber.300");
 
   React.useEffect(async () => {
     setLoading(true);
     const result = await campRegistoryService.getCampDetails(camp_id);
+    const campConsent = await campRegistoryService.getConsent({
+      camp_id: camp_id?.id,
+    });
+    const userLength = result?.data?.group_users?.length;
+    const campConsentLength = campConsent?.data?.length;
+    if (userLength === campConsentLength) {
+      setConsent("green.300");
+    }
     const data = result?.data?.properties;
     setCampLocation({
       lat: data?.lat,
@@ -118,7 +127,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       Icon: "CheckboxLineIcon",
       Name: "FAMILY_CONSENT",
       step: "edit_family_consent",
-      color: getColor(kit, kitarr),
+      color: consent,
     },
   ];
 

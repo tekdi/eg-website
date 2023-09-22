@@ -52,10 +52,15 @@ export default function CampSelectedLearners({
 
   const updateLearner = async () => {
     if (selectedIds.length !== 0) {
-      const ids = {
+      const updateLearner = {
         learner_ids: selectedIds,
+        edit_page_type: "edit_learners",
+        id: camp_id?.id,
       };
-      console.log("ids", ids);
+      const data = await campRegistoryService.updateCampDetails(updateLearner);
+      if (data) {
+        navigate(`/camp/${camp_id?.id}`);
+      }
     } else {
       setAlert(true);
     }
