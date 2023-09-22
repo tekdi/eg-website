@@ -73,6 +73,8 @@ export default function App({ userTokenInfo, footerLinks }) {
             : [];
           const newData = {
             ...dataF,
+            qualification_reference_document_id:
+              dataF?.qualification_reference_document_id || "",
             qualification_ids: arrData,
             qualification_master_id: `${
               dataF?.qualification_master_id
@@ -133,7 +135,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        console.log(nextIndex);
         if (nextIndex === "qualification_details") {
           navigate("/profile");
         } else if (nextIndex === "work_availability_details") {
@@ -283,12 +284,11 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
     setSchema(newSchema);
   }, [page, formData]);
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      const newStep = step ? step : newSteps[0];
+      const newStep = step || newSteps[0];
       setPage(newStep);
       setSchema(properties[newStep]);
       setPages(newSteps);
@@ -685,14 +685,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         setSchema(newSchema);
         setLoading(false);
       }
-    }
-    if (data?.qualification_reference_document_id === null) {
-      const newErrors = {
-        qualification_reference_document_id: {
-          __errors: [t("REQUIRED_MESSAGE_UPLOAD")],
-        },
-      };
-      setErrors(newErrors);
     }
   };
 
