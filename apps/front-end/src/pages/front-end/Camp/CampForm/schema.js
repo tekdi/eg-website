@@ -1,7 +1,7 @@
 export default {
   type: "step",
   properties: {
-    camp_location: {
+    edit_camp_location: {
       step_name: "CAMP_LOCATION",
       type: "object",
       required: [
@@ -56,17 +56,16 @@ export default {
           title: "GRAMPANCHAYAT",
           type: "string",
         },
-        edit_page_type: {
-          type: "string",
-          format: "hidden",
-          default: "edit_camp_location",
-        },
       },
     },
-    camp_venue_photos: {
+    edit_photo_details: {
       step_name: "CAMP_VENUE_PHOTOS",
       type: "object",
-      required: ["property_photo_building", "property_photo_classroom"],
+      required: [
+        "property_photo_building",
+        "property_photo_classroom",
+        "property_photo_other",
+      ],
       properties: {
         property_photo_building: {
           label: "CAMP_FRONT_VIEW",
@@ -87,14 +86,9 @@ export default {
           type: ["string", "number", "null"],
           format: "FileUpload",
         },
-        edit_page_type: {
-          type: "string",
-          format: "hidden",
-          default: "edit_photo_details",
-        },
       },
     },
-    facilities: {
+    edit_property_facilities: {
       step_name: "FACILITIES",
       type: "object",
       required: ["property_facilities"],
@@ -104,14 +98,9 @@ export default {
           type: "object",
           properties: {},
         },
-        edit_page_type: {
-          type: "string",
-          format: "hidden",
-          default: "edit_property_facilities",
-        },
       },
     },
-    kit: {
+    edit_kit_details: {
       step_name: "KIT",
       type: "object",
       required: [
@@ -149,17 +138,7 @@ export default {
           grid: 2,
           format: "textarea",
         },
-        edit_page_type: {
-          type: "string",
-          format: "hidden",
-          default: "edit_kit_details",
-        },
       },
-    },
-
-    family_consent: {
-      step_name: "LEARNER_CONSENT_FORM",
-      type: "object",
     },
   },
 };

@@ -578,6 +578,7 @@ export const MultiCheck = ({
 
 const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { label } = schema || {};
+  const { t } = useTranslation();
 
   const checkboxIcons = [
     { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
@@ -600,7 +601,7 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
           onChange(e);
         }}
       />
-      <Text flex="4">{label || ""}</Text>
+      <Text flex="4">{label ? t(label) : ""}</Text>
     </HStack>
   );
 };

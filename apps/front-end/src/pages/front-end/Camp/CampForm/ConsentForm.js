@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Checkbox, HStack, Pressable, VStack } from "native-base";
+import {
+  Actionsheet,
+  Box,
+  Checkbox,
+  HStack,
+  Pressable,
+  VStack,
+} from "native-base";
 import {
   Layout,
   FrontEndTypo,
@@ -11,59 +18,34 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { FileUpload } from "component/BaseInput";
 
 // App
 export default function ConsentForm() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
   const [isDisabled, setIsDisabled] = React.useState(true);
+  const [uploadData, setUploadData] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
-
   const [groupUsers, setGroupUsers] = React.useState();
-
-  const uplodInputRef = React.useRef();
-
-  const handleFileInputChange = async (e, campLearnerId) => {
-    let file = e.target.files[0];
-    setLoading(true);
-    const form_data = new FormData();
-    const item = {
-      file: file,
-      document_type: "camp",
-      document_sub_type: "consent_form",
-      user_id: campLearnerId,
-    };
-    for (let key in item) {
-      form_data.append(key, item[key]);
-    }
-    const data = await uploadRegistryService.uploadFile(form_data);
-    const docId = data?.data?.insert_documents?.returning[0]?.id || "";
-    const obj = {
-      document_id: `${docId}`,
-      id: id,
-    };
-    await campRegistoryService.createConsent(obj);
-    setLoading(false);
-  };
+  const [consents, setConsents] = React.useState();
 
   React.useEffect(async () => {
     const result = await campRegistoryService.getCampDetails({ id });
-    console.log("resultresult", result);
+    const campConsent = await campRegistoryService.getConsent({ camp_id: id });
+    setConsents(campConsent?.data?.consents || []);
     setGroupUsers(result?.data?.group_users);
     setLoading(false);
   }, []);
 
-  console.log("result", groupUsers);
-
   const onPressBackButton = async () => {
-    navigate(`/camp/campRegistration/${id}`);
+    navigate(`/camp/${id}`);
   };
 
   const handleCheckbox = (e) => {
     const checked = e;
     if (checked) {
-      console.log("checked");
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
@@ -73,7 +55,12 @@ export default function ConsentForm() {
   // update schema
 
   const onClickSubmit = () => {
-    navigate(`/camp/campRegistration/${id}`);
+    navigate(`/camp/${id}`);
+  };
+
+  const handleUpload = async (data) => {
+    await campRegistoryService.createConsent(data);
+    // api call
   };
 
   return (
@@ -92,6 +79,7 @@ export default function ConsentForm() {
         </AdminTypo.H3>
 
         {groupUsers?.map((item) => {
+          const document = consents?.find((e) => e.user_id === item?.id);
           return (
             <HStack
               key={item}
@@ -133,6 +121,7 @@ export default function ConsentForm() {
                     textOverflow="ellipsis"
                   >
                     <FrontEndTypo.H3 bold color="textGreyColor.800">
+                      {item?.id}
                       {item?.program_beneficiaries[0]?.enrollment_first_name}
                       {item?.program_beneficiaries[0]?.enrollment_middle_name &&
                         ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
@@ -143,44 +132,37 @@ export default function ConsentForm() {
                 </HStack>
               </HStack>
 
-              {/* <ImageView
-                source={{
-                  document_id: 1304,
-                }}
-                text={
-                  <HStack alignItems={"center"} justifyContent={"space-evenly"}>
-                    {t("VIEW")}
-                    <IconByName
-                      isDisabled
-                      name="FileTextLineIcon"
-                      color="blueText.450"
-                      _icon={{ size: "25px" }}
-                    ></IconByName>
-                  </HStack>
-                }
-              /> */}
-              <input
-                accept="image/*"
-                type="file"
-                style={{ display: "none" }}
-                ref={uplodInputRef}
-                onChange={(e) => {
-                  handleFileInputChange(e, item?.id);
-                }}
-              />
               <Pressable
                 onPress={(e) => {
-                  uplodInputRef?.current?.click();
+                  setUploadData({
+                    user_id: item?.id,
+                    document_id: document?.document_id || null,
+                    camp_id: id,
+                  });
                 }}
               >
                 <HStack alignItems={"center"} justifyContent={"space-evenly"}>
-                  {t("UPLOAD")}
-                  <IconByName
-                    isDisabled
-                    name="Upload2FillIcon"
-                    color="blueText.450"
-                    _icon={{ size: "25px" }}
-                  ></IconByName>
+                  {document?.document_id ? (
+                    <HStack>
+                      {t("VIEW")}
+                      <IconByName
+                        isDisabled
+                        name="FileTextLineIcon"
+                        color="blueText.450"
+                        _icon={{ size: "25px" }}
+                      />
+                    </HStack>
+                  ) : (
+                    <HStack>
+                      {t("UPLOAD")}
+                      <IconByName
+                        isDisabled
+                        name="Upload2FillIcon"
+                        color="blueText.450"
+                        _icon={{ size: "25px" }}
+                      />
+                    </HStack>
+                  )}
                 </HStack>
               </Pressable>
             </HStack>
@@ -205,6 +187,34 @@ export default function ConsentForm() {
           {t("SAVE")}
         </FrontEndTypo.Primarybutton>
       </Box>
+
+      <Actionsheet isOpen={uploadData?.user_id}>
+        <Actionsheet.Content alignItems={"left"}>
+          <HStack justifyContent={"space-between"} alignItems="strat">
+            <FrontEndTypo.H1 color="textGreyColor.800" p="2">
+              {t("UPLOAD_CONSENT_FORM")}
+            </FrontEndTypo.H1>
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setUploadData()}
+            />
+          </HStack>
+        </Actionsheet.Content>
+        <VStack bg="white" width={"100%"} space="5" p="5">
+          <FileUpload
+            schema={{
+              label: "UPLOAD_CONSENT_FORM",
+              document_type: "camp",
+              document_sub_type: "consent_form",
+            }}
+            value={uploadData?.document_id}
+            onChange={(e) => setUploadData({ ...uploadData, document_id: e })}
+          />
+          <FrontEndTypo.Primarybutton onPress={(e) => handleUpload(uploadData)}>
+            {t("SUBMIT")}
+          </FrontEndTypo.Primarybutton>
+        </VStack>
+      </Actionsheet>
     </Layout>
   );
 }

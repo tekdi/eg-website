@@ -239,16 +239,13 @@ export default [
     path: "/camp",
     component: CampDashboard,
   },
+
   {
-    path: "/camp/CampSelectedLearners",
-    component: CampSelectedLearners,
-  },
-  {
-    path: "/camp/campRegistration/:id",
+    path: "/camp/:id",
     component: CampRegistration,
   },
   {
-    path: "/camp/campRegistration/:id/edit/:step",
+    path: "/camp/:id/:step",
     component: CampForm,
   },
   {

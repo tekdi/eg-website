@@ -102,9 +102,9 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    if (step === "camp_location") {
+    if (step === "edit_camp_location") {
       getLocation();
-    } else if (step === "camp_venue_photos") {
+    } else if (step === "edit_photo_details") {
       const camp_venue_photos = campDetails?.properties;
       setFormData({
         ...formData,
@@ -115,20 +115,35 @@ export default function App({ userTokenInfo, footerLinks }) {
         property_photo_other:
           camp_venue_photos?.property_photo_other || undefined,
       });
-    } else if (step === "kit") {
+    } else if (step === "edit_kit_details") {
       const kit = campDetails;
-      setFormData({
-        ...formData,
-        kit_was_sufficient: kit?.kit_was_sufficient || undefined,
-        kit_received: kit?.kit_received || undefined,
-        kit_ratings: kit?.kit_ratings || undefined,
-        kit_feedback: kit?.kit_feedback || undefined,
-      });
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      const newStep = step || newSteps[0];
+      let schemaData = properties[newStep];
+      if (campDetails?.kit_received === null) {
+        const { kit_received, edit_page_type } = schemaData.properties;
+        const required = schemaData?.required.filter((item) =>
+          ["kit_received"].includes(item)
+        );
+        const newSchema = {
+          ...schemaData,
+          properties: { kit_received, edit_page_type },
+          required: required,
+        };
+        setSchema(newSchema);
+      } else {
+        setFormData({
+          ...formData,
+          kit_was_sufficient: kit?.kit_was_sufficient || undefined,
+          kit_received: kit?.kit_received || undefined,
+          kit_ratings: kit?.kit_ratings || undefined,
+          kit_feedback: kit?.kit_feedback || undefined,
+        });
+      }
     }
     setLoading(false);
   }, [step, campDetails]);
-
-  console.log("formData", formData);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -148,9 +163,9 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        navigate(`/camp/campRegistration/${id}`);
+        navigate(`/camp/${id}`);
       } else if (nextIndex !== undefined) {
-        navigate(`/camp/campRegistration/${id}/edit/${nextIndex}`);
+        navigate(`/camp/${id}/${nextIndex}`);
       }
     }
   };
@@ -158,22 +173,25 @@ export default function App({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     const qData = await enumRegistryService.listOfEnum();
     const facilitiesData = qData?.data?.CAMP_PROPERTY_FACILITIES;
-    if (step === "facilities") {
+    if (step === "edit_property_facilities") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       const newStep = step || newSteps[0];
       const newSchema = properties[newStep];
+      newSchema.properties.property_facilities.required = [];
       facilitiesData?.map((element) => {
         const propertyName = element?.value;
+        newSchema.properties.property_facilities.required.push(propertyName);
         newSchema.properties.property_facilities.properties[propertyName] = {
           label: element?.title,
           type: "string",
           format: "CheckUncheck",
         };
       });
+
       const facilities = {
         property_facilities: jsonParse(
-          campDetails?.properties?.property_facilities
+          campDetails?.properties?.property_facilities || "{}"
         ),
       };
       setFormData(facilities);
@@ -222,7 +240,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       setSchema(schemaData);
       setPages(newSteps);
 
-      if (step === "kit") {
+      if (step === "edit_kit_details") {
         if (formData?.kit_received == "yes") {
           setSchema(schemaData);
         } else if (formData?.kit_received === "no") {
@@ -248,6 +266,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       setLoading(true);
       const result = await campRegistoryService.updateCampDetails({
         ...data,
+        edit_page_type: step,
         ...(overide || {}),
         id: id,
       });
@@ -411,7 +430,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
 
     if (id === "root_kit_feedback") {
-      console.log("data", data?.kit_feedback);
       if (data?.kit_feedback === "") {
         setFormData({ ...formData, kit_feedback: undefined });
       }
@@ -432,7 +450,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
-        navigate(`/camp/CampRegistration/${id}`);
+        navigate(`/camp/${id}`);
       }
     }
   };
@@ -444,9 +462,9 @@ export default function App({ userTokenInfo, footerLinks }) {
     localStorage.setItem("backToProfile", backToProfile);
   };
 
-  if (page === "family_consent") {
+  if (page === "edit_family_consent") {
     return <ConsentForm />;
-  } else if (page === "camp_selected_learners") {
+  } else if (page === "edit_camp_selected_learners") {
     return <CampSelectedLearners isEdit={isEdit} />;
   }
 

@@ -2,9 +2,11 @@ import {
   AdminTypo,
   BodyMedium,
   FrontEndTypo,
+  GetEnumValue,
   IconByName,
   Layout,
   campRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -27,16 +29,17 @@ export default function CampDashboard({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [campList, setCampList] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState();
 
   React.useEffect(async () => {
     const result = await campRegistoryService.campNonRegisteredUser();
     const campList = await campRegistoryService.campList();
+    const enums = await enumRegistryService.listOfEnum();
+    setEnumOptions(enums?.data || {});
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
   }, []);
-
-  console.log("nonRegisteredUser", nonRegisteredUser);
 
   return (
     <Layout
@@ -106,7 +109,7 @@ export default function CampDashboard({ footerLinks }) {
                 <Pressable
                   key={item}
                   onPress={() => {
-                    navigate(`/camp/campRegistration/${item?.id}`);
+                    navigate(`/camp/${item?.id}`);
                   }}
                 >
                   <HStack
@@ -132,9 +135,14 @@ export default function CampDashboard({ footerLinks }) {
                         color="textMaroonColor.400"
                         _icon={{ size: "20px" }}
                       />
-                      <Text ml={2} color="textMaroonColor.400">
-                        {t("NOT_REGISTER")}
-                      </Text>
+                      <GetEnumValue
+                        t={t}
+                        enumType={"GROUPS_STATUS"}
+                        enumOptionValue={item?.group?.status}
+                        enumApiData={enumOptions}
+                        color="textMaroonColor.400"
+                        ml={2}
+                      />
                     </HStack>
                   </HStack>
                 </Pressable>

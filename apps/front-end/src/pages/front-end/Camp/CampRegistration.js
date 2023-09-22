@@ -16,7 +16,7 @@ const getColor = (obj, arr) => {
   if (result === 100) {
     color = "green.300";
   } else if (result > 33) {
-    color = "warning.300";
+    color = "amber.300";
   }
   return color;
 };
@@ -28,11 +28,13 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [campLocation, setCampLocation] = React.useState();
   const [campVenue, setCampVenue] = React.useState();
+  const [facilities, setFacilities] = React.useState();
+  const [kit, setKit] = React.useState();
+  const [kitarr, setKitarr] = React.useState([]);
 
   React.useEffect(async () => {
     setLoading(true);
     const result = await campRegistoryService.getCampDetails(camp_id);
-    console.log("result", result?.data?.properties);
     const data = result?.data?.properties;
     setCampLocation({
       lat: data?.lat,
@@ -44,6 +46,31 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       village: data?.village,
       grampanchayat: data?.grampanchayat,
     });
+    setCampVenue({
+      property_photo_building: data?.property_photo_building,
+      property_photo_classroom: data?.property_photo_classroom,
+      property_photo_other: data?.property_photo_other,
+    });
+    setFacilities({ property_facilities: data?.property_facilities });
+    if (result?.data?.kit_received === "yes") {
+      setKit({
+        kit_feedback: result?.data?.kit_feedback,
+        kit_ratings: result?.data?.kit_ratings,
+        kit_was_sufficient: result?.data?.kit_was_sufficient,
+        kit_received: result?.data?.kit_received,
+      });
+      setKitarr([
+        "kit_received",
+        "kit_was_sufficient",
+        "kit_ratings",
+        "kit_feedback",
+      ]);
+    } else {
+      setKit({
+        kit_received: result?.data?.kit_received,
+      });
+      setKitarr(["kit_received"]);
+    }
 
     setLoading(false);
   }, []);
@@ -52,6 +79,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     {
       Icon: "MapPinLineIcon",
       Name: "CAMP_LOCATION",
+      step: "edit_camp_location",
       color: getColor(campLocation, [
         "lat",
         "long",
@@ -66,51 +94,37 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     {
       Icon: "CameraLineIcon",
       Name: "CAMP_VENUE_PHOTOS",
-      color: getColor(campLocation, [
-        "lat",
-        "long",
-        "property_type",
-        "state",
-        "district",
-        "block",
-        "village",
-        "grampanchayat",
+      step: "edit_photo_details",
+      color: getColor(campVenue, [
+        "property_photo_building",
+        "property_photo_classroom",
       ]),
     },
     {
       Icon: "StarLineIcon",
       Name: "FACILITIES",
-      color: getColor(campLocation, [
-        "lat",
-        "long",
-        "property_type",
-        "state",
-        "district",
-        "block",
-        "village",
-        "grampanchayat",
-      ]),
+      step: "edit_property_facilities",
+
+      color: getColor(facilities, ["property_facilities"]),
     },
     {
       Icon: "MapPinLineIcon",
       Name: "KIT",
-      color: getColor(campLocation, [
-        "lat",
-        "long",
-        "property_type",
-        "state",
-        "district",
-        "block",
-        "village",
-        "grampanchayat",
-      ]),
+      step: "edit_kit_details",
+      color: getColor(kit, kitarr),
     },
 
     {
       Icon: "CheckboxLineIcon",
       Name: "FAMILY_CONSENT",
+      step: "edit_family_consent",
+      color: getColor(kit, kitarr),
     },
   ];
+
+  const areAllColorsSame = Navdata.map((item) => item?.color).every(
+    (value, index, array) => value === "green.300"
+  );
 
   const onPressBackButton = async () => {
     navigate("/camp");
@@ -140,9 +154,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         >
           <Pressable
             onPress={async () => {
-              navigate(
-                `/camp/campRegistration/${camp_id?.id}/edit/camp_selected_learners`
-              );
+              navigate(`/camp/${camp_id?.id}/edit_camp_selected_learners`);
             }}
           >
             <HStack justifyContent={"space-between"}>
@@ -167,19 +179,24 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           </Pressable>
         </Box>
       </HStack>
+
       {Navdata.map((item) => {
-        console.log("item", item);
         return (
           <NavigationBox
             key={item}
             camp_id={camp_id}
             IconName={item?.Icon}
             NavName={item?.Name}
+            step={item?.step}
+            color={item?.color}
           />
         );
       })}
       <HStack my={3} mx={"auto"} w={"90%"}>
-        <FrontEndTypo.Primarybutton isDisabled width={"100%"}>
+        <FrontEndTypo.Primarybutton
+          isDisabled={!areAllColorsSame}
+          width={"100%"}
+        >
           {t("SUBMIT_FOR_REGISTRATION")}
         </FrontEndTypo.Primarybutton>
       </HStack>
@@ -187,19 +204,18 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   );
 }
 
-const NavigationBox = ({ IconName, NavName, camp_id }) => {
+const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const navToForm = (NavName) => {
-    const name = NavName.toLowerCase();
-    navigate(`/camp/campRegistration/${camp_id?.id}/edit/${name}`);
+  const navToForm = (step) => {
+    navigate(`/camp/${camp_id?.id}/${step}`);
   };
 
   return (
     <HStack w={"90%"} marginTop={3} marginBottom={2} margin={"auto"}>
       <HStack
-        background={"amber.300"}
+        background={color}
         borderTopLeftRadius={"20px"}
         borderBottomLeftRadius={"20px"}
         w={"10px"}
@@ -217,7 +233,7 @@ const NavigationBox = ({ IconName, NavName, camp_id }) => {
       >
         <Pressable
           onPress={async () => {
-            navToForm(NavName);
+            navToForm(step);
           }}
         >
           <HStack justifyContent={"space-between"}>

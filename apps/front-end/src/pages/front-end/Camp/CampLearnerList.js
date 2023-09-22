@@ -18,7 +18,6 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
   const camp_id = useParams();
-  console.log("camp_id", camp_id);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
@@ -28,7 +27,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
     if (!isEdit) {
       navigate("/camp");
     } else {
-      navigate(`/camp/campRegistration/${camp_id?.id}`);
+      navigate(`/camp/${camp_id?.id}`);
     }
   };
 
@@ -58,7 +57,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
       };
       const result = await campRegistoryService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
-      navigate(`/camp/campRegistration/${camp_id}`);
+      navigate(`/camp/${camp_id}`);
     } else {
       setAlert(true);
     }
@@ -66,12 +65,9 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
 
   React.useEffect(async () => {
     const result = await campRegistoryService.campNonRegisteredUser();
-    console.log("result", result);
     setNonRegisteredUser(result?.data?.user);
     setLoading(false);
   }, []);
-
-  console.log("nonRegisteredUser", nonRegisteredUser);
 
   return (
     <Layout
