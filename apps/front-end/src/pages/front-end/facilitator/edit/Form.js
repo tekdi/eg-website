@@ -788,14 +788,16 @@ export default function App({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <Box>
-                <FrontEndTypo.Primarybutton
-                  isLoading={loading}
-                  p="4"
-                  mt="4"
-                  onPress={() => onClickSubmit(false)}
-                >
-                  {t("SAVE_AND_NEXT")}
-                </FrontEndTypo.Primarybutton>
+                {!step === "aadhaar_details" && (
+                  <FrontEndTypo.Primarybutton
+                    isLoading={loading}
+                    p="4"
+                    mt="4"
+                    onPress={() => onClickSubmit(false)}
+                  >
+                    {t("SAVE_AND_NEXT")}
+                  </FrontEndTypo.Primarybutton>
+                )}
 
                 <FrontEndTypo.Secondarybutton
                   isLoading={loading}

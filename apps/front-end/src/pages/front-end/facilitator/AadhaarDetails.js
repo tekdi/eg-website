@@ -136,7 +136,7 @@ export default function AadhaarDetails() {
                 </HStack>
               </VStack>
             </VStack>
-            {(facilitator?.aadhar_verified !== "yes" ||
+            {/* {(facilitator?.aadhar_verified !== "yes" ||
               facilitator?.aadhaar_verification_mode === "upload") && (
               <VStack
                 px="5"
@@ -162,14 +162,14 @@ export default function AadhaarDetails() {
                           user: facilitator,
                         }}
                       />
-                      {/* <FrontEndTypo.Secondarybutton
-                              my="4"
-                              onPress={() => {
-                                navigate(`/aadhaar-kyc/${id}/QR`);
-                              }}
-                            >
-                              {t("SCAN_QR_CODE")}
-                            </FrontEndTypo.Secondarybutton> */}
+                      <FrontEndTypo.Secondarybutton
+                        my="4"
+                        onPress={() => {
+                          navigate(`/aadhaar-kyc/${id}/QR`);
+                        }}
+                      >
+                        {t("SCAN_QR_CODE")}
+                      </FrontEndTypo.Secondarybutton>
                       {facilitator?.aadhaar_verification_mode !== "upload" && (
                         <FrontEndTypo.Secondarybutton
                           onPress={() => {
@@ -224,7 +224,7 @@ export default function AadhaarDetails() {
                   </VStack>
                 )}
               </VStack>
-            )}
+            )} */}
           </VStack>
         </VStack>
       )}
