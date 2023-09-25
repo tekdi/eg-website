@@ -140,7 +140,7 @@ export default function BenificiaryAadhaarDetails() {
             </VStack>
           </VStack>
 
-          {/* {(benificiary?.aadhar_verified !== "yes" ||
+          {(benificiary?.aadhar_verified !== "yes" ||
             benificiary?.aadhaar_verification_mode === "upload") && (
             <VStack
               px="5"
@@ -225,7 +225,7 @@ export default function BenificiaryAadhaarDetails() {
                 </VStack>
               )}
             </VStack>
-          )} */}
+          )}
         </VStack>
       </VStack>
     </Layout>

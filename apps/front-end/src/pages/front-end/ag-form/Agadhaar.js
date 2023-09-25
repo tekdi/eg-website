@@ -225,7 +225,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       is_duplicate: "no",
     };
     await AgRegistryService.updateAg(adddata, userId);
-    navigate(`/beneficiary/${userId}`, {
+    navigate(`/aadhaar-kyc/${userId}`, {
       state: { aadhar_no: formData?.aadhar_no, pathname: "/beneficiary/list" },
     });
   };
@@ -341,7 +341,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
               >
-                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
               </FrontEndTypo.Primarybutton>
             )}
           </Form>
