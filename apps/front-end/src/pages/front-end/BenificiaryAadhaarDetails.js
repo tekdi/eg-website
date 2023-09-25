@@ -166,14 +166,14 @@ export default function BenificiaryAadhaarDetails() {
                     >
                       {t("AADHAAR_NUMBER_KYC")}
                     </FrontEndTypo.Primarybutton>
-                    <FrontEndTypo.Secondarybutton
+                    {/* <FrontEndTypo.Secondarybutton
                       my="4"
                       onPress={() => {
                         navigate(`/aadhaar-kyc/${id}/QR`);
                       }}
                     >
                       {t("SCAN_QR_CODE")}
-                    </FrontEndTypo.Secondarybutton>
+                    </FrontEndTypo.Secondarybutton> */}
                     <FrontEndTypo.Primarybutton
                       mt="10"
                       onPress={() => {
