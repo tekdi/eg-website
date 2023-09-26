@@ -22,10 +22,10 @@ import {
   getUniqueArray,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { templates, widgets } from "../../../component/BaseInput";
-import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useGeolocated } from "react-geolocated";
 
 // App
 
@@ -135,53 +135,37 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
-    }
-  };
+  const { coords, isGeolocationEnabled } = useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  });
 
+  console.log("coords", coords);
   const showPosition = (position) => {
-    let lati = position.coords.latitude;
-    let longi = position.coords.longitude;
-
     setFormData({
       ...formData,
       edit_page_type: "add_address",
-      lat: lati,
-      long: longi,
+      lat: coords?.latitude.toString(),
+      long: coords?.longitude.toString(),
     });
   };
 
-  function showError(error) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
-
-        break;
-      case error.POSITION_UNAVAILABLE:
-        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
-
-        break;
-      case error.TIMEOUT:
-        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
-
-        break;
-      case error.UNKNOWN_ERROR:
-        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
-
-        break;
+  React.useEffect(() => {
+    if (isGeolocationEnabled) {
+      showPosition();
+    } else {
+      setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
     }
-  }
+  }, [coords]);
 
   React.useEffect(async () => {
     setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      getLocation();
+      showPosition();
     } else if (page === "3") {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "personal" });
