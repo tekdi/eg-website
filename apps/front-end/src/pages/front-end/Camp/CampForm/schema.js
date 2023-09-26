@@ -61,11 +61,7 @@ export default {
     edit_photo_details: {
       step_name: "CAMP_VENUE_PHOTOS",
       type: "object",
-      required: [
-        "property_photo_building",
-        "property_photo_classroom",
-        "property_photo_other",
-      ],
+
       properties: {
         property_photo_building: {
           label: "CAMP_FRONT_VIEW",
@@ -130,7 +126,7 @@ export default {
           type: ["string", "number", "null"],
           format: "StarRating",
           totalStars: 5,
-          ratingLabels: ["Poor", "Not Bad", "Average", "Good", "Amazing"],
+          ratingLabels: ["POOR", "NOT_BAD", "AVERAGE", "GOOD", "AMAZING"],
         },
         kit_feedback: {
           label: "KIT_SUGGESTION",
@@ -139,6 +135,11 @@ export default {
           format: "textarea",
         },
       },
+    },
+
+    edit_family_consent: {
+      step_name: "LEARNER_CONSENT_FORM",
+      type: "object",
     },
   },
 };

@@ -28,7 +28,7 @@ export default function CampSelectedLearners({
   const [selectedIds, setSelectedIds] = React.useState([]);
   const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
-    navigate(`/camp/${camp_id?.id}`);
+    navigate(`/camps/${camp_id?.id}`);
   };
 
   const handleCheckboxChange = (id) => {
@@ -59,7 +59,7 @@ export default function CampSelectedLearners({
       };
       const data = await campRegistoryService.updateCampDetails(updateLearner);
       if (data) {
-        navigate(`/camp/${camp_id?.id}`);
+        navigate(`/camps/${camp_id?.id}`);
       }
     } else {
       setAlert(true);

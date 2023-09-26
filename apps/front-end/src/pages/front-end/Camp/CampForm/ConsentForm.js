@@ -1,8 +1,8 @@
 import React from "react";
 import {
   Actionsheet,
+  Alert,
   Box,
-  Checkbox,
   HStack,
   Pressable,
   VStack,
@@ -14,6 +14,7 @@ import {
   ImageView,
   IconByName,
   campRegistoryService,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -23,7 +24,6 @@ import { FileUpload } from "component/BaseInput";
 export default function ConsentForm() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
-  const [isDisabled, setIsDisabled] = React.useState(true);
   const [uploadData, setUploadData] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -39,22 +39,13 @@ export default function ConsentForm() {
   }, [uploadData]);
 
   const onPressBackButton = async () => {
-    navigate(`/camp/${id}`);
-  };
-
-  const handleCheckbox = (e) => {
-    const checked = e;
-    if (checked) {
-      setIsDisabled(false);
-    } else {
-      setIsDisabled(true);
-    }
+    navigate(`/camps/${id}`);
   };
 
   // update schema
 
   const onClickSubmit = () => {
-    navigate(`/camp/${id}`);
+    navigate(`/camps/${id}`);
   };
 
   const handleUpload = async (data) => {
@@ -169,16 +160,21 @@ export default function ConsentForm() {
         })}
 
         <HStack space={4} alignItems={"center"}>
-          <Checkbox
-            checked={false}
-            color="blueText.450"
-            onChange={(e) => handleCheckbox(e)}
-          />
-          <AdminTypo.H5>{t("CONSENT_DISCLAIMER")}</AdminTypo.H5>
+          <Alert
+            status="warning"
+            alignItems={"start"}
+            mb="3"
+            mt="4"
+            width={"100%"}
+          >
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <BodyMedium>{t("CONSENT_DISCLAIMER")}</BodyMedium>
+            </HStack>
+          </Alert>
         </HStack>
         <FrontEndTypo.Primarybutton
           isLoading={loading}
-          isDisabled={isDisabled}
           p="4"
           mt="4"
           onPress={() => onClickSubmit()}

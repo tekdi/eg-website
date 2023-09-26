@@ -14,7 +14,6 @@ import {
   Box,
   Pressable,
   Text,
-  Progress,
   Center,
   Avatar,
   Alert,
@@ -100,16 +99,13 @@ export default function CampDashboard({ footerLinks }) {
           </HStack>
         </HStack>
         <VStack mt={5}>
-          <Box w={"100%"}>
-            <Progress value={45} size="xs" colorScheme="info" />
-          </Box>
           <VStack my={3} space={2}>
             {campList?.map((item) => {
               return (
                 <Pressable
                   key={item}
                   onPress={() => {
-                    navigate(`/camp/${item?.id}`);
+                    navigate(`/camps/${item?.id}`);
                   }}
                 >
                   <HStack
@@ -154,7 +150,7 @@ export default function CampDashboard({ footerLinks }) {
         {campList?.length !== 2 && (
           <FrontEndTypo.Secondarybutton
             onPress={() => {
-              navigate(`/camp/learnerList`);
+              navigate(`/camps/learnerList`, { state: "camp" });
             }}
           >
             {campList?.length !== 0
@@ -162,7 +158,6 @@ export default function CampDashboard({ footerLinks }) {
               : t("START_FIRST_CAMP_REGISTER")}
           </FrontEndTypo.Secondarybutton>
         )}
-
         <Alert
           status="warning"
           alignItems={"start"}

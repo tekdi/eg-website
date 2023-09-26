@@ -9,7 +9,7 @@ import {
   ImageView,
   campRegistoryService,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +18,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
   const camp_id = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
@@ -25,9 +26,9 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
   const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
     if (!isEdit) {
-      navigate("/camp");
+      navigate("/camps");
     } else {
-      navigate(`/camp/${camp_id?.id}`);
+      navigate(`/camps/${camp_id?.id}`);
     }
   };
 
@@ -57,7 +58,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
       };
       const result = await campRegistoryService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
-      navigate(`/camp/${camp_id}`);
+      navigate(`/camps/${camp_id}`);
     } else {
       setAlert(true);
     }
@@ -79,7 +80,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
         _box: { bg: "white" },
       }}
     >
-      {nonRegisteredUser.length > 0 ? (
+      {location?.state === "camp" ? (
         <Box py={6} px={4} mb={5}>
           <AdminTypo.H3 color={"textMaroonColor.400"}>
             {alert ? (
@@ -194,7 +195,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
         >
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("LEARNER_NOT_AVAILABLE")}</BodyMedium>
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
           </HStack>
         </Alert>
       )}

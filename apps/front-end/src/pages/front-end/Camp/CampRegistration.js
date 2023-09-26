@@ -136,7 +136,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   );
 
   const onPressBackButton = async () => {
-    navigate("/camp");
+    navigate("/camps");
   };
 
   return (
@@ -163,7 +163,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         >
           <Pressable
             onPress={async () => {
-              navigate(`/camp/${camp_id?.id}/edit_camp_selected_learners`);
+              navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
             }}
           >
             <HStack justifyContent={"space-between"}>
@@ -218,7 +218,7 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
   const navigate = useNavigate();
 
   const navToForm = (step) => {
-    navigate(`/camp/${camp_id?.id}/${step}`);
+    navigate(`/camps/${camp_id?.id}/${step}`);
   };
 
   return (

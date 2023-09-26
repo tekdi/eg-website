@@ -236,20 +236,20 @@ export default [
     component: FacilitatorQualification,
   },
   {
-    path: "/camp",
+    path: "/camps",
     component: CampDashboard,
   },
 
   {
-    path: "/camp/:id",
+    path: "/camps/:id",
     component: CampRegistration,
   },
   {
-    path: "/camp/:id/:step",
+    path: "/camps/:id/:step",
     component: CampForm,
   },
   {
-    path: "/camp/LearnerList",
+    path: "/camps/LearnerList",
     component: CampLeanerList,
   },
 

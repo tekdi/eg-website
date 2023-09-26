@@ -162,9 +162,9 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        navigate(`/camp/${id}`);
+        navigate(`/camps/${id}`);
       } else if (nextIndex !== undefined) {
-        navigate(`/camp/${id}/${nextIndex}`);
+        navigate(`/camps/${id}/${nextIndex}`);
       }
     }
   };
@@ -449,7 +449,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
-        navigate(`/camp/${id}`);
+        navigate(`/camps/${id}`);
       }
     }
   };

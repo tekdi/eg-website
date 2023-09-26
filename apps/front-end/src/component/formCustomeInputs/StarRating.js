@@ -1,10 +1,12 @@
 import { H2, IconByName } from "@shiksha/common-lib";
 import { FormControl, HStack, Pressable, Text, VStack } from "native-base";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const StarRating = ({ value, onChange, required, schema }) => {
   const { ratingLabels, totalStars } = schema || {};
   const [rating, setRating] = useState(value);
+  const { t } = useTranslation();
 
   const handleStarClick = (starIndex) => {
     const starvalue = starIndex + 1;
@@ -29,7 +31,7 @@ const StarRating = ({ value, onChange, required, schema }) => {
             />
             {ratingLabels?.[index] && (
               <Text color={index < rating ? "amber.400" : "iconColor.100"}>
-                {ratingLabels?.[index]}
+                {t(ratingLabels?.[index])}
               </Text>
             )}
           </VStack>
