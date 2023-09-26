@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Box, Checkbox, HStack, VStack } from "native-base";
+import { Alert, Box, Checkbox, HStack, Text, VStack } from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -162,6 +162,9 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
                         {item?.program_beneficiaries[0]?.enrollment_last_name &&
                           ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
                       </FrontEndTypo.H3>
+                      <Text>
+                        {item?.district}, {item?.block},{item?.village}
+                      </Text>
                     </VStack>
                   </HStack>
                 </HStack>
