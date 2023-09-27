@@ -139,7 +139,6 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     setPrerak(result);
   }, []);
 
-  console.log("prerak", prerak);
 
   const openModal = () => {
     if (selectedRows.length !== 0) {
@@ -191,17 +190,23 @@ export default function ReassignBeneficiaries({ footerLinks }) {
       prerakId,
       filter
     );
-    console.log("result", result?.data);
     setPaginationTotalRows(result?.totalCount || 0);
     setData(result?.data);
     setLoading(false);
   }, [filter]);
 
-  const assignToPrerak = async (id) => {
-    const activeId = { activeId: id };
-    const result = await benificiaryRegistoryService?.deactivateDuplicates(
-      activeId
+  const assignToPrerak = async () => {
+    const beneficiary_Ids = selectedRows.map((item) => {
+      return item?.id;
+    });
+    const obj = {
+      beneficiaryIds: beneficiary_Ids,
+      facilitatorId: filterfunction?.facilitator,
+    };
+    const result = await benificiaryRegistoryService?.ReassignBeneficiaries(
+      obj
     );
+
     if (!result?.success) {
       seterrormsg(true);
     }
@@ -278,14 +283,8 @@ export default function ReassignBeneficiaries({ footerLinks }) {
               setFilter({ ...filter, page: e });
             }}
           />
-          <Modal
-            isOpen={modalVisible}
-            onClose={() => setModalVisible(false)}
-            avoidKeyboard
-            size="xl"
-          >
+          <Modal isOpen={modalVisible} avoidKeyboard size="xl">
             <Modal.Content>
-              <Modal.CloseButton />
               <Modal.Header textAlign={"left"}>
                 <HStack alignItems={"center"} justifyContent={"space-between"}>
                   <HStack alignItems={"center"}>
@@ -420,7 +419,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     <AdminTypo.Secondarybutton
                       onPress={() => {
                         setModalConfirmVisible(false);
-                        navigate("/admin/learners/duplicates");
+                        navigate("/admin/learners/reassignList");
                       }}
                     >
                       {t("OK")}

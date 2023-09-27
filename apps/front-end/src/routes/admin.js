@@ -76,7 +76,7 @@ export default [
     component: ReassignBeneficiariesList,
   },
   {
-    path: "/admin/learners/reassignList/learnerList/:prerakId",
+    path: "/admin/learners/reassignList/:prerakId",
     component: ReassignBeneficiaries,
   },
   {

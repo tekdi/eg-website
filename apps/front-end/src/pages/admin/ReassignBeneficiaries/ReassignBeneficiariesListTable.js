@@ -62,7 +62,7 @@ const action = (row, t, navigate) => {
     <AdminTypo.Secondarybutton
       my="3"
       onPress={() => {
-        navigate(`/admin/learners/reassignList/learnerList/${row?.id}`);
+        navigate(`/admin/learners/reassignList/${row?.id}`);
       }}
     >
       {t("VIEW")}
