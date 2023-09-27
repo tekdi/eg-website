@@ -45,8 +45,10 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [campDetails, setCampDetails] = React.useState();
 
   const getLocation = () => {
-    if (navigator?.geolocation) {
-      navigator?.geolocation?.getCurrentPosition(showPosition, showError);
+    
+    const location = navigator?.geolocation;
+    if (location) {
+      location?.getCurrentPosition(showPosition, showError);
     } else {
       setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
     }
