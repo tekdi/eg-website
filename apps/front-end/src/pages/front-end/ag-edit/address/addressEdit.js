@@ -2,24 +2,11 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -28,14 +15,10 @@ import {
   IconByName,
   BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
-  uploadRegistryService,
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";

@@ -13,7 +13,6 @@ import guestRoutes from "./routes/guestRoutes";
 import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
 import PoAdminRoutes from "./routes/PoAdminRoutes";
-import { Image } from "native-base";
 
 //TODO: separate out the theme related code from App
 
