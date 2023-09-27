@@ -77,7 +77,6 @@ export default function CommunityView({ footerLinks }) {
     const result = await benificiaryRegistoryService.createCommunityReference(
       formData
     );
-    console.log("formData", formData);
     if (formData?.contact_number.toString()?.length !== 10) {
       const newErrors = {
         contact_number: {
