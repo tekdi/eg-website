@@ -23,7 +23,7 @@ const PrerakName = (row) => {
 };
 
 const statusCount = (row) => {
-  return row?.status_count.map((item) => {
+  return row?.status_count?.map((item) => {
     return (
       <Text key={item} cursor={"pointer"} mx={2}>
         <ChipStatus statusCount={item?.status}>
@@ -80,9 +80,25 @@ function Table({
   filter,
 }) {
   const { t } = useTranslation();
-  const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
 
-  console.log("data", data);
+  const beneficiaryStatus = [
+    {
+      title: "BENEFICIARY_STATUS_IDENTIFIED",
+      value: "identified",
+    },
+    {
+      title: "BENEFICIARY_STATUS_READY_TO_ENROLL",
+      value: "ready_to_enroll",
+    },
+    {
+      title: "BENEFICIARY_STATUS_ENROLLED",
+      value: "enrolled",
+    },
+    {
+      title: "BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED",
+      value: "enrolled_ip_verified",
+    },
+  ];
 
   const columns = (e) => [
     {
@@ -107,10 +123,10 @@ function Table({
   ];
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
-  }, []);
+  // React.useEffect(async () => {
+  //   const result = await enumRegistryService.listOfEnum();
+  //   // setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
+  // }, []);
 
   return (
     <VStack>

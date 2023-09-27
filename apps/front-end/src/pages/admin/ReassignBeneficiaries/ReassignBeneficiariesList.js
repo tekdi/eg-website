@@ -104,7 +104,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setQueryParameters(data);
   };
 
-  console.log("filter", filter);
 
   const schema = {
     type: "object",
