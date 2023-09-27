@@ -46,8 +46,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
-  const [isExistflag, setisExistflag] = React.useState(false);
-  const [underSameFacilitator, setunderSameFacilitator] = React.useState(true);
+  const [isExistflag, setisExistflag] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
   const id = useParams();
@@ -192,14 +191,14 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({ aadhar_no: data?.aadhar_no });
-        if (result.underSameFacilitator) {
-          setunderSameFacilitator(false);
-          setisExistflag(true);
-        } else if (!result?.success) {
-          setisExistflag(false);
-        } else if (result?.underSameFacilitator === false) {
-          setisExistflag(true);
-          setunderSameFacilitator(true);
+        if (result?.registeredAsFacilitator) {
+          setisExistflag("registeredAsFacilitator");
+        } else if (result?.underSameFacilitator) {
+          setisExistflag("underSameFacilitator");
+        } else if (result?.registeredAsBeneficiaries) {
+          setisExistflag("registeredAsBeneficiaries");
+        } else {
+          setisExistflag();
         }
       }
     }
@@ -225,7 +224,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       aadhar_no: formData?.aadhar_no,
       is_duplicate: "no",
     };
-    const adhaar = await AgRegistryService.updateAg(adddata, userId);
+    await AgRegistryService.updateAg(adddata, userId);
     navigate(`/aadhaar-kyc/${userId}`, {
       state: { aadhar_no: formData?.aadhar_no, pathname: "/beneficiary/list" },
     });
@@ -240,15 +239,20 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       });
     }
   }, [formData?.aadhar_no]);
+
   const onSubmit = () => {
-    if (isExistflag) {
+    if (isExistflag === "registeredAsFacilitator") {
+      setModalVisible(true);
+    } else if (isExistflag === "underSameFacilitator") {
+      setModalVisible(true);
+    } else if (isExistflag === "registeredAsBeneficiaries") {
       setFormData({
         ...formData,
         aadhar_no: formData?.aadhar_no,
         is_duplicate: "yes",
       });
-      setModalVisible(!modalVisible);
-    } else {
+      setModalVisible(true);
+    } else if (!isExistflag) {
       addAdhaar();
     }
   };
@@ -256,10 +260,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const addAdhaarduplicate = async () => {
     const text = textAreaRef.current.value;
     if (text !== "") {
-      const adhaarduplicate = await AgRegistryService.updateAg(
-        formData,
-        userId
-      );
+      await AgRegistryService.updateAg(formData, userId);
       navigate(`/aadhaar-kyc/${userId}`, {
         state: { aadhar_no: formData?.aadhar_no },
       });
@@ -361,22 +362,25 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 name="ErrorWarningLineIcon"
                 color="textRed.300"
                 size="20px"
-              ></IconByName>
+              />
               <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
                 {t("AG_LEARNER_ALREADY_IDENTIFIED")}
               </FrontEndTypo.H2>
             </HStack>
-            {underSameFacilitator && (
+            {isExistflag === "registeredAsBeneficiaries" && (
+              <VStack pt="3">
+                <FrontEndTypo.H5 color="textGreyColor.600">
+                  {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
+                </FrontEndTypo.H5>
+              </VStack>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            {isExistflag === "registeredAsBeneficiaries" ? (
               <React.Fragment>
-                <VStack pt="3">
-                  <FrontEndTypo.H5 color="textGreyColor.600">
-                    {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-                  </FrontEndTypo.H5>
-                </VStack>
                 <FrontEndTypo.Primarybutton
                   py="2"
                   width="100%"
-                  marginTop={"2em"}
                   onPress={() => {
                     setaddmodal(!addmodal);
                     setModalVisible(!modalVisible);
@@ -384,27 +388,24 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 >
                   {t("CONTINUE_ADDING")}
                 </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton
+                  width="100%"
+                  marginTop={"1em"}
+                  onPress={() => navigate(`/beneficiary/${userId}`)}
+                >
+                  {t("CANCEL_AND_GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
               </React.Fragment>
-            )}
-
-            {underSameFacilitator ? (
-              <FrontEndTypo.Secondarybutton
-                width="100%"
-                marginTop={"1em"}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                {t("CANCEL_AND_GO_BACK")}
-              </FrontEndTypo.Secondarybutton>
             ) : (
               <FrontEndTypo.Secondarybutton
                 width="100%"
                 marginTop={"1em"}
-                onPress={() => navigate(`/beneficiary/${userId}`)}
+                onPress={() => setModalVisible(false)}
               >
-                {t("CANCEL_AND_GO_TO_PROFILE")}
+                {t("CANCEL_AND_GO_BACK")}
               </FrontEndTypo.Secondarybutton>
             )}
-          </Modal.Body>
+          </Modal.Footer>
         </Modal.Content>
       </Modal>
 

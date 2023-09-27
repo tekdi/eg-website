@@ -35,12 +35,13 @@ const columns = (t, navigate) => [
             _icon={{ size: "35" }}
           />
         )}
-        <AdminTypo.H5 bold>
+        <AdminTypo.H6 bold>
           {row?.first_name + " " + row.last_name}
-        </AdminTypo.H5>
+        </AdminTypo.H6>
       </HStack>
     ),
     attr: "name",
+    wrap: "true",
   },
   {
     name: t("DISTRICT"),

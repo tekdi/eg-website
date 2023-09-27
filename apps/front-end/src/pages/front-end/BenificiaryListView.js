@@ -390,7 +390,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
               {Array.isArray(selectStatus) &&
                 selectStatus.map((option, index) => (
                   <Select.Item
-                    key={index}
+                    key={index || ""}
                     label={t(option.title)}
                     value={option.value}
                   />
@@ -412,7 +412,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             >
               {select2.map((option, index) => (
                 <Select.Item
-                  key={index}
+                  key={index || ""}
                   label={t(option.label)}
                   value={option.value}
                 />
