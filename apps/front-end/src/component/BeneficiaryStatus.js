@@ -50,13 +50,7 @@ export function ChipStatus({
   const { t } = useTranslation();
 
   React.useEffect(() => {
-    switch (
-      status
-        ? status?.toLowerCase()
-        : statusCount
-        ? statusCount?.toLowerCase()
-        : ""
-    ) {
+    switch (status ? status?.toLowerCase() : statusCount?.toLowerCase()) {
       case "rejected":
         setNewStatus(t("REJECTED"));
         setTextColor("#fff");

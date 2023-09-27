@@ -171,7 +171,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
       selector: (row) =>
         row?.district
           ? `${row?.district}, ${row?.block}${
-              row?.address === null ? "" : `, ${row?.address}`
+              row?.address && `, ${row?.address}`
             }`
           : "-",
       wrap: true,

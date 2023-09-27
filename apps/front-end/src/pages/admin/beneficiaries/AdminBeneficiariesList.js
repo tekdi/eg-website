@@ -217,7 +217,8 @@ export default function AdminHome({ footerLinks }) {
           >
             {t("RESOLVE_DUPLICATION")}
           </AdminTypo.Dangerbutton>
-          <AdminTypo.Dangerbutton
+          <AdminTypo.PrimaryButton
+            _text={{ fontSize: "12px" }}
             onPress={() => {
               navigate("/admin/learners/reassignList");
             }}
@@ -230,7 +231,7 @@ export default function AdminHome({ footerLinks }) {
             }
           >
             {t("REASSIGN_LEARNERS")}
-          </AdminTypo.Dangerbutton>
+          </AdminTypo.PrimaryButton>
         </HStack>
       </HStack>
       <HStack>

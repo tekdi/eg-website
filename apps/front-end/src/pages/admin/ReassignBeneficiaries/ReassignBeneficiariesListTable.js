@@ -1,10 +1,6 @@
-import {
-  IconByName,
-  AdminTypo,
-  enumRegistryService,
-} from "@shiksha/common-lib";
-import Chip, { ChipStatus, ChipStatusCount } from "component/BeneficiaryStatus";
-import { HStack, VStack, Image, ScrollView, Text } from "native-base";
+import { AdminTypo } from "@shiksha/common-lib";
+import { ChipStatus } from "component/BeneficiaryStatus";
+import { HStack, VStack, ScrollView, Text } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -122,11 +118,6 @@ function Table({
     },
   ];
   const navigate = useNavigate();
-
-  // React.useEffect(async () => {
-  //   const result = await enumRegistryService.listOfEnum();
-  //   // setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
-  // }, []);
 
   return (
     <VStack>

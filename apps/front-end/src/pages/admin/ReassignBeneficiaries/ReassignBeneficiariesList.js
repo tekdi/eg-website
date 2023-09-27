@@ -17,7 +17,6 @@ import {
   AdminTypo,
   AdminLayout as Layout,
   useWindowSize,
-  benificiaryRegistoryService,
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
