@@ -218,7 +218,6 @@ export default function AdminHome({ footerLinks }) {
             {t("RESOLVE_DUPLICATION")}
           </AdminTypo.Dangerbutton>
           <AdminTypo.PrimaryButton
-            _text={{ fontSize: "12px" }}
             onPress={() => {
               navigate("/admin/learners/reassignList");
             }}
