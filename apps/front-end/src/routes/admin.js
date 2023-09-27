@@ -35,6 +35,10 @@ const EnrollmentReceiptView = React.lazy(() =>
   import("pages/admin/beneficiaries/EnrollmentReceiptView")
 );
 
+const BeneficiaryAdminProfile = React.lazy(() =>
+  import("pages/admin/beneficiaries/Profile")
+);
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
@@ -67,6 +71,10 @@ export default [
   {
     path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
+  },
+  {
+    path: "/admin/beneficiary/:id",
+    component: BeneficiaryAdminProfile,
   },
   { path: "/", component: Orientation },
   { path: "*", component: NotFound },
