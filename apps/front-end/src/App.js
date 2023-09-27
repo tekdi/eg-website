@@ -65,6 +65,11 @@ function App() {
           icon: "GraduationCap",
         },
         {
+          title: "COMMUNITY",
+          route: "/community",
+          icon: "TeamLineIcon",
+        },
+        {
           title: "MY_CAMP",
           icon: "CommunityLineIcon",
         },
