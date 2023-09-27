@@ -228,7 +228,7 @@ export default [
   },
   { path: "*", component: Dashboard },
   {
-    path: "/community/list",
+    path: "/community",
     component: CommunityView,
   },
   { path: "/community/communityform", component: CommunityForm },

@@ -1,44 +1,32 @@
 export default {
-  description: "1.Basic details",
-  type: "step",
+  title: "COMMUNITY_DETAILS",
+  type: "object",
+  required: ["first_name", "contact_number", "designation"],
   properties: {
-    1: {
-      title: "Community Details",
-      type: "object",
-      properties: {
-        referencefullname: {
-          title: "FULL_NAME",
-          required: ["first_name", "contact_number", "relation"],
-          type: "object",
-          properties: {
-            first_name: {
-              type: "string",
-              title: "FIRST_NAME",
-            },
-            middle_name: {
-              type: ["string", "null"],
-              title: "MIDDLE_NAME",
-            },
-            last_name: {
-              type: ["string", "null"],
-              title: "LAST_NAME",
-            },
-            relation: {
-              type: "string",
-              title: "DESIGNATION",
-            },
-            contact_number: {
-              type: "number",
-              title: "MOBILE_NUMBER",
-            },
-            edit_page_type: {
-              type: "string",
-              default: "edit_reference",
-              format: "hidden",
-            },
-          },
-        },
-      },
+    first_name: {
+      type: "string",
+      title: "FIRST_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+    },
+    middle_name: {
+      type: ["string", "null"],
+      title: "MIDDLE_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+    },
+    last_name: {
+      type: ["string", "null"],
+      title: "LAST_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+    },
+    designation: {
+      type: "string",
+      title: "DESIGNATION",
+      format: "select",
+    },
+    contact_number: {
+      type: "string",
+      title: "MOBILE_NUMBER",
+      format: "MobileNumber",
     },
   },
 };
