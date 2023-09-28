@@ -1,12 +1,24 @@
-import { FrontEndTypo, IconByName, Layout } from "@shiksha/common-lib";
+import {
+  FrontEndTypo,
+  IconByName,
+  Layout,
+  benificiaryRegistoryService,
+} from "@shiksha/common-lib";
 import { Box, HStack, VStack } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 export default function PcrView() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
+  const [data, setData] = useState();
+
+  React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getPCRScores();
+    setData(result);
+  }, []);
+
   return (
     <Layout
       _appBar={{
