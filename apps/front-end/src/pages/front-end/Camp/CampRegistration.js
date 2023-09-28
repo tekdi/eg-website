@@ -134,10 +134,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     },
   ];
 
-  const areAllColorsSame = Navdata.map((item) => item?.color).every(
-    (value, index, array) => value === "green.300"
-  );
-
   const onPressBackButton = async () => {
     navigate("/camps");
   };
