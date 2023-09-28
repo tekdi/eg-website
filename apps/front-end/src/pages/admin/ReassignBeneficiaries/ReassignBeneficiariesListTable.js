@@ -10,7 +10,15 @@ import { useNavigate } from "react-router-dom";
 const PrerakName = (row) => {
   return (
     <VStack alignItems={"center"} space="2">
-      <Text color={"textGreyColor.100"} fontSize={"13px"}>
+      <Text
+        color={
+          ["rusticate", "rejected", "quit"].includes(row?.status)
+            ? "textMaroonColor.500"
+            : "textGreyColor.100"
+        }
+        fontSize={"13px"}
+        fontWeight={"bold"}
+      >
         {row?.first_name + " "}
         {row?.last_name ? row?.last_name : ""}
       </Text>
@@ -21,7 +29,7 @@ const PrerakName = (row) => {
 const statusCount = (row) => {
   return row?.status_count?.map((item) => {
     return (
-      <Text key={item} cursor={"pointer"} mx={2}>
+      <Text key={item} mx={2}>
         <ChipStatus statusCount={item?.status}>
           {item?.count === 0 ? "0" : item?.count}
         </ChipStatus>
@@ -126,7 +134,7 @@ function Table({
         <HStack pb="2">
           {beneficiaryStatus?.map((item) => {
             return (
-              <Text key={item} cursor={"pointer"} mx={2}>
+              <Text key={item} mx={2}>
                 <ChipStatus status={item?.value} />
               </Text>
             );
