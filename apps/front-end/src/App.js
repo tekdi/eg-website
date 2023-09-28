@@ -66,7 +66,7 @@ function App() {
         },
         {
           title: "COMMUNITY",
-          route: "/community",
+          route: "/community-references",
           icon: "TeamLineIcon",
         },
         {

@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { templates, widgets } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
-import schema1 from "./CommunityForm";
+import schema1 from "./schema";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { Alert, Box, Button, HStack, VStack } from "native-base";
@@ -42,7 +42,7 @@ export default function CommunityView({ footerLinks }) {
   }, []);
 
   React.useEffect(async () => {
-    const getData = await benificiaryRegistoryService.getCommunityReference({
+    const getData = await benificiaryRegistoryService.getCommunityReferences({
       context: "community.user",
     });
     setData(getData || {});

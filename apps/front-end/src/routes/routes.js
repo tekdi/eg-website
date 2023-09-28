@@ -105,10 +105,7 @@ const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
 const CommunityView = React.lazy(() =>
-  import("pages/front-end/Community/CommunityView")
-);
-const CommunityForm = React.lazy(() =>
-  import("pages/front-end/Community/CommunityForm")
+  import("pages/front-end/community/CommunityView")
 );
 
 export default [
@@ -228,8 +225,7 @@ export default [
   },
   { path: "*", component: Dashboard },
   {
-    path: "/community",
+    path: "/community-references",
     component: CommunityView,
   },
-  { path: "/community/communityform", component: CommunityForm },
 ];
