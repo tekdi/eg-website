@@ -104,6 +104,12 @@ const AadhaarDetails = React.lazy(() =>
 const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
+const PcrDetails = React.lazy(() =>
+  import("pages/front-end/PCRDetails.js/PcrDetails")
+);
+const PcrView = React.lazy(() =>
+  import("pages/front-end/PCRDetails.js/PcrView")
+);
 
 export default [
   { path: "/form", component: Home },
@@ -203,6 +209,14 @@ export default [
   {
     path: "/beneficiary/:id/upload/:photoNo",
     component: BenificiaryProfilePhoto,
+  },
+  {
+    path: "/beneficiary/:id/pcrdetails",
+    component: PcrDetails,
+  },
+  {
+    path: "/beneficiary/:id/pcrview",
+    component: PcrView,
   },
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
