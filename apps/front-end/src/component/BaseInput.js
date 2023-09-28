@@ -576,6 +576,7 @@ export const MultiCheck = ({
   );
 };
 
+// select between 2 values radio button (yes or no)
 const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { label } = schema || {};
   const { t } = useTranslation();

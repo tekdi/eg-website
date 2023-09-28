@@ -249,7 +249,7 @@ export default [
     component: CampForm,
   },
   {
-    path: "/camps/LearnerList",
+    path: "/camps/new/learners",
     component: CampLeanerList,
   },
 

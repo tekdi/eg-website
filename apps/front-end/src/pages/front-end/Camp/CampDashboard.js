@@ -5,7 +5,7 @@ import {
   GetEnumValue,
   IconByName,
   Layout,
-  campRegistoryService,
+  CampService,
   enumRegistryService,
 } from "@shiksha/common-lib";
 import {
@@ -31,8 +31,8 @@ export default function CampDashboard({ footerLinks }) {
   const [enumOptions, setEnumOptions] = React.useState();
 
   React.useEffect(async () => {
-    const result = await campRegistoryService.campNonRegisteredUser();
-    const campList = await campRegistoryService.campList();
+    const result = await CampService.campNonRegisteredUser();
+    const campList = await CampService.campList();
     const enums = await enumRegistryService.listOfEnum();
     setEnumOptions(enums?.data || {});
     setNonRegisteredUser(result?.data?.user || []);
@@ -150,7 +150,7 @@ export default function CampDashboard({ footerLinks }) {
         {campList?.length !== 2 && (
           <FrontEndTypo.Secondarybutton
             onPress={() => {
-              navigate(`/camps/learnerList`, { state: "camp" });
+              navigate(`/camps/new/learners`, { state: "camp" });
             }}
           >
             {campList?.length !== 0
@@ -178,7 +178,7 @@ export default function CampDashboard({ footerLinks }) {
             width="100%"
             height="315"
             src="https://www.youtube.com/embed/_Tbo0cATRGM?si=G7KEFIkHPLg1mFQy"
-            title="YouTube video player"
+            title={t("HOW_TO_START_CAMP")}
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen

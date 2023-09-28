@@ -13,7 +13,8 @@ import {
   AdminTypo,
   ImageView,
   IconByName,
-  campRegistoryService,
+  CampService,
+  ConsentService,
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -31,8 +32,8 @@ export default function ConsentForm() {
   const [consents, setConsents] = React.useState();
 
   React.useEffect(async () => {
-    const result = await campRegistoryService.getCampDetails({ id });
-    const campConsent = await campRegistoryService.getConsent({ camp_id: id });
+    const result = await CampService.getCampDetails({ id });
+    const campConsent = await ConsentService.getConsent({ camp_id: id });
     setConsents(campConsent?.data || []);
     setGroupUsers(result?.data?.group_users);
     setLoading(false);
@@ -49,7 +50,7 @@ export default function ConsentForm() {
   };
 
   const handleUpload = async (data) => {
-    await campRegistoryService.createConsent(data);
+    await ConsentService.createConsent(data);
     setUploadData();
     // api call
   };

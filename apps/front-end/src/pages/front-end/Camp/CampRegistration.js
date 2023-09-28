@@ -2,7 +2,8 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  campRegistoryService,
+  CampService,
+  ConsentService,
   arrList,
 } from "@shiksha/common-lib";
 import { HStack, Box, Pressable, Text, Image } from "native-base";
@@ -35,13 +36,15 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await campRegistoryService.getCampDetails(camp_id);
-    const campConsent = await campRegistoryService.getConsent({
+    const result = await CampService.getCampDetails(camp_id);
+    const campConsent = await ConsentService.getConsent({
       camp_id: camp_id?.id,
     });
+    console.log("result", result);
+    console.log("campConsent", campConsent);
     const userLength = result?.data?.group_users?.length;
     const campConsentLength = campConsent?.data?.length;
-    if (userLength === campConsentLength) {
+    if (userLength <= campConsentLength) {
       setConsent("green.300");
     }
     const data = result?.data?.properties;
@@ -202,10 +205,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         );
       })}
       <HStack my={3} mx={"auto"} w={"90%"}>
-        <FrontEndTypo.Primarybutton
-          isDisabled={!areAllColorsSame}
-          width={"100%"}
-        >
+        <FrontEndTypo.Primarybutton isDisabled={true} width={"100%"}>
           {t("SUBMIT_FOR_REGISTRATION")}
         </FrontEndTypo.Primarybutton>
       </HStack>

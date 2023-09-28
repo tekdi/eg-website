@@ -7,7 +7,7 @@ import {
   AdminTypo,
   IconByName,
   ImageView,
-  campRegistoryService,
+  CampService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -57,7 +57,7 @@ export default function CampSelectedLearners({
         edit_page_type: "edit_learners",
         id: camp_id?.id,
       };
-      const data = await campRegistoryService.updateCampDetails(updateLearner);
+      const data = await CampService.updateCampDetails(updateLearner);
       if (data) {
         navigate(`/camps/${camp_id?.id}`);
       }
@@ -67,8 +67,8 @@ export default function CampSelectedLearners({
   };
 
   React.useEffect(async () => {
-    const result = await campRegistoryService.campNonRegisteredUser();
-    const campdetails = await campRegistoryService.getCampDetails(camp_id);
+    const result = await CampService.campNonRegisteredUser();
+    const campdetails = await CampService.getCampDetails(camp_id);
     const campRegisterUsers = campdetails?.data?.group_users;
     const campNotRegisterUsers = result?.data?.user;
     const mergedData = campRegisterUsers.concat(campNotRegisterUsers);

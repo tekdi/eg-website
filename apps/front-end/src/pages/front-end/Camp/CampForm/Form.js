@@ -11,7 +11,7 @@ import {
   enumRegistryService,
   getOptions,
   validation,
-  campRegistoryService,
+  CampService,
   jsonParse,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,7 +45,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [campDetails, setCampDetails] = React.useState();
 
   const getLocation = () => {
-    
     const location = navigator?.geolocation;
     if (location) {
       location?.getCurrentPosition(showPosition, showError);
@@ -96,7 +95,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await campRegistoryService.getCampDetails({ id });
+    const result = await CampService.getCampDetails({ id });
     setCampDetails(result?.data);
     setLoading(false);
   }, []);
@@ -265,7 +264,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const formSubmitUpdate = async (data, overide) => {
     if (id) {
       setLoading(true);
-      const result = await campRegistoryService.updateCampDetails({
+      const result = await CampService.updateCampDetails({
         ...data,
         edit_page_type: step,
         ...(overide || {}),
