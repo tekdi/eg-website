@@ -72,7 +72,6 @@ export default function CommunityView({ footerLinks }) {
     setFormData();
     setAddMore(true);
   };
-  console.log(formData);
   const onSubmit = async () => {
     const result = await benificiaryRegistoryService.createCommunityReference(
       formData
