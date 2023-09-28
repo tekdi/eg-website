@@ -28,6 +28,7 @@ import {
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
+import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
@@ -190,7 +191,8 @@ export const FieldTemplate = ({
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
     >
-      {(!schema?.format || schema?.format !== "hidden") &&
+      {(!schema?.format ||
+        !["hidden", "CheckUncheck"].includes(schema?.format)) &&
         (label || schema?.label) && (
           <Box>
             {(id === "root" || schema?.label) && (
@@ -217,12 +219,11 @@ export const FieldTemplate = ({
 
 // rjsf custom ObjectFieldTemplate object field layout Template use in all form
 export const ObjectFieldTemplate = (props) => {
-  const { t } = useTranslation();
   return (
     <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
         <div
-          key={`element${index}`}
+          key={`element${element.name}`}
           id={`element_${element.name}`}
           style={{ width: "100%" }}
         >
@@ -534,7 +535,7 @@ export const MultiCheck = ({
           {required && <H2 color="textMaroonColor.400">*</H2>}
         </FormControl.Label>
       )}
-      <Stack flexDirection={grid ? "column" : ""} {...(_hstack ? _hstack : {})}>
+      <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
           <Box gap={"2"} key={subKey} flexDirection="row" flexWrap="wrap">
             {subItem?.map((item, key) => (
@@ -575,6 +576,37 @@ export const MultiCheck = ({
   );
 };
 
+// select between 2 values radio button (yes or no)
+const CheckUncheck = ({ required, schema, value, onChange }) => {
+  const { label } = schema || {};
+  const { t } = useTranslation();
+
+  const checkboxIcons = [
+    { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
+    { name: "CloseCircleLineIcon", activeColor: "red.500" },
+  ];
+  return (
+    <HStack space={2}>
+      {required && <Text color={"danger.500"}>*</Text>}
+      <CustomRadio
+        options={{
+          enumOptions: [{ value: "1" }, { value: "0" }],
+        }}
+        schema={{
+          icons: checkboxIcons,
+          _box: { gap: "0", width: "auto" },
+          _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+        }}
+        value={value}
+        onChange={(e) => {
+          onChange(e);
+        }}
+      />
+      <Text flex="4">{label ? t(label) : ""}</Text>
+    </HStack>
+  );
+};
+
 // rjsf custom textarea field
 const textarea = ({
   schema,
@@ -588,7 +620,7 @@ const textarea = ({
   const { label, title, help, rows } = schema ? schema : {};
   const { t } = useTranslation();
   return (
-    <FormControl isInvalid={isInvalid ? isInvalid : false}>
+    <FormControl isInvalid={isInvalid || false}>
       {title && (
         <FormControl.Label
           rounded="sm"
@@ -651,7 +683,6 @@ const validator = customizeValidator({
   },
 });
 
-
 const widgets = {
   RadioBtn,
   CustomR,
@@ -663,6 +694,8 @@ const widgets = {
   MobileNumber,
   MultiCheck,
   readOnly,
+  StarRating,
+  CheckUncheck,
 };
 
 const templates = {
@@ -777,4 +810,6 @@ export {
   MobileNumber,
   onError,
   transformErrors,
+  StarRating,
+  CheckUncheck,
 };
