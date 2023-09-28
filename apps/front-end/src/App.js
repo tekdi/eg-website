@@ -72,6 +72,7 @@ function App() {
         {
           title: "MY_CAMP",
           icon: "CommunityLineIcon",
+          route: "/camps",
         },
         {
           title: "DASHBOARD",
