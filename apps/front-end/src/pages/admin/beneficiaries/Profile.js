@@ -1029,6 +1029,16 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H4 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </AdminTypo.H4>
+                  <IconByName
+                    name="PencilLineIcon"
+                    color="iconColor.200"
+                    _icon={{ size: "25" }}
+                    onPress={(e) => {
+                      navigate(
+                        `/admin/beneficiary/${id}/editEnrollmentDetails`
+                      );
+                    }}
+                  />
 
                   {data?.program_beneficiaries?.status === "enrolled" && (
                     <AdminTypo.StatusButton
