@@ -120,7 +120,7 @@ export default function CommunityView({ footerLinks }) {
               data?.data?.map((item, index) => {
                 return (
                   <VStack
-                    key={index}
+                    key="index"
                     px="5"
                     py="4"
                     space="4"
