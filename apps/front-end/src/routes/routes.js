@@ -104,6 +104,9 @@ const AadhaarDetails = React.lazy(() =>
 const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
+const CommunityView = React.lazy(() =>
+  import("pages/front-end/community/CommunityView")
+);
 
 const CampDashboard = React.lazy(() =>
   import("pages/front-end/Camp/CampDashboard")
@@ -254,4 +257,8 @@ export default [
   },
 
   { path: "*", component: Dashboard },
+  {
+    path: "/community-references",
+    component: CommunityView,
+  },
 ];
