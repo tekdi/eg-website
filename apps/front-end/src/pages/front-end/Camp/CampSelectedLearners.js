@@ -168,7 +168,7 @@ export default function CampSelectedLearners({
                       {item?.program_beneficiaries[0]?.enrollment_last_name &&
                         ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
                     </FrontEndTypo.H3>
-                    <Text>
+                    <Text width={"80%"} wordWrap="break-word">
                       {item?.district}, {item?.block},{item?.village}
                       {item?.id}
                     </Text>
