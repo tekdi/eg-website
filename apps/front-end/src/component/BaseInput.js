@@ -260,9 +260,16 @@ export const CustomR = ({
 };
 
 // rjsf custom RadioBtn field
-export const RadioBtn = ({ options, value, onChange, required, schema }) => {
+export const RadioBtn = ({
+  options,
+  value,
+  onChange,
+  required,
+  schema,
+  directionColumn,
+}) => {
   const items = options?.enumOptions;
-  const { label, format } = schema ? schema : {};
+  const { label, format } = schema || {};
   const { t } = useTranslation();
   return (
     <FormControl gap="4">
@@ -283,11 +290,11 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
         <Stack
           direction={{
             base: "column",
-            sm: "row",
+            sm: directionColumn || "row",
           }}
           alignItems={{
             base: "flex-start",
-            md: "center",
+            md: directionColumn ? "flex-start" : "center",
           }}
           space={4}
           w="75%"
