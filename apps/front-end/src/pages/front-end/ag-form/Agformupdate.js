@@ -136,8 +136,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   };
 
   const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    const location = navigator.geolocation;
+    if (location) {
+      location.getCurrentPosition(showPosition, showError);
     } else {
       setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
     }
@@ -150,8 +151,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     setFormData({
       ...formData,
       edit_page_type: "add_address",
-      lat: lati,
-      long: longi,
+      lat: lati?.toString(),
+      long: longi?.toString(),
     });
   };
 
