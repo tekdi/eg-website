@@ -158,7 +158,7 @@ const getSubjects = async (schemaData, value, page) => {
 
 // App
 export default function App(footerLinks) {
-  const [setRefAppBar] = React.useState();
+  const [RefAppBar, setRefAppBar] = React.useState();
   const { step, id } = useParams();
   const userId = id;
   const [page, setPage] = React.useState();
@@ -407,91 +407,111 @@ export default function App(footerLinks) {
     return false;
   };
 
+  const handleEnrollmentNumberChange = async (data) => {
+    const { enrollment_number, ...otherError } = errors || {};
+    setErrors(otherError);
+
+    if (data?.enrollment_number) {
+      const debouncedFunction = debounce(async () => {
+        await enrollmentNumberExist(data?.enrollment_number);
+      }, 1000);
+      debouncedFunction();
+    }
+  };
+
+  const handleEnrollmentDateChange = (data) => {
+    const { enrollment_date, ...otherErrore } = errors || {};
+    setErrors(otherErrore);
+
+    const resultDate = validate(data, "enrollment_date");
+
+    if (resultDate?.enrollment_date) {
+      setErrors({
+        ...errors,
+        enrollment_date: {
+          __errors: [resultDate?.enrollment_date],
+        },
+      });
+    }
+  };
+
+  const handleEnrollmentStatusChange = async (data, fixedSchema, page) => {
+    const updatedSchema = await setSchemaByStatus(data, fixedSchema, page);
+    const updatedData = updatedSchema?.newData || {};
+    setSchema(updatedSchema?.newSchema);
+    setErrors();
+    return updatedData;
+  };
+
+  const handleAadhaarNoChange = (data) => {
+    const result = validate(data, "enrollment_aadhaar_no");
+    if (result?.enrollment_aadhaar_no) {
+      setErrors({
+        ...errors,
+        enrollment_aadhaar_no: {
+          __errors: [result?.enrollment_aadhaar_no],
+        },
+      });
+    } else {
+      const { enrollment_aadhaar_no, ...otherError } = errors || {};
+      setErrors(otherError);
+    }
+  };
+
+  const handleDobChange = (data) => {
+    const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
+    if (age?.enrollment_dob) {
+      setUiSchema(
+        getUiSchema(uiSchema, {
+          key: "enrollment_dob",
+          extra: {
+            "ui:help": (
+              <VStack>
+                {age?.age?.message}
+                <AlertCustom alert={age?.enrollment_dob} />,
+              </VStack>
+            ),
+          },
+        })
+      );
+      return { ...data, is_eligible: "no" };
+    } else {
+      setUiSchema(
+        getUiSchema(uiSchema, {
+          key: "enrollment_dob",
+          extra: {
+            "ui:help": age?.age?.message,
+          },
+        })
+      );
+      return { ...data, is_eligible: "yes" };
+    }
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
 
     switch (id) {
       case "root_enrollment_number":
-        let { enrollment_number, ...otherError } = errors || {};
-        setErrors(otherError);
-        if (data?.enrollment_number) {
-          const debouncedFunction = debounce(async () => {
-            await enrollmentNumberExist(data?.enrollment_number);
-          }, 1000);
-          debouncedFunction();
-        }
+        await handleEnrollmentNumberChange(data);
         break;
       case "root_enrollment_date":
-        let { enrollment_date, ...otherErrore } = errors || {};
-        setErrors(otherErrore);
-        const resultDate = validate(data, "enrollment_date");
-
-        if (resultDate?.enrollment_date) {
-          setErrors({
-            ...errors,
-            enrollment_date: {
-              __errors: [resultDate?.enrollment_date],
-            },
-          });
-        }
+        handleEnrollmentDateChange(data);
         break;
       case "root_enrolled_for_board":
         if (data.enrollment_status === "enrolled") {
           setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
         }
         break;
-
       case "root_enrollment_status":
-        const updatedSchema = await setSchemaByStatus(data, fixedSchema, page);
-        newData = updatedSchema?.newData ? updatedSchema?.newData : {};
-        setSchema(updatedSchema?.newSchema);
-        setErrors();
+        newData = await handleEnrollmentStatusChange(data, fixedSchema, page);
         break;
-
       case "root_enrollment_aadhaar_no":
-        const result = validate(data, "enrollment_aadhaar_no");
-        if (result?.enrollment_aadhaar_no) {
-          setErrors({
-            ...errors,
-            enrollment_aadhaar_no: {
-              __errors: [result?.enrollment_aadhaar_no],
-            },
-          });
-        } else {
-          let { enrollment_aadhaar_no, ...otherError } = errors || {};
-          setErrors(otherError);
-        }
-
+        handleAadhaarNoChange(data);
         break;
       case "root_enrollment_dob":
-        const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
-        if (age?.enrollment_dob) {
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_dob",
-              extra: {
-                "ui:help": (
-                  <VStack>
-                    {age?.age?.message}
-                    <AlertCustom alert={age?.enrollment_dob} />,
-                  </VStack>
-                ),
-              },
-            })
-          );
-          newData = { ...newData, is_eligible: "no" };
-        } else {
-          newData = { ...newData, is_eligible: "yes" };
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_dob",
-              extra: {
-                "ui:help": age?.age?.message,
-              },
-            })
-          );
-        }
+        newData = handleDobChange(data);
         break;
       default:
         break;
@@ -500,9 +520,9 @@ export default function App(footerLinks) {
   };
 
   // form submit
-  const onSubmit = async () => {
-    setBtnLoading(true);
+  const handleValidationErrors = async () => {
     const keys = Object.keys(errors || {});
+
     if (
       keys?.length < 1 &&
       formData?.enrollment_number &&
@@ -515,10 +535,12 @@ export default function App(footerLinks) {
         return resulten;
       }
     }
+
     if (keys?.length > 0) {
       const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
         (e) => keys.includes(e)
       );
+
       if (errorData.length > 0) {
         if (
           errorData.includes("enrollment_number") &&
@@ -531,27 +553,38 @@ export default function App(footerLinks) {
           setNotMatched(errorData);
         }
       }
+
       scrollToField({ property: keys?.[0] });
     } else {
-      const { success, isUserExist } =
-        await benificiaryRegistoryService.updateAg(
-          { ...formData, edit_page_type: page },
-          userId
-        );
-      if (isUserExist) {
-        setNotMatched(["enrollment_number"]);
-      } else if (success && formData.enrollment_status === "enrolled") {
-        nextPreviewStep();
-      } else {
-        navigate(`/admin/beneficiary/${userId}`);
-      }
+      return handleFormSubmission();
     }
+  };
+
+  const handleFormSubmission = async () => {
+    const { success, isUserExist } = await benificiaryRegistoryService.updateAg(
+      { ...formData, edit_page_type: page },
+      userId
+    );
+
+    if (isUserExist) {
+      setNotMatched(["enrollment_number"]);
+    } else if (success && formData.enrollment_status === "enrolled") {
+      nextPreviewStep();
+    } else {
+      navigate(`/admin/beneficiary/${userId}`);
+    }
+  };
+
+  const onSubmit = async () => {
+    setBtnLoading(true);
+    await handleValidationErrors();
     setBtnLoading(false);
   };
 
   return (
     <Layout
       getRefAppBar={(e) => setRefAppBar(e)}
+      RefAppBar={RefAppBar}
       _sidebar={footerLinks}
       loading={loading}
     >
