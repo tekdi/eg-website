@@ -390,7 +390,8 @@ const DEFAULT_THEME = {
     },
     boxBackgroundColour: {
       50: '#FFC5C0',
-      100: '#FAFAFA'
+      100: '#FAFAFA',
+      200: '#cbcaca36'
     },
     studentCard: {
       500: '#B9FBC0',
@@ -567,7 +568,7 @@ const DEFAULT_THEME = {
     textMaroonColor: {
       50: 'FDCAB5',
       100: '#FFACAF',
-      300:'',
+      300: '',
       400: '#790000',
       500: '#A93505'
     },
@@ -642,29 +643,27 @@ const DEFAULT_THEME = {
       100: '#e0e0e0'
     },
     textRed: {
-      
-      100:'#ff7b7b',
-      200:'#ff5252',
+      100: '#ff7b7b',
+      200: '#ff5252',
       300: '#FF2815',
-      400:'#ff0000',
-
+      400: '#ff0000'
     },
     dividerColor: '#EEEEEE',
     textGreen: {
-      50:'#92eb9b',
-      100:'#A6D05F',
-      200:'#ABD27B',
+      50: '#92eb9b',
+      100: '#A6D05F',
+      200: '#ABD27B',
       300: '#BCF6DB',
-      400:'#232020',
-      600:'#488C04',
+      400: '#232020',
+      600: '#488C04',
       700: '#0F6C41'
     },
     textBlue: {
-      100:'#a8e3fd'
+      100: '#a8e3fd'
     },
     text: {
-      100:'#a8e3fd'
-    },
+      100: '#a8e3fd'
+    }
   }
 }
 

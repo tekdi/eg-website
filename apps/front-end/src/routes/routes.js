@@ -104,6 +104,24 @@ const AadhaarDetails = React.lazy(() =>
 const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
+const CommunityView = React.lazy(() =>
+  import("pages/front-end/community/CommunityView")
+);
+
+const CampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/CampDashboard")
+);
+const CampSelectedLearners = React.lazy(() =>
+  import("pages/front-end/Camp/CampSelectedLearners")
+);
+const CampRegistration = React.lazy(() =>
+  import("pages/front-end/Camp/CampRegistration")
+);
+
+const CampForm = React.lazy(() => import("pages/front-end/Camp/CampForm/Form"));
+const CampLeanerList = React.lazy(() =>
+  import("pages/front-end/Camp/CampLearnerList")
+);
 const PcrDetails = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrDetails")
 );
@@ -234,5 +252,27 @@ export default [
     path: "/facilitatorqualification",
     component: FacilitatorQualification,
   },
+  {
+    path: "/camps",
+    component: CampDashboard,
+  },
+
+  {
+    path: "/camps/:id",
+    component: CampRegistration,
+  },
+  {
+    path: "/camps/:id/:step",
+    component: CampForm,
+  },
+  {
+    path: "/camps/new/learners",
+    component: CampLeanerList,
+  },
+
   { path: "*", component: Dashboard },
+  {
+    path: "/community-references",
+    component: CommunityView,
+  },
 ];
