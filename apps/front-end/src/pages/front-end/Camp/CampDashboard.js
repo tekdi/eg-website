@@ -56,7 +56,7 @@ export default function CampDashboard({ footerLinks }) {
         shadow="AlertShadow"
       >
         <HStack justifyContent={"space-between"} alignItems={"center"} mt={5}>
-          <VStack>
+          <VStack width={"50%"}>
             <AdminTypo.H3 color="textMaroonColor.400">
               {`${nonRegisteredUser?.length} `}
               {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")}
