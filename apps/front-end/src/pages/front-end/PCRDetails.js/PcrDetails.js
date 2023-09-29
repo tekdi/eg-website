@@ -25,6 +25,10 @@ const PcrDetails = () => {
     setselectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
   }, []);
 
+  const SavePcr = async () => {
+    const result = await benificiaryRegistoryService.getPcrScroresUpdate();
+    setData(result);
+  };
   const CreatePcr = async (id) => {
     const result = await benificiaryRegistoryService.createPCRScores(
       status,
@@ -68,7 +72,7 @@ const PcrDetails = () => {
                 {selectBaselineData?.map((item, i) => {
                   return (
                     <Select.Item
-                      key={i}
+                      key={"i"}
                       label={`${t(item.title)}`}
                       value={item.value}
                     />
@@ -92,7 +96,7 @@ const PcrDetails = () => {
                 {selectBaselineData?.map((item, i) => {
                   return (
                     <Select.Item
-                      key={i}
+                      key={"i"}
                       label={`${t(item.title)}`}
                       value={item.value}
                     />
@@ -132,7 +136,7 @@ const PcrDetails = () => {
                   {selectRapidData?.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={"i"}
                         label={`${t(item.title)}`}
                         value={item.value}
                       />
@@ -163,7 +167,7 @@ const PcrDetails = () => {
                   {selectRapidData?.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={"i"}
                         label={`${t(item.title)}`}
                         value={item.value}
                       />
@@ -205,7 +209,7 @@ const PcrDetails = () => {
                   {selectRapidData?.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={"i"}
                         label={`${t(item.title)}`}
                         value={item.value}
                       />
@@ -236,7 +240,7 @@ const PcrDetails = () => {
                   {selectRapidData?.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={"i"}
                         label={`${t(item.title)}`}
                         value={item.value}
                       />
@@ -275,7 +279,7 @@ const PcrDetails = () => {
                   {selectBaselineData?.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={"i"}
                         label={`${t(item.title)}`}
                         value={item.value}
                       />
@@ -299,7 +303,7 @@ const PcrDetails = () => {
                   {selectBaselineData?.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={"i"}
                         label={`${t(item.title)}`}
                         value={item.value}
                       />
@@ -331,7 +335,11 @@ const PcrDetails = () => {
             </Box>
           ) : (
             <Box pt="4">
-              <FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  SavePcr();
+                }}
+              >
                 {t("SAVE")}
               </FrontEndTypo.Primarybutton>
             </Box>
