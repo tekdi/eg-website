@@ -42,6 +42,14 @@ const enrollmentForm = React.lazy(() =>
   import("pages/admin/beneficiaries/enrollment/EnrollmentForm")
 );
 
+const ReassignBeneficiaries = React.lazy(() =>
+  import("pages/admin/ReassignBeneficiaries/ReassignBeneficiaries")
+);
+
+const ReassignBeneficiariesList = React.lazy(() =>
+  import("pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList")
+);
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
@@ -68,6 +76,14 @@ export default [
     component: AdminBeneficiariesDuplicatesByAadhaar,
   },
   {
+    path: "/admin/learners/reassignList",
+    component: ReassignBeneficiariesList,
+  },
+  {
+    path: "/admin/learners/reassignList/:prerakId",
+    component: ReassignBeneficiaries,
+  },
+  {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
   },
@@ -75,6 +91,7 @@ export default [
     path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
   },
+
   {
     path: "/admin/beneficiary/:id",
     component: BeneficiaryAdminProfile,
