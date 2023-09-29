@@ -80,7 +80,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
         _box: { bg: "white" },
       }}
     >
-      {location?.state === "camp" ? (
+      {location?.state === "camp" && nonRegisteredUser.length !== 0 ? (
         <Box py={6} px={4} mb={5}>
           <AdminTypo.H3 color={"textMaroonColor.400"}>
             {alert ? (
@@ -149,7 +149,6 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
                     <VStack
                       pl="2"
                       flex="1"
-                      wordWrap="break-word"
                       whiteSpace="nowrap"
                       overflow="hidden"
                       textOverflow="ellipsis"
@@ -162,9 +161,9 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
                         {item?.program_beneficiaries[0]?.enrollment_last_name &&
                           ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
                       </FrontEndTypo.H3>
-                      <Text>
-                        {item?.district}, {item?.block},{item?.village}
-                      </Text>
+                      <Text>{item?.district}</Text>
+                      <Text>{item?.block}</Text>
+                      <Text>{item?.village}</Text>
                     </VStack>
                   </HStack>
                 </HStack>
@@ -198,7 +197,11 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
         >
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+            <BodyMedium>
+              {nonRegisteredUser.length !== 0
+                ? t("PAGE_NOT_ACCESSABLE")
+                : t("LEARNER_NOT_AVAILABLE")}
+            </BodyMedium>
           </HStack>
         </Alert>
       )}

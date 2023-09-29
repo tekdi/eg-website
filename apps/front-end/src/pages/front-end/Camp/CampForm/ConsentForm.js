@@ -34,7 +34,11 @@ export default function ConsentForm() {
   React.useEffect(async () => {
     const result = await CampService.getCampDetails({ id });
     const campConsent = await ConsentService.getConsent({ camp_id: id });
-    setConsents(campConsent?.data || []);
+    if (Object.keys(campConsent?.data).length === 0) {
+      setConsents([]);
+    } else {
+      setConsents(campConsent?.data);
+    }
     setGroupUsers(result?.data?.group_users);
     setLoading(false);
   }, [uploadData]);
