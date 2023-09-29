@@ -405,9 +405,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
-            <Stack bg="white" space="5" p="5">
+            <Stack p="5">
               {[undefined].includes(facilitator?.aadhar_no) && (
-                <Stack bg="white" space="5">
+                <Stack space="3">
                   <Alert status="warning" alignItems={"start"}>
                     <HStack alignItems="center" space="2" color>
                       <Alert.Icon />
@@ -423,7 +423,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.Primarybutton>
                 </Stack>
               )}
-              {facilitator?.aadhar_no !== undefined && (
+              {/* {facilitator?.aadhar_no !== undefined && (
                 <Stack bg="white" space="5">
                   <Alert status="warning" alignItems={"start"}>
                     <HStack alignItems="center" space="2" color>
@@ -440,7 +440,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   />
                 </Stack>
               )}
-              {/* <FrontEndTypo.Secondarybutton
+              <FrontEndTypo.Secondarybutton
                 width="100%"
                 onPress={(e) =>
                   navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, {
