@@ -549,7 +549,6 @@ export default function App(footerLinks) {
     setBtnLoading(false);
   };
 
-  console.log("benificiary", benificiary);
 
   return (
     <Layout
