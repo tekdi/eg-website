@@ -68,7 +68,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 
     case "enrollment_awaited":
     case "enrollment_rejected":
-      const { enrolled_for_board, subjects } = constantSchema?.properties;
+      const { enrolled_for_board } = constantSchema?.properties || {};
       const required = constantSchema?.required.filter(
         (item) =>
           ![
@@ -109,7 +109,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
           page
         );
       } else {
-        const { subjects, ...properties } = constantSchema?.properties;
+        const { subjects, ...properties } = constantSchema?.properties || {};
         newSchema = {
           ...constantSchema,
           properties: {
@@ -128,7 +128,7 @@ const getSubjects = async (schemaData, value, page) => {
   if (value) {
     const propertiesMain = schema1.properties;
     const constantSchema = propertiesMain[page];
-    const { subjects } = constantSchema?.properties;
+    const { subjects } = constantSchema?.properties || {};
     const { payment_receipt_document_id, ...properties } =
       schemaData.properties;
     let { data } = await enumRegistryService.getSubjects({
@@ -145,7 +145,7 @@ const getSubjects = async (schemaData, value, page) => {
       },
       {
         key: "subjects",
-        arr: data ? data : [],
+        arr: data || [],
         title: "name",
         value: "id",
       }
@@ -158,7 +158,7 @@ const getSubjects = async (schemaData, value, page) => {
 
 // App
 export default function App(footerLinks) {
-  const [refAppBar, setRefAppBar] = React.useState();
+  const [setRefAppBar] = React.useState();
   const { step, id } = useParams();
   const userId = id;
   const [page, setPage] = React.useState();
@@ -549,7 +549,6 @@ export default function App(footerLinks) {
     setBtnLoading(false);
   };
 
-
   return (
     <Layout
       getRefAppBar={(e) => setRefAppBar(e)}
@@ -636,12 +635,12 @@ export default function App(footerLinks) {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {notMatched && notMatched?.includes("enrollment_aadhaar_no") && (
+              {notMatched?.includes("enrollment_aadhaar_no") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
               )}
-              {notMatched && notMatched?.includes("enrollment_number") && (
+              {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
