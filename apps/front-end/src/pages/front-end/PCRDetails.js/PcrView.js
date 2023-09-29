@@ -5,18 +5,22 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { Box, HStack, VStack } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 export default function PcrView() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
-  const [data, setData] = useState();
+  const [data, setData] = useState({});
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores();
-    setData(result);
+    const userData = result?.data.filter(
+      (item) => item.user_id.toString() === id
+    );
+    setData(userData[0]);
   }, []);
 
   return (
@@ -52,8 +56,9 @@ export default function PcrView() {
             borderBottomWidth="2"
           >
             <FrontEndTypo.H2 bold underline>
-              {t("PCR_DETAILS")} :-
+              {t("PCR_EDUCATION_LEVEL")} :-
             </FrontEndTypo.H2>
+
             <IconByName
               name="EditBoxLineIcon"
               color="iconColor.100"
@@ -72,7 +77,9 @@ export default function PcrView() {
                 {t("PRIAMRY_LEVEL_EDUCATION")}
               </FrontEndTypo.H3>
               <FrontEndTypo.H4 color="textGreyColor.800" fontWeight="400" bold>
-                A
+                {data?.baseline_learning_level
+                  ? data?.baseline_learning_level?.toUpperCase()
+                  : "-"}
               </FrontEndTypo.H4>
             </HStack>
             <HStack space="4">
@@ -81,7 +88,7 @@ export default function PcrView() {
                 fontWeight="400"
                 flex="0.5"
               >
-                {t("EVALUATION-1")}
+                {t("EVALUATION_1")}
               </FrontEndTypo.H3>
 
               <FrontEndTypo.H4
@@ -90,7 +97,9 @@ export default function PcrView() {
                 flex="0.3"
                 bold
               >
-                A
+                {data?.rapid_assessment_first_learning_level
+                  ? data?.rapid_assessment_first_learning_level
+                  : "-"}
               </FrontEndTypo.H4>
             </HStack>
             <HStack space="4">
@@ -99,7 +108,7 @@ export default function PcrView() {
                 fontWeight="400"
                 flex="0.5"
               >
-                {t("EVALUATION-2")}
+                {t("EVALUATION_2")}
               </FrontEndTypo.H3>
               <FrontEndTypo.H4
                 color="textGreyColor.800"
@@ -107,7 +116,9 @@ export default function PcrView() {
                 flex="0.3"
                 bold
               >
-                A
+                {data?.rapid_assessment_second_learning_level
+                  ? data?.rapid_assessment_second_learning_level
+                  : "-"}
               </FrontEndTypo.H4>
             </HStack>
             <HStack space="4">
@@ -124,14 +135,12 @@ export default function PcrView() {
                 flex="0.4"
                 bold
               >
-                A
+                {data?.endline_learning_level
+                  ? data?.endline_learning_level?.toUpperCase()
+                  : "-"}
               </FrontEndTypo.H4>
             </HStack>
           </VStack>
-
-          <HStack>
-            <FrontEndTypo.H5></FrontEndTypo.H5>
-          </HStack>
         </VStack>
       </Box>
     </Layout>
