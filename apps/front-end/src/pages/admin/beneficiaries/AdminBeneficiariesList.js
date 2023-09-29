@@ -136,7 +136,6 @@ export default function AdminHome({ footerLinks }) {
     >
       <HStack
         p="4"
-        justifyContent="space-between"
         space={["0", "0", "0", "4"]}
         flexWrap={"wrap"}
         ref={refSubHeader}

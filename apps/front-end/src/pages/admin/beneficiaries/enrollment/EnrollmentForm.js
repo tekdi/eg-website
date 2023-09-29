@@ -171,7 +171,7 @@ export default function App(footerLinks) {
   const [errors, setErrors] = React.useState({});
   const [lang] = React.useState(localStorage.getItem("lang"));
   const [notMatched, setNotMatched] = React.useState();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
