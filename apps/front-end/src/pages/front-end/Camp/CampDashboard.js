@@ -59,11 +59,7 @@ export default function CampDashboard({ footerLinks }) {
         margin={"20px"}
         shadow="AlertShadow"
       >
-        {[
-          "selected_for_onboarding",
-          "selected_prerak",
-          "shortlisted_for_orientation",
-        ].includes(ipStatus) ? (
+        {["selected_for_onboarding", "selected_prerak"].includes(ipStatus) ? (
           <VStack>
             <HStack
               justifyContent={"space-between"}

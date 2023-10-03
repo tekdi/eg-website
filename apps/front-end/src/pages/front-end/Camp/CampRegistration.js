@@ -6,15 +6,7 @@ import {
   ConsentService,
   arrList,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  Box,
-  Pressable,
-  Text,
-  Image,
-  VStack,
-  Avatar,
-} from "native-base";
+import { HStack, Box, Pressable, Text, Image, Avatar } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
