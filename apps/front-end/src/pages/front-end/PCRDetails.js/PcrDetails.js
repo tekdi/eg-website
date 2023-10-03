@@ -17,18 +17,12 @@ const PcrDetails = () => {
   const [selectBaselineData, setselectBaselineData] = useState();
   const [selectRapidData, setselectRapidData] = useState();
   const [pcrCreated, setPcrCreated] = useState();
-  const [data, setData] = useState();
-
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setselectBaselineData(result?.data?.PCR_SCORES_BASELINE_AND_ENDLINE);
     setselectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
   }, []);
 
-  const SavePcr = async () => {
-    const result = await benificiaryRegistoryService.getPcrScroresUpdate();
-    setData(result);
-  };
   const CreatePcr = async (id) => {
     const result = await benificiaryRegistoryService.createPCRScores(
       status,
@@ -36,7 +30,7 @@ const PcrDetails = () => {
     );
     setPcrCreated(result);
   };
-
+  console.log("pcrCreated", pcrCreated);
   return (
     <Layout
       _appBar={{
@@ -81,9 +75,9 @@ const PcrDetails = () => {
               </Select>
             ) : (
               <Select
-                selectedValue={""}
+                selectedValue={status?.baseline_learning_level || "Select"}
                 accessibilityLabel="Select"
-                placeholder={data?.baseline_learning_level || "Select"}
+                placeholder={status?.baseline_learning_level || "Select"}
                 _selectedItem={{
                   bg: "teal.600",
                   endIcon: <CheckIcon size="5" />,
@@ -316,34 +310,15 @@ const PcrDetails = () => {
             <></>
           )}
 
-          {status?.endline_learning_level &&
-          status?.baseline_learning_level &&
-          status?.rapid_assessment_first_learning_level &&
-          status?.rapid_assessment_second_learning_level ? (
-            <Box pt="4">
-              {!pcrCreated?.success ? (
-                <FrontEndTypo.Primarybutton
-                  onPress={() => {
-                    CreatePcr();
-                  }}
-                >
-                  {t("SAVE")}
-                </FrontEndTypo.Primarybutton>
-              ) : (
-                <></>
-              )}
-            </Box>
-          ) : (
-            <Box pt="4">
-              <FrontEndTypo.Primarybutton
-                onPress={() => {
-                  SavePcr();
-                }}
-              >
-                {t("SAVE")}
-              </FrontEndTypo.Primarybutton>
-            </Box>
-          )}
+          <Box pt="4">
+            <FrontEndTypo.Primarybutton
+              onPress={() => {
+                CreatePcr();
+              }}
+            >
+              {t("SAVE")}
+            </FrontEndTypo.Primarybutton>
+          </Box>
         </VStack>
       </ScrollView>
     </Layout>

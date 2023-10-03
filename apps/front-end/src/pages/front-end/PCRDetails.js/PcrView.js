@@ -53,7 +53,7 @@ export default function PcrView() {
             alignItems="center"
             borderColor="light.300"
             pb="1"
-            borderBottomWidth="2"
+            borderBottomWidth="1"
           >
             <FrontEndTypo.H2 bold underline>
               {t("PCR_EDUCATION_LEVEL")} :-
