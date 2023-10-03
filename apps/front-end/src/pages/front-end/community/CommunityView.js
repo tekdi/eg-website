@@ -47,9 +47,22 @@ export default function CommunityView({ footerLinks }) {
     });
     setData(getData || {});
   }, []);
+
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
+    if (id === "root_contact_number") {
+      if (newData?.contact_number.length !== 10) {
+        const newErrors = {
+          contact_number: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        setErrors();
+      }
+    }
     setFormData(newData);
   };
 
@@ -76,20 +89,20 @@ export default function CommunityView({ footerLinks }) {
     const result = await benificiaryRegistoryService.createCommunityReference(
       formData
     );
-    if (formData?.contact_number.toString()?.length !== 10) {
+    if (result?.message === "Mobile number already exists") {
       const newErrors = {
         contact_number: {
-          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
         },
       };
-      setAddMore(false);
       setErrors(newErrors);
+    } else {
+      setAddMore(false);
     }
     if (result?.success === true) {
       window?.location?.reload(true);
     }
   };
-
   return (
     <Layout
       _appBar={{
