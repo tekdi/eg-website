@@ -5,7 +5,7 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { Box, HStack, VStack } from "native-base";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -13,13 +13,11 @@ export default function PcrView() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
-  const [data, setData] = useState({});
+  const [data, setData] = React.useState({});
 
-  useEffect(async () => {
-    const result = await benificiaryRegistoryService.getPCRScores();
-    const userData = result?.data.filter(
-      (item) => item.user_id.toString() === id
-    );
+  React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getPCRScores({ id });
+    const userData = result?.data.filter((item) => item.user_id == id);
     setData(userData[0]);
   }, []);
 

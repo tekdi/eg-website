@@ -9,28 +9,110 @@ import { VStack, Select, CheckIcon, Box, ScrollView } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+const isDisabledSelect = ({ pcrCreated, attr }) => {
+  const data = pcrCreated;
+  let result = false;
+  switch (attr) {
+    case "rapid_assessment_first_learning_level":
+      if (
+        data?.rapid_assessment_second_learning_level ||
+        data?.endline_learning_level
+      )
+        result = true;
+      break;
+    case "rapid_assessment_second_learning_level":
+      if (data?.endline_learning_level) result = true;
+      break;
+    case "endline_learning_level":
+      break;
+    default:
+      if (
+        data?.rapid_assessment_first_learning_level ||
+        data?.rapid_assessment_second_learning_level ||
+        data?.endline_learning_level
+      )
+        result = true;
+      break;
+  }
+  return result;
+};
+
+const isHideSelect = ({ pcrCreated, attr }) => {
+  const data = pcrCreated;
+  let result = false;
+  switch (attr) {
+    case "rapid_assessment_first_learning_level":
+      if (
+        data?.baseline_learning_level ||
+        data?.rapid_assessment_first_learning_level ||
+        data?.rapid_assessment_second_learning_level ||
+        data?.endline_learning_level
+      )
+        result = true;
+      break;
+    case "rapid_assessment_second_learning_level":
+      if (
+        data?.rapid_assessment_first_learning_level ||
+        data?.rapid_assessment_second_learning_level ||
+        data?.endline_learning_level
+      )
+        result = true;
+      break;
+    case "endline_learning_level":
+      if (
+        data?.rapid_assessment_second_learning_level ||
+        data?.endline_learning_level
+      )
+        result = true;
+      break;
+    default:
+      break;
+  }
+  return result;
+};
+
 const PcrDetails = () => {
   const { id } = useParams();
-  const [status, setStatus] = useState({ user_id: id });
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectBaselineData, setselectBaselineData] = useState();
   const [selectRapidData, setselectRapidData] = useState();
   const [pcrCreated, setPcrCreated] = useState();
+  const [data, setData] = React.useState({});
+
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setselectBaselineData(result?.data?.PCR_SCORES_BASELINE_AND_ENDLINE);
     setselectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
   }, []);
 
-  const CreatePcr = async (id) => {
-    const result = await benificiaryRegistoryService.createPCRScores(
-      status,
-      id
-    );
-    setPcrCreated(result);
+  React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getPCRScores({ id });
+    const userData = result?.data.filter((item) => item?.user_id == id);
+    const {
+      baseline_learning_level,
+      rapid_assessment_first_learning_level,
+      rapid_assessment_second_learning_level,
+      endline_learning_level,
+    } = userData[0];
+    const newData = {
+      baseline_learning_level,
+      rapid_assessment_first_learning_level,
+      rapid_assessment_second_learning_level,
+      endline_learning_level,
+    };
+    setData(newData);
+    setPcrCreated(newData);
+  }, []);
+
+  const createPcr = async () => {
+    const result = await benificiaryRegistoryService.createPCRScores({
+      ...data,
+      user_id: id,
+    });
+    setPcrCreated(result?.pcr_scores);
   };
-  console.log("pcrCreated", pcrCreated);
+
   return (
     <Layout
       _appBar={{
@@ -48,272 +130,161 @@ const PcrDetails = () => {
             <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("PCR_INITIAL_LEVEL")}
             </FrontEndTypo.H3>
-            {status?.rapid_assessment_first_learning_level ? (
-              <Select
-                isDisabled={true}
-                selectedValue={status?.baseline_learning_level || ""}
-                accessibilityLabel="Select"
-                placeholder={status?.baseline_learning_level || "Select"}
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) =>
-                  setStatus({ ...status, baseline_learning_level: itemValue })
-                }
-              >
-                {selectBaselineData?.map((item, i) => {
-                  return (
-                    <Select.Item
-                      key={"i"}
-                      label={`${t(item.title)}`}
-                      value={item.value}
-                    />
-                  );
-                })}
-              </Select>
-            ) : (
-              <Select
-                selectedValue={status?.baseline_learning_level || "Select"}
-                accessibilityLabel="Select"
-                placeholder={status?.baseline_learning_level || "Select"}
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) =>
-                  setStatus({ ...status, baseline_learning_level: itemValue })
-                }
-              >
-                {selectBaselineData?.map((item, i) => {
-                  return (
-                    <Select.Item
-                      key={"i"}
-                      label={`${t(item.title)}`}
-                      value={item.value}
-                    />
-                  );
-                })}
-              </Select>
-            )}
+            <Select
+              isDisabled={isDisabledSelect({ pcrCreated })}
+              selectedValue={data?.baseline_learning_level || "Select"}
+              accessibilityLabel="SELECT"
+              placeholder={
+                data?.baseline_learning_level?.toUpperCase() || "Select"
+              }
+              mt={1}
+              onValueChange={(itemValue) =>
+                setData({ ...data, baseline_learning_level: itemValue })
+              }
+            >
+              {selectBaselineData?.map((item, i) => {
+                return (
+                  <Select.Item
+                    key={"i"}
+                    label={`${t(item.title)}`}
+                    value={item.value}
+                  />
+                );
+              })}
+            </Select>
           </VStack>
-
-          {status?.baseline_learning_level && (
+          {isHideSelect({
+            pcrCreated,
+            attr: "rapid_assessment_first_learning_level",
+          }) && (
             <VStack mt={8} space="2" alignItems={"center"}>
               <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
                 {t("PCR_EVALUATION_1")}
               </FrontEndTypo.H3>
-              {status?.rapid_assessment_second_learning_level ? (
-                <Select
-                  isDisabled={true}
-                  selectedValue={
-                    status?.rapid_assessment_first_learning_level || ""
-                  }
-                  accessibilityLabel="Select"
-                  placeholder={
-                    status?.rapid_assessment_first_learning_level || "Select"
-                  }
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    setStatus({
-                      ...status,
-                      rapid_assessment_first_learning_level: itemValue,
-                    })
-                  }
-                >
-                  {selectRapidData?.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={"i"}
-                        label={`${t(item.title)}`}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
-              ) : (
-                <Select
-                  selectedValue={
-                    status?.rapid_assessment_first_learning_level || ""
-                  }
-                  accessibilityLabel="Select"
-                  placeholder={
-                    status?.rapid_assessment_first_learning_level || "Select"
-                  }
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    setStatus({
-                      ...status,
-                      rapid_assessment_first_learning_level: itemValue,
-                    })
-                  }
-                >
-                  {selectRapidData?.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={"i"}
-                        label={`${t(item.title)}`}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
-              )}
+              <Select
+                isDisabled={isDisabledSelect({
+                  pcrCreated,
+                  attr: "rapid_assessment_first_learning_level",
+                })}
+                selectedValue={
+                  data?.rapid_assessment_first_learning_level?.toUpperCase() ||
+                  ""
+                }
+                accessibilityLabel="Select"
+                placeholder={
+                  data?.rapid_assessment_first_learning_level || "Select"
+                }
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) =>
+                  setData({
+                    ...data,
+                    rapid_assessment_first_learning_level: itemValue,
+                  })
+                }
+              >
+                {selectRapidData?.map((item, i) => {
+                  return (
+                    <Select.Item
+                      key={"i"}
+                      label={`${t(item.title)}`}
+                      value={item.value}
+                    />
+                  );
+                })}
+              </Select>
             </VStack>
           )}
 
-          {status?.baseline_learning_level &&
-          status?.rapid_assessment_first_learning_level ? (
+          {isHideSelect({
+            pcrCreated,
+            attr: "rapid_assessment_second_learning_level",
+          }) && (
             <VStack mt={8} space="2" alignItems={"center"}>
               <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
                 {t("PCR_EVALUATION_2")}
               </FrontEndTypo.H3>
-              {status?.endline_learning_level ? (
-                <Select
-                  isDisabled={true}
-                  selectedValue={
-                    status?.rapid_assessment_second_learning_level || ""
-                  }
-                  accessibilityLabel="Select"
-                  placeholder={
-                    status?.rapid_assessment_second_learning_level || "Select"
-                  }
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    setStatus({
-                      ...status,
-                      rapid_assessment_second_learning_level: itemValue,
-                    })
-                  }
-                >
-                  {selectRapidData?.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={"i"}
-                        label={`${t(item.title)}`}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
-              ) : (
-                <Select
-                  selectedValue={
-                    status?.rapid_assessment_second_learning_level || ""
-                  }
-                  accessibilityLabel="Select"
-                  placeholder={
-                    status?.rapid_assessment_second_learning_level || "Select"
-                  }
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    setStatus({
-                      ...status,
-                      rapid_assessment_second_learning_level: itemValue,
-                    })
-                  }
-                >
-                  {selectRapidData?.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={"i"}
-                        label={`${t(item.title)}`}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
-              )}
+              <Select
+                isDisabled={isDisabledSelect({
+                  pcrCreated,
+                  attr: "rapid_assessment_second_learning_level",
+                })}
+                selectedValue={
+                  data?.rapid_assessment_second_learning_level || ""
+                }
+                accessibilityLabel="Select"
+                placeholder={
+                  data?.rapid_assessment_second_learning_level || "Select"
+                }
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) => {
+                  setData({
+                    ...data,
+                    rapid_assessment_second_learning_level: itemValue,
+                  });
+                }}
+              >
+                {selectRapidData?.map((item, i) => {
+                  return (
+                    <Select.Item
+                      key={"i"}
+                      label={`${t(item.title)}`}
+                      value={item.value}
+                    />
+                  );
+                })}
+              </Select>
             </VStack>
-          ) : (
-            <></>
           )}
 
-          {status?.baseline_learning_level &&
-          status?.rapid_assessment_first_learning_level &&
-          status?.rapid_assessment_second_learning_level ? (
+          {isHideSelect({
+            pcrCreated,
+            attr: "endline_learning_level",
+          }) && (
             <VStack mt={8} space="2" alignItems={"center"}>
               <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
                 {t("PCR_FINAL_EVALUATON")}
               </FrontEndTypo.H3>
-
-              {pcrCreated?.success ? (
-                <Select
-                  isDisabled={true}
-                  selectedValue={status?.endline_learning_level || ""}
-                  accessibilityLabel="Select"
-                  placeholder={status?.endline_learning_level || "Select"}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    setStatus({ ...status, endline_learning_level: itemValue })
-                  }
-                >
-                  {selectBaselineData?.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={"i"}
-                        label={`${t(item.title)}`}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
-              ) : (
-                <Select
-                  selectedValue={status?.endline_learning_level || ""}
-                  accessibilityLabel="Select"
-                  placeholder={status?.endline_learning_level || "Select"}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    setStatus({ ...status, endline_learning_level: itemValue })
-                  }
-                >
-                  {selectBaselineData?.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={"i"}
-                        label={`${t(item.title)}`}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
-              )}
+              <Select
+                isDisabled={isDisabledSelect({
+                  pcrCreated,
+                  attr: "endline_learning_level",
+                })}
+                selectedValue={data?.endline_learning_level || ""}
+                accessibilityLabel="Select"
+                placeholder={data?.endline_learning_level || "Select"}
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) =>
+                  setData({ ...data, endline_learning_level: itemValue })
+                }
+              >
+                {selectBaselineData?.map((item, i) => {
+                  return (
+                    <Select.Item
+                      key={"i"}
+                      label={`${t(item.title)}`}
+                      value={item.value}
+                    />
+                  );
+                })}
+              </Select>
             </VStack>
-          ) : (
-            <></>
           )}
-
           <Box pt="4">
             <FrontEndTypo.Primarybutton
               onPress={() => {
-                CreatePcr();
+                createPcr();
               }}
             >
               {t("SAVE")}
