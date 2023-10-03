@@ -38,6 +38,9 @@ const EnrollmentReceiptView = React.lazy(() =>
 const BeneficiaryAdminProfile = React.lazy(() =>
   import("pages/admin/beneficiaries/Profile")
 );
+const enrollmentForm = React.lazy(() =>
+  import("pages/admin/beneficiaries/enrollment/EnrollmentForm")
+);
 
 const ReassignBeneficiaries = React.lazy(() =>
   import("pages/admin/ReassignBeneficiaries/ReassignBeneficiaries")
@@ -93,7 +96,10 @@ export default [
     path: "/admin/beneficiary/:id",
     component: BeneficiaryAdminProfile,
   },
-
+  {
+    path: "/admin/beneficiary/:id/editEnrollmentDetails",
+    component: enrollmentForm,
+  },
   { path: "/", component: Orientation },
   { path: "*", component: NotFound },
 ];

@@ -3,7 +3,7 @@ import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
 import {
-  Layout,
+  AdminLayout as Layout,
   enumRegistryService,
   benificiaryRegistoryService,
   FrontEndTypo,
@@ -14,6 +14,8 @@ import {
   enrollmentDateOfBirth,
   getUiSchema,
   BodyMedium,
+  IconByName,
+  AdminTypo,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
@@ -66,7 +68,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 
     case "enrollment_awaited":
     case "enrollment_rejected":
-      const { enrolled_for_board, subjects } = constantSchema?.properties;
+      const { enrolled_for_board } = constantSchema?.properties || {};
       const required = constantSchema?.required.filter(
         (item) =>
           ![
@@ -107,7 +109,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
           page
         );
       } else {
-        const { subjects, ...properties } = constantSchema?.properties;
+        const { subjects, ...properties } = constantSchema?.properties || {};
         newSchema = {
           ...constantSchema,
           properties: {
@@ -126,7 +128,7 @@ const getSubjects = async (schemaData, value, page) => {
   if (value) {
     const propertiesMain = schema1.properties;
     const constantSchema = propertiesMain[page];
-    const { subjects } = constantSchema?.properties;
+    const { subjects } = constantSchema?.properties || {};
     const { payment_receipt_document_id, ...properties } =
       schemaData.properties;
     let { data } = await enumRegistryService.getSubjects({
@@ -143,7 +145,7 @@ const getSubjects = async (schemaData, value, page) => {
       },
       {
         key: "subjects",
-        arr: data ? data : [],
+        arr: data || [],
         title: "name",
         value: "id",
       }
@@ -155,7 +157,8 @@ const getSubjects = async (schemaData, value, page) => {
 };
 
 // App
-export default function App() {
+export default function App(footerLinks) {
+  const [RefAppBar, setRefAppBar] = React.useState();
   const { step, id } = useParams();
   const userId = id;
   const [page, setPage] = React.useState();
@@ -166,9 +169,9 @@ export default function App() {
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang] = React.useState(localStorage.getItem("lang"));
   const [notMatched, setNotMatched] = React.useState();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -223,7 +226,7 @@ export default function App() {
       );
       const {
         program_beneficiaries: { enrollment_date },
-      } = benificiary ? benificiary : {};
+      } = benificiary || {};
 
       if (!enrollment_date) {
         error = {
@@ -240,10 +243,6 @@ export default function App() {
       }
     }
     return error;
-  };
-
-  const onPressBackButton = async () => {
-    await nextPreviewStep("p");
   };
 
   const getEnrollmentStatus = async (schemaData) => {
@@ -309,7 +308,7 @@ export default function App() {
   React.useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
-    const newStep = step ? step : newSteps[0];
+    const newStep = step || newSteps[0];
     setPage(newStep);
     setPages(newSteps);
   }, []);
@@ -319,7 +318,7 @@ export default function App() {
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
-      const { program_beneficiaries } = result ? result : {};
+      const { program_beneficiaries } = result || {};
 
       if (page === "edit_enrollement") {
         const newSchema = await getEnrollmentStatus(constantSchema);
@@ -408,91 +407,111 @@ export default function App() {
     return false;
   };
 
+  const handleEnrollmentNumberChange = async (data) => {
+    const { enrollment_number, ...otherError } = errors || {};
+    setErrors(otherError);
+
+    if (data?.enrollment_number) {
+      const debouncedFunction = debounce(async () => {
+        await enrollmentNumberExist(data?.enrollment_number);
+      }, 1000);
+      debouncedFunction();
+    }
+  };
+
+  const handleEnrollmentDateChange = (data) => {
+    const { enrollment_date, ...otherErrore } = errors || {};
+    setErrors(otherErrore);
+
+    const resultDate = validate(data, "enrollment_date");
+
+    if (resultDate?.enrollment_date) {
+      setErrors({
+        ...errors,
+        enrollment_date: {
+          __errors: [resultDate?.enrollment_date],
+        },
+      });
+    }
+  };
+
+  const handleEnrollmentStatusChange = async (data, fixedSchema, page) => {
+    const updatedSchema = await setSchemaByStatus(data, fixedSchema, page);
+    const updatedData = updatedSchema?.newData || {};
+    setSchema(updatedSchema?.newSchema);
+    setErrors();
+    return updatedData;
+  };
+
+  const handleAadhaarNoChange = (data) => {
+    const result = validate(data, "enrollment_aadhaar_no");
+    if (result?.enrollment_aadhaar_no) {
+      setErrors({
+        ...errors,
+        enrollment_aadhaar_no: {
+          __errors: [result?.enrollment_aadhaar_no],
+        },
+      });
+    } else {
+      const { enrollment_aadhaar_no, ...otherError } = errors || {};
+      setErrors(otherError);
+    }
+  };
+
+  const handleDobChange = (data) => {
+    const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
+    if (age?.enrollment_dob) {
+      setUiSchema(
+        getUiSchema(uiSchema, {
+          key: "enrollment_dob",
+          extra: {
+            "ui:help": (
+              <VStack>
+                {age?.age?.message}
+                <AlertCustom alert={age?.enrollment_dob} />,
+              </VStack>
+            ),
+          },
+        })
+      );
+      return { ...data, is_eligible: "no" };
+    } else {
+      setUiSchema(
+        getUiSchema(uiSchema, {
+          key: "enrollment_dob",
+          extra: {
+            "ui:help": age?.age?.message,
+          },
+        })
+      );
+      return { ...data, is_eligible: "yes" };
+    }
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
 
     switch (id) {
       case "root_enrollment_number":
-        let { enrollment_number, ...otherError } = errors ? errors : {};
-        setErrors(otherError);
-        if (data?.enrollment_number) {
-          const debouncedFunction = debounce(async () => {
-            const result = await enrollmentNumberExist(data?.enrollment_number);
-          }, 1000);
-          debouncedFunction();
-        }
+        await handleEnrollmentNumberChange(data);
         break;
       case "root_enrollment_date":
-        let { enrollment_date, ...otherErrore } = errors ? errors : {};
-        setErrors(otherErrore);
-        const resultDate = validate(data, "enrollment_date");
-
-        if (resultDate?.enrollment_date) {
-          setErrors({
-            ...errors,
-            enrollment_date: {
-              __errors: [resultDate?.enrollment_date],
-            },
-          });
-        }
+        handleEnrollmentDateChange(data);
         break;
       case "root_enrolled_for_board":
         if (data.enrollment_status === "enrolled") {
           setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
         }
         break;
-
       case "root_enrollment_status":
-        const updatedSchema = await setSchemaByStatus(data, fixedSchema, page);
-        newData = updatedSchema?.newData ? updatedSchema?.newData : {};
-        setSchema(updatedSchema?.newSchema);
-        setErrors();
+        newData = await handleEnrollmentStatusChange(data, fixedSchema, page);
         break;
-
       case "root_enrollment_aadhaar_no":
-        const result = validate(data, "enrollment_aadhaar_no");
-        if (result?.enrollment_aadhaar_no) {
-          setErrors({
-            ...errors,
-            enrollment_aadhaar_no: {
-              __errors: [result?.enrollment_aadhaar_no],
-            },
-          });
-        } else {
-          let { enrollment_aadhaar_no, ...otherError } = errors ? errors : {};
-          setErrors(otherError);
-        }
-
+        handleAadhaarNoChange(data);
         break;
       case "root_enrollment_dob":
-        const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
-        if (age?.enrollment_dob) {
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_dob",
-              extra: {
-                "ui:help": (
-                  <VStack>
-                    {age?.age?.message}
-                    <AlertCustom alert={age?.enrollment_dob} />,
-                  </VStack>
-                ),
-              },
-            })
-          );
-          newData = { ...newData, is_eligible: "no" };
-        } else {
-          newData = { ...newData, is_eligible: "yes" };
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_dob",
-              extra: {
-                "ui:help": age?.age?.message,
-              },
-            })
-          );
-        }
+        newData = handleDobChange(data);
         break;
       default:
         break;
@@ -501,9 +520,9 @@ export default function App() {
   };
 
   // form submit
-  const onSubmit = async () => {
-    setBtnLoading(true);
-    const keys = Object.keys(errors ? errors : {});
+  const handleValidationErrors = async () => {
+    const keys = Object.keys(errors || {});
+
     if (
       keys?.length < 1 &&
       formData?.enrollment_number &&
@@ -516,10 +535,12 @@ export default function App() {
         return resulten;
       }
     }
+
     if (keys?.length > 0) {
       const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
         (e) => keys.includes(e)
       );
+
       if (errorData.length > 0) {
         if (
           errorData.includes("enrollment_number") &&
@@ -532,38 +553,75 @@ export default function App() {
           setNotMatched(errorData);
         }
       }
+
       scrollToField({ property: keys?.[0] });
     } else {
-      const { success, isUserExist } =
-        await benificiaryRegistoryService.updateAg(
-          { ...formData, edit_page_type: page },
-          userId
-        );
-      if (isUserExist) {
-        setNotMatched(["enrollment_number"]);
-      } else if (success && formData.enrollment_status === "enrolled") {
-        nextPreviewStep();
-      } else {
-        navigate(`/beneficiary/${userId}`);
-      }
+      return handleFormSubmission();
     }
+  };
+
+  const handleFormSubmission = async () => {
+    const { success, isUserExist } = await benificiaryRegistoryService.updateAg(
+      { ...formData, edit_page_type: page },
+      userId
+    );
+
+    if (isUserExist) {
+      setNotMatched(["enrollment_number"]);
+    } else if (success && formData.enrollment_status === "enrolled") {
+      nextPreviewStep();
+    } else {
+      navigate(`/admin/beneficiary/${userId}`);
+    }
+  };
+
+  const onSubmit = async () => {
+    setBtnLoading(true);
+    await handleValidationErrors();
     setBtnLoading(false);
   };
 
   return (
     <Layout
+      getRefAppBar={(e) => setRefAppBar(e)}
+      RefAppBar={RefAppBar}
+      _sidebar={footerLinks}
       loading={loading}
-      _appBar={{
-        onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("ENROLLMENT_DETAILS"),
-        lang,
-        setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-      }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
     >
+      <HStack alignItems={"center"} space="1" pt="3">
+        <IconByName name="UserLineIcon" size="md" />
+        <AdminTypo.H1 color="Activatedcolor.400">{t("PROFILE")}</AdminTypo.H1>
+        <IconByName
+          size="sm"
+          name="ArrowRightSLineIcon"
+          onPress={(e) => navigate(-1)}
+        />
+        <AdminTypo.H1>
+          {benificiary?.program_beneficiaries?.status === "enrolled_ip_verified"
+            ? `${
+                benificiary?.program_beneficiaries?.enrollment_first_name ?? "-"
+              } ${
+                benificiary?.program_beneficiaries?.enrollment_last_name ?? "-"
+              }`
+            : `${benificiary?.first_name ?? "-"} ${
+                benificiary?.last_name ?? "-"
+              }`}
+        </AdminTypo.H1>
+        <IconByName
+          size="sm"
+          name="ArrowRightSLineIcon"
+          onPress={(e) => navigate(-1)}
+        />
+
+        <AdminTypo.H1
+          color="textGreyColor.800"
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
+          {t("ENROLLMENT_DETAILS")}
+        </AdminTypo.H1>
+      </HStack>
       <Box py={6} px={4} mb={5}>
         {schema && schema !== "" && (
           <Form
@@ -576,7 +634,7 @@ export default function App() {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               onChange,
@@ -610,12 +668,12 @@ export default function App() {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {notMatched && notMatched?.includes("enrollment_aadhaar_no") && (
+              {notMatched?.includes("enrollment_aadhaar_no") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
               )}
-              {notMatched && notMatched?.includes("enrollment_number") && (
+              {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>

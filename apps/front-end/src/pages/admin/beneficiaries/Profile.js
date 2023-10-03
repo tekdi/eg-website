@@ -1030,6 +1030,20 @@ export default function AgAdminProfile({ footerLinks }) {
                     {t("ENROLLMENT_DETAILS")}
                   </AdminTypo.H4>
 
+                  {data?.program_beneficiaries?.status !==
+                    "enrolled_ip_verified" && (
+                    <IconByName
+                      name="PencilLineIcon"
+                      color="iconColor.200"
+                      _icon={{ size: "25" }}
+                      onPress={(e) => {
+                        navigate(
+                          `/admin/beneficiary/${id}/editEnrollmentDetails`
+                        );
+                      }}
+                    />
+                  )}
+
                   {data?.program_beneficiaries?.status === "enrolled" && (
                     <AdminTypo.StatusButton
                       width={"25%"}
@@ -1051,22 +1065,6 @@ export default function AgAdminProfile({ footerLinks }) {
                     rounded="xl"
                   >
                     <VStack space={"8"}>
-                      <HStack alignItems={"Center"}>
-                        <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
-                          {t("TYPE_OF_ENROLLMENT")} :-
-                        </AdminTypo.H5>
-                        <AdminTypo.H5
-                          flex="0.69"
-                          color="textGreyColor.800"
-                          pl="1"
-                          bold
-                        >
-                          {data?.program_beneficiaries?.type_of_enrollement
-                            ? data?.program_beneficiaries?.type_of_enrollement
-                            : "-"}
-                        </AdminTypo.H5>
-                      </HStack>
-
                       <HStack alignItems={"Center"}>
                         <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                           {t("ENROLLMENT_STATUS")} :-
