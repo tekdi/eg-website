@@ -19,9 +19,7 @@ export default function ProfilePhoto({
           p="2"
           position="absolute"
           name="PencilLineIcon"
-          onPress={(e) =>
-            navigate(editLink ? editLink : `/profile/edit/upload/1`)
-          }
+          onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
         />
         {profile_photo_1?.id ? (
           <ImageView

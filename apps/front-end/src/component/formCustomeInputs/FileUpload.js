@@ -8,9 +8,9 @@ import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-const FileUpload = ({ options, value, onChange, required, schema }) => {
+const FileUpload = ({ value, onChange, schema }) => {
   const { label, title, uploadTitle, userId, document_type, iconComponent } =
-    schema ? schema : {};
+    schema || {};
   const uplodInputRef = React.useRef();
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -105,16 +105,17 @@ const FileUpload = ({ options, value, onChange, required, schema }) => {
                 width={"190px"}
                 height={"190px"}
                 borderRadius="0"
+                _image={{ borderRadius: 0 }}
               />
-            ) : iconComponent ? (
-              iconComponent
             ) : (
-              <IconByName
-                color="gray.500"
-                name="FileTextLineIcon"
-                _icon={{ size: "150" }}
-                isDisabled
-              />
+              iconComponent || (
+                <IconByName
+                  color="gray.500"
+                  name="FileTextLineIcon"
+                  _icon={{ size: "150" }}
+                  isDisabled
+                />
+              )
             )}
           </Box>
           <Pressable
