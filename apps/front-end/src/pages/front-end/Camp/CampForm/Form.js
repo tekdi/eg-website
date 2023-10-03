@@ -122,13 +122,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       const newStep = step || newSteps[0];
       let schemaData = properties[newStep];
       if (campDetails?.kit_received === null) {
-        const { kit_received, edit_page_type } = schemaData.properties;
+        const { kit_received } = schemaData.properties;
         const required = schemaData?.required.filter((item) =>
           ["kit_received"].includes(item)
         );
         const newSchema = {
           ...schemaData,
-          properties: { kit_received, edit_page_type },
+          properties: { kit_received },
           required: required,
         };
         setSchema(newSchema);
@@ -244,13 +244,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (formData?.kit_received == "yes") {
           setSchema(schemaData);
         } else if (formData?.kit_received === "no") {
-          const { kit_received, edit_page_type } = schemaData.properties;
+          const { kit_received } = schemaData.properties;
           const required = schemaData?.required.filter((item) =>
             ["kit_received"].includes(item)
           );
           const newSchema = {
             ...schemaData,
-            properties: { kit_received, edit_page_type },
+            properties: { kit_received },
             required: required,
           };
           setSchema(newSchema);
@@ -416,13 +416,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         const newSteps = Object.keys(properties);
         const newStep = step || newSteps[0];
         let schemaData = properties[newStep];
-        const { kit_received, edit_page_type } = schemaData.properties;
+        const { kit_received } = schemaData.properties;
         const required = schemaData?.required.filter((item) =>
           ["kit_received"].includes(item)
         );
         const newSchema = {
           ...schemaData,
-          properties: { kit_received, edit_page_type },
+          properties: { kit_received },
           required: required,
         };
         setSchema(newSchema);
