@@ -437,6 +437,7 @@ export default function BenificiaryProfileView(props) {
                 </FrontEndTypo.H3>
                 {![
                   "dropout",
+                  "enrolled",
                   "rejected",
                   "ready_to_enroll",
                   "enrolled_ip_verified",
