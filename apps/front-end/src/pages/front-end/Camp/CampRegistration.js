@@ -6,7 +6,7 @@ import {
   ConsentService,
   arrList,
 } from "@shiksha/common-lib";
-import { HStack, Box, Pressable, Text, Image } from "native-base";
+import { HStack, Box, Pressable, Text, Image, Avatar } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -40,8 +40,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     const campConsent = await ConsentService.getConsent({
       camp_id: camp_id?.id,
     });
-    console.log("result", result);
-    console.log("campConsent", campConsent);
     const userLength = result?.data?.group_users?.length;
     const campConsentLength = campConsent?.data?.length;
     if (userLength <= campConsentLength) {
@@ -148,6 +146,21 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         _box: { bg: "white" },
       }}
     >
+      <HStack margin={"auto"} mt={3} space={4}>
+        <HStack space={2} alignItems={"center"}>
+          <Avatar bg="gray.300" size={"sm"}></Avatar>
+          <Text>{t("NOT_STARTED")}</Text>
+        </HStack>
+        <HStack space={2} alignItems={"center"}>
+          <Avatar bg="amber.300" size={"sm"}></Avatar>
+          <Text>{t("IN_PROGRESS")}</Text>
+        </HStack>
+        <HStack space={2} alignItems={"center"}>
+          <Avatar bg="green.300" size={"sm"}></Avatar>
+          <Text>{t("COMPLETED")}</Text>
+        </HStack>
+      </HStack>
+
       <HStack w={"90%"} marginTop={3} marginBottom={2} margin={"auto"}>
         <Box
           bg="boxBackgroundColour.100"
@@ -173,10 +186,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                   _icon={{ size: "30px" }}
                 />
 
-                <Text ml={5}>
-                  {t("UPDATE_LEARNER")}
-                  <Text color={"textMaroonColor.400"}>*</Text>
-                </Text>
+                <Text ml={5}>{t("UPDATE_LEARNER")}</Text>
               </HStack>
               <IconByName
                 isDisabled
@@ -263,7 +273,9 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
 
               <Text ml={5}>
                 {t(NavName)}
-                <Text color={"textMaroonColor.400"}>*</Text>
+                {!["CAMP_VENUE_PHOTOS", "FAMILY_CONSENT"].includes(NavName) && (
+                  <Text color={"textMaroonColor.400"}>*</Text>
+                )}
               </Text>
             </HStack>
             <IconByName
