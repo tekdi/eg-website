@@ -145,9 +145,9 @@ const PcrDetails = () => {
               {selectBaselineData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={"i"}
-                    label={`${t(item.title)}`}
-                    value={item.value}
+                    key={item?.title}
+                    label={t(item?.title)}
+                    value={item?.value}
                   />
                 );
               })}
@@ -189,9 +189,9 @@ const PcrDetails = () => {
                 {selectRapidData?.map((item, i) => {
                   return (
                     <Select.Item
-                      key={"i"}
-                      label={`${t(item.title)}`}
-                      value={item.value}
+                      key={item?.title}
+                      label={t(item?.title)}
+                      value={item?.value}
                     />
                   );
                 })}
@@ -234,9 +234,9 @@ const PcrDetails = () => {
                 {selectRapidData?.map((item, i) => {
                   return (
                     <Select.Item
-                      key={"i"}
-                      label={`${t(item.title)}`}
-                      value={item.value}
+                      key={item?.title}
+                      label={t(item?.title)}
+                      value={item?.value}
                     />
                   );
                 })}
@@ -272,9 +272,9 @@ const PcrDetails = () => {
                 {selectBaselineData?.map((item, i) => {
                   return (
                     <Select.Item
-                      key={"i"}
-                      label={`${t(item.title)}`}
-                      value={item.value}
+                      key={item?.title}
+                      label={t(item?.title)}
+                      value={item?.value}
                     />
                   );
                 })}
