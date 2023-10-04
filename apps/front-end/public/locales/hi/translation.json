@@ -20,6 +20,7 @@
   "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER": " १२ अंकों का मान्य आधार नंबर दर्ज करें",
   "AADHAAR_VERIFICATION": "आधार वेरिफिकेशन ",
   "AADHAAR_VERIFICATION_SUCCESSFUL": "आधार वेरिफिकेशन  सफल",
+  "AADHAR_ALREADY_REGISTERED_WITH_PRERAK": "यह आधार संख्या पहले से ही प्रेरक के साथ पंजीकृत है, इसलिए आप इस आधार संख्या को जोड़ नहीं सकते हैं। कृपया अपने आधार संख्या की पुष्टि करें।",
   "AADHAR_CARD": "आधार कार्ड",
   "AADHAR_KYC_IN_PROGRESS": "आधार KYC प्रगति पर है",
   "AADHAR_KYC_PENDING": "KYC लंबित है",
