@@ -14,9 +14,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // App
-export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
+export default function CampList({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
+  const [Submitalert, setSubmitalert] = React.useState(false);
   const camp_id = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,11 +26,7 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
   const [selectedIds, setSelectedIds] = React.useState([]);
   const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
-    if (!isEdit) {
-      navigate("/camps");
-    } else {
-      navigate(`/camps/${camp_id?.id}`);
-    }
+    navigate("/camps");
   };
 
   const handleCheckboxChange = (id) => {
@@ -58,7 +55,11 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
       };
       const result = await CampService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
-      navigate(`/camps/${camp_id}`);
+      if (camp_id) {
+        navigate(`/camps/${camp_id}`);
+      } else {
+        setSubmitalert(true);
+      }
     } else {
       setAlert(true);
     }
@@ -177,15 +178,27 @@ export default function CampList({ userTokenInfo, footerLinks, isEdit }) {
               </HStack>
             );
           })}
-          {!isEdit ? (
-            <FrontEndTypo.Primarybutton onPress={createCamp}>
-              {t("CREATE_CAMP")}
-            </FrontEndTypo.Primarybutton>
+
+          {Submitalert ? (
+            <Alert
+              status="warning"
+              alignItems={"start"}
+              mb="3"
+              mt="4"
+              width={"100%"}
+            >
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
+              </HStack>
+            </Alert>
           ) : (
-            <FrontEndTypo.Primarybutton onPress={createCamp}>
-              {t("SAVE_AND_CAMP_PROFILE")}
-            </FrontEndTypo.Primarybutton>
+            <></>
           )}
+
+          <FrontEndTypo.Primarybutton onPress={createCamp}>
+            {t("CREATE_CAMP")}
+          </FrontEndTypo.Primarybutton>
         </Box>
       ) : (
         <Alert
