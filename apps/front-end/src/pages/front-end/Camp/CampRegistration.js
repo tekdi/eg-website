@@ -151,10 +151,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     }
   };
 
-  console.log("hasGreenFlag", isDisabled());
 
   const SubmitCampRegistration = async () => {
-    console.log("hii", camp_id);
     const obj = {
       id: camp_id?.id,
       status: "registered",
