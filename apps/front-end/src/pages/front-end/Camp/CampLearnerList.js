@@ -9,7 +9,7 @@ import {
   ImageView,
   CampService,
 } from "@shiksha/common-lib";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +18,6 @@ export default function CampList({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
   const [Submitalert, setSubmitalert] = React.useState(false);
-  const camp_id = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
