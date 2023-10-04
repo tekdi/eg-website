@@ -5,8 +5,17 @@ import {
   CampService,
   ConsentService,
   arrList,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { HStack, Box, Pressable, Text, Image, Avatar } from "native-base";
+import {
+  HStack,
+  Box,
+  Pressable,
+  Text,
+  Image,
+  Avatar,
+  Alert,
+} from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,7 +25,7 @@ const getColor = (obj, arr) => {
   let color = "gray.300";
   if (result === 100) {
     color = "green.300";
-  } else if (result > 33) {
+  } else if (result > 20) {
     color = "amber.300";
   }
   return color;
@@ -29,6 +38,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [campLocation, setCampLocation] = React.useState();
   const [campVenue, setCampVenue] = React.useState();
+  const [campStatus, setCampStatus] = React.useState();
   const [facilities, setFacilities] = React.useState();
   const [kit, setKit] = React.useState();
   const [kitarr, setKitarr] = React.useState([]);
@@ -37,6 +47,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     setLoading(true);
     const result = await CampService.getCampDetails(camp_id);
+    setCampStatus(result?.data?.group?.status);
     const campConsent = await ConsentService.getConsent({
       camp_id: camp_id?.id,
     });
@@ -62,25 +73,18 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       property_photo_other: data?.property_photo_other,
     });
     setFacilities({ property_facilities: data?.property_facilities });
-    if (result?.data?.kit_received === "yes") {
-      setKit({
-        kit_feedback: result?.data?.kit_feedback,
-        kit_ratings: result?.data?.kit_ratings,
-        kit_was_sufficient: result?.data?.kit_was_sufficient,
-        kit_received: result?.data?.kit_received,
-      });
-      setKitarr([
-        "kit_received",
-        "kit_was_sufficient",
-        "kit_ratings",
-        "kit_feedback",
-      ]);
-    } else {
-      setKit({
-        kit_received: result?.data?.kit_received,
-      });
-      setKitarr(["kit_received"]);
-    }
+    setKit({
+      kit_feedback: result?.data?.kit_feedback,
+      kit_ratings: result?.data?.kit_ratings,
+      kit_was_sufficient: result?.data?.kit_was_sufficient,
+      kit_received: result?.data?.kit_received,
+    });
+    setKitarr([
+      "kit_received",
+      "kit_was_sufficient",
+      "kit_ratings",
+      "kit_feedback",
+    ]);
 
     setLoading(false);
   }, []);
@@ -134,6 +138,32 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   const onPressBackButton = async () => {
     navigate("/camps");
+  };
+
+  // Check if all specified names have the color "green.300"
+  const isDisabled = () => {
+    if (campStatus === "registered") {
+      return false;
+    } else {
+      ["CAMP_LOCATION", "FACILITIES", "KIT"].every((name) =>
+        Navdata.some((item) => item.Name === name && item.color === "green.300")
+      );
+    }
+  };
+
+  console.log("hasGreenFlag", isDisabled());
+
+  const SubmitCampRegistration = async () => {
+    console.log("hii", camp_id);
+    const obj = {
+      id: camp_id?.id,
+      status: "registered",
+      edit_page_type: "edit_camp_status",
+    };
+    const data = await CampService.updateCampDetails(obj);
+    if (data) {
+      navigate("/camps");
+    }
   };
 
   return (
@@ -210,8 +240,20 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           />
         );
       })}
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4" width={"100%"}>
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <BodyMedium>{t("CAMP_APPROVAL_MSG")}</BodyMedium>
+        </HStack>
+      </Alert>
       <HStack my={3} mx={"auto"} w={"90%"}>
-        <FrontEndTypo.Primarybutton isDisabled={true} width={"100%"}>
+        <FrontEndTypo.Primarybutton
+          isDisabled={!isDisabled()}
+          width={"100%"}
+          onPress={() => {
+            SubmitCampRegistration();
+          }}
+        >
           {t("SUBMIT_FOR_REGISTRATION")}
         </FrontEndTypo.Primarybutton>
       </HStack>
