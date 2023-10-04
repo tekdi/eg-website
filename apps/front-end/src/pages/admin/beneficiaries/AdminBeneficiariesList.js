@@ -136,7 +136,6 @@ export default function AdminHome({ footerLinks }) {
     >
       <HStack
         p="4"
-        justifyContent="space-between"
         space={["0", "0", "0", "4"]}
         flexWrap={"wrap"}
         ref={refSubHeader}
@@ -217,6 +216,20 @@ export default function AdminHome({ footerLinks }) {
           >
             {t("RESOLVE_DUPLICATION")}
           </AdminTypo.Dangerbutton>
+          <AdminTypo.PrimaryButton
+            onPress={() => {
+              navigate("/admin/learners/reassignList");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="10px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("REASSIGN_LEARNERS")}
+          </AdminTypo.PrimaryButton>
         </HStack>
       </HStack>
       <HStack>

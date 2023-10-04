@@ -9,8 +9,14 @@ import {
   jsonParse,
   uploadRegistryService,
   Breadcrumb,
+  jsonToQueryString,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  createSearchParams,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { HStack, VStack, Stack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -26,6 +32,8 @@ const checkboxIcons = [
 export default function EnrollmentReceiptView({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const filter = jsonToQueryString(location?.state);
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [subjects, setSubjects] = React.useState();
@@ -75,7 +83,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       if (data?.success) {
         setOpenModal(false);
-        navigate("/admin/learners/enrollmentVerificationList");
+
+        navigate({
+          pathname: "/admin/learners/enrollmentVerificationList",
+          search: `?${createSearchParams(filter)}`,
+        });
       }
     }
   };
@@ -157,15 +169,15 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                   ?.enrollment_first_name
                               }
                               {data?.program_beneficiaries
-                                ?.enrollment_last_name &&
-                                " " +
-                                  data?.program_beneficiaries
-                                    ?.enrollment_last_name}
-                              {data?.program_beneficiaries
                                 ?.enrollment_middle_name &&
                                 " " +
                                   data?.program_beneficiaries
                                     ?.enrollment_middle_name}
+                              {data?.program_beneficiaries
+                                ?.enrollment_last_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_last_name}
                             </AdminTypo.H5>
                           ),
                         },
@@ -327,7 +339,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 )}
               </VStack>
             </HStack>
-            <HStack>
+            <HStack space="4">
               <AdminTypo.Successbutton
                 isDisabled={
                   reason?.enrollment_details === "no" ||
@@ -337,7 +349,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               >
                 {t("FACILITATOR_STATUS_VERIFY")}
               </AdminTypo.Successbutton>
-              <AdminTypo.Dangerbutton
+              {/* <AdminTypo.Dangerbutton
                 mx={5}
                 isDisabled={
                   reason?.enrollment_details === "yes" &&
@@ -350,7 +362,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 }}
               >
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-              </AdminTypo.Dangerbutton>
+              </AdminTypo.Dangerbutton> */}
               <AdminTypo.Secondarybutton
                 isDisabled={
                   reason?.enrollment_details === "yes" &&

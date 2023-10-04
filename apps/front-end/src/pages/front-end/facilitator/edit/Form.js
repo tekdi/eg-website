@@ -541,7 +541,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         facilitator?.mobile !== data?.mobile
       ) {
         const result = await userExist({ mobile: data?.mobile });
-        if (result?.isUserExist || result?.message === "User exist") {
+        if (result.registeredAsFacilitator) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
@@ -612,7 +612,8 @@ export default function App({ userTokenInfo, footerLinks }) {
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
-        if (result.isUserExist || result?.message === "User exist") {
+
+        if (result?.success) {
           const newErrors = {
             aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
@@ -790,14 +791,16 @@ export default function App({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <Box>
-                <FrontEndTypo.Primarybutton
-                  isLoading={loading}
-                  p="4"
-                  mt="4"
-                  onPress={() => onClickSubmit(false)}
-                >
-                  {t("SAVE_AND_NEXT")}
-                </FrontEndTypo.Primarybutton>
+                {!step === "aadhaar_details" && (
+                  <FrontEndTypo.Primarybutton
+                    isLoading={loading}
+                    p="4"
+                    mt="4"
+                    onPress={() => onClickSubmit(false)}
+                  >
+                    {t("SAVE_AND_NEXT")}
+                  </FrontEndTypo.Primarybutton>
+                )}
 
                 <FrontEndTypo.Secondarybutton
                   isLoading={loading}

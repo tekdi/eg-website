@@ -1,5 +1,13 @@
 import React from "react";
-import { HStack, VStack, Box, Progress, Image, Alert } from "native-base";
+import {
+  HStack,
+  VStack,
+  Box,
+  Progress,
+  Image,
+  Alert,
+  Stack,
+} from "native-base";
 import {
   arrList,
   IconByName,
@@ -11,6 +19,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
+import AadhaarNumberOKYC from "component/AadhaarNumberOKYC";
 
 export default function AadhaarDetails() {
   const { id } = useParams();
@@ -127,7 +136,7 @@ export default function AadhaarDetails() {
                 </HStack>
               </VStack>
             </VStack>
-            {(facilitator?.aadhar_verified !== "yes" ||
+            {/* {(facilitator?.aadhar_verified !== "yes" ||
               facilitator?.aadhaar_verification_mode === "upload") && (
               <VStack
                 px="5"
@@ -137,10 +146,9 @@ export default function AadhaarDetails() {
                 borderWidth="1px"
                 bg="white"
                 borderColor="appliedColor"
+                space="4"
               >
-                {!["yes", "in_progress"].includes(
-                  facilitator?.aadhar_verified
-                ) &&
+                {!["yes"].includes(facilitator?.aadhar_verified) &&
                   facilitator?.aadhar_no !== "" &&
                   facilitator?.aadhar_no !== null &&
                   facilitator?.aadhar_no !== undefined && (
@@ -148,30 +156,31 @@ export default function AadhaarDetails() {
                       <FrontEndTypo.H2 bold color="textMaroonColor.400" pt="5">
                         {t("COMPLETE_AADHAAR_VERIFICATION")}
                       </FrontEndTypo.H2>
+
+                      <AadhaarNumberOKYC
+                        {...{
+                          user: facilitator,
+                        }}
+                      />
                       <FrontEndTypo.Secondarybutton
+                        my="4"
                         onPress={() => {
-                          navigate(`/aadhaar-kyc/${id}/okyc2`);
+                          navigate(`/aadhaar-kyc/${id}/QR`);
                         }}
                       >
-                        {t("AADHAAR_NUMBER_KYC")}
+                        {t("SCAN_QR_CODE")}
                       </FrontEndTypo.Secondarybutton>
-                      {/* <FrontEndTypo.Secondarybutton
-                              my="4"
-                              onPress={() => {
-                                navigate(`/aadhaar-kyc/${id}/QR`);
-                              }}
-                            >
-                              {t("SCAN_QR_CODE")}
-                            </FrontEndTypo.Secondarybutton> */}
-                      <FrontEndTypo.Secondarybutton
-                        onPress={() => {
-                          navigate(`/aadhaar-kyc/${id}/upload`, {
-                            state: `/beneficiary/${id}/aadhaardetails`,
-                          });
-                        }}
-                      >
-                        {t("AADHAR_UPLOAD_KYC")}
-                      </FrontEndTypo.Secondarybutton>
+                      {facilitator?.aadhaar_verification_mode !== "upload" && (
+                        <FrontEndTypo.Secondarybutton
+                          onPress={() => {
+                            navigate(`/aadhaar-kyc/${id}/upload`, {
+                              state: `/beneficiary/${id}/aadhaardetails`,
+                            });
+                          }}
+                        >
+                          {t("AADHAR_UPLOAD_KYC")}
+                        </FrontEndTypo.Secondarybutton>
+                      )}
                     </VStack>
                   )}
                 {facilitator?.aadhaar_verification_mode === "upload" && (
@@ -215,7 +224,7 @@ export default function AadhaarDetails() {
                   </VStack>
                 )}
               </VStack>
-            )}
+            )} */}
           </VStack>
         </VStack>
       )}

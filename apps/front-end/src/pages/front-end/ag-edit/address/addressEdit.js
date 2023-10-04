@@ -98,8 +98,8 @@ export default function agFormEdit({ ip }) {
     setFormData(qData.result);
     setFormData({
       ...formData,
-      lat: lati,
-      long: longi,
+      lat: lati.toString(),
+      long: longi.toString(),
       address: finalData?.address == "null" ? "" : finalData?.address,
       state: finalData?.state,
       district: finalData?.district,
@@ -273,10 +273,6 @@ export default function agFormEdit({ ip }) {
   React.useEffect(() => {
     updateBtnText();
   }, [formData, page, lang]);
-
-  const userExist = async (filters) => {
-    return await facilitatorRegistryService.isExist(filters);
-  };
 
   const formSubmitUpdate = async (formData) => {
     if (id) {

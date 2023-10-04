@@ -32,7 +32,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
   const constantSchema = properties[page];
   const { enrollment_status, payment_receipt_document_id } =
-    fixedSchema?.properties ? fixedSchema?.properties : {};
+    fixedSchema?.properties || {};
   let newSchema = {};
   let newData = {};
   [
@@ -168,7 +168,7 @@ export default function App() {
   const [errors, setErrors] = React.useState({});
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [notMatched, setNotMatched] = React.useState();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
