@@ -136,8 +136,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   };
 
   const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    const location = navigator.geolocation;
+    if (location) {
+      location.getCurrentPosition(showPosition, showError);
     } else {
       setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
     }
@@ -150,8 +151,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     setFormData({
       ...formData,
       edit_page_type: "add_address",
-      lat: lati,
-      long: longi,
+      lat: lati?.toString(),
+      long: longi?.toString(),
     });
   };
 
@@ -559,6 +560,17 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         const newErrors = {
           address: {
             __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    if (data?.previous_school_type === "never_studied") {
+      if (data?.type_of_learner === "dropout") {
+        const newErrors = {
+          type_of_learner: {
+            __errors: [t("SELECT_MESSAGE_DROPOUT")],
           },
         };
         setErrors(newErrors);
