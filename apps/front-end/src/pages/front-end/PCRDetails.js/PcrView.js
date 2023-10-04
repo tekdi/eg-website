@@ -34,7 +34,7 @@ export default function PcrView() {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      <Box p="2" marginTop="10%">
+      <Box p="2" marginTop="1%">
         <VStack
           px="5"
           py="4"
@@ -43,7 +43,7 @@ export default function PcrView() {
           borderWidth="1px"
           bg="white"
           borderColor="appliedColor"
-          width="80%"
+          width="98%"
           alignSelf="center"
         >
           <HStack
