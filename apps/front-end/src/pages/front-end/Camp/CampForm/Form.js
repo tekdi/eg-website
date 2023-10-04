@@ -99,7 +99,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     setCampDetails(result?.data);
     setLoading(false);
   }, []);
-
+  
   React.useEffect(async () => {
     setLoading(true);
     if (step === "edit_camp_location") {
@@ -444,7 +444,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         newFormData,
         Object.keys(schema?.properties),
         {},
-        ""
+        step === "edit_photo_details" ? null : ""
       );
       await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {
