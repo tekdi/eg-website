@@ -94,7 +94,7 @@ const PcrDetails = () => {
       rapid_assessment_first_learning_level,
       rapid_assessment_second_learning_level,
       endline_learning_level,
-    } = userData[0];
+    } = userData[0] || {};
     const newData = {
       baseline_learning_level,
       rapid_assessment_first_learning_level,
