@@ -111,6 +111,7 @@ const PcrDetails = () => {
       user_id: id,
     });
     setPcrCreated(result?.pcr_scores);
+    navigate(`/beneficiary/${id}/pcrview`);
   };
 
   return (
