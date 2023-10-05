@@ -170,15 +170,15 @@ export default function CampDashboard({ footerLinks }) {
                   </VStack>
                 </VStack>
 
-                {campList?.length !== 2 && (
+                {campList?.length < 2 && (
                   <FrontEndTypo.Secondarybutton
                     onPress={() => {
                       navigate(`/camps/new/learners`, { state: "camp" });
                     }}
                   >
-                    {campList?.length !== 0
-                      ? t("START_SECOND_CAMP_REGISTER")
-                      : t("START_FIRST_CAMP_REGISTER")}
+                    {campList?.length === 0
+                      ? t("START_FIRST_CAMP_REGISTER")
+                      : t("START_SECOND_CAMP_REGISTER")}
                   </FrontEndTypo.Secondarybutton>
                 )}
                 <Alert
