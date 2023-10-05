@@ -1,7 +1,8 @@
 import { AdminTypo } from "@shiksha/common-lib";
-import { ChipStatus } from "component/BeneficiaryStatus";
-import { HStack, VStack, ScrollView, Text } from "native-base";
+import { ChipStatus } from "component/Chip";
+import { ChipStatus as BeneficiaryStatus } from "component/BeneficiaryStatus";
 
+import { HStack, VStack, ScrollView, Text } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -26,31 +27,13 @@ const PrerakName = (row) => {
   );
 };
 
-const PrerakStatus = (row) => {
-  return (
-    <VStack alignItems={"center"} space="2">
-      <Text
-        color={
-          ["rusticate", "rejected", "quit"].includes(row?.status)
-            ? "textMaroonColor.500"
-            : "textGreyColor.100"
-        }
-        fontSize={"13px"}
-        fontWeight={"bold"}
-      >
-        {row?.status}
-      </Text>
-    </VStack>
-  );
-};
-
 const statusCount = (row) => {
   return row?.status_count?.map((item) => {
     return (
       <Text key={item} mx={2}>
-        <ChipStatus statusCount={item?.status}>
+        <BeneficiaryStatus statusCount={item?.status}>
           {item?.count === 0 ? "0" : item?.count}
-        </ChipStatus>
+        </BeneficiaryStatus>
       </Text>
     );
   });
@@ -139,10 +122,9 @@ function Table({
     },
     {
       name: t("PRERAK_STATUS"),
-      selector: (row) => PrerakStatus(row),
-      sortable: true,
-      attr: "status",
+      selector: (row) => <ChipStatus status={row?.status} />,
       wrap: true,
+      attr: "ss",
     },
     {
       name: t("LEARNER_COUNT"),
@@ -168,7 +150,7 @@ function Table({
           {beneficiaryStatus?.map((item) => {
             return (
               <Text key={item} mx={2}>
-                <ChipStatus status={item?.value} />
+                <BeneficiaryStatus status={item?.value} />
               </Text>
             );
           })}
