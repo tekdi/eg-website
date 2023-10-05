@@ -15,7 +15,6 @@ import {
   VStack,
   Box,
   Pressable,
-  Text,
   Center,
   Avatar,
   Alert,
