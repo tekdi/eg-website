@@ -54,7 +54,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       };
       const result = await CampService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
-      if (!camp_id) {
+      if (camp_id) {
         navigate(`/camps/${camp_id}`);
       } else {
         setErrors(result?.message);
