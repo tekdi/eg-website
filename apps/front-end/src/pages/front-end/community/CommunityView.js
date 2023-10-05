@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import schema1 from "./schema";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { Alert, Box, Button, HStack, VStack } from "native-base";
+import { Alert, Box, VStack } from "native-base";
 
 export default function CommunityView({ footerLinks }) {
   const { t } = useTranslation();
