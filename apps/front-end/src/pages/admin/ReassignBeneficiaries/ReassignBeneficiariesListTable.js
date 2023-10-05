@@ -1,7 +1,8 @@
 import { AdminTypo } from "@shiksha/common-lib";
-import { ChipStatus } from "component/BeneficiaryStatus";
-import { HStack, VStack, ScrollView, Text } from "native-base";
+import { ChipStatus } from "component/Chip";
+import { ChipStatus as BeneficiaryStatus } from "component/BeneficiaryStatus";
 
+import { HStack, VStack, ScrollView, Text } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -25,14 +26,17 @@ const PrerakName = (row) => {
     </VStack>
   );
 };
+const PrerakStatus = (row) => {
+  return <ChipStatus status={row?.status} />;
+};
 
 const statusCount = (row) => {
   return row?.status_count?.map((item) => {
     return (
       <Text key={item} mx={2}>
-        <ChipStatus statusCount={item?.status}>
+        <BeneficiaryStatus statusCount={item?.status}>
           {item?.count === 0 ? "0" : item?.count}
-        </ChipStatus>
+        </BeneficiaryStatus>
       </Text>
     );
   });
@@ -106,11 +110,24 @@ function Table({
 
   const columns = (e) => [
     {
+      name: t("PRERAK_ID"),
+      selector: (row) => row?.id,
+      sortable: true,
+      attr: "id",
+      wrap: true,
+    },
+    {
       name: t("PRERAK_NAME"),
       selector: (row) => PrerakName(row),
       sortable: true,
-      attr: "aadhaar",
+      attr: "name",
       wrap: true,
+    },
+    {
+      name: t("PRERAK_STATUS"),
+      selector: (row) => PrerakStatus(row),
+      wrap: true,
+      attr: "status",
     },
     {
       name: t("LEARNER_COUNT"),
@@ -122,7 +139,8 @@ function Table({
       name: t("LEARNER_DISTRIBUTION"),
       selector: (row) => statusCount(row),
       sortable: true,
-      attr: "count",
+      attr: "distribution",
+      wrap: true,
     },
   ];
   const navigate = useNavigate();
@@ -135,7 +153,7 @@ function Table({
           {beneficiaryStatus?.map((item) => {
             return (
               <Text key={item} mx={2}>
-                <ChipStatus status={item?.value} />
+                <BeneficiaryStatus status={item?.value} />
               </Text>
             );
           })}

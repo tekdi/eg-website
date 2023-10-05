@@ -15,6 +15,13 @@ import { useNavigate } from "react-router-dom";
 
 const columns = (t, navigate) => [
   {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.id,
+    sortable: true,
+    attr: "id",
+    wrap: true,
+  },
+  {
     name: t("NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
@@ -36,7 +43,7 @@ const columns = (t, navigate) => [
           />
         )}
         <AdminTypo.H6 bold>
-          {row?.first_name + " " + row.last_name}
+          {`${row?.first_name} ${row?.last_name || ""}`}
         </AdminTypo.H6>
       </HStack>
     ),
@@ -55,20 +62,20 @@ const columns = (t, navigate) => [
     name: t("MOBILE_NUMBER"),
     selector: (row) => row?.mobile,
 
-    attr: "email",
+    attr: "mobile",
   },
   {
     name: t("STATUS"),
     selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
 
     wrap: true,
-    attr: "email",
+    attr: "status",
   },
   {
     name: t("GENDER"),
     selector: (row) => row?.gender,
 
-    attr: "city",
+    attr: "gender",
   },
   {
     name: t("ACTION"),
