@@ -436,6 +436,7 @@ export default function BenificiaryProfileView(props) {
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 {![
+                  "enrolled",
                   "dropout",
                   "rejected",
                   "ready_to_enroll",
