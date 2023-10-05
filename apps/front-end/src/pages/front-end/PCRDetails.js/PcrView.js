@@ -1,11 +1,9 @@
 import {
   CardComponent,
-  FrontEndTypo,
-  IconByName,
   Layout,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import { Box, HStack, VStack } from "native-base";
+import { Box } from "native-base";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
