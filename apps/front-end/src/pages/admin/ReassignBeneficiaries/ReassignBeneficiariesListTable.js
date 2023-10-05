@@ -26,6 +26,9 @@ const PrerakName = (row) => {
     </VStack>
   );
 };
+const PrerakStatus = (row) => {
+  return <ChipStatus status={row?.status} />;
+};
 
 const statusCount = (row) => {
   return row?.status_count?.map((item) => {
@@ -122,7 +125,7 @@ function Table({
     },
     {
       name: t("PRERAK_STATUS"),
-      selector: (row) => <ChipStatus status={row?.status} />,
+      selector: (row) => PrerakStatus(row),
       wrap: true,
       attr: "status",
     },
