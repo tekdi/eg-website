@@ -124,6 +124,13 @@ function Table({
 
   const columns = (e) => [
     {
+      name: t("PRERAK_ID"),
+      selector: (row) => row?.id,
+      sortable: true,
+      attr: "aadhaar",
+      wrap: true,
+    },
+    {
       name: t("PRERAK_NAME"),
       selector: (row) => PrerakName(row),
       sortable: true,
@@ -148,6 +155,7 @@ function Table({
       selector: (row) => statusCount(row),
       sortable: true,
       attr: "count",
+      wrap: true,
     },
   ];
   const navigate = useNavigate();
