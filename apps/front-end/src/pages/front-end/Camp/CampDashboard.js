@@ -204,7 +204,7 @@ export default function CampDashboard({ footerLinks }) {
               >
                 <HStack alignItems="center" space="2" color>
                   <Alert.Icon />
-                  <BodyMedium>{t("COMMUNITY_min_error")}</BodyMedium>
+                  <BodyMedium>{t("COMMUNITY_MIN_ERROR")}</BodyMedium>
                 </HStack>
               </Alert>
             )}
