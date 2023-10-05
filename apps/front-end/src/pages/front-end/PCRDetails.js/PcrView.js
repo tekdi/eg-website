@@ -1,4 +1,5 @@
 import {
+  CardComponent,
   FrontEndTypo,
   IconByName,
   Layout,
@@ -34,112 +35,31 @@ export default function PcrView() {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      <Box p="2" marginTop="1%">
-        <VStack
-          px="5"
-          py="4"
-          space="4"
-          borderRadius="10px"
-          borderWidth="1px"
-          bg="white"
-          borderColor="appliedColor"
-          width="98%"
-          alignSelf="center"
-        >
-          <HStack
-            justifyContent="space-between"
-            alignItems="center"
-            borderColor="light.300"
-            pb="1"
-            borderBottomWidth="1"
-          >
-            <FrontEndTypo.H2 bold underline>
-              {t("PCR_EDUCATION_LEVEL")} :-
-            </FrontEndTypo.H2>
-
-            <IconByName
-              name="EditBoxLineIcon"
-              color="iconColor.100"
-              onPress={() => {
-                navigate(`/beneficiary/${id}/pcrdetails`);
-              }}
-            />
-          </HStack>
-          <VStack space="4">
-            <HStack space="4">
-              <FrontEndTypo.H3
-                color="textGreyColor.50"
-                flex="0.5"
-                fontWeight="400"
-              >
-                {t("PRIAMRY_LEVEL_EDUCATION")}
-              </FrontEndTypo.H3>
-              <FrontEndTypo.H4 color="textGreyColor.800" fontWeight="400" bold>
-                {data?.baseline_learning_level
-                  ? data?.baseline_learning_level?.toUpperCase()
-                  : "-"}
-              </FrontEndTypo.H4>
-            </HStack>
-            <HStack space="4">
-              <FrontEndTypo.H3
-                color="textGreyColor.50"
-                fontWeight="400"
-                flex="0.5"
-              >
-                {t("EVALUATION_1")}
-              </FrontEndTypo.H3>
-
-              <FrontEndTypo.H4
-                color="textGreyColor.800"
-                fontWeight="400"
-                flex="0.3"
-                bold
-              >
-                {data?.rapid_assessment_first_learning_level
-                  ? data?.rapid_assessment_first_learning_level
-                  : "-"}
-              </FrontEndTypo.H4>
-            </HStack>
-            <HStack space="4">
-              <FrontEndTypo.H3
-                color="textGreyColor.50"
-                fontWeight="400"
-                flex="0.5"
-              >
-                {t("EVALUATION_2")}
-              </FrontEndTypo.H3>
-              <FrontEndTypo.H4
-                color="textGreyColor.800"
-                fontWeight="400"
-                flex="0.3"
-                bold
-              >
-                {data?.rapid_assessment_second_learning_level
-                  ? data?.rapid_assessment_second_learning_level
-                  : "-"}
-              </FrontEndTypo.H4>
-            </HStack>
-            <HStack space="4">
-              <FrontEndTypo.H3
-                color="textGreyColor.50"
-                fontWeight="400"
-                flex="0.5"
-              >
-                {t("FINAL_LEVEL_EDUCATION")}
-              </FrontEndTypo.H3>
-              <FrontEndTypo.H4
-                color="textGreyColor.800"
-                fontWeight="400"
-                flex="0.4"
-                bold
-              >
-                {data?.endline_learning_level
-                  ? data?.endline_learning_level?.toUpperCase()
-                  : "-"}
-              </FrontEndTypo.H4>
-            </HStack>
-          </VStack>
-        </VStack>
+      <Box p="10">
+        <CardComponent
+          {...(!data?.endline_learning_level
+            ? { onEdit: (e) => navigate(`/beneficiary/${id}/pcrdetails`) }
+            : {})}
+          title={t("PCR_EDUCATION_LEVEL")}
+          item={{
+            ...data,
+            baseline_learning_level:
+              data?.baseline_learning_level?.toUpperCase(),
+            endline_learning_level: data?.endline_learning_level?.toUpperCase(),
+          }}
+          label={[
+            "PRIAMRY_LEVEL_EDUCATION",
+            "EVALUATION_1",
+            "EVALUATION_2",
+            "FINAL_LEVEL_EDUCATION",
+          ]}
+          arr={[
+            "baseline_learning_level",
+            "rapid_assessment_first_learning_level",
+            "rapid_assessment_second_learning_level",
+            "endline_learning_level",
+          ]}
+        />
       </Box>
     </Layout>
   );

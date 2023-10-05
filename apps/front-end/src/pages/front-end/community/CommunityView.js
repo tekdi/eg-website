@@ -1,4 +1,5 @@
 import {
+  CardComponent,
   FrontEndTypo,
   GetEnumValue,
   Layout,
@@ -103,7 +104,7 @@ export default function CommunityView({ footerLinks }) {
       window?.location?.reload(true);
     }
   };
-  console.log(data?.data);
+
   return (
     <Layout
       _appBar={{
@@ -131,165 +132,190 @@ export default function CommunityView({ footerLinks }) {
           ))}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
-            {data?.data?.length > 0 ? (
+            {data?.data?.length > 0 &&
               data?.data
                 ?.slice()
                 .reverse()
-                .map((item, index, array) => {
+                .map((item, index) => {
                   return (
-                    <VStack
-                      key="index"
-                      px="5"
-                      py="4"
-                      space="4"
-                      borderRadius="10px"
-                      borderWidth="1px"
-                      bg="white"
-                      borderColor="appliedColor"
-                      width="90%"
-                      alignSelf="center"
-                    >
-                      <HStack space="1">
-                        <FrontEndTypo.H3>{index + 1})</FrontEndTypo.H3>
-                        <FrontEndTypo.H3 bold underline>
-                          {t("MEMBER_DETAILS")}
-                        </FrontEndTypo.H3>
-                        :-
-                      </HStack>
+                    // <VStack
+                    //   key="index"
+                    //   px="5"
+                    //   py="4"
+                    //   space="4"
+                    //   borderRadius="10px"
+                    //   borderWidth="1px"
+                    //   bg="white"
+                    //   borderColor="appliedColor"
+                    //   width="90%"
+                    //   alignSelf="center"
+                    // >
+                    //   <HStack space="1">
+                    //     <FrontEndTypo.H3>{index + 1})</FrontEndTypo.H3>
+                    //     <FrontEndTypo.H3 bold underline>
+                    //       {t("MEMBER_DETAILS")}
+                    //     </FrontEndTypo.H3>
+                    //     :-
+                    //   </HStack>
 
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.300"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <FrontEndTypo.H3
-                          color="textGreyColor.50"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {t("FIRST_NAME")}
-                        </FrontEndTypo.H3>
-                        :
-                        <FrontEndTypo.H3
-                          color="textGreyColor.800"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {item?.first_name ? item?.first_name : "-"}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.300"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <FrontEndTypo.H3
-                          color="textGreyColor.50"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {t("MIDDLE_NAME")}
-                        </FrontEndTypo.H3>
-                        :
-                        <FrontEndTypo.H3
-                          color="textGreyColor.800"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {item?.middle_name ? item?.middle_name : "-"}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.300"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <FrontEndTypo.H3
-                          color="textGreyColor.50"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {t("LAST_NAME")}
-                        </FrontEndTypo.H3>
-                        :
-                        <FrontEndTypo.H3
-                          color="textGreyColor.800"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {item?.last_name ? item?.last_name : "-"}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.300"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <FrontEndTypo.H3
-                          color="textGreyColor.50"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {t("DESIGNATION")}
-                        </FrontEndTypo.H3>
-                        :
-                        <FrontEndTypo.H3
-                          color="textGreyColor.800"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {item?.designation ? (
-                            <GetEnumValue
-                              t={t}
-                              enumType={"COMMUNITY_MEMBER_DESIGNATIONS"}
-                              enumOptionValue={item?.designation}
-                              enumApiData={enumOptions}
-                            />
-                          ) : (
-                            "-"
-                          )}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.300"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <FrontEndTypo.H3
-                          color="textGreyColor.50"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {t("CONTACT_NUMBER")}
-                        </FrontEndTypo.H3>
-                        :
-                        <FrontEndTypo.H3
-                          color="textGreyColor.800"
-                          fontWeight="400"
-                          flex="0.3"
-                        >
-                          {item?.contact_number ? item?.contact_number : "-"}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                    </VStack>
+                    //   <HStack
+                    //     justifyContent="space-between"
+                    //     alignItems="center"
+                    //     borderColor="light.300"
+                    //     pb="1"
+                    //     borderBottomWidth="1"
+                    //   >
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.50"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {t("FIRST_NAME")}
+                    //     </FrontEndTypo.H3>
+                    //     :
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.800"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {item?.first_name ? item?.first_name : "-"}
+                    //     </FrontEndTypo.H3>
+                    //   </HStack>
+                    //   <HStack
+                    //     justifyContent="space-between"
+                    //     alignItems="center"
+                    //     borderColor="light.300"
+                    //     pb="1"
+                    //     borderBottomWidth="1"
+                    //   >
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.50"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {t("MIDDLE_NAME")}
+                    //     </FrontEndTypo.H3>
+                    //     :
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.800"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {item?.middle_name ? item?.middle_name : "-"}
+                    //     </FrontEndTypo.H3>
+                    //   </HStack>
+                    //   <HStack
+                    //     justifyContent="space-between"
+                    //     alignItems="center"
+                    //     borderColor="light.300"
+                    //     pb="1"
+                    //     borderBottomWidth="1"
+                    //   >
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.50"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {t("LAST_NAME")}
+                    //     </FrontEndTypo.H3>
+                    //     :
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.800"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {item?.last_name ? item?.last_name : "-"}
+                    //     </FrontEndTypo.H3>
+                    //   </HStack>
+                    //   <HStack
+                    //     justifyContent="space-between"
+                    //     alignItems="center"
+                    //     borderColor="light.300"
+                    //     pb="1"
+                    //     borderBottomWidth="1"
+                    //   >
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.50"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {t("DESIGNATION")}
+                    //     </FrontEndTypo.H3>
+                    //     :
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.800"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {item?.designation ? (
+                    //         <GetEnumValue
+                    //           t={t}
+                    //           enumType={"COMMUNITY_MEMBER_DESIGNATIONS"}
+                    //           enumOptionValue={item?.designation}
+                    //           enumApiData={enumOptions}
+                    //         />
+                    //       ) : (
+                    //         "-"
+                    //       )}
+                    //     </FrontEndTypo.H3>
+                    //   </HStack>
+                    //   <HStack
+                    //     justifyContent="space-between"
+                    //     alignItems="center"
+                    //     borderColor="light.300"
+                    //     pb="1"
+                    //     borderBottomWidth="1"
+                    //   >
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.50"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {t("CONTACT_NUMBER")}
+                    //     </FrontEndTypo.H3>
+                    //     :
+                    //     <FrontEndTypo.H3
+                    //       color="textGreyColor.800"
+                    //       fontWeight="400"
+                    //       flex="0.3"
+                    //     >
+                    //       {item?.contact_number ? item?.contact_number : "-"}
+                    //     </FrontEndTypo.H3>
+                    //   </HStack>
+                    // </VStack>
+                    <CardComponent
+                      title={`${index + 1}) ${t("MEMBER_DETAILS")}`}
+                      item={{
+                        ...item,
+                        designation: item?.designation ? (
+                          <GetEnumValue
+                            t={t}
+                            enumType={"COMMUNITY_MEMBER_DESIGNATIONS"}
+                            enumOptionValue={item?.designation}
+                            enumApiData={enumOptions}
+                          />
+                        ) : (
+                          "-"
+                        ),
+                      }}
+                      label={[
+                        "FIRST_NAME",
+                        "MIDDLE_NAME",
+                        "LAST_NAME",
+                        "DESIGNATION",
+                        "CONTACT_NUMBER",
+                      ]}
+                      arr={[
+                        "first_name",
+                        "middle_name",
+                        "last_name",
+                        "designation",
+                        "contact_number",
+                      ]}
+                    />
                   );
-                })
-            ) : (
-              <></>
-            )}
-            {data?.data?.length >= 10 ? (
-              <></>
-            ) : (
+                })}
+            {data?.data?.length < 10 && (
               <FrontEndTypo.Primarybutton onPress={onAdd}>
                 {t("ADD_COMMUNITY_MEMBER")}
               </FrontEndTypo.Primarybutton>
