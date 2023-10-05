@@ -35,6 +35,7 @@ import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
+import CardComponent from './components/frontend_component/CardComponent'
 import PoAdminLayout from './components/Po_admin_layout/Layout'
 import Breadcrumb from './components/Breadcrumb'
 
@@ -80,6 +81,7 @@ export {
   Alert,
   GetEnumValue,
   ItemComponent,
+  CardComponent,
   Breadcrumb
 }
 
