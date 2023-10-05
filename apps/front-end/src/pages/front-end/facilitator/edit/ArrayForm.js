@@ -12,11 +12,11 @@ import {
   getOptions,
   enumRegistryService,
   validation,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { widgets, templates } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
-import ItemComponent from "./ItemComponent.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -371,10 +371,10 @@ export default function App({ userTokenInfo, footerLinks }) {
                     contact_number,
                     type_of_document,
                     document_id,
-                  } = item?.reference ? item?.reference : {};
+                  } = item?.reference || {};
                   return (
-                    <Box key={index}>
-                      <ItemComponent
+                    <Box key={name}>
+                      <CardComponent
                         schema={schema}
                         index={index + 1}
                         item={{
