@@ -103,6 +103,7 @@ export default function CommunityView({ footerLinks }) {
       window?.location?.reload(true);
     }
   };
+  console.log(data?.data);
   return (
     <Layout
       _appBar={{
@@ -115,186 +116,183 @@ export default function CommunityView({ footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <Box p="4">
-        {!addMore && (
-          <Alert
-            alignSelf="center"
-            status="warning"
-            p="2"
-            flexDirection="row"
-            gap="2"
-          >
-            <Alert.Icon size="5" />
-            <FrontEndTypo.H2>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H2>
-          </Alert>
-        )}
+        {!addMore ||
+          (data?.data.length <= 2 && (
+            <Alert
+              alignSelf="center"
+              status="warning"
+              p="2"
+              flexDirection="row"
+              gap="2"
+            >
+              <Alert.Icon size="5" />
+              <FrontEndTypo.H2>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H2>
+            </Alert>
+          ))}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
             {data?.data?.length > 0 ? (
-              data?.data?.map((item, index) => {
-                return (
-                  <VStack
-                    key="index"
-                    px="5"
-                    py="4"
-                    space="4"
-                    borderRadius="10px"
-                    borderWidth="1px"
-                    bg="white"
-                    borderColor="appliedColor"
-                    width="90%"
-                    alignSelf="center"
-                  >
-                    <HStack space="1">
-                      <FrontEndTypo.H3>{index + 1})</FrontEndTypo.H3>
-                      <FrontEndTypo.H3 bold underline>
-                        {t("MEMBER_DETAILS")}
-                      </FrontEndTypo.H3>
-                      :-
-                    </HStack>
+              data?.data
+                ?.slice()
+                .reverse()
+                .map((item, index, array) => {
+                  return (
+                    <VStack
+                      key="index"
+                      px="5"
+                      py="4"
+                      space="4"
+                      borderRadius="10px"
+                      borderWidth="1px"
+                      bg="white"
+                      borderColor="appliedColor"
+                      width="90%"
+                      alignSelf="center"
+                    >
+                      <HStack space="1">
+                        <FrontEndTypo.H3>{index + 1})</FrontEndTypo.H3>
+                        <FrontEndTypo.H3 bold underline>
+                          {t("MEMBER_DETAILS")}
+                        </FrontEndTypo.H3>
+                        :-
+                      </HStack>
 
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.300"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.3"
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderColor="light.300"
+                        pb="1"
+                        borderBottomWidth="1"
                       >
-                        {t("FIRST_NAME")}
-                      </FrontEndTypo.H3>
-                      :
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
+                        <FrontEndTypo.H3
+                          color="textGreyColor.50"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {t("FIRST_NAME")}
+                        </FrontEndTypo.H3>
+                        :
+                        <FrontEndTypo.H3
+                          color="textGreyColor.800"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {item?.first_name ? item?.first_name : "-"}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderColor="light.300"
+                        pb="1"
+                        borderBottomWidth="1"
                       >
-                        {item?.first_name ? item?.first_name : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.300"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.3"
+                        <FrontEndTypo.H3
+                          color="textGreyColor.50"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {t("MIDDLE_NAME")}
+                        </FrontEndTypo.H3>
+                        :
+                        <FrontEndTypo.H3
+                          color="textGreyColor.800"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {item?.middle_name ? item?.middle_name : "-"}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderColor="light.300"
+                        pb="1"
+                        borderBottomWidth="1"
                       >
-                        {t("MIDDLE_NAME")}
-                      </FrontEndTypo.H3>
-                      :
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
+                        <FrontEndTypo.H3
+                          color="textGreyColor.50"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {t("LAST_NAME")}
+                        </FrontEndTypo.H3>
+                        :
+                        <FrontEndTypo.H3
+                          color="textGreyColor.800"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {item?.last_name ? item?.last_name : "-"}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderColor="light.300"
+                        pb="1"
+                        borderBottomWidth="1"
                       >
-                        {item?.middle_name ? item?.middle_name : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.300"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.3"
+                        <FrontEndTypo.H3
+                          color="textGreyColor.50"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {t("DESIGNATION")}
+                        </FrontEndTypo.H3>
+                        :
+                        <FrontEndTypo.H3
+                          color="textGreyColor.800"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {item?.designation ? (
+                            <GetEnumValue
+                              t={t}
+                              enumType={"COMMUNITY_MEMBER_DESIGNATIONS"}
+                              enumOptionValue={item?.designation}
+                              enumApiData={enumOptions}
+                            />
+                          ) : (
+                            "-"
+                          )}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderColor="light.300"
+                        pb="1"
+                        borderBottomWidth="1"
                       >
-                        {t("LAST_NAME")}
-                      </FrontEndTypo.H3>
-                      :
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {item?.last_name ? item?.last_name : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.300"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {t("DESIGNATION")}
-                      </FrontEndTypo.H3>
-                      :
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {item?.designation ? (
-                          <GetEnumValue
-                            t={t}
-                            enumType={"COMMUNITY_MEMBER_DESIGNATIONS"}
-                            enumOptionValue={item?.designation}
-                            enumApiData={enumOptions}
-                          />
-                        ) : (
-                          "-"
-                        )}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.300"
-                      pb="1"
-                      borderBottomWidth="1"
-                    >
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {t("CONTACT_NUMBER")}
-                      </FrontEndTypo.H3>
-                      :
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {item?.contact_number ? item?.contact_number : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                  </VStack>
-                );
-              })
+                        <FrontEndTypo.H3
+                          color="textGreyColor.50"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {t("CONTACT_NUMBER")}
+                        </FrontEndTypo.H3>
+                        :
+                        <FrontEndTypo.H3
+                          color="textGreyColor.800"
+                          fontWeight="400"
+                          flex="0.3"
+                        >
+                          {item?.contact_number ? item?.contact_number : "-"}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                    </VStack>
+                  );
+                })
             ) : (
               <></>
             )}
             {data?.data?.length >= 10 ? (
               <></>
             ) : (
-              <Button variant={"link"} colorScheme="info">
-                <FrontEndTypo.H3
-                  color="blueText.400"
-                  underline
-                  bold
-                  onPress={onAdd}
-                >
-                  {t("ADD_COMMUNITY_MEMBER")}
-                </FrontEndTypo.H3>
-              </Button>
+              <FrontEndTypo.Primarybutton onPress={onAdd}>
+                {t("ADD_COMMUNITY_MEMBER")}
+              </FrontEndTypo.Primarybutton>
             )}
           </VStack>
         ) : (
