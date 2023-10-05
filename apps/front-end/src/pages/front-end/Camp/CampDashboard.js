@@ -144,7 +144,9 @@ export default function CampDashboard({ footerLinks }) {
                             <VStack>
                               <AdminTypo.H3>{item?.group?.name}</AdminTypo.H3>
                               {item?.group?.description && (
-                                <Text>{item?.group?.description}</Text>
+                                <AdminTypo.H6>
+                                  {item?.group?.description}
+                                </AdminTypo.H6>
                               )}
                             </VStack>
                             <HStack>

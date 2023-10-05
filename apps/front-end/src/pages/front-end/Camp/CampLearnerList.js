@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 export default function CampList({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
-  const [errors, setErrors] = React.useState(false);
+  const [errors, setErrors] = React.useState();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -54,10 +54,10 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       };
       const result = await CampService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
-      if (camp_id) {
+      if (!camp_id) {
         navigate(`/camps/${camp_id}`);
       } else {
-        setErrors(true);
+        setErrors(result?.message);
       }
     } else {
       setAlert(true);
@@ -188,7 +188,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
             >
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
+                <BodyMedium>{t(errors)}</BodyMedium>
               </HStack>
             </Alert>
           )}

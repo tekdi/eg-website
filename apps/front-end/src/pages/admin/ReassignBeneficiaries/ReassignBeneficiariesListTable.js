@@ -26,6 +26,24 @@ const PrerakName = (row) => {
   );
 };
 
+const PrerakStatus = (row) => {
+  return (
+    <VStack alignItems={"center"} space="2">
+      <Text
+        color={
+          ["rusticate", "rejected", "quit"].includes(row?.status)
+            ? "textMaroonColor.500"
+            : "textGreyColor.100"
+        }
+        fontSize={"13px"}
+        fontWeight={"bold"}
+      >
+        {row?.status}
+      </Text>
+    </VStack>
+  );
+};
+
 const statusCount = (row) => {
   return row?.status_count?.map((item) => {
     return (
@@ -110,6 +128,13 @@ function Table({
       selector: (row) => PrerakName(row),
       sortable: true,
       attr: "aadhaar",
+      wrap: true,
+    },
+    {
+      name: t("PRERAK_STATUS"),
+      selector: (row) => PrerakStatus(row),
+      sortable: true,
+      attr: "status",
       wrap: true,
     },
     {
