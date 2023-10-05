@@ -139,6 +139,7 @@ export default function CommunityView({ footerLinks }) {
                 .map((item, index) => {
                   return (
                     <CardComponent
+                      key={item?.id}
                       title={`${index + 1}) ${t("MEMBER_DETAILS")}`}
                       item={{
                         ...item,
