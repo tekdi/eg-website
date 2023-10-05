@@ -88,7 +88,7 @@ export default function CampDashboard({ footerLinks }) {
                       {nonRegisteredUser.length > 0 && (
                         <Avatar.Group
                           _avatar={{
-                            size: "lg",
+                            size: "sm",
                           }}
                           max={3}
                         >
@@ -141,11 +141,13 @@ export default function CampDashboard({ footerLinks }) {
                             justifyContent={"space-between"}
                           >
                             <VStack>
-                              <AdminTypo.H3>{item?.group?.name}</AdminTypo.H3>
+                              <FrontEndTypo.H3>
+                                {item?.group?.name}
+                              </FrontEndTypo.H3>
                               {item?.group?.description && (
-                                <AdminTypo.H6>
+                                <FrontEndTypo.H6>
                                   {item?.group?.description}
-                                </AdminTypo.H6>
+                                </FrontEndTypo.H6>
                               )}
                             </VStack>
                             <HStack>
@@ -177,9 +179,15 @@ export default function CampDashboard({ footerLinks }) {
                       navigate(`/camps/new/learners`, { state: "camp" });
                     }}
                   >
-                    {campList?.length === 0
-                      ? t("START_FIRST_CAMP_REGISTER")
-                      : t("START_SECOND_CAMP_REGISTER")}
+                    {campList?.length === 0 ? (
+                      <FrontEndTypo.H3>
+                        {t("START_FIRST_CAMP_REGISTER")}
+                      </FrontEndTypo.H3>
+                    ) : (
+                      <FrontEndTypo.H3>
+                        {t("START_SECOND_CAMP_REGISTER")}
+                      </FrontEndTypo.H3>
+                    )}
                   </FrontEndTypo.Secondarybutton>
                 )}
                 <Alert
