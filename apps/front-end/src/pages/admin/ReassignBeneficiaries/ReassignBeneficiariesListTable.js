@@ -110,21 +110,21 @@ function Table({
       name: t("PRERAK_ID"),
       selector: (row) => row?.id,
       sortable: true,
-      attr: "aadhaar",
+      attr: "id",
       wrap: true,
     },
     {
       name: t("PRERAK_NAME"),
       selector: (row) => PrerakName(row),
       sortable: true,
-      attr: "aadhaar",
+      attr: "name",
       wrap: true,
     },
     {
       name: t("PRERAK_STATUS"),
       selector: (row) => <ChipStatus status={row?.status} />,
       wrap: true,
-      attr: "ss",
+      attr: "status",
     },
     {
       name: t("LEARNER_COUNT"),
@@ -136,7 +136,7 @@ function Table({
       name: t("LEARNER_DISTRIBUTION"),
       selector: (row) => statusCount(row),
       sortable: true,
-      attr: "count",
+      attr: "distribution",
       wrap: true,
     },
   ];

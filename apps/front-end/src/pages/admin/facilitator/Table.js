@@ -18,7 +18,7 @@ const columns = (t, navigate) => [
     name: t("PRERAK_ID"),
     selector: (row) => row?.id,
     sortable: true,
-    attr: "aadhaar",
+    attr: "id",
     wrap: true,
   },
   {
@@ -62,20 +62,20 @@ const columns = (t, navigate) => [
     name: t("MOBILE_NUMBER"),
     selector: (row) => row?.mobile,
 
-    attr: "email",
+    attr: "mobile",
   },
   {
     name: t("STATUS"),
     selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
 
     wrap: true,
-    attr: "email",
+    attr: "status",
   },
   {
     name: t("GENDER"),
     selector: (row) => row?.gender,
 
-    attr: "city",
+    attr: "gender",
   },
   {
     name: t("ACTION"),
