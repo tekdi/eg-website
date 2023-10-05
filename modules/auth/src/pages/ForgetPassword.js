@@ -49,6 +49,10 @@ export default function ForgetPassword() {
   const [otpData, setotpData] = useState();
   const navigate = useNavigate();
 
+  const onPressBackButton = async () => {
+    navigate("/login");
+  };
+
   const validate = () => {
     let arr = {};
     if (
@@ -149,7 +153,8 @@ export default function ForgetPassword() {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["helpBtn"],
+        onPressBackButton,
+        onlyIconsShow: ["helpBtn", "backBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
