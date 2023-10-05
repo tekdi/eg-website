@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 export default function CampList({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
-  const [Submitalert, setSubmitalert] = React.useState(false);
+  const [errors, setErrors] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       if (camp_id) {
         navigate(`/camps/${camp_id}`);
       } else {
-        setSubmitalert(true);
+        setErrors(true);
       }
     } else {
       setAlert(true);
@@ -178,7 +178,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
             );
           })}
 
-          {Submitalert ? (
+          {errors && (
             <Alert
               status="warning"
               alignItems={"start"}
@@ -191,8 +191,6 @@ export default function CampList({ userTokenInfo, footerLinks }) {
                 <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
               </HStack>
             </Alert>
-          ) : (
-            <></>
           )}
 
           <FrontEndTypo.Primarybutton onPress={createCamp}>
