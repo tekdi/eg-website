@@ -91,12 +91,8 @@ function Table({
 
   const beneficiaryStatus = [
     {
-      title: "BENEFICIARY_STATUS_IDENTIFIED",
-      value: "identified",
-    },
-    {
-      title: "BENEFICIARY_STATUS_READY_TO_ENROLL",
-      value: "ready_to_enroll",
+      title: "IDENTIFIED_READY_TO_ENROLL",
+      value: "identified_ready_to_enroll",
     },
     {
       title: "BENEFICIARY_STATUS_ENROLLED",
