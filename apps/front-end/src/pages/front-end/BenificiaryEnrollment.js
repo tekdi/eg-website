@@ -128,7 +128,7 @@ export default function BenificiaryEnrollment() {
             onEdit={(e) =>
               navigate(`/beneficiary/edit/${id}/enrollment-details`)
             }
-            status={benificiary?.program_beneficiaries?.status}
+            BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}
         {![
