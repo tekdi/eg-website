@@ -239,7 +239,7 @@ export default function CampDashboard({ footerLinks }) {
           <iframe
             width="100%"
             height="315"
-            src="https://www.youtube.com/embed/_Tbo0cATRGM?si=G7KEFIkHPLg1mFQy"
+            src="https://www.youtube.com/embed/LPjsnW5LKWs?si=wbkJgHcLP3mMuH2W"
             title={t("HOW_TO_START_CAMP")}
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
