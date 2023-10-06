@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   HStack,
-  Button,
-  Box,
   FormControl,
   Input,
   VStack,
@@ -16,16 +14,10 @@ import {
   useWindowSize,
   Subtitle,
   t,
-  login,
-  logout,
-  H1,
   Layout,
-  BodyMedium,
-  H4,
   authRegistryService,
   CustomOTPBox,
   FrontEndTypo,
-  FloatingInput,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -173,7 +165,7 @@ export default function ForgetPassword() {
             uri: "/images/auth/forget_password.png",
           }}
           alt="reset password"
-          width="240"
+          width="310"
           height="215"
         />
         <VStack space={5} p="5">

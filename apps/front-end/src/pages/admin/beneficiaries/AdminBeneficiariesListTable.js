@@ -17,6 +17,8 @@ const columns = (t, navigate) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
+    wrap: true,
+    width: "95px",
   },
   {
     name: t("LEARNERS_NAME"),
@@ -56,6 +58,7 @@ const columns = (t, navigate) => [
     ),
     attr: "name",
     wrap: true,
+    width: "250px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -93,6 +96,7 @@ const columns = (t, navigate) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
+    width: "250px",
   },
   {
     name: t("STATUS"),
@@ -107,6 +111,7 @@ const columns = (t, navigate) => [
 
     attr: "email",
     wrap: true,
+    width: "250px",
   },
   {
     name: t("ACTION"),
