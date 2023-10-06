@@ -176,15 +176,15 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     >
       <HStack margin={"auto"} mt={3} space={4}>
         <HStack space={2} alignItems={"center"}>
-          <Avatar bg="gray.300" size={"sm"}></Avatar>
+          <Avatar bg="gray.300" size={["15px", "sm"]}></Avatar>
           <Text>{t("NOT_STARTED")}</Text>
         </HStack>
         <HStack space={2} alignItems={"center"}>
-          <Avatar bg="amber.300" size={"sm"}></Avatar>
+          <Avatar bg="amber.300" size={["15px", "sm"]}></Avatar>
           <Text>{t("IN_PROGRESS")}</Text>
         </HStack>
         <HStack space={2} alignItems={"center"}>
-          <Avatar bg="green.300" size={"sm"}></Avatar>
+          <Avatar bg="green.300" size={["15px", "sm"]}></Avatar>
           <Text>{t("COMPLETED")}</Text>
         </HStack>
       </HStack>
@@ -199,14 +199,13 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           w={"95%"}
           paddingX={5}
           paddingY={3}
-          ml={5}
         >
           <Pressable
             onPress={async () => {
               navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
             }}
           >
-            <HStack justifyContent={"space-between"}>
+            <HStack ml={"11px"} width={"100%"} justifyContent={"space-between"}>
               <HStack alignItems={"center"}>
                 <IconByName
                   isDisabled
@@ -277,12 +276,6 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
 
   return (
     <HStack w={"90%"} marginTop={3} marginBottom={2} margin={"auto"}>
-      <HStack
-        background={color}
-        borderTopLeftRadius={"20px"}
-        borderBottomLeftRadius={"20px"}
-        w={"10px"}
-      ></HStack>
       <Box
         bg="boxBackgroundColour.100"
         borderColor="btnGray.100"
@@ -290,9 +283,6 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
         borderWidth="1px"
         shadow="AlertShadow"
         w={"95%"}
-        paddingX={5}
-        paddingY={3}
-        ml={2}
       >
         <Pressable
           onPress={async () => {
@@ -300,38 +290,46 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
           }}
         >
           <HStack justifyContent={"space-between"}>
-            <HStack alignItems={"center"}>
-              {NavName === "KIT" ? (
-                <Image
-                  source={{
-                    uri: "/boxline.svg",
-                  }}
-                  alt=""
-                  size={"28px"}
-                  resizeMode="contain"
-                />
-              ) : (
-                <IconByName
-                  isDisabled
-                  name={IconName}
-                  //color="amber.400"
-                  _icon={{ size: "30px" }}
-                />
-              )}
-
-              <Text ml={5}>
-                {t(NavName)}
-                {!["CAMP_VENUE_PHOTOS", "FAMILY_CONSENT"].includes(NavName) && (
-                  <Text color={"textMaroonColor.400"}>*</Text>
+            <HStack
+              background={color}
+              borderTopLeftRadius={"20px"}
+              borderBottomLeftRadius={"20px"}
+              w={"10px"}
+            ></HStack>
+            <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
+              <HStack alignItems={"center"}>
+                {NavName === "KIT" ? (
+                  <Image
+                    source={{
+                      uri: "/boxline.svg",
+                    }}
+                    alt=""
+                    size={"28px"}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <IconByName
+                    isDisabled
+                    name={IconName}
+                    //color="amber.400"
+                    _icon={{ size: "30px" }}
+                  />
                 )}
-              </Text>
+
+                <Text ml={5}>
+                  {t(NavName)}
+                  {!["CAMP_VENUE_PHOTOS", "FAMILY_CONSENT"].includes(
+                    NavName
+                  ) && <Text color={"textMaroonColor.400"}>*</Text>}
+                </Text>
+              </HStack>
+              <IconByName
+                isDisabled
+                name="ArrowRightSLineIcon"
+                //color="amber.400"
+                _icon={{ size: "30px" }}
+              />
             </HStack>
-            <IconByName
-              isDisabled
-              name="ArrowRightSLineIcon"
-              //color="amber.400"
-              _icon={{ size: "30px" }}
-            />
           </HStack>
         </Pressable>
       </Box>
