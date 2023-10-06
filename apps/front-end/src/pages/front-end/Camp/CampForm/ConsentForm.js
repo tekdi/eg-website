@@ -148,8 +148,8 @@ export default function ConsentForm() {
                       />
                     </HStack>
                   ) : (
-                    <HStack>
-                      {t("UPLOAD")}
+                    <HStack alignItems={"center"} space={2}>
+                      <FrontEndTypo.H2>{t("UPLOAD")}</FrontEndTypo.H2>
                       <IconByName
                         isDisabled
                         name="Upload2FillIcon"

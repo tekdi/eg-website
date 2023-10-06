@@ -144,14 +144,14 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const isDisabled = () => {
     if (campStatus === "registered") {
       return false;
-    } else {
+    } else if (
       ["CAMP_LOCATION", "FACILITIES", "KIT"].every((name) =>
         Navdata.some((item) => item.Name === name && item.color === "green.300")
-      );
+      )
+    ) {
+      return true;
     }
   };
-
-
   const SubmitCampRegistration = async () => {
     const obj = {
       id: camp_id?.id,
@@ -238,12 +238,20 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           />
         );
       })}
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4" width={"100%"}>
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <BodyMedium>{t("CAMP_APPROVAL_MSG")}</BodyMedium>
-        </HStack>
-      </Alert>
+      {campStatus === "registered" && (
+        <Alert
+          status="warning"
+          alignItems={"start"}
+          mb="3"
+          mt="4"
+          width={"100%"}
+        >
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("CAMP_APPROVAL_MSG")}</BodyMedium>
+          </HStack>
+        </Alert>
+      )}
       <HStack my={3} mx={"auto"} w={"90%"}>
         <FrontEndTypo.Primarybutton
           isDisabled={!isDisabled()}
