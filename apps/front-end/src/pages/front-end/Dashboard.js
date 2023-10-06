@@ -139,7 +139,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
-          <InfoBox status={facilitator?.status} progress={progress} />
+          {facilitator?.status === "applied" && (
+            <InfoBox status={facilitator?.status} progress={progress} />
+          )}
           <Stack>
             {facilitator?.program_faciltators?.status ===
               "selected_for_onboarding" && progress !== 100 ? (
@@ -168,176 +170,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.H1>
             </HStack>
           </Stack>
-          {/* {["application_screened", "screened"].includes(
-            facilitator.status
-          ) && (
-            <Stack>
-              <Stack space="5" p="5">
-                <FrontEndTypo.H3 bold>{t("INTERVIEW_DETAILS")}</FrontEndTypo.H3>
-                <HStack space="5">
-                  <IconByName
-                    isDisabled
-                    name="UserLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3>
-                    {t("CONDUCTED_BY")}: IP Name
-                  </FrontEndTypo.H3>
-                </HStack>
-                <HStack space="5">
-                  <IconByName
-                    isDisabled
-                    name="TimeLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3>9th April, 11 am</FrontEndTypo.H3>
-                </HStack>
-                <HStack space="5">
-                  <IconByName
-                    isDisabled
-                    name="MapPinLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3>{t("ONLINE")}: Google Meet</FrontEndTypo.H3>
-                </HStack>
-                <HStack space="2">
-                  <FrontEndTypo.Secondarybutton width="50%">
-                    {t("REJECT")}
-                  </FrontEndTypo.Secondarybutton>
-                  <FrontEndTypo.Primarybutton width="50%">
-                    {t("ACCEPT")}
-                  </FrontEndTypo.Primarybutton>
-                </HStack>
-              </Stack>
-            </Stack>
-          )} */}
-          {/* {facilitator.status === "shortlisted_for_orientation" && (
-            <Stack>
-            <HStack
-              {...styles.inforBox}
-              p="5"
-              borderBottomWidth="1"
-              borderBottomColor={"gray.300"}
-              shadows="BlueOutlineShadow"
-            >
-              <IconByName
-                flex="0.1"
-                isDisabled
-                name="UserLineIcon"
-                _icon={{ size: "25px" }}
-              />
-              <VStack flex="0.9">
-                <FrontEndTypo.H3 bold>
-                  {t("SHORTLISTED_FOR_ORIENTATION")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4>
-                  {t("YOUR_IP_WILL_SHARE_DETAILS_SOON")}
-                </FrontEndTypo.H4>
-              </VStack>
-            </HStack>
-            </Stack>
-          )} */}
-
-          {/* Used shortlisted_for_orientation */}
-          {/* {facilitator.status === "shortlisted_for_orientation" && (
-            <Stack>
-              <Stack bg="bgPinkColor.300" space="6" p={4}>
-                <FrontEndTypo.H3 bold>
-                  {t("ORIENTATION_DETAILS")}
-                </FrontEndTypo.H3>
-                <HStack space="5">
-                  <IconByName
-                    isDisabled
-                    name="UserLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3>
-                    {t("CONDUCTED_BY")}: IP Name
-                  </FrontEndTypo.H3>
-                </HStack>
-                <HStack space="5">
-                  <IconByName
-                    isDisabled
-                    name="TimeLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3>9th April, 11 am</FrontEndTypo.H3>
-                </HStack>
-                <HStack space="5">
-                  <IconByName
-                    isDisabled
-                    name="MapPinLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3>{t("ONLINE")}: Google Meet</FrontEndTypo.H3>
-                </HStack>
-                <HStack space="2">
-                  <FrontEndTypo.Secondarybutton width="50%">
-                    {t("REJECT")}
-                  </FrontEndTypo.Secondarybutton>
-                  <FrontEndTypo.Primarybutton width="50%">
-                    {t("ACCEPT")}
-                  </FrontEndTypo.Primarybutton>
-                </HStack>
-                <HStack>
-                  <IconByName
-                    isDisabled
-                    name="FileTextLineIcon"
-                    _icon={{ size: "20px" }}
-                  />
-                  <FrontEndTypo.H3 bold space="1" pl="2">
-                    {t("DOCUMENTS_YOU_NEED_TO_CARRY")}
-                  </FrontEndTypo.H3>
-                </HStack>
-                <FrontEndTypo.H3>
-                  {t("MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS")}
-                </FrontEndTypo.H3>
-                <View style={{ marginBottom: 10 }} space="3">
-                  <FrontEndTypo.H3
-                    style={{ fontSize: 14 }}
-                  >{`\u2022 Original Aadhaar Card`}</FrontEndTypo.H3>
-                  <FrontEndTypo.H3
-                    style={{ fontSize: 14 }}
-                  >{`\u2022 Graduation Certificates`}</FrontEndTypo.H3>
-                  <FrontEndTypo.H3
-                    style={{ fontSize: 14 }}
-                  >{`\u2022 Work Experience Proof`}</FrontEndTypo.H3>
-                  <FrontEndTypo.H3
-                    style={{ fontSize: 14 }}
-                  >{`\u2022 Volunteer Experience Proof`}</FrontEndTypo.H3>
-                </View>
-              </Stack>
-            </Stack>
-          )} */}
-          {/* <HStack
-            space="2"
-            alignItems="Center"
-            width="100%"
-            justifyContent="space-evenly"
-            px="5"
-          >
-            <VStack space={2} width="50%">
-              <Button alignItems="Center" variant="outline" py="5">
-                <IconByName
-                  isDisabled
-                  name="UserAddLineIcon"
-                  _icon={{ size: "60px" }}
-                />
-                <Text fontSize="md">{t("ADD_AN_AG")}</Text>
-              </Button>
-            </VStack>
-            <VStack width="50%" space={2}>
-              <Button variant="outline" py="5">
-                <IconByName
-                  isDisabled
-                  name="BriefcaseLineIcon"
-                  _icon={{ size: "60px" }}
-                />
-                <Text fontSize="md">{t("PRERAK_DUTIES")}</Text>
-              </Button>
-            </VStack>
-          </HStack> */}
-          {/* potential prerak */}
           {[
             "pragati_mobilizer",
             "selected_prerak",
@@ -372,25 +204,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     {t("ITS_TIME_TO_START_MOBILIZING")}
                   </FrontEndTypo.H2>
                 )}
-                {/* <Alert mx={"3"} status="info" colorScheme="info" my="4">
-                  <VStack space={"2"} flexShrink={"1"}>
-                    <HStack
-                      flexShrink={"1"}
-                      space={"2"}
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <HStack flexShrink={"1"} space={"2"} alignItems="center">
-                        <Alert.Icon />
-                        {t("YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO")}
-                      </HStack>
-                    </HStack>
-                  </VStack>
-                </Alert> */}
               </Stack>
             </Stack>
           )}
-
           {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
             <Stack>
               <VStack p="5" pt={1}>
@@ -423,33 +239,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.Primarybutton>
                 </Stack>
               )}
-              {/* {facilitator?.aadhar_no !== undefined && (
-                <Stack bg="white" space="5">
-                  <Alert status="warning" alignItems={"start"}>
-                    <HStack alignItems="center" space="2" color>
-                      <Alert.Icon />
-                      <BodyMedium>
-                        {t("SELECTED_FOR_ONBOARDING_ERROR_MESSAGE")}
-                      </BodyMedium>
-                    </HStack>
-                  </Alert>
-                  <AadhaarNumberOKYC
-                    {...{
-                      user: facilitator,
-                    }}
-                  />
-                </Stack>
-              )}
-              <FrontEndTypo.Secondarybutton
-                width="100%"
-                onPress={(e) =>
-                  navigate(`/aadhaar-kyc/${facilitator?.id}/QR`, {
-                    state: "/",
-                  })
-                }
-              >
-                {t("SCAN_QR_CODE")}
-              </FrontEndTypo.Secondarybutton> */}
             </Stack>
           )}
           {isDocumentUpload() && (
