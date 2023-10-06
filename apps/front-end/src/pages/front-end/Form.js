@@ -465,8 +465,8 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await userExist({ mobile });
-    if (result.isUserExist) {
+    const result = await facilitatorRegistryService.isExist({ mobile });
+    if (result?.registeredAsFacilitator) {
       const newErrors = {
         mobile: {
           __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
@@ -505,7 +505,7 @@ export default function App({ facilitator, ip, onClick }) {
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
-        if (result.isUserExist) {
+        if (result?.success) {
           const newErrors = {
             aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],

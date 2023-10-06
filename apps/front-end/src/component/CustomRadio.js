@@ -20,7 +20,7 @@ export default function CustomRadio({
   ...props
 }) {
   const { t } = useTranslation();
-  const { _hstack, icons, _pressable, grid, label, _box, format } =
+  const { _hstack, icons, _stackIcon, _pressable, grid, label, _box, format } =
     schema || {};
   const { enumOptions } = options || {};
   let items = [enumOptions];
@@ -61,7 +61,7 @@ export default function CustomRadio({
                 {...(icons?.[key]?.["_pressable"] || _pressable || {})}
                 onPress={() => onChange(item?.value)}
               >
-                <VStack alignItems="center" space="3" flex="1">
+                <VStack alignItems="center" space="3" flex="1" {..._stackIcon}>
                   {icons?.[subKey + key] && icons?.[subKey + key].name && (
                     <IconByName
                       {...icons[subKey + key]}

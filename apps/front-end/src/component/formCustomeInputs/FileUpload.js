@@ -24,7 +24,7 @@ const FileUpload = ({ value, onChange, schema }) => {
     const item = {
       file,
       document_type,
-      user_id: userId,
+      user_id: userId || localStorage.getItem("id"), // localStorage id of the logged-in user
     };
     for (let key in item) {
       form_data.append(key, item[key]);
