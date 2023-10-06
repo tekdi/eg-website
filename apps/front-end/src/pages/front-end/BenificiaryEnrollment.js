@@ -1,12 +1,11 @@
 import React from "react";
-import { Alert, HStack, VStack } from "native-base";
+import { VStack } from "native-base";
 import {
   ItemComponent,
   benificiaryRegistoryService,
   Layout,
   enumRegistryService,
   GetEnumValue,
-  BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
