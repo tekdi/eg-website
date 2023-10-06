@@ -46,28 +46,23 @@ function AppShell({
     if (searchParams.token != undefined) {
       localStorage.setItem('token', searchParams.token)
       setToken(searchParams.token)
-      skipLogin = true
     }
   }, [])
 
   React.useEffect(() => {
     const getData = async () => {
-      const { newTheme, newRoutes, config } = await getAppshellData(
-        routes,
-        '',
-        themeName
-      )
+      const { newTheme } = await getAppshellData(routes, '', themeName)
       if (!token) {
         if (AuthComponent) {
           setAccessRoutes([
-            ...(guestRoutes ? guestRoutes : []),
+            ...(guestRoutes || []),
             {
               path: '*',
               component: AuthComponent
             }
           ])
         } else {
-          setAccessRoutes([...(guestRoutes ? guestRoutes : [])])
+          setAccessRoutes([...(guestRoutes || [])])
         }
       } else {
         setAccessRoutes(routes)
