@@ -15,10 +15,10 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
-  ImageView,
   enumRegistryService,
   GetEnumValue,
   BodyMedium,
+  CardComponent,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +100,22 @@ export default function FacilitatorBasicDetails({
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
-
+            <VStack>
+              <CardComponent
+                _vstack={{ space: 0 }}
+                _hstack={{ borderBottomWidth: 0 }}
+                title={t("CONTACT_DETAILS")}
+                label={["SELF", "ALTERNATIVE_NUMBER","EMAIL"]}
+                icon={[
+                  { name: "CellphoneLineIcon", color: "iconColor.100" },
+                  { name: "SmartphoneLineIcon", color: "iconColor.100" },
+                  { name: "MailLineIcon", color: "iconColor.100" },
+                ]}
+                item={facilitator}
+                arr={["mobile", "alternative_mobile_number", "email_id"]}
+                onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+              />
+            </VStack>
             <Box
               bg="boxBackgroundColour.100"
               borderColor="#E0E0E0"
