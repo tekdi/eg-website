@@ -29,8 +29,8 @@ const AppRoutesContainer = ({
           <Routes>
             {routes.map((item: any, index: number) => (
               <Route
-                key={index}
-                path={item.path}
+                key={item?.path}
+                path={item?.path}
                 element={
                   <item.component
                     {...{ footerLinks, appName, setAlert, ...otherProps }}
