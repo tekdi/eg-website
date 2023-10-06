@@ -510,9 +510,8 @@ export default function BenificiaryProfileView(props) {
                   </FrontEndTypo.H3>
 
                   {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !== "rejected" &&
                     benificiary?.program_beneficiaries?.status !==
-                      "enrolled_ip_verified" && (
+                      "rejected" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
