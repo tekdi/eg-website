@@ -20,6 +20,7 @@ const columns = (t, navigate) => [
     sortable: true,
     attr: "id",
     wrap: true,
+    width: "100px",
   },
   {
     name: t("NAME"),
@@ -49,6 +50,7 @@ const columns = (t, navigate) => [
     ),
     attr: "name",
     wrap: "true",
+    width: "250px",
   },
   {
     name: t("DISTRICT"),
@@ -61,21 +63,21 @@ const columns = (t, navigate) => [
   {
     name: t("MOBILE_NUMBER"),
     selector: (row) => row?.mobile,
-
     attr: "mobile",
+    wrap: true,
   },
   {
     name: t("STATUS"),
     selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
-
     wrap: true,
     attr: "status",
+    width: "150px",
   },
   {
     name: t("GENDER"),
     selector: (row) => row?.gender,
-
     attr: "gender",
+    width: "100px",
   },
   {
     name: t("ACTION"),
@@ -100,7 +102,6 @@ function Table({
   data,
   loading,
   enumOptions,
-  facilitator,
 }) {
   const { t } = useTranslation();
 

@@ -549,6 +549,30 @@ export default function App() {
     }
     setBtnLoading(false);
   };
+if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
+  return (
+    <Layout
+      loading={loading}
+      _appBar={{
+        onPressBackButton,
+        onlyIconsShow: ["backBtn", "userInfo"],
+        name: t("ENROLLMENT_DETAILS"),
+        lang,
+        setLang,
+        _box: { bg: "white", shadow: "appBarShadow" },
+        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+      }}
+      _page={{ _scollView: { bg: "formBg.500" } }}
+    >
+      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+        <HStack alignItems="center" space="2" color>
+          <Alert.Icon />
+          <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+        </HStack>
+      </Alert>
+    </Layout>
+  );
+}
 
   return (
     <Layout

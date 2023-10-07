@@ -46,7 +46,10 @@ export default function CommunityView({ footerLinks }) {
     const getData = await benificiaryRegistoryService.getCommunityReferences({
       context: "community.user",
     });
-    setData(getData || {});
+    const {
+      data: { community_response },
+    } = getData || {};
+    setData(community_response);
   }, []);
 
   const onChange = async (e, id) => {
@@ -118,7 +121,7 @@ export default function CommunityView({ footerLinks }) {
     >
       <Box p="4">
         {!addMore ||
-          (data?.data.length <= 2 && (
+          (data?.length <= 2 && (
             <Alert
               alignSelf="center"
               status="warning"
@@ -132,8 +135,8 @@ export default function CommunityView({ footerLinks }) {
           ))}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
-            {data?.data?.length > 0 &&
-              data?.data
+            {data?.length > 0 &&
+              data
                 ?.slice()
                 .reverse()
                 .map((item, index) => {
@@ -171,7 +174,7 @@ export default function CommunityView({ footerLinks }) {
                     />
                   );
                 })}
-            {data?.data?.length < 10 && (
+            {data?.length < 10 && (
               <FrontEndTypo.Primarybutton onPress={onAdd}>
                 {t("ADD_COMMUNITY_MEMBER")}
               </FrontEndTypo.Primarybutton>
