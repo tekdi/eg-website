@@ -50,6 +50,8 @@ const ReassignBeneficiariesList = React.lazy(() =>
   import("pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList")
 );
 
+const ViewCamp = React.lazy(() => import("pages/admin/camp/View"));
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
@@ -101,5 +103,6 @@ export default [
     component: enrollmentForm,
   },
   { path: "/", component: Orientation },
+  { path: "/admin/ViewCamp/:id", component: ViewCamp },
   { path: "*", component: NotFound },
 ];
