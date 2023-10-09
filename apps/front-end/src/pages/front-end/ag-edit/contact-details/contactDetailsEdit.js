@@ -58,7 +58,7 @@ import {
 } from "../../../../component/BaseInput.js";
 
 // App
-export default function agFormEdit({ ip }) {
+export default function ContactDetailsEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);
@@ -413,13 +413,9 @@ export default function agFormEdit({ ip }) {
     }
 
     if (id === "root_email_id") {
-      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      console.log("hi");
       if (
         data?.email_id &&
-        !data?.email_id
-          ?.toString()
-          ?.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+        !data?.email_id?.toString()?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
       ) {
         const newErrors = {
           email_id: {
