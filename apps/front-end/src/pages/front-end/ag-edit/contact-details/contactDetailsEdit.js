@@ -2,24 +2,8 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -28,23 +12,17 @@ import {
   IconByName,
   BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
-  uploadRegistryService,
   sendAndVerifyOtp,
   FrontEndTypo,
   CustomOTPBox,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { useScreenshot } from "use-screenshot-hook";
-
 import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
@@ -61,16 +39,10 @@ import {
 export default function ContactDetailsEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
-  const [cameraSelection, setCameraSelection] = React.useState(0);
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
@@ -86,13 +58,7 @@ export default function ContactDetailsEdit({ ip }) {
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
-  };
+
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
@@ -104,7 +70,7 @@ export default function ContactDetailsEdit({ ip }) {
         alternative_device_type,
         alternative_device_ownership,
         ...properties
-      } = constantSchema?.properties;
+      } = constantSchema?.properties || {};
       const required = constantSchema?.required.filter(
         (item) =>
           !["alternative_device_type", "alternative_device_ownership"].includes(
@@ -184,35 +150,6 @@ export default function ContactDetailsEdit({ ip }) {
       }
     }
   };
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
-  };
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -227,39 +164,7 @@ export default function ContactDetailsEdit({ ip }) {
       setSubmitBtn(t("NEXT"));
     }
   }, []);
-  const formSubmitCreate = async (formData) => {};
   const otpfunction = async () => {
-    if (formData?.mobile.length < 10) {
-      const data = await formSubmitCreate(formData);
-
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("MINIMUM_LENGTH_IS_10")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
-      const data = await formSubmitCreate(formData);
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("PLEASE_ENTER_VALID_NUMBER")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
     const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
       ...formData,
       hash: localStorage.getItem("hash"),
@@ -267,23 +172,7 @@ export default function ContactDetailsEdit({ ip }) {
 
     setverifyOtpData(otpData);
     if (status === true) {
-      const data = await formSubmitCreate(formData);
-
-      if (data?.error) {
-        const newErrors = {
-          mobile: {
-            __errors:
-              data?.error?.constructor?.name === "String"
-                ? [data?.error]
-                : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-          },
-        };
-        setErrors(newErrors);
-      } else {
-        submit();
-      }
+      submit();
     } else if (status === false) {
       const newErrors = {
         otp: {
@@ -299,7 +188,7 @@ export default function ContactDetailsEdit({ ip }) {
 
   const formSubmitUpdate = async (formData) => {
     if (id) {
-      const data = await enumRegistryService.editProfileById({
+      await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
@@ -338,11 +227,10 @@ export default function ContactDetailsEdit({ ip }) {
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
+    const regex = /^([+]\d{2})?\d{10}$/;
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (id === "root_mobile") {
-      if (
-        data?.mobile &&
-        !data?.mobile?.toString()?.match(/^([+]\d{2})?\d{10}$/)
-      ) {
+      if (data?.mobile && !data?.mobile?.toString()?.match(regex)) {
         const newErrors = {
           mobile: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
@@ -354,7 +242,7 @@ export default function ContactDetailsEdit({ ip }) {
         setMobileConditon(true);
       }
       if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties;
+        const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
         setFormData((e) => {
@@ -367,9 +255,7 @@ export default function ContactDetailsEdit({ ip }) {
     if (id === "root_alternative_mobile_number") {
       if (
         data?.alternative_mobile_number &&
-        !data?.alternative_mobile_number
-          ?.toString()
-          ?.match(/^([+]\d{2})?\d{10}$/)
+        !data?.alternative_mobile_number?.toString()?.match(regex)
       ) {
         const newErrors = {
           alternative_mobile_number: {
@@ -379,18 +265,14 @@ export default function ContactDetailsEdit({ ip }) {
         setErrors(newErrors);
       }
 
-      if (
-        !data?.alternative_mobile_number
-          ?.toString()
-          ?.match(/^([+]\d{2})?\d{10}$/)
-      ) {
+      if (!data?.alternative_mobile_number?.toString()?.match(regex)) {
         const propertiesMain = schema1.properties;
         const constantSchema = propertiesMain[1];
         const {
           alternative_device_type,
           alternative_device_ownership,
           ...properties
-        } = constantSchema?.properties;
+        } = constantSchema?.properties || {};
         const required = constantSchema?.required.filter((item) =>
           ["alternative_device_type", "alternative_device_ownership"].includes(
             item
@@ -402,9 +284,7 @@ export default function ContactDetailsEdit({ ip }) {
 
       if (
         data?.alternative_mobile_number &&
-        data?.alternative_mobile_number
-          ?.toString()
-          ?.match(/^([+]\d{2})?\d{10}$/)
+        data?.alternative_mobile_number?.toString()?.match(regex)
       ) {
         const propertiesMain = schema1.properties;
         const constantSchema = propertiesMain[1];
@@ -413,10 +293,7 @@ export default function ContactDetailsEdit({ ip }) {
     }
 
     if (id === "root_email_id") {
-      if (
-        data?.email_id &&
-        !data?.email_id?.toString()?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-      ) {
+      if (data?.email_id && !data?.email_id?.toString()?.match(regexEmail)) {
         const newErrors = {
           email_id: {
             __errors: [t("PLEASE_ENTER_VALID_EMAIL")],
@@ -459,7 +336,7 @@ export default function ContactDetailsEdit({ ip }) {
       formData?.mobile != formData?.alternative_mobile_number &&
       !errors
     ) {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };
@@ -475,7 +352,6 @@ export default function ContactDetailsEdit({ ip }) {
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* Box */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -488,7 +364,7 @@ export default function ContactDetailsEdit({ ip }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ RadioBtn, CustomR, CustomOTPBox }}
             templates={{
@@ -504,7 +380,7 @@ export default function ContactDetailsEdit({ ip }) {
             noHtml5Validate={true}
             {...{
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               onChange,
@@ -611,7 +487,7 @@ export default function ContactDetailsEdit({ ip }) {
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
+                    await login(cData);
                     navigate("/");
                     navigate(0);
                   }}
