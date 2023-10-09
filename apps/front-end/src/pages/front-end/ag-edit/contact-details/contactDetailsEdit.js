@@ -417,7 +417,9 @@ export default function agFormEdit({ ip }) {
       console.log("hi");
       if (
         data?.email_id &&
-        !data?.email_id?.toString()?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+        !data?.email_id
+          ?.toString()
+          ?.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ) {
         const newErrors = {
           email_id: {
