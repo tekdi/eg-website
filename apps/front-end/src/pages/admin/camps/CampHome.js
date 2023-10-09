@@ -85,7 +85,7 @@ const columns = (navigate) => [
     selector: (row) => (
       <AdminTypo.Secondarybutton
         my="3"
-        onPress={() => navigate(`/admin/camp/987/view`)}
+        onPress={() => navigate(`/admin/camp/${row?.id}/view`)}
       >
         {t("VIEW")}
       </AdminTypo.Secondarybutton>
@@ -95,7 +95,7 @@ const columns = (navigate) => [
   },
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
-  const [filter, setFilter] = React.useState({ limit: 5 });
+  const [filter, setFilter] = React.useState({});
   const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
