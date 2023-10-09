@@ -132,7 +132,7 @@ export default function FacilitatorBasicDetails({
                   .join(", "),
               }}
               arr={["home"]}
-              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+              onEdit={(e) => navigate(`/profile/edit/address_details`)}
             />
             <CardComponent
               _vstack={{ space: 0 }}
@@ -141,7 +141,7 @@ export default function FacilitatorBasicDetails({
               label={["Gender", "Social Category", "Martial Status"]}
               item={facilitator}
               arr={["gender", "social_category", "marital_status"]}
-              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+              onEdit={(e) => navigate(`/profile/edit/personal_details`)}
             />
             <CardComponent
               _vstack={{ space: 0 }}
@@ -154,7 +154,7 @@ export default function FacilitatorBasicDetails({
                 contact_number: [facilitator?.references?.contact_number],
               }}
               arr={["name", "designation", "contact_number"]}
-              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+              onEdit={(e) => navigate(`/profile/edit/reference_details`)}
             />
             <CardComponent
               _vstack={{ space: 0 }}
@@ -163,7 +163,7 @@ export default function FacilitatorBasicDetails({
               label={["Availability", "Designation", "Contact"]}
               item={facilitator}
               arr={["name"]}
-              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+              onEdit={(e) => navigate(`/profile/edit/work_availability_details`)}
             />
           </VStack>
         </VStack>
