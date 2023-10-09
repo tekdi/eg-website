@@ -40,7 +40,6 @@ export default function ContactDetailsEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
@@ -412,93 +411,6 @@ export default function ContactDetailsEdit({ ip }) {
           <React.Fragment />
         )}
       </Box>
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.username}
-                    </BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.password}
-                    </BodySmall>
-                  </HStack>
-                </Box>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }
