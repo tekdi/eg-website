@@ -25,6 +25,7 @@ import {
   setQueryParameters,
   debounce,
   urlData,
+  filterObject,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -374,37 +375,45 @@ export const Filter = ({ filter, setFilter }) => {
           newFilter = { ...newFilter, [e]: filter[e] };
         }
       });
-      const result = await facilitatorRegistryService.searchByBeneficiary({
-        ...facilitatorFilter,
-        ...newFilter,
-      });
-      setIsMore(
-        parseInt(`${result?.data?.currentPage}`) <
-          parseInt(`${result?.data?.totalPages}`)
-      );
-      const newData = result?.data?.data?.map((e) => ({
-        value: e?.id,
-        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
-      }));
-      const newFilterData = newData.filter(
-        (e) =>
-          facilitator.filter((subE) => subE.value === e?.value).length === 0
-      );
-      if (filter?.page > 1) {
-        setFacilitator([...facilitator, ...newFilterData]);
-      } else {
-        setFacilitator(newFilterData);
+      const { error, ...result } =
+        await facilitatorRegistryService.searchByBeneficiary({
+          ...facilitatorFilter,
+          ...newFilter,
+        });
+      if (!error) {
+        setIsMore(
+          parseInt(`${result?.data?.currentPage}`) <
+            parseInt(`${result?.data?.totalPages}`)
+        );
+        const newData = result?.data?.data?.map((e) => ({
+          value: e?.id,
+          label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+        }));
+        const newFilterData = newData?.filter(
+          (e) =>
+            facilitator?.filter((subE) => subE.value === e?.value).length === 0
+        );
+        if (filter?.page > 1) {
+          setFacilitator([...facilitator, ...newFilterData]);
+        } else {
+          setFacilitator(newFilterData);
+        }
       }
     };
     facilitatorDetails();
   }, [facilitatorFilter, filter]);
 
   const onChange = async (data) => {
-    const { district, block } = data?.formData || {};
+    const { district: newDistrict, block: newBlock } = data?.formData || {};
+    const { district, block, ...remainData } = filter;
     setFilterObject({
-      ...filter,
-      ...(district ? { district } : {}),
-      ...(block ? { block } : {}),
+      ...remainData,
+      ...(newDistrict?.length > 0
+        ? {
+            district: newDistrict,
+            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+          }
+        : {}),
     });
   };
 
