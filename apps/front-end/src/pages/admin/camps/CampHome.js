@@ -106,7 +106,7 @@ const [data, setData]=React.useState([]);
     const qData = await CampService.getCampList();
     setData(qData)
   }, []);
-  console.log("qdata",data);
+  
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack
@@ -214,7 +214,7 @@ const [data, setData]=React.useState([]);
                 customStyles={CustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
-
+                facilitator={userTokenInfo?.authUser}
                 pagination
                 paginationRowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
                 defaultSortAsc
