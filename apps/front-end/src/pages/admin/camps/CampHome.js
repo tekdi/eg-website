@@ -14,10 +14,13 @@ import {
   IconByName,
   AdminLayout as Layout,
   debounce,
+  CampService,
   t,
   useWindowSize,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
+import { ChipStatus } from "component/Chip";
+
 
 export const CustomStyles = {
   rows: {
@@ -41,73 +44,40 @@ export const CustomStyles = {
     },
   },
 };
-const data = [
-  {
-    id: 1,
-    camp: "abc",
-    prerak_id: 9,
-    prerak: "Tushar",
-    camp_status: "Complete",
-  },
-  {
-    id: 2,
-    camp: "def",
-    prerak_id: 8,
-    prerak: "Sagar",
-    camp_status: "Incomplete",
-  },
-  {
-    id: 3,
-    camp: "ghi",
-    prerak_id: 7,
-    prerak: "Swapnil",
-    camp_status: "Complete",
-  },
-  {
-    id: 4,
-    camp: "jkl",
-    prerak_id: 5,
-    prerak: "Chaitanya",
-    camp_status: "Complete",
-  },
-  {
-    id: 5,
-    camp: "mno",
-    prerak_id: 10,
-    prerak: "Rahul",
-    camp_status: "InComplete",
-  },
-];
+
 const columns = (navigate) => [
+  
   {
     name: t("ID"),
-    selector: (row) => row?.id,
+    selector: (row) => row?.name,
     sortable: true,
     attr: "aadhaar",
     wrap: true,
+    // width:'50px'
   },
   {
     name: t("CAMP"),
-    selector: (row) => row?.camp,
+    selector: (row) => row?.name,
     sortable: true,
     attr: "count",
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.prerak_id,
+    selector: (row) => row?.camp.group_users[0].user.faciltator_id,
     sortable: true,
     attr: "count",
   },
   {
     name: t("PRERAK"),
-    selector: (row) => row?.prerak,
+    selector: (row) => row?.camp?.group_users[0]?.user?.first_name +" "+row?.camp?.group_users[0]?.user?.last_name,
     sortable: true,
     attr: "count",
   },
   {
     name: t("CAMP_STATUS"),
-    selector: (row) => row?.camp_status,
+    selector: (row) => <ChipStatus status={row?.status} />,
     sortable: true,
+    wrap:true,
     attr: "count",
   },
   {
@@ -125,11 +95,18 @@ const columns = (navigate) => [
   },
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
-  const [filter, setFilter] = React.useState({ limit: 10 });
+  const [filter, setFilter] = React.useState({ limit: 5 });
   const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const navigate = useNavigate();
+const [data, setData]=React.useState([]);
+
+  React.useEffect(async () => {
+    const qData = await CampService.getCampList();
+    setData(qData)
+  }, []);
+  console.log("qdata",data);
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack
@@ -237,6 +214,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 customStyles={CustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
+
                 pagination
                 paginationRowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
                 defaultSortAsc
