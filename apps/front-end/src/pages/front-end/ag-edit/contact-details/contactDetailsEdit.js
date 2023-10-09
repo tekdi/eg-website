@@ -414,8 +414,11 @@ export default function agFormEdit({ ip }) {
 
     if (id === "root_email_id") {
       const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-      if (data?.email_id && !data?.email_id?.toString()?.match(regex)) {
+      console.log("hi");
+      if (
+        data?.email_id &&
+        !data?.email_id?.toString()?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+      ) {
         const newErrors = {
           email_id: {
             __errors: [t("PLEASE_ENTER_VALID_EMAIL")],
