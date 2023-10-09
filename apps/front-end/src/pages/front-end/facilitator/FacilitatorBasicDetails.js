@@ -15,10 +15,10 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
-  ImageView,
   enumRegistryService,
   GetEnumValue,
   BodyMedium,
+  CardComponent,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -100,489 +100,71 @@ export default function FacilitatorBasicDetails({
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
-
-            <Box
-              bg="boxBackgroundColour.100"
-              borderColor="#E0E0E0"
-              borderRadius="10px"
-              borderWidth="1px"
-              paddingBottom="24px"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3
-                    fontWeight="700"
-                    bold
-                    color="textGreyColor.800"
-                  >
-                    {t("CONTACT_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="EditBoxLineIcon"
-                    color="iconColor.100"
-                    onPress={(e) => {
-                      navigate(`/profile/edit/contact_details`);
-                    }}
-                  />
-                </HStack>
-                <Box paddingTop="2">
-                  <Progress
-                    value={arrList(facilitator, [
-                      "device_ownership",
-                      "mobile",
-                      "device_type",
-                    ])}
-                    size="xs"
-                    colorScheme="info"
-                  />
-                </Box>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="Center" justifyContent="space-between">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {t("SELF")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {facilitator?.mobile ? facilitator?.mobile : "-"}
-                    </FrontEndTypo.H3>
-
-                    <IconByName
-                      name="CellphoneLineIcon"
-                      color="iconColor.100"
-                    />
-                  </HStack>
-                  <Divider
-                    orientation="horizontal"
-                    bg="AppliedColor"
-                    thickness="1"
-                  />
-                  <HStack alignItems="Center" justifyContent="space-between">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {t("ALTERNATIVE_NUMBER")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {facilitator?.alternative_mobile_number
-                        ? facilitator?.alternative_mobile_number
-                        : "-"}
-                    </FrontEndTypo.H3>
-
-                    <IconByName
-                      name="SmartphoneLineIcon"
-                      color="iconColor.100"
-                    />
-                  </HStack>
-                  <Divider
-                    orientation="horizontal"
-                    bg="AppliedColor"
-                    thickness="1"
-                  />
-
-                  <HStack
-                    alignItems="Center"
-                    justifyContent="space-between"
-                    alignContent="left"
-                    position="left"
-                  >
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {t("EMAIL")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {facilitator?.email_id ? facilitator?.email_id : "-"}
-                    </FrontEndTypo.H3>
-
-                    <IconByName name="MailLineIcon" color="iconColor.100" />
-                  </HStack>
-                </VStack>
-              </VStack>
-            </Box>
-
-            <Box
-              bg="#FAFAFA"
-              borderColor="#E0E0E0"
-              borderRadius="10px"
-              borderWidth="1px"
-              paddingBottom="24px"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3
-                    fontWeight="700"
-                    bold
-                    color="textGreyColor.800"
-                  >
-                    {t("ADDRESS_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="EditBoxLineIcon"
-                    color="iconColor.100"
-                    onPress={(e) => {
-                      navigate(`/profile/edit/address_details`);
-                    }}
-                  />
-                </HStack>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="Center" space="xl">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {t("HOME")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {[
-                        facilitator?.state,
-                        facilitator?.district,
-                        facilitator?.block,
-                        facilitator?.village,
-                        facilitator?.grampanchayat,
-                      ]
-                        .filter((e) => e)
-                        .join(", ")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                </VStack>
-              </VStack>
-            </Box>
-
-            <Box
-              bg="boxBackgroundColour.100"
-              borderColor="#E0E0E0"
-              borderRadius="10px"
-              borderWidth="1px"
-              paddingBottom="24px"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3
-                    fontWeight="700"
-                    bold
-                    color="textGreyColor.800"
-                  >
-                    {t("PERSONAL_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="EditBoxLineIcon"
-                    color="iconColor.100"
-                    onPress={(e) => {
-                      navigate(`/profile/edit/personal_details`);
-                    }}
-                  />
-                </HStack>
-                <Box paddingTop="2">
-                  <Progress
-                    value={arrList(arrPersonal, [
-                      "gender",
-                      "marital_status",
-                      "social_category",
-                    ])}
-                    size="xs"
-                    colorScheme="info"
-                  />
-                </Box>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="Center" space="xl">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {t("GENDER")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {facilitator?.gender ? (
-                        <GetEnumValue
-                          t={t}
-                          enumType={"GENDER"}
-                          enumOptionValue={facilitator?.gender}
-                          enumApiData={enumOptions}
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <Divider
-                    orientation="horizontal"
-                    bg="AppliedColor"
-                    thickness="1"
-                  />
-                  <HStack alignItems="Center" space="xl">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {t("SOCIAL_CATEGORY")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {facilitator?.extended_users?.social_category ? (
-                        <GetEnumValue
-                          t={t}
-                          enumType={"FACILITATOR_SOCIAL_STATUS"}
-                          enumOptionValue={
-                            facilitator?.extended_users?.social_category
-                          }
-                          enumApiData={enumOptions}
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                  <Divider
-                    orientation="horizontal"
-                    bg="AppliedColor"
-                    thickness="1"
-                  />
-                  <HStack alignItems="Center" space="2xl">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {t("MARITAL_STATUS")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {facilitator?.extended_users?.marital_status ? (
-                        <GetEnumValue
-                          t={t}
-                          enumType={"MARITAL_STATUS"}
-                          enumOptionValue={
-                            facilitator?.extended_users?.marital_status
-                          }
-                          enumApiData={enumOptions}
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                </VStack>
-              </VStack>
-            </Box>
-            {
-              <Box
-                bg="boxBackgroundColour.100"
-                borderColor="#E0E0E0"
-                borderRadius="10px"
-                borderWidth="1px"
-                paddingBottom="24px"
-              >
-                <VStack
-                  paddingLeft="16px"
-                  paddingRight="16px"
-                  paddingTop="16px"
-                >
-                  <HStack justifyContent="space-between" alignItems="Center">
-                    <FrontEndTypo.H3
-                      fontWeight="700"
-                      bold
-                      color="textGreyColor.800"
-                    >
-                      {t("REFERENCE_DETAILS")}
-                    </FrontEndTypo.H3>
-                    <IconByName
-                      name="EditBoxLineIcon"
-                      color="iconColor.100"
-                      onPress={(e) => {
-                        navigate(`/profile/edit/reference_details`);
-                      }}
-                    />
-                  </HStack>
-                  <Box paddingTop="2">
-                    <Progress
-                      value={arrList(facilitator?.references, [
-                        "name",
-
-                        "contact_number",
-                      ])}
-                      size="xs"
-                      colorScheme="info"
-                    />
-                  </Box>
-                  <VStack space="2" paddingTop="5">
-                    <HStack alignItems="Center" space="2xl">
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.4"
-                      >
-                        {t("NAME")}
-                      </FrontEndTypo.H3>
-
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {facilitator?.references?.name
-                          ? facilitator?.references.name
-                          : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    <Divider
-                      orientation="horizontal"
-                      bg="AppliedColor"
-                      thickness="1"
-                    />
-                    <HStack alignItems="Center" space="2xl">
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.4"
-                      >
-                        {t("DESIGNATION")}
-                      </FrontEndTypo.H3>
-
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {facilitator?.references?.designation
-                          ? facilitator?.references.designation
-                          : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    <Divider
-                      orientation="horizontal"
-                      bg="AppliedColor"
-                      thickness="1"
-                    />
-                    <HStack alignItems="Center" space="2xl">
-                      <FrontEndTypo.H3
-                        color="textGreyColor.50"
-                        fontWeight="400"
-                        flex="0.4"
-                      >
-                        {t("CONTACT")}
-                      </FrontEndTypo.H3>
-
-                      <FrontEndTypo.H3
-                        color="textGreyColor.800"
-                        fontWeight="400"
-                        flex="0.3"
-                      >
-                        {facilitator?.references?.contact_number
-                          ? facilitator?.references.contact_number
-                          : "-"}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                  </VStack>
-                </VStack>
-              </Box>
-            }
-            <Box
-              bg="#FAFAFA"
-              borderColor="#E0E0E0"
-              borderRadius="10px"
-              borderWidth="1px"
-              paddingBottom="24px"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <HStack justifyContent="space-between" alignItems="Center">
-                  <FrontEndTypo.H3
-                    fontWeight="700"
-                    bold
-                    color="textGreyColor.800"
-                  >
-                    {t("OTHER_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="EditBoxLineIcon"
-                    color="iconColor.100"
-                    onPress={(e) => {
-                      navigate(`/profile/edit/work_availability_details`);
-                    }}
-                  />
-                </HStack>
-                <Box paddingTop="2">
-                  <Progress
-                    value={arrList(facilitator, ["availability"])}
-                    size="xs"
-                    colorScheme="info"
-                  />
-                </Box>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="Center" space="xl">
-                    <FrontEndTypo.H3
-                      color="textGreyColor.50"
-                      fontWeight="400"
-                      flex="0.4"
-                    >
-                      {t("AVAILABILITY")}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H3
-                      color="textGreyColor.800"
-                      fontWeight="400"
-                      flex="0.3"
-                    >
-                      {/* {facilitator?.availability
-                      ? facilitator?.availability
-                      : "-"} */}
-                      {facilitator?.availability ? (
-                        <GetEnumValue
-                          t={t}
-                          enumType={"FACILITATOR_AVAILABILITY"}
-                          enumOptionValue={facilitator?.availability}
-                          enumApiData={enumOptions}
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                </VStack>
-              </VStack>
-            </Box>
+            <CardComponent
+              _vstack={{ space: 0 }}
+              _hstack={{ borderBottomWidth: 0 }}
+              title={t("CONTACT_DETAILS")}
+              label={["SELF", "ALTERNATIVE_NUMBER", "EMAIL"]}
+              icon={[
+                { name: "CellphoneLineIcon", color: "iconColor.100" },
+                { name: "SmartphoneLineIcon", color: "iconColor.100" },
+                { name: "MailLineIcon", color: "iconColor.100" },
+              ]}
+              item={facilitator}
+              arr={["mobile", "alternative_mobile_number", "email_id"]}
+              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+            />
+            <CardComponent
+              isHideProgressBar={true}
+              _vstack={{ space: 0 }}
+              _hstack={{ borderBottomWidth: 0 }}
+              title={t("ADDRESS_DETAILS")}
+              label={["HOME"]}
+              item={{
+                home: [
+                  facilitator?.state,
+                  facilitator?.district,
+                  facilitator?.block,
+                  facilitator?.village,
+                  facilitator?.grampanchayat,
+                ]
+                  .filter((e) => e)
+                  .join(", "),
+              }}
+              arr={["home"]}
+              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+            />
+            <CardComponent
+              _vstack={{ space: 0 }}
+              _hstack={{ borderBottomWidth: 0 }}
+              title={t("PERSONAL_DETAILS")}
+              label={["Gender", "Social Category", "Martial Status"]}
+              item={facilitator}
+              arr={["gender", "social_category", "marital_status"]}
+              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+            />
+            <CardComponent
+              _vstack={{ space: 0 }}
+              _hstack={{ borderBottomWidth: 0 }}
+              title={t("REFERENCE_DETAILS")}
+              label={["Name", "Designation", "Contact"]}
+              item={{
+                name: [facilitator?.references?.name],
+                designation: [facilitator?.references?.designation],
+                contact_number: [facilitator?.references?.contact_number],
+              }}
+              arr={["name", "designation", "contact_number"]}
+              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+            />
+            <CardComponent
+              _vstack={{ space: 0 }}
+              _hstack={{ borderBottomWidth: 0 }}
+              title={t("OTHER_DETAILS")}
+              label={["Availability", "Designation", "Contact"]}
+              item={facilitator}
+              arr={["name"]}
+              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+            />
           </VStack>
         </VStack>
       )}

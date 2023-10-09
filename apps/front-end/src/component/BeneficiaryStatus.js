@@ -136,6 +136,11 @@ export function ChipStatus({
         setTextColor("#fff");
         setColor("textGreen.600");
         break;
+      case "identified_ready_to_enroll":
+        setNewStatus(t("IDENTIFIED_READY_TO_ENROLL"));
+        setTextColor("textGreyColor.800");
+        setColor("identifiedColor");
+        break;
       default:
         setNewStatus(t("IDENTIFIED"));
         setTextColor("textGreyColor.800");

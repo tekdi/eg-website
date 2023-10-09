@@ -7,15 +7,7 @@ import {
   arrList,
   BodyMedium,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  Box,
-  Pressable,
-  Text,
-  Image,
-  Avatar,
-  Alert,
-} from "native-base";
+import { HStack, Pressable, Image, Avatar, Alert, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -144,14 +136,14 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const isDisabled = () => {
     if (campStatus === "registered") {
       return false;
-    } else {
+    } else if (
       ["CAMP_LOCATION", "FACILITIES", "KIT"].every((name) =>
         Navdata.some((item) => item.Name === name && item.color === "green.300")
-      );
+      )
+    ) {
+      return true;
     }
   };
-
-
   const SubmitCampRegistration = async () => {
     const obj = {
       id: camp_id?.id,
@@ -174,87 +166,85 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         _box: { bg: "white" },
       }}
     >
-      <HStack margin={"auto"} mt={3} space={4}>
-        <HStack space={2} alignItems={"center"}>
-          <Avatar bg="gray.300" size={"sm"}></Avatar>
-          <Text>{t("NOT_STARTED")}</Text>
+      <VStack p="4" space={4}>
+        <HStack margin={"auto"} mt={3} space={4}>
+          <HStack space={2} alignItems={"center"}>
+            <Avatar bg="gray.300" size={["15px", "sm"]} />
+            <FrontEndTypo.H3>{t("NOT_STARTED")}</FrontEndTypo.H3>
+          </HStack>
+          <HStack space={2} alignItems={"center"}>
+            <Avatar bg="amber.300" size={["15px", "sm"]} />
+            <FrontEndTypo.H3>{t("IN_PROGRESS")}</FrontEndTypo.H3>
+          </HStack>
+          <HStack space={2} alignItems={"center"}>
+            <Avatar bg="green.300" size={["15px", "sm"]} />
+            <FrontEndTypo.H3>{t("COMPLETED")}</FrontEndTypo.H3>
+          </HStack>
         </HStack>
-        <HStack space={2} alignItems={"center"}>
-          <Avatar bg="amber.300" size={"sm"}></Avatar>
-          <Text>{t("IN_PROGRESS")}</Text>
-        </HStack>
-        <HStack space={2} alignItems={"center"}>
-          <Avatar bg="green.300" size={"sm"}></Avatar>
-          <Text>{t("COMPLETED")}</Text>
-        </HStack>
-      </HStack>
-
-      <HStack w={"90%"} marginTop={3} marginBottom={2} margin={"auto"}>
-        <Box
+        <Pressable
           bg="boxBackgroundColour.100"
-          borderColor="btnGray.100"
-          borderRadius="10px"
-          borderWidth="1px"
           shadow="AlertShadow"
-          w={"95%"}
-          paddingX={5}
-          paddingY={3}
-          ml={5}
-        >
-          <Pressable
-            onPress={async () => {
-              navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
-            }}
-          >
-            <HStack justifyContent={"space-between"}>
-              <HStack alignItems={"center"}>
-                <IconByName
-                  isDisabled
-                  name={"GraduationCap"}
-                  _icon={{ size: "30px" }}
-                />
-
-                <Text ml={5}>{t("UPDATE_LEARNER")}</Text>
-              </HStack>
-              <IconByName
-                isDisabled
-                name="ArrowRightSLineIcon"
-                _icon={{ size: "30px" }}
-              />
-            </HStack>
-          </Pressable>
-        </Box>
-      </HStack>
-
-      {Navdata.map((item) => {
-        return (
-          <NavigationBox
-            key={item}
-            camp_id={camp_id}
-            IconName={item?.Icon}
-            NavName={item?.Name}
-            step={item?.step}
-            color={item?.color}
-          />
-        );
-      })}
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4" width={"100%"}>
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <BodyMedium>{t("CAMP_APPROVAL_MSG")}</BodyMedium>
-        </HStack>
-      </Alert>
-      <HStack my={3} mx={"auto"} w={"90%"}>
-        <FrontEndTypo.Primarybutton
-          isDisabled={!isDisabled()}
-          width={"100%"}
-          onPress={() => {
-            SubmitCampRegistration();
+          borderRadius="10px"
+          onPress={async () => {
+            navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
           }}
         >
-          {t("SUBMIT_FOR_REGISTRATION")}
-        </FrontEndTypo.Primarybutton>
-      </HStack>
+          <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
+            <HStack alignItems={"center"}>
+              <IconByName
+                isDisabled
+                name={"GraduationCap"}
+                _icon={{ size: "30px" }}
+              />
+
+              <FrontEndTypo.H3 ml={5}>{t("UPDATE_LEARNER")}</FrontEndTypo.H3>
+            </HStack>
+            <IconByName
+              isDisabled
+              name="ArrowRightSLineIcon"
+              _icon={{ size: "30px" }}
+            />
+          </HStack>
+        </Pressable>
+
+        {Navdata.map((item) => {
+          return (
+            <NavigationBox
+              key={item}
+              camp_id={camp_id}
+              IconName={item?.Icon}
+              NavName={item?.Name}
+              step={item?.step}
+              color={item?.color}
+            />
+          );
+        })}
+        {campStatus === "registered" && (
+          <Alert
+            status="warning"
+            alignItems={"start"}
+            mb="3"
+            mt="4"
+            width={"100%"}
+          >
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <BodyMedium>{t("CAMP_APPROVAL_MSG")}</BodyMedium>
+            </HStack>
+          </Alert>
+        )}
+        <HStack my={3} mx={"auto"} w={"90%"}>
+          <FrontEndTypo.Primarybutton
+            isDisabled={!isDisabled()}
+            width={"100%"}
+            onPress={() => {
+              SubmitCampRegistration();
+            }}
+          >
+            {t("SUBMIT_FOR_REGISTRATION")}
+          </FrontEndTypo.Primarybutton>
+        </HStack>
+      </VStack>
     </Layout>
   );
 }
@@ -268,65 +258,50 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
   };
 
   return (
-    <HStack w={"90%"} marginTop={3} marginBottom={2} margin={"auto"}>
-      <HStack
-        background={color}
-        borderTopLeftRadius={"20px"}
-        borderBottomLeftRadius={"20px"}
-        w={"10px"}
-      ></HStack>
-      <Box
-        bg="boxBackgroundColour.100"
-        borderColor="btnGray.100"
-        borderRadius="10px"
-        borderWidth="1px"
-        shadow="AlertShadow"
-        w={"95%"}
-        paddingX={5}
-        paddingY={3}
-        ml={2}
-      >
-        <Pressable
-          onPress={async () => {
-            navToForm(step);
-          }}
-        >
-          <HStack justifyContent={"space-between"}>
-            <HStack alignItems={"center"}>
-              {NavName === "KIT" ? (
-                <Image
-                  source={{
-                    uri: "/boxline.svg",
-                  }}
-                  alt=""
-                  size={"28px"}
-                  resizeMode="contain"
-                />
-              ) : (
-                <IconByName
-                  isDisabled
-                  name={IconName}
-                  //color="amber.400"
-                  _icon={{ size: "30px" }}
-                />
-              )}
-
-              <Text ml={5}>
-                {t(NavName)}
-                {!["CAMP_VENUE_PHOTOS", "FAMILY_CONSENT"].includes(NavName) && (
-                  <Text color={"textMaroonColor.400"}>*</Text>
-                )}
-              </Text>
-            </HStack>
+    <Pressable
+      onPress={async () => {
+        navToForm(step);
+      }}
+      bg="boxBackgroundColour.100"
+      shadow="AlertShadow"
+      borderLeftWidth={10}
+      borderLeftColor={color}
+      borderRadius="10px"
+    >
+      <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
+        <HStack alignItems={"center"}>
+          {NavName === "KIT" ? (
+            <Image
+              source={{
+                uri: "/boxline.svg",
+              }}
+              alt=""
+              size={"28px"}
+              resizeMode="contain"
+            />
+          ) : (
             <IconByName
               isDisabled
-              name="ArrowRightSLineIcon"
+              name={IconName}
               //color="amber.400"
               _icon={{ size: "30px" }}
             />
-          </HStack>
-        </Pressable>
-      </Box>
-    </HStack>
+          )}
+
+          <FrontEndTypo.H3 ml={5}>
+            {t(NavName)}
+            {!["CAMP_VENUE_PHOTOS", "FAMILY_CONSENT"].includes(NavName) && (
+              <FrontEndTypo.H3 color={"textMaroonColor.400"}>*</FrontEndTypo.H3>
+            )}
+          </FrontEndTypo.H3>
+        </HStack>
+        <IconByName
+          isDisabled
+          name="ArrowRightSLineIcon"
+          //color="amber.400"
+          _icon={{ size: "30px" }}
+        />
+      </HStack>
+    </Pressable>
   );
 };

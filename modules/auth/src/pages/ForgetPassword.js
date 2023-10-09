@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   HStack,
-  Button,
-  Box,
   FormControl,
   Input,
   VStack,
@@ -16,16 +14,10 @@ import {
   useWindowSize,
   Subtitle,
   t,
-  login,
-  logout,
-  H1,
   Layout,
-  BodyMedium,
-  H4,
   authRegistryService,
   CustomOTPBox,
   FrontEndTypo,
-  FloatingInput,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +40,10 @@ export default function ForgetPassword() {
 
   const [otpData, setotpData] = useState();
   const navigate = useNavigate();
+
+  const onPressBackButton = async () => {
+    navigate("/login");
+  };
 
   const validate = () => {
     let arr = {};
@@ -149,7 +145,8 @@ export default function ForgetPassword() {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["helpBtn"],
+        onPressBackButton,
+        onlyIconsShow: ["helpBtn", "backBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
@@ -168,7 +165,7 @@ export default function ForgetPassword() {
             uri: "/images/auth/forget_password.png",
           }}
           alt="reset password"
-          width="240"
+          width="310"
           height="215"
         />
         <VStack space={5} p="5">
