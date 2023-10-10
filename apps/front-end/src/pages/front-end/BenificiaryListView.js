@@ -45,9 +45,7 @@ const LearnerMessage = ({ program_beneficiaries }) => {
 
   return (
     <HStack color="blueText.450" alignItems="center">
-      <FrontEndTypo.H4 color="blueText.450" underline>
-        {getTitle()}
-      </FrontEndTypo.H4>
+      <FrontEndTypo.H4 color="blueText.450">{getTitle()}</FrontEndTypo.H4>
     </HStack>
   );
 };
@@ -73,9 +71,10 @@ const List = ({ data }) => {
               onPress={async () => {
                 navigate(`/beneficiary/${item?.id}`);
               }}
+              flex={1}
             >
-              <HStack justifyContent="space-between">
-                <HStack alignItems="Center" flex="5">
+              <HStack justifyContent="space-between" space={1}>
+                <HStack alignItems="Center" flex={[1, 2, 4]}>
                   {item?.profile_photo_1?.id ? (
                     <ImageView
                       source={{
@@ -130,20 +129,21 @@ const List = ({ data }) => {
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box maxW="121px">
+                <VStack alignItems="end" flex={[1]}>
                   <ChipStatus
+                    w="fit-content"
                     status={item?.program_beneficiaries?.status}
                     is_duplicate={item?.is_duplicate}
                     is_deactivated={item?.is_deactivated}
                     rounded={"sm"}
                   />
-                </Box>
+                </VStack>
               </HStack>
             </Pressable>
-            <VStack bg="white" pl="2">
+            <VStack bg="white" pl="2" mr="2">
               {item?.program_beneficiaries?.status === "identified" && (
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450">
                     {t("COMPLETE_THE_DOCUMENTATION")}
                   </FrontEndTypo.H4>
                   <IconByName
@@ -155,10 +155,9 @@ const List = ({ data }) => {
                   />
                 </HStack>
               )}
-
               {item?.program_beneficiaries?.status === "enrollment_pending" && (
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450">
                     {t("CONTINUE_ENROLLMENT")}
                   </FrontEndTypo.H4>
                   <IconByName
@@ -169,10 +168,9 @@ const List = ({ data }) => {
                   />
                 </HStack>
               )}
-
               {item?.program_beneficiaries?.status === "ready_to_enroll" && (
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450">
                     {t("ENTER_THE_ENROLLMENT_DETAILS")}
                   </FrontEndTypo.H4>
                   <IconByName
@@ -183,56 +181,21 @@ const List = ({ data }) => {
                   />
                 </HStack>
               )}
-
+              {["duplicated", "enrolled_ip_verified"]?.includes(
+                item?.program_beneficiaries?.status
+              ) && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450">
+                    {item?.program_beneficiaries?.status === "duplicated"
+                      ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
+                      : t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
               {item?.program_beneficiaries?.status === "enrolled" && (
                 <LearnerMessage
                   program_beneficiaries={item?.program_beneficiaries}
                 />
-              )}
-
-              {item?.program_beneficiaries?.status === "dropout" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4
-                    color="blueText.450"
-                    underline
-                  ></FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status === "duplicated" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("FOLLOW_UP_WITH_IP_ASSIGNMENT")}
-                  </FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status ===
-                "enrolled_ip_verified" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
-                  </FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status === "rejected" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4
-                    color="blueText.450"
-                    underline
-                  ></FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status ===
-                "ineligible_for_pragati_camp" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4
-                    color="blueText.450"
-                    underline
-                  ></FrontEndTypo.H4>
-                </HStack>
               )}
             </VStack>
           </VStack>
