@@ -12,11 +12,11 @@ import {
   getOptions,
   enumRegistryService,
   validation,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { widgets, templates } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
-import ItemComponent from "./ItemComponent.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -68,7 +68,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     if (schema1.type === "step") {
       const properties = schema1.properties;
       let newSchema1 =
@@ -142,7 +142,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, [type]);
 
   const getData = async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     if (id) {
       const result = await facilitatorRegistryService.getOne({ id });
       setfacilitator(result);
@@ -157,12 +157,12 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   const formSubmitUpdate = async (data, overide) => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     if (id) {
       setLoading(true);
       const result = await facilitatorRegistryService.profileStapeUpdate({
         ...data,
-        ...(overide ? overide : {}),
+        ...(overide || {}),
         id: id,
       });
       getData();
@@ -244,7 +244,23 @@ export default function App({ userTokenInfo, footerLinks }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     const user = userTokenInfo?.authUser;
-    setErrors();
+    if (id === "root_reference_details_contact_number") {
+      if (data?.reference_details?.contact_number?.toString().length === 10) {
+        if (data?.reference_details?.contact_number === facilitator?.mobile) {
+          const newErrors = {
+            reference_details: {
+              contact_number: {
+                __errors: [t("ERROR_MESSAGE_MOBILE_NUMBER_CANNT_USE")],
+              },
+            },
+          };
+          setErrors(newErrors);
+        } else {
+          setErrors();
+        }
+      }
+    }
+
     if (id === "root_reference_details_type_of_document") {
       let newSchema = schema;
       setLoading(true);
@@ -279,7 +295,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         ...Object.keys(schema?.properties),
         "arr_id",
       ]);
-      const data = await formSubmitUpdate({
+      await formSubmitUpdate({
         ...newdata,
         page_type:
           type === "reference_details"
@@ -307,9 +323,9 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   const onDelete = async (id) => {
     if (type === "reference_details") {
-      const result = await facilitatorRegistryService.referenceDelete({ id });
+      await facilitatorRegistryService.referenceDelete({ id });
     } else {
-      const result = await facilitatorRegistryService.experienceDelete({ id });
+      await facilitatorRegistryService.experienceDelete({ id });
     }
     setData(data.filter((e) => e.id !== id));
   };
@@ -355,10 +371,10 @@ export default function App({ userTokenInfo, footerLinks }) {
                     contact_number,
                     type_of_document,
                     document_id,
-                  } = item?.reference ? item?.reference : {};
+                  } = item?.reference || {};
                   return (
-                    <Box key={index}>
-                      <ItemComponent
+                    <Box key={name}>
+                      <CardComponent
                         schema={schema}
                         index={index + 1}
                         item={{
@@ -425,7 +441,7 @@ export default function App({ userTokenInfo, footerLinks }) {
                   widgets,
                   templates,
                   validator,
-                  schema: schema ? schema : {},
+                  schema: schema || {},
                   formData,
                   customValidate,
                   onChange,

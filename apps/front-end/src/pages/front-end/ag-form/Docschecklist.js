@@ -93,6 +93,7 @@ const Docschecklist = ({ footerLinks }) => {
     }
     setButtonPress(true);
   };
+
   return (
     <Layout
       loading={loading}

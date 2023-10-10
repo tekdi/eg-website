@@ -436,6 +436,7 @@ export default function BenificiaryProfileView(props) {
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 {![
+                  "enrolled",
                   "dropout",
                   "rejected",
                   "ready_to_enroll",
@@ -509,9 +510,8 @@ export default function BenificiaryProfileView(props) {
                   </FrontEndTypo.H3>
 
                   {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !== "rejected" &&
                     benificiary?.program_beneficiaries?.status !==
-                      "enrolled_ip_verified" && (
+                      "rejected" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
@@ -522,6 +522,24 @@ export default function BenificiaryProfileView(props) {
                     )}
                 </HStack>
               )}
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="1"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("PCR_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/pcrview`);
+                  }}
+                />
+              </HStack>
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"

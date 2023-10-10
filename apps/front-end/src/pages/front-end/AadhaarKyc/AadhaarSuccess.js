@@ -11,12 +11,24 @@ export default function AadhaarSuccess({
   aadhaarCompare,
 }) {
   const [data, setData] = React.useState([]);
+  const [verifiedData, setVerifiedData] = React.useState({});
   const [isVerified, setIsVerified] = React.useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   React.useEffect(() => {
-    setData(aadhaarCompare?.data);
+    const newData = aadhaarCompare?.data || [];
+    setData(newData);
+    let verData = {};
+    newData.forEach((e) => {
+      if (e?.arr) {
+        verData = {
+          ...verData,
+          [e.arr]: e?.isVerified === false ? false : true,
+        };
+      }
+    });
+    setVerifiedData(verData);
     setIsVerified(aadhaarCompare?.isVerified);
   }, []);
 
@@ -120,13 +132,51 @@ export default function AadhaarSuccess({
             </HStack>
           </HStack>
         </VStack>
+        <VStack mt="2" space="4">
+          {(verifiedData?.first_name === false ||
+            verifiedData?.dob === false) && (
+            <HStack space={2}>
+              <VStack flex={1} space={2}>
+                {verifiedData?.first_name === false && (
+                  <FrontEndTypo.H3>
+                    {t("AADHAAR_OKYC_NAME_IS_NOT_MATCH_MESSAGE")}
+                  </FrontEndTypo.H3>
+                )}
+                {verifiedData?.dob === false && (
+                  <FrontEndTypo.H3>
+                    {t("AADHAAR_OKYC_DOB_IS_NOT_MATCH_MESSAGE")}
+                  </FrontEndTypo.H3>
+                )}
+              </VStack>
+              <FrontEndTypo.Primarybutton
+                ml="1"
+                size="md"
+                height="15px"
+                onPress={(e) => {
+                  navigate(`/profile/edit/basic_details`);
+                }}
+              >
+                <FrontEndTypo.H4 bold color="white">
+                  {t("EDIT")}
+                </FrontEndTypo.H4>
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          )}
+          {verifiedData?.aadhaar_no === false && (
+            <FrontEndTypo.H3>
+              {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCH_MESSAGE")}
+            </FrontEndTypo.H3>
+          )}
+        </VStack>
       </Alert>
       <FrontEndTypo.Primarybutton
         onPress={(e) => {
           if (location?.state) {
             navigate(location?.state);
           } else {
-            if (id) {
+            if (user?.program_faciltators?.id) {
+              navigate(`/profile/${id}/aadhaardetails`);
+            } else if (id) {
               navigate(`/beneficiary/${id}`);
             } else {
               navigate("/beneficiary/list");

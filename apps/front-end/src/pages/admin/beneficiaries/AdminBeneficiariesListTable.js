@@ -10,13 +10,15 @@ import moment from "moment";
 import { HStack, VStack, Text, ScrollView } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
-
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const columns = (t) => [
+const columns = (t, navigate) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
+    wrap: true,
+    width: "95px",
   },
   {
     name: t("LEARNERS_NAME"),
@@ -40,22 +42,23 @@ const columns = (t) => [
           />
         )}
         {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
-          <AdminTypo.H5 bold>
+          <AdminTypo.H6 bold>
             {row?.program_beneficiaries?.enrollment_first_name + " "}
             {row?.program_beneficiaries?.enrollment_last_name
               ? row?.program_beneficiaries?.enrollment_last_name
               : ""}
-          </AdminTypo.H5>
+          </AdminTypo.H6>
         ) : (
-          <AdminTypo.H5 bold>
+          <AdminTypo.H6 bold>
             {row?.first_name + " "}
             {row?.last_name ? row?.last_name : ""}
-          </AdminTypo.H5>
+          </AdminTypo.H6>
         )}
       </HStack>
     ),
     attr: "name",
     wrap: true,
+    width: "250px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -93,6 +96,7 @@ const columns = (t) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
+    width: "250px",
   },
   {
     name: t("STATUS"),
@@ -107,6 +111,21 @@ const columns = (t) => [
 
     attr: "email",
     wrap: true,
+    width: "250px",
+  },
+  {
+    name: t("ACTION"),
+    selector: (row) => (
+      <AdminTypo.Secondarybutton
+        my="3"
+        onPress={() => {
+          navigate(`/admin/beneficiary/${row?.id}`);
+        }}
+      >
+        {t("VIEW")}
+      </AdminTypo.Secondarybutton>
+    ),
+    wrap: true,
   },
 ];
 
@@ -115,7 +134,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
 
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
@@ -159,7 +178,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[...columns(t)]}
+        columns={[...columns(t, navigate)]}
         data={data}
         persistTableHead
         progressPending={loading}

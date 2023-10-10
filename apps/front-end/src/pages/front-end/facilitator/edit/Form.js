@@ -73,6 +73,8 @@ export default function App({ userTokenInfo, footerLinks }) {
             : [];
           const newData = {
             ...dataF,
+            qualification_reference_document_id:
+              dataF?.qualification_reference_document_id || "",
             qualification_ids: arrData,
             qualification_master_id: `${
               dataF?.qualification_master_id
@@ -135,6 +137,8 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (pageStape === "p") {
         if (nextIndex === "qualification_details") {
           navigate("/profile");
+        } else if (nextIndex === "work_availability_details") {
+          navigate("/facilitatorqualification");
         } else {
           navigate("/facilitatorbasicdetail");
         }
@@ -280,12 +284,11 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
     setSchema(newSchema);
   }, [page, formData]);
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      const newStep = step ? step : newSteps[0];
+      const newStep = step || newSteps[0];
       setPage(newStep);
       setSchema(properties[newStep]);
       setPages(newSteps);
@@ -538,7 +541,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         facilitator?.mobile !== data?.mobile
       ) {
         const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
+        if (result.registeredAsFacilitator) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
@@ -609,7 +612,8 @@ export default function App({ userTokenInfo, footerLinks }) {
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
-        if (result.isUserExist) {
+
+        if (result?.success) {
           const newErrors = {
             aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
@@ -787,14 +791,16 @@ export default function App({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <Box>
-                <FrontEndTypo.Primarybutton
-                  isLoading={loading}
-                  p="4"
-                  mt="4"
-                  onPress={() => onClickSubmit(false)}
-                >
-                  {t("SAVE_AND_NEXT")}
-                </FrontEndTypo.Primarybutton>
+                {!step === "aadhaar_details" && (
+                  <FrontEndTypo.Primarybutton
+                    isLoading={loading}
+                    p="4"
+                    mt="4"
+                    onPress={() => onClickSubmit(false)}
+                  >
+                    {t("SAVE_AND_NEXT")}
+                  </FrontEndTypo.Primarybutton>
+                )}
 
                 <FrontEndTypo.Secondarybutton
                   isLoading={loading}

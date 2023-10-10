@@ -15,6 +15,14 @@ import { useNavigate } from "react-router-dom";
 
 const columns = (t, navigate) => [
   {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.id,
+    sortable: true,
+    attr: "id",
+    wrap: true,
+    width: "100px",
+  },
+  {
     name: t("NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
@@ -35,12 +43,14 @@ const columns = (t, navigate) => [
             _icon={{ size: "35" }}
           />
         )}
-        <AdminTypo.H5 bold>
-          {row?.first_name + " " + row.last_name}
-        </AdminTypo.H5>
+        <AdminTypo.H6 bold>
+          {`${row?.first_name} ${row?.last_name || ""}`}
+        </AdminTypo.H6>
       </HStack>
     ),
     attr: "name",
+    wrap: "true",
+    width: "250px",
   },
   {
     name: t("DISTRICT"),
@@ -53,21 +63,21 @@ const columns = (t, navigate) => [
   {
     name: t("MOBILE_NUMBER"),
     selector: (row) => row?.mobile,
-
-    attr: "email",
+    attr: "mobile",
+    wrap: true,
   },
   {
     name: t("STATUS"),
     selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
-
     wrap: true,
-    attr: "email",
+    attr: "status",
+    width: "150px",
   },
   {
     name: t("GENDER"),
     selector: (row) => row?.gender,
-
-    attr: "city",
+    attr: "gender",
+    width: "100px",
   },
   {
     name: t("ACTION"),
@@ -92,7 +102,6 @@ function Table({
   data,
   loading,
   enumOptions,
-  facilitator,
 }) {
   const { t } = useTranslation();
 
