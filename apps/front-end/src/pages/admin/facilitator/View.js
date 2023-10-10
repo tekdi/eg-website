@@ -134,7 +134,7 @@ export default function FacilitatorView({ footerLinks }) {
     await profileDetails();
   }, []);
 
-  const showData = (item) => (item ? item : "-");
+  const showData = (item) => item || "-";
 
   const validate = () => {
     let arr = {};
@@ -166,11 +166,7 @@ export default function FacilitatorView({ footerLinks }) {
     }
 
     setErrors(arr);
-    if (arr.password || arr.confirmPassword) {
-      return false;
-    } else {
-      return true;
-    }
+    return !(arr.password || arr.confirmPassword);
   };
 
   const handleResetPassword = async (password, confirm_password) => {
@@ -216,7 +212,7 @@ export default function FacilitatorView({ footerLinks }) {
 
   const handleAadhaarUpdate = (event) => {
     const inputValue = event.target.value;
-    const numericValue = inputValue.replace(/[^0-9]/g, "");
+    const numericValue = inputValue.replace(/\D/g, "");
     const maxLength = 12;
     const truncatedValue = numericValue.slice(0, maxLength);
     setAadhaarValue(truncatedValue);
@@ -308,72 +304,6 @@ export default function FacilitatorView({ footerLinks }) {
                     .join(",")}
                 </AdminTypo.H6>
               </HStack>
-              {/* <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
-                {t("ELIGIBILITY_CRITERIA").toUpperCase()}
-              </AdminTypo.H4>
-              <HStack width={"100%"}>
-                <Box flex={0.3}>
-                  <Steper size={100} type="circle" progress={75} bg="white" />
-                </Box>
-                <VStack flex={0.7} space="2">
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                        
-                      {t("QUALIFICATION")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        {
-                          value: 135,
-                          color: "progressBarColor.200",
-                        },
-                        { value: 80, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("WORK_EXPERIENCE")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("VOLUNTEER_EXPERIENCE")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("AVAILABILITY")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                </VStack>
-              </HStack> */}
             </VStack>
             <HStack flex="0.5" justifyContent="center">
               {data?.profile_photo_1?.name ? (
@@ -381,7 +311,7 @@ export default function FacilitatorView({ footerLinks }) {
                   source={{
                     uri: data?.profile_photo_1?.name,
                   }}
-                  // alt="Alternate Text"
+                  alt="profile photo"
                   width={"180px"}
                   height={"180px"}
                 />
@@ -562,13 +492,6 @@ export default function FacilitatorView({ footerLinks }) {
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
                     onPress={() => {
-                      credentials?.password === credentials?.confirmPassword
-                        ? handleResetPassword(
-                            credentials?.password,
-                            credentials?.confirmPassword
-                          )
-                        : credentials?.password !==
-                          credentials?.confirmPassword;
                       handleResetPassword(
                         credentials?.password,
                         credentials?.confirmPassword
@@ -781,7 +704,7 @@ export default function FacilitatorView({ footerLinks }) {
                             <AdminTypo.H5 bold>
                               {data?.experience ? (
                                 data?.experience?.map((e, key) => (
-                                  <Experience key={key} {...e} />
+                                  <Experience key={e} {...e} />
                                 ))
                               ) : (
                                 <AdminTypo.H5
@@ -803,7 +726,7 @@ export default function FacilitatorView({ footerLinks }) {
                             <AdminTypo.H5 bold>
                               {data?.vo_experience ? (
                                 data?.vo_experience?.map((e, key) => (
-                                  <Experience key={key} {...e} />
+                                  <Experience key={e} {...e} />
                                 ))
                               ) : (
                                 <AdminTypo.H5
