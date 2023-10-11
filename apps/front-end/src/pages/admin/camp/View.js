@@ -6,10 +6,12 @@ import {
   AdminTypo,
   facilitatorRegistryService,
   CampService,
+  FrontEndTypo,
+  CardComponent,
+  MapComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack } from "native-base";
-
+import { Alert, Box, Checkbox, HStack, Stack, Text, VStack } from "native-base";
 
 export default function View({ footerLinks }) {
   const navigate = useNavigate();
@@ -22,10 +24,8 @@ export default function View({ footerLinks }) {
 
   const getData = async () => {
     try {
-      const result = await CampService.getFacilatorAdminCampList({id});
-      setDataa(result);
-      console.log("check response", result);
-      alert(JSON.stringify(result))
+      const result = await CampService.getFacilatorAdminCampList({ id });
+      setDataa(result?.data);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -49,13 +49,10 @@ export default function View({ footerLinks }) {
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
-          >
-            {/* abc{data?.first_name} {data?.last_name} */}
-          </AdminTypo.H1>
+          ></AdminTypo.H1>
         </HStack>
         <HStack flexWrap="wrap">
           <VStack space="4" flexWrap="wrap">
-            {/* <ChipStatus status={} /> */}
             <HStack
               bg="badgeColor.400"
               rounded={"md"}
@@ -83,21 +80,24 @@ export default function View({ footerLinks }) {
                 name="MapPinLineIcon"
                 color="textGreyColor.300"
               />
-              <AdminTypo.H6 color="textGreyColor.600" bold>
-                acn
-              </AdminTypo.H6>
+              <AdminTypo.H6 color="textGreyColor.600" bold></AdminTypo.H6>
             </HStack>
           </VStack>
           <HStack>
-            <IconByName
+            {/* <IconByName
               isDisabled
               name="AccountCircleLineIcon"
               color="textGreyColor.300"
-              _icon={{ size: "150px" }}
-            />
+              _icon={{ size: "100px" }}
+            /> */}
           </HStack>
+          <Stack flex={4} style={{ marginLeft: "50%" }}>
+            <MapComponent
+              latitude={data?.camp?.properties?.lat}
+              longitude={data?.camp?.properties?.long}
+            ></MapComponent>
+          </Stack>
         </HStack>
-        {/* <HStack alignItems={"center"} space="1" pt="3" bg={"red.300"}></HStack> */}
         <HStack justifyContent="space-between">
           <VStack
             borderWidth={"1px"}
@@ -109,162 +109,82 @@ export default function View({ footerLinks }) {
             p="6"
             rounded="xl"
           >
-            <HStack
-              justifyContent="space-between"
-              alignItems="center"
-              borderColor="light.400"
-              pb="1"
-              borderBottomWidth="1"
-            >
-              <AdminTypo.H5 color="textGreyColor" bold>
-                {t("List of Learner")}
-              </AdminTypo.H5>
-            </HStack>
-
-            <VStack>
-              <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                {/* {t("SELF")}: */}
-              </AdminTypo.H5>
-              <AdminTypo.H5
-                flex="1"
-                color="textGreyColor.800"
-                pl="1"
-                bold
-              ></AdminTypo.H5>
-
-              <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                {/* {t("ALTERNATIVE_NUMBER")}: */}
-              </AdminTypo.H5>
-              <AdminTypo.H5
-                flex="1"
-                color="textGreyColor.800"
-                pl="1"
-                bold
-              ></AdminTypo.H5>
-
-              <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                {/* {t("EMAIL_ID")}: */}
-              </AdminTypo.H5>
-              <AdminTypo.H5
-                flex="1"
-                color="textGreyColor.800"
-                bold
-              ></AdminTypo.H5>
-              <HStack alignItems="center">
-                <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
-                  {/* {t("AADHAAR_NO")}: */}
-                </AdminTypo.H5>
-                <HStack
-                  flex="1"
-                  alignItems={"center"}
-                  space={"4"}
-                  justifyContent={"space-between"}
-                >
-                  <AdminTypo.H5
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    color="textGreyColor.800"
-                    bold
-                  ></AdminTypo.H5>
-                </HStack>
-              </HStack>
-            </VStack>
-          </VStack>
+            <AdminTypo.H5 color="textGreyColor" bold>
+              {t("Learner Details & Family Consent Letters")}
+            </AdminTypo.H5>
+            {data?.camp?.beneficiaries?.length > 0 ? (
+              data?.camp?.beneficiaries.map((learner, index) => {
+                console.log({ learner });
+                return (
+                  <CardComponent
+                    key={learner?.id}
+                    format={{ doc_id: "file" }}
+                    item={{
+                      ...(learner?.user || {}),
+                      doc_id: "",
+                    }}
+                    bg={"light.100"}
+                    isHideProgressBar={true}
+                    _vstack={{ space: 0 }}
+                    _hstack={{ borderBottomWidth: 0 }}
+                    title={t("LEARNER") + ` ${learner?.user?.id}`}
+                    label={["First Name", "Last Name"]}
+                    arr={["first_name", "last_name", "doc_id"]}
+                  />
+                );
+              })
+            ) : (
+              <p>No data available</p>
+            )}
+          </VStack>{" "}
           <VStack
+            borderWidth={"1px"}
+            borderColor={"primary.200"}
+            borderStyle={"solid"}
             space={"5"}
             w={"33%"}
             bg="light.100"
             p="6"
             rounded="xl"
-            ml="3"
+          >
+            <AdminTypo.H5 color="textGreyColor" bold>
+              {t("Property and Facility Details")}
+            </AdminTypo.H5>
+            <CardComponent
+              item={data?.camp?.properties}
+              bg={"light.100"}
+              isHideProgressBar={true}
+              _vstack={{ space: 0 }}
+              _hstack={{ borderBottomWidth: 0 }}
+              title={t("Property and Facility Details")}
+              label={[
+                "Block",
+                "District",
+                "Grampanchayat",
+                "State",
+                "Street",
+                "Village",
+              ]}
+              arr={[
+                "block",
+                "district",
+                "grampanchayat",
+                "state",
+                "street",
+                "village",
+              ]}
+            />
+          </VStack>
+          <VStack
             borderWidth={"1px"}
             borderColor={"primary.200"}
             borderStyle={"solid"}
-          >
-            <HStack p="1" mx="1" rounded="xl">
-              <VStack space="20px" w="auto">
-                <VStack space="20px" w="auto" rounded="xl">
-                  <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    borderColor="light.400"
-                    pb="1"
-                    borderBottomWidth="1"
-                  >
-                    <AdminTypo.H5 color="textGreyColor" bold>
-                      {t("Property and Facility Details")}
-                    </AdminTypo.H5>
-                  </HStack>
-                  <VStack>
-                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                      {/* {t("FATHER_NAME")}: */}
-                    </AdminTypo.H5>
-                    <AdminTypo.H5
-                      flex="0.7"
-                      color="textGreyColor.800"
-                      bold
-                    ></AdminTypo.H5>
-                  </VStack>
-
-                  <VStack space="2">
-                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                      {/* {t("MOTHER_NAME")}: */}
-                    </AdminTypo.H5>
-                    <AdminTypo.H5
-                      flex="0.7"
-                      color="textGreyColor.800"
-                      bold
-                    ></AdminTypo.H5>
-                  </VStack>
-                </VStack>
-              </VStack>
-            </HStack>
-          </VStack>
-
-          <VStack
             space={"5"}
             w={"33%"}
             bg="light.100"
             p="6"
             rounded="xl"
-            ml="3"
-            borderWidth={"1px"}
-            borderColor={"primary.200"}
-            borderStyle={"solid"}
-          >
-            <HStack
-              justifyContent="space-between"
-              alignItems="center"
-              borderColor="light.400"
-              pb="1"
-              borderBottomWidth="1"
-            >
-              <AdminTypo.H5 color="textGreyColor" bold>
-                {t("Family Consent Letters")}
-              </AdminTypo.H5>
-            </HStack>
-            <VStack>
-              <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                {/* {t("SOCIAL_CATEGORY")}: */}
-              </AdminTypo.H5>
-              <AdminTypo.H5
-                flex="0.7"
-                color="textGreyColor.800"
-                bold
-              ></AdminTypo.H5>
-            </VStack>
-
-            <VStack space="2">
-              <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                {/* {t("MARITAL_STATUS")}: */}
-              </AdminTypo.H5>
-              <AdminTypo.H5
-                flex="0.7"
-                color="textGreyColor.800"
-                bold
-              ></AdminTypo.H5>
-            </VStack>
-          </VStack>
+          ></VStack>
         </HStack>
       </VStack>
     </Layout>
