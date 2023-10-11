@@ -13,7 +13,7 @@ import {
 import {
   HStack,
   VStack,
-  Box,
+
   Pressable,
   Center,
   Avatar,

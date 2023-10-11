@@ -2,16 +2,9 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+import { Alert, Box, HStack } from "native-base";
 import {
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
-  filtersByObject,
   BodyMedium,
   enumRegistryService,
   benificiaryRegistoryService,
@@ -22,8 +15,7 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import { useScreenshot } from "use-screenshot-hook";
-import Clipboard from "component/Clipboard.js";
+
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -34,9 +26,11 @@ import {
   RadioBtn,
   CustomR,
 } from "../../../../component/BaseInput.js";
+import { useTranslation } from "react-i18next";
 
 // App
 export default function ContactDetailsEdit({ ip }) {
+  const { t } = useTranslation();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -48,7 +42,7 @@ export default function ContactDetailsEdit({ ip }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [userId, setuserId] = React.useState(id);
+  const [userId] = React.useState(id);
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpButton, setOtpButton] = React.useState(false);
   const [mobileConditon, setMobileConditon] = React.useState(false);
@@ -168,7 +162,6 @@ export default function ContactDetailsEdit({ ip }) {
       ...formData,
       hash: localStorage.getItem("hash"),
     });
-
     setverifyOtpData(otpData);
     if (status === true) {
       submit();
