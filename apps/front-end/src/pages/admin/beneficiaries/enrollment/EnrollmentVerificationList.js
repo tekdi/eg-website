@@ -94,7 +94,7 @@ const columns = (t, navigate, filter) => [
     width: "150px",
   },
   {
-    name: t("PRERAK_ID"),
+    name: t("PRERAK_ID_1"),
     selector: (row) => row?.program_beneficiaries?.id,
     width: "100px",
   },
@@ -160,6 +160,11 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const handleRowClick = (row) => {
+    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
+      state: filter,
+    });
+  };
 
   React.useEffect(async () => {
     if (urlFilterApply) {
@@ -339,6 +344,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                 onChangePage={(e) => {
                   setFilterObject({ ...filter, page: e });
                 }}
+                onRowClicked={handleRowClick}
               />
             </VStack>
           </ScrollView>
