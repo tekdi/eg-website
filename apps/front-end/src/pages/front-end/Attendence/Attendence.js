@@ -49,6 +49,114 @@ const customStyles = {
   },
 };
 
+const renderNameColumn = (row, t) => {
+  const name = row?.user?.first_name + " " + row?.user?.last_name;
+  const hasProfileUrl = !!row?.profile_url;
+
+  return (
+    <HStack alignItems="center" space="2">
+      {hasProfileUrl ? (
+        <Avatar source={{ uri: row?.profile_url }} width="35px" height="35px" />
+      ) : (
+        <IconByName
+          isDisabled
+          name="AccountCircleLineIcon"
+          color="gray.300"
+          _icon={{ size: "35" }}
+        />
+      )}
+      <Text>{name}</Text>
+    </HStack>
+  );
+};
+
+const renderStatusColumn = (row) => <Text>{row?.rsvp || ""}</Text>;
+
+const renderAttendanceColumn = (row, t) => (
+  <HStack space="2">
+    <Text key={row?.id}>
+      {row?.status === "present" ? "Present" : "Absent"}
+    </Text>
+    <Switch
+      offTrackColor="dangerColor"
+      onTrackColor="successColor"
+      onThumbColor="appliedColor"
+      offThumbColor="appliedColor"
+      value={row.status === "present"}
+      onValueChange={() => onSwitchToggle(row)}
+    />
+  </HStack>
+);
+
+const renderAadharKycColumn = (row, t) => (
+  <Chip
+    bg={
+      row?.user?.aadhar_verified !== null &&
+      row?.user?.aadhar_verified !== "pending"
+        ? "potentialColor"
+        : "dangerColor"
+    }
+    label={
+      row?.user?.aadhar_verified === "in_progress"
+        ? t("AADHAR_KYC_IN_PROGRESS")
+        : row?.user?.aadhar_verified === "pending"
+        ? t("AADHAR_KYC_PENDING")
+        : row?.user?.aadhar_verified !== null
+        ? t("YES")
+        : t("NO")
+    }
+    rounded="sm"
+  />
+);
+
+const renderAttendeeListColumn = (row, t) => (
+  <Chip
+    label={
+      row?.fa_is_processed === null
+        ? "-"
+        : row?.fa_is_processed === true
+        ? t("YES") +
+          " " +
+          Math.floor(row?.fa_similarity_percentage * 100) / 100 +
+          "%"
+        : t("NO")
+    }
+    rounded="sm"
+  />
+);
+
+const scheduleCandidates = (t) => [
+  {
+    name: t("NAME"),
+    selector: (row) => renderNameColumn(row, t),
+    sortable: false,
+    attr: "name",
+  },
+  {
+    name: t("INVITE_STATUS"),
+    selector: (row) => renderStatusColumn(row, t),
+    sortable: false,
+    attr: "email",
+  },
+  {
+    name: t("MARK_ATTENDANCE"),
+    selector: (row) => renderAttendanceColumn(row, t),
+    sortable: false,
+    attr: "marks",
+  },
+  {
+    name: t("ADHAR_KYC"),
+    selector: (row) => renderAadharKycColumn(row, t),
+    sortable: false,
+    attr: "adhar_kyc",
+  },
+  {
+    name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
+    selector: (row) => renderAttendeeListColumn(row, t),
+    sortable: false,
+    attr: "attendence_verified",
+  },
+];
 
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
@@ -126,118 +234,6 @@ export default function Attendence({ footerLinks }) {
     }
   };
 
-  const renderNameColumn = (row) => {
-    const name = row?.user?.first_name + " " + row?.user?.last_name;
-    const hasProfileUrl = !!row?.profile_url;
-
-    return (
-      <HStack alignItems="center" space="2">
-        {hasProfileUrl ? (
-          <Avatar
-            source={{ uri: row?.profile_url }}
-            width="35px"
-            height="35px"
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        <Text>{name}</Text>
-      </HStack>
-    );
-  };
-
-  const renderStatusColumn = (row) => <Text>{row?.rsvp || ""}</Text>;
-
-  const renderAttendanceColumn = (row) => (
-    <HStack space="2">
-      <Text key={row?.id}>
-        {row?.status === "present" ? "Present" : "Absent"}
-      </Text>
-      <Switch
-        offTrackColor="#DC2626"
-        onTrackColor="#00D790"
-        onThumbColor="#E0E0E0"
-        offThumbColor="#E0E0E0"
-        value={row.status === "present"}
-        onValueChange={() => onSwitchToggle(row)}
-      />
-    </HStack>
-  );
-
-  const renderAadharKycColumn = (row) => (
-    <Chip
-      bg={
-        row?.user?.aadhar_verified !== null &&
-        row?.user?.aadhar_verified !== "pending"
-          ? "potentialColor"
-          : "dangerColor"
-      }
-      label={
-        row?.user?.aadhar_verified === "in_progress"
-          ? t("AADHAR_KYC_IN_PROGRESS")
-          : row?.user?.aadhar_verified === "pending"
-          ? t("AADHAR_KYC_PENDING")
-          : row?.user?.aadhar_verified !== null
-          ? t("YES")
-          : t("NO")
-      }
-      rounded="sm"
-    />
-  );
-
-  const renderAttendeeListColumn = (row) => (
-    <Chip
-      label={
-        row?.fa_is_processed === null
-          ? "-"
-          : row?.fa_is_processed === true
-          ? t("YES") +
-            " " +
-            Math.floor(row?.fa_similarity_percentage * 100) / 100 +
-            "%"
-          : t("NO")
-      }
-      rounded="sm"
-    />
-  );
-
-  const scheduleCandidates = (e) => [
-    {
-      name: t("NAME"),
-      selector: (row) => renderNameColumn(row),
-      sortable: false,
-      attr: "name",
-    },
-    {
-      name: t("INVITE_STATUS"),
-      selector: (row) => renderStatusColumn(row),
-      sortable: false,
-      attr: "email",
-    },
-    {
-      name: t("MARK_ATTENDANCE"),
-      selector: (row) => renderAttendanceColumn(row),
-      sortable: false,
-      attr: "marks",
-    },
-    {
-      name: t("ADHAR_KYC"),
-      selector: (row) => renderAadharKycColumn(row),
-      sortable: false,
-      attr: "adhar_kyc",
-    },
-    {
-      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-      selector: (row) => renderAttendeeListColumn(row),
-      sortable: false,
-      attr: "attendence_verified",
-    },
-  ];
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
@@ -906,7 +902,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(),
+                ...scheduleCandidates(t),
                 {
                   name: t(""),
                   selector: (row) => (
