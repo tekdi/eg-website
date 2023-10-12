@@ -35,7 +35,7 @@ export default function FamilyDetails({ ip }) {
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [userId] = React.useState(id);
+  const userId = id;
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {

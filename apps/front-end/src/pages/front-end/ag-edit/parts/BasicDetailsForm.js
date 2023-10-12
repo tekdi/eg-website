@@ -39,7 +39,7 @@ export default function BasicDetailsForm({ id }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId] = React.useState(id);
+  const userId = id;
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
@@ -285,7 +285,7 @@ export default function BasicDetailsForm({ id }) {
               </FrontEndTypo.Primarybutton>
             </Form>
           ) : (
-            <React.Fragment />
+            <></>
           )}
         </Box>
       )}

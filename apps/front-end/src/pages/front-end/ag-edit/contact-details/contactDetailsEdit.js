@@ -42,7 +42,7 @@ export default function ContactDetailsEdit({ ip }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [userId] = React.useState(id);
+  const userId = id;
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpButton, setOtpButton] = React.useState(false);
   const [mobileConditon, setMobileConditon] = React.useState(false);
