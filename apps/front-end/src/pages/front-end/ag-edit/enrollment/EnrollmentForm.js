@@ -66,7 +66,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 
     case "enrollment_awaited":
     case "enrollment_rejected":
-      const { enrolled_for_board, subjects } = constantSchema?.properties;
+      const { enrolled_for_board } = constantSchema?.properties || {};
       const required = constantSchema?.required.filter(
         (item) =>
           ![
@@ -107,7 +107,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
           page
         );
       } else {
-        const { subjects, ...properties } = constantSchema?.properties;
+        const { subjects, ...properties } = constantSchema?.properties || {};
         newSchema = {
           ...constantSchema,
           properties: {
@@ -126,7 +126,7 @@ const getSubjects = async (schemaData, value, page) => {
   if (value) {
     const propertiesMain = schema1.properties;
     const constantSchema = propertiesMain[page];
-    const { subjects } = constantSchema?.properties;
+    const { subjects } = constantSchema?.properties || {};
     const { payment_receipt_document_id, ...properties } =
       schemaData.properties;
     let { data } = await enumRegistryService.getSubjects({
@@ -143,7 +143,7 @@ const getSubjects = async (schemaData, value, page) => {
       },
       {
         key: "subjects",
-        arr: data ? data : [],
+        arr: data || [],
         title: "name",
         value: "id",
       }
@@ -156,6 +156,7 @@ const getSubjects = async (schemaData, value, page) => {
 
 // App
 export default function App() {
+  const { t } = useTranslation();
   const { step, id } = useParams();
   const userId = id;
   const [page, setPage] = React.useState();
@@ -171,7 +172,6 @@ export default function App() {
   const [loading, setLoading] = React.useState(false);
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const [uiSchema, setUiSchema] = React.useState({
     subjects: {
@@ -223,7 +223,7 @@ export default function App() {
       );
       const {
         program_beneficiaries: { enrollment_date },
-      } = benificiary ? benificiary : {};
+      } = benificiary || {};
 
       if (!enrollment_date) {
         error = {
@@ -309,7 +309,7 @@ export default function App() {
   React.useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
-    const newStep = step ? step : newSteps[0];
+    const newStep = step || newSteps[0];
     setPage(newStep);
     setPages(newSteps);
   }, []);
@@ -319,7 +319,7 @@ export default function App() {
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
-      const { program_beneficiaries } = result ? result : {};
+      const { program_beneficiaries } = result || {};
 
       if (page === "edit_enrollement") {
         const newSchema = await getEnrollmentStatus(constantSchema);
@@ -414,17 +414,17 @@ export default function App() {
 
     switch (id) {
       case "root_enrollment_number":
-        let { enrollment_number, ...otherError } = errors ? errors : {};
+        let { enrollment_number, ...otherError } = errors || {};
         setErrors(otherError);
         if (data?.enrollment_number) {
           const debouncedFunction = debounce(async () => {
-            const result = await enrollmentNumberExist(data?.enrollment_number);
+            await enrollmentNumberExist(data?.enrollment_number);
           }, 1000);
           debouncedFunction();
         }
         break;
       case "root_enrollment_date":
-        let { enrollment_date, ...otherErrore } = errors ? errors : {};
+        let { enrollment_date, ...otherErrore } = errors || {};
         setErrors(otherErrore);
         const resultDate = validate(data, "enrollment_date");
 
@@ -460,7 +460,7 @@ export default function App() {
             },
           });
         } else {
-          let { enrollment_aadhaar_no, ...otherError } = errors ? errors : {};
+          let { enrollment_aadhaar_no, ...otherError } = errors || {};
           setErrors(otherError);
         }
 
@@ -503,7 +503,7 @@ export default function App() {
   // form submit
   const onSubmit = async () => {
     setBtnLoading(true);
-    const keys = Object.keys(errors ? errors : {});
+    const keys = Object.keys(errors || {});
     if (
       keys?.length < 1 &&
       formData?.enrollment_number &&
@@ -549,30 +549,30 @@ export default function App() {
     }
     setBtnLoading(false);
   };
-if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
-  return (
-    <Layout
-      loading={loading}
-      _appBar={{
-        onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
-        name: t("ENROLLMENT_DETAILS"),
-        lang,
-        setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
-      }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
-    >
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
-        </HStack>
-      </Alert>
-    </Layout>
-  );
-}
+  if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
+    return (
+      <Layout
+        loading={loading}
+        _appBar={{
+          onPressBackButton,
+          onlyIconsShow: ["backBtn", "userInfo"],
+          name: t("ENROLLMENT_DETAILS"),
+          lang,
+          setLang,
+          _box: { bg: "white", shadow: "appBarShadow" },
+          _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+        }}
+        _page={{ _scollView: { bg: "formBg.500" } }}
+      >
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      </Layout>
+    );
+  }
 
   return (
     <Layout
@@ -600,7 +600,7 @@ if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               onChange,
@@ -634,12 +634,13 @@ if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {notMatched && notMatched?.includes("enrollment_aadhaar_no") && (
+              {notMatched?.includes("enrollment_aadhaar_no") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
               )}
-              {notMatched && notMatched?.includes("enrollment_number") && (
+
+              {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>

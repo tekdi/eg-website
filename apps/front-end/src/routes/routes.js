@@ -2,7 +2,7 @@ import React from "react";
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
-  import("../pages/front-end/ag-edit/basicDetails")
+  import("../pages/front-end/ag-edit/parts/basicDetails")
 );
 const educationDetails = React.lazy(() =>
   import(
