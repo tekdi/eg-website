@@ -94,7 +94,7 @@ const columns = (t, navigate, filter) => [
     width: "150px",
   },
   {
-    name: t("PRERAK_ID_1"),
+    name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
     width: "100px",
   },

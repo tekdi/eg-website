@@ -82,7 +82,7 @@ const columns = (t, navigate) => [
     },
   },
   {
-    name: t("PRERAK_ID_1"),
+    name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.facilitator_id,
   },
   {
