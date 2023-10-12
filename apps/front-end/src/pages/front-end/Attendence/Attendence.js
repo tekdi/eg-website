@@ -72,7 +72,7 @@ const renderNameColumn = (row, t) => {
 
 const renderStatusColumn = (row, t) => <Text>{row?.rsvp || ""}</Text>;
 
-const renderAttendanceColumn = (row, t) => (
+const renderAttendanceColumn = (row, t, onSwitchToggle) => (
   <HStack space="2">
     <Text key={row?.id}>
       {row?.status === "present" ? "Present" : "Absent"}
@@ -125,7 +125,7 @@ const renderAttendeeListColumn = (row, t) => (
   />
 );
 
-const scheduleCandidates = (t) => [
+const scheduleCandidates = (t, onSwitchToggle) => [
   {
     name: t("NAME"),
     selector: (row) => renderNameColumn(row, t),
@@ -140,7 +140,7 @@ const scheduleCandidates = (t) => [
   },
   {
     name: t("MARK_ATTENDANCE"),
-    selector: (row) => renderAttendanceColumn(row, t),
+    selector: (row) => renderAttendanceColumn(row, t, onSwitchToggle),
     sortable: false,
     attr: "marks",
   },
@@ -902,7 +902,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(t),
+                ...scheduleCandidates(t, onSwitchToggle),
                 {
                   name: t(""),
                   selector: (row) => (
