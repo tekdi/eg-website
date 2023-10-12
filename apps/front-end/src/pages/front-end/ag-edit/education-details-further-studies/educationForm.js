@@ -27,7 +27,7 @@ import {
 
 // App
 export default function App({ onClick, id }) {
-  const [userId] = React.useState(id);
+  const userId = id;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
