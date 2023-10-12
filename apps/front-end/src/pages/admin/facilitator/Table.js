@@ -136,7 +136,9 @@ function Table({
                     enumApiData={enumOptions}
                   />
                 )}
-                {`(${item?.count})`}
+                {filter?.status == t(item?.status)
+                  ? `(${paginationTotalRows})` + " "
+                  : " "}
               </Text>
             );
           })}
