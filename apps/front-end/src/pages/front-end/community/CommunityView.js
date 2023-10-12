@@ -56,7 +56,7 @@ export default function CommunityView({ footerLinks }) {
     const data = e.formData;
     const newData = { ...formData, ...data };
     if (id === "root_contact_number") {
-      if (newData?.contact_number.length !== 10) {
+      if ((newData?.contact_number.length??'') !== 10) {
         const newErrors = {
           contact_number: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
