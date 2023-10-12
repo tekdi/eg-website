@@ -229,7 +229,7 @@ export default function agFormEdit({ ip }) {
   }, []);
   const formSubmitCreate = async (formData) => {};
   const otpfunction = async () => {
-    if (formData?.mobile.length < 10) {
+    if (formData?.mobile?.length < 10) {
       const data = await formSubmitCreate(formData);
 
       const newErrors = {

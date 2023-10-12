@@ -32,7 +32,7 @@ const styles = {
 export default function Login() {
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
-  const [width, Height] = useWindowSize();
+  const [ Height] = useWindowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
@@ -56,15 +56,16 @@ export default function Login() {
     }
 
     setErrors(arr);
-    if (arr.username || arr.password) {
-      return false;
-    }
-    return true;
-  };
+    
+      if (arr.username || arr.password) {
+        return false;
+      }
+      return true;
+    };
 
   const handleLogin = async () => {
     if (validate()) {
-      const { user, token, error } = credentials
+      const { error } = credentials
         ? await login(credentials)
         : {};
       if (!error) {
