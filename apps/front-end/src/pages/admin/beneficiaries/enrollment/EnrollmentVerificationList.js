@@ -32,6 +32,7 @@ const columns = (t, navigate, filter) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
+    width: "150px",
   },
   {
     name: t("LEARNERS_NAME"),
@@ -70,6 +71,7 @@ const columns = (t, navigate, filter) => [
       </HStack>
     ),
     wrap: true,
+    width: "350px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -89,10 +91,12 @@ const columns = (t, navigate, filter) => [
         return "-";
       }
     },
+    width: "150px",
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
+    width: "100px",
   },
   {
     name: t("PRERAK_NAME"),
@@ -105,6 +109,7 @@ const columns = (t, navigate, filter) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
+    width: "350px",
   },
   {
     name: t("STATUS"),
@@ -117,6 +122,7 @@ const columns = (t, navigate, filter) => [
       />
     ),
     wrap: true,
+    width: "150px",
   },
   {
     name: t("ACTION"),
@@ -134,6 +140,7 @@ const columns = (t, navigate, filter) => [
           {t("VIEW")}
         </AdminTypo.Secondarybutton>
       ),
+    width: "150px",
   },
 ];
 
@@ -153,6 +160,11 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const handleRowClick = (row) => {
+    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
+      state: filter,
+    });
+  };
 
   React.useEffect(async () => {
     if (urlFilterApply) {
@@ -332,6 +344,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                 onChangePage={(e) => {
                   setFilterObject({ ...filter, page: e });
                 }}
+                onRowClicked={handleRowClick}
               />
             </VStack>
           </ScrollView>
