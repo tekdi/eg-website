@@ -70,7 +70,7 @@ const renderNameColumn = (row, t) => {
   );
 };
 
-const renderStatusColumn = (row) => <Text>{row?.rsvp || ""}</Text>;
+const renderStatusColumn = (row, t) => <Text>{row?.rsvp || ""}</Text>;
 
 const renderAttendanceColumn = (row, t) => (
   <HStack space="2">
