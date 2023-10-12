@@ -38,12 +38,12 @@ export default {
         lat: {
           type: ["number", "string"],
           title: "LATITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         long: {
           type: ["number", "string"],
           title: "LONGITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         address: {
           title: "STREET_ADDRESS",

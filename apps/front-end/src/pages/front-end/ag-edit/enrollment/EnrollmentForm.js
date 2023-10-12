@@ -534,9 +534,20 @@ export default function App() {
       }
       scrollToField({ property: keys?.[0] });
     } else {
+      const newFormData = formData;
+      let newdata = filterObject(
+        newFormData,
+        Object.keys(schema?.properties),
+        {},
+        ""
+      );
       const { success, isUserExist } =
         await benificiaryRegistoryService.updateAg(
-          { ...formData, edit_page_type: page },
+          {
+            ...newdata,
+            edit_page_type: page,
+            is_eligible: newFormData?.is_eligible,
+          },
           userId
         );
       if (isUserExist) {

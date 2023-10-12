@@ -167,7 +167,7 @@ export default {
               description: {
                 title: "DESCRIPTION",
                 type: "string",
-                format: "textarea",
+                format: "Textarea",
                 rows: 5,
               },
               experience_in_years: {
@@ -211,7 +211,7 @@ export default {
               description: {
                 title: "DESCRIPTION",
                 type: "string",
-                format: "textarea",
+                format: "Textarea",
                 rows: 5,
               },
               experience_in_years: {
