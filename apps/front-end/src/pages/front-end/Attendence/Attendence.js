@@ -136,7 +136,7 @@ const scheduleCandidates = (t) => [
     name: t("INVITE_STATUS"),
     selector: (row) => renderStatusColumn(row, t),
     sortable: false,
-    attr: "email",
+    attr: "invite",
   },
   {
     name: t("MARK_ATTENDANCE"),

@@ -55,7 +55,7 @@ export default function BasicDetailsForm({ id }) {
       middle_name: qData?.middle_name,
       first_name: qData?.first_name,
       last_name: qData?.last_name,
-      dob: qData?.dob ? qData?.dob : undefined,
+      dob: qData?.dob || undefined,
     });
   }, []);
 
