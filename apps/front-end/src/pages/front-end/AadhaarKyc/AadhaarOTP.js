@@ -31,7 +31,8 @@ export default function AdharOTP({
   });
 
   const generateCode = () => {
-    setData({ ...data, securityCode: Math.floor(1000 + Math.random() * 9000) });
+    const random = Math.random();
+    setData({ ...data, securityCode: Math.floor(1000 + random * 9000) });
   };
 
   const handleSubmit = async () => {
@@ -59,7 +60,7 @@ export default function AdharOTP({
         aadhar_verified: "yes",
         aadhaar_verification_mode: "offline",
       });
-      setPage && setPage("aadhaarSuccess");
+      setPage ? setPage("aadhaarSuccess") : setPage();
     } else {
       setAttempt("number");
       setError({
