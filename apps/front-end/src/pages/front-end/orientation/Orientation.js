@@ -75,11 +75,17 @@ export default function Orientation({ footerLinks }) {
           {required ? "*" : null}
         </AdminTypo.H6>
       </HStack>
-      <HStack alignItems="center" flex={["1", "3", "4"]}>
+      <HStack alignItems="left" flex={["1", "3", "4"]}>
         <AdminTypo.Secondarybutton
-          leftIcon={<Text>{userIds ? Object.values(userIds).length : ""}</Text>}
+          leftIcon={
+            <Text maxWidth="10px" alignItems="left">
+              {userIds ? Object.values(userIds).length : ""}
+            </Text>
+          }
           onPress={() => setIsOpen(true)}
-          flex="1"
+          height="50px"
+          maxWidth="200px"
+          flex={1}
         >
           {t("SELECT_PRERAK")}
         </AdminTypo.Secondarybutton>
