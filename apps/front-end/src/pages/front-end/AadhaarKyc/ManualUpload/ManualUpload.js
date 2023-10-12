@@ -251,7 +251,7 @@ export default function ManualUpload({
                     : "CheckboxCircleLineIcon"
                 }
                 onPress={() => {
-                  image?.front ? setIsFront(false) : "";
+                  image?.front && setIsFront(false);
                 }}
               />
             </HStack>

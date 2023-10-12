@@ -140,6 +140,10 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
+  const handleRowClick = (row) => {
+    navigate(`/admin/beneficiary/${row?.id}`);
+  };
+
   return (
     <VStack>
       <ScrollView horizontal={true} mb="2">
@@ -191,6 +195,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         onChangePage={(e) => {
           setFilter({ ...filter, page: e });
         }}
+        onRowClicked={handleRowClick}
       />
     </VStack>
   );
