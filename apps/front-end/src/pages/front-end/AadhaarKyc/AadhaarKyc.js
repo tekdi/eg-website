@@ -524,9 +524,7 @@ const AadhaarOptions = ({
       >
         {t("TRY_AADHAR_QR_KYC")}
       </FrontEndTypo.Secondarybutton> */}
-      {user?.aadhar_verified === "in_progress" ? (
-        <React.Fragment></React.Fragment>
-      ) : (
+      {!user?.aadhar_verified === "in_progress" && (
         <FrontEndTypo.Secondarybutton
           isDisabled={isQRDisabled}
           onPress={() => {
