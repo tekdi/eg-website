@@ -32,7 +32,9 @@ const styles = {
 export default function Login() {
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
-  const [ Height] = useWindowSize();
+  const windowSize = useWindowSize();
+  const height = windowSize[1];
+  const width = windowSize[2];
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
@@ -56,18 +58,16 @@ export default function Login() {
     }
 
     setErrors(arr);
-    
-      if (arr.username || arr.password) {
-        return false;
-      }
-      return true;
-    };
+
+    if (arr.username || arr.password) {
+      return false;
+    }
+    return true;
+  };
 
   const handleLogin = async () => {
     if (validate()) {
-      const { error } = credentials
-        ? await login(credentials)
-        : {};
+      const { error } = credentials ? await login(credentials) : {};
       if (!error) {
         navigate("/");
         navigate(0);
@@ -89,7 +89,7 @@ export default function Login() {
       }}
       getRefAppBar={(e) => setRef(e)}
     >
-      <VStack bg="bgGreyColor.200" minH={Height - ref?.clientHeight} space="1">
+      <VStack bg="bgGreyColor.200" minH={height - ref?.clientHeight} space="1">
         <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
         </FrontEndTypo.H1>
