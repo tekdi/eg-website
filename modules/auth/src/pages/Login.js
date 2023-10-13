@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   HStack,
   FormControl,
@@ -33,7 +33,7 @@ export default function Login() {
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
   const [width, Height] = useWindowSize();
-  const [credentials, setCredentials] = useState();
+  const [credentials, setCredentials] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
@@ -78,6 +78,7 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
+  console.log("errors", errors);
   return (
     <Layout
       _appBar={{
@@ -119,7 +120,8 @@ export default function Login() {
               </HStack>
             </VStack>
           </Alert>
-          {"alert" in errors ? (
+
+          {"alert" in errors && (
             <Alert w="100%" status={"error"}>
               <VStack space={2} flexShrink={1} w="100%">
                 <HStack flexShrink={1} space={2} justifyContent="space-between">
@@ -135,8 +137,6 @@ export default function Login() {
                 </HStack>
               </VStack>
             </Alert>
-          ) : (
-            <React.Fragment />
           )}
           <form>
             <VStack space="2">
@@ -161,7 +161,7 @@ export default function Login() {
                     })
                   }
                 />
-                {"username" in errors ? (
+                {"username" in errors && (
                   <FormControl.ErrorMessage
                     _text={{
                       fontSize: "xs",
@@ -171,8 +171,6 @@ export default function Login() {
                   >
                     {errors.username}
                   </FormControl.ErrorMessage>
-                ) : (
-                  <React.Fragment />
                 )}
               </FormControl>
               <FormControl isRequired isInvalid={"password" in errors}>
@@ -206,7 +204,7 @@ export default function Login() {
                     })
                   }
                 />
-                {"password" in errors ? (
+                {"password" in errors && (
                   <FormControl.ErrorMessage
                     _text={{
                       fontSize: "xs",
@@ -216,8 +214,6 @@ export default function Login() {
                   >
                     {errors.password}
                   </FormControl.ErrorMessage>
-                ) : (
-                  <React.Fragment />
                 )}
               </FormControl>
             </VStack>

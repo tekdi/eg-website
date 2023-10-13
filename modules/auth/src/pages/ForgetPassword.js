@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   HStack,
   FormControl,
@@ -33,12 +33,12 @@ export default function ForgetPassword() {
 
   const [ref, setRef] = React.useState(null);
   const [width, Height] = useWindowSize();
-  const [credentials, setCredentials] = useState();
+  const [credentials, setCredentials] = React.useState();
   const [errors, setErrors] = React.useState({});
-  const [visible, setVisible] = useState(false);
-  const [OtpValue, setOtpValue] = useState(true);
+  const [visible, setVisible] = React.useState(false);
+  const [OtpValue, setOtpValue] = React.useState(true);
 
-  const [otpData, setotpData] = useState();
+  const [otpData, setotpData] = React.useState();
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
@@ -169,7 +169,7 @@ export default function ForgetPassword() {
           height="215"
         />
         <VStack space={5} p="5">
-          {"alert" in errors ? (
+          {"alert" in errors && (
             <Alert w="100%" status={"error"}>
               <VStack space={2} flexShrink={1} w="100%">
                 <HStack flexShrink={1} space={2} justifyContent="space-between">
@@ -185,8 +185,6 @@ export default function ForgetPassword() {
                 </HStack>
               </VStack>
             </Alert>
-          ) : (
-            <React.Fragment />
           )}
           <VStack space="4">
             <FormControl isRequired isInvalid={"username" in errors}>
@@ -207,7 +205,7 @@ export default function ForgetPassword() {
                   })
                 }
               />
-              {"username" in errors ? (
+              {"username" in errors && (
                 <FormControl.ErrorMessage
                   _text={{
                     fontSize: "xs",
@@ -217,11 +215,9 @@ export default function ForgetPassword() {
                 >
                   {errors.username}
                 </FormControl.ErrorMessage>
-              ) : (
-                <React.Fragment />
               )}
             </FormControl>
-            {visible ? (
+            {visible && (
               <FormControl isRequired isInvalid={"otp" in errors}>
                 <CustomOTPBox
                   onChange={(e) => {
@@ -234,7 +230,7 @@ export default function ForgetPassword() {
                     handleLogin(credentials?.username);
                   }}
                 />
-                {"otp" in errors ? (
+                {"otp" in errors && (
                   <FormControl.ErrorMessage
                     _text={{
                       fontSize: "xs",
@@ -244,14 +240,10 @@ export default function ForgetPassword() {
                   >
                     {errors.otp}
                   </FormControl.ErrorMessage>
-                ) : (
-                  <React.Fragment />
                 )}
               </FormControl>
-            ) : (
-              <React.Fragment />
             )}
-            {credentials?.otp ? (
+            {credentials?.otp && (
               <VStack space={4}>
                 <FormControl isRequired isInvalid={"password" in errors}>
                   <Input
@@ -269,7 +261,7 @@ export default function ForgetPassword() {
                       })
                     }
                   />
-                  {"password" in errors ? (
+                  {"password" in errors && (
                     <FormControl.ErrorMessage
                       _text={{
                         fontSize: "xs",
@@ -277,14 +269,8 @@ export default function ForgetPassword() {
                         fontWeight: 500,
                       }}
                     >
-                      {!credentials?.password ? (
-                        errors.password
-                      ) : (
-                        <React.Fragment />
-                      )}
+                      {!credentials?.password && errors.password}
                     </FormControl.ErrorMessage>
-                  ) : (
-                    <React.Fragment />
                   )}
                 </FormControl>
 
@@ -307,7 +293,7 @@ export default function ForgetPassword() {
                       })
                     }
                   />
-                  {"confirm_password" in errors ? (
+                  {"confirm_password" in errors && (
                     <FormControl.ErrorMessage
                       _text={{
                         fontSize: "xs",
@@ -315,19 +301,12 @@ export default function ForgetPassword() {
                         fontWeight: 500,
                       }}
                     >
-                      {!credentials?.confirm_password ? (
-                        errors.confirm_password
-                      ) : (
-                        <React.Fragment />
-                      )}
+                      {!credentials?.confirm_password &&
+                        errors.confirm_password}
                     </FormControl.ErrorMessage>
-                  ) : (
-                    <React.Fragment />
                   )}
                 </FormControl>
               </VStack>
-            ) : (
-              <React.Fragment />
             )}
           </VStack>
           {OtpValue ? (
