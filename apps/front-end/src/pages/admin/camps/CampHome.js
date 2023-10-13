@@ -17,7 +17,6 @@ import {
   AdminTypo,
   IconByName,
   AdminLayout as Layout,
-  debounce,
   CampService,
   t,
   useWindowSize,
@@ -86,12 +85,6 @@ const columns = (navigate) => [
     sortable: true,
     attr: "count",
   },
-  // {
-  //   name: t("GRMPANCHYAT"),
-  //   selector: (row) => row?.properties?.grampanchayat,
-  //   sortable: true,
-  //   attr: "count",
-  // },
   {
     name: t("CAMP_STATUS"),
     selector: (row) => <ChipStatus status={row?.group?.status} />,
@@ -115,24 +108,26 @@ const columns = (navigate) => [
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const [filter, setFilter] = React.useState({});
-  const Height = useWindowSize[1];
-  const Width = useWindowSize[2];
+  const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+
+  React.useEffect(() => {
+    const urlFilter = urlData(["district", "block"]);
+    setFilter({ ...filter, ...urlFilter });
+    setUrlFilterApply(true);
+  }, []);
 
   React.useEffect(async () => {
-    console.log("filter", filter);
-    const qData = await CampService.getCampList(filter);
-    console.log("qData", qData);
-    setData(qData?.camps);
+    if (urlFilterApply) {
+      const qData = await CampService.getCampList(filter);
+      setData(qData?.camps);
+    }
   }, [filter]);
 
-  const setFilterObject = (data) => {
-    setFilter(data);
-    setQueryParameters(data);
-  };
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack
@@ -162,7 +157,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             resizeMode="contain"
           />
         </HStack>
-        <Input
+        {/* <Input
           size={"xs"}
           minH="49px"
           maxH="49px"
@@ -183,9 +178,9 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
               3000
             );
           }}
-        />
+        /> */}
 
-        <AdminTypo.Secondarybutton
+        {/* <AdminTypo.Secondarybutton
           rightIcon={
             <IconByName
               color="#084B82"
@@ -196,7 +191,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
           }
         >
           {t("EXPORT")}
-        </AdminTypo.Secondarybutton>
+        </AdminTypo.Secondarybutton> */}
       </HStack>
       <HStack>
         <Box
@@ -209,14 +204,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
           >
-            <Filter
-              filter={filter}
-              setFilter={setFilter}
-              Height={Height}
-              setFilterObject={setFilterObject}
-              refAppBar={refAppBar}
-              ref={ref}
-            />
+            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
 
@@ -225,7 +213,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <Box roundedBottom={"2xl"}>
               <DataTable
                 filter={filter}
-                setFilter={setFilterObject}
+                setFilter={(e) => {
+                  setFilter(e);
+                  setQueryParameters(e);
+                }}
                 customStyles={CustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
@@ -250,16 +241,14 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   );
 }
 
-export const Filter = ({
-  filter,
-  Height,
-  setFilterObject,
-  setFilter,
-  refAppBar,
-  ref,
-}) => {
+export const Filter = ({ filter, setFilter }) => {
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
+
+  const setFilterObject = (data) => {
+    setFilter(data);
+    setQueryParameters(data);
+  };
 
   const schema = {
     type: "object",
@@ -313,7 +302,6 @@ export const Filter = ({
       name,
     });
     setgetDistrictsAll(getDistricts?.districts);
-    setFilter(urlData(["district", "block"]));
   }, []);
 
   React.useEffect(async () => {
@@ -327,52 +315,54 @@ export const Filter = ({
   }, [filter?.district]);
 
   const onChange = async (data) => {
-    const { district, block } = data?.formData || {};
+    const { district: newDistrict, block: newBlock } = data?.formData || {};
+    const { district, block, ...remainData } = filter;
     setFilterObject({
-      ...filter,
-      ...(district ? { district } : {}),
-      ...(block ? { block } : {}),
+      ...remainData,
+      ...(newDistrict?.length > 0
+        ? {
+            district: newDistrict,
+            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+          }
+        : {}),
     });
   };
+
   const clearFilter = () => {
     setFilter({});
     setFilterObject({});
   };
 
   return (
-    <ScrollView
-      maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
-    >
-      <VStack space={3}>
-        <HStack
-          alignItems="center"
-          justifyContent="space-between"
-          borderBottomWidth="2"
-          borderColor="#eee"
-          flexWrap="wrap"
-        >
-          <HStack>
-            <IconByName isDisabled name="FilterLineIcon" />
-            <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-          </HStack>
-          <Button variant="link" pt="3" onPress={clearFilter}>
-            <AdminTypo.H6 color="blueText.400" underline bold>
-              {t("CLEAR_FILTER")}
-            </AdminTypo.H6>
-          </Button>
+    <VStack space={3}>
+      <HStack
+        alignItems="center"
+        justifyContent="space-between"
+        borderBottomWidth="2"
+        borderColor="#eee"
+        flexWrap="wrap"
+      >
+        <HStack>
+          <IconByName isDisabled name="FilterLineIcon" />
+          <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
         </HStack>
-        <Box p={[0, 0, 3]} pr="3">
-          <Form
-            schema={schema}
-            uiSchema={uiSchema}
-            onChange={onChange}
-            validator={validator}
-            formData={filter}
-          >
-            <Button display={"none"} type="submit"></Button>
-          </Form>
-        </Box>
-      </VStack>
-    </ScrollView>
+        <Button variant="link" pt="3" onPress={clearFilter}>
+          <AdminTypo.H6 color="blueText.400" underline bold>
+            {t("CLEAR_FILTER")}
+          </AdminTypo.H6>
+        </Button>
+      </HStack>
+      <Box p={[0, 0, 3]} pr="3">
+        <Form
+          schema={schema}
+          uiSchema={uiSchema}
+          onChange={onChange}
+          validator={validator}
+          formData={filter}
+        >
+          <Button display={"none"} type="submit"></Button>
+        </Form>
+      </Box>
+    </VStack>
   );
 };

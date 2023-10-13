@@ -248,7 +248,7 @@ export default function AdminHome({ footerLinks }) {
             }
             pr="2"
           >
-            <Filter {...{ filter, setFilter }} />
+            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
