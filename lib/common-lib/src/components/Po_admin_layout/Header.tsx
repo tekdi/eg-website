@@ -15,7 +15,7 @@ export default function Header({
   _subHeading
 }: any) {
   let newAvatar = localStorage.getItem('firstName')
-  return !isDisabledHeader ? (
+  return !isDisabledHeader && (
     customeComponent || (
       <Box {..._box} py={7} px={5}>
         <HStack justifyContent='space-between' alignItems='center'>
@@ -40,7 +40,5 @@ export default function Header({
         </HStack>
       </Box>
     )
-  ) : (
-    <React.Fragment />
   )
 }
