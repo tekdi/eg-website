@@ -1,6 +1,6 @@
 import moment from "moment";
 import { Box, HStack, Text, useToast, VStack } from "native-base";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { calendar } from "services/utils";
 import { IconByName } from "@shiksha/common-lib";
@@ -31,10 +31,10 @@ export function DayWiesBar({
   _box,
 }) {
   const todayDate = new Date();
-  const [date, setDate] = useState();
+  const [date, setDate] = React.useState();
   const { t } = useTranslation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "primary.500" : "coolGray.500");
@@ -80,10 +80,10 @@ export function WeekWiesBar({
   rightErrorText,
   leftErrorText,
 }) {
-  const [weekDays, setWeekDays] = useState([]);
+  const [weekDays, setWeekDays] = React.useState([]);
   const { t } = useTranslation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     setWeekDays(calendar(page, null, "week"));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "primary.500" : "coolGray.500");
