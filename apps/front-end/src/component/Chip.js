@@ -68,6 +68,14 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
         setColor("rejectedColor");
         break;
+        case "registered":
+        setNewStatus(t("GROUPS_STATUS_REGISTERED"));
+        setColor("selectedColor");
+        break;
+        case "not_registered":
+        setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
+        setColor("rejectedColor");
+        break;
       default:
         setNewStatus(t("APPLIED"));
         setColor("appliedColor");
