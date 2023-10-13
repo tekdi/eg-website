@@ -791,7 +791,7 @@ export default function App({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <Box>
-                {!step === "aadhaar_details" && (
+                {step !== "aadhaar_details" && (
                   <FrontEndTypo.Primarybutton
                     isLoading={loading}
                     p="4"

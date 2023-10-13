@@ -18,7 +18,7 @@ const CRadio = ({ items, onChange }) => {
     >
       <HStack alignItems="center" space={3} flexWrap="wrap">
         {items?.map((item, key) => (
-          <Radio key={key} value={item?.value} size="sm">
+          <Radio key={item} value={item?.value} size="sm">
             {t(item?.title)}
           </Radio>
         ))}
@@ -45,7 +45,7 @@ export default function StatusButton({ data, setData }) {
 
   const update = async (status) => {
     if (data?.program_faciltator_id && status) {
-      const result = await facilitatorRegistryService.update({
+      await facilitatorRegistryService.update({
         id: data?.program_faciltator_id,
         status: status,
         status_reason: reason,
@@ -222,28 +222,13 @@ export default function StatusButton({ data, setData }) {
                       ]
                     }
                   />
-                  {reason &&
-                  ![
-                    "Incomplete Form",
-                    "Not Qualified",
-                    "Less experienced",
-                  ].includes(reason) ? (
-                    <Input
-                      onChange={(e) => {
-                        setReason(e?.target?.value);
-                      }}
-                      variant={"underlined"}
-                      placeholder={t("MENTION_YOUR_REASON")}
-                    />
-                  ) : (
-                    <Input
-                      onChange={(e) => {
-                        setReason(e?.target?.value);
-                      }}
-                      variant={"underlined"}
-                      placeholder={t("MENTION_YOUR_REASON")}
-                    />
-                  )}
+                  <Input
+                    onChange={(e) => {
+                      setReason(e?.target?.value);
+                    }}
+                    variant={"underlined"}
+                    placeholder={t("MENTION_YOUR_REASON")}
+                  />
                 </VStack>
               ) : (
                 <H1 textAlign="center" py="5">

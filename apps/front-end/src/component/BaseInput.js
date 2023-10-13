@@ -352,7 +352,7 @@ export const Aadhaar = (props) => {
 // rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label, title } = schema ? schema : {};
+  const { label, title } = schema || {};
   const { t } = useTranslation();
 
   return (
@@ -384,7 +384,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           }}
         >
           <Text fontSize="12" fontWeight="400">
-            {t(label ? label : title)}
+            {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
             ) : (
@@ -398,8 +398,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
       <Select
         key={value + items}
         selectedValue={value}
-        accessibilityLabel={t(label ? label : title)}
-        placeholder={t(label ? label : title)}
+        accessibilityLabel={t(label || title)}
+        placeholder={t(label || title)}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
@@ -420,8 +420,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
 };
 
 // rjsf custom readOnly field
-export const readOnly = ({ value, onChange, required, schema }) => {
-  const { title } = schema ? schema : {};
+export const ReadOnly = ({ value, onChange, required, schema }) => {
+  const { title } = schema || {};
   const { t } = useTranslation();
   return (
     <HStack gap="2">
@@ -510,8 +510,8 @@ export const MultiCheck = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { _hstack, icons, grid, label, format } = schema ? schema : {};
-  const { enumOptions } = options ? options : {};
+  const { _hstack, icons, grid, label, format } = schema || {};
+  const { enumOptions } = options || {};
   let items = [enumOptions];
   if (grid && enumOptions?.constructor.name === "Array") {
     items = chunk(enumOptions, grid);
@@ -525,7 +525,7 @@ export const MultiCheck = ({
       });
     }
 
-    var updatedList = [...newValue];
+    let updatedList = [...newValue];
     if (event.target.checked) {
       updatedList = [...newValue, event.target.value];
     } else {
@@ -544,9 +544,9 @@ export const MultiCheck = ({
       )}
       <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
-          <Box gap={"2"} key={subKey} flexDirection="row" flexWrap="wrap">
+          <Box gap={"2"} key={subItem} flexDirection="row" flexWrap="wrap">
             {subItem?.map((item, key) => (
-              <label key={key}>
+              <label key={item}>
                 <HStack alignItems="center" space="3" flex="1">
                   {icons?.[key] && icons?.[key].name && (
                     <IconByName
@@ -615,7 +615,7 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
 };
 
 // rjsf custom textarea field
-const textarea = ({
+const Textarea = ({
   schema,
   options,
   value,
@@ -624,7 +624,7 @@ const textarea = ({
   isInvalid,
 }) => {
   const [isFocus, setIsfocus] = React.useState(false);
-  const { label, title, help, rows } = schema ? schema : {};
+  const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
   return (
     <FormControl isInvalid={isInvalid || false}>
@@ -667,13 +667,13 @@ const textarea = ({
         </FormControl.Label>
       )}
       <TextArea
-        totalLines={rows ? rows : 3}
+        totalLines={rows || 3}
         key={title}
         onFocus={(e) => setIsfocus(true)}
         onBlur={(e) => setIsfocus(false)}
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        placeholder={t(label ? label : schema?.label)}
+        placeholder={t(label || schema?.label)}
       />
       {help && isInvalid ? (
         <FormControl.ErrorMessage>{t(help)}</FormControl.ErrorMessage>
@@ -695,12 +695,12 @@ const widgets = {
   CustomR,
   Aadhaar,
   select,
-  textarea,
+  Textarea,
   CustomOTPBox,
   FileUpload,
   MobileNumber,
   MultiCheck,
-  readOnly,
+  ReadOnly,
   StarRating,
   CheckUncheck,
 };
@@ -780,7 +780,7 @@ const transformErrors = (errors, schema, t) => {
     } else if (error.name === "enum") {
       error.message = `${t("SELECT_MESSAGE")}`;
     } else if (error.name === "format") {
-      const { format } = error?.params ? error?.params : {};
+      const { format } = error?.params || {};
       let message = "REQUIRED_MESSAGE";
       if (format === "email") {
         message = "PLEASE_ENTER_VALID_EMAIL";

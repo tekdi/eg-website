@@ -106,6 +106,9 @@ function Table({
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const handleRowClick = (row) => {
+    navigate(`/admin/view/${row?.id}`);
+  };
   //
   return (
     <VStack>
@@ -133,7 +136,9 @@ function Table({
                     enumApiData={enumOptions}
                   />
                 )}
-                {`(${item?.count})`}
+                {filter?.status == t(item?.status)
+                  ? `(${paginationTotalRows})` + " "
+                  : " "}
               </Text>
             );
           })}
@@ -157,6 +162,7 @@ function Table({
         onChangePage={(e) => {
           setFilter({ ...filter, page: e });
         }}
+        onRowClicked={handleRowClick}
       />
     </VStack>
   );
