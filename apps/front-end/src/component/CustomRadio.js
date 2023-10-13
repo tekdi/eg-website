@@ -1,13 +1,5 @@
 import { IconByName, chunk, H2 } from "@shiksha/common-lib";
-import {
-  Box,
-  Pressable,
-  Text,
-  VStack,
-  Stack,
-  FormControl,
-  HStack,
-} from "native-base";
+import { Box, Pressable, Text, VStack, Stack, FormControl } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 

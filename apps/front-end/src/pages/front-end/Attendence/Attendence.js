@@ -1,5 +1,4 @@
 import {
-  H4,
   IconByName,
   AdminLayout as Layout,
   useWindowSize,
