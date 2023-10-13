@@ -88,7 +88,7 @@ const PcrDetails = () => {
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = result?.data.filter((item) => item?.user_id == id);
+    const userData = Array.isArray(result?.data)?result?.data.filter((item) => item?.user_id == id):[];
     const {
       baseline_learning_level,
       rapid_assessment_first_learning_level,
