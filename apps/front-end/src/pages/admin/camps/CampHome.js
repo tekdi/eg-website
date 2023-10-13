@@ -28,7 +28,6 @@ import {
 import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
 
-
 export const CustomStyles = {
   rows: {
     style: {
@@ -53,10 +52,9 @@ export const CustomStyles = {
 };
 
 const columns = (navigate) => [
-  
   {
     name: t("CAMP_ID"),
-    selector: (row) =>row?.id,
+    selector: (row) => row?.id,
     sortable: true,
     attr: "count",
   },
@@ -68,19 +66,23 @@ const columns = (navigate) => [
   },
   {
     name: t("PRERAK"),
-    selector: (row) => row?.faciltator?.user?.first_name +" "+row?.faciltator?.user?.last_name,
+    selector: (row) =>
+      row?.faciltator?.user?.first_name +
+      " " +
+      row?.faciltator?.user?.last_name,
     sortable: true,
     attr: "count",
   },
   {
     name: t("DISTRICT"),
-    selector: (row) => row?.properties?.district ?row?.properties?.district:"-",
+    selector: (row) =>
+      row?.properties?.district ? row?.properties?.district : "-",
     sortable: true,
     attr: "count",
   },
   {
     name: t("BLOCK"),
-    selector: (row) => row?.properties?.block ?row?.properties?.block:"-",
+    selector: (row) => (row?.properties?.block ? row?.properties?.block : "-"),
     sortable: true,
     attr: "count",
   },
@@ -94,7 +96,7 @@ const columns = (navigate) => [
     name: t("CAMP_STATUS"),
     selector: (row) => <ChipStatus status={row?.group?.status} />,
     sortable: true,
-    wrap:true,
+    wrap: true,
     attr: "count",
   },
   {
@@ -113,17 +115,18 @@ const columns = (navigate) => [
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const [filter, setFilter] = React.useState({});
-  const [Height] = useWindowSize();
+  const Height = useWindowSize[1];
+  const Width = useWindowSize[2];
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const navigate = useNavigate();
-const [data, setData]=React.useState([]);
+  const [data, setData] = React.useState([]);
 
-React.useEffect(async () => {
-    console.log("filter",filter);
+  React.useEffect(async () => {
+    console.log("filter", filter);
     const qData = await CampService.getCampList(filter);
-    console.log("qData",qData);
-    setData(qData?.camps)
+    console.log("qData", qData);
+    setData(qData?.camps);
   }, [filter]);
 
   const setFilterObject = (data) => {
@@ -206,22 +209,29 @@ React.useEffect(async () => {
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
           >
-            <Filter filter={filter} setFilter={setFilter} Height={Height} setFilterObject={setFilterObject} refAppBar={refAppBar} ref={ref}/>
+            <Filter
+              filter={filter}
+              setFilter={setFilter}
+              Height={Height}
+              setFilterObject={setFilterObject}
+              refAppBar={refAppBar}
+              ref={ref}
+            />
           </ScrollView>
         </Box>
-        
+
         <Box flex={[5, 5, 4]}>
           <ScrollView>
-            <Box roundedBottom={"2xl"} >
+            <Box roundedBottom={"2xl"}>
               <DataTable
-              filter={filter}
-              setFilter={setFilterObject}
+                filter={filter}
+                setFilter={setFilterObject}
                 customStyles={CustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
-                paginationRowsPerPageOptions={[ 2, 5, 15, 50, 100]}
+                paginationRowsPerPageOptions={[2, 5, 15, 50, 100]}
                 defaultSortAsc
                 paginationServer
                 data={data}
@@ -240,7 +250,14 @@ React.useEffect(async () => {
   );
 }
 
-export const Filter =({filter,Height,setFilterObject,setFilter,refAppBar,ref})=>{
+export const Filter = ({
+  filter,
+  Height,
+  setFilterObject,
+  setFilter,
+  refAppBar,
+  ref,
+}) => {
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
 
@@ -290,16 +307,16 @@ export const Filter =({filter,Height,setFilterObject,setFilter,refAppBar,ref})=>
       "ui:options": {},
     },
   };
-  React.useEffect(async() => {
+  React.useEffect(async () => {
     let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({name});
-    setgetDistrictsAll(getDistricts?.districts)
-    setFilter(
-      urlData(["district", "block"])
-    );
-  }, [])
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name,
+    });
+    setgetDistrictsAll(getDistricts?.districts);
+    setFilter(urlData(["district", "block"]));
+  }, []);
 
-  React.useEffect(async() => {
+  React.useEffect(async () => {
     let blockData = [];
     if (filter?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -307,11 +324,10 @@ export const Filter =({filter,Height,setFilterObject,setFilter,refAppBar,ref})=>
       });
     }
     setGetBlocksAll(blockData);
-  }, [filter?.district])
-  
+  }, [filter?.district]);
+
   const onChange = async (data) => {
-    const { district, block } =
-      data?.formData || {};
+    const { district, block } = data?.formData || {};
     setFilterObject({
       ...filter,
       ...(district ? { district } : {}),
@@ -323,44 +339,40 @@ export const Filter =({filter,Height,setFilterObject,setFilter,refAppBar,ref})=>
     setFilterObject({});
   };
 
-
-  return(
+  return (
     <ScrollView
-    maxH={
-      Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
-    }
-  >
-    <VStack space={3}>
-              <HStack
-                alignItems="center"
-                justifyContent="space-between"
-                borderBottomWidth="2"
-                borderColor="#eee"
-                flexWrap="wrap"
-              >
-                <HStack>
-                  <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-                </HStack>
-                <Button variant="link" pt="3" onPress={clearFilter}>
-                  <AdminTypo.H6 color="blueText.400" underline bold>
-                    {t("CLEAR_FILTER")}
-                  </AdminTypo.H6>
-                </Button>
-              </HStack>
-              <Box p={[0, 0, 3]} pr="3">
-                <Form
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  onChange={onChange}
-                  validator={validator}
-                  formData={filter}
-                  
-                >
-                  <Button display={"none"} type="submit"></Button>
-                </Form>
-              </Box>
-            </VStack>
-  </ScrollView>
-  )
-}
+      maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
+    >
+      <VStack space={3}>
+        <HStack
+          alignItems="center"
+          justifyContent="space-between"
+          borderBottomWidth="2"
+          borderColor="#eee"
+          flexWrap="wrap"
+        >
+          <HStack>
+            <IconByName isDisabled name="FilterLineIcon" />
+            <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+          </HStack>
+          <Button variant="link" pt="3" onPress={clearFilter}>
+            <AdminTypo.H6 color="blueText.400" underline bold>
+              {t("CLEAR_FILTER")}
+            </AdminTypo.H6>
+          </Button>
+        </HStack>
+        <Box p={[0, 0, 3]} pr="3">
+          <Form
+            schema={schema}
+            uiSchema={uiSchema}
+            onChange={onChange}
+            validator={validator}
+            formData={filter}
+          >
+            <Button display={"none"} type="submit"></Button>
+          </Form>
+        </Box>
+      </VStack>
+    </ScrollView>
+  );
+};
