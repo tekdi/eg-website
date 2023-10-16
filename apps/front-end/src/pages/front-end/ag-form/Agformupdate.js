@@ -116,7 +116,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
         setPage("upload");
       } else {
         return true;
@@ -323,10 +322,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const userExist = async (filters) => {
     return await facilitatorRegistryService.isExist(filters);
-  };
-
-  const formSubmitUpdate = async (formData) => {
-    const { id } = authUser;
   };
 
   const goErrorPage = (key) => {
