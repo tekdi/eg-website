@@ -1,22 +1,11 @@
 import React from "react";
+import { HStack, VStack, Alert } from "native-base";
 import {
-  HStack,
-  VStack,
-  Box,
-  Progress,
-  Divider,
-  Center,
-  Alert,
-} from "native-base";
-import {
-  arrList,
   FrontEndTypo,
   IconByName,
   facilitatorRegistryService,
   t,
   Layout,
-  enumRegistryService,
-  GetEnumValue,
   BodyMedium,
   CardComponent,
 } from "@shiksha/common-lib";
@@ -30,26 +19,16 @@ export default function FacilitatorBasicDetails({
 }) {
   const [facilitator, setfacilitator] = React.useState();
   const navigate = useNavigate();
-  const arrPersonal = {
-    ...facilitator?.extended_users,
-    gender: facilitator?.gender,
-  };
-  const [enumOptions, setEnumOptions] = React.useState({});
 
   React.useEffect(() => {
     facilitatorDetails();
   }, []);
 
   const facilitatorDetails = async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     const result = await facilitatorRegistryService.getOne({ id });
     setfacilitator(result);
   };
-
-  React.useEffect(async () => {
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
-  }, [facilitator]);
 
   return (
     <Layout
@@ -92,8 +71,7 @@ export default function FacilitatorBasicDetails({
               <HStack alignItems="Center">
                 <IconByName name="Cake2LineIcon" color="iconColor.300" />
                 <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                  {facilitator &&
-                  facilitator.dob &&
+                  {facilitator?.dob &&
                   moment(facilitator.dob, "YYYY-MM-DD", true).isValid()
                     ? moment(facilitator?.dob).format("DD/MM/YYYY")
                     : "-"}
@@ -163,7 +141,9 @@ export default function FacilitatorBasicDetails({
               label={["Availability", "Designation", "Contact"]}
               item={facilitator}
               arr={["name"]}
-              onEdit={(e) => navigate(`/profile/edit/work_availability_details`)}
+              onEdit={(e) =>
+                navigate(`/profile/edit/work_availability_details`)
+              }
             />
           </VStack>
         </VStack>

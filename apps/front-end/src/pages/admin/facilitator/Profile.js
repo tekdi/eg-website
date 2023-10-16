@@ -2,25 +2,21 @@ import React from "react";
 import {
   IconByName,
   AdminLayout as Layout,
-  ProgressBar,
   ImageView,
   Loading,
   t,
   AdminTypo,
 } from "@shiksha/common-lib";
-import { Heading, HStack, Text, VStack, Box, Image } from "native-base";
-import Chip from "component/Chip";
+import { HStack, VStack } from "native-base";
+
 import { useNavigate } from "react-router-dom";
-import Steper from "component/Steper";
-import { ChipStatus } from "component/BeneficiaryStatus";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
   const navigate = useNavigate();
 
   React.useEffect(async () => {
-    // const result = await facilitatorRegistryService.getOne({ id });
-    setData(userTokenInfo?.authUser);
+    setData(userTokenInfo?.authUser || {});
   }, []);
 
   if (!data) {

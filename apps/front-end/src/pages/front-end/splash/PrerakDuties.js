@@ -1,8 +1,7 @@
 import React from "react";
-import { VStack, Text, Image, Box, Button, Stack } from "native-base";
-import { AppBar, FrontEndTypo, t, Layout } from "@shiksha/common-lib";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import SplashScreen from "../splash/SplashScreen";
+import { VStack, Image, Box, Stack } from "native-base";
+import { FrontEndTypo, t, Layout } from "@shiksha/common-lib";
+import { useLocation } from "react-router-dom";
 import Home from "../Home";
 
 const stylesheet = {
@@ -70,8 +69,6 @@ const stylesheet = {
 };
 
 function PrerakDuties(props) {
-  const { id } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
   let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } =
     props;
@@ -79,12 +76,7 @@ function PrerakDuties(props) {
   console.log(location);
   const setBackButton = () => {
     let data = page - 1;
-    if (data === 0) {
-      setPage(data.toString());
-      // navigate(`/facilitator-self-onboarding/${id}`);
-    } else {
-      setPage(data.toString());
-    }
+    setPage(data.toString());
   };
 
   return (
@@ -135,7 +127,7 @@ function PrerakDuties(props) {
             </Box>
             <FrontEndTypo.Primarybutton
               width="85%"
-              onPress={onPress ? onPress : (e) => {}}
+              onPress={onPress || (() => {})}
             >
               {processedButton}
             </FrontEndTypo.Primarybutton>
@@ -145,7 +137,7 @@ function PrerakDuties(props) {
                 my="5"
                 underline
                 bold
-                onPress={onSkipPress ? onSkipPress : (e) => {}}
+                onPress={onSkipPress || (() => {})}
               >
                 {t("SKIP_TO_APPLY")}
               </FrontEndTypo.H3>

@@ -29,7 +29,7 @@ export default function FacilitatorQualification({
   }, []);
 
   const facilitatorDetails = async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     const result = await facilitatorRegistryService.getOne({ id });
     setfacilitator(result);
     setQualification(result?.qualifications ? result?.qualifications : {});
@@ -206,14 +206,6 @@ export default function FacilitatorQualification({
                     flex="0.4"
                   >
                     {qualifications?.map((e) => e.name).join(", ")}
-                    {/* {qualifications?.map((e) => {
-                      <GetEnumValue
-                        t={t}
-                        enumType={"QUALIFICATION"}
-                        enumOptionValue={e.name}
-                        enumApiData={enumOptions}
-                      />;
-                    })} */}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
