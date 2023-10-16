@@ -6,14 +6,14 @@ import {
   FrontEndTypo,
   BodyMedium,
 } from "@shiksha/common-lib";
-import React from "react";
+import React, { useState } from "react";
 import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = ({ footerLinks }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [selectData, setselectData] = React.useState([]);
+  const [selectData, setselectData] = useState([]);
   const [status, setStatus] = React.useState({});
   const [checkList, setCheckList] = React.useState(false);
   const [buttonPress, setButtonPress] = React.useState(false);
@@ -22,7 +22,6 @@ const Docschecklist = ({ footerLinks }) => {
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
-    let docStatus = data?.result?.program_beneficiaries?.documents_status;
     setBenificiary(data?.result);
     setloading(false);
     if (data.result?.program_beneficiaries?.documents_status) {
