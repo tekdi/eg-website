@@ -6,7 +6,6 @@ import { Alert, Box, HStack } from "native-base";
 import {
   AgRegistryService,
   Layout,
-  filtersByObject,
   BodyMedium,
   sendAndVerifyOtp,
   CustomOTPBox,
@@ -37,9 +36,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -102,31 +99,18 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
   const otpfunction = async () => {
     if (formData?.mobile?.length < 10) {
-      const data = await formSubmitCreate(formData);
-
       const newErrors = {
         mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("MINIMUM_LENGTH_IS_10")],
+          __errors: [t("MINIMUM_LENGTH_IS_10")],
         },
       };
       setErrors(newErrors);
     }
 
     if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
-      const data = await formSubmitCreate(formData);
       const newErrors = {
         mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("PLEASE_ENTER_VALID_NUMBER")],
+          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
         },
       };
       setErrors(newErrors);
@@ -138,24 +122,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     });
 
     setverifyOtpData(otpData);
-    if (status === true) {
-      const data = await formSubmitCreate(formData);
 
-      if (data?.error) {
-        const newErrors = {
-          mobile: {
-            __errors:
-              data?.error?.constructor?.name === "String"
-                ? [data?.error]
-                : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-          },
-        };
-        setErrors(newErrors);
-      } else {
-        createAg();
-      }
+    if (status) {
+      createAg();
     } else if (status === false) {
       const newErrors = {
         otp: {
@@ -163,7 +132,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         },
       };
       setErrors(newErrors);
-    } else {
+    } else if (!otpData?.error) {
       setSchema(newSchema);
       setotpbtn(true);
     }
@@ -203,8 +172,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     });
   }, []);
 
-  const formSubmitCreate = async (formData) => {};
-
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
@@ -225,16 +192,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
-      }
-    }
+
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
       if (years < 12) {
@@ -305,7 +263,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       }
 
       if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties;
+        const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
         setFormData((e) => {
@@ -338,7 +296,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -364,24 +321,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       const { id } = authUser;
       let success = false;
       if (id) {
-        success = true;
-      } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
-          const newErrors = {
-            mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
-        }
-      } else if (page <= 1) {
         success = true;
       }
       if (success) {
@@ -427,7 +366,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
             templates={{
@@ -437,14 +376,13 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
-              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
             {...{
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               customValidate,
