@@ -19,12 +19,10 @@ import {
   FrontEndTypo,
   getOptions,
   Loading,
-  getUniqueArray,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { templates, widgets } from "../../../component/BaseInput";
-import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // App
@@ -36,7 +34,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
   const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
@@ -45,7 +42,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
   const location = useLocation();
@@ -85,18 +81,12 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
         learning_motivation: result?.program_beneficiaries?.learning_motivation,
         type_of_support_needed:
           result?.program_beneficiaries?.type_of_support_needed,
-        learning_motivation: getUniqueArray(
-          result?.program_beneficiaries?.learning_motivation
-        ),
-        type_of_support_needed: getUniqueArray(
-          result?.program_beneficiaries?.type_of_support_needed
-        ),
       });
     }
   }, []);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    await nextPreviewStep("p");
   };
 
   const updateData = (data, deleteData = false) => {};
@@ -179,21 +169,22 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
+    console.log("step", step);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       getLocation();
     } else if (page === "3") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "personal" });
     } else if (page === "4") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_education" });
     } else if (page === "5") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_other_details" });
     } else if (page === "upload") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
     }
     setLoading(false);
   }, [page]);
@@ -327,9 +318,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       setPage(agroute ? "upload" : newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
-      setYearsRange([minYear.year(), maxYear.year()]);
+
       setSubmitBtn(t("NEXT"));
     }
   }, []);
@@ -345,8 +334,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       updateData({}, true);
     }
   };
-
-  const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {
     if (key) {
@@ -369,10 +356,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       }
     }
     if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
+      const regex = /^[2-9]\d{3}\d{4}\d{4}$/;
+      if (data?.aadhar_token && !`${data?.aadhar_token}`?.match(regex)) {
         errors?.aadhar_token?.addError(
           `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
         );
@@ -444,7 +429,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       }
       setSchema(newSchema);
     }
-    formData;
     return newSchema;
   };
 
@@ -613,27 +597,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       const { id } = authUser;
       let success = false;
       if (id) {
-        // const data = await formSubmitUpdate(newData);
-        // if (!_.isEmpty(data)) {
-        success = true;
-        // }
-      } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
-          const newErrors = {
-            mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
-        }
-      } else if (page <= 1) {
         success = true;
       }
       if (success) {
@@ -872,7 +835,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
               widgets,
               uiSchema,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               formData,
               customValidate,
               onChange,
