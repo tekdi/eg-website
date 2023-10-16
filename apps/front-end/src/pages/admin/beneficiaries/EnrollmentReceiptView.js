@@ -104,7 +104,9 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <AdminTypo.H1 key="1">
                 {t("ENROLLMENT_VERIFICATION")}
               </AdminTypo.H1>,
-              <AdminTypo.H2 key="2">{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
+              <AdminTypo.H2 key="2">{`${data?.first_name} ${
+                data?.last_name ? data?.last_name : " "
+              }`}</AdminTypo.H2>,
               <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
               <ChipStatus
                 key={"4"}
