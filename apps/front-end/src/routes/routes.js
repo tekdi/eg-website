@@ -39,9 +39,6 @@ const otherdetails = React.lazy(() =>
 const EnrollmentForm = React.lazy(() =>
   import("pages/front-end/ag-edit/enrollment/EnrollmentForm")
 );
-const Agduplicate = React.lazy(() =>
-  import("pages/front-end/ag-form/Agduplicate")
-);
 const Agform = React.lazy(() => import("pages/front-end/ag-form/Agform"));
 const Docschecklist = React.lazy(() =>
   import("pages/front-end/ag-form/Docschecklist")
@@ -181,7 +178,6 @@ export default [
   { path: "/beneficiary", component: Agform },
   { path: "/beneficiary/:id/2", component: AgformUpdate },
   { path: "/beneficiary/:id/3", component: Agadhaar },
-  { path: "/beneficiary/:id/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
