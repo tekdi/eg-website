@@ -819,11 +819,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             >
               {t("SKIP")}
             </Button>
-            {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
-            ) : (
-              <React.Fragment />
-            )}
+            {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
           </VStack>
         </VStack>
       </Layout>
@@ -849,18 +845,16 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
           progress={page === "upload" ? 10 : page}
         /> */}
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
 
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang + addBtn}
             ref={formRef}
@@ -889,8 +883,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
               {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>

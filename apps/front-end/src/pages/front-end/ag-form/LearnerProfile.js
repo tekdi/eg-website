@@ -1,39 +1,22 @@
 import {
   Collapsible,
-  H1,
   H3,
-  H4,
   Layout,
   t,
   IconByName,
   FrontEndTypo,
 } from "@shiksha/common-lib";
-import React, { useState } from "react";
-import {
-  Image,
-  Text,
-  VStack,
-  HStack,
-  Button,
-  Modal,
-  TextArea,
-} from "native-base";
+import React from "react";
+import { Image, Text, VStack, HStack } from "native-base";
 import { useNavigate } from "react-router-dom";
 
 const LearnerProfile = () => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [addmodal, setaddmodal] = React.useState(false);
 
   const navigate = useNavigate();
-
-  const [firstname, setfirstname] = useState("Rachana Wagh");
-  const [alreadyreg, setalreadyreg] = useState(true);
-  const [regsuccess, setregsuccess] = useState(false);
-
-  const [DOB, setDOB] = useState("10-11-1995");
-  const [gender, setgender] = useState("Female");
-  const [verify_id, setverify_id] = useState("xxxx xxxx 8880");
+  const [alreadyreg, setalreadyreg] = React.useState(true);
+  const [regsuccess, setregsuccess] = React.useState(false);
 
   const navToScreen = () => {
     console.log("reached ");

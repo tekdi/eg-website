@@ -1,24 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
+import { Alert, Box, Center, HStack, Image, Modal, VStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
   Camera,
   Layout,
   H1,
@@ -26,12 +11,9 @@ import {
   login,
   H3,
   IconByName,
-  BodySmall,
-  filtersByObject,
   H2,
   getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
@@ -279,7 +261,7 @@ export default function agFormEdit({ ip }) {
     console.log("page3.....", updateDetails);
   };
 
-  const [cameraFile, setcameraFile] = useState();
+  const [cameraFile, setcameraFile] = React.useState();
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
@@ -440,12 +422,10 @@ export default function agFormEdit({ ip }) {
               ref={uplodInputRef}
               onChange={handleFileInputChange}
             />
-            {errors?.fileSize ? (
+            {errors?.fileSize && (
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {errors?.fileSize}
               </FrontEndTypo.H2>
-            ) : (
-              <React.Fragment />
             )}
           </VStack>
         </VStack>
@@ -465,17 +445,15 @@ export default function agFormEdit({ ip }) {
     >
       <Box py={6} px={4} mb={5}>
         {/* Box */}
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang + addBtn}
             ref={formRef}
@@ -509,8 +487,6 @@ export default function agFormEdit({ ip }) {
               {pages[pages?.length - 1] === page ? "Submit" : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
       <Modal

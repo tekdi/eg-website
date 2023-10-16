@@ -419,17 +419,15 @@ export default function AddressEdit({ ip }) {
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
@@ -457,8 +455,6 @@ export default function AddressEdit({ ip }) {
               {pages[pages?.length - 1] === page && t("SAVE")}
             </FrontEndTypo.Primarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>

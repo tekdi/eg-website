@@ -268,7 +268,7 @@ export default function ReferenceDetails({ ip }) {
               </HStack>
             </Alert>
           )}
-          {page && page !== "" ? (
+          {page && page !== "" && (
             <Form
               key={lang}
               ref={formRef}
@@ -304,8 +304,6 @@ export default function ReferenceDetails({ ip }) {
                 {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
               </Button>
             </Form>
-          ) : (
-            <React.Fragment />
           )}
         </Box>
       )}

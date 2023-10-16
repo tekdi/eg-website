@@ -1,7 +1,5 @@
 import {
-  H1,
   H3,
-  H4,
   Layout,
   t,
   benificiaryRegistoryService,
@@ -9,25 +7,17 @@ import {
   BodyMedium,
   getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
-import React, { useState } from "react";
-import {
-  Text,
-  VStack,
-  HStack,
-  Button,
-  Select,
-  CheckIcon,
-  Alert,
-} from "native-base";
+import React from "react";
+import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = ({ footerLinks }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [selectData, setselectData] = useState([]);
-  const [status, setStatus] = useState({});
-  const [checkList, setCheckList] = useState(false);
-  const [buttonPress, setButtonPress] = useState(false);
+  const [selectData, setselectData] = React.useState([]);
+  const [status, setStatus] = React.useState({});
+  const [checkList, setCheckList] = React.useState(false);
+  const [buttonPress, setButtonPress] = React.useState(false);
   const [benificiary, setBenificiary] = React.useState({});
   const [msgshow, setmsgshow] = React.useState(false);
   const [loading, setloading] = React.useState(true);
@@ -501,8 +491,8 @@ const Docschecklist = ({ footerLinks }) => {
               })}
             </Select>
           </HStack>
-          {checkList ? (
-            buttonPress ? (
+          {checkList &&
+            (buttonPress ? (
               <FrontEndTypo.ColourPrimaryButton mb={1} type="submit">
                 {t("MARK_AS_COMPLETE")}
               </FrontEndTypo.ColourPrimaryButton>
@@ -527,10 +517,7 @@ const Docschecklist = ({ footerLinks }) => {
                   {t("MARK_AS_COMPLETE")}
                 </FrontEndTypo.Primarybutton>
               </VStack>
-            )
-          ) : (
-            <React.Fragment></React.Fragment>
-          )}
+            ))}
 
           <FrontEndTypo.Primarybutton
             mt="4"

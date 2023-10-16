@@ -1,23 +1,14 @@
 import {
   H1,
   H3,
-  H4,
   IconByName,
   Layout,
   t,
   FrontEndTypo,
   H2,
 } from "@shiksha/common-lib";
-import React, { useState } from "react";
-import {
-  Image,
-  Text,
-  VStack,
-  HStack,
-  Button,
-  Modal,
-  TextArea,
-} from "native-base";
+import React from "react";
+import { VStack, HStack, Modal, TextArea } from "native-base";
 import { useNavigate } from "react-router-dom";
 
 const Agduplicate = () => {
@@ -27,13 +18,13 @@ const Agduplicate = () => {
 
   const navigate = useNavigate();
 
-  const [firstname, setfirstname] = useState("Rachana Wagh");
-  const [alreadyreg, setalreadyreg] = useState(true);
-  const [regsuccess, setregsuccess] = useState(false);
+  const [firstname, setfirstname] = React.useState("Rachana Wagh");
+  const [alreadyreg, setalreadyreg] = React.useState(true);
+  const [regsuccess, setregsuccess] = React.useState(false);
 
-  const [DOB, setDOB] = useState("10-11-1995");
-  const [gender, setgender] = useState("Female");
-  const [verify_id, setverify_id] = useState("xxxx xxxx 8880");
+  const [DOB, setDOB] = React.useState("10-11-1995");
+  const [gender, setgender] = React.useState("Female");
+  const [verify_id, setverify_id] = React.useState("xxxx xxxx 8880");
 
   const navToScreen = () => {
     console.log("reached ");

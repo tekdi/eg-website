@@ -150,11 +150,7 @@ export default function BenificiaryProfilePhoto() {
               </VStack>
             </Pressable>
           </Box>
-          {errors?.fileSize ? (
-            <H2 color="red.400">{errors?.fileSize}</H2>
-          ) : (
-            <React.Fragment />
-          )}
+          {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
           <FrontEndTypo.Primarybutton
             isLoading={loading}
             p="4"

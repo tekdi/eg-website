@@ -414,18 +414,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
           steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
           progress={page === "upload" ? 10 : page}
         /> */}
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
 
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang + addBtn}
             ref={formRef}
@@ -474,8 +472,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             )}
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>
