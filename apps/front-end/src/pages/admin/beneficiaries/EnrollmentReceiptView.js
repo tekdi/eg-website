@@ -98,7 +98,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <HStack space={"2"} justifyContent="space-between">
           <Breadcrumb
             drawer={
-              <IconByName size="sm" name="ArrowRightSLineIcon" isDisabled />
+              <IconByName
+                size="sm"
+                name="ArrowRightSLineIcon"
+                onPress={(e) => navigate(-1)}
+              />
             }
             data={[
               <AdminTypo.H1 key="1">
