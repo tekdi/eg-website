@@ -43,9 +43,6 @@ const Agform = React.lazy(() => import("pages/front-end/ag-form/Agform"));
 const Docschecklist = React.lazy(() =>
   import("pages/front-end/ag-form/Docschecklist")
 );
-const LearnerProfile = React.lazy(() =>
-  import("pages/front-end/ag-form/LearnerProfile")
-);
 const BenificiaryListView = React.lazy(() =>
   import("pages/front-end/BenificiaryListView")
 );
@@ -179,7 +176,6 @@ export default [
   { path: "/beneficiary/:id/2", component: AgformUpdate },
   { path: "/beneficiary/:id/3", component: Agadhaar },
   { path: "/AgSuccess", component: Success },
-  { path: "/learnerProfile", component: LearnerProfile },
   { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
   { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
   { path: "/beneficiary/:id", component: BenificiaryProfileView },

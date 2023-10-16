@@ -5,7 +5,6 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   BodyMedium,
-  getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
 import React from "react";
 import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
@@ -19,7 +18,6 @@ const Docschecklist = ({ footerLinks }) => {
   const [checkList, setCheckList] = React.useState(false);
   const [buttonPress, setButtonPress] = React.useState(false);
   const [benificiary, setBenificiary] = React.useState({});
-  const [msgshow, setmsgshow] = React.useState(false);
   const [loading, setloading] = React.useState(true);
 
   React.useEffect(async () => {
@@ -27,7 +25,6 @@ const Docschecklist = ({ footerLinks }) => {
     let docStatus = data?.result?.program_beneficiaries?.documents_status;
     setBenificiary(data?.result);
     setloading(false);
-    setmsgshow(getBeneficaryDocumentationStatus(docStatus));
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(
         JSON.parse(data.result?.program_beneficiaries?.documents_status)
@@ -61,10 +58,7 @@ const Docschecklist = ({ footerLinks }) => {
       documents_status: status,
     };
     if (Object.keys(status).length > 0) {
-      let dataOutput = await benificiaryRegistoryService.getStatusUpdate(
-        id,
-        data
-      );
+      await benificiaryRegistoryService.getStatusUpdate(id, data);
     }
   }, [status]);
 
@@ -79,7 +73,7 @@ const Docschecklist = ({ footerLinks }) => {
         reason_for_status_update: "documents_completed",
       };
 
-      const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+      await benificiaryRegistoryService.statusUpdate(bodyData);
     }
     setButtonPress(true);
   };
@@ -141,7 +135,7 @@ const Docschecklist = ({ footerLinks }) => {
                 selectData.map((item, i) => {
                   return (
                     <Select.Item
-                      key={i}
+                      key={item.title}
                       label={`${t(item.title)}`}
                       value={item.value}
                     />
@@ -176,7 +170,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -210,7 +204,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -239,7 +233,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -268,7 +262,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -297,7 +291,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -331,7 +325,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -362,7 +356,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -391,7 +385,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -420,7 +414,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -449,7 +443,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
@@ -483,7 +477,7 @@ const Docschecklist = ({ footerLinks }) => {
               {selectData?.map((item, i) => {
                 return (
                   <Select.Item
-                    key={i}
+                    key={item.title}
                     label={`${t(item.title)}`}
                     value={item.value}
                   />
