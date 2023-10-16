@@ -18,19 +18,16 @@ const Agduplicate = () => {
 
   const navigate = useNavigate();
 
-  const [firstname, setfirstname] = React.useState("Rachana Wagh");
-  const [alreadyreg, setalreadyreg] = React.useState(true);
-  const [regsuccess, setregsuccess] = React.useState(false);
+  const [firstname] = React.useState("Rachana Wagh");
+  const [alreadyreg] = React.useState(true);
+  const [regsuccess] = React.useState(false);
 
-  const [DOB, setDOB] = React.useState("10-11-1995");
-  const [gender, setgender] = React.useState("Female");
-  const [verify_id, setverify_id] = React.useState("xxxx xxxx 8880");
+  const [DOB] = React.useState("10-11-1995");
+  const [gender] = React.useState("Female");
+  const [verify_id] = React.useState("xxxx xxxx 8880");
 
   const navToScreen = () => {
-    console.log("reached ");
-
     if (alreadyreg) {
-      console.log("reached here");
       setModalVisible(!modalVisible);
     } else {
       setModalVisible(false);
