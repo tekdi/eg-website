@@ -34,12 +34,10 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const textAreaRef = useRef();
   const [textVisible, settextVisible] = React.useState(false);
   const { t } = useTranslation();
-  const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -58,7 +56,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       let data = await benificiaryRegistoryService.getOne(userId);
 
       setFormData({
-        aadhar_no: data?.result?.aadhar_no,
         aadhar_no: data?.result?.aadhar_no,
         edit_page_type: "add_ag_duplication",
         is_duplicate: "no",
@@ -151,10 +148,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       );
     }
     if (data?.aadhar_no) {
-      if (
-        data?.aadhar_no &&
-        !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
+      const regex = /^[2-9]\d{3}\d{4}\d{4}$/;
+      if (data?.aadhar_no && !`${data?.aadhar_no}`?.match(regex)) {
         errors?.aadhar_no?.addError(
           `${t(
             "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
@@ -296,7 +291,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
         {page && page !== "" && (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ RadioBtn, CustomR, CustomOTPBox, Aadhaar }}
             templates={{
@@ -312,7 +307,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
             noHtml5Validate={true}
             {...{
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               formData,
               customValidate,
               onChange,

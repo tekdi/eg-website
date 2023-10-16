@@ -56,7 +56,7 @@ import {
 } from "../../../../component/BaseInput.js";
 
 // App
-export default function agFormEdit({ ip }) {
+export default function UploadPhoto({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);

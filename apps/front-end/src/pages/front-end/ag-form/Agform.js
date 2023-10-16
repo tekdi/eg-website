@@ -6,7 +6,6 @@ import { Alert, Box, HStack } from "native-base";
 import {
   AgRegistryService,
   Layout,
-  filtersByObject,
   BodyMedium,
   sendAndVerifyOtp,
   CustomOTPBox,
@@ -305,7 +304,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       }
 
       if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties;
+        const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
         setFormData((e) => {
@@ -338,7 +337,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -376,10 +374,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
             },
           };
           setErrors(newErrors);
-        } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
         }
       } else if (page <= 1) {
         success = true;
@@ -427,7 +421,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
             templates={{
@@ -437,14 +431,13 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
-              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
             {...{
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               customValidate,

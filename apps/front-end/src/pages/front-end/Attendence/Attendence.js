@@ -235,8 +235,9 @@ export default function Attendence({ footerLinks }) {
   };
 
   const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+    const location = navigator.geolocation;
+    if (location) {
+      location.getCurrentPosition(successCallback, errorCallback);
     } else {
       console.log("Geolocation is not supported by this browser.");
     }

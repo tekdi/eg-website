@@ -31,7 +31,8 @@ export default function AdharOTP({
   });
 
   const generateCode = () => {
-    const random = Math.random();
+    const maths = Math;
+    const random = maths.random();
     setData({ ...data, securityCode: Math.floor(1000 + random * 9000) });
   };
 
