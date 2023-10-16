@@ -168,7 +168,6 @@ export default function Attendence({ footerLinks }) {
   const [page, setPage] = React.useState(1);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [filterObj, setFilterObj] = React.useState();
-  const [refAppBar, setRefAppBar] = React.useState();
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [locationData, setlocationData] = useState("");
   const [attendance, setAttendance] = React.useState("");
@@ -390,7 +389,7 @@ export default function Attendence({ footerLinks }) {
                     shadow="BlueOutlineShadow"
                     onPress={() => {
                       updateUserData();
-                      cameraFile ? setUserData() : error;
+                      cameraFile && setUserData();
                       setcameraFile("");
                       setCameraUrl();
                     }}
@@ -403,7 +402,7 @@ export default function Attendence({ footerLinks }) {
                     ml="4"
                     px="5"
                     onPress={() => {
-                      cameraFile ? uploadAttendencePicture() : error;
+                      cameraFile && uploadAttendencePicture();
                     }}
                   >
                     {t("NEXT")}
@@ -454,10 +453,7 @@ export default function Attendence({ footerLinks }) {
       _sidebar={footerLinks}
       loading={loading}
     >
-      <ScrollView
-        maxH={Height - refAppBar?.clientHeight}
-        minH={Height - refAppBar?.clientHeight}
-      >
+      <ScrollView maxH={Height} minH={Height}>
         <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
           <VStack>
             <HStack justifyContent={"space-between"}>
