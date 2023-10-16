@@ -24,9 +24,7 @@ const referencedetails = React.lazy(() =>
 const familydetails = React.lazy(() =>
   import("pages/front-end/ag-edit/family-details/familydetails")
 );
-const uploadphoto = React.lazy(() =>
-  import("pages/front-end/ag-edit/upload-photo/uploadphoto")
-);
+
 const futureStudy = React.lazy(() =>
   import(
     "pages/front-end/ag-edit/education-details-further-studies/futureStudy"
@@ -154,12 +152,6 @@ export default [
     path: "/beneficiary/edit/:id/family-details",
     component: familydetails,
   },
-
-  {
-    path: "/beneficiary/edit/:id/upload-photo",
-    component: uploadphoto,
-  },
-
   { path: "/beneficiary/edit/:id/education", component: educationDetails },
   {
     path: "/beneficiary/edit/:id/future-education",

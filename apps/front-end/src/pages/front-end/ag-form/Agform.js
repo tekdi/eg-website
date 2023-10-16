@@ -36,9 +36,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -99,7 +97,12 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const otpfunction = async () => {
+  const validateMobile = async ({
+    formData,
+    setErrors,
+    t,
+    formSubmitCreate,
+  }) => {
     if (formData?.mobile?.length < 10) {
       const data = await formSubmitCreate(formData);
 
@@ -114,9 +117,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         },
       };
       setErrors(newErrors);
-    }
-
-    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
+    } else if (
+      !(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)
+    ) {
       const data = await formSubmitCreate(formData);
       const newErrors = {
         mobile: {
@@ -130,7 +133,20 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       };
       setErrors(newErrors);
     }
+  };
 
+  const validateOtp = async ({
+    formData,
+    schema,
+    setErrors,
+    setSchema,
+    setotpbtn,
+    setverifyOtpData,
+    t,
+    formSubmitCreate,
+    createAg,
+    sendAndVerifyOtp,
+  }) => {
     const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
       ...formData,
       hash: localStorage.getItem("hash"),
@@ -167,6 +183,23 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       setotpbtn(true);
     }
   };
+
+  const otpfunction = async () => {
+    await validateMobile({ formData, setErrors, t, formSubmitCreate });
+    await validateOtp({
+      formData,
+      schema,
+      setErrors,
+      setSchema,
+      setotpbtn,
+      setverifyOtpData,
+      t,
+      formSubmitCreate,
+      createAg,
+      sendAndVerifyOtp,
+    });
+  };
+
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -202,8 +235,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     });
   }, []);
 
-  const formSubmitCreate = async (formData) => {};
-
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
@@ -215,58 +246,65 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const customValidate = (data, errors, c) => {
-    if (data?.mobile) {
-      if (data?.mobile?.toString()?.length !== 10) {
-        errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
-      }
-      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
-        errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
-      }
+  const validateMobileNumber = (mobile, t, errors) => {
+    if (!mobile) return errors;
+
+    const mobileString = mobile.toString();
+    if (mobileString.length !== 10) {
+      errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
     }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+    if (!(mobile > 6000000000 && mobile < 9999999999)) {
+      errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
+    }
+    return errors;
+  };
+
+  const validateDOB = (dob, t, errors) => {
+    if (!dob) return errors;
+
+    const years = moment().diff(dob, "years");
+    if (years < 12) {
+      errors.dob.addError(t("MINIMUM_AGE_12_YEAR_OLD"));
+    }
+    if (years > 30) {
+      errors.dob.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
+    }
+    return errors;
+  };
+
+  const validateName = (data, key, t, schema, errors) => {
+    if (key === "first_name" || key === "last_name") {
+      const name = data[key]?.replace(/ /g, "");
+      if (!name) {
+        errors[key].addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
         );
       }
     }
-    if (data?.dob) {
-      const years = moment().diff(data?.dob, "years");
-      if (years < 12) {
-        errors?.dob?.addError(t("MINIMUM_AGE_12_YEAR_OLD"));
-      }
-      if (years > 30) {
-        errors?.dob?.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
-      }
+    return errors;
+  };
+
+  const validateStringPattern = (data, key, t, schema, errors) => {
+    if (data[key] && !data[key].match(/^[a-zA-Z ]*$/g)) {
+      errors[key].addError(
+        `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+      );
     }
-    ["grampanchayat", "first_name", "middle_name", "last_name"].forEach(
-      (key) => {
-        if (
-          key === "first_name" &&
-          data?.first_name?.replace(/ /g, "") === ""
-        ) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
-        }
+    return errors;
+  };
 
-        if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
-        }
+  const customValidate = (data, errors, t, schema) => {
+    if (data) {
+      errors = validateMobileNumber(data.mobile, t, errors);
+      errors = validateDOB(data.dob, t, errors);
 
-        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
+      ["grampanchayat", "first_name", "middle_name", "last_name"].forEach(
+        (key) => {
+          errors = validateName(data, key, t, schema, errors);
+          errors = validateStringPattern(data, key, t, schema, errors);
         }
-      }
-    );
+      );
+    }
 
     return errors;
   };
@@ -336,50 +374,64 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const onSubmit = async (data) => {
-    let newFormData = data.formData;
+  const sanitizeNameFields = (data, schema) => {
+    let newData = { ...data };
     if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name.replace(/ /g, ""),
+      newData = {
+        ...newData,
+        first_name: newData.first_name.replace(/ /g, ""),
       };
     }
-
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name.replace(/ /g, ""),
+    if (schema?.properties?.last_name && newData.last_name) {
+      newData = {
+        ...newData,
+        last_name: newData.last_name.replace(/ /g, ""),
       };
     }
+    return newData;
+  };
 
-    const newData = {
-      ...formData,
-      ...newFormData,
-      ["form_step_number"]: parseInt(page) + 1,
-    };
-    setFormData(newData);
+  const shouldSkipSubmission = (authUser, page) => {
+    return authUser.id || page <= 1;
+  };
+
+  const handleFormSubmission = async (newData, formSubmitCreate, t) => {
+    const data = await formSubmitCreate(newData);
+    if (data?.error) {
+      return {
+        mobileError: data?.error
+          ? data?.error
+          : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+      };
+    }
+    return {};
+  };
+
+  const handleSubmission = async ({
+    newData,
+    page,
+    errors,
+    t,
+    authUser,
+    formSubmitCreate,
+    setErrors,
+    setStep,
+    goErrorPage,
+  }) => {
     if (_.isEmpty(errors)) {
-      const { id } = authUser;
-      let success = false;
-      if (id) {
-        success = true;
-      } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
-          const newErrors = {
-            mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      } else if (page <= 1) {
-        success = true;
-      }
-      if (success) {
+      if (shouldSkipSubmission(authUser, page)) {
         setStep();
+      } else if (page === "2") {
+        const submissionResult = await handleFormSubmission(
+          newData,
+          formSubmitCreate,
+          t
+        );
+        if (submissionResult.mobileError) {
+          setErrors({ mobile: { __errors: submissionResult.mobileError } });
+        } else {
+          setStep();
+        }
       }
     } else {
       const key = Object.keys(errors);
@@ -388,6 +440,29 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       }
     }
   };
+
+  const onSubmit = async (data) => {
+    const sanitizedData = sanitizeNameFields(data.formData, schema);
+    const newData = {
+      ...formData,
+      ...sanitizedData,
+      form_step_number: parseInt(page) + 1,
+    };
+
+    setFormData(newData);
+    await handleSubmission({
+      newData,
+      page,
+      errors,
+      t,
+      authUser,
+      formSubmitCreate,
+      setErrors,
+      setStep,
+      goErrorPage,
+    });
+  };
+  
 
   return (
     <Layout
@@ -403,11 +478,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* <Steper
-          type={"circle"}
-          steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
-          progress={page === "upload" ? 10 : page}
-        /> */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
