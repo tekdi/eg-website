@@ -89,7 +89,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     await nextPreviewStep("p");
   };
 
-  const updateData = (data, deleteData = false) => {};
 
   const uiSchema = {
     learning_motivation: {
@@ -169,7 +168,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    console.log("step", step);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
       await AgRegistryService.updateAg(formData, userId);
@@ -329,10 +327,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const formSubmitUpdate = async (formData) => {
     const { id } = authUser;
-
-    if (id) {
-      updateData({}, true);
-    }
   };
 
   const goErrorPage = (key) => {
@@ -487,7 +481,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
     if (id === "root_mobile") {
       if (data?.mobile?.toString()?.length === 10) {
         const result = await userExist({ mobile: data?.mobile });
@@ -527,22 +520,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
         const newErrors = {
           grampanchayat: {
-            __errors: [t("REQUIRED_MESSAGE")],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
-
-    if (id === "root_address") {
-      if (
-        !data?.address?.match(
-          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
-        ) &&
-        data?.address !== null
-      ) {
-        const newErrors = {
-          address: {
             __errors: [t("REQUIRED_MESSAGE")],
           },
         };
@@ -592,7 +569,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
-    updateData(newData);
     if (_.isEmpty(errors)) {
       const { id } = authUser;
       let success = false;
