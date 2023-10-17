@@ -375,8 +375,12 @@ export default function App({ userTokenInfo, footerLinks }) {
                   return (
                     <Box key={name}>
                       <CardComponent
+                        title={`${index + 1}. ${
+                          item?.type === "vo_experience"
+                            ? t("VOLUNTEER_EXPERIENCE")
+                            : t("JOB_EXPERIENCE")
+                        }`}
                         schema={schema}
-                        index={index + 1}
                         item={{
                           ...item,
                           ...(item?.reference?.constructor.name === "Object"

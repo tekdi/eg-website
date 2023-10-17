@@ -99,7 +99,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     setCampDetails(result?.data);
     setLoading(false);
   }, []);
-  
+
   React.useEffect(async () => {
     setLoading(true);
     if (step === "edit_camp_location") {
@@ -197,7 +197,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       setFormData(facilities);
     }
   }, [step, schema, campDetails]);
-
+  
   // update schema
   React.useEffect(async () => {
     let newSchema = schema;

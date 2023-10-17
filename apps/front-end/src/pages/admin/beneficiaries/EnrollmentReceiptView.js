@@ -10,6 +10,7 @@ import {
   uploadRegistryService,
   Breadcrumb,
   jsonToQueryString,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import {
   createSearchParams,
@@ -20,7 +21,6 @@ import {
 import { HStack, VStack, Stack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import CustomRadio from "component/CustomRadio";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 
@@ -313,7 +313,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                 }}
                               >
                                 <ImageView
-                                  isImageTag
                                   _box={{
                                     width: "100%",
                                     height: "100%",

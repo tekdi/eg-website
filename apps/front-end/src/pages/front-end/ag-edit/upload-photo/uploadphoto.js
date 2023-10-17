@@ -14,7 +14,6 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
 import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,
@@ -37,6 +36,7 @@ import {
   AgRegistryService,
   uploadRegistryService,
   FrontEndTypo,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
