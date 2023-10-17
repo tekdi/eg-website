@@ -24,8 +24,9 @@ import {
   AdminTypo,
   chunk,
   sprintF,
+  CheckUncheck,
+  CustomRadio,
 } from "@shiksha/common-lib";
-import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
@@ -580,37 +581,6 @@ export const MultiCheck = ({
         ))}
       </Stack>
     </FormControl>
-  );
-};
-
-// select between 2 values radio button (yes or no)
-const CheckUncheck = ({ required, schema, value, onChange }) => {
-  const { label } = schema || {};
-  const { t } = useTranslation();
-
-  const checkboxIcons = [
-    { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
-    { name: "CloseCircleLineIcon", activeColor: "red.500" },
-  ];
-  return (
-    <HStack space={2}>
-      {required && <Text color={"danger.500"}>*</Text>}
-      <CustomRadio
-        options={{
-          enumOptions: [{ value: "1" }, { value: "0" }],
-        }}
-        schema={{
-          icons: checkboxIcons,
-          _box: { gap: "0", width: "auto" },
-          _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
-        }}
-        value={value}
-        onChange={(e) => {
-          onChange(e);
-        }}
-      />
-      <Text flex="4">{label ? t(label) : ""}</Text>
-    </HStack>
   );
 };
 

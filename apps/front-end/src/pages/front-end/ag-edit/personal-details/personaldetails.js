@@ -2,16 +2,31 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack } from "native-base";
 
 import {
+  Alert,
+  Box,
+  Button,
+  Center,
+  HStack,
+  Image,
+  Modal,
+  Radio,
+  Stack,
+  VStack,
+} from "native-base";
+import Steper from "../../../../component/Steper.js";
+import {
+  facilitatorRegistryService,
+  geolocationRegistryService,
+  Camera,
   Layout,
   BodyMedium,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
-  getOptions,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
