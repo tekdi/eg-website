@@ -91,7 +91,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       }
     }
   };
-
+  console.log("data", data);
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
@@ -145,30 +145,42 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     navigate(`/admin/beneficiary/${data?.id}`);
                   }}
                 >
-                  Learner Profile Details
+                  {t("LEARNER_PROFILE")}
                 </AdminTypo.PrimaryButton>
 
                 <ValidationBox error={error?.enrollment_details}>
                   <VStack space={4}>
                     <HStack alignItems="center" space="8">
-                      {[
-                        data?.profile_photo_1,
-                        data?.profile_photo_2,
-                        data?.profile_photo_3,
-                      ].map(
-                        (photo) =>
-                          photo?.id && (
-                            <ImageView
-                              key={photo}
-                              w="85px"
-                              h="85px"
-                              source={{
-                                document_id: photo?.id,
-                              }}
-                            />
-                          )
+                      {data?.profile_photo_1?.name ||
+                      data?.profile_photo_2?.name ||
+                      data?.profile_photo_3?.name ? (
+                        [
+                          data?.profile_photo_1,
+                          data?.profile_photo_2,
+                          data?.profile_photo_3,
+                        ].map(
+                          (photo) =>
+                            photo?.id && (
+                              <ImageView
+                                key={photo?.id}
+                                w="85px"
+                                h="85px"
+                                source={{
+                                  document_id: photo?.id,
+                                }}
+                              />
+                            )
+                        )
+                      ) : (
+                        <IconByName
+                          isDisabled
+                          name="AccountCircleLineIcon"
+                          color="textGreyColor.300"
+                          _icon={{ size: "90px" }}
+                        />
                       )}
                     </HStack>
+
                     <HStack space={4} alignItems="center">
                       <CustomRadio
                         options={{
