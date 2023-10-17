@@ -91,7 +91,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       }
     }
   };
-  console.log("data", data);
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
