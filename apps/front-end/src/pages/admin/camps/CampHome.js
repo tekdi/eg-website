@@ -97,7 +97,7 @@ const columns = (navigate) => [
     selector: (row) => (
       <AdminTypo.Secondarybutton
         my="3"
-        onPress={() => navigate(`/admin/camp/${row?.id}/view`)}
+        onPress={() => navigate(`/admin/camp/view/${row.id}`)}
       >
         {t("VIEW")}
       </AdminTypo.Secondarybutton>

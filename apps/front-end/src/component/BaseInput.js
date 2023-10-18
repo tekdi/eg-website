@@ -24,8 +24,8 @@ import {
   AdminTypo,
   chunk,
   sprintF,
+  CustomRadio,
 } from "@shiksha/common-lib";
-import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
