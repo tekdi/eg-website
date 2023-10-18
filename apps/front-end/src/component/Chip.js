@@ -15,16 +15,16 @@ export default function Chip({ label, children, isActive, ...props }) {
       m="1"
       {...props}
     >
-      {children ? children : label}
+      {children || label}
     </Box>
   );
 }
 
 // ChipStatus
-export function ChipStatus({ status, ...props }) {
+export function ChipStatus({ width, status, ...props }) {
   const [color, setColor] = React.useState("appliedColor");
   const [newStatus, setNewStatus] = React.useState(status);
-
+  console.log("width", width);
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "application_screened":
@@ -68,11 +68,11 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
         setColor("rejectedColor");
         break;
-        case "registered":
+      case "registered":
         setNewStatus(t("GROUPS_STATUS_REGISTERED"));
         setColor("selectedColor");
         break;
-        case "not_registered":
+      case "not_registered":
         setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
         setColor("rejectedColor");
         break;
@@ -86,7 +86,7 @@ export function ChipStatus({ status, ...props }) {
     <Chip
       px="4"
       py="2"
-      width="100px"
+      width={width || "100px"}
       bg={color}
       label={newStatus}
       _text={{
