@@ -29,6 +29,7 @@ import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
+import GeoLocation from "./formCustomeInputs/GeoLocation";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
@@ -702,6 +703,7 @@ const widgets = {
   MultiCheck,
   ReadOnly,
   StarRating,
+  GeoLocation,
   CheckUncheck,
 };
 
@@ -818,5 +820,6 @@ export {
   onError,
   transformErrors,
   StarRating,
+  GeoLocation,
   CheckUncheck,
 };

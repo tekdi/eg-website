@@ -16,14 +16,17 @@ import {
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { templates, widgets } from "../../../../component/BaseInput.js";
+import {
+  GeoLocation,
+  templates,
+  widgets,
+} from "../../../../component/BaseInput.js";
 
 // App
 export default function AddressEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -32,72 +35,20 @@ export default function AddressEdit({ ip }) {
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
+  const location = GeoLocation();
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${userId}`);
   };
 
-  const getLocation = () => {
-    const location = navigator.geolocation;
-    if (location) {
-      location.getCurrentPosition(showPosition, showError);
-    } else {
-      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
-    }
-  };
-
-  const showPosition = async (position) => {
-    let lati = position.coords.latitude;
-    let longi = position.coords.longitude;
-
-    const qData = await benificiaryRegistoryService.getOne(id);
-    const finalData = qData.result;
-    setFormData(qData.result);
-    setFormData({
-      ...formData,
-      lat: lati.toString(),
-      long: longi.toString(),
-      address: finalData?.address == "null" ? "" : finalData?.address,
-      state: finalData?.state,
-      district: finalData?.district,
-      block: finalData?.block,
-      village: finalData?.village,
-      grampanchayat:
-        finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
-    });
-  };
-
-  function showError(error) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
-
-        break;
-      case error.POSITION_UNAVAILABLE:
-        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
-
-        break;
-      case error.TIMEOUT:
-        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
-
-        break;
-      case error.UNKNOWN_ERROR:
-        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
-
-        break;
-    }
-  }
-
   //getting data
   React.useEffect(async () => {
-    getLocation();
     const qData = await benificiaryRegistoryService.getOne(id);
-    const finalData = qData.result;
-    setFormData(qData.result);
+    const finalData = qData?.result;
     setFormData({
       ...formData,
-      lat: finalData?.lat,
-      long: finalData?.long,
+      lat: location?.latitude?.toString() || finalData?.lat,
+      long: location?.longitude?.toString() || finalData?.long,
       address: finalData?.address == "null" ? "" : finalData?.address,
       state: finalData?.state,
       district: finalData?.district,
@@ -106,7 +57,12 @@ export default function AddressEdit({ ip }) {
       grampanchayat:
         finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
     });
-  }, []);
+    if (!location) {
+      setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
+    } else {
+      setAlert("");
+    }
+  }, [location]);
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
