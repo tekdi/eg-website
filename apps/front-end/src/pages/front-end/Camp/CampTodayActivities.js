@@ -21,8 +21,14 @@ import {
   Badge,
 } from "native-base";
 import AppBar from "@shiksha/common-lib";
+import Drawer from "react-modern-drawer";
 
 export default function CampTodayActivities({ footerLinks }) {
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+
+  const toggleDrawer = () => {
+    setOpenDrawer((prevState) => !prevState);
+  };
   return (
     <Layout
       _appBar={{ name: t("Add today's activities") }}
@@ -59,8 +65,11 @@ export default function CampTodayActivities({ footerLinks }) {
             // icon={[{ name: "CellphoneLineIcon", color: "iconColor.100" }]}
             // item={"hi"}
           >
-            <IconByName name={"CellphoneLineIcon"} />
-            <h1>sdf</h1>
+            <IconByName
+              onPress={() => setOpenDrawer(true)}
+              name={"CellphoneLineIcon"}
+            />
+            {/* <h1>sdf</h1> */}
           </CardComponent>
           <CardComponent
             _vstack={{ space: 0, flex: 1 }}
@@ -70,6 +79,13 @@ export default function CampTodayActivities({ footerLinks }) {
             arr={[]}
             item={"hi"}
           />
+          <Drawer
+            onClose={toggleDrawer}
+            open={openDrawer}
+            direction="bottom"
+            zIndex="99999"
+            // lockBackgroundScroll={true}
+          ></Drawer>{" "}
         </HStack>
       </Box>
     </Layout>
