@@ -126,6 +126,12 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       step: "edit_family_consent",
       color: consent,
     },
+    {
+      Icon: "CheckboxLineIcon",
+      Name: "ATTENDANCE",
+      step: "attendance",
+      color: consent,
+    },
   ];
 
   const onPressBackButton = async () => {

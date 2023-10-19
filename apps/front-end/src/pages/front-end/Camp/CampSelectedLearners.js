@@ -26,7 +26,7 @@ export default function CampSelectedLearners({
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
-  const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
+  const selectAllChecked = selectedIds?.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
     navigate(`/camps/${camp_id?.id}`);
   };
@@ -69,11 +69,11 @@ export default function CampSelectedLearners({
   React.useEffect(async () => {
     const result = await CampService.campNonRegisteredUser();
     const campdetails = await CampService.getCampDetails(camp_id);
-    const campRegisterUsers = campdetails?.data?.group_users;
-    const campNotRegisterUsers = result?.data?.user;
-    const mergedData = campRegisterUsers.concat(campNotRegisterUsers);
+    const campRegisterUsers = campdetails?.data?.group_users || [];
+    const campNotRegisterUsers = result?.data?.user || [];
+    const mergedData = campRegisterUsers?.concat(campNotRegisterUsers);
     setNonRegisteredUser(mergedData);
-    const ids = campRegisterUsers.map((item) => item.id);
+    const ids = campRegisterUsers?.map((item) => item.id);
     setSelectedIds(ids);
     setLoading(false);
   }, []);
