@@ -277,7 +277,7 @@ export default function App() {
       case "enrollment_aadhaar_no":
         if (
           data.enrollment_aadhaar_no &&
-          `${data.enrollment_aadhaar_no}` !== `${benificiary.aadhar_no}`
+          `${data?.enrollment_aadhaar_no}` !== `${benificiary?.aadhar_no}`
         ) {
           error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
         }
