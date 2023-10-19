@@ -18,6 +18,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { HStack, Stack, VStack, Modal, Button, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
+import { StarRating } from "component/BaseInput";
 
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
@@ -333,7 +334,15 @@ export default function View({ footerLinks }) {
                 "Suggestions for the kit",
                 "The quality of kit",
               ]}
-              item={data}
+              item={{
+                ...data,
+                kit_ratings: (
+                  <StarRating
+                    value={data.kit_ratings}
+                    schema={{ totalStars: 5 }}
+                  />
+                ),
+              }}
               arr={[
                 "kit_received",
                 "kit_was_sufficient",
