@@ -33,8 +33,7 @@ export default function Login() {
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
   const windowSize = useWindowSize();
-  const height = windowSize[1];
-  const width = windowSize[2];
+  const [width, height] = windowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
