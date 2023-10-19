@@ -5,7 +5,7 @@ import {
   GetEnumValue,
   IconByName,
   Layout,
-  CampService,
+  campService,
   enumRegistryService,
   facilitatorRegistryService,
   benificiaryRegistoryService,
@@ -36,8 +36,8 @@ export default function CampDashboard({ footerLinks }) {
   const [campId, setCampId] = React.useState("");
 
   React.useEffect(async () => {
-    const result = await CampService.campNonRegisteredUser();
-    const campList = await CampService.campList();
+    const result = await campService.campNonRegisteredUser();
+    const campList = await campService.campList();
     const enums = await enumRegistryService.listOfEnum();
     const ip_user_info = await facilitatorRegistryService.getInfo();
     const getData = await benificiaryRegistoryService.getCommunityReferences({
@@ -247,7 +247,11 @@ export default function CampDashboard({ footerLinks }) {
               <FrontEndTypo.Secondarybutton>
                 {t("CAMP_SETTINGS")}
               </FrontEndTypo.Secondarybutton>
-              <FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/camps/${campId}/start`);
+                }}
+              >
                 {t("CAMP_EXECUTION")}
               </FrontEndTypo.Primarybutton>
             </VStack>

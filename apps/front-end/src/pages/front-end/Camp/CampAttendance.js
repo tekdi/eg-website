@@ -6,7 +6,7 @@ import {
   AdminTypo,
   ImageView,
   IconByName,
-  CampService,
+  campService,
   Camera,
   Loading,
   uploadRegistryService,
@@ -29,8 +29,8 @@ export default function ConsentForm() {
   const [cameraFile, setcameraFile] = React.useState();
 
   React.useEffect(async () => {
-    const result = await CampService.getCampDetails({ id });
-    const campConsent = await CampService.CampAttendance({ id });
+    const result = await campService.getCampDetails({ id });
+    const campConsent = await campService.CampAttendance({ id });
     if (Object.keys(campConsent?.data).length === 0) {
       setConsents([]);
     } else {
@@ -55,7 +55,7 @@ export default function ConsentForm() {
   const uploadAttendencePicture = async (e) => {
     setError("");
     if (cameraFile?.key) {
-      await CampService.markCampAttendance({
+      await campService.markCampAttendance({
         context: "camp",
         context_id: id,
         user_id: userData?.id,
@@ -76,7 +76,7 @@ export default function ConsentForm() {
 
   const updateUserData = async () => {
     if (cameraFile?.key) {
-      await CampService.markCampAttendance({
+      await campService.markCampAttendance({
         context: "camp",
         context_id: id,
         user_id: userData?.id,

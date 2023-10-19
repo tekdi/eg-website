@@ -2,7 +2,7 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  CampService,
+  campService,
   ConsentService,
   arrList,
   BodyMedium,
@@ -38,7 +38,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await CampService.getCampDetails(camp_id);
+    const result = await campService.getCampDetails(camp_id);
     setCampStatus(result?.data?.group?.status);
     const campConsent = await ConsentService.getConsent({
       camp_id: camp_id?.id,
@@ -156,7 +156,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       status: "registered",
       edit_page_type: "edit_camp_status",
     };
-    const data = await CampService.updateCampDetails(obj);
+    const data = await campService.updateCampDetails(obj);
     if (data) {
       navigate("/camps");
     }
