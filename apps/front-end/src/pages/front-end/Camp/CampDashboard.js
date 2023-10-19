@@ -10,15 +10,7 @@ import {
   facilitatorRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-
-  Pressable,
-  Center,
-  Avatar,
-  Alert,
-} from "native-base";
+import { HStack, VStack, Pressable, Center, Avatar, Alert } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
