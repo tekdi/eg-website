@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -38,7 +38,7 @@ import {
 } from "../../../../component/BaseInput.js";
 
 // App
-export default function agFormEdit({ ip }) {
+export default function AgFormEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [cameraData, setCameraData] = React.useState([]);
@@ -59,6 +59,7 @@ export default function agFormEdit({ ip }) {
   const { id } = useParams();
   const [userId, setuserId] = React.useState(id);
   const navigate = useNavigate();
+  const [cameraFile, setcameraFile] = useState();
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/edit/${userId}`);
@@ -260,8 +261,6 @@ export default function agFormEdit({ ip }) {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
     console.log("page3.....", updateDetails);
   };
-
-  const [cameraFile, setcameraFile] = React.useState();
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
