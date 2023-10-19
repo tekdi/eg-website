@@ -78,7 +78,6 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
-  console.log("errors", errors);
   return (
     <Layout
       _appBar={{
