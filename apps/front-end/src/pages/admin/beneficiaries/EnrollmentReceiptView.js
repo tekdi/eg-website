@@ -91,20 +91,27 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       }
     }
   };
-
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
         <HStack space={"2"} justifyContent="space-between">
           <Breadcrumb
             drawer={
-              <IconByName size="sm" name="ArrowRightSLineIcon" isDisabled />
+              <IconByName
+                size="sm"
+                name="ArrowRightSLineIcon"
+                onPress={(e) =>
+                  navigate("/admin/learners/enrollmentVerificationList")
+                }
+              />
             }
             data={[
               <AdminTypo.H1 key="1">
                 {t("ENROLLMENT_VERIFICATION")}
               </AdminTypo.H1>,
-              <AdminTypo.H2 key="2">{`${data?.first_name} ${data?.last_name}`}</AdminTypo.H2>,
+              <AdminTypo.H2 key="2">{`${data?.first_name} ${
+                data?.last_name ? data?.last_name : " "
+              }`}</AdminTypo.H2>,
               <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
               <ChipStatus
                 key={"4"}
@@ -121,8 +128,9 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             <AdminTypo.H5 color="textGreyColor.800" bold>
               {t("ENROLLMENT_DETAILS_VERIFICATION")}
             </AdminTypo.H5>
+
             <HStack space="2">
-              <VStack flex="2" pb="1" space={2}>
+              <VStack flex="2" pb="1" space={4}>
                 <HStack flexWrap={"wrap"}>
                   <TextInfo
                     _box={{ pr: "2", alignItems: "center" }}
@@ -139,66 +147,117 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     ]}
                   />
                 </HStack>
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    navigate(`/admin/beneficiary/${data?.id}`);
+                  }}
+                >
+                  {t("LEARNER_PROFILE")}
+                </AdminTypo.PrimaryButton>
+
                 <ValidationBox error={error?.enrollment_details}>
-                  <CustomRadio
-                    options={{
-                      enumOptions: [{ value: "yes" }, { value: "no" }],
-                    }}
-                    schema={{
-                      grid: 1,
-                      icons: checkboxIcons,
-                      _box: { flex: "1", gap: "2" },
-                      _hstack: { space: "2" },
-                      _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
-                    }}
-                    value={reason?.enrollment_details}
-                    onChange={(e) => {
-                      setReason({ ...reason, enrollment_details: e });
-                    }}
-                  />
-                  <VStack flex={4}>
-                    <TextInfo
-                      data={data?.program_beneficiaries}
-                      arr={[
-                        {
-                          label: "NAME",
-                          value: (
-                            <AdminTypo.H5>
-                              {
-                                data?.program_beneficiaries
-                                  ?.enrollment_first_name
-                              }
-                              {data?.program_beneficiaries
-                                ?.enrollment_middle_name &&
-                                " " +
-                                  data?.program_beneficiaries
-                                    ?.enrollment_middle_name}
-                              {data?.program_beneficiaries
-                                ?.enrollment_last_name &&
-                                " " +
-                                  data?.program_beneficiaries
-                                    ?.enrollment_last_name}
-                            </AdminTypo.H5>
-                          ),
-                        },
-                        {
-                          label: "DOB",
-                          value: (
-                            <AdminTypo.H5>
-                              {data?.program_beneficiaries?.enrollment_dob
-                                ? moment(
-                                    data?.program_beneficiaries?.enrollment_dob
-                                  ).format("DD-MM-YYYY")
-                                : "-"}
-                            </AdminTypo.H5>
-                          ),
-                        },
-                        {
-                          label: "AADHAAR_NUMBER",
-                          keyArr: "enrollment_aadhaar_no",
-                        },
-                      ]}
-                    />
+                  <VStack space={4}>
+                    <HStack alignItems="center" space="8">
+                      {data?.profile_photo_1?.name ||
+                      data?.profile_photo_2?.name ||
+                      data?.profile_photo_3?.name ? (
+                        [
+                          data?.profile_photo_1,
+                          data?.profile_photo_2,
+                          data?.profile_photo_3,
+                        ].map(
+                          (photo) =>
+                            photo?.id && (
+                              <ImageView
+                                key={photo?.id}
+                                w="85px"
+                                h="85px"
+                                source={{
+                                  document_id: photo?.id,
+                                }}
+                              />
+                            )
+                        )
+                      ) : (
+                        <IconByName
+                          isDisabled
+                          name="AccountCircleLineIcon"
+                          color="textGreyColor.300"
+                          _icon={{ size: "90px" }}
+                        />
+                      )}
+                    </HStack>
+
+                    <HStack space={4} alignItems="center">
+                      <CustomRadio
+                        options={{
+                          enumOptions: [{ value: "yes" }, { value: "no" }],
+                        }}
+                        schema={{
+                          grid: 1,
+                          icons: checkboxIcons,
+                          _box: { flex: "1", gap: "2" },
+                          _hstack: { space: "6" },
+                          _pressable: {
+                            p: 0,
+                            mb: 0,
+                            borderWidth: 0,
+                            style: {},
+                          },
+                        }}
+                        value={reason?.enrollment_details}
+                        onChange={(e) => {
+                          setReason({ ...reason, enrollment_details: e });
+                        }}
+                      />
+                      <VStack flex={4}>
+                        <TextInfo
+                          _box={{ space: "2" }}
+                          data={data?.program_beneficiaries}
+                          arr={[
+                            {
+                              label: "NAME",
+
+                              value: (
+                                <AdminTypo.H5>
+                                  {
+                                    data?.program_beneficiaries
+                                      ?.enrollment_first_name
+                                  }
+                                  {data?.program_beneficiaries
+                                    ?.enrollment_middle_name &&
+                                    " " +
+                                      data?.program_beneficiaries
+                                        ?.enrollment_middle_name}
+                                  {data?.program_beneficiaries
+                                    ?.enrollment_last_name &&
+                                    " " +
+                                      data?.program_beneficiaries
+                                        ?.enrollment_last_name}
+                                </AdminTypo.H5>
+                              ),
+                            },
+                            {
+                              label: "DOB",
+                              value: (
+                                <AdminTypo.H5>
+                                  {data?.program_beneficiaries?.enrollment_dob
+                                    ? moment(
+                                        data?.program_beneficiaries
+                                          ?.enrollment_dob
+                                      ).format("DD-MM-YYYY")
+                                    : "-"}
+                                </AdminTypo.H5>
+                              ),
+                            },
+                            {
+                              label: "AADHAAR_NUMBER",
+                              keyArr: "enrollment_aadhaar_no",
+                            },
+                          ]}
+                        />
+                      </VStack>
+                    </HStack>
                   </VStack>
                 </ValidationBox>
                 <ValidationBox error={error?.learner_enrollment_details}>
@@ -210,7 +269,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       grid: 1,
                       icons: checkboxIcons,
                       _box: { flex: "1", gap: "2" },
-                      _hstack: { space: "2" },
+                      _hstack: { space: "4" },
                       _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
                     }}
                     value={reason?.learner_enrollment_details}
@@ -220,6 +279,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   />
                   <VStack flex={4}>
                     <TextInfo
+                      _box={{ space: "2" }}
                       data={data?.program_beneficiaries}
                       arr={[
                         {
