@@ -12,6 +12,7 @@ import {
   jsonParse,
   ImageView,
   FrontEndTypo,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, Stack, VStack, Modal, Button, Alert } from "native-base";
@@ -264,7 +265,7 @@ export default function View({ footerLinks }) {
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
           >
             {/* {consentData} */}
-            {data?.beneficiaries?.length > 0 ? (
+            {data?.beneficiaries?.length > 0 &&
               data?.beneficiaries.map((learner, index) => {
                 let learnerConsentData = Array.isArray(consentData)
                   ? consentData.find((e) => e.user_id === learner.id)
@@ -281,7 +282,13 @@ export default function View({ footerLinks }) {
                       >{`${learner?.first_name} ${learner?.last_name}`}</AdminTypo.H6>
                     }
                     subTitle={
-                      <AdminTypo.H6>{`${learner?.district} ${learner?.block}${learner?.village}`}</AdminTypo.H6>
+                      learner?.district &&
+                      learner?.block &&
+                      learner?.village ? (
+                        <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
+                      ) : (
+                        ""
+                      )
                     }
                     image={
                       learner?.profile_photo_1?.id
@@ -309,10 +316,7 @@ export default function View({ footerLinks }) {
                     }
                   />
                 );
-              })
-            ) : (
-              <p>No data available</p>
-            )}
+              })}
           </CardComponent>
 
           <CardComponent
@@ -329,7 +333,7 @@ export default function View({ footerLinks }) {
                 "Suggestions for the kit",
                 "The quality of kit",
               ]}
-              item={data?.camp}
+              item={data}
               arr={[
                 "kit_received",
                 "kit_was_sufficient",
@@ -347,63 +351,72 @@ export default function View({ footerLinks }) {
                 <CheckUncheck
                   key={item?.title}
                   schema={{ label: t(item?.title) }}
-                  value={propertyFacilities[item?.value] || ""}
+                  value={propertyFacilities?.[item?.value] || ""}
                 />
               ))}
             </CardComponent>
           </CardComponent>
         </HStack>
         <HStack space={10} justifyContent={"center"}>
-          <AdminTypo.StatusButton
-            status={"success"}
-            onPress={() => setStatus("approved")}
-          >
-            {t("VERIFY")}
-          </AdminTypo.StatusButton>
-          <AdminTypo.StatusButton
-            status={"info"}
-            onPress={() => setStatus("change_required")}
-          >
-            {t("CHANGES_NEEDED")}
-          </AdminTypo.StatusButton>
+          {data?.group?.status !== "approved" && (
+            <>
+              <AdminTypo.StatusButton
+                status="success"
+                onPress={() => setStatus("approved")}
+              >
+                {t("VERIFY")}
+              </AdminTypo.StatusButton>
+              <AdminTypo.Secondarybutton
+                status="info"
+                onPress={() => setStatus("change_required")}
+              >
+                {t("CHANGES_NEEDED")}
+              </AdminTypo.Secondarybutton>
+            </>
+          )}
 
-          <Modal isOpen={status} onClose={() => setStatus()}>
-            <Modal.Content maxWidth="400px">
+          <Modal isOpen={status} onClose={() => setStatus()} size="lg">
+            <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header>Welcome at Camp</Modal.Header>
               {status == "approved" ? (
                 <Modal.Body>
-                  {" "}
-                  <FrontEndTypo.H2 bold color="textGreyColor.550">
-                    {t("VERIFY_MESSAGE")}
-                  </FrontEndTypo.H2>
+                  <Alert status="success" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <BodyMedium>{t("VERIFY_MESSAGE")}</BodyMedium>
+                    </HStack>
+                  </Alert>
                 </Modal.Body>
               ) : (
                 <Modal.Body>
-                  <FrontEndTypo.H2 bold color="textGreyColor.550">
+                  {/* <FrontEndTypo.H2 bold color="textGreyColor.550">
                     {t("CHANGES_REQUIRED")}
-                  </FrontEndTypo.H2>
+                  </FrontEndTypo.H2> */}
+                  <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <BodyMedium> {t("CHANGES_REQUIRED")}</BodyMedium>
+                    </HStack>
+                  </Alert>
                 </Modal.Body>
               )}
               <Modal.Footer>
-                <Button.Group space={2}>
-                  <Button
-                    variant="ghost"
-                    colorScheme="blueGray"
+                <HStack justifyContent="space-between" width="100%">
+                  <AdminTypo.PrimaryButton
                     onPress={() => {
                       setStatus(false);
                     }}
                   >
                     {t("CANCEL")}
-                  </Button>
-                  <Button
+                  </AdminTypo.PrimaryButton>
+
+                  <AdminTypo.Secondarybutton
                     onPress={() => {
                       updateCampStatus();
                     }}
                   >
                     {t("CONFIRM")}
-                  </Button>
-                </Button.Group>
+                  </AdminTypo.Secondarybutton>
+                </HStack>
               </Modal.Footer>
             </Modal.Content>
           </Modal>

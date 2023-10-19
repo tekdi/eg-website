@@ -108,45 +108,8 @@ export function CampChipStatus({ status, ...props }) {
 
   React.useEffect(() => {
     switch (status && status?.toLowerCase()) {
-      case "application_screened":
-      case "screened":
-        setColor("screenedColor");
-        setNewStatus(t("SCREENED"));
-        break;
       case "rejected":
         setNewStatus(t("REJECTED"));
-        setColor("rejectedColor");
-        break;
-      case "shortlisted_for_orientation":
-        setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
-        setColor("shortlistedColor");
-        break;
-      case "pragati_mobilizer":
-        setNewStatus(t("PRAGATI_MOBILIZER"));
-        setColor("potentialColor");
-        break;
-      case "selected_for_training":
-        setNewStatus(t("SELECTED_FOR_TRAINING"));
-        setColor("selectedColor");
-        break;
-      case "selected_for_onboarding":
-        setNewStatus(t("SELECTED_FOR_ONBOARDING"));
-        setColor("selectedColor");
-        break;
-      case "selected_prerak":
-        setNewStatus(t("SELECTED_PRERAK"));
-        setColor("selectedColor");
-        break;
-      case "quit":
-        setNewStatus(t("QUIT"));
-        setColor("rejectedColor");
-        break;
-      case "rusticate":
-        setNewStatus(t("RUSTICATE"));
-        setColor("rejectedColor");
-        break;
-      case "on_hold":
-        setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
         setColor("rejectedColor");
         break;
       case "registered":
@@ -166,7 +129,7 @@ export function CampChipStatus({ status, ...props }) {
         setColor("rejectedColor");
         break;
       default:
-        setNewStatus(t("APPLIED"));
+        setNewStatus(t("NA"));
         setColor("appliedColor");
     }
   }, [status]);

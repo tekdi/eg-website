@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
 
 import { useNavigate } from "react-router-dom";
-import { Box, Image, Button, HStack, ScrollView, VStack } from "native-base";
+import {
+  Box,
+  Image,
+  Button,
+  HStack,
+  ScrollView,
+  VStack,
+  Text,
+} from "native-base";
 import {
   AdminTypo,
   IconByName,
@@ -15,6 +23,8 @@ import {
   geolocationRegistryService,
   setQueryParameters,
   urlData,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
@@ -106,6 +116,9 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [CampFilterStatus, setCampFilterStatus] = useState([]);
+  const [enumOptions, setEnumOptions] = React.useState({});
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(() => {
     const urlFilter = urlData(["district", "block"]);
@@ -114,9 +127,24 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(async () => {
+    const result = await enumRegistryService.getStatuswiseCount();
+    setCampFilterStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, []);
+
+  React.useEffect(async () => {
     if (urlFilterApply) {
-      const qData = await CampService.getCampList(filter);
+      let newFilter = filter;
+      if (filter?.status === "all") {
+        const { status, ...dataFilter } = filter || {};
+        console.log({ dataFilter });
+        newFilter = dataFilter;
+      }
+
+      const qData = await CampService.getCampList(newFilter);
       setData(qData?.camps);
+      setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
   }, [filter]);
 
@@ -199,42 +227,41 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
-        <ScrollView horizontal={true} mb="2">
-          <HStack pb="2">
-            {facilitaorStatus?.map((item) => {
-              return (
-                <Text
-                  key={"table"}
-                  color={
-                    filter?.status == t(item?.status) ? "blueText.400" : ""
-                  }
-                  bold={filter?.status == t(item?.status) ? true : false}
-                  cursor={"pointer"}
-                  mx={3}
-                  onPress={() => {
-                    setFilter({ ...filter, status: item?.status, page: 1 });
-                  }}
-                >
-                  {item.status === "all" ? (
-                    <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
-                  ) : (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"FACILITATOR_STATUS"}
-                      enumOptionValue={item?.status}
-                      enumApiData={enumOptions}
-                    />
-                  )}
-                  {filter?.status == t(item?.status)
-                    ? `(${paginationTotalRows})` + " "
-                    : " "}
-                </Text>
-              );
-            })}
-          </HStack>
-        </ScrollView>
+
         <Box flex={[5, 5, 4]}>
           <ScrollView>
+            <HStack pb="2">
+              {CampFilterStatus?.map((item) => {
+                return (
+                  <Text
+                    key={"table"}
+                    color={
+                      filter?.status == t(item?.status) ? "blueText.400" : ""
+                    }
+                    bold={filter?.status == t(item?.status) ? true : false}
+                    cursor={"pointer"}
+                    mx={3}
+                    onPress={() => {
+                      setFilter({ ...filter, status: item?.status, page: 1 });
+                    }}
+                  >
+                    {item.status === "all" ? (
+                      <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                    ) : (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"GROUPS_STATUS"}
+                        enumOptionValue={item?.status}
+                        enumApiData={enumOptions}
+                      />
+                    )}
+                    {filter?.status == t(item?.status)
+                      ? `(${paginationTotalRows})` + " "
+                      : " "}
+                  </Text>
+                );
+              })}
+            </HStack>
             <Box roundedBottom={"2xl"}>
               <DataTable
                 filter={filter}
@@ -247,6 +274,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
+                paginationTotalRows={paginationTotalRows}
                 paginationRowsPerPageOptions={[2, 5, 15, 50, 100]}
                 defaultSortAsc
                 paginationServer

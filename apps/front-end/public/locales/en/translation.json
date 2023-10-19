@@ -523,6 +523,8 @@
   "GRADUATION_CERTIFICATES": "Graduation Certificates",
   "GRAMPANCHAYAT": "Grampanchayat",
   "GROUPS_STATUS_CAMP_VERIFIED": "Camp Verified",
+  "GROUPS_STATUS_APPROVED": "Approved",
+  "GROUPS_STATUS_CHANGE_REQUIRED": "Change Required",
   "GROUPS_STATUS_INACTIVE": "Inactive",
   "GROUPS_STATUS_NOT_REGISTERED": "Not Registered",
   "GROUPS_STATUS_REGISTERED": "Registered",
