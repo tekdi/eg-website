@@ -128,6 +128,9 @@ const PcrDetails = React.lazy(() =>
 const PcrView = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrView")
 );
+const StartCampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/campAttendance.js/StartCampDashboard")
+);
 
 const CampAttendance = React.lazy(() =>
   import("pages/front-end/Camp/CampAttendance")
@@ -282,6 +285,6 @@ export default [
     path: "/camps/:id/attendance",
     component: CampAttendance,
   },
-
+  { path: "/camp-attendances", component: StartCampDashboard },
   { path: "*", component: Dashboard },
 ];
