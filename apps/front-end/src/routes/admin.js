@@ -104,8 +104,7 @@ export default [
     component: enrollmentForm,
   },
   { path: "/", component: Orientation },
-  { path: "/admin/campHome", component: CampHome },
-  // { path: "/admin/camp/:id/view", component: CampsView },
-  { path: "/admin/camp/view/:id", component: ViewCamp },
+  { path: "/admin/camps", component: CampHome },
+  { path: "/admin/camps/:id", component: ViewCamp },
   { path: "*", component: NotFound },
 ];

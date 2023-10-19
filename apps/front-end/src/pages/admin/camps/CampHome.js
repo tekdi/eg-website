@@ -4,15 +4,7 @@ import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
 
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Image,
-  Button,
-  HStack,
-  Input,
-  ScrollView,
-  VStack,
-} from "native-base";
+import { Box, Image, Button, HStack, ScrollView, VStack } from "native-base";
 import {
   AdminTypo,
   IconByName,
@@ -25,7 +17,7 @@ import {
   urlData,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import { ChipStatus } from "component/Chip";
+import { CampChipStatus } from "component/Chip";
 
 export const CustomStyles = {
   rows: {
@@ -87,7 +79,7 @@ const columns = (navigate) => [
   },
   {
     name: t("CAMP_STATUS"),
-    selector: (row) => <ChipStatus status={row?.group?.status} />,
+    selector: (row) => <CampChipStatus status={row?.group?.status} />,
     sortable: true,
     wrap: true,
     attr: "count",
@@ -97,7 +89,7 @@ const columns = (navigate) => [
     selector: (row) => (
       <AdminTypo.Secondarybutton
         my="3"
-        onPress={() => navigate(`/admin/camp/view/${row.id}`)}
+        onPress={() => navigate(`/admin/camps/${row.id}`)}
       >
         {t("VIEW")}
       </AdminTypo.Secondarybutton>
@@ -207,7 +199,40 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
-
+        <ScrollView horizontal={true} mb="2">
+          <HStack pb="2">
+            {facilitaorStatus?.map((item) => {
+              return (
+                <Text
+                  key={"table"}
+                  color={
+                    filter?.status == t(item?.status) ? "blueText.400" : ""
+                  }
+                  bold={filter?.status == t(item?.status) ? true : false}
+                  cursor={"pointer"}
+                  mx={3}
+                  onPress={() => {
+                    setFilter({ ...filter, status: item?.status, page: 1 });
+                  }}
+                >
+                  {item.status === "all" ? (
+                    <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                  ) : (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"FACILITATOR_STATUS"}
+                      enumOptionValue={item?.status}
+                      enumApiData={enumOptions}
+                    />
+                  )}
+                  {filter?.status == t(item?.status)
+                    ? `(${paginationTotalRows})` + " "
+                    : " "}
+                </Text>
+              );
+            })}
+          </HStack>
+        </ScrollView>
         <Box flex={[5, 5, 4]}>
           <ScrollView>
             <Box roundedBottom={"2xl"}>

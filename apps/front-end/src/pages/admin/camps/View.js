@@ -11,10 +11,10 @@ import {
   enumRegistryService,
   jsonParse,
   ImageView,
-  GetEnumValue,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Button } from "native-base";
+import { HStack, Stack, VStack, Modal, Button, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -27,7 +27,8 @@ export default function View({ footerLinks }) {
   const [properties, setProperties] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState();
   const [consentData, setConsentData] = React.useState([]);
-  const [openModal, setOpenModal] = React.useState(false);
+  const [status, setStatus] = React.useState(false);
+  const [errorList, setErrorList] = React.useState();
 
   const { id } = useParams();
 
@@ -67,6 +68,21 @@ export default function View({ footerLinks }) {
     fetchData();
   }, []);
 
+  const updateCampStatus = async () => {
+    const { error, ...result } = await CampService.updateCampStatus({
+      id,
+      facilitator_id: data?.faciltator?.[0]?.id,
+      status,
+    });
+
+    if (result?.status === 200) {
+      navigate("/admin/camps");
+    } else {
+      setErrorList(result?.message);
+      setStatus();
+    }
+  };
+
   React.useEffect(async () => {
     const qData = await enumRegistryService.listOfEnum();
     const data = qData?.data?.CAMP_PROPERTY_FACILITIES;
@@ -78,6 +94,35 @@ export default function View({ footerLinks }) {
   return (
     <Layout _sidebar={footerLinks}>
       <VStack flex={1} space={"5"} p="3" mb="5">
+        {errorList && (
+          <Alert
+            status="warning"
+            alignItems={"start"}
+            mb="3"
+            mt="4"
+            width={"100%"}
+          >
+            <HStack alignItems="center" space="2" color>
+              {errorList?.constructor?.name === "String" ? (
+                <HStack space={2} alignItems={"center"}>
+                  <Alert.Icon />
+                  <AdminTypo.H6>{t(errorList)}</AdminTypo.H6>
+                </HStack>
+              ) : (
+                errorList?.constructor?.name === "Array" && (
+                  <VStack space={2}>
+                    {errorList?.map((item) => (
+                      <HStack space={2} alignItems={"center"}>
+                        <Alert.Icon />
+                        <AdminTypo.H6 key={item}>{t(item)}</AdminTypo.H6>
+                      </HStack>
+                    ))}
+                  </VStack>
+                )
+              )}
+            </HStack>
+          </Alert>
+        )}
         <HStack alignItems={"center"} space="1" pt="3">
           <IconByName name="UserLineIcon" size="md" />
           <AdminTypo.H1 color="Activatedcolor.400">
@@ -292,6 +337,7 @@ export default function View({ footerLinks }) {
                 "kit_feedback",
               ]}
             />
+
             <CardComponent
               title={t(
                 "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
@@ -310,38 +356,52 @@ export default function View({ footerLinks }) {
         <HStack space={10} justifyContent={"center"}>
           <AdminTypo.StatusButton
             status={"success"}
-            onPress={() => setOpenModal(true)}
+            onPress={() => setStatus("approved")}
           >
             {t("VERIFY")}
           </AdminTypo.StatusButton>
           <AdminTypo.StatusButton
             status={"info"}
-            onPress={() => setOpenModal(true)}
+            onPress={() => setStatus("change_required")}
           >
             {t("CHANGES_NEEDED")}
           </AdminTypo.StatusButton>
-          <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+
+          <Modal isOpen={status} onClose={() => setStatus()}>
             <Modal.Content maxWidth="400px">
               <Modal.CloseButton />
-              <Modal.Header>Title</Modal.Header>
-              <Modal.Body>User is verified</Modal.Body>
+              <Modal.Header>Welcome at Camp</Modal.Header>
+              {status == "approved" ? (
+                <Modal.Body>
+                  {" "}
+                  <FrontEndTypo.H2 bold color="textGreyColor.550">
+                    {t("VERIFY_MESSAGE")}
+                  </FrontEndTypo.H2>
+                </Modal.Body>
+              ) : (
+                <Modal.Body>
+                  <FrontEndTypo.H2 bold color="textGreyColor.550">
+                    {t("CHANGES_REQUIRED")}
+                  </FrontEndTypo.H2>
+                </Modal.Body>
+              )}
               <Modal.Footer>
                 <Button.Group space={2}>
                   <Button
                     variant="ghost"
                     colorScheme="blueGray"
                     onPress={() => {
-                      setOpenModal(false);
+                      setStatus(false);
                     }}
                   >
-                    Cancel
+                    {t("CANCEL")}
                   </Button>
                   <Button
                     onPress={() => {
-                      setOpenModal(false);
+                      updateCampStatus();
                     }}
                   >
-                    Save
+                    {t("CONFIRM")}
                   </Button>
                 </Button.Group>
               </Modal.Footer>

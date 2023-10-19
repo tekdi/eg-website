@@ -68,12 +68,101 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
         setColor("rejectedColor");
         break;
-        case "registered":
+      case "registered":
         setNewStatus(t("GROUPS_STATUS_REGISTERED"));
         setColor("selectedColor");
         break;
-        case "not_registered":
+      case "not_registered":
         setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
+        setColor("rejectedColor");
+        break;
+      default:
+        setNewStatus(t("APPLIED"));
+        setColor("appliedColor");
+    }
+  }, [status]);
+
+  return (
+    <Chip
+      px="4"
+      py="2"
+      width="100px"
+      bg={color}
+      label={newStatus}
+      _text={{
+        textTransform: "capitalize",
+        fontSize: "10px",
+        fontWeight: "500",
+        textAlign: "center",
+      }}
+      rounded="sm"
+      {...props}
+    />
+  );
+}
+
+// ChipStatus
+export function CampChipStatus({ status, ...props }) {
+  const [color, setColor] = React.useState("appliedColor");
+  const [newStatus, setNewStatus] = React.useState(status);
+
+  React.useEffect(() => {
+    switch (status && status?.toLowerCase()) {
+      case "application_screened":
+      case "screened":
+        setColor("screenedColor");
+        setNewStatus(t("SCREENED"));
+        break;
+      case "rejected":
+        setNewStatus(t("REJECTED"));
+        setColor("rejectedColor");
+        break;
+      case "shortlisted_for_orientation":
+        setNewStatus(t("SHORTLISTED_FOR_ORIENTATION"));
+        setColor("shortlistedColor");
+        break;
+      case "pragati_mobilizer":
+        setNewStatus(t("PRAGATI_MOBILIZER"));
+        setColor("potentialColor");
+        break;
+      case "selected_for_training":
+        setNewStatus(t("SELECTED_FOR_TRAINING"));
+        setColor("selectedColor");
+        break;
+      case "selected_for_onboarding":
+        setNewStatus(t("SELECTED_FOR_ONBOARDING"));
+        setColor("selectedColor");
+        break;
+      case "selected_prerak":
+        setNewStatus(t("SELECTED_PRERAK"));
+        setColor("selectedColor");
+        break;
+      case "quit":
+        setNewStatus(t("QUIT"));
+        setColor("rejectedColor");
+        break;
+      case "rusticate":
+        setNewStatus(t("RUSTICATE"));
+        setColor("rejectedColor");
+        break;
+      case "on_hold":
+        setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
+        setColor("rejectedColor");
+        break;
+      case "registered":
+        setNewStatus(t("GROUPS_STATUS_REGISTERED"));
+        setColor("selectedColor");
+        break;
+      case "not_registered":
+        setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
+        setColor("rejectedColor");
+        break;
+      case "approved":
+        setNewStatus("Approved");
+        setColor("selectedColor");
+        break;
+      case "change_required":
+        setNewStatus("Change Required");
         setColor("rejectedColor");
         break;
       default:
