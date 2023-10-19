@@ -23,7 +23,6 @@ import {
   CustomOTPBox,
   AdminTypo,
   chunk,
-  sprintF,
   CustomRadio,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";

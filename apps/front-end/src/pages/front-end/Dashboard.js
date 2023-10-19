@@ -86,7 +86,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         isAllow++;
       }
       if (key === "experience") {
-        return !(expData?.length > 0);
+        return expData?.length <= 0;
       }
     }
 
@@ -98,7 +98,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         isAllow++;
       }
       if (key === "vo_experience") {
-        return !(expData?.length > 0);
+        return expData?.length <= 0;
       }
     }
 
