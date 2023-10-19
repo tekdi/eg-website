@@ -129,6 +129,10 @@ const PcrView = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrView")
 );
 
+const CampAttendance = React.lazy(() =>
+  import("pages/front-end/Camp/CampAttendance")
+);
+
 export default [
   { path: "/form", component: Home },
   {
@@ -270,9 +274,14 @@ export default [
     component: CampLeanerList,
   },
 
-  { path: "*", component: Dashboard },
   {
     path: "/community-references",
     component: CommunityView,
   },
+  {
+    path: "/camps/:id/attendance",
+    component: CampAttendance,
+  },
+
+  { path: "*", component: Dashboard },
 ];
