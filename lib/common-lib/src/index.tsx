@@ -37,6 +37,10 @@ import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
 import CardComponent from './components/frontend_component/CardComponent'
 import PoAdminLayout from './components/Po_admin_layout/Layout'
+import { MapComponent } from './components/frontend_component/MapComponent'
+import CustomRadio from './components/frontend_component/CustomRadio'
+import CheckUncheck from './components/frontend_component/CheckUncheck'
+import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
 
 // export
@@ -82,7 +86,11 @@ export {
   GetEnumValue,
   ItemComponent,
   CardComponent,
-  Breadcrumb
+  Breadcrumb,
+  MapComponent,
+  CheckUncheck,
+  CustomRadio,
+  UserCard
 }
 
 export * from './services/RestClient'
