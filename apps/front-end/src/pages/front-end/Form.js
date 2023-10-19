@@ -816,11 +816,7 @@ export default function App({ facilitator, ip, onClick }) {
                 {t("UPLOAD_PHOTO")}
               </FrontEndTypo.Secondarybutton>
             </Box>
-            {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
-            ) : (
-              <React.Fragment />
-            )}
+            {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
           </VStack>
           <FrontEndTypo.Primarybutton
             isLoading={loading}
@@ -862,17 +858,15 @@ export default function App({ facilitator, ip, onClick }) {
             progress={page - 1}
           />
         </Box>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
@@ -918,8 +912,6 @@ export default function App({ facilitator, ip, onClick }) {
               </FrontEndTypo.Primarybutton>
             )}
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
       <Modal
