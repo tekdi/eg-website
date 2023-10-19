@@ -27,13 +27,11 @@ import {
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
 import CustomRadio from "component/CustomRadio";
-import { useLocation } from "react-router-dom";
 import { MultiCheck } from "../../component/BaseInput";
 import Clipboard from "component/Clipboard";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const location = useLocation();
 
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/SchemaUpdate.js";
@@ -23,8 +23,7 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import { templates, widgets } from "../../../component/BaseInput";
-import { useLocation } from "react-router-dom";
+import { GeoLocation, templates, widgets } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 
 // App
@@ -48,12 +47,11 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
-  const location = useLocation();
+  const location = GeoLocation();
   const [agroute, setagroute] = React.useState(location?.state?.route);
   const [loading, setLoading] = React.useState(true);
 
   const id = useParams();
-
   const navigate = useNavigate();
 
   React.useEffect(async () => {
@@ -135,65 +133,36 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const getLocation = () => {
-    const location = navigator.geolocation;
-    if (location) {
-      location.getCurrentPosition(showPosition, showError);
-    } else {
-      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
-    }
-  };
-
-  const showPosition = (position) => {
-    let lati = position.coords.latitude;
-    let longi = position.coords.longitude;
-
+  useEffect(() => {
     setFormData({
       ...formData,
       edit_page_type: "add_address",
-      lat: lati?.toString(),
-      long: longi?.toString(),
+      lat: location?.latitude?.toString(),
+      long: location?.longitude?.toString(),
     });
-  };
-
-  function showError(error) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
-
-        break;
-      case error.POSITION_UNAVAILABLE:
-        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
-
-        break;
-      case error.TIMEOUT:
-        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
-
-        break;
-      case error.UNKNOWN_ERROR:
-        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
-
-        break;
-    }
-  }
+  }, [location]);
 
   React.useEffect(async () => {
     setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      getLocation();
+      await AgRegistryService.updateAg(formData, userId);
+      if (!location) {
+        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
+      } else {
+        setAlert("");
+      }
     } else if (page === "3") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "personal" });
     } else if (page === "4") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_education" });
     } else if (page === "5") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_other_details" });
     } else if (page === "upload") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
     }
     setLoading(false);
   }, [page]);

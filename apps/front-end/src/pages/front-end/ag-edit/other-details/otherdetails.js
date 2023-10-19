@@ -53,9 +53,6 @@ import {
   CustomR,
   select,
 } from "../../../../component/BaseInput.js";
-
-import { useLocation } from "react-router-dom";
-
 // App
 
 export default function AgformUpdate({ userTokenInfo }) {
@@ -63,9 +60,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
@@ -77,8 +71,6 @@ export default function AgformUpdate({ userTokenInfo }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [userId, setuserId] = React.useState(id);
-
-  const location = useLocation();
 
   const navigate = useNavigate();
 
