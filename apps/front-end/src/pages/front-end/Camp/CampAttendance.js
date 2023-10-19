@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  Actionsheet,
-  Alert,
-  Avatar,
-  Box,
-  HStack,
-  Pressable,
-  Stack,
-  VStack,
-} from "native-base";
+import { Avatar, Box, HStack, Pressable, Stack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
@@ -16,22 +7,17 @@ import {
   ImageView,
   IconByName,
   CampService,
-  ConsentService,
-  BodyMedium,
   Camera,
   Loading,
   uploadRegistryService,
-  eventService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileUpload } from "component/BaseInput";
 
 // App
 export default function ConsentForm() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
-  const [uploadData, setUploadData] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [groupUsers, setGroupUsers] = React.useState();
@@ -60,22 +46,16 @@ export default function ConsentForm() {
 
   // update schema
 
-  const onClickSubmit = () => {
-    navigate(`/camps/${id}`);
-  };
-
-  const handleUpload = async (data) => {
-    await ConsentService.createConsent(data);
-    setUploadData();
-    // api call
-  };
+  // const onClickSubmit = () => {
+  //   navigate(`/camps/${id}`);
+  // };
 
   // Camera MOdule
 
   const uploadAttendencePicture = async (e) => {
     setError("");
     if (cameraFile?.key) {
-      const apiResponse = await CampService.markCampAttendance({
+      await CampService.markCampAttendance({
         context: "camp",
         context_id: id,
         user_id: userData?.id,
@@ -96,7 +76,7 @@ export default function ConsentForm() {
 
   const updateUserData = async () => {
     if (cameraFile?.key) {
-      const apiResponse = await CampService.markCampAttendance({
+      await CampService.markCampAttendance({
         context: "camp",
         context_id: id,
         user_id: userData?.id,
@@ -165,7 +145,9 @@ export default function ConsentForm() {
                     shadow="BlueOutlineShadow"
                     onPress={() => {
                       updateUserData();
-                      cameraFile ? setUserData() : error;
+                      cameraFile
+                        ? setUserData()
+                        : setError("Capture Picture First");
                       setcameraFile("");
                       setCameraUrl();
                     }}
@@ -178,7 +160,9 @@ export default function ConsentForm() {
                     ml="4"
                     px="5"
                     onPress={() => {
-                      cameraFile ? uploadAttendencePicture() : error;
+                      cameraFile
+                        ? uploadAttendencePicture()
+                        : setError("Capture Picture First");
                     }}
                   >
                     {t("NEXT")}
@@ -324,58 +308,7 @@ export default function ConsentForm() {
             </HStack>
           );
         })}
-
-        {/* <HStack space={4} alignItems={"center"}>
-          <Alert
-            status="warning"
-            alignItems={"start"}
-            mb="3"
-            mt="4"
-            width={"100%"}
-          >
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{t("CONSENT_DISCLAIMER")}</BodyMedium>
-            </HStack>
-          </Alert>
-        </HStack> */}
-        {/* <FrontEndTypo.Primarybutton
-          isLoading={loading}
-          p="4"
-          mt="4"
-          onPress={() => onClickSubmit()}
-        >
-          {t("SAVE")}
-        </FrontEndTypo.Primarybutton> */}
       </Box>
-
-      {/* <Actionsheet isOpen={uploadData?.user_id}>
-        <Actionsheet.Content alignItems={"left"}>
-          <HStack justifyContent={"space-between"} alignItems="strat">
-            <FrontEndTypo.H1 color="textGreyColor.800" p="2">
-              {t("UPLOAD_CONSENT_FORM")}
-            </FrontEndTypo.H1>
-            <IconByName
-              name="CloseCircleLineIcon"
-              onPress={(e) => setUploadData()}
-            />
-          </HStack>
-        </Actionsheet.Content>
-        <VStack bg="white" width={"100%"} space="5" p="5">
-          <FileUpload
-            schema={{
-              label: "UPLOAD_CONSENT_FORM",
-              document_type: "camp",
-              document_sub_type: "consent_form",
-            }}
-            value={uploadData?.document_id}
-            onChange={(e) => setUploadData({ ...uploadData, document_id: e })}
-          />
-          <FrontEndTypo.Primarybutton onPress={(e) => handleUpload(uploadData)}>
-            {t("SUBMIT")}
-          </FrontEndTypo.Primarybutton>
-        </VStack>
-      </Actionsheet> */}
     </Layout>
   );
 }
