@@ -124,20 +124,16 @@ const columns = (t, navigate, filter) => [
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <>
-        <Pressable
-          onPress={() =>
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`)
-          }
-        >
-          <ChipStatus
-            key={index}
-            is_duplicate={row?.is_duplicate}
-            is_deactivated={row?.is_deactivated}
-            status={row?.program_beneficiaries?.status}
-          />
-        </Pressable>
-      </>
+      <Pressable
+        onPress={() => navigate(`/admin/learners/enrollmentReceipt/${row?.id}`)}
+      >
+        <ChipStatus
+          key={index}
+          is_duplicate={row?.is_duplicate}
+          is_deactivated={row?.is_deactivated}
+          status={row?.program_beneficiaries?.status}
+        />
+      </Pressable>
     ),
     wrap: true,
     width: "180px",
