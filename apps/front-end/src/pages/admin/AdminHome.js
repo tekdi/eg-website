@@ -23,10 +23,10 @@ import {
   setQueryParameters,
   urlData,
   debounce,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
-import CustomRadio from "component/CustomRadio";
 import { useLocation } from "react-router-dom";
 import { MultiCheck } from "../../component/BaseInput";
 import Clipboard from "component/Clipboard";
