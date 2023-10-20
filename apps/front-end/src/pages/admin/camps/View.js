@@ -15,9 +15,9 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Button, Alert } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert, Link } from "native-base";
 import { useTranslation } from "react-i18next";
-import Chip from "component/Chip";
+import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 
 export default function View({ footerLinks }) {
@@ -148,15 +148,7 @@ export default function View({ footerLinks }) {
         <HStack flexWrap="wrap" justifyContent={"space-between"}>
           <VStack>
             <HStack py="4">
-              <Chip>
-                {/* <GetEnumValue
-              t={t}
-              enumType={"PREVIOUS_SCHOOL_TYPE"}
-              enumOptionValue={data?.group?.status}
-              enumApiData={enumOptions}
-            /> */}
-                {data?.group?.status}
-              </Chip>
+              <CampChipStatus status={data?.group?.status} />
             </HStack>
             {data?.faciltator?.length > 0 &&
               data?.faciltator.map((facilitator) => {
@@ -200,25 +192,33 @@ export default function View({ footerLinks }) {
           </VStack>
           <HStack space={3} width="70%" justifyContent="space-evenly">
             {[
-              properties?.photo_other?.name,
-              properties.photo_building?.name,
-              properties?.photo_classroom?.name,
+              properties?.photo_other,
+              properties.photo_building,
+              properties?.photo_classroom,
             ].map(
               (item) =>
                 item && (
-                  <ImageView
-                    isImageTag
-                    key={item}
-                    source={{
-                      uri: item,
-                    }}
-                    width="250px"
-                    height="250px"
-                    m={"10px"}
-                    p={"2"}
-                    border="2px solid #eee"
-                    borderRadius={"4"}
-                  />
+                  <HStack>
+                    <ImageView
+                      key={item}
+                      isImageTag={!item}
+                      urlObject={item || {}}
+                      _button={{ p: 0 }}
+                      text={
+                        <ImageView
+                          isImageTag
+                          urlObject={item || {}}
+                          width="260px"
+                          height="260px"
+                          m={"10px"}
+                          p={"2"}
+                          border="2px solid #eee"
+                          borderRadius={"4"}
+                          alignItems="left"
+                        />
+                      }
+                    />
+                  </HStack>
                 )
             )}
             <Stack>
@@ -382,6 +382,16 @@ export default function View({ footerLinks }) {
                 {t("CHANGES_NEEDED")}
               </AdminTypo.Secondarybutton>
             </>
+          )}
+
+          {data?.group?.status === "approved" && (
+            <AdminTypo.Secondarybutton
+              onPress={() => {
+                updateCampStatus();
+              }}
+            >
+              {t("MODIFY")}
+            </AdminTypo.Secondarybutton>
           )}
 
           <Modal isOpen={status} onClose={() => setStatus()} size="lg">
