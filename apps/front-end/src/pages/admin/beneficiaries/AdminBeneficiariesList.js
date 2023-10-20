@@ -175,7 +175,7 @@ export default function AdminHome({ footerLinks }) {
             );
           }}
         />
-        <HStack alignSelf={"center"} space="4" height={"6vh"}>
+        <HStack alignSelf={"center"} space="4" height={"5vh"}>
           <Menu
             w="190"
             placement="bottom right"
@@ -248,7 +248,7 @@ export default function AdminHome({ footerLinks }) {
             }
             pr="2"
           >
-            <Filter {...{ filter, setFilter }} />
+            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>

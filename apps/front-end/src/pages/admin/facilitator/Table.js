@@ -6,7 +6,7 @@ import {
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, VStack, Text, ScrollView } from "native-base";
+import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -25,27 +25,34 @@ const columns = (t, navigate) => [
   {
     name: t("NAME"),
     selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_photo_1?.name ? (
-          <ImageView
-            source={{
-              uri: row?.profile_photo_1?.name,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        <AdminTypo.H6 bold>
-          {`${row?.first_name} ${row?.last_name || ""}`}
-        </AdminTypo.H6>
+      <HStack>
+        <Pressable
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+          onPress={() => navigate(`/admin/view/${row?.id}`)}
+        >
+          <HStack alignItems={"center"} space={2}>
+            {row?.profile_photo_1?.name ? (
+              <ImageView
+                source={{
+                  uri: row?.profile_photo_1?.name,
+                }}
+                // alt="Alternate Text"
+                width={"35px"}
+                height={"35px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "35" }}
+              />
+            )}
+            <AdminTypo.H6 bold>
+              {`${row?.first_name} ${row?.last_name || ""}`}
+            </AdminTypo.H6>
+          </HStack>
+        </Pressable>
       </HStack>
     ),
     attr: "name",
@@ -68,7 +75,11 @@ const columns = (t, navigate) => [
   },
   {
     name: t("STATUS"),
-    selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/view/${row?.id}`)}>
+        <ChipStatus status={row?.program_faciltators?.status} />
+      </Pressable>
+    ),
     wrap: true,
     attr: "status",
     width: "150px",
@@ -114,7 +125,7 @@ function Table({
     <VStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-          {facilitaorStatus?.map((item) => {
+        {Array?.isArray(facilitaorStatus)&&facilitaorStatus?.map((item) => {
             return (
               <Text
                 key={"table"}

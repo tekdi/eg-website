@@ -49,6 +49,9 @@ const ReassignBeneficiaries = React.lazy(() =>
 const ReassignBeneficiariesList = React.lazy(() =>
   import("pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList")
 );
+const CampHome = React.lazy(() => import("pages/admin/camps/CampHome"));
+// const CampsView = React.lazy(() => import("pages/admin/camps/View"));
+const ViewCamp = React.lazy(() => import("pages/admin/camps/View"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -101,5 +104,7 @@ export default [
     component: enrollmentForm,
   },
   { path: "/", component: Orientation },
+  { path: "/admin/camps", component: CampHome },
+  { path: "/admin/camps/:id", component: ViewCamp },
   { path: "*", component: NotFound },
 ];

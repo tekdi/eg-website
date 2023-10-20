@@ -23,10 +23,10 @@ import {
   setQueryParameters,
   urlData,
   debounce,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
-import CustomRadio from "component/CustomRadio";
 import { useLocation } from "react-router-dom";
 import { MultiCheck } from "../../component/BaseInput";
 import Clipboard from "component/Clipboard";
@@ -150,7 +150,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       work_experience: {
         type: "array",
         title: t("WORK_EXPERIENCES"),
-        _hstack: { maxH: 135, overflowY: "scroll" },
+        _hstack: { maxH: 130, overflowY: "scroll" },
         items: {
           type: "string",
           enumNames: [
@@ -292,7 +292,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           }}
         />
 
-        <HStack height={"6vh"} space={2}>
+        <HStack height={"4vh"} space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
               exportPrerakCSV();

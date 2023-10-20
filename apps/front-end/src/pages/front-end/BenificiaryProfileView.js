@@ -20,9 +20,9 @@ import {
   t,
   ImageView,
   BodyMedium,
+  CustomRadio,
 } from "@shiksha/common-lib";
 
-import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
