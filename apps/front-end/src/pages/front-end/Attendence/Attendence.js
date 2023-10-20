@@ -1,5 +1,4 @@
 import {
-  H4,
   IconByName,
   AdminLayout as Layout,
   useWindowSize,
@@ -26,7 +25,7 @@ import {
   Switch,
   Badge,
 } from "native-base";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
@@ -170,20 +169,20 @@ export default function Attendence({ footerLinks }) {
   const [filterObj, setFilterObj] = React.useState();
   const [refAppBar, setRefAppBar] = React.useState();
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const [locationData, setlocationData] = useState("");
+  const [locationData, setlocationData] = React.useState("");
   const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
-  const [event, setEvent] = useState("");
+  const [event, setEvent] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const formRef = React.useRef();
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({});
+  const [error, setError] = React.useState("");
+  const [formData, setFormData] = React.useState({});
 
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = React.useState({});
 
-  const [cameraFile, setcameraFile] = useState();
-  useEffect(() => {
+  const [cameraFile, setcameraFile] = React.useState();
+  React.useEffect(() => {
     getLocation();
   }, []);
 

@@ -421,15 +421,13 @@ export default function App({ userTokenInfo, footerLinks }) {
             </VStack>
           ) : (
             <Box>
-              {alert ? (
+              {alert && (
                 <Alert status="warning" alignItems={"start"} mb="3">
                   <HStack alignItems="center" space="2" color>
                     <Alert.Icon />
                     <BodyMedium>{alert}</BodyMedium>
                   </HStack>
                 </Alert>
-              ) : (
-                <React.Fragment />
               )}
               <Form
                 key={lang}

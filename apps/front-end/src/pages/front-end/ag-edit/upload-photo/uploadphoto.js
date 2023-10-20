@@ -14,7 +14,7 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
+import { CustomRadio } from "@shiksha/common-lib";
 import Steper from "../../../../component/Steper.js";
 import {
   facilitatorRegistryService,

@@ -114,7 +114,7 @@ function Table({
     <VStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-          {facilitaorStatus?.map((item) => {
+        {Array?.isArray(facilitaorStatus)&&facilitaorStatus?.map((item) => {
             return (
               <Text
                 key={"table"}
