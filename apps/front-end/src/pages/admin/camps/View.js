@@ -3,7 +3,7 @@ import {
   IconByName,
   AdminLayout as Layout,
   AdminTypo,
-  CampService,
+  campService,
   CardComponent,
   UserCard,
   MapComponent,
@@ -41,7 +41,7 @@ export default function View({ footerLinks }) {
     };
 
     try {
-      const response = await CampService.getCampAdminConsent(requestBody);
+      const response = await campService.getCampAdminConsent(requestBody);
       setConsentData(response?.data);
     } catch (error) {
       console.error("An error occurred:", error);
@@ -51,7 +51,7 @@ export default function View({ footerLinks }) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await CampService.getFacilatorAdminCampList({ id });
+        const result = await campService.getFacilatorAdminCampList({ id });
         const camp = result?.data?.camp;
         setDataa(camp);
         setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
@@ -71,7 +71,7 @@ export default function View({ footerLinks }) {
   }, []);
 
   const updateCampStatus = async () => {
-    const { error, ...result } = await CampService.updateCampStatus({
+    const { error, ...result } = await campService.updateCampStatus({
       id,
       facilitator_id: data?.faciltator?.[0]?.id,
       status,
