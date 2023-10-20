@@ -150,7 +150,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       work_experience: {
         type: "array",
         title: t("WORK_EXPERIENCES"),
-        _hstack: { maxH: 135, overflowY: "scroll" },
+        _hstack: { maxH: 130, overflowY: "scroll" },
         items: {
           type: "string",
           enumNames: [
@@ -292,7 +292,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           }}
         />
 
-        <HStack height={"6vh"} space={2}>
+        <HStack height={"4vh"} space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
               exportPrerakCSV();
