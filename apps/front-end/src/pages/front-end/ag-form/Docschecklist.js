@@ -1,5 +1,4 @@
 import {
-  H3,
   Layout,
   t,
   benificiaryRegistoryService,

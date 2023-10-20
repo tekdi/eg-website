@@ -23,9 +23,8 @@ import {
   CustomOTPBox,
   AdminTypo,
   chunk,
-  sprintF,
+  CustomRadio,
 } from "@shiksha/common-lib";
-import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
@@ -742,65 +741,40 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
-  return errors.map((error) => {
-    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
-    if (error.name === "required") {
-      if (schemaItem) {
-        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
-        if (schemaItem?.format === "FileUpload") {
-          error.message = `${t("REQUIRED_MESSAGE_UPLOAD")} "${t(title)}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(title)}"`;
-        }
-      } else {
-        error.message = `${t("REQUIRED_MESSAGE")}`;
-      }
-    } else if (error.name === "minItems") {
-      if (schemaItem) {
-        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
-        error.message = sprintF(
-          t("SELECT_MINIMUM"),
-          error?.params?.limit,
-          t(title)
-        );
-      } else {
-        error.message = sprintF(t("SELECT_MINIMUM"), error?.params?.limit, "");
-      }
-    } else if (error.name === "maxItems") {
-      if (schemaItem) {
-        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
-        error.message = sprintF(
-          t("SELECT_MAXIMUM"),
-          error?.params?.limit,
-          t(title)
-        );
-      } else {
-        error.message = sprintF(t("SELECT_MAXIMUM"), error?.params?.limit, "");
-      }
-    } else if (error.name === "enum") {
-      error.message = `${t("SELECT_MESSAGE")}`;
-    } else if (error.name === "format") {
-      const { format } = error?.params || {};
-      let message = "REQUIRED_MESSAGE";
-      if (format === "email") {
-        message = "PLEASE_ENTER_VALID_EMAIL";
-      }
-      if (format === "string") {
-        message = "PLEASE_ENTER_VALID_STREING";
-      } else if (format === "number") {
-        message = "PLEASE_ENTER_VALID_NUMBER";
-      }
+  const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
-      if (schema?.properties?.[error?.property]?.title) {
-        error.message = `${t(message)} "${t(
-          schema?.properties?.[error?.property]?.title
-        )}"`;
-      } else {
-        error.message = `${t(message)}`;
-      }
+  const getMessage = (error) => {
+    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
+    const title = getTitle(schemaItem);
+
+    switch (error.name) {
+      case "required":
+        return `${t(
+          schemaItem?.format === "FileUpload"
+            ? "REQUIRED_MESSAGE_UPLOAD"
+            : "REQUIRED_MESSAGE"
+        )} "${t(title)}"`;
+      case "minItems":
+        return t("SELECT_MINIMUM", error?.params?.limit, title);
+      case "maxItems":
+        return t("SELECT_MAXIMUM", error?.params?.limit, title);
+      case "enum":
+        return t("SELECT_MESSAGE");
+      case "format":
+        const { format } = error?.params || {};
+        const messageKey =
+          {
+            email: "PLEASE_ENTER_VALID_EMAIL",
+            string: "PLEASE_ENTER_VALID_STRING",
+            number: "PLEASE_ENTER_VALID_NUMBER",
+          }[format] || "REQUIRED_MESSAGE";
+        return t(messageKey, title ? t(title) : "");
+      default:
+        return error.message;
     }
-    return error;
-  });
+  };
+
+  return errors.map((error) => ({ ...error, message: getMessage(error) }));
 };
 
 // rjsf onerror parmaeter for common

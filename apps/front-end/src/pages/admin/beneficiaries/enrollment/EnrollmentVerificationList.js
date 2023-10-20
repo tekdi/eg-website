@@ -71,7 +71,7 @@ const columns = (t, navigate, filter) => [
       </HStack>
     ),
     wrap: true,
-    width: "350px",
+    width: "320px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -109,7 +109,7 @@ const columns = (t, navigate, filter) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
-    width: "350px",
+    width: "320px",
   },
   {
     name: t("STATUS"),
@@ -122,7 +122,7 @@ const columns = (t, navigate, filter) => [
       />
     ),
     wrap: true,
-    width: "150px",
+    width: "180px",
   },
   {
     name: t("ACTION"),

@@ -6,12 +6,9 @@ import { Alert, Box, Center, HStack, Image, Modal, VStack } from "native-base";
 import {
   Camera,
   Layout,
-  H1,
   t,
   login,
-  H3,
   IconByName,
-  H2,
   getBase64,
   BodyMedium,
   enumRegistryService,

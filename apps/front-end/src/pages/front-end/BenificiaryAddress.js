@@ -8,7 +8,6 @@ import {
   Layout,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 
 export default function BenificiaryAddress() {
