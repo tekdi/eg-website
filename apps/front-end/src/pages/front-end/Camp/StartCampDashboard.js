@@ -276,24 +276,33 @@ export default function StartCampDashboard({ footerLinks }) {
                             name="CalendarEventLineIcon"
                             color="gray.600"
                             bg="gray.300"
-                            rounded="100%"
+                            rounded="full"
                             p="5"
                           />
                           <FrontEndTypo.H5>Today's Activities</FrontEndTypo.H5>
                         </VStack>
                       </Pressable>
                     </CardComponent>
-                    <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-                      <VStack alignItems="center" space={3}>
-                        <IconByName
-                          name="BookOpenLineIcon"
-                          color="gray.600"
-                          bg="gray.300"
-                          rounded="100%"
-                          p="5"
-                        />
-                        <FrontEndTypo.H5>View Attendance</FrontEndTypo.H5>
-                      </VStack>
+                    <CardComponent
+                      _vstack={{ flex: 1, alignItems: "center" }}
+                      _body={{ pt: 4 }}
+                    >
+                      <Pressable
+                        onPress={(e) => navigate(`/camps/${id}/attendance`)}
+                      >
+                        <VStack alignItems="center" space={3}>
+                          <IconByName
+                            name="BookOpenLineIcon"
+                            color="gray.600"
+                            bg="gray.300"
+                            rounded="full"
+                            p="5"
+                          />
+                          <FrontEndTypo.H5 textAlign="center">
+                            Learner Attendance
+                          </FrontEndTypo.H5>
+                        </VStack>
+                      </Pressable>
                     </CardComponent>
                   </HStack>
                   <FrontEndTypo.Primarybutton onPress={(e) => endCamp()}>
@@ -316,14 +325,22 @@ export default function StartCampDashboard({ footerLinks }) {
         <VStack pt="6" space="4">
           <FrontEndTypo.H3>Other Activites,</FrontEndTypo.H3>
           <HStack space="6">
-            <VStack alignItems="center">
-              <IconByName name="CalendarEventLineIcon" color="gray.300" />
-              <FrontEndTypo.H5>View Attendance</FrontEndTypo.H5>
-            </VStack>
-            <VStack alignItems="center">
-              <IconByName name="UserAddLineIcon" color="gray.300" />
-              <FrontEndTypo.H5>Add Learner</FrontEndTypo.H5>
-            </VStack>
+            <Pressable onPress={(e) => navigate(`/camps/${id}/attendance`)}>
+              <VStack alignItems="center" space={3}>
+                <IconByName name="CalendarEventLineIcon" color="gray.400" />
+                <FrontEndTypo.H5>View Attendance</FrontEndTypo.H5>
+              </VStack>
+            </Pressable>
+            <Pressable
+              onPress={(e) =>
+                navigate(`/camps/${id}/edit_camp_selected_learners`)
+              }
+            >
+              <VStack alignItems="center" space={3}>
+                <IconByName name="UserAddLineIcon" color="gray.400" />
+                <FrontEndTypo.H5>Add Learner</FrontEndTypo.H5>
+              </VStack>
+            </Pressable>
           </HStack>
         </VStack>
       </VStack>

@@ -119,17 +119,10 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       step: "edit_kit_details",
       color: getColor(kit, kitarr),
     },
-
     {
       Icon: "CheckboxLineIcon",
       Name: "FAMILY_CONSENT",
       step: "edit_family_consent",
-      color: consent,
-    },
-    {
-      Icon: "CheckboxLineIcon",
-      Name: "ATTENDANCE",
-      step: "attendance",
       color: consent,
     },
   ];

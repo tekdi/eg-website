@@ -38,11 +38,7 @@ export default function ConsentForm() {
     }
     setGroupUsers(result?.data?.group_users);
     setLoading(false);
-  }, [consents]);
-
-  const onPressBackButton = async () => {
-    navigate(`/camps/${id}`);
-  };
+  }, [id]);
 
   // update schema
 
@@ -206,7 +202,6 @@ export default function ConsentForm() {
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
         name: t("ATTENDANCE"),
-        onPressBackButton,
         _box: { bg: "white" },
       }}
     >
