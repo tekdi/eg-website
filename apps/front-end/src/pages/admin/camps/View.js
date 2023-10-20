@@ -92,7 +92,6 @@ export default function View({ footerLinks }) {
 
   }, []);
 
-  console.log("loading", loading);
 
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
