@@ -133,7 +133,7 @@ export default function View({ footerLinks }) {
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/campHome`)}
+            onPress={(e) => navigate(-1)}
           />
           <AdminTypo.H1
             color="textGreyColor.800"
@@ -299,7 +299,12 @@ export default function View({ footerLinks }) {
                     rightElement={
                       <HStack>
                         <ImageView
-                          source={{ document_id: consentUrlObject?.id || {} }}
+                          source={{
+                            document_id:
+                              consentUrlObject?.id !== null
+                                ? consentUrlObject?.id
+                                : {},
+                          }}
                           isImageTag={!consentUrlObject}
                           // urlObject={consentUrlObject?.id || {}}
                           _button={{ p: 0 }}
@@ -367,11 +372,11 @@ export default function View({ footerLinks }) {
           </CardComponent>
         </HStack>
         <HStack space={10} justifyContent={"center"}>
-          {data?.group?.status !== "approved" && (
+          {data?.group?.status !== "camp_ip_verified" && (
             <>
               <AdminTypo.StatusButton
                 status="success"
-                onPress={() => setStatus("approved")}
+                onPress={() => setStatus("camp_ip_verified")}
               >
                 {t("VERIFY")}
               </AdminTypo.StatusButton>
@@ -384,7 +389,7 @@ export default function View({ footerLinks }) {
             </>
           )}
 
-          {data?.group?.status === "approved" && (
+          {data?.group?.status === "camp_ip_verified" && (
             <AdminTypo.Secondarybutton
               onPress={() => {
                 updateCampStatus();
@@ -397,8 +402,8 @@ export default function View({ footerLinks }) {
           <Modal isOpen={status} onClose={() => setStatus()} size="lg">
             <Modal.Content>
               <Modal.CloseButton />
-              <Modal.Header>Welcome at Camp</Modal.Header>
-              {status == "approved" ? (
+              <Modal.Header>{t("WELCOME_AT_CAMP")}</Modal.Header>
+              {status === "camp_ip_verified" ? (
                 <Modal.Body>
                   <Alert status="success" alignItems={"start"} mb="3" mt="4">
                     <HStack alignItems="center" space="2" color>
