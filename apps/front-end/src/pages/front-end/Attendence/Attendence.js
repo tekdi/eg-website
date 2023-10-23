@@ -389,7 +389,9 @@ export default function Attendence({ footerLinks }) {
                     shadow="BlueOutlineShadow"
                     onPress={() => {
                       updateUserData();
-                      cameraFile && setUserData();
+                      cameraFile
+                        ? setUserData()
+                        : setError("Capture Picture First");
                       setcameraFile("");
                       setCameraUrl();
                     }}
@@ -402,7 +404,9 @@ export default function Attendence({ footerLinks }) {
                     ml="4"
                     px="5"
                     onPress={() => {
-                      cameraFile && uploadAttendencePicture();
+                      cameraFile
+                        ? uploadAttendencePicture()
+                        : setError("Capture Picture First");
                     }}
                   >
                     {t("NEXT")}
