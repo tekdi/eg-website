@@ -312,7 +312,7 @@
   "DEVICE_OWNERSHIP": "Device Ownership",
   "DID_THE_INTERVIEW_TAKE_SUCCESSFULLY": "Did the interview take place Successfully",
   "DID_YOU_RECEIVE_A_KIT": "Did you receive a kit?",
-  "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT": "Did you think the kit was sufficient?",
+  "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT": "Is the material available in the Pragati Kit sufficient as per the learners of the camp?",
   "DIPLOMA": "Diploma",
   "DISCLAIMER_MESSAGE": "I understand that my Aadhaar details shall not be used or stored for any other purpose.",
   "DISTRICT": "District",
@@ -1092,6 +1092,9 @@
   "THE_QUALITY_OF_THE_KIT": "The quality of the kit",
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "Please add origami-related materials to the fit. Colored paper, scissors, glue, etc.",
   "CHANGES_REQUIRED": "Please inform required changes to the Prerak",
-  "VERIFY_MESSAGE": "Do you want to verify the camp. if yes press confirm or to go back to camp list press cancel",
-  "MODIFY": "Modify"
+  "VERIFY_MESSAGE": "Do you want to verify the camp. if yes press confirm.",
+  "MODIFY": "Modify",
+  "PROPERTY_TYPE": "Property Type",
+  "CAMP_ID": "Camp ID",
+  "CAMP_STATUS": "Camp Status"
 }

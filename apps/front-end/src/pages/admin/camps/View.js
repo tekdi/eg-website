@@ -78,7 +78,7 @@ export default function View({ footerLinks }) {
     });
 
     if (result?.status === 200) {
-      navigate("/admin/camps");
+      navigate("/admin/camps?status=registered&page=1");
     } else {
       setErrorList(result?.message);
       setStatus();
@@ -255,7 +255,7 @@ export default function View({ footerLinks }) {
             isHideProgressBar={true}
             _vstack={{ bg: "light.100", space: 0, flex: 3 }}
             title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
-            label={["Property Type"]}
+            label={["PROPERTY_TYPE"]}
             item={data?.properties}
             arr={["property_type"]}
           ></CardComponent>
@@ -329,10 +329,10 @@ export default function View({ footerLinks }) {
               _vstack={{ space: 0, flex: 3 }}
               title={t("KIT_DETAILS")}
               label={[
-                "Got the kit",
-                "Is the kit successful",
-                "Suggestions for the kit",
-                "The quality of kit",
+                "GOT_THE_KIT",
+                "IS_THE_KIT_USEFUL",
+                "SUGGESTIONS_FOR_THE_KIT",
+                "THE_QUALITY_OF_THE_KIT",
               ]}
               item={{
                 ...data,
