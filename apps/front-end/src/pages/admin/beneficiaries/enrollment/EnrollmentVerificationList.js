@@ -10,7 +10,6 @@ import {
   AdminLayout as Layout,
   urlData,
   setQueryParameters,
-  Breadcrumb,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -220,38 +219,26 @@ function EnrollmentVerificationList({ footerLinks }) {
       _sidebar={footerLinks}
     >
       <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
-        <Breadcrumb
-          drawer={
-            <IconByName
-              size="sm"
-              name="ArrowRightSLineIcon"
-              onPress={(e) => navigate("/admin/learners")}
-            />
-          }
-          data={[
-            <HStack key="b1" alignItems="center" space={"2"}>
-              <IconByName
-                isDisabled
-                name="GraduationCap"
-                _icon={{ size: "30" }}
-              />
-              <AdminTypo.H1 color="Activatedcolor.400">
-                {t("All_AG_LEARNERS")}
-              </AdminTypo.H1>
-            </HStack>,
-            <HStack alignItems="center" key="b2" space={"2"}>
-              <AdminTypo.H2>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H2>
-              <Image
-                source={{
-                  uri: "/box.svg",
-                }}
-                alt=""
-                size={"28px"}
-                resizeMode="contain"
-              />
-            </HStack>,
-          ]}
-        />
+        <HStack justifyContent="space-between" alignItems="center">
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
+          <AdminTypo.H1 color="Activatedcolor.400">
+            {t("All_AG_LEARNERS")}
+          </AdminTypo.H1>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate("/admin/learners")}
+          />
+          <AdminTypo.H1 px="3">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
         <Input
           size={"xs"}
           minH="49px"
@@ -293,7 +280,7 @@ function EnrollmentVerificationList({ footerLinks }) {
             }
             pr="2"
           >
-            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+            <Filter {...{ filter, setFilter }} />
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
