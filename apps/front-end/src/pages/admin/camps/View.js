@@ -300,7 +300,7 @@ export default function View({ footerLinks }) {
                           />
                           <Pressable
                             onPress={() =>
-                              navigate(`/admin/camps/${id}/reassign`)
+                              navigate(`/admin/camps/${learner?.id}/reassign`)
                             }
                           >
                             <IconByName name="PencilLineIcon" />

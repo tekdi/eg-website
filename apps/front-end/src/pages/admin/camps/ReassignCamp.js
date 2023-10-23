@@ -9,7 +9,7 @@ import {
   campService,
   useWindowSize,
 } from "@shiksha/common-lib";
-import { Box, HStack, Modal, VStack, ScrollView } from "native-base";
+import { Box, HStack, Modal, VStack, ScrollView, useToast } from "native-base";
 import { CampChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
@@ -84,6 +84,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [modal, setModal] = React.useState();
+  const toast = useToast();
 
   React.useEffect(async () => {
     let newFilter = filter;
@@ -94,6 +95,22 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
   }, []);
+
+  const reassignCamp = async () => {
+    const obj = {
+      learner_id: parseInt(id),
+      camp_id: modal?.id,
+    };
+    const result = await campService.reassignCamp(obj);
+    if (result) {
+      setModal("");
+      navigate(-1);
+    } else {
+      toast.show({
+        description: "Hello world",
+      });
+    }
+  };
 
   return (
     <Layout
@@ -280,13 +297,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             <FrontEndTypo.Secondarybutton onPress={(e) => setModal()}>
               {t("CANCEL")}
             </FrontEndTypo.Secondarybutton>
-            <FrontEndTypo.Primarybutton
-              onPress={(e) =>
-                navigate(`/aadhaar-kyc/${user?.id}/okyc2`, {
-                  state: "/",
-                })
-              }
-            >
+            <FrontEndTypo.Primarybutton onPress={() => reassignCamp()}>
               {t("CONFIRM")}
             </FrontEndTypo.Primarybutton>
           </Modal.Footer>
