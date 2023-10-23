@@ -11,11 +11,10 @@ import {
   enumRegistryService,
   jsonParse,
   ImageView,
-  FrontEndTypo,
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert, Link } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -31,6 +30,7 @@ export default function View({ footerLinks }) {
   const [consentData, setConsentData] = React.useState([]);
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
+  const [loading, setLoading] = React.useState(true);
 
   const { id } = useParams();
 
@@ -48,26 +48,23 @@ export default function View({ footerLinks }) {
     }
   };
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await campService.getFacilatorAdminCampList({ id });
-        const camp = result?.data?.camp;
-        setDataa(camp);
-        setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
-        setProperties(camp?.properties);
-        let properData = camp?.properties;
-        setProperties(properData);
-
-        const campId = camp?.id;
-        const facilitatorId = camp?.faciltator[0]?.id;
-        getConsentDetailsWithParams(campId, facilitatorId);
-      } catch (error) {
-        console.error("An error occurred:", error);
-      }
-    };
-
-    fetchData();
+  React.useEffect(async () => {
+    setLoading(true);
+    try {
+      const result = await campService.getFacilatorAdminCampList({ id });
+      const camp = result?.data?.camp;
+      setDataa(camp);
+      setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
+      setProperties(camp?.properties);
+      let properData = camp?.properties;
+      setProperties(properData);
+      const campId = camp?.id;
+      const facilitatorId = camp?.faciltator[0]?.id;
+      getConsentDetailsWithParams(campId, facilitatorId);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+      setLoading(false);
   }, []);
 
   const updateCampStatus = async () => {
@@ -86,15 +83,18 @@ export default function View({ footerLinks }) {
   };
 
   React.useEffect(async () => {
+    setLoading(true);
     const qData = await enumRegistryService.listOfEnum();
     const data = qData?.data?.CAMP_PROPERTY_FACILITIES;
-
     setEnumOptions(qData?.data);
     setFacilities(data);
+    setLoading(false);
+
   }, []);
 
+
   return (
-    <Layout _sidebar={footerLinks}>
+    <Layout _sidebar={footerLinks} loading={loading}>
       <VStack flex={1} space={"5"} p="3" mb="5">
         {errorList && (
           <Alert
@@ -114,7 +114,7 @@ export default function View({ footerLinks }) {
                 errorList?.constructor?.name === "Array" && (
                   <VStack space={2}>
                     {errorList?.map((item) => (
-                      <HStack space={2} alignItems={"center"}>
+                      <HStack key={item} space={2} alignItems={"center"}>
                         <Alert.Icon />
                         <AdminTypo.H6 key={item}>{t(item)}</AdminTypo.H6>
                       </HStack>
@@ -133,7 +133,7 @@ export default function View({ footerLinks }) {
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/campHome`)}
+            onPress={(e) => navigate(`/admin/camps`)}
           />
           <AdminTypo.H1
             color="textGreyColor.800"
@@ -190,7 +190,7 @@ export default function View({ footerLinks }) {
                 );
               })}
           </VStack>
-          <HStack space={3} width="70%" justifyContent="space-evenly">
+          <HStack space={3} width="70%">
             {[
               properties?.photo_other,
               properties.photo_building,
@@ -198,9 +198,8 @@ export default function View({ footerLinks }) {
             ].map(
               (item) =>
                 item && (
-                  <HStack>
+                  <HStack key={item}>
                     <ImageView
-                      key={item}
                       isImageTag={!item}
                       urlObject={item || {}}
                       _button={{ p: 0 }}
@@ -226,13 +225,6 @@ export default function View({ footerLinks }) {
                 latitude={data?.properties?.lat}
                 longitude={data?.properties?.long}
               />
-              {/* {consentData.map((item) => (
-              <CardComponent
-                key={item?.title}
-                schema={{ label: t(item?.title) }}
-                value={data[item?.value] || ""}
-              />
-            ))} */}
             </Stack>
           </HStack>
         </HStack>
@@ -262,10 +254,9 @@ export default function View({ footerLinks }) {
         </HStack>
         <HStack space={4}>
           <CardComponent
-            _vstack={{ bg: "light.100", flex: 1 }}
+            _vstack={{ bg: "light.100", flex: 1, space: 4 }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
           >
-            {/* {consentData} */}
             {data?.beneficiaries?.length > 0 &&
               data?.beneficiaries.map((learner, index) => {
                 let learnerConsentData = Array.isArray(consentData)
@@ -273,49 +264,51 @@ export default function View({ footerLinks }) {
                   : {};
 
                 const consentUrlObject = learnerConsentData?.document || {};
-                // alert(JSON.stringify(consentUrlObject));
                 return (
-                  <UserCard
+                  <VStack
                     key={learner}
-                    title={
-                      <AdminTypo.H6
-                        bold
-                      >{`${learner?.first_name} ${learner?.last_name}`}</AdminTypo.H6>
-                    }
-                    subTitle={
-                      learner?.district &&
-                      learner?.block &&
-                      learner?.village ? (
-                        <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
-                      ) : (
-                        ""
-                      )
-                    }
-                    image={
-                      learner?.profile_photo_1?.id
-                        ? { document_id: learner?.profile_photo_1?.id }
-                        : null
-                    }
-                    rightElement={
-                      <HStack>
-                        <ImageView
-                          source={{ document_id: consentUrlObject?.id || {} }}
-                          isImageTag={!consentUrlObject}
-                          // urlObject={consentUrlObject?.id || {}}
-                          _button={{ p: 0 }}
-                          text={
-                            <HStack space={"2"}>
-                              {t("LINK")}
-                              <IconByName
-                                name="ExternalLinkLineIcon"
-                                isDisabled
-                              />
-                            </HStack>
-                          }
-                        />
-                      </HStack>
-                    }
-                  />
+                    space={4}
+                    justifyContent={"space-evenly"}
+                  >
+                    <UserCard
+                      title={
+                        <AdminTypo.H6
+                          bold
+                        >{`${learner?.first_name} ${learner?.last_name}`}</AdminTypo.H6>
+                      }
+                      subTitle={
+                        learner?.district &&
+                        learner?.block &&
+                        learner?.village ? (
+                          <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
+                        ) : (
+                          ""
+                        )
+                      }
+                      image={
+                        learner?.profile_photo_1?.id
+                          ? { document_id: learner?.profile_photo_1?.id }
+                          : null
+                      }
+                      rightElement={
+                        <HStack>
+                          <ImageView
+                            source={{ document_id: consentUrlObject?.id || {} }}
+                            isImageTag={!consentUrlObject}
+                            _button={{ p: 0 }}
+                            text={<HStack space={"2"}>{t("VIEW")}</HStack>}
+                          />
+                          <Pressable
+                            onPress={() =>
+                              navigate(`/admin/camps/${learner?.id}/reassign`)
+                            }
+                          >
+                            <IconByName name="PencilLineIcon" />
+                          </Pressable>
+                        </HStack>
+                      }
+                    />
+                  </VStack>
                 );
               })}
           </CardComponent>
