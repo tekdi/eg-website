@@ -175,7 +175,7 @@ export default function AdminHome({ footerLinks }) {
             );
           }}
         />
-        <HStack alignSelf={"center"} space="4" height={"6vh"}>
+        <HStack alignSelf={"center"} space="4" height={"5vh"}>
           <Menu
             w="190"
             placement="bottom right"
