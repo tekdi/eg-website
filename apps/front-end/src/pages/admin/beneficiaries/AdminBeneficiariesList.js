@@ -292,8 +292,8 @@ export const Filter = ({ filter, setFilter }) => {
 
   const setFilterObject = (data) => {
     if (data?.district) {
-      const { district } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district });
+      const { district, block } = data;
+      setFacilitatorFilter({ ...facilitatorFilter, district, block });
     }
     setFilter(data);
     setQueryParameters(data);
@@ -366,40 +366,23 @@ export const Filter = ({ filter, setFilter }) => {
     }
   }, [filter?.district]);
 
-  React.useEffect(() => {
-    const facilitatorDetails = async () => {
-      let newFilter = {};
-      ["district", "block", "status"].forEach((e) => {
-        if (filter[e]) {
-          newFilter = { ...newFilter, [e]: filter[e] };
-        }
-      });
-      const { error, ...result } =
-        await facilitatorRegistryService.searchByBeneficiary({
-          ...facilitatorFilter,
-          ...newFilter,
-        });
-      if (!error) {
-        setIsMore(
-          parseInt(`${result?.data?.currentPage}`) <
-            parseInt(`${result?.data?.totalPages}`)
-        );
-        const newData = result?.data?.data?.map((e) => ({
+  React.useEffect(async () => {
+    const { error, ...result } =
+      await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+    if (!error) {
+      let newData;
+      setIsMore(
+        parseInt(`${result?.data?.currentPage}`) <
+          parseInt(`${result?.data?.totalPages}`)
+      );
+      if (result?.data?.data) {
+        newData = result?.data?.data?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
-        const newFilterData = newData?.filter(
-          (e) =>
-            facilitator?.filter((subE) => subE.value === e?.value).length === 0
-        );
-        if (filter?.page > 1) {
-          setFacilitator([...facilitator, ...newFilterData]);
-        } else {
-          setFacilitator(newFilterData);
-        }
       }
-    };
-    facilitatorDetails();
+      setFacilitator(newData);
+    }
   }, [facilitatorFilter, filter]);
 
   const onChange = async (data) => {
