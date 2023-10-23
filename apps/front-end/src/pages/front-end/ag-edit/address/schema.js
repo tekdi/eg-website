@@ -10,12 +10,12 @@ export default {
         lat: {
           type: ["number", "string"],
           label: "LATITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         long: {
           type: ["number", "string"],
           label: "LONGITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         address: {
           title: "STREET_ADDRESS",

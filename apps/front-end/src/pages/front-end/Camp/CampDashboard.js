@@ -5,7 +5,7 @@ import {
   GetEnumValue,
   IconByName,
   Layout,
-  CampService,
+  campService,
   enumRegistryService,
   facilitatorRegistryService,
   benificiaryRegistoryService,
@@ -13,11 +13,11 @@ import {
 import {
   HStack,
   VStack,
-  Box,
   Pressable,
   Center,
   Avatar,
   Alert,
+  Modal,
 } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -32,10 +32,12 @@ export default function CampDashboard({ footerLinks }) {
   const [enumOptions, setEnumOptions] = React.useState();
   const [communityLength, setCommunityLength] = React.useState();
   const [ipStatus, setIpStatus] = React.useState();
+  const [modal, setModal] = React.useState(false);
+  const [campId, setCampId] = React.useState("");
 
   React.useEffect(async () => {
-    const result = await CampService.campNonRegisteredUser();
-    const campList = await CampService.campList();
+    const result = await campService.campNonRegisteredUser();
+    const campList = await campService.campList();
     const enums = await enumRegistryService.listOfEnum();
     const ip_user_info = await facilitatorRegistryService.getInfo();
     const getData = await benificiaryRegistoryService.getCommunityReferences({
@@ -122,7 +124,8 @@ export default function CampDashboard({ footerLinks }) {
                       <Pressable
                         key={item}
                         onPress={() => {
-                          navigate(`/camps/${item?.id}`);
+                          setModal(true);
+                          setCampId(item?.id);
                         }}
                         bg="boxBackgroundColour.100"
                         shadow="AlertShadow"
@@ -224,6 +227,37 @@ export default function CampDashboard({ footerLinks }) {
           </HStack>
         </VStack>
       </VStack>
+      <Modal
+        isOpen={modal}
+        onClose={() => setModal(false)}
+        safeAreaTop={true}
+        size="xl"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Body p={5} marginTop={"20px"}>
+            <VStack space={4}>
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/camps/${campId}`);
+                }}
+              >
+                {t("PROFILE")}
+              </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton>
+                {t("CAMP_SETTINGS")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/camps/${campId}/start`);
+                }}
+              >
+                {t("CAMP_EXECUTION")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }

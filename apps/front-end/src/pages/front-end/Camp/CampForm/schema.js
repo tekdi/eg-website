@@ -16,12 +16,12 @@ export default {
         lat: {
           type: "string",
           title: "LATITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         long: {
           type: "string",
           title: "LONGITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         property_type: {
           title: "PROPERTY_TYPE",
@@ -132,7 +132,7 @@ export default {
           label: "KIT_SUGGESTION",
           type: ["string", "number", "null"],
           grid: 2,
-          format: "textarea",
+          format: "Textarea",
         },
       },
     },

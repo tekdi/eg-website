@@ -2,7 +2,7 @@ import React from "react";
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
-  import("../pages/front-end/ag-edit/basicDetails")
+  import("../pages/front-end/ag-edit/parts/basicDetails")
 );
 const educationDetails = React.lazy(() =>
   import(
@@ -127,6 +127,17 @@ const PcrDetails = React.lazy(() =>
 );
 const PcrView = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrView")
+);
+const StartCampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/StartCampDashboard")
+);
+
+const CampAttendance = React.lazy(() =>
+  import("pages/front-end/Camp/CampAttendance")
+);
+
+const CampTodayActivities = React.lazy(() =>
+  import("pages/front-end/Camp/CampTodayActivities")
 );
 
 export default [
@@ -270,9 +281,15 @@ export default [
     component: CampLeanerList,
   },
 
-  { path: "*", component: Dashboard },
   {
     path: "/community-references",
     component: CommunityView,
   },
+  {
+    path: "/camps/:id/attendance",
+    component: CampAttendance,
+  },
+  { path: "/camps/:id/start", component: StartCampDashboard },
+  { path: "/camps/:id/activities", component: CampTodayActivities },
+  { path: "*", component: Dashboard },
 ];

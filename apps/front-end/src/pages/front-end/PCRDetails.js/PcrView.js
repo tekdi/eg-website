@@ -16,7 +16,7 @@ export default function PcrView() {
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = result?.data?.filter((item) => item.user_id == id);
+    const userData = Array.isArray(result?.data) ? result.data.filter((item) => item.user_id == id) : [];
     setData(userData[0]);
   }, []);
 

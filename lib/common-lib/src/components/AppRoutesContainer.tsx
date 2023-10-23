@@ -17,7 +17,7 @@ const AppRoutesContainer = ({
   // const user = useAuthFlow()
   return (
     <NativeBaseProvider {...(Object.keys(theme).length ? { theme } : {})}>
-      <Alert {...{ alert, setAlert }} />
+      <Alert {...{ alert, setAlert }} _alert={{}} type='' />
       <React.Suspense
         fallback={
           <Center>
