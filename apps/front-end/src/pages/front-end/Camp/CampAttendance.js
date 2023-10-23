@@ -54,10 +54,11 @@ export default function ConsentForm() {
     const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
     if (photo_1) {
       await campService.markCampAttendance({
+        ...data,
         context_id: id,
         user_id: userData?.id,
         status: "present",
-        photo_1: photo_1,
+        photo_1: `${photo_1}`,
       });
     } else {
       setError("Capture Picture First");

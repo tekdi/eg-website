@@ -9,6 +9,7 @@ import {
   Loading,
   Camera,
   uploadRegistryService,
+  ImageView,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { Box, HStack, Pressable, Progress, Stack, VStack } from "native-base";
@@ -22,6 +23,7 @@ export default function StartCampDashboard({ footerLinks }) {
   const { id } = useParams();
   const [error, setError] = React.useState();
   const [data, setData] = React.useState({});
+  const [facilitator, setFacilitator] = React.useState();
   const [start, setStart] = React.useState(false);
   const [cameraFile, setcameraFile] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -31,6 +33,7 @@ export default function StartCampDashboard({ footerLinks }) {
   React.useEffect(async () => {
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
+    setFacilitator(result?.data?.faciltator?.[0] || {});
   }, [id]);
 
   React.useEffect(() => {
@@ -63,12 +66,17 @@ export default function StartCampDashboard({ footerLinks }) {
     };
   }, [localStorage.getItem("startCamp")]);
 
+  // start Camp
   const startCamp = () => {
-    localStorage.setItem("startCamp", moment());
-    // uploadAttendencePicture();
-    setCameraUrl();
-    setStart(false);
+    try {
+      localStorage.setItem("startCamp", moment());
+      uploadAttendencePicture();
+      setCameraUrl();
+      setStart(false);
+    } catch (e) {}
   };
+
+  // endCamp
   const endCamp = () => {
     localStorage.removeItem("startCamp");
     setTimer({
@@ -78,27 +86,27 @@ export default function StartCampDashboard({ footerLinks }) {
       cs: 0,
     });
   };
+
+  // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
-    if (cameraFile?.id) {
+    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+    if (photo_1) {
       const dataQ = {
         ...data,
+        context_id: id,
+        user_id: facilitator?.id,
         status: "present",
-        photo_1: cameraFile ? cameraFile?.id : "",
+        photo_1: `${photo_1}`,
       };
-      console.log({ dataQ });
-      // const apiResponse = await eventService.updateAttendance();
-      // if (apiResponse?.status === 200) {
-      // const eventResult = await eventService.getEventListById({ id: id });
-      // setEvent(eventResult?.event);
-      // }
+      await campService.markCampAttendance(dataQ);
     } else {
       setError("Capture Picture First");
     }
     setCameraUrl();
   };
 
-  if (start) {
+  if (start && data?.lat && data?.long) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Camera
@@ -165,8 +173,10 @@ export default function StartCampDashboard({ footerLinks }) {
               if (file) {
                 setError("");
                 let formData = new FormData();
+                formData.append("user_id", facilitator?.id);
+                formData.append("document_type", "camp_attendance");
                 formData.append("file", file);
-                const uploadDoc = await uploadRegistryService.uploadPicture(
+                const uploadDoc = await uploadRegistryService.uploadFile(
                   formData
                 );
                 if (uploadDoc) {
@@ -204,15 +214,20 @@ export default function StartCampDashboard({ footerLinks }) {
         <Box alignContent="center">
           <HStack justifyContent={"space-between"}>
             <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-              {t("WELCOME")} Chaitanya Kole,
+              {t("WELCOME")}{" "}
+              {[
+                facilitator?.first_name,
+                facilitator?.middle_name,
+                facilitator?.last_name,
+              ]
+                .filter((e) => e)
+                .join(" ")}
+              ,
             </FrontEndTypo.H1>
-            {/* <ImageView source={image} /> */}
-
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              color="gray.300"
-              _icon={{ size: "100px" }}
+            <ImageView
+              urlObject={facilitator?.profile_photo_1 || {}}
+              width="100"
+              height="100"
             />
           </HStack>
         </Box>
