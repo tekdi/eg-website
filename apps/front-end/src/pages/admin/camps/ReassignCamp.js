@@ -80,7 +80,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [campData, setCampData] = React.useState();
-  const [width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [modal, setModal] = React.useState();
@@ -265,14 +265,14 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 {t("CAMP_NAME")}: {modal?.group?.name}
               </AdminTypo.H4>
               <AdminTypo.H4>
-                {t("PRERAK_NAME")}:{" "}
+                {t("PRERAK_NAME")}:
                 {modal?.faciltator?.user?.first_name +
                   " " +
                   modal?.faciltator?.user?.last_name}
               </AdminTypo.H4>
               <AdminTypo.H4>
                 {t("ADDRESS")}:
-                {(modal?.properties?.district, modal?.properties?.block || "-")}
+                {`${modal?.properties?.district}, ${modal?.properties?.block}`}
               </AdminTypo.H4>
             </VStack>
           </Modal.Body>
