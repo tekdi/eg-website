@@ -28,26 +28,20 @@ import DataTable from "react-data-table-component";
 const Experience = (obj) => {
   return (
     <VStack>
-      {obj?.role_title ? (
+      {obj?.role_title && (
         <Text>
           {t("ROLE")} : {obj?.role_title}
         </Text>
-      ) : (
-        <React.Fragment />
       )}
-      {obj?.experience_in_years ? (
+      {obj?.experience_in_years && (
         <Text>
           {t("YEARS_OF_EX")} : {obj?.experience_in_years}
         </Text>
-      ) : (
-        <React.Fragment />
       )}
-      {obj?.description ? (
+      {obj?.description && (
         <Text>
           {t("DESCRIPTION")} : {obj?.description}
         </Text>
-      ) : (
-        <React.Fragment />
       )}
     </VStack>
   );
@@ -410,7 +404,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H6>
                       8 characters, 1 Capital, 1 Small, 1 Number
                     </AdminTypo.H6>
-                    {"password" in errors ? (
+                    {"password" in errors && (
                       <FormControl.ErrorMessage
                         _text={{
                           fontSize: "xs",
@@ -418,14 +412,8 @@ export default function FacilitatorView({ footerLinks }) {
                           fontWeight: 500,
                         }}
                       >
-                        {!credentials?.password ? (
-                          errors.password
-                        ) : (
-                          <React.Fragment />
-                        )}
+                        {!credentials?.password && errors.password}
                       </FormControl.ErrorMessage>
-                    ) : (
-                      <React.Fragment />
                     )}
 
                     <Input
@@ -460,7 +448,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H6>
                       8 characters, 1 Capital, 1 Small, 1 Number
                     </AdminTypo.H6>
-                    {"confirmPassword" in errors ? (
+                    {"confirmPassword" in errors && (
                       <FormControl.ErrorMessage
                         _text={{
                           fontSize: "xs",
@@ -468,14 +456,9 @@ export default function FacilitatorView({ footerLinks }) {
                           fontWeight: 500,
                         }}
                       >
-                        {!credentials?.confirmPassword ? (
-                          errors.confirmPassword
-                        ) : (
-                          <React.Fragment />
-                        )}
+                        {!credentials?.confirmPassword &&
+                          errors.confirmPassword}
                       </FormControl.ErrorMessage>
-                    ) : (
-                      <React.Fragment />
                     )}
                   </VStack>
                 </FormControl>

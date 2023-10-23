@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -9,23 +9,28 @@ import {
   Image,
   Button,
   HStack,
-  Input,
   ScrollView,
   VStack,
+  Text,
+  Input,
 } from "native-base";
 import {
   AdminTypo,
   IconByName,
   AdminLayout as Layout,
-  CampService,
+  campService,
   t,
   useWindowSize,
   geolocationRegistryService,
   setQueryParameters,
   urlData,
+  enumRegistryService,
+  GetEnumValue,
+  facilitatorRegistryService,
+  debounce,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import { ChipStatus } from "component/Chip";
+import { CampChipStatus } from "component/Chip";
 
 export const CustomStyles = {
   rows: {
@@ -55,13 +60,13 @@ const columns = (navigate) => [
     name: t("CAMP_ID"),
     selector: (row) => row?.id,
     sortable: true,
-    attr: "count",
+    attr: "CAMP_ID",
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.faciltator?.user?.faciltator_id,
     sortable: true,
-    attr: "count",
+    attr: "PRERAK_ID",
   },
   {
     name: t("PRERAK"),
@@ -70,34 +75,34 @@ const columns = (navigate) => [
       " " +
       row?.faciltator?.user?.last_name,
     sortable: true,
-    attr: "count",
+    attr: "PRERAK",
   },
   {
     name: t("DISTRICT"),
     selector: (row) =>
       row?.properties?.district ? row?.properties?.district : "-",
     sortable: true,
-    attr: "count",
+    attr: "DISTRICT",
   },
   {
     name: t("BLOCK"),
     selector: (row) => (row?.properties?.block ? row?.properties?.block : "-"),
     sortable: true,
-    attr: "count",
+    attr: "BLOCK",
   },
   {
     name: t("CAMP_STATUS"),
-    selector: (row) => <ChipStatus status={row?.group?.status} />,
+    selector: (row) => <CampChipStatus status={row?.group?.status} />,
     sortable: true,
     wrap: true,
-    attr: "count",
+    attr: "CAMP_STATUS",
   },
   {
     name: t("ACTION"),
     selector: (row) => (
       <AdminTypo.Secondarybutton
         my="3"
-        onPress={() => navigate(`/admin/camp/${row?.id}/view`)}
+        onPress={() => navigate(`/admin/camps/${row.id}`)}
       >
         {t("VIEW")}
       </AdminTypo.Secondarybutton>
@@ -114,6 +119,9 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [CampFilterStatus, setCampFilterStatus] = useState([]);
+  const [enumOptions, setEnumOptions] = React.useState({});
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(() => {
     const urlFilter = urlData(["district", "block"]);
@@ -122,9 +130,24 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(async () => {
+    const result = await enumRegistryService.getStatuswiseCount();
+    setCampFilterStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+  }, []);
+
+  React.useEffect(async () => {
     if (urlFilterApply) {
-      const qData = await CampService.getCampList(filter);
+      let newFilter = filter;
+      if (filter?.status === "all") {
+        const { status, ...dataFilter } = filter || {};
+        console.log({ dataFilter });
+        newFilter = dataFilter;
+      }
+
+      const qData = await campService.getCampList(newFilter);
       setData(qData?.camps);
+      setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
   }, [filter]);
 
@@ -157,41 +180,6 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             resizeMode="contain"
           />
         </HStack>
-        {/* <Input
-          size={"xs"}
-          minH="49px"
-          maxH="49px"
-          onScroll={false}
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-            />
-          }
-          placeholder={t("SEARCH")}
-          variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              3000
-            );
-          }}
-        /> */}
-
-        {/* <AdminTypo.Secondarybutton
-          rightIcon={
-            <IconByName
-              color="#084B82"
-              _icon={{}}
-              size="15px"
-              name="ShareLineIcon"
-            />
-          }
-        >
-          {t("EXPORT")}
-        </AdminTypo.Secondarybutton> */}
       </HStack>
       <HStack>
         <Box
@@ -210,6 +198,38 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 
         <Box flex={[5, 5, 4]}>
           <ScrollView>
+            <HStack pb="2">
+              {CampFilterStatus?.map((item) => {
+                return (
+                  <Text
+                    key={"table"}
+                    color={
+                      filter?.status == t(item?.status) ? "blueText.400" : ""
+                    }
+                    bold={filter?.status == t(item?.status) ? true : false}
+                    cursor={"pointer"}
+                    mx={3}
+                    onPress={() => {
+                      setFilter({ ...filter, status: item?.status, page: 1 });
+                    }}
+                  >
+                    {item.status === "all" ? (
+                      <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                    ) : (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"GROUPS_STATUS"}
+                        enumOptionValue={item?.status}
+                        enumApiData={enumOptions}
+                      />
+                    )}
+                    {filter?.status == t(item?.status)
+                      ? `(${paginationTotalRows})` + " "
+                      : " "}
+                  </Text>
+                );
+              })}
+            </HStack>
             <Box roundedBottom={"2xl"}>
               <DataTable
                 filter={filter}
@@ -222,7 +242,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
-                paginationRowsPerPageOptions={[2, 5, 15, 50, 100]}
+                paginationTotalRows={paginationTotalRows}
+                paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
                 defaultSortAsc
                 paginationServer
                 data={data}
@@ -244,8 +265,14 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 export const Filter = ({ filter, setFilter }) => {
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
+  const [facilitator, setFacilitator] = React.useState([]);
 
   const setFilterObject = (data) => {
+    if (data?.district) {
+      const { district, block } = data;
+      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+    }
     setFilter(data);
     setQueryParameters(data);
   };
@@ -331,8 +358,22 @@ export const Filter = ({ filter, setFilter }) => {
   const clearFilter = () => {
     setFilter({});
     setFilterObject({});
+    setFacilitatorFilter({});
   };
-
+  React.useEffect(async () => {
+    const { error, ...result } =
+      await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+    if (!error) {
+      let newData;
+      if (result?.data?.data) {
+        newData = result?.data?.data?.map((e) => ({
+          value: e?.id,
+          label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+        }));
+      }
+      setFacilitator(newData);
+    }
+  }, [facilitatorFilter, filter]);
   return (
     <VStack space={3}>
       <HStack
@@ -363,6 +404,39 @@ export const Filter = ({ filter, setFilter }) => {
           <Button display={"none"} type="submit"></Button>
         </Form>
       </Box>
+      <AdminTypo.H5>{t("PRERAK")}</AdminTypo.H5>
+      <Input
+        w="100%"
+        height="32px"
+        placeholder={t("SEARCH")}
+        variant="outline"
+        onChange={(e) => {
+          debounce(
+            setFacilitatorFilter({
+              ...facilitatorFilter,
+              search: e.nativeEvent.text,
+              page: 1,
+            }),
+            3000
+          );
+        }}
+      />
+      <MultiCheck
+        value={filter?.facilitator ? filter?.facilitator : []}
+        onChange={(e) => {
+          setFilterObject({ ...filter, facilitator: e });
+        }}
+        schema={{
+          grid: 1,
+          _hstack: {
+            maxH: 130,
+            overflowY: "scroll",
+          },
+        }}
+        options={{
+          enumOptions: facilitator,
+        }}
+      />
     </VStack>
   );
 };

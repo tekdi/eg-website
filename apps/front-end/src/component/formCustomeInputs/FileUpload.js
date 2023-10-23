@@ -46,7 +46,7 @@ const FileUpload = ({ value, onChange, schema }) => {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-    if (file.size <= 1048576 * 10) {
+    if (file && file.size <= 1048576 * 10) {
       uploadProfile(file);
     } else {
       setErrors({ fileSize: t("FILE_SIZE") });
