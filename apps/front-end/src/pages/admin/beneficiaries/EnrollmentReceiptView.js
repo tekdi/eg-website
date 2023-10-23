@@ -100,9 +100,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <IconByName
                 size="sm"
                 name="ArrowRightSLineIcon"
-                onPress={(e) =>
-                  navigate("/admin/learners/enrollmentVerificationList")
-                }
+                onPress={(e) => navigate(-1)}
               />
             }
             data={[
