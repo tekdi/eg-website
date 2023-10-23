@@ -133,7 +133,7 @@ export default function View({ footerLinks }) {
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/camp`)}
+            onPress={(e) => navigate(`/admin/camps`)}
           />
           <AdminTypo.H1
             color="textGreyColor.800"
