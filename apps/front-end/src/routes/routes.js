@@ -133,7 +133,11 @@ const StartCampDashboard = React.lazy(() =>
 );
 
 const CampAttendance = React.lazy(() =>
-  import("pages/front-end/Camp/CampAttendance")
+  import("pages/front-end/Camp/Attendace/CampAttendance")
+);
+
+const Attendance = React.lazy(() =>
+  import("pages/front-end/Camp/Attendace/Attendance")
 );
 
 const CampTodayActivities = React.lazy(() =>
@@ -288,6 +292,10 @@ export default [
   {
     path: "/camps/:id/attendance",
     component: CampAttendance,
+  },
+  {
+    path: "/camps/:id/attendance-view",
+    component: Attendance,
   },
   { path: "/camps/:id/start", component: StartCampDashboard },
   { path: "/camps/:id/activities", component: CampTodayActivities },
