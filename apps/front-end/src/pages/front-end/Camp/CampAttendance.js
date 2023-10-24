@@ -10,9 +10,15 @@ import {
   Camera,
   Loading,
   uploadRegistryService,
+  GeoLocation,
+  UserCard,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Chip from "component/Chip";
+
+const PRESENT = "present";
+const ABSENT = "absent";
 
 // App
 export default function ConsentForm() {
@@ -21,25 +27,27 @@ export default function ConsentForm() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [groupUsers, setGroupUsers] = React.useState();
-  const [attendances, setAttendances] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const [userData, setUserData] = React.useState({});
   const [error, setError] = React.useState("");
-  const [cameraFile, setcameraFile] = React.useState();
+  const [cameraFile, setCameraFile] = React.useState();
+  const [data, setData] = React.useState({});
 
   React.useEffect(async () => {
     const result = await campService.getCampDetails({ id });
     const resultAttendance = await campService.CampAttendance({ id });
-    if (Object.keys(resultAttendance?.data).length === 0) {
-      setAttendances([]);
-    } else {
-      setAttendances(resultAttendance?.data);
+    let attendances = [];
+    if (resultAttendance?.data?.length > 0) {
+      attendances = resultAttendance?.data;
     }
     setGroupUsers(
-      result?.data?.group_users.map((item, index) => ({ ...item, index }))
+      result?.data?.group_users.map((item, index) => {
+        let attendance = attendances.find((e) => e?.user?.id === item.id);
+        return { ...item, index, attendance };
+      })
     );
     setLoading(false);
-  }, [id]);
+  }, [id, !userData]);
 
   // update schema
 
@@ -49,36 +57,46 @@ export default function ConsentForm() {
 
   // Camera MOdule
 
-  const uploadAttendencePicture = async (e) => {
+  const uploadAttendence = async (user, status = PRESENT, finish = false) => {
     setError("");
-    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
-    if (photo_1) {
-      await campService.markCampAttendance({
-        ...data,
-        context_id: id,
-        user_id: userData?.id,
-        status: "present",
-        photo_1: `${photo_1}`,
-      });
+    if (user?.attendance?.status) {
+      if (status === PRESENT || status === ABSENT) {
+        const payLoad = {
+          ...data,
+          id: user?.attendance?.id,
+          context_id: id,
+          user_id: user?.id,
+          status,
+        };
+        await campService.updateCampAttendance(payLoad);
+      }
     } else {
-      setError("Capture Picture First");
-    }
-    const coruntIndex = groupUsers.findIndex(
-      (item) => item?.id === userData?.id
-    );
-    if (groupUsers[coruntIndex + 1]) {
-      setCameraUrl();
-      setUserData({ ...groupUsers[coruntIndex + 1], index: coruntIndex + 1 });
-    }
-  };
+      const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+      if (photo_1) {
+        const payLoad = {
+          ...data,
+          context_id: id,
+          user_id: user?.id,
+          status: PRESENT,
+          photo_1: `${photo_1}`,
+        };
 
-  const updateUserData = async ({ status, user_id }) => {
-    if (status === "present" || status === "absent") {
-      await campService.markCampAttendance({
-        context_id: id,
-        user_id: user_id,
-        status,
-      });
+        await campService.markCampAttendance(payLoad);
+      } else {
+        setError("Capture Picture First");
+      }
+    }
+
+    if (finish) {
+      setCameraUrl();
+      setCameraFile();
+      setUserData();
+    } else {
+      const coruntIndex = groupUsers.findIndex((item) => item?.id === user?.id);
+      if (groupUsers[coruntIndex + 1]) {
+        setCameraUrl();
+        setUserData({ ...groupUsers[coruntIndex + 1], index: coruntIndex + 1 });
+      }
     }
   };
 
@@ -100,10 +118,16 @@ export default function ConsentForm() {
                   >
                     <AdminTypo.H6 color="white">{t("NAME")}</AdminTypo.H6>
                     <AdminTypo.H6 color="white">
-                      {
+                      {`${userData?.index + 1}) ${[
                         userData?.program_beneficiaries[0]
-                          ?.enrollment_first_name
-                      }
+                          ?.enrollment_first_name,
+                        userData?.program_beneficiaries[0]
+                          ?.enrollment_middle_name,
+                        userData?.program_beneficiaries[0]
+                          ?.enrollment_last_name,
+                      ]
+                        .filter((e) => e)
+                        .join(" ")}`}
                     </AdminTypo.H6>
                   </HStack>
                   <HStack
@@ -130,14 +154,7 @@ export default function ConsentForm() {
                   )}
                   <AdminTypo.Secondarybutton
                     shadow="BlueOutlineShadow"
-                    onPress={() => {
-                      uploadAttendencePicture();
-                      cameraFile
-                        ? setUserData()
-                        : setError("Capture Picture First");
-                      setcameraFile("");
-                      setCameraUrl();
-                    }}
+                    onPress={() => uploadAttendence(userData, PRESENT, true)}
                   >
                     {t("FINISH")}
                   </AdminTypo.Secondarybutton>
@@ -146,11 +163,7 @@ export default function ConsentForm() {
                     variant="secondary"
                     ml="4"
                     px="5"
-                    onPress={() => {
-                      cameraFile
-                        ? uploadAttendencePicture()
-                        : setError("Capture Picture First");
-                    }}
+                    onPress={() => uploadAttendence(userData)}
                   >
                     {t("NEXT")}
                   </AdminTypo.Secondarybutton>
@@ -173,7 +186,7 @@ export default function ConsentForm() {
                       formData
                     );
                     if (uploadDoc) {
-                      setcameraFile(uploadDoc);
+                      setCameraFile(uploadDoc);
                     }
                     setCameraUrl({ url, file });
                   } else {
@@ -197,6 +210,15 @@ export default function ConsentForm() {
         _box: { bg: "white" },
       }}
     >
+      <GeoLocation
+        getLocation={(lat, long, error) => {
+          if (error) {
+            setError(error);
+          } else {
+            setData({ ...data, lat: `${lat}`, long: `${long}` });
+          }
+        }}
+      />
       <VStack py={6} px={4} space="6">
         <HStack justifyContent={"space-between"}>
           <AdminTypo.H3 color={"textMaroonColor.400"}>
@@ -209,105 +231,60 @@ export default function ConsentForm() {
         </FrontEndTypo.Primarybutton>
         <VStack space="4">
           {groupUsers?.map((item) => {
-            const document = attendances?.find((e) => e.user?.id === item?.id);
             return (
-              <HStack
-                key={item}
-                bg="white"
-                shadow="FooterShadow"
-                rounded="sm"
-                space="1"
-                alignItems={"center"}
-                justifyContent="space-between"
-              >
-                <HStack space={2}>
-                  {(!document?.status || document?.status === "present") && (
-                    <IconByName
-                      onPress={(e) => {
-                        updateUserData({
-                          status: "absent",
-                          user_id: item?.id,
-                        });
-                      }}
-                      py="4"
-                      px="2"
-                      bg="red.100"
-                      name="CloseCircleLineIcon"
-                      _icon={{ size: "25px", color: "gray" }}
-                    />
-                  )}
-                  <HStack alignItems="Center" flex="5">
-                    {item?.profile_photo_1?.id ? (
-                      <ImageView
-                        source={{
-                          uri: item?.profile_photo_1?.name,
-                        }}
-                        // alt="Alternate Text"
-                        width={"45px"}
-                        height={"45px"}
-                      />
-                    ) : (
+              <HStack key={item} flex="1">
+                <UserCard
+                  _hstack={{ p: 0, space: 1, flex: 1 }}
+                  _vstack={{ py: 2 }}
+                  _image={{ size: 45 }}
+                  leftElement={
+                    (!item?.attendance?.status ||
+                      item?.attendance?.status === PRESENT) && (
                       <IconByName
-                        isDisabled
-                        name="AccountCircleLineIcon"
-                        color="gray.300"
-                        _icon={{ size: "51px" }}
+                        onPress={(e) => {
+                          uploadAttendence(item, ABSENT, true);
+                        }}
+                        height="100%"
+                        roundedRight="0"
+                        bg="red.100"
+                        name="CloseCircleLineIcon"
+                        _icon={{ size: "25px", color: "gray" }}
                       />
-                    )}
-
-                    <VStack
-                      pl="2"
-                      flex="1"
-                      wordWrap="break-word"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      <FrontEndTypo.H3 bold color="textGreyColor.800">
-                        {item?.program_beneficiaries[0]?.enrollment_first_name}
-                        {item?.program_beneficiaries[0]
-                          ?.enrollment_middle_name &&
-                          ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
-                        {item?.program_beneficiaries[0]?.enrollment_last_name &&
-                          ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
-                      </FrontEndTypo.H3>
-                    </VStack>
-                  </HStack>
-                </HStack>
-                {/* <HStack alignItems={"center"} justifyContent={"space-evenly"}>
-                {document?.status ? (
-                  document?.status === "present" ? (
-                    <HStack space={2}>
-                      <Avatar bg="green.300" size={["15px", "30px"]} />
-                      <FrontEndTypo.H2>{t("PRESENT")}</FrontEndTypo.H2>
+                    )
+                  }
+                  rightElement={
+                    (!item?.attendance?.status ||
+                      item?.attendance?.status === ABSENT) && (
+                      <IconByName
+                        onPress={(e) => {
+                          setUserData(item);
+                        }}
+                        height="100%"
+                        roundedLeft="0"
+                        bg="green.100"
+                        name="CheckboxCircleLineIcon"
+                        _icon={{ size: "25px", color: "gray" }}
+                      />
+                    )
+                  }
+                  title={[
+                    item?.program_beneficiaries[0]?.enrollment_first_name,
+                    item?.program_beneficiaries[0]?.enrollment_middle_name,
+                    item?.program_beneficiaries[0]?.enrollment_last_name,
+                  ]
+                    .filter((e) => e)
+                    .join(" ")}
+                  subTitle={
+                    <HStack>
+                      <RenderAttendee row={item?.attendance || {}} t={t} />
                     </HStack>
-                  ) : (
-                    <HStack space={2}>
-                      <Avatar bg="amber.300" size={["15px", "30px"]} />
-                      <FrontEndTypo.H2>{t("ABSENT")}</FrontEndTypo.H2>
-                    </HStack>
-                  )
-                ) : (
-                  <HStack alignItems={"center"} space={2}>
-                    <Avatar bg="gray.300" size={["15px", "30px"]} />
-                    <FrontEndTypo.H2>{t("PENDING")}</FrontEndTypo.H2>
-                  </HStack>
-                )}
-              </HStack> */}
-
-                {(!document?.status || document?.status === "absent") && (
-                  <IconByName
-                    onPress={(e) => {
-                      setUserData(item);
-                    }}
-                    py="4"
-                    px="2"
-                    bg="green.100"
-                    name="CheckboxCircleLineIcon"
-                    color="gray.500"
-                    _icon={{ size: "25px", color: "gray" }}
-                  />
-                )}
+                  }
+                  image={
+                    item?.profile_photo_1?.fileUrl
+                      ? { urlObject: item?.profile_photo_1 }
+                      : null
+                  }
+                />
               </HStack>
             );
           })}
@@ -316,3 +293,19 @@ export default function ConsentForm() {
     </Layout>
   );
 }
+
+const RenderAttendee = ({ row, t }) => (
+  <Chip
+    py="1px"
+    label={
+      <FrontEndTypo.H5 bold>
+        {row?.fa_is_processed === null
+          ? "-"
+          : row?.fa_is_processed === true
+          ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
+          : t("NO")}
+      </FrontEndTypo.H5>
+    }
+    rounded="lg"
+  />
+);

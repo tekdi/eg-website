@@ -205,7 +205,7 @@ export default function StartCampDashboard({ footerLinks }) {
             if (error) {
               setError(error);
             } else {
-              setData({ ...data, lat, long });
+              setData({ ...data, lat: `${lat}`, long: `${long}` });
             }
           }}
         />
