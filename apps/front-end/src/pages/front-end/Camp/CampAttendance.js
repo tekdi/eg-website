@@ -34,6 +34,10 @@ export default function ConsentForm() {
   const [data, setData] = React.useState({});
 
   React.useEffect(async () => {
+    await getData();
+  }, [id, !userData]);
+
+  const getData = async () => {
     const result = await campService.getCampDetails({ id });
     const resultAttendance = await campService.CampAttendance({ id });
     let attendances = [];
@@ -47,7 +51,7 @@ export default function ConsentForm() {
       })
     );
     setLoading(false);
-  }, [id, !userData]);
+  };
 
   // update schema
 
@@ -61,14 +65,20 @@ export default function ConsentForm() {
     setError("");
     if (user?.attendance?.status) {
       if (status === PRESENT || status === ABSENT) {
-        const payLoad = {
+        let payLoad = {
           ...data,
           id: user?.attendance?.id,
           context_id: id,
           user_id: user?.id,
           status,
         };
+        if (status === PRESENT) {
+          const photo_1 =
+            cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+          payLoad = { ...payLoad, photo_1: `${photo_1}` };
+        }
         await campService.updateCampAttendance(payLoad);
+        await getData();
       }
     } else {
       const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
@@ -82,6 +92,7 @@ export default function ConsentForm() {
         };
 
         await campService.markCampAttendance(payLoad);
+        await getData();
       } else {
         setError("Capture Picture First");
       }
@@ -118,7 +129,8 @@ export default function ConsentForm() {
                   >
                     <AdminTypo.H6 color="white">{t("NAME")}</AdminTypo.H6>
                     <AdminTypo.H6 color="white">
-                      {`${userData?.index + 1}) ${[
+                      {/* ${userData?.index + 1}) */}
+                      {`${[
                         userData?.program_beneficiaries[0]
                           ?.enrollment_first_name,
                         userData?.program_beneficiaries[0]
@@ -130,7 +142,7 @@ export default function ConsentForm() {
                         .join(" ")}`}
                     </AdminTypo.H6>
                   </HStack>
-                  <HStack
+                  {/* <HStack
                     space={2}
                     divider={
                       <AdminTypo.H6 color="white" bold>
@@ -142,39 +154,40 @@ export default function ConsentForm() {
                     <AdminTypo.H6 color="white">
                       {groupUsers?.length ? groupUsers?.length : 0}
                     </AdminTypo.H6>
-                  </HStack>
+                  </HStack> */}
                 </VStack>
               }
-              footerComponent={
-                <HStack space={3} width="100%" justifyContent="space-between">
-                  {error && (
-                    <AdminTypo.H4 style={{ color: "red" }}>
-                      {error}
-                    </AdminTypo.H4>
-                  )}
-                  <AdminTypo.Secondarybutton
-                    shadow="BlueOutlineShadow"
-                    onPress={() => uploadAttendence(userData, PRESENT, true)}
-                  >
-                    {t("FINISH")}
-                  </AdminTypo.Secondarybutton>
-                  <AdminTypo.Secondarybutton
-                    isDisabled={userData?.index + 1 === groupUsers.length}
-                    variant="secondary"
-                    ml="4"
-                    px="5"
-                    onPress={() => uploadAttendence(userData)}
-                  >
-                    {t("NEXT")}
-                  </AdminTypo.Secondarybutton>
-                </HStack>
-              }
+              // footerComponent={
+              //   <HStack space={3} width="100%" justifyContent="space-between">
+              //     {error && (
+              //       <AdminTypo.H4 style={{ color: "red" }}>
+              //         {error}
+              //       </AdminTypo.H4>
+              //     )}
+              //     <AdminTypo.Secondarybutton
+              //       shadow="BlueOutlineShadow"
+              //       onPress={() => uploadAttendence(userData, PRESENT, true)}
+              //     >
+              //       {t("FINISH")}
+              //     </AdminTypo.Secondarybutton>
+              //     <AdminTypo.Secondarybutton
+              //       isDisabled={userData?.index + 1 === groupUsers.length}
+              //       variant="secondary"
+              //       ml="4"
+              //       px="5"
+              //       onPress={() => uploadAttendence(userData)}
+              //     >
+              //       {t("NEXT")}
+              //     </AdminTypo.Secondarybutton>
+              //   </HStack>
+              // }
               {...{
                 cameraModal: true,
                 setCameraModal: async (item) => {
                   setUserData();
                 },
                 cameraUrl,
+                onFinish: (e) => uploadAttendence(userData, PRESENT, true),
                 setCameraUrl: async (url, file) => {
                   if (file) {
                     setError("");
@@ -226,9 +239,9 @@ export default function ConsentForm() {
           </AdminTypo.H3>
           <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
         </HStack>
-        <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
+        {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
-        </FrontEndTypo.Primarybutton>
+        </FrontEndTypo.Primarybutton> */}
         <VStack space="4">
           {groupUsers?.map((item) => {
             return (
