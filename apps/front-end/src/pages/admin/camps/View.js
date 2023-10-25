@@ -153,16 +153,17 @@ export default function View({ footerLinks }) {
                 data?.faciltator.map((facilitator) => {
                   return (
                     <UserCard
+                      key={facilitator}
                       _hstack={{ p: 0, borderWidth: 0, space: 1, flex: 0.8 }}
                       _vstack={{ py: 0 }}
                       _image={{ size: 100 }}
                       title={
                         <VStack>
-                          <AdminTypo.H3 color="textGreyColor.600">
+                          <AdminTypo.H6 color="textGreyColor.600">
                             {[facilitator?.first_name, facilitator?.last_name]
                               .filter((e) => e)
                               .join(" ")}
-                          </AdminTypo.H3>
+                          </AdminTypo.H6>
                           <AdminTypo.H4 color="textGreyColor.600">
                             {facilitator?.mobile}
                           </AdminTypo.H4>
@@ -194,9 +195,8 @@ export default function View({ footerLinks }) {
           ].map(
             (item) =>
               item && (
-                <HStack>
+                <HStack key={item}>
                   <ImageView
-                    key={item}
                     isImageTag={!item}
                     urlObject={item || {}}
                     _button={{ p: 0 }}
@@ -226,6 +226,7 @@ export default function View({ footerLinks }) {
         </HStack>
         <HStack space={4}>
           <CardComponent
+            _header={{ bg: "#F4F4F4" }}
             title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
           >
@@ -241,6 +242,7 @@ export default function View({ footerLinks }) {
           </CardComponent>
           <CardComponent
             isHideProgressBar={true}
+            _header={{ bg: "#F4F4F4" }}
             _vstack={{ bg: "light.100", space: 0, flex: 3 }}
             title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
             label={["PROPERTY_TYPE"]}
@@ -250,7 +252,12 @@ export default function View({ footerLinks }) {
         </HStack>
         <HStack space={4}>
           <CardComponent
-            _vstack={{ bg: "light.100", flex: 1, space: 4 }}
+            _vstack={{
+              bg: "light.100",
+              flex: 1,
+              space: 4,
+            }}
+            _header={{ bg: "#F4F4F4" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
           >
             {data?.beneficiaries?.length > 0 &&
@@ -261,12 +268,16 @@ export default function View({ footerLinks }) {
 
                 const consentUrlObject = learnerConsentData?.document || {};
                 return (
-                  <VStack
+                  <UserCard
                     key={learner}
                     title={
-                      <AdminTypo.H6
-                        bold
-                      >{`${learner?.first_name} ${learner?.last_name}`}</AdminTypo.H6>
+                      <AdminTypo.H6 bold>
+                        {`${learner?.first_name} ${learner?.last_name}`}
+                        {console.log(
+                          "learner data",
+                          `${learner?.first_name} ${learner?.last_name}`
+                        )}
+                      </AdminTypo.H6>
                     }
                     subTitle={
                       learner?.district &&
@@ -310,9 +321,9 @@ export default function View({ footerLinks }) {
                 );
               })}
           </CardComponent>
-
           <CardComponent
             _vstack={{ bg: "light.100", flex: 3 }}
+            _header={{ bg: "#F4F4F4" }}
             title={t("PROPERTY_AND_FACILITY_DETAILS")}
           >
             <CardComponent
@@ -330,7 +341,7 @@ export default function View({ footerLinks }) {
                 kit_ratings: (
                   <StarRating
                     value={data.kit_ratings}
-                    schema={{ totalStars: 5 }}
+                    schema={{ totalStars: 5, readOnly: true }}
                   />
                 ),
               }}
@@ -341,7 +352,7 @@ export default function View({ footerLinks }) {
                 "kit_feedback",
               ]}
             />
-
+            <br />
             <CardComponent
               title={t(
                 "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"

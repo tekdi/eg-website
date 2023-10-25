@@ -4,14 +4,16 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const StarRating = ({ value, onChange, required, schema }) => {
-  const { ratingLabels, totalStars } = schema || {};
+  const { ratingLabels, totalStars, readOnly } = schema || {};
   const [rating, setRating] = useState(value);
   const { t } = useTranslation();
 
   const handleStarClick = (starIndex) => {
     const starvalue = starIndex + 1;
-    setRating(`${starvalue}`);
-    onChange(`${starvalue}`);
+    if (readOnly !== true) {
+      setRating(`${starvalue}`);
+      onChange(`${starvalue}`);
+    }
   };
 
   React.useEffect(() => {
