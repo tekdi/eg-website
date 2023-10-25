@@ -143,8 +143,8 @@ export default function View({ footerLinks }) {
           </AdminTypo.H1>
         </HStack>
 
-        <HStack flexWrap="wrap" justifyContent={"space-between"}>
-          <VStack flex="1">
+        <HStack flexWrap="wrap">
+          <VStack>
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
             </HStack>
@@ -152,81 +152,77 @@ export default function View({ footerLinks }) {
               {data?.faciltator?.length > 0 &&
                 data?.faciltator.map((facilitator) => {
                   return (
-                    <HStack
-                      rounded={"md"}
-                      p="2"
-                      alignItems="center"
-                      space="2"
-                      key={facilitator?.id}
-                    >
-                      <ImageView
-                        urlObject={facilitator?.profile_photo_1 || {}}
-                        size="lg"
-                      />
-                      <VStack>
-                        <AdminTypo.H3 color="textGreyColor.600">
-                          {[facilitator?.first_name, facilitator?.last_name]
-                            .filter((e) => e)
-                            .join(" ")}
-                        </AdminTypo.H3>
-                        <AdminTypo.H4 color="textGreyColor.600">
-                          {facilitator?.mobile}
-                        </AdminTypo.H4>
-
-                        <AdminTypo.H5>
-                          {[
-                            facilitator?.state,
-                            facilitator?.district,
-                            facilitator?.block,
-                            facilitator?.village,
-                            facilitator?.grampanchayat,
-                          ]
-                            .filter((e) => e)
-                            .join(", ")}
-                        </AdminTypo.H5>
-                      </VStack>
-                    </HStack>
+                    <UserCard
+                      _hstack={{ p: 0, borderWidth: 0, space: 1, flex: 0.8 }}
+                      _vstack={{ py: 0 }}
+                      _image={{ size: 100 }}
+                      title={
+                        <VStack>
+                          <AdminTypo.H3 color="textGreyColor.600">
+                            {[facilitator?.first_name, facilitator?.last_name]
+                              .filter((e) => e)
+                              .join(" ")}
+                          </AdminTypo.H3>
+                          <AdminTypo.H4 color="textGreyColor.600">
+                            {facilitator?.mobile}
+                          </AdminTypo.H4>
+                        </VStack>
+                      }
+                      subTitle={[
+                        facilitator?.state,
+                        facilitator?.district,
+                        facilitator?.block,
+                        facilitator?.village,
+                        facilitator?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(", ")}
+                      image={
+                        facilitator?.profile_photo_1?.fileUrl
+                          ? { urlObject: facilitator?.profile_photo_1 }
+                          : null
+                      }
+                    />
                   );
                 })}
             </HStack>
           </VStack>
-          <HStack space={3} flex="3" ml={"70px"}>
-            {[
-              properties?.photo_other,
-              properties.photo_building,
-              properties?.photo_classroom,
-            ].map(
-              (item) =>
-                item && (
-                  <HStack key={item}>
-                    <ImageView
-                      isImageTag={!item}
-                      urlObject={item || {}}
-                      _button={{ p: 0 }}
-                      text={
-                        <ImageView
-                          isImageTag
-                          urlObject={item || {}}
-                          width="260px"
-                          height="250px"
-                          m={"10px"}
-                          p={"2"}
-                          border="2px solid #eee"
-                          borderRadius={"4"}
-                          alignItems="left"
-                        />
-                      }
-                    />
-                  </HStack>
-                )
-            )}
-            <Stack>
-              <MapComponent
-                latitude={data?.properties?.lat}
-                longitude={data?.properties?.long}
-              />
-            </Stack>
-          </HStack>
+          {[
+            properties?.photo_other,
+            properties.photo_building,
+            properties?.photo_classroom,
+          ].map(
+            (item) =>
+              item && (
+                <HStack>
+                  <ImageView
+                    key={item}
+                    isImageTag={!item}
+                    urlObject={item || {}}
+                    _button={{ p: 0 }}
+                    text={
+                      <ImageView
+                        isImageTag
+                        urlObject={item || {}}
+                        width="260px"
+                        height="250px"
+                        m={"10px"}
+                        p={"2"}
+                        border="2px solid #eee"
+                        borderRadius={"4"}
+                        alignItems="left"
+                      />
+                    }
+                  />
+                </HStack>
+              )
+          )}
+          <Stack flex="1">
+            <MapComponent
+              latitude={data?.properties?.lat}
+              longitude={data?.properties?.long}
+            />
+          </Stack>
         </HStack>
         <HStack space={4}>
           <CardComponent
