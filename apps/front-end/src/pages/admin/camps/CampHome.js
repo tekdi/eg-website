@@ -18,7 +18,7 @@ import {
   AdminTypo,
   IconByName,
   AdminLayout as Layout,
-  CampService,
+  campService,
   t,
   useWindowSize,
   geolocationRegistryService,
@@ -145,7 +145,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
         newFilter = dataFilter;
       }
 
-      const qData = await CampService.getCampList(newFilter);
+      const qData = await campService.getCampList(newFilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }

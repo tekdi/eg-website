@@ -2,38 +2,13 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./otherdetailsSchema.js";
+import { Alert, Box, HStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  uploadRegistryService,
   AgRegistryService,
-  Camera,
   Layout,
-  H1,
   t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
-  StudentEnumService,
-  sendAndVerifyOtp,
   CustomOTPBox,
   benificiaryRegistoryService,
   enumRegistryService,

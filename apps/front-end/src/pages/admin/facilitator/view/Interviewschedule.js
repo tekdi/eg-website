@@ -1,11 +1,10 @@
-import { AdminTypo, H1, H2, IconByName, t } from "@shiksha/common-lib";
-import { Box, Stack, Button, HStack, Text, VStack } from "native-base";
+import { AdminTypo, IconByName, t } from "@shiksha/common-lib";
+import { Stack, HStack, VStack } from "native-base";
 import React, { useState } from "react";
 import Shortlisted from "./Shortlisted";
 
 export default function Interviewschedule() {
   const [status, setStatus] = React.useState(false);
-  const [data, setData] = React.useState();
   return (
     <Stack
       flexDirection="row"

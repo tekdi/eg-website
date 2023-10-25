@@ -1,7 +1,4 @@
 import {
-  H1,
-  H3,
-  H4,
   Layout,
   t,
   benificiaryRegistoryService,
@@ -10,15 +7,7 @@ import {
   getBeneficaryDocumentationStatus,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
-import {
-  Text,
-  VStack,
-  HStack,
-  Button,
-  Select,
-  CheckIcon,
-  Alert,
-} from "native-base";
+import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Docschecklist = ({ footerLinks }) => {
