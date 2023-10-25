@@ -42,7 +42,7 @@ export default function CampDashboard({ footerLinks }) {
       context: "community.user",
     });
 
-    setCommunityLength(getData?.data.length || 0);
+    setCommunityLength(getData?.data?.community_response?.length || 0);
     setIpStatus(ip_user_info?.program_faciltators?.status);
     setEnumOptions(enums?.data || {});
     setNonRegisteredUser(result?.data?.user || []);
@@ -56,34 +56,32 @@ export default function CampDashboard({ footerLinks }) {
       loading={loading}
       _footer={{ menues: footerLinks }}
     >
-      <Box
-        bg="boxBackgroundColour.200"
-        borderColor="btnGray.100"
-        borderRadius="10px"
-        borderWidth="1px"
-        padding="6"
-        margin={"20px"}
-        shadow="AlertShadow"
-      >
-        {["selected_for_onboarding", "selected_prerak"].includes(ipStatus) ? (
-          <VStack>
-            {communityLength >= 2 ? (
-              <VStack>
-                <HStack
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                  mt={5}
-                >
-                  <VStack width={"50%"}>
-                    <AdminTypo.H3 color="textMaroonColor.400">
-                      {`${nonRegisteredUser?.length} `}
-                      {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")}
-                    </AdminTypo.H3>
-                    <AdminTypo.H3 color="textMaroonColor.400">
-                      {t("LEARNERS")}
-                    </AdminTypo.H3>
-                  </VStack>
-                  <HStack>
+      <VStack p="4" space="5">
+        <VStack
+          bg="boxBackgroundColour.200"
+          borderColor="btnGray.100"
+          borderRadius="10px"
+          borderWidth="1px"
+          padding="4"
+          shadow="AlertShadow"
+        >
+          {["selected_for_onboarding", "selected_prerak"].includes(ipStatus) ? (
+            <VStack>
+              {communityLength >= 2 ? (
+                <VStack space={5}>
+                  <HStack
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                  >
+                    <VStack flex={1}>
+                      <AdminTypo.H4 color="textMaroonColor.400">
+                        {`${nonRegisteredUser?.length} `}
+                        {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")}
+                      </AdminTypo.H4>
+                      <AdminTypo.H4 color="textMaroonColor.400">
+                        {t("LEARNERS")}
+                      </AdminTypo.H4>
+                    </VStack>
                     <Center>
                       {nonRegisteredUser.length > 0 && (
                         <Avatar.Group
@@ -119,134 +117,113 @@ export default function CampDashboard({ footerLinks }) {
                       )}
                     </Center>
                   </HStack>
-                </HStack>
-                <VStack mt={5}>
-                  <VStack my={3} space={2}>
-                    {campList?.map((item) => {
-                      return (
-                        <Pressable
-                          key={item}
-                          onPress={() => {
-                            navigate(`/camps/${item?.id}`);
-                          }}
+                  {campList?.map((item) => {
+                    return (
+                      <Pressable
+                        key={item}
+                        onPress={() => {
+                          navigate(`/camps/${item?.id}`);
+                        }}
+                        bg="boxBackgroundColour.100"
+                        shadow="AlertShadow"
+                        borderRadius="10px"
+                        py={3}
+                        px={5}
+                      >
+                        <HStack
+                          alignItems={"center"}
+                          justifyContent={"space-between"}
                         >
-                          <HStack
-                            bg="white"
-                            p="2"
-                            my={2}
-                            shadow="FooterShadow"
-                            rounded="sm"
-                            space="1"
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                          >
-                            <VStack>
-                              <FrontEndTypo.H3>
-                                {item?.group?.name}
-                              </FrontEndTypo.H3>
-                              {item?.group?.description && (
-                                <FrontEndTypo.H6>
-                                  {item?.group?.description}
-                                </FrontEndTypo.H6>
-                              )}
-                            </VStack>
-                            <HStack>
-                              <IconByName
-                                isDisabled
-                                name="ErrorWarningLineIcon"
-                                color="textMaroonColor.400"
-                                _icon={{ size: "20px" }}
-                              />
-                              <GetEnumValue
-                                t={t}
-                                enumType={"GROUPS_STATUS"}
-                                enumOptionValue={item?.group?.status}
-                                enumApiData={enumOptions}
-                                color="textMaroonColor.400"
-                                ml={2}
-                              />
-                            </HStack>
+                          <VStack>
+                            <FrontEndTypo.H3>
+                              {item?.group?.name}
+                            </FrontEndTypo.H3>
+                            {item?.group?.description && (
+                              <FrontEndTypo.H6>
+                                {item?.group?.description}
+                              </FrontEndTypo.H6>
+                            )}
+                          </VStack>
+                          <HStack>
+                            <IconByName
+                              isDisabled
+                              name="ErrorWarningLineIcon"
+                              color="textMaroonColor.400"
+                              _icon={{ size: "20px" }}
+                            />
+                            <GetEnumValue
+                              t={t}
+                              enumType={"GROUPS_STATUS"}
+                              enumOptionValue={item?.group?.status}
+                              enumApiData={enumOptions}
+                              color="textMaroonColor.400"
+                              ml={2}
+                            />
                           </HStack>
-                        </Pressable>
-                      );
-                    })}
-                  </VStack>
-                </VStack>
+                        </HStack>
+                      </Pressable>
+                    );
+                  })}
 
-                {campList?.length < 2 && (
-                  <FrontEndTypo.Secondarybutton
-                    onPress={() => {
-                      navigate(`/camps/new/learners`, { state: "camp" });
-                    }}
-                  >
-                    {campList?.length === 0 ? (
-                      <FrontEndTypo.H3>
-                        {t("START_FIRST_CAMP_REGISTER")}
+                  {campList?.length < 2 && (
+                    <FrontEndTypo.Secondarybutton
+                      onPress={() => {
+                        navigate(`/camps/new/learners`, { state: "camp" });
+                      }}
+                    >
+                      <FrontEndTypo.H3 color="textMaroonColor.400">
+                        {campList?.length === 0
+                          ? t("START_FIRST_CAMP_REGISTER")
+                          : t("START_SECOND_CAMP_REGISTER")}
                       </FrontEndTypo.H3>
-                    ) : (
-                      <FrontEndTypo.H3>
-                        {t("START_SECOND_CAMP_REGISTER")}
-                      </FrontEndTypo.H3>
-                    )}
-                  </FrontEndTypo.Secondarybutton>
-                )}
-                <Alert
-                  status="warning"
-                  alignItems={"start"}
-                  mb="3"
-                  mt="4"
-                  width={"100%"}
-                >
+                    </FrontEndTypo.Secondarybutton>
+                  )}
+                  <Alert status="warning" alignItems={"start"} width={"100%"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{t("CAMP_WARNING")}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                </VStack>
+              ) : (
+                <Alert status="warning" alignItems={"start"} width={"100%"}>
                   <HStack alignItems="center" space="2" color>
                     <Alert.Icon />
-                    <BodyMedium>{t("CAMP_WARNING")}</BodyMedium>
+                    <BodyMedium>{t("COMMUNITY_MIN_ERROR")}</BodyMedium>
                   </HStack>
                 </Alert>
-              </VStack>
-            ) : (
-              <Alert
-                status="warning"
-                alignItems={"start"}
-                mb="3"
-                mt="4"
-                width={"100%"}
-              >
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>{t("COMMUNITY_MIN_ERROR")}</BodyMedium>
-                </HStack>
-              </Alert>
-            )}
-          </VStack>
-        ) : (
-          <Alert
-            status="warning"
-            alignItems={"start"}
-            mb="3"
-            mt="4"
-            width={"100%"}
-          >
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
-            </HStack>
-          </Alert>
-        )}
-      </Box>
-      <Box padding="6">
-        <AdminTypo.H2>{t("HOW_TO_START_CAMP")}</AdminTypo.H2>
-        <HStack mt={2}>
-          <iframe
-            width="100%"
-            height="315"
-            src="https://www.youtube.com/embed/LPjsnW5LKWs?si=wbkJgHcLP3mMuH2W"
-            title={t("HOW_TO_START_CAMP")}
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </HStack>
-      </Box>
+              )}
+            </VStack>
+          ) : (
+            <Alert
+              status="warning"
+              alignItems={"start"}
+              mb="3"
+              mt="4"
+              width={"100%"}
+            >
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
+              </HStack>
+            </Alert>
+          )}
+        </VStack>
+        <VStack>
+          <AdminTypo.H2>{t("HOW_TO_START_CAMP")}</AdminTypo.H2>
+          <HStack mt={2}>
+            <iframe
+              width="100%"
+              height="315"
+              src="https://www.youtube.com/embed/LPjsnW5LKWs?si=wbkJgHcLP3mMuH2W"
+              title={t("HOW_TO_START_CAMP")}
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </HStack>
+        </VStack>
+      </VStack>
     </Layout>
   );
 }
