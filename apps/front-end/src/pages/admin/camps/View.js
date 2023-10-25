@@ -31,6 +31,7 @@ export default function View({ footerLinks }) {
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [edit, setEdit] = React.useState(true);
 
   const { id } = useParams();
 
@@ -64,7 +65,7 @@ export default function View({ footerLinks }) {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-      setLoading(false);
+    setLoading(false);
   }, []);
 
   const updateCampStatus = async () => {
@@ -89,9 +90,14 @@ export default function View({ footerLinks }) {
     setEnumOptions(qData?.data);
     setFacilities(data);
     setLoading(false);
-
   }, []);
 
+  const navTOedit = (item) => {
+    const send = () => {
+      navigate(`/admin/camps/${id}/${item}`);
+    };
+    return send;
+  };
 
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
@@ -232,6 +238,7 @@ export default function View({ footerLinks }) {
           <CardComponent
             title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
+            onEdit={edit && navTOedit("edit_camp_location")}
           >
             {[
               data?.properties?.state,
@@ -250,12 +257,14 @@ export default function View({ footerLinks }) {
             label={["Property Type"]}
             item={data?.properties}
             arr={["property_type"]}
+            onEdit={edit && navTOedit("edit_camp_location")}
           ></CardComponent>
         </HStack>
         <HStack space={4}>
           <CardComponent
             _vstack={{ bg: "light.100", flex: 1, space: 4 }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+            onEdit={edit && navTOedit("edit_family_consent")}
           >
             {data?.beneficiaries?.length > 0 &&
               data?.beneficiaries.map((learner, index) => {
@@ -342,12 +351,14 @@ export default function View({ footerLinks }) {
                 "kit_ratings",
                 "kit_feedback",
               ]}
+              onEdit={edit && navTOedit("edit_kit_details")}
             />
 
             <CardComponent
               title={t(
                 "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
               )}
+              onEdit={edit && navTOedit("edit_property_facilities")}
             >
               {facilities.map((item) => (
                 <CheckUncheck
@@ -380,7 +391,7 @@ export default function View({ footerLinks }) {
           {data?.group?.status === "approved" && (
             <AdminTypo.Secondarybutton
               onPress={() => {
-                updateCampStatus();
+                setEdit(true);
               }}
             >
               {t("MODIFY")}
