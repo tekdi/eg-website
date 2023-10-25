@@ -33,7 +33,7 @@ const columns = (t, navigate, filter) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
-    width: "150px",
+    // width: "150px",
   },
   {
     name: t("LEARNERS_NAME"),
@@ -81,7 +81,7 @@ const columns = (t, navigate, filter) => [
       </HStack>
     ),
     wrap: true,
-    width: "320px",
+    width: "250px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -101,12 +101,12 @@ const columns = (t, navigate, filter) => [
         return "-";
       }
     },
-    width: "150px",
+    // width: "150px",
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
-    width: "100px",
+    // width: "100px",
   },
   {
     name: t("PRERAK_NAME"),
@@ -119,7 +119,7 @@ const columns = (t, navigate, filter) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
-    width: "320px",
+    width: "200px",
   },
   {
     name: t("STATUS"),
@@ -221,7 +221,15 @@ function EnrollmentVerificationList({ footerLinks }) {
       <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
         <HStack justifyContent="space-between" alignItems="center">
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 px="5">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
+          <AdminTypo.H1 color="Activatedcolor.400">
+            {t("All_AG_LEARNERS")}
+          </AdminTypo.H1>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate("/admin/learners")}
+          />
+          <AdminTypo.H1 px="3">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",

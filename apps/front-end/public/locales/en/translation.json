@@ -105,6 +105,7 @@
   "ASSIGN": "Assign",
   "ASSIGN_SUCCESS": "Assigned Successfully",
   "ASSIGN_TO_PRERAK": "Assign to Prerak",
+  "ATTENDANCE": "Attendance",
   "ATTENDANCE_CAMERA_SUBTITLE": "Make sure this image has a clear profile view of your Face. Improper Image might result in disqualification of the Application.",
   "ATTENDEE_LIST_ATTENDENCE_VERIFIED": "Attendance verified",
   "AUTO_GENERATE": "Auto generate",
@@ -809,6 +810,7 @@
   "REASON_FOR_LEAVING_STUDIES": "Reason For Leaving Studies",
   "REASON_OF_DUPLICATION": "Reason of Duplication",
   "REASSIGN_LEARNERS": "Reassign Learner's",
+  "REASSIGN_CAMP": "Reassign To Camp",
   "REFERENCE": "Reference",
   "REFERENCE_CONTACT_DETAILS": "Reference Contact Details",
   "REFERENCE_DETAILS": "Reference Details",
@@ -1096,5 +1098,6 @@
   "THE_QUALITY_OF_THE_KIT": "The quality of the kit",
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "Please add origami-related materials to the fit. Colored paper, scissors, glue, etc.",
   "CHANGES_REQUIRED": "Please inform required changes to the Prerak",
-  "VERIFY_MESSAGE": "Do you want to verify the camp. if yes press confirm or to go back to camp list press cancel"
+  "VERIFY_MESSAGE": "Do you want to verify the camp. if yes press confirm or to go back to camp list press cancel",
+  "MODIFY": "Modify"
 }
