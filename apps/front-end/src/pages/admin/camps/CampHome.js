@@ -64,7 +64,7 @@ const columns = (navigate) => [
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id,
+    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
     sortable: true,
     attr: "PRERAK_ID",
   },
