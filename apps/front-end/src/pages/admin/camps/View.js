@@ -150,47 +150,49 @@ export default function View({ footerLinks }) {
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
             </HStack>
-            {data?.faciltator?.length > 0 &&
-              data?.faciltator.map((facilitator) => {
-                return (
-                  <HStack
-                    rounded={"md"}
-                    p="2"
-                    alignItems="center"
-                    space="2"
-                    key={facilitator?.id}
-                  >
-                    <ImageView
-                      urlObject={facilitator?.profile_photo_1 || {}}
-                      size="lg"
-                    />
-                    <VStack>
-                      <AdminTypo.H3 color="textGreyColor.600">
-                        {[facilitator?.first_name, facilitator?.last_name]
-                          .filter((e) => e)
-                          .join(" ")}
-                      </AdminTypo.H3>
-                      <AdminTypo.H4 color="textGreyColor.600">
-                        {facilitator?.mobile}
-                      </AdminTypo.H4>
+            <HStack>
+              {data?.faciltator?.length > 0 &&
+                data?.faciltator.map((facilitator) => {
+                  return (
+                    <HStack
+                      rounded={"md"}
+                      p="2"
+                      alignItems="center"
+                      space="2"
+                      key={facilitator?.id}
+                    >
+                      <ImageView
+                        urlObject={facilitator?.profile_photo_1 || {}}
+                        size="lg"
+                      />
+                      <VStack>
+                        <AdminTypo.H3 color="textGreyColor.600">
+                          {[facilitator?.first_name, facilitator?.last_name]
+                            .filter((e) => e)
+                            .join(" ")}
+                        </AdminTypo.H3>
+                        <AdminTypo.H4 color="textGreyColor.600">
+                          {facilitator?.mobile}
+                        </AdminTypo.H4>
 
-                      <AdminTypo.H5>
-                        {[
-                          facilitator?.state,
-                          facilitator?.district,
-                          facilitator?.block,
-                          facilitator?.village,
-                          facilitator?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")}
-                      </AdminTypo.H5>
-                    </VStack>
-                  </HStack>
-                );
-              })}
+                        <AdminTypo.H5>
+                          {[
+                            facilitator?.state,
+                            facilitator?.district,
+                            facilitator?.block,
+                            facilitator?.village,
+                            facilitator?.grampanchayat,
+                          ]
+                            .filter((e) => e)
+                            .join(", ")}
+                        </AdminTypo.H5>
+                      </VStack>
+                    </HStack>
+                  );
+                })}
+            </HStack>
           </VStack>
-          <HStack space={3} width="70%" justifyContent="space-evenly">
+          <HStack space={3} justifyContent="space-evenly">
             {[
               properties?.photo_other,
               properties.photo_building,
@@ -208,8 +210,8 @@ export default function View({ footerLinks }) {
                         <ImageView
                           isImageTag
                           urlObject={item || {}}
-                          width="260px"
-                          height="260px"
+                          width="350px"
+                          height="250px"
                           m={"10px"}
                           p={"2"}
                           border="2px solid #eee"

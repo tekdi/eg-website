@@ -125,7 +125,7 @@ export function CampChipStatus({ status, ...props }) {
         setColor("selectedColor");
         break;
       case "change_required":
-        setNewStatus("GROUPS_STATUS_CHANGE_REQUIRED");
+        setNewStatus(t("GROUPS_STATUS_CHANGE_REQUIRED"));
         setColor("green.200");
         break;
       default:
