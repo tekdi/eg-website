@@ -14,7 +14,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert, Pressable } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -76,7 +76,7 @@ export default function View({ footerLinks }) {
     });
 
     if (result?.status === 200) {
-      navigate("/admin/camps");
+      navigate("/admin/camps?status=registered&page=1");
     } else {
       setErrorList(result?.message);
       setStatus();
@@ -139,7 +139,7 @@ export default function View({ footerLinks }) {
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/camps`)}
+            onPress={(e) => navigate(-1)}
           />
           <AdminTypo.H1
             color="textGreyColor.800"
@@ -151,88 +151,89 @@ export default function View({ footerLinks }) {
           </AdminTypo.H1>
         </HStack>
 
-        <HStack flexWrap="wrap" justifyContent={"space-between"}>
+        <HStack flexWrap="wrap">
           <VStack>
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
             </HStack>
-            {data?.faciltator?.length > 0 &&
-              data?.faciltator.map((facilitator) => {
-                return (
-                  <HStack
-                    rounded={"md"}
-                    p="2"
-                    alignItems="center"
-                    space="2"
-                    key={facilitator?.id}
-                  >
-                    <ImageView
-                      urlObject={facilitator?.profile_photo_1 || {}}
-                      size="lg"
-                    />
-                    <VStack>
-                      <AdminTypo.H3 color="textGreyColor.600">
-                        {[facilitator?.first_name, facilitator?.last_name]
-                          .filter((e) => e)
-                          .join(" ")}
-                      </AdminTypo.H3>
-                      <AdminTypo.H4 color="textGreyColor.600">
-                        {facilitator?.mobile}
-                      </AdminTypo.H4>
-
-                      <AdminTypo.H5>
-                        {[
-                          facilitator?.state,
-                          facilitator?.district,
-                          facilitator?.block,
-                          facilitator?.village,
-                          facilitator?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")}
-                      </AdminTypo.H5>
-                    </VStack>
-                  </HStack>
-                );
-              })}
-          </VStack>
-          <HStack space={3} width="70%">
-            {[
-              properties?.photo_other,
-              properties.photo_building,
-              properties?.photo_classroom,
-            ].map(
-              (item) =>
-                item && (
-                  <HStack key={item}>
-                    <ImageView
-                      isImageTag={!item}
-                      urlObject={item || {}}
-                      _button={{ p: 0 }}
-                      text={
-                        <ImageView
-                          isImageTag
-                          urlObject={item || {}}
-                          width="260px"
-                          height="260px"
-                          m={"10px"}
-                          p={"2"}
-                          border="2px solid #eee"
-                          borderRadius={"4"}
-                          alignItems="left"
-                        />
+            <HStack>
+              {data?.faciltator?.length > 0 &&
+                data?.faciltator.map((facilitator) => {
+                  return (
+                    <UserCard
+                      key={facilitator}
+                      _hstack={{ p: 0, borderWidth: 0, space: 1, flex: 0.8 }}
+                      _vstack={{ py: 0 }}
+                      _image={{ size: 100 }}
+                      title={
+                        <VStack>
+                          <AdminTypo.H3 color="textGreyColor.600">
+                            {[facilitator?.first_name, facilitator?.last_name]
+                              .filter((e) => e)
+                              .join(" ")}
+                          </AdminTypo.H3>
+                          <AdminTypo.H4 color="textGreyColor.600">
+                            {facilitator?.mobile}
+                          </AdminTypo.H4>
+                        </VStack>
+                      }
+                      subTitle={[
+                        facilitator?.state,
+                        facilitator?.district,
+                        facilitator?.block,
+                        facilitator?.village,
+                        facilitator?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(", ")}
+                      image={
+                        facilitator?.profile_photo_1?.fileUrl
+                          ? { urlObject: facilitator?.profile_photo_1 }
+                          : null
                       }
                     />
-                  </HStack>
-                )
-            )}
-            <Stack>
-              <MapComponent
-                latitude={data?.properties?.lat}
-                longitude={data?.properties?.long}
-              />
-            </Stack>
-          </HStack>
+                  );
+                })}
+            </HStack>
+          </VStack>
+          {[
+            properties?.photo_other,
+            properties.photo_building,
+            properties?.photo_classroom,
+          ].map(
+            (item) =>
+              item && (
+                <HStack
+                key={item}
+                >
+                  <ImageView
+                    
+                    isImageTag={!item}
+                    urlObject={item || {}}
+                    _button={{ p: 0 }}
+                    text={
+                      <ImageView
+                        isImageTag
+                        urlObject={item || {}}
+                        width="260px"
+                        height="250px"
+                        m={"10px"}
+                        p={"2"}
+                        border="2px solid #eee"
+                        borderRadius={"4"}
+                        alignItems="left"
+                      />
+                    }
+                  />
+                </HStack>
+              )
+          )}
+          <Stack flex="1">
+            <MapComponent
+              latitude={data?.properties?.lat}
+              longitude={data?.properties?.long}
+            />
+          </Stack>
         </HStack>
         <HStack space={4}>
           <CardComponent
@@ -254,7 +255,7 @@ export default function View({ footerLinks }) {
             isHideProgressBar={true}
             _vstack={{ bg: "light.100", space: 0, flex: 3 }}
             title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
-            label={["Property Type"]}
+            label={["PROPERTY_TYPE"]}
             item={data?.properties}
             arr={["property_type"]}
             onEdit={edit && navTOedit("edit_camp_location")}
@@ -276,48 +277,50 @@ export default function View({ footerLinks }) {
                 return (
                   <VStack
                     key={learner}
-                    space={4}
-                    justifyContent={"space-evenly"}
-                  >
-                    <UserCard
-                      title={
-                        <AdminTypo.H6
-                          bold
-                        >{`${learner?.first_name} ${learner?.last_name}`}</AdminTypo.H6>
-                      }
-                      subTitle={
-                        learner?.district &&
-                        learner?.block &&
-                        learner?.village ? (
-                          <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
-                        ) : (
-                          ""
-                        )
-                      }
-                      image={
-                        learner?.profile_photo_1?.id
-                          ? { document_id: learner?.profile_photo_1?.id }
-                          : null
-                      }
-                      rightElement={
-                        <HStack>
-                          <ImageView
-                            source={{ document_id: consentUrlObject?.id || {} }}
-                            isImageTag={!consentUrlObject}
-                            _button={{ p: 0 }}
-                            text={<HStack space={"2"}>{t("VIEW")}</HStack>}
-                          />
-                          <Pressable
-                            onPress={() =>
-                              navigate(`/admin/camps/${learner?.id}/reassign`)
-                            }
-                          >
-                            <IconByName name="PencilLineIcon" />
-                          </Pressable>
-                        </HStack>
-                      }
-                    />
-                  </VStack>
+                    title={
+                      <AdminTypo.H6
+                        bold
+                      >{`${learner?.first_name} ${learner?.last_name}`}</AdminTypo.H6>
+                    }
+                    subTitle={
+                      learner?.district &&
+                      learner?.block &&
+                      learner?.village ? (
+                        <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
+                      ) : (
+                        ""
+                      )
+                    }
+                    image={
+                      learner?.profile_photo_1?.id
+                        ? { document_id: learner?.profile_photo_1?.id }
+                        : null
+                    }
+                    rightElement={
+                      <HStack>
+                        <ImageView
+                          source={{
+                            document_id:
+                              consentUrlObject?.id !== null
+                                ? consentUrlObject?.id
+                                : {},
+                          }}
+                          isImageTag={!consentUrlObject}
+                          // urlObject={consentUrlObject?.id || {}}
+                          _button={{ p: 0 }}
+                          text={
+                            <HStack space={"2"}>
+                              {t("LINK")}
+                              <IconByName
+                                name="ExternalLinkLineIcon"
+                                isDisabled
+                              />
+                            </HStack>
+                          }
+                        />
+                      </HStack>
+                    }
+                  />
                 );
               })}
           </CardComponent>
@@ -331,10 +334,10 @@ export default function View({ footerLinks }) {
               _vstack={{ space: 0, flex: 3 }}
               title={t("KIT_DETAILS")}
               label={[
-                "Got the kit",
-                "Is the kit successful",
-                "Suggestions for the kit",
-                "The quality of kit",
+                "GOT_THE_KIT",
+                "IS_THE_KIT_USEFUL",
+                "SUGGESTIONS_FOR_THE_KIT",
+                "THE_QUALITY_OF_THE_KIT",
               ]}
               item={{
                 ...data,
@@ -371,11 +374,11 @@ export default function View({ footerLinks }) {
           </CardComponent>
         </HStack>
         <HStack space={10} justifyContent={"center"}>
-          {data?.group?.status !== "approved" && (
+          {data?.group?.status !== "camp_ip_verified" && (
             <>
               <AdminTypo.StatusButton
                 status="success"
-                onPress={() => setStatus("approved")}
+                onPress={() => setStatus("camp_ip_verified")}
               >
                 {t("VERIFY")}
               </AdminTypo.StatusButton>
@@ -388,7 +391,7 @@ export default function View({ footerLinks }) {
             </>
           )}
 
-          {data?.group?.status === "approved" && (
+          {data?.group?.status === "camp_ip_verified" && (
             <AdminTypo.Secondarybutton
               onPress={() => {
                 setEdit(true);
@@ -401,8 +404,8 @@ export default function View({ footerLinks }) {
           <Modal isOpen={status} onClose={() => setStatus()} size="lg">
             <Modal.Content>
               <Modal.CloseButton />
-              <Modal.Header>Welcome at Camp</Modal.Header>
-              {status == "approved" ? (
+              <Modal.Header>{t("WELCOME_AT_CAMP")}</Modal.Header>
+              {status === "camp_ip_verified" ? (
                 <Modal.Body>
                   <Alert status="success" alignItems={"start"} mb="3" mt="4">
                     <HStack alignItems="center" space="2" color>
