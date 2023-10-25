@@ -140,6 +140,10 @@ const CampTodayActivities = React.lazy(() =>
   import("pages/front-end/Camp/CampTodayActivities")
 );
 
+const CampSettings = React.lazy(() =>
+  import("pages/front-end/Camp/CampSetting")
+);
+
 export default [
   { path: "/form", component: Home },
   {
@@ -288,6 +292,10 @@ export default [
   {
     path: "/camps/:id/attendance",
     component: CampAttendance,
+  },
+  {
+    path: "/camps/:id/settings",
+    component: CampSettings,
   },
   { path: "/camps/:id/start", component: StartCampDashboard },
   { path: "/camps/:id/activities", component: CampTodayActivities },
