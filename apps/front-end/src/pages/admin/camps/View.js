@@ -146,7 +146,7 @@ export default function View({ footerLinks }) {
         </HStack>
 
         <HStack flexWrap="wrap" justifyContent={"space-between"}>
-          <VStack>
+          <VStack flex="1">
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
             </HStack>
@@ -192,7 +192,7 @@ export default function View({ footerLinks }) {
                 })}
             </HStack>
           </VStack>
-          <HStack space={3} justifyContent="space-evenly">
+          <HStack space={3} flex="3" ml={"70px"}>
             {[
               properties?.photo_other,
               properties.photo_building,
@@ -210,7 +210,7 @@ export default function View({ footerLinks }) {
                         <ImageView
                           isImageTag
                           urlObject={item || {}}
-                          width="350px"
+                          width="260px"
                           height="250px"
                           m={"10px"}
                           p={"2"}
