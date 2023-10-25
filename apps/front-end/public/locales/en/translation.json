@@ -1099,5 +1099,11 @@
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "Please add origami-related materials to the fit. Colored paper, scissors, glue, etc.",
   "CHANGES_REQUIRED": "Please inform required changes to the Prerak",
   "VERIFY_MESSAGE": "Do you want to verify the camp. if yes press confirm or to go back to camp list press cancel",
-  "MODIFY": "Modify"
+  "MODIFY": "Modify",
+  "PREFERRED_TIME": "Preferred Time",
+  "PLEASE_INDICATE_SUITABLE_TIME_CAMPING": "Please indicate a suitable time for camping.",
+  "WEEKLY_OFF": "Weekly Off",
+  "PLEASE_ENTER_THE_DAYS_YOU_WANT_TO_TAKE_THE_WEEKLY_OFF": "Please enter the days you want to take the weekly off.",
+  "LIST_OF_HOLIDAYS": "List of holidays"
+
 }

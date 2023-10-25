@@ -27,5 +27,8 @@
     "lerna": "4.0.0",
     "prettier": "^2.6.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-datetime-picker": "^5.5.3",
+    "react-time-picker": "^6.5.2"
+  }
 }
