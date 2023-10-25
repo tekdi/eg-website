@@ -52,12 +52,12 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
     }
   }, [attendance, students]);
 
-  useEffect(() => {
-    const filterStudent = students.filter((e) =>
-      e?.fullName?.toLowerCase().match(search?.toLowerCase())
-    );
-    setSearchStudents(filterStudent);
-  }, [search, students]);
+  // useEffect(() => {
+  //   const filterStudent = students.filter((e) =>
+  //     e?.fullName?.toLowerCase().match(search?.toLowerCase())
+  //   );
+  //   setSearchStudents(filterStudent);
+  // }, [search, students]);
 
   useEffect(async () => {
     let ignore = false;
@@ -97,8 +97,8 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
     let weekdays = calendar(weekPage, "week");
     let params = {
       id,
-      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
-      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+      start_date: weekdays?.[0]?.format("Y-MM-DD"),
+      end_date: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
     };
     const attendanceData = await GetAttendance(params);
     setAttendance(attendanceData);
@@ -137,7 +137,7 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
   if (loading === "true" || loading) {
     return <Loading />;
   }
-  console.log(searchStudents);
+  console.log(searchStudents, unmarkStudents);
   return (
     <Layout
       _appBar={{
@@ -159,19 +159,7 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
               view="week"
               setPage={setWeekPage}
               page={weekPage}
-              previousDisabled={
-                Math.abs(weekPage) >=
-                moment()
-                  .startOf("week")
-                  .diff(
-                    moment(
-                      manifest?.[
-                        "class_attendance.date_till_previous_attendance_allow"
-                      ]
-                    ).startOf("week"),
-                    "week"
-                  )
-              }
+              previousDisabled={false}
               nextDisabled={weekPage >= 0}
               leftErrorText={
                 !isEditDisabled

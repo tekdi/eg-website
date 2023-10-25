@@ -35,9 +35,9 @@ import {
 import { useNavigate } from "react-router-dom";
 const colors = overrideColorTheme();
 
-const PRESENT = "Present";
-const ABSENT = "Absent";
-const UNMARKED = "Unmarked";
+const PRESENT = "present";
+const ABSENT = "absent";
+const UNMARKED = "unmarked";
 
 export const GetAttendance = async (params) => {
   const resultAttendance = await campService.CampAttendance(params);
@@ -47,53 +47,62 @@ export const GetAttendance = async (params) => {
 export const GetIcon = ({ status, _box, color, _icon }) => {
   let icon = <></>;
   let iconProps = { fontSize: "xl", isDisabled: true, ..._icon };
+
   switch (status) {
     case "Present":
+    case "present":
       icon = (
-        <Box {..._box} color={color || colors.attendancePresent}>
+        <Box
+          {..._box}
+          color={color || colors.attendancePresent?.["500"] || "green.500"}
+        >
           <IconByName name="CheckboxCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Absent":
+    case "absent":
       icon = (
-        <Box {..._box} color={color ? color : colors.attendanceAbsent}>
+        <Box
+          {..._box}
+          color={color || colors.attendanceAbsent?.["500"] || "red.500"}
+        >
           <IconByName name="CloseCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Late":
       icon = (
-        <Box {..._box} color={color ? color : colors.checkBlankcircle}>
+        <Box {..._box} color={color || colors.checkBlankcircle || "gray.400"}>
           <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Holiday":
       icon = (
-        <Box {..._box} color={color ? color : colors.attendanceUnmarkedLight}>
+        <Box
+          {..._box}
+          color={color || colors.attendanceUnmarkedLight || "gray.300"}
+        >
           <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Unmarked":
-      icon = (
-        <Box {..._box} color={color ? color : colors.attendanceUnmarked}>
-          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
-        </Box>
-      );
-      break;
     case "Today":
       icon = (
-        <Box {..._box} color={color ? color : colors.attendanceUnmarked}>
+        <Box
+          {..._box}
+          color={color || colors.attendanceUnmarked?.["500"] || "gray.500"}
+        >
           <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     default:
       icon = (
-        <Box {..._box} color={color ? color : colors.attendancedefault}>
-          <IconByName name={status} {...iconProps} />
+        <Box {..._box} color={color || colors.attendancedefault || "gray.500"}>
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
@@ -135,8 +144,8 @@ export const MultipalAttendance = ({
       )?.length;
       let params = {
         id,
-        fromDate: weekdays?.[0]?.format("YYYY-MM-DD"),
-        toDate: weekdays?.[weekdays.length - 1]?.format("YYYY-MM-DD"),
+        start_date: weekdays?.[0]?.format("YYYY-MM-DD"),
+        end_date: weekdays?.[weekdays.length - 1]?.format("YYYY-MM-DD"),
       };
       let attendanceData = await GetAttendance(params);
       const present = getStudentsPresentAbsent(
@@ -586,7 +595,7 @@ export default function AttendanceComponent({
               (e) =>
                 !(
                   e.date === dataObject.date &&
-                  e.studentId === dataObject.studentId
+                  e.user?.id === dataObject.user?.id
                 )
             );
 
@@ -796,12 +805,31 @@ const CalendarComponent = ({
     let isHoliday = holidays.includes(day.format("YYYY-MM-DD"));
     let dateValue = day.format("YYYY-MM-DD");
     let smsDay = sms?.find(
-      (e) => e.date === day.format("YYYY-MM-DD") && e.studentId === student.id
+      (e) =>
+        e.date_time === day.format("YYYY-MM-DD") && e.user?.id === student.id
     );
     let attendanceItem = attendance
       .slice()
       .reverse()
-      .find((e) => e.date === dateValue && e.studentId === student.id);
+      .find((e) => {
+        const re =
+          moment(e.date_time).format("YYYY-MM-DD") === dateValue &&
+          e.user?.id === student.id;
+
+        return re;
+      });
+    if (attendanceItem?.status) {
+      attendanceItem = {
+        ...attendanceItem,
+        attendance: attendanceItem?.status,
+      };
+
+      console.log({
+        attendance,
+        attendanceItem,
+        da: [attendanceItem?.attendance, "===", PRESENT],
+      });
+    }
     let attendanceIconProp = !isIconSizeSmall
       ? {
           _box: { py: 2, minW: "46px", alignItems: "center" },
@@ -877,7 +905,7 @@ const CalendarComponent = ({
           attendanceIconProp,
           attendanceType,
         ] = handleAttendaceData(attendance, day);
-
+        if (attendanceItem) console.log({ attendanceIconProp, attendanceItem });
         return (
           <VStack
             key={subIndex}
@@ -939,29 +967,29 @@ const CalendarComponent = ({
             <TouchableHighlight
               onPress={(e) => {
                 //check if isToday required or not
-                if (!isEditDisabled && isAllowDay && !isHoliday && isToday) {
-                  const newAttendanceData = {
-                    attendanceId: attendanceItem?.id ? attendanceItem.id : null,
-                    id: attendanceItem?.id ? attendanceItem.id : null,
-                    date: dateValue,
-                    attendance: attendanceType,
-                    studentId: student.id,
-                  };
-                  markAttendance(newAttendanceData);
-                }
+                // if (!isEditDisabled && isAllowDay && !isHoliday && isToday) {
+                //   const newAttendanceData = {
+                //     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+                //     id: attendanceItem?.id ? attendanceItem.id : null,
+                //     date: dateValue,
+                //     attendance: attendanceType,
+                //     studentId: student.id,
+                //   };
+                //   markAttendance(newAttendanceData);
+                // }
               }}
-              onLongPress={(event) => {
-                if (!isEditDisabled && isAllowDay && !isHoliday) {
-                  setAttendanceObject({
-                    attendanceId: attendanceItem?.id ? attendanceItem.id : null,
-                    date: dateValue,
-                    attendance: attendanceItem?.attendance,
-                    id: attendanceItem?.id,
-                    studentId: student.id,
-                  });
-                  setShowModal(true);
-                }
-              }}
+              // onLongPress={(event) => {
+              //   if (!isEditDisabled && isAllowDay && !isHoliday) {
+              //     setAttendanceObject({
+              //       attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+              //       date: dateValue,
+              //       attendance: attendanceItem?.attendance,
+              //       id: attendanceItem?.id,
+              //       studentId: student.id,
+              //     });
+              //     setShowModal(true);
+              //   }
+              // }}
             >
               <Box alignItems="center">
                 {loading[dateValue + student.id] ? (

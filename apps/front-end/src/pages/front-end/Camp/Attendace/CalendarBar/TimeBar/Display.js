@@ -25,7 +25,15 @@ export const Display = ({
           {
             // @ts-ignore
             <IconByName
-              _icon={{ size: "24" }}
+              _icon={{
+                size: "24",
+                color:
+                  typeof previousDisabled === "undefined" ||
+                  previousDisabled === false
+                    ? activeColor || colors.primary
+                    : // @ts-ignore
+                      colors.grayInLight,
+              }}
               p="0"
               color={
                 typeof previousDisabled === "undefined" ||
@@ -55,7 +63,13 @@ export const Display = ({
           {
             // @ts-ignore
             <IconByName
-              _icon={{ size: "24" }}
+              _icon={{
+                size: "24",
+                color:
+                  typeof nextDisabled === "undefined" || nextDisabled === false
+                    ? activeColor || colors.gray?.["700"]
+                    : colors?.grayInLight,
+              }}
               p="0"
               color={
                 typeof nextDisabled === "undefined" || nextDisabled === false
