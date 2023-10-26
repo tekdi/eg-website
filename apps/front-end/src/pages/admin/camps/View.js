@@ -14,7 +14,15 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert } from "native-base";
+import {
+  HStack,
+  Stack,
+  VStack,
+  Modal,
+  Alert,
+  Pressable,
+  Button,
+} from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -36,14 +44,11 @@ export default function View({ footerLinks }) {
   const { id } = useParams();
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
-    const requestBody = {
-      camp_id: campId,
-      facilitator_id: facilitatorId,
-    };
-
     try {
-      const response = await campService.getCampAdminConsent(requestBody);
-      setConsentData(response?.data);
+      const campConsent = await ConsentService.getCampAdminConsent({
+        camp_id: id,
+      });
+      setConsentData(campConsent?.data);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -203,11 +208,8 @@ export default function View({ footerLinks }) {
           ].map(
             (item) =>
               item && (
-                <HStack
-                key={item}
-                >
+                <HStack key={item}>
                   <ImageView
-                    
                     isImageTag={!item}
                     urlObject={item || {}}
                     _button={{ p: 0 }}
@@ -275,7 +277,7 @@ export default function View({ footerLinks }) {
 
                 const consentUrlObject = learnerConsentData?.document || {};
                 return (
-                  <VStack
+                  <UserCard
                     key={learner}
                     title={
                       <AdminTypo.H6
@@ -297,7 +299,7 @@ export default function View({ footerLinks }) {
                         : null
                     }
                     rightElement={
-                      <HStack>
+                      <HStack alignItems={"center"} space={3}>
                         <ImageView
                           source={{
                             document_id:
@@ -308,16 +310,10 @@ export default function View({ footerLinks }) {
                           isImageTag={!consentUrlObject}
                           // urlObject={consentUrlObject?.id || {}}
                           _button={{ p: 0 }}
-                          text={
-                            <HStack space={"2"}>
-                              {t("LINK")}
-                              <IconByName
-                                name="ExternalLinkLineIcon"
-                                isDisabled
-                              />
-                            </HStack>
-                          }
+                          text={<HStack space={"4"}>{t("VIEW")}</HStack>}
                         />
+
+                        <HStack space={"4"}>{t("REASSIGN")}</HStack>
                       </HStack>
                     }
                   />
@@ -361,6 +357,7 @@ export default function View({ footerLinks }) {
               title={t(
                 "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
               )}
+              enumOptions
               onEdit={edit && navTOedit("edit_property_facilities")}
             >
               {facilities.map((item) => (

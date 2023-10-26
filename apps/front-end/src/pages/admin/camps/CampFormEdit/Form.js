@@ -264,7 +264,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const formSubmitUpdate = async (data, overide) => {
     if (id) {
       setLoading(true);
-      const result = await campService.updateCampDetails({
+      const result = await campService.updateIpCampDetails({
         ...data,
         edit_page_type: step,
         ...(overide || {}),
@@ -471,16 +471,9 @@ export default function App({ userTokenInfo, footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton,
-        onlyIconsShow: ["backBtn"],
-        leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
-      _footer={{ menues: footerLinks }}
       loading={loading}
     >
       <Box py={6} px={4} mb={5}>

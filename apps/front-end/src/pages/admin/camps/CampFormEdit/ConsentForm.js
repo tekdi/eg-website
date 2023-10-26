@@ -33,7 +33,9 @@ export default function ConsentForm() {
 
   React.useEffect(async () => {
     const result = await campService.getFacilatorAdminCampList({ id });
-    const campConsent = await ConsentService.getConsent({ camp_id: id });
+    const campConsent = await ConsentService.getCampAdminConsent({
+      camp_id: id,
+    });
     if (Object.keys(campConsent?.data).length === 0) {
       setConsents([]);
     } else {
@@ -54,7 +56,8 @@ export default function ConsentForm() {
   };
 
   const handleUpload = async (data) => {
-    await ConsentService.createConsent(data);
+    console.log("data", data);
+    await ConsentService.editIpConsent(data);
     setUploadData();
     // api call
   };
@@ -62,7 +65,6 @@ export default function ConsentForm() {
   return (
     <Layout
       loading={loading}
-      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
         name: t("CONSENT_FORM"),
         onPressBackButton,
