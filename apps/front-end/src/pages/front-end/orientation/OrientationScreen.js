@@ -95,6 +95,7 @@ export default function OrientationScreen({
       ),
       sortable: false,
       attr: "email",
+      wrap: true,
     },
     {
       name: t("COMMENT"),

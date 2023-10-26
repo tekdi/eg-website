@@ -10,6 +10,7 @@ import {
   AdminLayout as Layout,
   urlData,
   setQueryParameters,
+  Breadcrumb,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -32,6 +33,7 @@ const columns = (t, navigate, filter) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
+    // width: "150px",
   },
   {
     name: t("LEARNERS_NAME"),
@@ -70,6 +72,7 @@ const columns = (t, navigate, filter) => [
       </HStack>
     ),
     wrap: true,
+    width: "250px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -89,10 +92,12 @@ const columns = (t, navigate, filter) => [
         return "-";
       }
     },
+    width: "150px",
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
+    // width: "100px",
   },
   {
     name: t("PRERAK_NAME"),
@@ -105,6 +110,7 @@ const columns = (t, navigate, filter) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
+    width: "200px",
   },
   {
     name: t("STATUS"),
@@ -117,6 +123,7 @@ const columns = (t, navigate, filter) => [
       />
     ),
     wrap: true,
+    width: "150px",
   },
   {
     name: t("ACTION"),
@@ -134,6 +141,7 @@ const columns = (t, navigate, filter) => [
           {t("VIEW")}
         </AdminTypo.Secondarybutton>
       ),
+    width: "150px",
   },
 ];
 
@@ -153,6 +161,11 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const handleRowClick = (row) => {
+    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
+      state: filter,
+    });
+  };
 
   React.useEffect(async () => {
     if (urlFilterApply) {
@@ -193,18 +206,38 @@ function EnrollmentVerificationList({ footerLinks }) {
       _sidebar={footerLinks}
     >
       <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
-        <HStack justifyContent="space-between" alignItems="center">
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 px="5">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
-        </HStack>
+        <Breadcrumb
+          drawer={
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate("/admin/learners")}
+            />
+          }
+          data={[
+            <HStack key="b1" alignItems="center" space={"2"}>
+              <IconByName
+                isDisabled
+                name="GraduationCap"
+                _icon={{ size: "30" }}
+              />
+              <AdminTypo.H1 color="Activatedcolor.400">
+                {t("All_AG_LEARNERS")}
+              </AdminTypo.H1>
+            </HStack>,
+            <HStack alignItems="center" key="b2" space={"2"}>
+              <AdminTypo.H2>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H2>
+              <Image
+                source={{
+                  uri: "/box.svg",
+                }}
+                alt=""
+                size={"28px"}
+                resizeMode="contain"
+              />
+            </HStack>,
+          ]}
+        />
         <Input
           size={"xs"}
           minH="49px"
@@ -246,7 +279,7 @@ function EnrollmentVerificationList({ footerLinks }) {
             }
             pr="2"
           >
-            <Filter {...{ filter, setFilter }} />
+            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
@@ -332,6 +365,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                 onChangePage={(e) => {
                   setFilterObject({ ...filter, page: e });
                 }}
+                onRowClicked={handleRowClick}
               />
             </VStack>
           </ScrollView>
