@@ -361,8 +361,9 @@ export const Filter = ({ filter, setFilter }) => {
     setFacilitatorFilter({});
   };
   React.useEffect(async () => {
-    const { error, ...result } =
-      await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
+      facilitatorFilter
+    );
 
     if (!error) {
       let newData;

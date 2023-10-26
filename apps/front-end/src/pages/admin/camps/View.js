@@ -277,13 +277,11 @@ export default function View({ footerLinks }) {
                         </AdminTypo.H6>
                       }
                       subTitle={
-                        learner?.district &&
-                        learner?.block &&
-                        learner?.village ? (
-                          <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
-                        ) : (
-                          ""
-                        )
+                        <AdminTypo.H6>
+                          {[learner?.district, learner?.block, learner?.village]
+                            .filter((e) => e)
+                            .join(" ")}
+                        </AdminTypo.H6>
                       }
                       image={
                         learner?.profile_photo_1?.id
