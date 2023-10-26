@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -113,7 +113,7 @@ const columns = (navigate) => [
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const [filter, setFilter] = React.useState({});
-  const [Width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const navigate = useNavigate();
@@ -363,10 +363,11 @@ export const Filter = ({ filter, setFilter }) => {
   React.useEffect(async () => {
     const { error, ...result } =
       await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+
     if (!error) {
       let newData;
-      if (result?.data?.data) {
-        newData = result?.data?.data?.map((e) => ({
+      if (result) {
+        newData = result?.users?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
