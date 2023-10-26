@@ -273,12 +273,9 @@ export default function View({ footerLinks }) {
                     title={
                       <AdminTypo.H6 bold>
                         {`${learner?.first_name} ${learner?.last_name}`}
-                        {console.log(
-                          "learner data",
-                          `${learner?.first_name} ${learner?.last_name}`
-                        )}
                       </AdminTypo.H6>
                     }
+                    _hstack={{ my: "10px" }}
                     subTitle={
                       learner?.district &&
                       learner?.block &&
@@ -328,7 +325,7 @@ export default function View({ footerLinks }) {
           >
             <CardComponent
               isHideProgressBar={true}
-              _vstack={{ space: 0, flex: 3 }}
+              _vstack={{ space: 4, flex: 3, my: "10px" }}
               title={t("KIT_DETAILS")}
               label={[
                 "GOT_THE_KIT",
@@ -352,7 +349,6 @@ export default function View({ footerLinks }) {
                 "kit_feedback",
               ]}
             />
-            <br />
             <CardComponent
               title={t(
                 "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"

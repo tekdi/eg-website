@@ -10,7 +10,7 @@ const StarRating = ({ value, onChange, required, schema }) => {
 
   const handleStarClick = (starIndex) => {
     const starvalue = starIndex + 1;
-    if (readOnly !== true) {
+    if (!readOnly) {
       setRating(`${starvalue}`);
       onChange(`${starvalue}`);
     }
