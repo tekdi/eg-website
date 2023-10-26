@@ -226,7 +226,7 @@ export default function View({ footerLinks }) {
         </HStack>
         <HStack space={4}>
           <CardComponent
-            _header={{ bg: "#F4F4F4" }}
+            _header={{ bg: "light.100" }}
             title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
           >
@@ -242,7 +242,7 @@ export default function View({ footerLinks }) {
           </CardComponent>
           <CardComponent
             isHideProgressBar={true}
-            _header={{ bg: "#F4F4F4" }}
+            _header={{ bg: "light.100" }}
             _vstack={{ bg: "light.100", space: 0, flex: 3 }}
             title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
             label={["PROPERTY_TYPE"]}
@@ -257,111 +257,115 @@ export default function View({ footerLinks }) {
               flex: 1,
               space: 4,
             }}
-            _header={{ bg: "#F4F4F4" }}
+            _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
           >
-            {data?.beneficiaries?.length > 0 &&
-              data?.beneficiaries.map((learner, index) => {
-                let learnerConsentData = Array.isArray(consentData)
-                  ? consentData.find((e) => e.user_id === learner.id)
-                  : {};
+            <VStack space={4}>
+              {data?.beneficiaries?.length > 0 &&
+                data?.beneficiaries.map((learner, index) => {
+                  let learnerConsentData = Array.isArray(consentData)
+                    ? consentData.find((e) => e.user_id === learner.id)
+                    : {};
 
-                const consentUrlObject = learnerConsentData?.document || {};
-                return (
-                  <UserCard
-                    key={learner}
-                    title={
-                      <AdminTypo.H6 bold>
-                        {`${learner?.first_name} ${learner?.last_name}`}
-                      </AdminTypo.H6>
-                    }
-                    _hstack={{ my: "10px" }}
-                    subTitle={
-                      learner?.district &&
-                      learner?.block &&
-                      learner?.village ? (
-                        <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
-                      ) : (
-                        ""
-                      )
-                    }
-                    image={
-                      learner?.profile_photo_1?.id
-                        ? { document_id: learner?.profile_photo_1?.id }
-                        : null
-                    }
-                    rightElement={
-                      <HStack>
-                        <ImageView
-                          source={{
-                            document_id:
-                              consentUrlObject?.id !== null
-                                ? consentUrlObject?.id
-                                : {},
-                          }}
-                          isImageTag={!consentUrlObject}
-                          // urlObject={consentUrlObject?.id || {}}
-                          _button={{ p: 0 }}
-                          text={
-                            <HStack space={"2"}>
-                              {t("LINK")}
-                              <IconByName
-                                name="ExternalLinkLineIcon"
-                                isDisabled
-                              />
-                            </HStack>
-                          }
-                        />
-                      </HStack>
-                    }
-                  />
-                );
-              })}
+                  const consentUrlObject = learnerConsentData?.document || {};
+                  return (
+                    <UserCard
+                      key={learner}
+                      title={
+                        <AdminTypo.H6 bold>
+                          {`${learner?.first_name} ${learner?.last_name}`}
+                        </AdminTypo.H6>
+                      }
+                      subTitle={
+                        learner?.district &&
+                        learner?.block &&
+                        learner?.village ? (
+                          <AdminTypo.H6>{`${learner.district} ${learner.block}${learner.village}`}</AdminTypo.H6>
+                        ) : (
+                          ""
+                        )
+                      }
+                      image={
+                        learner?.profile_photo_1?.id
+                          ? { document_id: learner?.profile_photo_1?.id }
+                          : null
+                      }
+                      rightElement={
+                        <HStack>
+                          <ImageView
+                            source={{
+                              document_id:
+                                consentUrlObject?.id !== null
+                                  ? consentUrlObject?.id
+                                  : {},
+                            }}
+                            isImageTag={!consentUrlObject}
+                            // urlObject={consentUrlObject?.id || {}}
+                            _button={{ p: 0 }}
+                            text={
+                              <HStack space={"2"}>
+                                {t("LINK")}
+                                <IconByName
+                                  name="ExternalLinkLineIcon"
+                                  isDisabled
+                                />
+                              </HStack>
+                            }
+                          />
+                        </HStack>
+                      }
+                    />
+                  );
+                })}
+            </VStack>
           </CardComponent>
+
           <CardComponent
             _vstack={{ bg: "light.100", flex: 3 }}
-            _header={{ bg: "#F4F4F4" }}
+            _header={{ bg: "light.100" }}
             title={t("PROPERTY_AND_FACILITY_DETAILS")}
           >
-            <CardComponent
-              isHideProgressBar={true}
-              _vstack={{ space: 4, flex: 3, my: "10px" }}
-              title={t("KIT_DETAILS")}
-              label={[
-                "GOT_THE_KIT",
-                "IS_THE_KIT_USEFUL",
-                "SUGGESTIONS_FOR_THE_KIT",
-                "THE_QUALITY_OF_THE_KIT",
-              ]}
-              item={{
-                ...data,
-                kit_ratings: (
-                  <StarRating
-                    value={data.kit_ratings}
-                    schema={{ totalStars: 5, readOnly: true }}
+            <VStack space={4}>
+              <CardComponent
+                isHideProgressBar={true}
+                _vstack={{ space: 4, flex: 3 }}
+                title={t("KIT_DETAILS")}
+                label={[
+                  "GOT_THE_KIT",
+                  "IS_THE_KIT_USEFUL",
+                  "SUGGESTIONS_FOR_THE_KIT",
+                  "THE_QUALITY_OF_THE_KIT",
+                ]}
+                item={{
+                  ...data,
+                  kit_ratings: (
+                    <StarRating
+                      value={data.kit_ratings}
+                      schema={{ totalStars: 5, readOnly: true }}
+                    />
+                  ),
+                }}
+                arr={[
+                  "kit_received",
+                  "kit_was_sufficient",
+                  "kit_ratings",
+                  "kit_feedback",
+                ]}
+              />
+              <CardComponent
+                title={t(
+                  "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
+                )}
+              >
+                {facilities.map((item) => (
+                  <CheckUncheck
+                    key={item?.title}
+                    schema={{ label: t(item?.title) }}
+                    value={propertyFacilities?.[item?.value] || ""}
                   />
-                ),
-              }}
-              arr={[
-                "kit_received",
-                "kit_was_sufficient",
-                "kit_ratings",
-                "kit_feedback",
-              ]}
-            />
-            <CardComponent
-              title={t(
-                "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
-              )}
-            >
-              {facilities.map((item) => (
-                <CheckUncheck
-                  key={item?.title}
-                  schema={{ label: t(item?.title) }}
-                  value={propertyFacilities?.[item?.value] || ""}
-                />
-              ))}
-            </CardComponent>
+                ))}
+              </CardComponent>
+            </VStack>
           </CardComponent>
         </HStack>
         <HStack space={10} justifyContent={"center"}>
