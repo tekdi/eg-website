@@ -114,19 +114,19 @@ export function CampChipStatus({ status, ...props }) {
         break;
       case "registered":
         setNewStatus(t("GROUPS_STATUS_REGISTERED"));
-        setColor("selectedColor");
+        setColor("warningColor");
         break;
       case "not_registered":
         setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
         setColor("rejectedColor");
         break;
-      case "approved":
-        setNewStatus("Approved");
+      case "camp_ip_verified":
+        setNewStatus(t("GROUPS_STATUS_CAMP_IP_VERIFIED"));
         setColor("selectedColor");
         break;
       case "change_required":
-        setNewStatus("Change Required");
-        setColor("rejectedColor");
+        setNewStatus(t("GROUPS_STATUS_CHANGE_REQUIRED"));
+        setColor("green.200");
         break;
       default:
         setNewStatus(t("NA"));
