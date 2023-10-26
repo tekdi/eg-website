@@ -1,7 +1,7 @@
 import { FrontEndTypo, IconByName, Layout, t } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import { CardComponent } from "@shiksha/common-lib";
-import { VStack, HStack, Pressable } from "native-base";
+import { VStack, HStack, Pressable, Stack } from "native-base";
 import { TimePick } from "./TimePicker";
 
 export default function CampSetting({ footerLinks }) {
@@ -37,6 +37,12 @@ export default function CampSetting({ footerLinks }) {
         <VStack marginTop={10} alignItems="center" space={3}>
           <TimePick />
         </VStack>
+        <Stack marginTop={10} alignItems="center" space={3}>
+          <FrontEndTypo.H2>
+            {" "}
+            Please enter the days you want to take the weekly off.
+          </FrontEndTypo.H2>
+        </Stack>
         <HStack marginTop={10} justifyContent="center" space={4}>
           {weeks.map((day, index) => (
             <Pressable
