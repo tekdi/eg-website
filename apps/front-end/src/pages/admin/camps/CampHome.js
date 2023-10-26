@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -361,12 +361,14 @@ export const Filter = ({ filter, setFilter }) => {
     setFacilitatorFilter({});
   };
   React.useEffect(async () => {
-    const { error, ...result } =
-      await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
+      facilitatorFilter
+    );
+
     if (!error) {
       let newData;
-      if (result?.data?.data) {
-        newData = result?.data?.data?.map((e) => ({
+      if (result) {
+        newData = result?.users?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
@@ -382,6 +384,7 @@ export const Filter = ({ filter, setFilter }) => {
         borderBottomWidth="2"
         borderColor="#eee"
         flexWrap="wrap"
+        Width
       >
         <HStack>
           <IconByName isDisabled name="FilterLineIcon" />
