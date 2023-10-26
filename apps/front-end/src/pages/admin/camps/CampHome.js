@@ -113,7 +113,7 @@ const columns = (navigate) => [
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const [filter, setFilter] = React.useState({});
-  const [Height] = useWindowSize();
+  const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const navigate = useNavigate();
@@ -383,6 +383,7 @@ export const Filter = ({ filter, setFilter }) => {
         borderBottomWidth="2"
         borderColor="#eee"
         flexWrap="wrap"
+        Width
       >
         <HStack>
           <IconByName isDisabled name="FilterLineIcon" />
