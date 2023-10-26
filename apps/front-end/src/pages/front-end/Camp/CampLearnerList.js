@@ -7,7 +7,7 @@ import {
   AdminTypo,
   IconByName,
   ImageView,
-  CampService,
+  campService,
 } from "@shiksha/common-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -52,7 +52,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       const ids = {
         learner_ids: selectedIds,
       };
-      const result = await CampService.campRegister(ids);
+      const result = await campService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
       if (camp_id) {
         navigate(`/camps/${camp_id}`);
@@ -65,7 +65,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(async () => {
-    const result = await CampService.campNonRegisteredUser();
+    const result = await campService.campNonRegisteredUser();
     setNonRegisteredUser(result?.data?.user);
     setLoading(false);
   }, []);

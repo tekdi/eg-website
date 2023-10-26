@@ -18,7 +18,7 @@ import {
   AdminTypo,
   IconByName,
   AdminLayout as Layout,
-  CampService,
+  campService,
   t,
   useWindowSize,
   geolocationRegistryService,
@@ -64,7 +64,7 @@ const columns = (navigate) => [
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id,
+    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
     sortable: true,
     attr: "PRERAK_ID",
   },
@@ -145,7 +145,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
         newFilter = dataFilter;
       }
 
-      const qData = await CampService.getCampList(newFilter);
+      const qData = await campService.getCampList(newFilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }

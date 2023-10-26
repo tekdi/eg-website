@@ -20,7 +20,7 @@ import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
-import * as CampService from './services/CampService'
+import * as campService from './services/campService'
 import * as ConsentService from './services/ConsentService'
 import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
@@ -42,6 +42,7 @@ import CustomRadio from './components/frontend_component/CustomRadio'
 import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
+import GeoLocation from './components/frontend_component/GeoLocation'
 
 // export
 export {
@@ -76,7 +77,7 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
-  CampService,
+  campService,
   ConsentService,
   CheatSheet,
   CustomOTPBox,
@@ -90,7 +91,8 @@ export {
   MapComponent,
   CheckUncheck,
   CustomRadio,
-  UserCard
+  UserCard,
+  GeoLocation
 }
 
 export * from './services/RestClient'
