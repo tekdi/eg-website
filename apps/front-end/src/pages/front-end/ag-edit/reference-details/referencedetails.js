@@ -268,7 +268,7 @@ export default function ReferenceDetails({ ip }) {
               </HStack>
             </Alert>
           )}
-          {page && page !== "" && (
+          {page !== "" && (
             <Form
               key={lang}
               ref={formRef}

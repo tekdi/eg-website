@@ -449,7 +449,7 @@ export default function AgFormEdit({ ip }) {
             </HStack>
           </Alert>
         )}
-        {page && page !== "" && (
+        {page !== "" && (
           <Form
             key={lang + addBtn}
             ref={formRef}

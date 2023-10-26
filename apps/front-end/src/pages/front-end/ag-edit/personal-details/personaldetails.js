@@ -213,7 +213,7 @@ export default function PersonalDetails({ ip }) {
             </HStack>
           </Alert>
         )}
-        {page && page !== "" && (
+        {page !== "" && (
           <Form
             key={lang}
             ref={formRef}

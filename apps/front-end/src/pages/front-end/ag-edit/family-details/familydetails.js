@@ -320,7 +320,7 @@ export default function FamilyDetails({ ip }) {
               </HStack>
             </Alert>
           )}
-          {page && page !== "" && (
+          {page !== "" && (
             <Form
               key={lang}
               ref={formRef}

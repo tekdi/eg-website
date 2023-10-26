@@ -854,7 +854,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           </Alert>
         )}
 
-        {page && page !== "" && (
+        {page !== "" && (
           <Form
             key={lang + addBtn}
             ref={formRef}

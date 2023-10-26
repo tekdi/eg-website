@@ -866,7 +866,7 @@ export default function App({ facilitator, ip, onClick }) {
             </HStack>
           </Alert>
         )}
-        {page && page !== "" && (
+        {page !== "" && (
           <Form
             key={lang}
             ref={formRef}

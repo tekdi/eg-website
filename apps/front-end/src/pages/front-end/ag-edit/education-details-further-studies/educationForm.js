@@ -283,7 +283,7 @@ export default function App({ onClick, id }) {
             </HStack>
           </Alert>
         )}
-        {page && page !== "" && (
+        {page !== "" && (
           <Form
             key={lang}
             ref={formRef}
