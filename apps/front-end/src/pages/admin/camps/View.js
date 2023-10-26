@@ -14,7 +14,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert, Pressable } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert, Text } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -230,20 +230,23 @@ export default function View({ footerLinks }) {
             title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
           >
-            {[
-              data?.properties?.state,
-              data?.properties?.district,
-              data?.properties?.block,
-              data?.properties?.village,
-              data?.properties?.grampanchayat,
-            ]
-              .filter((e) => e)
-              .join(", ")}
+            <VStack space={2}>
+              {" "}
+              {[
+                data?.properties?.state,
+                data?.properties?.district,
+                data?.properties?.block,
+                data?.properties?.village,
+                data?.properties?.grampanchayat,
+              ]
+                .filter((e) => e)
+                .join(", ")}
+            </VStack>
           </CardComponent>
           <CardComponent
             isHideProgressBar={true}
             _header={{ bg: "light.100" }}
-            _vstack={{ bg: "light.100", space: 0, flex: 3 }}
+            _vstack={{ bg: "light.100", space: 2, flex: 3 }}
             title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
             label={["PROPERTY_TYPE"]}
             item={data?.properties}
@@ -355,13 +358,15 @@ export default function View({ footerLinks }) {
                   "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
                 )}
               >
-                {facilities.map((item) => (
-                  <CheckUncheck
-                    key={item?.title}
-                    schema={{ label: t(item?.title) }}
-                    value={propertyFacilities?.[item?.value] || ""}
-                  />
-                ))}
+                <VStack space={2}>
+                  {facilities.map((item) => (
+                    <CheckUncheck
+                      key={item?.title}
+                      schema={{ label: t(item?.title) }}
+                      value={propertyFacilities?.[item?.value] || ""}
+                    />
+                  ))}
+                </VStack>
               </CardComponent>
             </VStack>
           </CardComponent>

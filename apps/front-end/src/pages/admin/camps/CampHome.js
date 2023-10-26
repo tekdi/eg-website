@@ -13,6 +13,7 @@ import {
   VStack,
   Text,
   Input,
+  Pressable,
 } from "native-base";
 import {
   AdminTypo,
@@ -36,6 +37,7 @@ export const CustomStyles = {
   rows: {
     style: {
       minHeight: "72px",
+      cursor: "pointer",
     },
   },
   headCells: {
@@ -92,7 +94,11 @@ const columns = (navigate) => [
   },
   {
     name: t("CAMP_STATUS"),
-    selector: (row) => <CampChipStatus status={row?.group?.status} />,
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
+        <CampChipStatus status={row?.group?.status} />
+      </Pressable>
+    ),
     sortable: true,
     wrap: true,
     attr: "CAMP_STATUS",
@@ -113,7 +119,7 @@ const columns = (navigate) => [
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const [filter, setFilter] = React.useState({});
-  const [Width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const navigate = useNavigate();
@@ -150,6 +156,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
   }, [filter]);
+
+  const handleRowClick = (row) => {
+    navigate(`/admin/camps/${row.id}`);
+  };
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
@@ -253,6 +263,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 onChangePage={(e) => {
                   setFilter({ ...filter, page: e?.toString() });
                 }}
+                onRowClicked={handleRowClick}
               />
             </Box>
           </ScrollView>
