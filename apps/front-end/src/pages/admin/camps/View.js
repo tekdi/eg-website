@@ -18,11 +18,13 @@ import { HStack, Stack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
+import DataTable from "react-data-table-component";
 
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [data, setDataa] = React.useState([]);
+  const [userData, setUserData] = React.useState([]);
   const [facilities, setFacilities] = React.useState([]);
   const [propertyFacilities, setPropertyFacilities] = React.useState({});
   const [properties, setProperties] = React.useState([]);
@@ -45,13 +47,17 @@ export default function View({ footerLinks }) {
       console.error("An error occurred:", error);
     }
   };
-
   React.useEffect(async () => {
     setLoading(true);
     try {
       const result = await campService.getFacilatorAdminCampList({ id });
+      console.log(
+        "result?.data?.camp?.beneficiaries",
+        result?.data?.camp?.beneficiaries
+      );
       const camp = result?.data?.camp;
       setDataa(camp);
+      setUserData(result?.data?.camp?.beneficiaries);
       setEdit(data?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
       setProperties(camp?.properties);
@@ -96,7 +102,58 @@ export default function View({ footerLinks }) {
     };
     return send;
   };
-
+  const columns = (t, navigate) => [
+    {
+      name: "Id",
+      selector: (row) => row?.id,
+      wrap: true,
+      width: "80px",
+    },
+    {
+      name: "Enrollment No.",
+      selector: (row) => row?.program_beneficiaries[0].enrollment_number,
+      wrap: true,
+      width: "120px",
+    },
+    {
+      name: "Name",
+      selector: (row) => (
+        <UserCard
+          _hstack={{ borderWidth: 0, p: 1 }}
+          key={row}
+          title={
+            <AdminTypo.H6 bold>
+              {`${row?.first_name} ${row?.last_name}`}
+            </AdminTypo.H6>
+          }
+          image={
+            row?.profile_photo_1?.id
+              ? { urlObject: row?.profile_photo_1 }
+              : null
+          }
+        />
+      ),
+    },
+    {
+      name: "Enrollment No",
+      selector: (row) => row?.id,
+      wrap: true,
+    },
+    {
+      name: t("ACTION"),
+      selector: (row) => (
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => {
+            navigate(`/admin/view/${row?.id}`);
+          }}
+        >
+          {t("REASSIGN")}
+        </AdminTypo.Secondarybutton>
+      ),
+    },
+  ];
+  // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack flex={1} space={"5"} p="3" mb="5">
@@ -149,7 +206,6 @@ export default function View({ footerLinks }) {
             {data?.id}
           </AdminTypo.H1>
         </HStack>
-
         <HStack flexWrap="wrap">
           <VStack>
             <HStack py="4">
@@ -235,6 +291,7 @@ export default function View({ footerLinks }) {
           <CardComponent
             _header={{ bg: "light.100" }}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
+            title={t("CAMP_LOCATION_ADDRESS")}
             onEdit={edit && navTOedit("edit_camp_location")}
           >
             <VStack space={2} marginTop={"10px"}>
@@ -251,17 +308,27 @@ export default function View({ footerLinks }) {
           </CardComponent>
           <CardComponent
             isHideProgressBar={true}
-            _header={{ bg: "light.100" }}
-            _vstack={{ bg: "light.100", space: 2, flex: 3 }}
-            title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
-            label={["PROPERTY_TYPE"]}
+            _vstack={{ bg: "light.100", space: 2, flex: 3, pt: 3 }}
+            //label={["PROPERTY_TYPE"]}
             item={data?.properties}
             arr={["property_type"]}
             onEdit={edit && navTOedit("edit_camp_location")}
-          ></CardComponent>
+          />
         </HStack>
         <HStack space={4}>
           <CardComponent
+            _vstack={{
+              bg: "light.100",
+              flex: 2,
+              space: 4,
+            }}
+            _header={{ bg: "light.100" }}
+            title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+            onEdit={edit && navTOedit("edit_family_consent")}
+          >
+            <DataTable columns={columns(t, navigate)} data={userData} />
+          </CardComponent>
+          {/* <CardComponent
             _vstack={{
               bg: "light.100",
               flex: 2,
@@ -326,12 +393,10 @@ export default function View({ footerLinks }) {
                   );
                 })}
             </VStack>
-          </CardComponent>
-
+          </CardComponent> */}
           <CardComponent
             _vstack={{ bg: "light.100", flex: 2 }}
             _header={{ bg: "light.100" }}
-            title={t("PROPERTY_AND_FACILITY_DETAILS")}
           >
             <VStack space={4} pt="4">
               <HStack space={3} justifyContent={"space-between"}>
