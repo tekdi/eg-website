@@ -12,18 +12,9 @@ import {
   jsonParse,
   ImageView,
   BodyMedium,
-  ConsentService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  HStack,
-  Stack,
-  VStack,
-  Modal,
-  Alert,
-  Pressable,
-  Button,
-} from "native-base";
+import { HStack, Stack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";

@@ -24,7 +24,6 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
-import CampSelectedLearners from "../CampSelectedLearners.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -41,7 +40,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isEdit] = React.useState(true);
   const [campDetails, setCampDetails] = React.useState();
 
   const getLocation = () => {
@@ -144,13 +142,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
     setLoading(false);
   }, [step, campDetails]);
-
-  const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
-  };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -464,8 +455,6 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   if (page === "edit_family_consent") {
     return <ConsentForm />;
-  } else if (page === "edit_camp_selected_learners") {
-    return <CampSelectedLearners isEdit={isEdit} />;
   }
 
   return (
@@ -485,7 +474,7 @@ export default function App({ userTokenInfo, footerLinks }) {
             </HStack>
           </Alert>
         ) : (
-          <React.Fragment />
+          <React.Fragment></React.Fragment>
         )}
         {page && page !== "" && (
           <Form
