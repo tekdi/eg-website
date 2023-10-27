@@ -31,18 +31,16 @@ export default function View({ footerLinks }) {
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [edit, setEdit] = React.useState(false);
 
   const { id } = useParams();
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
-    const requestBody = {
-      camp_id: campId,
-      facilitator_id: facilitatorId,
-    };
-
     try {
-      const response = await campService.getCampAdminConsent(requestBody);
-      setConsentData(response?.data);
+      const campConsent = await campService.getCampAdminConsent({
+        camp_id: id,
+      });
+      setConsentData(campConsent?.data);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -54,6 +52,7 @@ export default function View({ footerLinks }) {
       const result = await campService.getFacilatorAdminCampList({ id });
       const camp = result?.data?.camp;
       setDataa(camp);
+      setEdit(data?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
       setProperties(camp?.properties);
       let properData = camp?.properties;
@@ -90,6 +89,13 @@ export default function View({ footerLinks }) {
     setFacilities(data);
     setLoading(false);
   }, []);
+
+  const navTOedit = (item) => {
+    const send = () => {
+      navigate(`/admin/camps/${id}/${item}`);
+    };
+    return send;
+  };
 
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
@@ -138,6 +144,7 @@ export default function View({ footerLinks }) {
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
+            enumOptions
           >
             {data?.id}
           </AdminTypo.H1>
@@ -229,6 +236,7 @@ export default function View({ footerLinks }) {
             _header={{ bg: "light.100" }}
             title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
+            onEdit={edit && navTOedit("edit_camp_location")}
           >
             <VStack space={2}>
               {" "}
@@ -251,6 +259,7 @@ export default function View({ footerLinks }) {
             label={["PROPERTY_TYPE"]}
             item={data?.properties}
             arr={["property_type"]}
+            onEdit={edit && navTOedit("edit_camp_location")}
           ></CardComponent>
         </HStack>
         <HStack space={4}>
@@ -262,6 +271,7 @@ export default function View({ footerLinks }) {
             }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+            onEdit={edit && navTOedit("edit_family_consent")}
           >
             <VStack space={4}>
               {data?.beneficiaries?.length > 0 &&
@@ -272,50 +282,49 @@ export default function View({ footerLinks }) {
 
                   const consentUrlObject = learnerConsentData?.document || {};
                   return (
-                    <UserCard
-                      key={learner}
-                      title={
-                        <AdminTypo.H6 bold>
-                          {`${learner?.first_name} ${learner?.last_name}`}
-                        </AdminTypo.H6>
-                      }
-                      subTitle={
-                        <AdminTypo.H6>
-                          {[learner?.district, learner?.block, learner?.village]
-                            .filter((e) => e)
-                            .join(" ")}
-                        </AdminTypo.H6>
-                      }
-                      image={
-                        learner?.profile_photo_1?.id
-                          ? { document_id: learner?.profile_photo_1?.id }
-                          : null
-                      }
-                      rightElement={
-                        <HStack>
-                          <ImageView
-                            source={{
-                              document_id:
-                                consentUrlObject?.id !== null
-                                  ? consentUrlObject?.id
-                                  : {},
-                            }}
-                            isImageTag={!consentUrlObject}
-                            // urlObject={consentUrlObject?.id || {}}
-                            _button={{ p: 0 }}
-                            text={
-                              <HStack space={"2"}>
-                                {t("LINK")}
-                                <IconByName
-                                  name="ExternalLinkLineIcon"
-                                  isDisabled
-                                />
-                              </HStack>
-                            }
-                          />
-                        </HStack>
-                      }
-                    />
+                    <CardComponent key={learner} _vstack={{}}>
+                      <UserCard
+                        _hstack={{ borderWidth: 0, p: 1 }}
+                        key={learner}
+                        title={
+                          <AdminTypo.H6 bold>
+                            {`${learner?.first_name} ${learner?.last_name}`}
+                          </AdminTypo.H6>
+                        }
+                        subTitle={
+                          <AdminTypo.H6>
+                            {[
+                              learner?.district,
+                              learner?.block,
+                              learner?.village,
+                            ]
+                              .filter((e) => e)
+                              .join(" ")}
+                          </AdminTypo.H6>
+                        }
+                        image={
+                          learner?.profile_photo_1?.id
+                            ? { urlObject: learner?.profile_photo_1 }
+                            : null
+                        }
+                      />
+                      <HStack alignItems={"center"}>
+                        <ImageView
+                          source={{
+                            document_id:
+                              consentUrlObject?.id !== null
+                                ? consentUrlObject?.id
+                                : {},
+                          }}
+                          isImageTag={!consentUrlObject}
+                          // urlObject={consentUrlObject?.id || {}}
+                          _button={{ p: 0 }}
+                          text={<HStack space={"4"}>{t("VIEW")}</HStack>}
+                        />
+
+                        <HStack space={"4"}>{t("REASSIGN")}</HStack>
+                      </HStack>
+                    </CardComponent>
                   );
                 })}
             </VStack>
@@ -352,11 +361,13 @@ export default function View({ footerLinks }) {
                   "kit_ratings",
                   "kit_feedback",
                 ]}
+                onEdit={edit && navTOedit("edit_kit_details")}
               />
               <CardComponent
                 title={t(
                   "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
                 )}
+                onEdit={edit && navTOedit("edit_property_facilities")}
               >
                 <VStack space={2}>
                   {facilities.map((item) => (
@@ -392,7 +403,7 @@ export default function View({ footerLinks }) {
           {data?.group?.status === "camp_ip_verified" && (
             <AdminTypo.Secondarybutton
               onPress={() => {
-                updateCampStatus();
+                setEdit(true);
               }}
             >
               {t("MODIFY")}
