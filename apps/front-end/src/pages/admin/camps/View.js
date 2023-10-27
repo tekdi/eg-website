@@ -40,13 +40,13 @@ export default function View({ footerLinks }) {
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
-  const [edit, setEdit] = React.useState(true);
+  const [edit, setEdit] = React.useState(false);
 
   const { id } = useParams();
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
-      const campConsent = await ConsentService.getCampAdminConsent({
+      const campConsent = await campService.getCampAdminConsent({
         camp_id: id,
       });
       setConsentData(campConsent?.data);
@@ -61,6 +61,7 @@ export default function View({ footerLinks }) {
       const result = await campService.getFacilatorAdminCampList({ id });
       const camp = result?.data?.camp;
       setDataa(camp);
+      setEdit(data?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
       setProperties(camp?.properties);
       let properData = camp?.properties;
@@ -152,6 +153,7 @@ export default function View({ footerLinks }) {
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
+            enumOptions
           >
             {data?.id}
           </AdminTypo.H1>
