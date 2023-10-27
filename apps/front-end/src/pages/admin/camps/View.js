@@ -14,7 +14,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert, Text } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -26,7 +26,7 @@ export default function View({ footerLinks }) {
   const [facilities, setFacilities] = React.useState([]);
   const [propertyFacilities, setPropertyFacilities] = React.useState({});
   const [properties, setProperties] = React.useState([]);
-  const [enumOptions, setEnumOptions] = React.useState();
+  const [setEnumOptions] = React.useState();
   const [consentData, setConsentData] = React.useState([]);
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
