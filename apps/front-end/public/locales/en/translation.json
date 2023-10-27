@@ -203,6 +203,7 @@
   "CAMP_PROPERTY_TYPE_OTHER_GOVERNMENT_BUILDING": "Other government_building",
   "CAMP_PROPERTY_TYPE_PRERAK_HOUSE": "Prerak house",
   "CAMP_PROPERTY_TYPE_SAMUDAY_KENDRA": "Samuday kendra",
+  "CAMP_PROPERTY_TYPE": "Type of camp place",
   "CAMP_REGISTER": "Camp Registration",
   "CAMP_STATUS": "Camp Status",
   "CAMP_VALIDATION_MESSAGE_CREATING_CAMP_DETAILS": "Camp registration failed.",

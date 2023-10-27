@@ -308,11 +308,11 @@ export default function View({ footerLinks }) {
           </CardComponent>
           <CardComponent
             isHideProgressBar={true}
-            _vstack={{ bg: "light.100", space: 2, flex: 3, pt: 3 }}
-            //label={["PROPERTY_TYPE"]}
+            _vstack={{ bg: "light.100", space: 0, flex: 1, pt: 3, height: 20 }}
+            label={["CAMP_PROPERTY_TYPE"]}
             item={data?.properties}
             arr={["property_type"]}
-            onEdit={edit && navTOedit("edit_camp_location")}
+            onEdit={edit && navTOedit("Type of camp place")}
           />
         </HStack>
         <HStack space={4}>
