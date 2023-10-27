@@ -152,7 +152,7 @@ export default function View({ footerLinks }) {
       ),
     },
     {
-      name: "Enrollment No",
+      name: t("CONSENT_FORM"),
       selector: (row) => ConsentForm({ t, row, consentData }),
       wrap: true,
     },
