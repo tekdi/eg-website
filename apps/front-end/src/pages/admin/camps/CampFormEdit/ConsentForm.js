@@ -33,7 +33,7 @@ export default function ConsentForm() {
 
   React.useEffect(async () => {
     const result = await campService.getFacilatorAdminCampList({ id });
-    const campConsent = await ConsentService.getCampAdminConsent({
+    const campConsent = await campService.getCampAdminConsent({
       camp_id: id,
     });
     if (Object.keys(campConsent?.data).length === 0) {
