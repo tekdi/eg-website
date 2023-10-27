@@ -20,6 +20,27 @@ import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
 
+const ConsentForm = ({ consentData, row, t }) => {
+  let learnerConsentData = Array.isArray(consentData)
+    ? consentData.find((e) => e.user_id === row?.id)
+    : {};
+
+  const consentUrlObject = learnerConsentData?.document || {};
+  return (
+    <ImageView
+      isImageTag={!consentUrlObject}
+      urlObject={consentUrlObject || {}}
+      _button={{ p: 0 }}
+      text={
+        <IconByName
+          name="FilePdfLineIcon"
+          _icon={{ size: "30", color: "green" }}
+        />
+      }
+    />
+  );
+};
+
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -51,10 +72,6 @@ export default function View({ footerLinks }) {
     setLoading(true);
     try {
       const result = await campService.getFacilatorAdminCampList({ id });
-      console.log(
-        "result?.data?.camp?.beneficiaries",
-        result?.data?.camp?.beneficiaries
-      );
       const camp = result?.data?.camp;
       setDataa(camp);
       setUserData(result?.data?.camp?.beneficiaries);
@@ -136,7 +153,7 @@ export default function View({ footerLinks }) {
     },
     {
       name: "Enrollment No",
-      selector: (row) => row?.id,
+      selector: (row) => ConsentForm({ t, row, consentData }),
       wrap: true,
     },
     {
@@ -328,72 +345,6 @@ export default function View({ footerLinks }) {
           >
             <DataTable columns={columns(t, navigate)} data={userData} />
           </CardComponent>
-          {/* <CardComponent
-            _vstack={{
-              bg: "light.100",
-              flex: 2,
-              space: 4,
-            }}
-            _header={{ bg: "light.100" }}
-            title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
-            onEdit={edit && navTOedit("edit_family_consent")}
-          >
-            <VStack space={4} pt="4">
-              {data?.beneficiaries?.length > 0 &&
-                data?.beneficiaries.map((learner, index) => {
-                  let learnerConsentData = Array.isArray(consentData)
-                    ? consentData.find((e) => e.user_id === learner.id)
-                    : {};
-
-                  const consentUrlObject = learnerConsentData?.document || {};
-                  return (
-                    <CardComponent key={learner} _vstack={{}}>
-                      <UserCard
-                        _hstack={{ borderWidth: 0, p: 1 }}
-                        key={learner}
-                        title={
-                          <AdminTypo.H6 bold>
-                            {`${learner?.first_name} ${learner?.last_name}`}
-                          </AdminTypo.H6>
-                        }
-                        subTitle={
-                          <AdminTypo.H6>
-                            {[
-                              learner?.district,
-                              learner?.block,
-                              learner?.village,
-                            ]
-                              .filter((e) => e)
-                              .join(" ")}
-                          </AdminTypo.H6>
-                        }
-                        image={
-                          learner?.profile_photo_1?.id
-                            ? { urlObject: learner?.profile_photo_1 }
-                            : null
-                        }
-                      />
-                      <HStack alignItems={"center"}>
-                        <ImageView
-                          source={{
-                            document_id:
-                              consentUrlObject?.id !== null
-                                ? consentUrlObject?.id
-                                : {},
-                          }}
-                          isImageTag={!consentUrlObject}
-                          // urlObject={consentUrlObject?.id || {}}
-                          _button={{ p: 0 }}
-                          text={<HStack space={"4"}>{t("VIEW")}</HStack>}
-                        />
-
-                        <HStack space={"4"}>{t("REASSIGN")}</HStack>
-                      </HStack>
-                    </CardComponent>
-                  );
-                })}
-            </VStack>
-          </CardComponent> */}
           <CardComponent
             _vstack={{ bg: "light.100", flex: 2 }}
             _header={{ bg: "light.100" }}
