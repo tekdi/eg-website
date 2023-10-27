@@ -471,6 +471,7 @@ export const Filter = ({ filter, setFilter }) => {
           }}
         />
         <MultiCheck
+          key={facilitator}
           value={filter?.facilitator ? filter?.facilitator : []}
           onChange={(e) => {
             setFilterObject({ ...filter, facilitator: e });
