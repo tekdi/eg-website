@@ -26,7 +26,7 @@ export default function View({ footerLinks }) {
   const [facilities, setFacilities] = React.useState([]);
   const [propertyFacilities, setPropertyFacilities] = React.useState({});
   const [properties, setProperties] = React.useState([]);
-  const [setEnumOptions] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState();
   const [consentData, setConsentData] = React.useState([]);
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
@@ -234,12 +234,10 @@ export default function View({ footerLinks }) {
         <HStack space={4}>
           <CardComponent
             _header={{ bg: "light.100" }}
-            title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
             onEdit={edit && navTOedit("edit_camp_location")}
           >
-            <VStack space={2}>
-              {" "}
+            <VStack space={2} marginTop={"10px"}>
               {[
                 data?.properties?.state,
                 data?.properties?.district,
@@ -266,14 +264,14 @@ export default function View({ footerLinks }) {
           <CardComponent
             _vstack={{
               bg: "light.100",
-              flex: 1,
+              flex: 2,
               space: 4,
             }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
           >
-            <VStack space={4}>
+            <VStack space={4} pt="4">
               {data?.beneficiaries?.length > 0 &&
                 data?.beneficiaries.map((learner, index) => {
                   let learnerConsentData = Array.isArray(consentData)
@@ -331,45 +329,57 @@ export default function View({ footerLinks }) {
           </CardComponent>
 
           <CardComponent
-            _vstack={{ bg: "light.100", flex: 3 }}
+            _vstack={{ bg: "light.100", flex: 2 }}
             _header={{ bg: "light.100" }}
             title={t("PROPERTY_AND_FACILITY_DETAILS")}
           >
-            <VStack space={4}>
-              <CardComponent
-                isHideProgressBar={true}
-                _vstack={{ space: 4, flex: 3 }}
-                title={t("KIT_DETAILS")}
-                label={[
-                  "GOT_THE_KIT",
-                  "IS_THE_KIT_USEFUL",
-                  "SUGGESTIONS_FOR_THE_KIT",
-                  "THE_QUALITY_OF_THE_KIT",
-                ]}
-                item={{
-                  ...data,
-                  kit_ratings: (
-                    <StarRating
-                      value={data.kit_ratings}
-                      schema={{ totalStars: 5, readOnly: true }}
-                    />
-                  ),
-                }}
-                arr={[
-                  "kit_received",
-                  "kit_was_sufficient",
-                  "kit_ratings",
-                  "kit_feedback",
-                ]}
-                onEdit={edit && navTOedit("edit_kit_details")}
-              />
+            <VStack space={4} pt="4">
+              <HStack space={3} justifyContent={"space-between"}>
+                <CardComponent
+                  isHideProgressBar={true}
+                  _vstack={{ space: 4, flex: 2 }}
+                  _hstack={{ space: 2 }}
+                  title={t("KIT_DETAILS")}
+                  label={[
+                    "GOT_THE_KIT",
+                    "IS_THE_KIT_USEFUL",
+                    "RATINGS_FOR_KIT",
+                    "THE_QUALITY_OF_THE_KIT",
+                  ]}
+                  item={{
+                    ...data,
+                    kit_received:
+                      data.kit_received === "yes" ? t("YES") : t("NO"),
+                    kit_was_sufficient:
+                      data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
+                    kit_ratings: (
+                      <StarRating
+                        value={data.kit_ratings}
+                        schema={{
+                          totalStars: 5,
+                          readOnly: true,
+                          _hstack: { my: 0 },
+                          _icon: { _icon: { size: "20" } },
+                        }}
+                      />
+                    ),
+                  }}
+                  arr={[
+                    "kit_received",
+                    "kit_was_sufficient",
+                    "kit_ratings",
+                    "kit_feedback",
+                  ]}
+                  onEdit={edit && navTOedit("edit_kit_details")}
+                />
+              </HStack>
               <CardComponent
                 title={t(
                   "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
                 )}
                 onEdit={edit && navTOedit("edit_property_facilities")}
               >
-                <VStack space={2}>
+                <VStack space={1} pt="4">
                   {facilities.map((item) => (
                     <CheckUncheck
                       key={item?.title}
