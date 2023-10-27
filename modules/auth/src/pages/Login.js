@@ -32,8 +32,7 @@ const styles = {
 export default function Login() {
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
-  const windowSize = useWindowSize();
-  const [width, height] = windowSize();
+  const [width, height] = useWindowSize();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);

@@ -4,7 +4,7 @@ import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
 import {
   geolocationRegistryService,
-  Layout,
+  AdminLayout as Layout,
   BodyMedium,
   filterObject,
   FrontEndTypo,
@@ -24,7 +24,6 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
-import CampSelectedLearners from "../CampSelectedLearners.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -41,7 +40,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isEdit] = React.useState(true);
   const [campDetails, setCampDetails] = React.useState();
 
   const getLocation = () => {
@@ -95,8 +93,8 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await campService.getCampDetails({ id });
-    setCampDetails(result?.data);
+    const result = await campService.getFacilatorAdminCampList({ id });
+    setCampDetails(result?.data?.camp);
     setLoading(false);
   }, []);
 
@@ -145,13 +143,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, [step, campDetails]);
 
-  const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
-  };
-
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
@@ -163,9 +154,9 @@ export default function App({ userTokenInfo, footerLinks }) {
         nextIndex = pages[index - 1];
       }
       if (pageStape === "p") {
-        navigate(`/camps/${id}`);
+        navigate(`/admin/camps/${id}`);
       } else if (nextIndex !== undefined) {
-        navigate(`/camps/${id}/${nextIndex}`);
+        navigate(`/admin/camps/${id}/${nextIndex}`);
       }
     }
   };
@@ -264,7 +255,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const formSubmitUpdate = async (data, overide) => {
     if (id) {
       setLoading(true);
-      const result = await campService.updateCampDetails({
+      const result = await campService.updateIpCampDetails({
         ...data,
         edit_page_type: step,
         ...(overide || {}),
@@ -450,7 +441,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
-        navigate(`/camps/${id}`);
+        navigate(`/admin/camps/${id}`);
       }
     }
   };
@@ -464,35 +455,24 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   if (page === "edit_family_consent") {
     return <ConsentForm />;
-  } else if (page === "edit_camp_selected_learners") {
-    return <CampSelectedLearners isEdit={isEdit} />;
   }
 
   return (
     <Layout
       _appBar={{
-        onPressBackButton,
-        onlyIconsShow: ["backBtn"],
-        leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
-      _footer={{ menues: footerLinks }}
       loading={loading}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
         {page && page !== "" && (
           <Form

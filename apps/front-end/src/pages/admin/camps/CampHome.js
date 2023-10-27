@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -18,7 +18,7 @@ import {
   AdminTypo,
   IconByName,
   AdminLayout as Layout,
-  CampService,
+  campService,
   t,
   useWindowSize,
   geolocationRegistryService,
@@ -64,7 +64,7 @@ const columns = (navigate) => [
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id,
+    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
     sortable: true,
     attr: "PRERAK_ID",
   },
@@ -145,7 +145,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
         newFilter = dataFilter;
       }
 
-      const qData = await CampService.getCampList(newFilter);
+      const qData = await campService.getCampList(newFilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
@@ -361,12 +361,14 @@ export const Filter = ({ filter, setFilter }) => {
     setFacilitatorFilter({});
   };
   React.useEffect(async () => {
-    const { error, ...result } =
-      await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
+      facilitatorFilter
+    );
+
     if (!error) {
       let newData;
-      if (result?.data?.data) {
-        newData = result?.data?.data?.map((e) => ({
+      if (result) {
+        newData = result?.users?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
@@ -382,6 +384,7 @@ export const Filter = ({ filter, setFilter }) => {
         borderBottomWidth="2"
         borderColor="#eee"
         flexWrap="wrap"
+        Width
       >
         <HStack>
           <IconByName isDisabled name="FilterLineIcon" />

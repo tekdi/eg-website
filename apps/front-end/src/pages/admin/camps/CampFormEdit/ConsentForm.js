@@ -8,7 +8,7 @@ import {
   VStack,
 } from "native-base";
 import {
-  Layout,
+  AdminLayout as Layout,
   FrontEndTypo,
   AdminTypo,
   ImageView,
@@ -32,29 +32,32 @@ export default function ConsentForm() {
   const [consents, setConsents] = React.useState();
 
   React.useEffect(async () => {
-    const result = await campService.getCampDetails({ id });
-    const campConsent = await ConsentService.getConsent({ camp_id: id });
+    const result = await campService.getFacilatorAdminCampList({ id });
+    const campConsent = await campService.getCampAdminConsent({
+      camp_id: id,
+    });
     if (Object.keys(campConsent?.data).length === 0) {
       setConsents([]);
     } else {
       setConsents(campConsent?.data);
     }
-    setGroupUsers(result?.data?.group_users);
+    setGroupUsers(result?.data?.camp?.beneficiaries);
     setLoading(false);
   }, [uploadData]);
 
   const onPressBackButton = async () => {
-    navigate(`/camps/${id}`);
+    navigate(`/admin/camps/${id}`);
   };
 
   // update schema
 
   const onClickSubmit = () => {
-    navigate(`/camps/${id}`);
+    navigate(`/admin/camps/${id}`);
   };
 
   const handleUpload = async (data) => {
-    await ConsentService.createConsent(data);
+    console.log("data", data);
+    await ConsentService.editIpConsent(data);
     setUploadData();
     // api call
   };
@@ -62,7 +65,6 @@ export default function ConsentForm() {
   return (
     <Layout
       loading={loading}
-      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
         name: t("CONSENT_FORM"),
         onPressBackButton,
@@ -117,11 +119,9 @@ export default function ConsentForm() {
                     textOverflow="ellipsis"
                   >
                     <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.program_beneficiaries[0]?.enrollment_first_name}
-                      {item?.program_beneficiaries[0]?.enrollment_middle_name &&
-                        ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
-                      {item?.program_beneficiaries[0]?.enrollment_last_name &&
-                        ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
+                      {item?.first_name}
+                      {item?.middle_name && ` ${item?.middle_name}`}
+                      {item?.last_name && ` ${item?.last_name}`}
                     </FrontEndTypo.H3>
                   </VStack>
                 </HStack>
