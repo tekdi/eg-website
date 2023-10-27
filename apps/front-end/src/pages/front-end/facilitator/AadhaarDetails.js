@@ -136,7 +136,7 @@ export default function AadhaarDetails() {
                 </HStack>
               </VStack>
             </VStack>
-            {/* {(facilitator?.aadhar_verified !== "yes" ||
+            {(facilitator?.aadhar_verified !== "yes" ||
               facilitator?.aadhaar_verification_mode === "upload") && (
               <VStack
                 px="5"
@@ -224,7 +224,7 @@ export default function AadhaarDetails() {
                   </VStack>
                 )}
               </VStack>
-            )} */}
+            )}
           </VStack>
         </VStack>
       )}

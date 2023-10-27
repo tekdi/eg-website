@@ -57,8 +57,13 @@ const columns = (t, navigate) => [
     selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
-    name: t("QUALIFICATION"),
-    selector: (row) => row?.qualifications?.qualification_master?.name || "-",
+    name: t("OKYC_VERIFICATION"),
+    wrap: true,
+    selector: (row) =>
+      row?.aadhar_verified === "pending" ||
+      row?.aadhar_verified === "in_progress"
+        ? t("NO")
+        : t("YES"),
   },
   {
     name: t("MOBILE_NUMBER"),
@@ -114,34 +119,37 @@ function Table({
     <VStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-        {Array?.isArray(facilitaorStatus)&&facilitaorStatus?.map((item) => {
-            return (
-              <Text
-                key={"table"}
-                color={filter?.status == t(item?.status) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.status) ? true : false}
-                cursor={"pointer"}
-                mx={3}
-                onPress={() => {
-                  setFilter({ ...filter, status: item?.status, page: 1 });
-                }}
-              >
-                {item.status === "all" ? (
-                  <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
-                ) : (
-                  <GetEnumValue
-                    t={t}
-                    enumType={"FACILITATOR_STATUS"}
-                    enumOptionValue={item?.status}
-                    enumApiData={enumOptions}
-                  />
-                )}
-                {filter?.status == t(item?.status)
-                  ? `(${paginationTotalRows})` + " "
-                  : " "}
-              </Text>
-            );
-          })}
+          {Array?.isArray(facilitaorStatus) &&
+            facilitaorStatus?.map((item) => {
+              return (
+                <Text
+                  key={"table"}
+                  color={
+                    filter?.status == t(item?.status) ? "blueText.400" : ""
+                  }
+                  bold={filter?.status == t(item?.status) ? true : false}
+                  cursor={"pointer"}
+                  mx={3}
+                  onPress={() => {
+                    setFilter({ ...filter, status: item?.status, page: 1 });
+                  }}
+                >
+                  {item.status === "all" ? (
+                    <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                  ) : (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"FACILITATOR_STATUS"}
+                      enumOptionValue={item?.status}
+                      enumApiData={enumOptions}
+                    />
+                  )}
+                  {filter?.status == t(item?.status)
+                    ? `(${paginationTotalRows})` + " "
+                    : " "}
+                </Text>
+              );
+            })}
         </HStack>
       </ScrollView>
       <DataTable
