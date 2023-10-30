@@ -13,6 +13,7 @@ import {
   VStack,
   Text,
   Input,
+  Pressable,
 } from "native-base";
 import {
   AdminTypo,
@@ -36,6 +37,7 @@ export const CustomStyles = {
   rows: {
     style: {
       minHeight: "72px",
+      cursor: "pointer",
     },
   },
   headCells: {
@@ -92,7 +94,11 @@ const columns = (navigate) => [
   },
   {
     name: t("CAMP_STATUS"),
-    selector: (row) => <CampChipStatus status={row?.group?.status} />,
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
+        <CampChipStatus status={row?.group?.status} />
+      </Pressable>
+    ),
     sortable: true,
     wrap: true,
     attr: "CAMP_STATUS",
@@ -151,6 +157,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     }
   }, [filter]);
 
+  const handleRowClick = (row) => {
+    navigate(`/admin/camps/${row.id}`);
+  };
+
   return (
     <Layout
       test={Width}
@@ -195,6 +205,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
+            temp={Width}
           >
             {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
@@ -210,7 +221,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     color={
                       filter?.status == t(item?.status) ? "blueText.400" : ""
                     }
-                    bold={filter?.status == t(item?.status) ? true : false}
+                    bold={filter?.status == t(item?.status)}
                     cursor={"pointer"}
                     mx={3}
                     onPress={() => {
@@ -257,6 +268,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 onChangePage={(e) => {
                   setFilter({ ...filter, page: e?.toString() });
                 }}
+                onRowClicked={handleRowClick}
               />
             </Box>
           </ScrollView>
