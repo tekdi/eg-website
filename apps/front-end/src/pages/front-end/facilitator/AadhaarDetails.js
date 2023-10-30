@@ -162,14 +162,14 @@ export default function AadhaarDetails() {
                           user: facilitator,
                         }}
                       />
-                      <FrontEndTypo.Secondarybutton
+                      {/* <FrontEndTypo.Secondarybutton
                         my="4"
                         onPress={() => {
                           navigate(`/aadhaar-kyc/${id}/QR`);
                         }}
                       >
                         {t("SCAN_QR_CODE")}
-                      </FrontEndTypo.Secondarybutton>
+                      </FrontEndTypo.Secondarybutton> */}
                       {facilitator?.aadhaar_verification_mode !== "upload" && (
                         <FrontEndTypo.Secondarybutton
                           onPress={() => {
