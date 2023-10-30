@@ -4,6 +4,7 @@ import {
   Loading,
   checkAadhaar,
   authRegistryService,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -37,6 +38,7 @@ export default function Aadhaarokyc2({
           aadhaar_verification_mode: "offline",
         });
       }
+      await facilitatorRegistryService.prerakAadhaarOkycResponse(res);
       setPage && setPage("aadhaarSuccess");
     } else {
       setAttempt("number");
