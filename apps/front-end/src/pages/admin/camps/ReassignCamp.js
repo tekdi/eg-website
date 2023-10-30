@@ -99,7 +99,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const reassignCamp = async () => {
     const obj = {
       learner_id: parseInt(user_id),
-      camp_id: id,
+      camp_id: modal?.id,
     };
     const result = await campService.reassignCamp(obj);
     if (result) {
