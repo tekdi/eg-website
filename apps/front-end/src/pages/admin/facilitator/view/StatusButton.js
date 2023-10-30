@@ -241,9 +241,9 @@ export default function StatusButton({ data, setData }) {
                     />
                   </VStack>
                 ) : (
-                  <H1 textAlign="center" py="5">
+                  <AdminTypo.H1 textAlign="center" py="5">
                     {t("ARE_YOU_SURE")}
-                  </H1>
+                  </AdminTypo.H1>
                 )}
                 <HStack width="100%" justifyContent="space-between" space={5}>
                   <AdminTypo.Secondarybutton onPress={() => setShowModal()}>
