@@ -256,14 +256,15 @@ export default function ConsentForm() {
             </AdminTypo.H3>
             <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
           </HStack>
-          <Button
+          <FrontEndTypo.Secondarysmallbutton
             variant="outlinePrimary"
-            colorScheme="green"
-            size={"xs"}
+            colorScheme="red"
+            py="0"
+            endIcon={<IconByName name="EditBoxLineIcon" />}
             onPress={(e) => setIsEditable(!isEditable)}
           >
             {t(isEditable ? "SAVE" : "EDIT")}
-          </Button>
+          </FrontEndTypo.Secondarysmallbutton>
         </HStack>
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
@@ -276,7 +277,8 @@ export default function ConsentForm() {
                   _hstack={{
                     ...(!isEditable
                       ? { py: 0 }
-                      : item?.attendance?.status !== PRESENT
+                      : item?.attendance?.status &&
+                        item?.attendance?.status !== PRESENT
                       ? { p: 0, pl: 4 }
                       : { p: 0 }),
                     space: 1,
@@ -293,7 +295,8 @@ export default function ConsentForm() {
                   _image={{ size: 45, color: "gray" }}
                   leftElement={
                     isEditable &&
-                    item?.attendance?.status === PRESENT && (
+                    (!item?.attendance?.status ||
+                      item?.attendance?.status === PRESENT) && (
                       <IconByName
                         onPress={(e) => {
                           uploadAttendence(item, ABSENT, true);
@@ -308,7 +311,8 @@ export default function ConsentForm() {
                   }
                   rightElement={
                     isEditable &&
-                    item?.attendance?.status === ABSENT && (
+                    (!item?.attendance?.status ||
+                      item?.attendance?.status === ABSENT) && (
                       <IconByName
                         onPress={(e) => {
                           setUserData(item);
@@ -354,7 +358,7 @@ const RenderAttendee = ({ row, t }) => (
     label={
       <FrontEndTypo.H5 bold>
         {row?.fa_is_processed === null
-          ? "-"
+          ? t("NO")
           : row?.fa_is_processed === true
           ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
           : t("NO")}
