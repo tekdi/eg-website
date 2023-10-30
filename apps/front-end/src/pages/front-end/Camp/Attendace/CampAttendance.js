@@ -1,10 +1,9 @@
 import React from "react";
-import { Box, HStack, VStack } from "native-base";
+import { Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
   AdminTypo,
-  ImageView,
   IconByName,
   campService,
   Camera,
@@ -13,7 +12,7 @@ import {
   GeoLocation,
   UserCard,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -24,7 +23,6 @@ const ABSENT = "absent";
 export default function ConsentForm() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [groupUsers, setGroupUsers] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -32,6 +30,7 @@ export default function ConsentForm() {
   const [error, setError] = React.useState("");
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
+  const [isEditable, setIsEditable] = React.useState(false);
 
   React.useEffect(async () => {
     await getData();
@@ -81,20 +80,32 @@ export default function ConsentForm() {
         await getData();
       }
     } else {
-      const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
-      if (photo_1) {
+      if (status === PRESENT) {
+        const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+        if (photo_1) {
+          const payLoad = {
+            ...data,
+            context_id: id,
+            user_id: user?.id,
+            status: PRESENT,
+            photo_1: `${photo_1}`,
+          };
+
+          await campService.markCampAttendance(payLoad);
+          await getData();
+        } else {
+          setError("Capture Picture First");
+        }
+      } else if (status === ABSENT) {
         const payLoad = {
           ...data,
           context_id: id,
           user_id: user?.id,
-          status: PRESENT,
-          photo_1: `${photo_1}`,
+          status: ABSENT,
         };
 
         await campService.markCampAttendance(payLoad);
         await getData();
-      } else {
-        setError("Capture Picture First");
       }
     }
 
@@ -155,6 +166,11 @@ export default function ConsentForm() {
                       {groupUsers?.length ? groupUsers?.length : 0}
                     </AdminTypo.H6>
                   </HStack> */}
+                  {error && (
+                    <AdminTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </AdminTypo.H4>
+                  )}
                 </VStack>
               }
               // footerComponent={
@@ -224,9 +240,9 @@ export default function ConsentForm() {
       }}
     >
       <GeoLocation
-        getLocation={(lat, long, error) => {
-          if (error) {
-            setError(error);
+        getLocation={(lat, long, err) => {
+          if (err) {
+            setError(err);
           } else {
             setData({ ...data, lat: `${lat}`, long: `${long}` });
           }
@@ -234,10 +250,20 @@ export default function ConsentForm() {
       />
       <VStack py={6} px={4} space="6">
         <HStack justifyContent={"space-between"}>
-          <AdminTypo.H3 color={"textMaroonColor.400"}>
-            {t("LEARNERS")}
-          </AdminTypo.H3>
-          <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
+          <HStack>
+            <AdminTypo.H3 color={"textMaroonColor.400"}>
+              {t("LEARNERS")}
+            </AdminTypo.H3>
+            <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
+          </HStack>
+          <Button
+            variant="outlinePrimary"
+            colorScheme="green"
+            size={"xs"}
+            onPress={(e) => setIsEditable(!isEditable)}
+          >
+            {t(isEditable ? "SAVE" : "EDIT")}
+          </Button>
         </HStack>
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
@@ -247,12 +273,27 @@ export default function ConsentForm() {
             return (
               <HStack key={item} flex="1">
                 <UserCard
-                  _hstack={{ p: 0, space: 1, flex: 1 }}
+                  _hstack={{
+                    ...(!isEditable
+                      ? { py: 0 }
+                      : item?.attendance?.status !== PRESENT
+                      ? { p: 0, pl: 4 }
+                      : { p: 0 }),
+                    space: 1,
+                    flex: 1,
+                    bg: isEditable
+                      ? "white"
+                      : item?.attendance?.status === PRESENT
+                      ? "green.100"
+                      : item?.attendance?.status === ABSENT
+                      ? "red.100"
+                      : "",
+                  }}
                   _vstack={{ py: 2 }}
-                  _image={{ size: 45 }}
+                  _image={{ size: 45, color: "gray" }}
                   leftElement={
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === PRESENT) && (
+                    isEditable &&
+                    item?.attendance?.status === PRESENT && (
                       <IconByName
                         onPress={(e) => {
                           uploadAttendence(item, ABSENT, true);
@@ -266,8 +307,8 @@ export default function ConsentForm() {
                     )
                   }
                   rightElement={
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === ABSENT) && (
+                    isEditable &&
+                    item?.attendance?.status === ABSENT && (
                       <IconByName
                         onPress={(e) => {
                           setUserData(item);

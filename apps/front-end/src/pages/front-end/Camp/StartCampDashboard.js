@@ -340,7 +340,9 @@ export default function StartCampDashboard({ footerLinks }) {
         <VStack pt="6" space="4">
           <FrontEndTypo.H3>Other Activites,</FrontEndTypo.H3>
           <HStack space="6">
-            <Pressable onPress={(e) => navigate(`/camps/${id}/attendance`)}>
+            <Pressable
+              onPress={(e) => navigate(`/camps/${id}/attendance-view`)}
+            >
               <VStack alignItems="center" space={3}>
                 <IconByName name="CalendarEventLineIcon" color="gray.400" />
                 <FrontEndTypo.H5>View Attendance</FrontEndTypo.H5>
