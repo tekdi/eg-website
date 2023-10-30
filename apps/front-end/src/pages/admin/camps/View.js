@@ -326,13 +326,7 @@ export default function View({ footerLinks }) {
                 .join(", ")}
             </AdminTypo.H4>
           </CardComponent>
-          {/* <CardComponent
-            isHideProgressBar={true}
-            _vstack={{ bg: "light.100", space: 0, flex: 1, pt: 3, height: 20 }}
-            label={["CAMP_PROPERTY_TYPE"]}
-            // item={data?.properties}
-            // arr={["property_type"]}
-          /> */}
+
           <CardComponent
             _header={{ bg: "light.100" }}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
