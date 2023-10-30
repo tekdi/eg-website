@@ -12,7 +12,7 @@ import {
   GeoLocation,
   UserCard,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -23,7 +23,6 @@ const ABSENT = "absent";
 export default function ConsentForm() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [groupUsers, setGroupUsers] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -80,20 +79,32 @@ export default function ConsentForm() {
         await getData();
       }
     } else {
-      const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
-      if (photo_1) {
+      if (status === PRESENT) {
+        const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+        if (photo_1) {
+          const payLoad = {
+            ...data,
+            context_id: id,
+            user_id: user?.id,
+            status: PRESENT,
+            photo_1: `${photo_1}`,
+          };
+
+          await campService.markCampAttendance(payLoad);
+          await getData();
+        } else {
+          setError("Capture Picture First");
+        }
+      } else if (status === ABSENT) {
         const payLoad = {
           ...data,
           context_id: id,
           user_id: user?.id,
-          status: PRESENT,
-          photo_1: `${photo_1}`,
+          status: ABSENT,
         };
 
         await campService.markCampAttendance(payLoad);
         await getData();
-      } else {
-        setError("Capture Picture First");
       }
     }
 
@@ -154,6 +165,11 @@ export default function ConsentForm() {
                       {groupUsers?.length ? groupUsers?.length : 0}
                     </AdminTypo.H6>
                   </HStack> */}
+                  {error && (
+                    <AdminTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </AdminTypo.H4>
+                  )}
                 </VStack>
               }
               // footerComponent={
@@ -223,9 +239,9 @@ export default function ConsentForm() {
       }}
     >
       <GeoLocation
-        getLocation={(lat, long, error) => {
-          if (error) {
-            setError(error);
+        getLocation={(lat, long, err) => {
+          if (err) {
+            setError(err);
           } else {
             setData({ ...data, lat: `${lat}`, long: `${long}` });
           }
