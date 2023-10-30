@@ -90,8 +90,6 @@ export default function View({ footerLinks }) {
     setLoading(false);
   }, []);
 
-  console.log("enumOptions", enumOptions?.CAMP_PROPERTY_TYPE);
-
   const updateCampStatus = async () => {
     const { error, ...result } = await campService.updateCampStatus({
       id,
