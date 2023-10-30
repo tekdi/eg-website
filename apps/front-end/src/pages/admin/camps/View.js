@@ -12,17 +12,41 @@ import {
   jsonParse,
   ImageView,
   BodyMedium,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert, Pressable } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
+import DataTable from "react-data-table-component";
+
+const ConsentForm = ({ consentData, row, t }) => {
+  let learnerConsentData = Array.isArray(consentData)
+    ? consentData.find((e) => e.user_id === row?.id)
+    : {};
+
+  const consentUrlObject = learnerConsentData?.document || {};
+  return (
+    <ImageView
+      isImageTag={!consentUrlObject}
+      urlObject={consentUrlObject || {}}
+      _button={{ p: 0 }}
+      text={
+        <IconByName
+          name="FilePdfLineIcon"
+          _icon={{ size: "30", color: "green" }}
+        />
+      }
+    />
+  );
+};
 
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [data, setDataa] = React.useState([]);
+  const [userData, setUserData] = React.useState([]);
   const [facilities, setFacilities] = React.useState([]);
   const [propertyFacilities, setPropertyFacilities] = React.useState({});
   const [properties, setProperties] = React.useState([]);
@@ -31,29 +55,28 @@ export default function View({ footerLinks }) {
   const [status, setStatus] = React.useState(false);
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [edit, setEdit] = React.useState(false);
 
   const { id } = useParams();
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
-    const requestBody = {
-      camp_id: campId,
-      facilitator_id: facilitatorId,
-    };
-
     try {
-      const response = await campService.getCampAdminConsent(requestBody);
-      setConsentData(response?.data);
+      const campConsent = await campService.getCampAdminConsent({
+        camp_id: id,
+      });
+      setConsentData(campConsent?.data);
     } catch (error) {
       console.error("An error occurred:", error);
     }
   };
-
   React.useEffect(async () => {
     setLoading(true);
     try {
       const result = await campService.getFacilatorAdminCampList({ id });
       const camp = result?.data?.camp;
       setDataa(camp);
+      setUserData(result?.data?.camp?.beneficiaries);
+      setEdit(data?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
       setProperties(camp?.properties);
       let properData = camp?.properties;
@@ -66,6 +89,8 @@ export default function View({ footerLinks }) {
     }
     setLoading(false);
   }, []);
+
+  console.log("enumOptions", enumOptions?.CAMP_PROPERTY_TYPE);
 
   const updateCampStatus = async () => {
     const { error, ...result } = await campService.updateCampStatus({
@@ -91,6 +116,64 @@ export default function View({ footerLinks }) {
     setLoading(false);
   }, []);
 
+  const navTOedit = (item) => {
+    const send = () => {
+      navigate(`/admin/camps/${id}/${item}`);
+    };
+    return send;
+  };
+  const columns = (t, navigate) => [
+    {
+      name: "Id",
+      selector: (row) => row?.id,
+      wrap: true,
+      width: "80px",
+    },
+    {
+      name: t("ENROLLMENT_NO"),
+      selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
+      wrap: true,
+      width: "120px",
+    },
+    {
+      name: t("LEARNERS_NAME"),
+      selector: (row) => (
+        <UserCard
+          _hstack={{ borderWidth: 0, p: 1 }}
+          key={row}
+          title={
+            <AdminTypo.H6 bold>
+              {`${row?.first_name} ${row?.last_name}`}
+            </AdminTypo.H6>
+          }
+          image={
+            row?.profile_photo_1?.id
+              ? { urlObject: row?.profile_photo_1 }
+              : null
+          }
+        />
+      ),
+    },
+    {
+      name: t("CONSENT_FORM"),
+      selector: (row) => ConsentForm({ t, row, consentData }),
+      wrap: true,
+    },
+    {
+      name: t("ACTION"),
+      selector: (row) => (
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => {
+            navigate(`/admin/camps/${id}/reassign/${row?.id}`);
+          }}
+        >
+          {t("REASSIGN")}
+        </AdminTypo.Secondarybutton>
+      ),
+    },
+  ];
+  // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack flex={1} space={"5"} p="3" mb="5">
@@ -138,11 +221,11 @@ export default function View({ footerLinks }) {
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
+            enumOptions
           >
             {data?.id}
           </AdminTypo.H1>
         </HStack>
-
         <HStack flexWrap="wrap">
           <VStack>
             <HStack py="4">
@@ -227,141 +310,111 @@ export default function View({ footerLinks }) {
         <HStack space={4}>
           <CardComponent
             _header={{ bg: "light.100" }}
-            title={t("CAMP_LOCATION_ADDRESS")}
             _vstack={{ bg: "light.100", space: 2, flex: 1 }}
+            title={t("CAMP_LOCATION_ADDRESS")}
+            onEdit={edit && navTOedit("edit_camp_location")}
           >
-            {[
-              data?.properties?.state,
-              data?.properties?.district,
-              data?.properties?.block,
-              data?.properties?.village,
-              data?.properties?.grampanchayat,
-            ]
-              .filter((e) => e)
-              .join(", ")}
+            <AdminTypo.H4 space={2} marginTop={"10px"}>
+              {[
+                data?.properties?.state,
+                data?.properties?.district,
+                data?.properties?.block,
+                data?.properties?.village,
+                data?.properties?.grampanchayat,
+              ]
+                .filter((e) => e)
+                .join(", ")}
+            </AdminTypo.H4>
           </CardComponent>
+
           <CardComponent
-            isHideProgressBar={true}
             _header={{ bg: "light.100" }}
-            _vstack={{ bg: "light.100", space: 0, flex: 3 }}
-            title={t("INACTIVE_GOVERNMENT_PRIVATE_SCHOOL")}
-            label={["PROPERTY_TYPE"]}
-            item={data?.properties}
-            arr={["property_type"]}
-          ></CardComponent>
+            _vstack={{ bg: "light.100", space: 2, flex: 1 }}
+            title={t("CAMP_PROPERTY_TYPE")}
+            onEdit={edit && navTOedit("edit_camp_location")}
+          >
+            <VStack marginTop={"10px"}>
+              <GetEnumValue
+                t={t}
+                enumType={"CAMP_PROPERTY_TYPE"}
+                enumOptionValue={data?.properties?.property_type}
+                enumApiData={enumOptions}
+              />
+            </VStack>
+          </CardComponent>
         </HStack>
         <HStack space={4}>
           <CardComponent
             _vstack={{
               bg: "light.100",
-              flex: 1,
+              flex: 2,
               space: 4,
             }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+            onEdit={edit && navTOedit("edit_family_consent")}
           >
-            <VStack space={4}>
-              {data?.beneficiaries?.length > 0 &&
-                data?.beneficiaries.map((learner, index) => {
-                  let learnerConsentData = Array.isArray(consentData)
-                    ? consentData.find((e) => e.user_id === learner.id)
-                    : {};
-
-                  const consentUrlObject = learnerConsentData?.document || {};
-                  return (
-                    <UserCard
-                      key={learner}
-                      title={
-                        <AdminTypo.H6 bold>
-                          {`${learner?.first_name} ${learner?.last_name}`}
-                        </AdminTypo.H6>
-                      }
-                      subTitle={
-                        <AdminTypo.H6>
-                          {[learner?.district, learner?.block, learner?.village]
-                            .filter((e) => e)
-                            .join(" ")}
-                        </AdminTypo.H6>
-                      }
-                      image={
-                        learner?.profile_photo_1?.id
-                          ? { document_id: learner?.profile_photo_1?.id }
-                          : null
-                      }
-                      rightElement={
-                        <HStack>
-                          <ImageView
-                            source={{
-                              document_id:
-                                consentUrlObject?.id !== null
-                                  ? consentUrlObject?.id
-                                  : {},
-                            }}
-                            isImageTag={!consentUrlObject}
-                            // urlObject={consentUrlObject?.id || {}}
-                            _button={{ p: 0 }}
-                            text={
-                              <HStack space={"2"}>
-                                {t("LINK")}
-                                <IconByName
-                                  name="ExternalLinkLineIcon"
-                                  isDisabled
-                                />
-                              </HStack>
-                            }
-                          />
-                        </HStack>
-                      }
-                    />
-                  );
-                })}
-            </VStack>
+            <DataTable columns={columns(t, navigate)} data={userData} />
           </CardComponent>
-
           <CardComponent
-            _vstack={{ bg: "light.100", flex: 3 }}
+            _vstack={{ bg: "light.100", flex: 2 }}
             _header={{ bg: "light.100" }}
-            title={t("PROPERTY_AND_FACILITY_DETAILS")}
           >
-            <VStack space={4}>
-              <CardComponent
-                isHideProgressBar={true}
-                _vstack={{ space: 4, flex: 3 }}
-                title={t("KIT_DETAILS")}
-                label={[
-                  "GOT_THE_KIT",
-                  "IS_THE_KIT_USEFUL",
-                  "SUGGESTIONS_FOR_THE_KIT",
-                  "THE_QUALITY_OF_THE_KIT",
-                ]}
-                item={{
-                  ...data,
-                  kit_ratings: (
-                    <StarRating
-                      value={data.kit_ratings}
-                      schema={{ totalStars: 5, readOnly: true }}
-                    />
-                  ),
-                }}
-                arr={[
-                  "kit_received",
-                  "kit_was_sufficient",
-                  "kit_ratings",
-                  "kit_feedback",
-                ]}
-              />
+            <VStack space={4} pt="4">
+              <HStack space={3} justifyContent={"space-between"}>
+                <CardComponent
+                  isHideProgressBar={true}
+                  _vstack={{ space: 4, flex: 2 }}
+                  _hstack={{ space: 2 }}
+                  title={t("KIT_DETAILS")}
+                  label={[
+                    "GOT_THE_KIT",
+                    "IS_THE_KIT_USEFUL",
+                    "RATINGS_FOR_KIT",
+                    "THE_QUALITY_OF_THE_KIT",
+                  ]}
+                  item={{
+                    ...data,
+                    kit_received:
+                      data.kit_received === "yes" ? t("YES") : t("NO"),
+                    kit_was_sufficient:
+                      data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
+                    kit_ratings: (
+                      <StarRating
+                        value={data.kit_ratings}
+                        schema={{
+                          totalStars: 5,
+                          readOnly: true,
+                          _hstack: { my: 0 },
+                          _icon: { _icon: { size: "20" } },
+                        }}
+                      />
+                    ),
+                  }}
+                  arr={[
+                    "kit_received",
+                    "kit_was_sufficient",
+                    "kit_ratings",
+                    "kit_feedback",
+                  ]}
+                  onEdit={edit && navTOedit("edit_kit_details")}
+                />
+              </HStack>
               <CardComponent
                 title={t(
                   "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
                 )}
+                onEdit={edit && navTOedit("edit_property_facilities")}
               >
-                {facilities.map((item) => (
-                  <CheckUncheck
-                    key={item?.title}
-                    schema={{ label: t(item?.title) }}
-                    value={propertyFacilities?.[item?.value] || ""}
-                  />
-                ))}
+                <VStack space={1} pt="4">
+                  {facilities.map((item) => (
+                    <CheckUncheck
+                      key={item?.title}
+                      schema={{ label: t(item?.title) }}
+                      value={propertyFacilities?.[item?.value] || ""}
+                    />
+                  ))}
+                </VStack>
               </CardComponent>
             </VStack>
           </CardComponent>
@@ -387,7 +440,7 @@ export default function View({ footerLinks }) {
           {data?.group?.status === "camp_ip_verified" && (
             <AdminTypo.Secondarybutton
               onPress={() => {
-                updateCampStatus();
+                setEdit(true);
               }}
             >
               {t("MODIFY")}
