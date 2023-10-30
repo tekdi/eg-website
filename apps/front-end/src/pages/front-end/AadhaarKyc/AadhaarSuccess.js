@@ -1,8 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { VStack } from "native-base"; // Assuming other imports are correct
-
+import { VStack } from "native-base";
 import AadharCompare from "./AadhaarCompare";
 import { FrontEndTypo } from "@shiksha/common-lib";
 

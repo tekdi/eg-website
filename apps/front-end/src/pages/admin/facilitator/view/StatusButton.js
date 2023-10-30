@@ -43,8 +43,9 @@ export default function StatusButton({ data, setData }) {
   const [disabledBtn, setDisabledBtn] = React.useState([]);
   const [statusList, setStatusList] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
+  const [okycResponse, setOkycResponse] = React.useState();
   const { t } = useTranslation();
-  const subjectId = JSON.parse(data?.program_faciltators?.okyc_response);
+
   const update = async (status) => {
     if (data?.program_faciltator_id && status) {
       await facilitatorRegistryService.update({
@@ -56,6 +57,11 @@ export default function StatusButton({ data, setData }) {
       setData({ ...data, status: status, status_reason: reason });
     }
   };
+  React.useEffect(() => {
+    const parsedData = JSON.parse(data.program_faciltators.okyc_response);
+    setOkycResponse(parsedData);
+  }, [data]);
+
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     const statusListNew = data?.data.FACILITATOR_STATUS.map((item) => {
@@ -73,9 +79,9 @@ export default function StatusButton({ data, setData }) {
       };
     });
     setStatusList(statusListNew);
-
     setEnumOptions(data?.data);
   }, []);
+
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
       case "application_screened":
@@ -285,7 +291,10 @@ export default function StatusButton({ data, setData }) {
                 <AadharCompare
                   {...{
                     user: data,
-                    aadhaarCompare: checkAadhaar(data, subjectId?.aadhaar_data),
+                    aadhaarCompare: checkAadhaar(
+                      data,
+                      okycResponse?.aadhaar_data
+                    ),
                   }}
                 />
 

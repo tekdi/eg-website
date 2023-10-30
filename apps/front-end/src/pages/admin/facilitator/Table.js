@@ -66,11 +66,7 @@ const columns = (t, navigate) => [
   {
     name: t("OKYC_VERIFICATION"),
     wrap: true,
-    selector: (row) =>
-      row?.aadhar_verified === "pending" ||
-      row?.aadhar_verified === "in_progress"
-        ? t("NO")
-        : t("YES"),
+    selector: (row) => (row?.aadhar_verified === "yes" ? t("YES") : t("NO")),
   },
   {
     name: t("MOBILE_NUMBER"),
@@ -133,7 +129,7 @@ function Table({
           {Array?.isArray(facilitaorStatus) &&
             facilitaorStatus?.map((item) => {
               return (
-                <Text
+                <AdminTypo.H5
                   key={"table"}
                   color={
                     filter?.status == t(item?.status) ? "blueText.400" : ""
@@ -158,7 +154,7 @@ function Table({
                   {filter?.status == t(item?.status)
                     ? `(${paginationTotalRows})` + " "
                     : " "}
-                </Text>
+                </AdminTypo.H5>
               );
             })}
         </HStack>
