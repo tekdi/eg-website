@@ -137,7 +137,7 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
   if (loading === "true" || loading) {
     return <Loading />;
   }
-  console.log(searchStudents, unmarkStudents);
+
   return (
     <Layout
       _appBar={{
@@ -150,10 +150,10 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
       _footer={{ menues: footerLinks }}
     >
       <Stack space={1}>
-        <FrontEndTypo.H4 textAlign="center">
+        {/* <FrontEndTypo.H4 textAlign="center">
           {t("TOTAL") + " " + students.length + " " + t("STUDENTS")}
-        </FrontEndTypo.H4>
-        <Box bg={colors.white} px="4" pb="30">
+        </FrontEndTypo.H4> */}
+        <Box bg={colors.white} px="4" py="30">
           <HStack space="4" justifyContent="space-between" alignItems="center">
             <CalendarBar
               view="week"
@@ -214,6 +214,7 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
           data={searchStudents}
           renderItem={({ item, index }) => (
             <AttendanceComponent
+              type={"weeks"}
               setAlert={setAlert}
               setLastAttedance={setLastAttedance}
               manifest={manifest}

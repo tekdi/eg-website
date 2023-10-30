@@ -130,7 +130,6 @@ export const MultipalAttendance = ({
   const navigate = useNavigate();
   const [startTime, setStartTime] = useState();
   const holidays = [];
-  const fullName = localStorage.getItem("fullName");
   const buttonRef = React.useRef(null);
   useEffect(() => {
     if (showModal) setStartTime(moment());
@@ -534,35 +533,13 @@ export default function AttendanceComponent({
   const [showModal, setShowModal] = React.useState(false);
   const [smsShowModal, setSmsShowModal] = React.useState(false);
   const [loading, setLoading] = React.useState({});
-  const status = Array.isArray(
-    manifest?.["attendance.default_attendance_states"]
-  )
-    ? manifest?.["attendance.default_attendance_states"]
-    : manifest?.["attendance.default_attendance_states"]
-    ? JSON.parse(manifest?.["attendance.default_attendance_states"])
-    : [];
+  const status = [];
 
   useEffect(() => {
     if (typeof page === "object") {
-      setDays(
-        page.map((e) =>
-          calendar(
-            e,
-            type,
-            manifest?.[
-              "class_attendance.no_of_day_display_on_attendance_screen"
-            ]
-          )
-        )
-      );
+      setDays(page.map((e) => calendar(e, type)));
     } else {
-      setDays([
-        calendar(
-          page,
-          type,
-          manifest?.["class_attendance.no_of_day_display_on_attendance_screen"]
-        ),
-      ]);
+      setDays([calendar(page, type)]);
     }
     async function getData() {
       if (attendanceProp) {
@@ -657,10 +634,34 @@ export default function AttendanceComponent({
                   ? { urlObject: student?.profile_photo_1 }
                   : null
               }
+              rightElement={
+                type === "day"
+                  ? days.map((day, index) => (
+                      <CalendarComponent
+                        manifest={manifest}
+                        key={day}
+                        monthDays={[[day]]}
+                        isIconSizeSmall={true}
+                        isEditDisabled={isEditDisabled}
+                        {...{
+                          attendance,
+                          student,
+                          markAttendance,
+                          setAttendanceObject,
+                          setShowModal,
+                          setSmsShowModal,
+                          loading,
+                          type,
+                          _weekBox: _weekBox?.[index] ? _weekBox[index] : {},
+                        }}
+                      />
+                    ))
+                  : false
+              }
             />
           </Suspense>
         )}
-        {type !== "day" ? (
+        {type !== "day" && (
           <Box borderWidth={1} borderColor={colors.coolGray} rounded="xl">
             {days.map((day, index) => (
               <CalendarComponent
@@ -683,8 +684,6 @@ export default function AttendanceComponent({
               />
             ))}
           </Box>
-        ) : (
-          <></>
         )}
         <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
           <Actionsheet.Content alignItems={"left"} bg={colors.bgMarkAttendance}>
@@ -823,12 +822,6 @@ const CalendarComponent = ({
         ...attendanceItem,
         attendance: attendanceItem?.status,
       };
-
-      console.log({
-        attendance,
-        attendanceItem,
-        da: [attendanceItem?.attendance, "===", PRESENT],
-      });
     }
     let attendanceIconProp = !isIconSizeSmall
       ? {
@@ -837,17 +830,11 @@ const CalendarComponent = ({
         }
       : {};
     let attendanceType = PRESENT;
-    if (attendanceItem?.attendance === PRESENT) {
-      attendanceIconProp = {
-        ...attendanceIconProp,
-        status: attendanceItem?.attendance,
-      };
-    } else if (attendanceItem?.attendance === ABSENT) {
-      attendanceIconProp = {
-        ...attendanceIconProp,
-        status: attendanceItem?.attendance,
-      };
-    } else if (attendanceItem?.attendance === "Late") {
+    if (
+      attendanceItem?.attendance === PRESENT ||
+      attendanceItem?.attendance === ABSENT ||
+      attendanceItem?.attendance === "Late"
+    ) {
       attendanceIconProp = {
         ...attendanceIconProp,
         status: attendanceItem?.attendance,
@@ -870,7 +857,7 @@ const CalendarComponent = ({
       }
     }
 
-    return [
+    return {
       isToday,
       isAllowDay,
       isHoliday,
@@ -879,14 +866,14 @@ const CalendarComponent = ({
       attendanceItem,
       attendanceIconProp,
       attendanceType,
-    ];
+    };
   };
 
   return monthDays.map((week, index) => (
     <HStack
       justifyContent="space-around"
       alignItems="center"
-      key={index}
+      key={week}
       borderBottomWidth={
         monthDays.length > 1 && monthDays.length - 1 !== index ? "1" : "0"
       }
@@ -894,21 +881,14 @@ const CalendarComponent = ({
       {...(type === "day" ? { px: "2" } : { p: "2" })}
       {..._weekBox}
     >
-      {week.map((day, subIndex) => {
-        const [
-          isToday,
-          isAllowDay,
-          isHoliday,
-          dateValue,
-          smsDay,
-          attendanceItem,
-          attendanceIconProp,
-          attendanceType,
-        ] = handleAttendaceData(attendance, day);
-        if (attendanceItem) console.log({ attendanceIconProp, attendanceItem });
+      {console.log({ week })}
+      {week?.map((day, subIndex) => {
+        const { isToday, isHoliday, dateValue, smsDay, attendanceIconProp } =
+          handleAttendaceData(attendance, day);
+
         return (
           <VStack
-            key={subIndex}
+            key={day}
             alignItems="center"
             borderWidth={isToday ? "1" : ""}
             borderColor={isToday ? colors.calendarBtn : ""}
