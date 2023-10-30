@@ -53,6 +53,9 @@ const CampHome = React.lazy(() => import("pages/admin/camps/CampHome"));
 // const CampsView = React.lazy(() => import("pages/admin/camps/View"));
 const ViewCamp = React.lazy(() => import("pages/admin/camps/View"));
 const ReassignCamp = React.lazy(() => import("pages/admin/camps/ReassignCamp"));
+const ReassignPrerak = React.lazy(() =>
+  import("pages/admin/camps/ReassignPrerak")
+);
 const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
@@ -110,7 +113,11 @@ export default [
   { path: "/", component: Orientation },
   { path: "/admin/camps", component: CampHome },
   { path: "/admin/camps/:id", component: ViewCamp },
-  { path: "/admin/camps/:id/reassign", component: ReassignCamp },
+  { path: "/admin/camps/:id/reassign/:user_id", component: ReassignCamp },
+  {
+    path: "/admin/camps/:id/reassignPrerak/:user_id",
+    component: ReassignPrerak,
+  },
   {
     path: "/admin/camps/:id/:step",
     component: CampForm,

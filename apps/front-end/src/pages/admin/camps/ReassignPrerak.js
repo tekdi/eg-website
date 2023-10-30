@@ -8,22 +8,16 @@ import {
   tableCustomStyles,
   campService,
   useWindowSize,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { Box, HStack, Modal, VStack, ScrollView, useToast } from "native-base";
-import { CampChipStatus } from "component/Chip";
+import { CampChipStatus, ChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
-import { ChipStatus } from "component/BeneficiaryStatus";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 
 const columns = (navigate, t, setModal) => [
-  {
-    name: t("CAMP_ID"),
-    selector: (row) => row?.id,
-    sortable: true,
-    attr: "CAMP_ID",
-  },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.faciltator?.user?.faciltator_id,
@@ -53,11 +47,18 @@ const columns = (navigate, t, setModal) => [
     attr: "BLOCK",
   },
   {
-    name: t("CAMP_STATUS"),
-    selector: (row) => <CampChipStatus status={row?.group?.status} />,
+    name: t("LEARNER_COUNT"),
+    selector: (row) => <>0</>,
     sortable: true,
     wrap: true,
-    attr: "CAMP_STATUS",
+    attr: "LEARNER_COUNT",
+  },
+  {
+    name: t("CAMP_COUNT"),
+    selector: (row) => <>0</>,
+    sortable: true,
+    wrap: true,
+    attr: "CAMP_COUNT",
   },
   {
     name: t("ACTION"),
@@ -88,8 +89,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
   React.useEffect(async () => {
     let newFilter = filter;
-    const result = await benificiaryRegistoryService.getOne(user_id);
-    setData(result?.result);
+    const id = user_id;
+    const result = await facilitatorRegistryService.getOne({ id });
+    setData(result);
     const qData = await campService.getCampList(newFilter);
     setCampData(qData?.camps);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
@@ -146,7 +148,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
-              <ChipStatus status={data?.program_beneficiaries?.status} />
+              <ChipStatus status={data?.status} />
+              {console.log("data", data)}
               <HStack
                 bg="badgeColor.400"
                 rounded={"md"}
@@ -242,6 +245,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         <ScrollView
           maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
         >
+          {console.log("campData", campData)}
           <DataTable
             filter={filter}
             setFilter={(e) => {

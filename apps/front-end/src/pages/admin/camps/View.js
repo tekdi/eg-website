@@ -14,7 +14,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert } from "native-base";
+import { HStack, Stack, VStack, Modal, Alert, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -166,11 +166,23 @@ export default function View({ footerLinks }) {
                       _image={{ size: 100 }}
                       title={
                         <VStack>
-                          <AdminTypo.H6 color="textGreyColor.600">
-                            {[facilitator?.first_name, facilitator?.last_name]
-                              .filter((e) => e)
-                              .join(" ")}
-                          </AdminTypo.H6>
+                          <HStack alignItems={"center"} space={20}>
+                            <AdminTypo.H6 color="textGreyColor.600">
+                              {[facilitator?.first_name, facilitator?.last_name]
+                                .filter((e) => e)
+                                .join(" ")}
+                            </AdminTypo.H6>
+                            <IconByName
+                              name="EditBoxLineIcon"
+                              color="iconColor.100"
+                              onPress={(e) =>
+                                navigate(
+                                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                                )
+                              }
+                            />
+                          </HStack>
+
                           <AdminTypo.H4 color="textGreyColor.600">
                             {facilitator?.mobile}
                           </AdminTypo.H4>
@@ -318,8 +330,15 @@ export default function View({ footerLinks }) {
                           _button={{ p: 0 }}
                           text={<HStack space={"4"}>{t("VIEW")}</HStack>}
                         />
-
-                        <HStack space={"4"}>{t("REASSIGN")}</HStack>
+                        <Pressable
+                          onPress={() =>
+                            navigate(
+                              `/admin/camps/${id}/reassign/${learner?.id}`
+                            )
+                          }
+                        >
+                          <HStack space={"4"}>{t("REASSIGN")}</HStack>
+                        </Pressable>
                       </HStack>
                     </CardComponent>
                   );
