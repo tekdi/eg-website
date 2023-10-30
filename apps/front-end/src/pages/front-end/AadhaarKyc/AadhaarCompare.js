@@ -1,20 +1,11 @@
 import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
-import { Alert, HStack, VStack, Image, Box } from "native-base";
+import { HStack, VStack, Image, Box } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
 
-export default function AadharCompare({
-  user,
-  type,
-  location,
-  aadhaarCompare,
-}) {
+export default function AadharCompare({ aadhaarCompare }) {
   const { t } = useTranslation();
-  const { id } = useParams();
   const [data, setData] = React.useState([]);
-  const [verifiedData, setVerifiedData] = React.useState({});
-  const [isVerified, setIsVerified] = React.useState(true);
 
   React.useEffect(() => {
     const newData = aadhaarCompare?.data || [];
@@ -24,12 +15,10 @@ export default function AadharCompare({
       if (e?.arr) {
         verData = {
           ...verData,
-          [e.arr]: e?.isVerified === false ? false : true,
+          [e.arr]: e?.isVerified === false,
         };
       }
     });
-    setVerifiedData(verData);
-    setIsVerified(aadhaarCompare?.isVerified);
   }, []);
 
   return (
@@ -91,7 +80,7 @@ export default function AadharCompare({
           ) : (
             <VStack key={item}>
               {index === 1 && (
-                <HStack key={index - 1} px="4" flex="1" py="2" space={2}>
+                <HStack key={item} px="4" flex="1" py="2" space={2}>
                   <FrontEndTypo.H3 flex="1">{t("TITLE")} </FrontEndTypo.H3>
                   <FrontEndTypo.H3 flex="1">
                     {t("PROFILE_DETAILS")}
@@ -117,65 +106,6 @@ export default function AadharCompare({
           )
         )}
       </VStack>
-      {/* <Alert status={isVerified ? "success" : "error"} my="4">
-        <VStack space={2} flexShrink={1}>
-          <HStack
-            flexShrink={1}
-            space={2}
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <HStack flexShrink={1} space={2} alignItems="center">
-              <Alert.Icon />
-              <FrontEndTypo.H4>
-                {type === "upload"
-                  ? isVerified
-                    ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
-                    : t("YOUR_AADHAAR_UPLOAD_FAILED")
-                  : isVerified
-                  ? t("AADHAAR_VERIFICATION_SUCCESSFUL")
-                  : t("AADHAR_KYC_VERIFICATION_FAILED")}
-              </FrontEndTypo.H4>
-            </HStack>
-          </HStack>
-        </VStack>
-        <VStack mt="2" space="4">
-          {(verifiedData?.first_name === false ||
-            verifiedData?.dob === false) && (
-            <HStack space={2}>
-              <VStack flex={1} space={2}>
-                {verifiedData?.first_name === false && (
-                  <FrontEndTypo.H3>
-                    {t("AADHAAR_OKYC_NAME_IS_NOT_MATCH_MESSAGE")}
-                  </FrontEndTypo.H3>
-                )}
-                {verifiedData?.dob === false && (
-                  <FrontEndTypo.H3>
-                    {t("AADHAAR_OKYC_DOB_IS_NOT_MATCH_MESSAGE")}
-                  </FrontEndTypo.H3>
-                )}
-              </VStack>
-              <FrontEndTypo.Primarybutton
-                ml="1"
-                size="md"
-                height="15px"
-                onPress={(e) => {
-                  navigate(`/profile/edit/basic_details`);
-                }}
-              >
-                <FrontEndTypo.H4 bold color="white">
-                  {t("EDIT")}
-                </FrontEndTypo.H4>
-              </FrontEndTypo.Primarybutton>
-            </HStack>
-          )}
-          {verifiedData?.aadhaar_no === false && (
-            <FrontEndTypo.H3>
-              {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCH_MESSAGE")}
-            </FrontEndTypo.H3>
-          )}
-        </VStack>
-      </Alert> */}
     </VStack>
   );
 }

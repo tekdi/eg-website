@@ -6,7 +6,7 @@ import {
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
+import { HStack, VStack, ScrollView, Pressable } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -127,7 +127,7 @@ function Table({
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
           {Array?.isArray(facilitaorStatus) &&
-            facilitaorStatus?.map((item) => {
+            facilitaorStatus.map((item) => {
               return (
                 <AdminTypo.H5
                   key={"table"}

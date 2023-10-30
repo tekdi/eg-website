@@ -152,7 +152,11 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   }, [filter]);
 
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      {...Width}
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+    >
       <HStack
         space={[0, 0, "2"]}
         p="2"
