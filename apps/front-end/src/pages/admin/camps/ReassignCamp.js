@@ -91,7 +91,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     const result = await benificiaryRegistoryService.getOne(user_id);
     setData(result?.result);
     const qData = await campService.getCampList(newFilter);
-    setCampData(qData?.camps);
+    const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
+    setCampData(filtered);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
   }, []);
