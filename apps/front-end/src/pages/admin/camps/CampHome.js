@@ -11,7 +11,6 @@ import {
   HStack,
   ScrollView,
   VStack,
-  Text,
   Input,
   Pressable,
 } from "native-base";
@@ -216,7 +215,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <HStack pb="2">
               {CampFilterStatus?.map((item) => {
                 return (
-                  <Text
+                  <AdminTypo.H5
                     key={"table"}
                     color={
                       filter?.status == t(item?.status) ? "blueText.400" : ""
@@ -241,7 +240,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     {filter?.status == t(item?.status)
                       ? `(${paginationTotalRows})` + " "
                       : " "}
-                  </Text>
+                  </AdminTypo.H5>
                 );
               })}
             </HStack>
