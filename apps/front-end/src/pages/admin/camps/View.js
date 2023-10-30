@@ -12,6 +12,7 @@ import {
   jsonParse,
   ImageView,
   BodyMedium,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, Stack, VStack, Modal, Alert } from "native-base";
@@ -89,6 +90,8 @@ export default function View({ footerLinks }) {
     setLoading(false);
   }, []);
 
+  console.log("enumOptions", enumOptions?.CAMP_PROPERTY_TYPE);
+
   const updateCampStatus = async () => {
     const { error, ...result } = await campService.updateCampStatus({
       id,
@@ -127,13 +130,13 @@ export default function View({ footerLinks }) {
       width: "80px",
     },
     {
-      name: "Enrollment No.",
-      selector: (row) => row?.program_beneficiaries[0].enrollment_number,
+      name: t("ENROLLMENT_NO"),
+      selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
       wrap: true,
       width: "120px",
     },
     {
-      name: "Name",
+      name: t("LEARNERS_NAME"),
       selector: (row) => (
         <UserCard
           _hstack={{ borderWidth: 0, p: 1 }}
@@ -162,7 +165,7 @@ export default function View({ footerLinks }) {
         <AdminTypo.Secondarybutton
           my="3"
           onPress={() => {
-            navigate(`/admin/view/${row?.id}`);
+            navigate(`/admin/camps/${id}/reassign/${row?.id}`);
           }}
         >
           {t("REASSIGN")}
@@ -311,7 +314,7 @@ export default function View({ footerLinks }) {
             title={t("CAMP_LOCATION_ADDRESS")}
             onEdit={edit && navTOedit("edit_camp_location")}
           >
-            <VStack space={2} marginTop={"10px"}>
+            <AdminTypo.H4 space={2} marginTop={"10px"}>
               {[
                 data?.properties?.state,
                 data?.properties?.district,
@@ -321,16 +324,30 @@ export default function View({ footerLinks }) {
               ]
                 .filter((e) => e)
                 .join(", ")}
-            </VStack>
+            </AdminTypo.H4>
           </CardComponent>
-          <CardComponent
+          {/* <CardComponent
             isHideProgressBar={true}
             _vstack={{ bg: "light.100", space: 0, flex: 1, pt: 3, height: 20 }}
             label={["CAMP_PROPERTY_TYPE"]}
-            item={data?.properties}
-            arr={["property_type"]}
-            onEdit={edit && navTOedit("Type of camp place")}
-          />
+            // item={data?.properties}
+            // arr={["property_type"]}
+          /> */}
+          <CardComponent
+            _header={{ bg: "light.100" }}
+            _vstack={{ bg: "light.100", space: 2, flex: 1 }}
+            title={t("CAMP_PROPERTY_TYPE")}
+            onEdit={edit && navTOedit("edit_camp_location")}
+          >
+            <VStack marginTop={"10px"}>
+              <GetEnumValue
+                t={t}
+                enumType={"CAMP_PROPERTY_TYPE"}
+                enumOptionValue={data?.properties?.property_type}
+                enumApiData={enumOptions}
+              />
+            </VStack>
+          </CardComponent>
         </HStack>
         <HStack space={4}>
           <CardComponent

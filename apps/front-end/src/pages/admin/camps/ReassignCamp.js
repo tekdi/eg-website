@@ -72,7 +72,7 @@ const columns = (navigate, t, setModal) => [
 ];
 
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
-  const { id } = useParams();
+  const { id, user_id } = useParams();
   const [data, setData] = React.useState();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
@@ -88,7 +88,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
   React.useEffect(async () => {
     let newFilter = filter;
-    const result = await benificiaryRegistoryService.getOne(id);
+    const result = await benificiaryRegistoryService.getOne(user_id);
     setData(result?.result);
     const qData = await campService.getCampList(newFilter);
     setCampData(qData?.camps);
@@ -98,8 +98,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
   const reassignCamp = async () => {
     const obj = {
-      learner_id: parseInt(id),
-      camp_id: modal?.id,
+      learner_id: parseInt(user_id),
+      camp_id: id,
     };
     const result = await campService.reassignCamp(obj);
     if (result) {
