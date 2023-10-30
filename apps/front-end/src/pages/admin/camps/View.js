@@ -133,26 +133,16 @@ export default function View({ footerLinks }) {
       name: t("ENROLLMENT_NO"),
       selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
       wrap: true,
-      width: "120px",
+      width: "80px",
     },
     {
       name: t("LEARNERS_NAME"),
       selector: (row) => (
-        <UserCard
-          _hstack={{ borderWidth: 0, p: 1 }}
-          key={row}
-          title={
-            <AdminTypo.H6 bold>
-              {`${row?.first_name} ${row?.last_name}`}
-            </AdminTypo.H6>
-          }
-          image={
-            row?.profile_photo_1?.id
-              ? { urlObject: row?.profile_photo_1 }
-              : null
-          }
-        />
+        <AdminTypo.H6 bold>
+          {`${row?.first_name} ${row?.last_name ? row?.last_name : ""}`}
+        </AdminTypo.H6>
       ),
+      wrap: true,
     },
     {
       name: t("CONSENT_FORM"),
@@ -163,6 +153,7 @@ export default function View({ footerLinks }) {
       name: t("ACTION"),
       selector: (row) => (
         <AdminTypo.Secondarybutton
+          fontSize="12px"
           my="3"
           onPress={() => {
             navigate(`/admin/camps/${id}/reassign/${row?.id}`);
@@ -348,7 +339,7 @@ export default function View({ footerLinks }) {
             _vstack={{
               bg: "light.100",
               flex: 2,
-              space: 4,
+              space: 2,
             }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
