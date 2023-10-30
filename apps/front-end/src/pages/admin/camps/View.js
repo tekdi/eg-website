@@ -127,20 +127,29 @@ export default function View({ footerLinks }) {
       name: "Id",
       selector: (row) => row?.id,
       wrap: true,
-      width: "80px",
     },
     {
       name: t("ENROLLMENT_NO"),
       selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
       wrap: true,
-      width: "80px",
     },
     {
       name: t("LEARNERS_NAME"),
       selector: (row) => (
-        <AdminTypo.H6 bold>
-          {`${row?.first_name} ${row?.last_name ? row?.last_name : ""}`}
-        </AdminTypo.H6>
+        <UserCard
+          _hstack={{ borderWidth: 0, p: 1 }}
+          key={row}
+          title={
+            <AdminTypo.H6 bold>
+              {`${row?.first_name} ${row?.last_name ? row?.last_name : ""}`}
+            </AdminTypo.H6>
+          }
+          image={
+            row?.profile_photo_1?.id
+              ? { urlObject: row?.profile_photo_1 }
+              : null
+          }
+        />
       ),
       wrap: true,
     },
@@ -153,7 +162,7 @@ export default function View({ footerLinks }) {
       name: t("ACTION"),
       selector: (row) => (
         <AdminTypo.Secondarybutton
-          my="3"
+          my="2"
           onPress={() => {
             navigate(`/admin/camps/${id}/reassign/${row?.id}`);
           }}
@@ -333,6 +342,62 @@ export default function View({ footerLinks }) {
             </VStack>
           </CardComponent>
         </HStack>
+
+        <HStack space={4}>
+          <CardComponent
+            isHideProgressBar={true}
+            _vstack={{ space: 4, flex: 1 }}
+            _hstack={{ space: 2 }}
+            title={t("KIT_DETAILS")}
+            label={[
+              "GOT_THE_KIT",
+              "IS_THE_KIT_USEFUL",
+              "RATINGS_FOR_KIT",
+              "THE_QUALITY_OF_THE_KIT",
+            ]}
+            item={{
+              ...data,
+              kit_received: data.kit_received === "yes" ? t("YES") : t("NO"),
+              kit_was_sufficient:
+                data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
+              kit_ratings: (
+                <StarRating
+                  value={data.kit_ratings}
+                  schema={{
+                    totalStars: 5,
+                    readOnly: true,
+                    _hstack: { my: 0 },
+                    _icon: { _icon: { size: "20" } },
+                  }}
+                />
+              ),
+            }}
+            arr={[
+              "kit_received",
+              "kit_was_sufficient",
+              "kit_ratings",
+              "kit_feedback",
+            ]}
+            onEdit={edit && navTOedit("edit_kit_details")}
+          />
+
+          <CardComponent
+            title={t("THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE")}
+            onEdit={edit && navTOedit("edit_property_facilities")}
+            _vstack={{ space: 4, flex: 1 }}
+          >
+            <VStack space={1} pt="4">
+              {facilities.map((item) => (
+                <CheckUncheck
+                  key={item?.title}
+                  schema={{ label: t(item?.title) }}
+                  value={propertyFacilities?.[item?.value] || ""}
+                />
+              ))}
+            </VStack>
+          </CardComponent>
+        </HStack>
+
         <HStack space={4}>
           <CardComponent
             _vstack={{
@@ -345,68 +410,6 @@ export default function View({ footerLinks }) {
             onEdit={edit && navTOedit("edit_family_consent")}
           >
             <DataTable columns={columns(t, navigate)} data={userData} />
-          </CardComponent>
-          <CardComponent
-            _vstack={{ bg: "light.100", flex: 2 }}
-            _header={{ bg: "light.100" }}
-          >
-            <VStack space={4} pt="4">
-              <HStack space={3} justifyContent={"space-between"}>
-                <CardComponent
-                  isHideProgressBar={true}
-                  _vstack={{ space: 4, flex: 2 }}
-                  _hstack={{ space: 2 }}
-                  title={t("KIT_DETAILS")}
-                  label={[
-                    "GOT_THE_KIT",
-                    "IS_THE_KIT_USEFUL",
-                    "RATINGS_FOR_KIT",
-                    "THE_QUALITY_OF_THE_KIT",
-                  ]}
-                  item={{
-                    ...data,
-                    kit_received:
-                      data.kit_received === "yes" ? t("YES") : t("NO"),
-                    kit_was_sufficient:
-                      data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
-                    kit_ratings: (
-                      <StarRating
-                        value={data.kit_ratings}
-                        schema={{
-                          totalStars: 5,
-                          readOnly: true,
-                          _hstack: { my: 0 },
-                          _icon: { _icon: { size: "20" } },
-                        }}
-                      />
-                    ),
-                  }}
-                  arr={[
-                    "kit_received",
-                    "kit_was_sufficient",
-                    "kit_ratings",
-                    "kit_feedback",
-                  ]}
-                  onEdit={edit && navTOedit("edit_kit_details")}
-                />
-              </HStack>
-              <CardComponent
-                title={t(
-                  "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE"
-                )}
-                onEdit={edit && navTOedit("edit_property_facilities")}
-              >
-                <VStack space={1} pt="4">
-                  {facilities.map((item) => (
-                    <CheckUncheck
-                      key={item?.title}
-                      schema={{ label: t(item?.title) }}
-                      value={propertyFacilities?.[item?.value] || ""}
-                    />
-                  ))}
-                </VStack>
-              </CardComponent>
-            </VStack>
           </CardComponent>
         </HStack>
         <HStack space={10} justifyContent={"center"}>
