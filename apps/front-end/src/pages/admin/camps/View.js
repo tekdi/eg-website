@@ -160,6 +160,7 @@ export default function View({ footerLinks }) {
       name: t("ACTION"),
       selector: (row) => (
         <AdminTypo.Secondarybutton
+          my={3}
           onPress={() => {
             navigate(`/admin/camps/${id}/reassign/${row?.id}`);
           }}
