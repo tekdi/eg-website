@@ -1,8 +1,9 @@
-import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
-import { Alert, HStack, VStack, Image, Box } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import { VStack } from "native-base";
+import AadharCompare from "./AadhaarCompare";
+import { FrontEndTypo } from "@shiksha/common-lib";
 
 export default function AadhaarSuccess({
   user,
@@ -10,180 +11,28 @@ export default function AadhaarSuccess({
   location,
   aadhaarCompare,
 }) {
-  const [data, setData] = React.useState([]);
-  const [verifiedData, setVerifiedData] = React.useState({});
-  const [isVerified, setIsVerified] = React.useState(true);
+  const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { id } = useParams();
-  React.useEffect(() => {
-    const newData = aadhaarCompare?.data || [];
-    setData(newData);
-    let verData = {};
-    newData.forEach((e) => {
-      if (e?.arr) {
-        verData = {
-          ...verData,
-          [e.arr]: e?.isVerified === false ? false : true,
-        };
-      }
-    });
-    setVerifiedData(verData);
-    setIsVerified(aadhaarCompare?.isVerified);
-  }, []);
+
+  const handleContinue = () => {
+    if (location?.state) {
+      navigate(location?.state);
+    } else if (user?.program_facilitators?.id) {
+      navigate(`/profile/${id}/aadhaardetails`);
+    } else if (id) {
+      navigate(`/beneficiary/${id}`);
+    } else if (user?.id) {
+      navigate(`/admin/view/${id}`);
+    } else {
+      navigate("/beneficiary/list");
+    }
+  };
 
   return (
-    <VStack px="4" space="4">
-      <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
-        {t("OFFLINE_AADHAAR_VERIFICATION")}
-        (OKYC)
-      </FrontEndTypo.H1>
-      <VStack space={"2"} bg="white" shadow="FooterShadow" borderRadius="10">
-        {data?.map((item, index) =>
-          item.name === "PHOTO" ? (
-            <HStack
-              px="4"
-              py="2"
-              justifyContent={item?.aadhaar ? "" : "center"}
-            >
-              <Box w="120" h="120" flex="1" display={["none", "unset"]} />
-              <VStack space="1" flex="1">
-                <FrontEndTypo.H3>{t("PROFILE_DETAILS")}</FrontEndTypo.H3>
-                {item?.user ? (
-                  <ImageView
-                    w="120"
-                    h="120"
-                    source={{ document_id: item?.user }}
-                    alt="user photo"
-                  />
-                ) : (
-                  <IconByName
-                    isDisabled
-                    name="AccountCircleLineIcon"
-                    color="iconColor.350"
-                    _icon={{ size: "120" }}
-                    justifySelf="Center"
-                  />
-                )}
-              </VStack>
-              {item?.aadhaar && (
-                <VStack space="1" flex="1">
-                  <FrontEndTypo.H3>{t("AADHAAR_DETAILS")}</FrontEndTypo.H3>
-                  <Image
-                    rounded={"full"}
-                    w="120"
-                    h="120"
-                    source={{
-                      uri: `data:image/jpeg;charset=utf-8;base64,${item?.aadhaar}`,
-                    }}
-                    alt="aadhaar photo"
-                  />
-                </VStack>
-              )}
-            </HStack>
-          ) : (
-            <VStack>
-              {index === 1 && (
-                <HStack key={index - 1} px="4" flex="1" py="2" space={2}>
-                  <FrontEndTypo.H3 flex="1">{t("TITLE")} </FrontEndTypo.H3>
-                  <FrontEndTypo.H3 flex="1">
-                    {t("PROFILE_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <FrontEndTypo.H3 flex="1">
-                    {t("AADHAAR_DETAILS")}
-                  </FrontEndTypo.H3>
-                </HStack>
-              )}
-              <HStack
-                key={index}
-                px="4"
-                flex="1"
-                py="2"
-                bg={item?.isVerified === false ? "red.300" : ""}
-                space={2}
-              >
-                <FrontEndTypo.H3 flex="1">{t(item?.name)} </FrontEndTypo.H3>
-                <FrontEndTypo.H3 flex="1">{item?.user} </FrontEndTypo.H3>
-                <FrontEndTypo.H3 flex="1">{item?.aadhaar} </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          )
-        )}
-      </VStack>
-      <Alert status={isVerified ? "success" : "error"} my="4">
-        <VStack space={2} flexShrink={1}>
-          <HStack
-            flexShrink={1}
-            space={2}
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <HStack flexShrink={1} space={2} alignItems="center">
-              <Alert.Icon />
-              <FrontEndTypo.H4>
-                {type === "upload"
-                  ? isVerified
-                    ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
-                    : t("YOUR_AADHAAR_UPLOAD_FAILED")
-                  : isVerified
-                  ? t("AADHAAR_VERIFICATION_SUCCESSFUL")
-                  : t("AADHAR_KYC_VERIFICATION_FAILED")}
-              </FrontEndTypo.H4>
-            </HStack>
-          </HStack>
-        </VStack>
-        <VStack mt="2" space="4">
-          {(verifiedData?.first_name === false ||
-            verifiedData?.dob === false) && (
-            <HStack space={2}>
-              <VStack flex={1} space={2}>
-                {verifiedData?.first_name === false && (
-                  <FrontEndTypo.H3>
-                    {t("AADHAAR_OKYC_NAME_IS_NOT_MATCH_MESSAGE")}
-                  </FrontEndTypo.H3>
-                )}
-                {verifiedData?.dob === false && (
-                  <FrontEndTypo.H3>
-                    {t("AADHAAR_OKYC_DOB_IS_NOT_MATCH_MESSAGE")}
-                  </FrontEndTypo.H3>
-                )}
-              </VStack>
-              <FrontEndTypo.Primarybutton
-                ml="1"
-                size="md"
-                height="15px"
-                onPress={(e) => {
-                  navigate(`/profile/edit/basic_details`);
-                }}
-              >
-                <FrontEndTypo.H4 bold color="white">
-                  {t("EDIT")}
-                </FrontEndTypo.H4>
-              </FrontEndTypo.Primarybutton>
-            </HStack>
-          )}
-          {verifiedData?.aadhaar_no === false && (
-            <FrontEndTypo.H3>
-              {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCH_MESSAGE")}
-            </FrontEndTypo.H3>
-          )}
-        </VStack>
-      </Alert>
-      <FrontEndTypo.Primarybutton
-        onPress={(e) => {
-          if (location?.state) {
-            navigate(location?.state);
-          } else {
-            if (user?.program_faciltators?.id) {
-              navigate(`/profile/${id}/aadhaardetails`);
-            } else if (id) {
-              navigate(`/beneficiary/${id}`);
-            } else {
-              navigate("/beneficiary/list");
-            }
-          }
-        }}
-      >
+    <VStack px={4} space={4}>
+      <AadharCompare {...{ user, type, location, aadhaarCompare, id }} />
+      <FrontEndTypo.Primarybutton onPress={handleContinue}>
         {t("CONTINUE")}
       </FrontEndTypo.Primarybutton>
     </VStack>
