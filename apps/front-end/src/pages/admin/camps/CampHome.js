@@ -153,7 +153,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 
   return (
     <Layout
-      {...Width}
+      test={Width}
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
     >
