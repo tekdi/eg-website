@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, HStack, VStack } from "native-base";
+import { Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
@@ -30,6 +30,7 @@ export default function ConsentForm() {
   const [error, setError] = React.useState("");
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
+  const [isEditable, setIsEditable] = React.useState(false);
 
   React.useEffect(async () => {
     await getData();
@@ -249,10 +250,20 @@ export default function ConsentForm() {
       />
       <VStack py={6} px={4} space="6">
         <HStack justifyContent={"space-between"}>
-          <AdminTypo.H3 color={"textMaroonColor.400"}>
-            {t("LEARNERS")}
-          </AdminTypo.H3>
-          <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
+          <HStack>
+            <AdminTypo.H3 color={"textMaroonColor.400"}>
+              {t("LEARNERS")}
+            </AdminTypo.H3>
+            <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
+          </HStack>
+          <Button
+            variant="outlinePrimary"
+            colorScheme="green"
+            size={"xs"}
+            onPress={(e) => setIsEditable(!isEditable)}
+          >
+            {t(isEditable ? "SAVE" : "EDIT")}
+          </Button>
         </HStack>
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
@@ -262,12 +273,27 @@ export default function ConsentForm() {
             return (
               <HStack key={item} flex="1">
                 <UserCard
-                  _hstack={{ p: 0, space: 1, flex: 1 }}
+                  _hstack={{
+                    ...(!isEditable
+                      ? { py: 0 }
+                      : item?.attendance?.status !== PRESENT
+                      ? { p: 0, pl: 4 }
+                      : { p: 0 }),
+                    space: 1,
+                    flex: 1,
+                    bg: isEditable
+                      ? "white"
+                      : item?.attendance?.status === PRESENT
+                      ? "green.100"
+                      : item?.attendance?.status === ABSENT
+                      ? "red.100"
+                      : "",
+                  }}
                   _vstack={{ py: 2 }}
-                  _image={{ size: 45 }}
+                  _image={{ size: 45, color: "gray" }}
                   leftElement={
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === PRESENT) && (
+                    isEditable &&
+                    item?.attendance?.status === PRESENT && (
                       <IconByName
                         onPress={(e) => {
                           uploadAttendence(item, ABSENT, true);
@@ -281,8 +307,8 @@ export default function ConsentForm() {
                     )
                   }
                   rightElement={
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === ABSENT) && (
+                    isEditable &&
+                    item?.attendance?.status === ABSENT && (
                       <IconByName
                         onPress={(e) => {
                           setUserData(item);
