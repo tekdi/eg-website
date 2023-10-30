@@ -153,7 +153,6 @@ export default function View({ footerLinks }) {
       name: t("ACTION"),
       selector: (row) => (
         <AdminTypo.Secondarybutton
-          fontSize="12px"
           my="3"
           onPress={() => {
             navigate(`/admin/camps/${id}/reassign/${row?.id}`);
@@ -339,7 +338,7 @@ export default function View({ footerLinks }) {
             _vstack={{
               bg: "light.100",
               flex: 2,
-              space: 2,
+              space: 4,
             }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
