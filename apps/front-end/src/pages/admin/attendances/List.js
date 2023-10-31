@@ -24,29 +24,12 @@ const columns = (t, navigate) => [
     selector: (row) => row?.id,
     wrap: true,
     width: "95px",
+    wrap: true,
   },
   {
     name: t("PERSON_NAME"),
     selector: (row) => (
       <HStack alignItems={"center"} space={2}>
-        {row?.user?.profile_photo_1?.name ? (
-          <ImageView
-            source={{
-              uri: row?.user?.profile_photo_1?.name,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-
         <AdminTypo.H6 bold>
           {[row?.user?.first_name, row?.user?.middle_name, row?.user?.last_name]
             ?.filter((e) => e)
@@ -62,31 +45,35 @@ const columns = (t, navigate) => [
     name: t("DATE_TIME"),
     selector: (row) =>
       row?.date_time ? moment(row?.date_time).format("Do MMM Y h:mma") : "-",
+    wrap: true,
   },
   {
-    name: t("person_photo"),
+    name: t("PERSON_PHOTO"),
     selector: (row) =>
       row?.user?.profile_photo_1 ? (
         <ImageView urlObject={row?.user?.profile_photo_1} />
       ) : (
         "-"
       ),
+    wrap: true,
   },
   {
-    name: t("attendance_photo"),
+    name: t("ATTENDANCE_PHOTO"),
     selector: (row) =>
       row?.attendance_photo_1 ? (
         <ImageView urlObject={row?.attendance_photo_1} />
       ) : (
         "-"
       ),
+    wrap: true,
   },
   {
-    name: t("Attendance lat_long"),
+    name: t("ATTENDANCE_LAT_LONG"),
     selector: (row) => [row?.lat, row?.long].join(", "),
+    wrap: true,
   },
   {
-    name: t("Present/Absent"),
+    name: t("PRESENT_ABSENT"),
     selector: (row) =>
       row?.status ? (
         <Chip
@@ -94,15 +81,17 @@ const columns = (t, navigate) => [
           px="4"
           bg={row?.status === PRESENT ? "green.200" : "red.200"}
         >
-          {row?.status}
+          {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
         </Chip>
       ) : (
         "-"
       ),
+    wrap: true,
   },
   {
-    name: t("Confidence Level"),
+    name: t("CONFIDENCE_LEVEL"),
     selector: (row) => row?.fa_similarity_percentage || "-",
+    wrap: true,
   },
 ];
 
@@ -110,7 +99,7 @@ const columns = (t, navigate) => [
 function Table() {
   const [attendances, setAttendances] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const id = 69;
+  const id = 66;
   const { t } = useTranslation();
   const navigate = useNavigate();
 
