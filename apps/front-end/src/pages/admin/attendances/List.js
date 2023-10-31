@@ -99,7 +99,7 @@ const columns = (t, navigate) => [
 function Table() {
   const [attendances, setAttendances] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const id = 69;
+  const id = 66;
   const { t } = useTranslation();
   const navigate = useNavigate();
 
