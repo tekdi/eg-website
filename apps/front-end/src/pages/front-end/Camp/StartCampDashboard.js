@@ -90,7 +90,7 @@ export default function StartCampDashboard({ footerLinks }) {
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
-    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.name;
     if (photo_1) {
       const dataQ = {
         ...data,
