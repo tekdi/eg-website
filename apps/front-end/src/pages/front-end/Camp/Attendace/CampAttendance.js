@@ -73,7 +73,7 @@ export default function ConsentForm() {
         };
         if (status === PRESENT) {
           const photo_1 =
-            cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+            cameraFile?.data?.insert_documents?.returning?.[0]?.name;
           payLoad = { ...payLoad, photo_1: `${photo_1}` };
         }
         await campService.updateCampAttendance(payLoad);
@@ -81,7 +81,8 @@ export default function ConsentForm() {
       }
     } else {
       if (status === PRESENT) {
-        const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+        const photo_1 =
+          cameraFile?.data?.insert_documents?.returning?.[0]?.name;
         if (photo_1) {
           const payLoad = {
             ...data,
