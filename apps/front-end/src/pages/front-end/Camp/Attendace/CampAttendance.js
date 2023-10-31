@@ -232,6 +232,7 @@ export default function ConsentForm() {
                     }
                     setCameraUrl({ url, file });
                   } else {
+                    setCameraUrl();
                     setUserData();
                   }
                 },
