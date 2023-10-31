@@ -3,7 +3,6 @@ import { Alert, Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
-  AdminTypo,
   IconByName,
   campService,
   Camera,
@@ -135,13 +134,13 @@ export default function ConsentForm() {
                   <HStack
                     space={2}
                     divider={
-                      <AdminTypo.H6 color="white" bold>
+                      <FrontEndTypo.H6 color="white" bold>
                         :
-                      </AdminTypo.H6>
+                      </FrontEndTypo.H6>
                     }
                   >
-                    <AdminTypo.H6 color="white">{t("NAME")}</AdminTypo.H6>
-                    <AdminTypo.H6 color="white">
+                    <FrontEndTypo.H6 color="white">{t("NAME")}</FrontEndTypo.H6>
+                    <FrontEndTypo.H6 color="white">
                       {/* ${userData?.index + 1}) */}
                       {`${[
                         userData?.program_beneficiaries[0]
@@ -153,42 +152,42 @@ export default function ConsentForm() {
                       ]
                         .filter((e) => e)
                         .join(" ")}`}
-                    </AdminTypo.H6>
+                    </FrontEndTypo.H6>
                   </HStack>
                   {/* <HStack
                     space={2}
                     divider={
-                      <AdminTypo.H6 color="white" bold>
+                      <FrontEndTypo.H6 color="white" bold>
                         :
-                      </AdminTypo.H6>
+                      </FrontEndTypo.H6>
                     }
                   >
-                    <AdminTypo.H6 color="white">{t("CANDIDATES")}</AdminTypo.H6>
-                    <AdminTypo.H6 color="white">
+                    <FrontEndTypo.H6 color="white">{t("CANDIDATES")}</FrontEndTypo.H6>
+                    <FrontEndTypo.H6 color="white">
                       {groupUsers?.length ? groupUsers?.length : 0}
-                    </AdminTypo.H6>
+                    </FrontEndTypo.H6>
                   </HStack> */}
                   {error && (
-                    <AdminTypo.H4 style={{ color: "red" }}>
+                    <FrontEndTypo.H4 style={{ color: "red" }}>
                       {error}
-                    </AdminTypo.H4>
+                    </FrontEndTypo.H4>
                   )}
                 </VStack>
               }
               // footerComponent={
               //   <HStack space={3} width="100%" justifyContent="space-between">
               //     {error && (
-              //       <AdminTypo.H4 style={{ color: "red" }}>
+              //       <FrontEndTypo.H4 style={{ color: "red" }}>
               //         {error}
-              //       </AdminTypo.H4>
+              //       </FrontEndTypo.H4>
               //     )}
-              //     <AdminTypo.Secondarybutton
+              //     <FrontEndTypo.Secondarybutton
               //       shadow="BlueOutlineShadow"
               //       onPress={() => uploadAttendence(userData, PRESENT, true)}
               //     >
               //       {t("FINISH")}
-              //     </AdminTypo.Secondarybutton>
-              //     <AdminTypo.Secondarybutton
+              //     </FrontEndTypo.Secondarybutton>
+              //     <FrontEndTypo.Secondarybutton
               //       isDisabled={userData?.index + 1 === groupUsers.length}
               //       variant="secondary"
               //       ml="4"
@@ -196,7 +195,7 @@ export default function ConsentForm() {
               //       onPress={() => uploadAttendence(userData)}
               //     >
               //       {t("NEXT")}
-              //     </AdminTypo.Secondarybutton>
+              //     </FrontEndTypo.Secondarybutton>
               //   </HStack>
               // }
               messageComponent={
@@ -204,7 +203,9 @@ export default function ConsentForm() {
                   <Alert status="success">
                     <HStack alignItems="center" space="2">
                       <Alert.Icon />
-                      <AdminTypo.H4>{t("ATTENDANCE_SUCCESS")}</AdminTypo.H4>
+                      <FrontEndTypo.H4>
+                        {t("ATTENDANCE_SUCCESS")}
+                      </FrontEndTypo.H4>
                     </HStack>
                   </Alert>
                 )
@@ -263,10 +264,10 @@ export default function ConsentForm() {
       <VStack py={6} px={4} space="6">
         <HStack justifyContent={"space-between"}>
           <HStack>
-            <AdminTypo.H3 color={"textMaroonColor.400"}>
+            <FrontEndTypo.H3 color={"textMaroonColor.400"}>
               {t("LEARNERS")}
-            </AdminTypo.H3>
-            <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>({groupUsers?.length || 0})</FrontEndTypo.H3>
           </HStack>
         </HStack>
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
