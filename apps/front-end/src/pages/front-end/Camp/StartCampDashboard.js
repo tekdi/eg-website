@@ -5,14 +5,22 @@ import {
   IconByName,
   Layout,
   GeoLocation,
-  Alert,
+  Alert as TAlert,
   Loading,
   Camera,
   uploadRegistryService,
   ImageView,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Box, HStack, Pressable, Progress, Stack, VStack } from "native-base";
+import {
+  Box,
+  HStack,
+  Pressable,
+  Progress,
+  Stack,
+  VStack,
+  Alert,
+} from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -161,6 +169,16 @@ export default function StartCampDashboard({ footerLinks }) {
           //     </FrontEndTypo.Secondarybutton>
           //   </HStack>
           // }
+          messageComponent={
+            cameraUrl && (
+              <Alert status="success">
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  <FrontEndTypo.H4>{t("ATTENDANCE_SUCCESS")}</FrontEndTypo.H4>
+                </HStack>
+              </Alert>
+            )
+          }
           {...{
             onFinish: (e) => startCamp(),
             cameraModal: start,
@@ -233,7 +251,7 @@ export default function StartCampDashboard({ footerLinks }) {
           </HStack>
         </Box>
         <VStack space="4">
-          <Alert
+          <TAlert
             alert={error}
             setAlert={(e) => {
               setStart(false);

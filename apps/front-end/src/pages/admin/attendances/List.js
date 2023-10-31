@@ -18,10 +18,25 @@ import Chip from "component/Chip";
 const PRESENT = "present";
 const ABSENT = "absent";
 
+const RenderAttendee = ({ row, t }) => (
+  <Chip
+    py="1px"
+    label={
+      <AdminTypo.H6 bold>
+        {row?.fa_is_processed === null
+          ? t("NO")
+          : row?.fa_is_processed === true
+          ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
+          : t("NO")}
+      </AdminTypo.H6>
+    }
+    rounded="lg"
+  />
+);
 const columns = (t, navigate) => [
   {
     name: t("PERSON_ID"),
-    selector: (row) => row?.id,
+    selector: (row) => row?.user_id,
     wrap: true,
     width: "95px",
   },
@@ -95,7 +110,7 @@ const columns = (t, navigate) => [
   },
   {
     name: t("CONFIDENCE_LEVEL"),
-    selector: (row) => row?.fa_similarity_percentage || "-",
+    selector: (row) => <RenderAttendee row={row || {}} t={t} />,
     wrap: true,
   },
 ];
