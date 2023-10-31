@@ -106,6 +106,7 @@
   "AS_PER_AADHAAR": "(As Per Aadhaar Card)",
   "AS_PER_ENROLLMENT_RECEIPT": "(As per Enrollment Receipt)",
   "ATTENDANCE": "Attendance",
+  "ATTENDANCE_SUCCESS": "Attendance Successfully",
   "ATTENDANCE_CAMERA_SUBTITLE": "Make sure this image has a clear profile view of your Face. Improper Image might result in disqualification of the Application.",
   "ATTENDEE_LIST_ATTENDENCE_VERIFIED": "Attendance verified",
   "AUTO_GENERATE": "Auto generate",

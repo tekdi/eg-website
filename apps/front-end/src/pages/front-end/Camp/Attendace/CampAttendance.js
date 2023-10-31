@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, HStack, VStack } from "native-base";
+import { Alert, Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
@@ -199,6 +199,16 @@ export default function ConsentForm() {
               //     </AdminTypo.Secondarybutton>
               //   </HStack>
               // }
+              messageComponent={
+                cameraUrl && (
+                  <Alert status="success">
+                    <HStack alignItems="center" space="2">
+                      <Alert.Icon />
+                      <AdminTypo.H4>{t("ATTENDANCE_SUCCESS")}</AdminTypo.H4>
+                    </HStack>
+                  </Alert>
+                )
+              }
               {...{
                 cameraModal: true,
                 setCameraModal: async (item) => {
