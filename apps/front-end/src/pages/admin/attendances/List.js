@@ -4,7 +4,7 @@ import {
   AdminTypo,
   tableCustomStyles,
   AdminLayout as Layout,
-  campService,
+  attendanceService,
   calendar,
 } from "@shiksha/common-lib";
 import moment from "moment";
@@ -24,7 +24,6 @@ const columns = (t, navigate) => [
     selector: (row) => row?.id,
     wrap: true,
     width: "95px",
-    wrap: true,
   },
   {
     name: t("PERSON_NAME"),
@@ -50,8 +49,10 @@ const columns = (t, navigate) => [
   {
     name: t("PERSON_PHOTO"),
     selector: (row) =>
-      row?.user?.profile_photo_1 ? (
-        <ImageView urlObject={row?.user?.profile_photo_1} />
+      row?.user?.profile_photo_1.length ? (
+        <ImageView
+          source={{ document_id: row?.user?.profile_photo_1?.[0]?.id }}
+        />
       ) : (
         "-"
       ),
@@ -60,8 +61,12 @@ const columns = (t, navigate) => [
   {
     name: t("ATTENDANCE_PHOTO"),
     selector: (row) =>
-      row?.attendance_photo_1 ? (
-        <ImageView urlObject={row?.attendance_photo_1} />
+      row?.photo_1 && row?.status === PRESENT ? (
+        isNaN(parseInt(row?.photo_1)) ? (
+          <ImageView source={{ uri: row?.photo_1 }} />
+        ) : (
+          <ImageView source={{ document_id: row?.photo_1 }} />
+        )
       ) : (
         "-"
       ),
@@ -69,7 +74,7 @@ const columns = (t, navigate) => [
   },
   {
     name: t("ATTENDANCE_LAT_LONG"),
-    selector: (row) => [row?.lat, row?.long].join(", "),
+    selector: (row) => [row?.lat, row?.long].filter((e) => e).join(", "),
     wrap: true,
   },
   {
@@ -98,8 +103,9 @@ const columns = (t, navigate) => [
 // Table component
 function Table() {
   const [attendances, setAttendances] = React.useState([]);
+  const [filter, setFilter] = React.useState({ page: 1, limit: 10 });
+  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  const id = 66;
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -110,16 +116,14 @@ function Table() {
   React.useEffect(async () => {
     let ignore = false;
     async function getData() {
-      let startDate = moment().add(0, "months").startOf("month");
-      let endDate = moment().endOf("month");
-      let params = {
-        id,
-        start_date: startDate?.format("YYYY-MM-DD"),
-        end_date: endDate?.format("YYYY-MM-DD"),
-      };
-      const resultAttendance = await campService.CampAttendance(params);
-      if (resultAttendance?.data?.length > 0) {
-        setAttendances(resultAttendance?.data);
+      const resultAttendance = await attendanceService.list(filter);
+      if (resultAttendance?.data?.data?.length > 0) {
+        setAttendances(resultAttendance?.data?.data);
+        setPaginationTotalRows(
+          resultAttendance?.data?.totalCount
+            ? resultAttendance?.data?.totalCount
+            : 0
+        );
       }
     }
     await getData();
@@ -127,7 +131,7 @@ function Table() {
     return () => {
       ignore = true;
     };
-  }, [id]);
+  }, [filter]);
 
   return (
     <Layout>
@@ -152,14 +156,17 @@ function Table() {
         persistTableHead
         progressPending={loading}
         pagination
+        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+        paginationPerPage={filter?.limit ? filter?.limit : 10}
         paginationServer
-        paginationTotalRows={10}
-        // onChangeRowsPerPage={(e) => {
-        //   setFilter({ ...filter, limit: e, page: 1 });
-        // }}
-        // onChangePage={(e) => {
-        //   setFilter({ ...filter, page: e });
-        // }}
+        paginationTotalRows={paginationTotalRows}
+        paginationDefaultPage={filter?.page}
+        onChangeRowsPerPage={(e) => {
+          setFilter({ ...filter, limit: e, page: 1 });
+        }}
+        onChangePage={(e) => {
+          setFilter({ ...filter, page: e });
+        }}
         // onRowClicked={handleRowClick}
       />
     </Layout>

@@ -48,7 +48,7 @@ fieldset {
   border: 0;
 }
 legend {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -64,7 +64,7 @@ label {
   margin-bottom: 5px;
   margin-top: 8px;
   color: #212121;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -259,10 +259,7 @@ ul.list-inline {
 .has-error.radio-inline label {
   color: #a94442;
 }
-img {
-  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-  filter: grayscale(100%);
-}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

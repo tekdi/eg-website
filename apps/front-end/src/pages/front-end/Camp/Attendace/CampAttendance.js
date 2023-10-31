@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, HStack, VStack } from "native-base";
+import { Alert, Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
@@ -30,7 +30,7 @@ export default function ConsentForm() {
   const [error, setError] = React.useState("");
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
-  const [isEditable, setIsEditable] = React.useState(false);
+  const [isEditable, setIsEditable] = React.useState();
 
   React.useEffect(async () => {
     await getData();
@@ -62,6 +62,7 @@ export default function ConsentForm() {
 
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
     setError("");
+    setIsEditable({ ...isEditable, [user?.id]: null });
     if (user?.attendance?.status) {
       if (status === PRESENT || status === ABSENT) {
         let payLoad = {
@@ -198,6 +199,16 @@ export default function ConsentForm() {
               //     </AdminTypo.Secondarybutton>
               //   </HStack>
               // }
+              messageComponent={
+                cameraUrl && (
+                  <Alert status="success">
+                    <HStack alignItems="center" space="2">
+                      <Alert.Icon />
+                      <AdminTypo.H4>{t("ATTENDANCE_SUCCESS")}</AdminTypo.H4>
+                    </HStack>
+                  </Alert>
+                )
+              }
               {...{
                 cameraModal: true,
                 setCameraModal: async (item) => {
@@ -230,7 +241,7 @@ export default function ConsentForm() {
       </Box>
     );
   }
-
+  console.log({ isEditable });
   return (
     <Layout
       loading={loading}
@@ -257,15 +268,6 @@ export default function ConsentForm() {
             </AdminTypo.H3>
             <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
           </HStack>
-          <FrontEndTypo.Secondarysmallbutton
-            variant="outlinePrimary"
-            colorScheme="red"
-            py="0"
-            endIcon={<IconByName name="EditBoxLineIcon" />}
-            onPress={(e) => setIsEditable(!isEditable)}
-          >
-            {t(isEditable ? "SAVE" : "EDIT")}
-          </FrontEndTypo.Secondarysmallbutton>
         </HStack>
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
@@ -276,28 +278,27 @@ export default function ConsentForm() {
               <HStack key={item} flex="1">
                 <UserCard
                   _hstack={{
-                    ...(!isEditable
+                    ...(!isEditable?.[item.id] && item?.attendance?.status
                       ? { py: 0 }
-                      : item?.attendance?.status &&
-                        item?.attendance?.status !== PRESENT
-                      ? { p: 0, pl: 4 }
-                      : { p: 0 }),
+                      : // : item?.attendance?.status &&
+                        //   item?.attendance?.status !== PRESENT
+                        // ? { p: 0, pl: 4 }
+                        { p: 0 }),
                     space: 1,
                     flex: 1,
-                    bg: isEditable
-                      ? "white"
-                      : item?.attendance?.status === PRESENT
-                      ? "green.100"
-                      : item?.attendance?.status === ABSENT
-                      ? "red.100"
-                      : "",
+                    bg:
+                      isEditable?.[item.id] || !item?.attendance?.status
+                        ? "white"
+                        : item?.attendance?.status === PRESENT
+                        ? "green.100"
+                        : item?.attendance?.status === ABSENT
+                        ? "red.100"
+                        : "",
                   }}
                   _vstack={{ py: 2 }}
                   _image={{ size: 45, color: "gray" }}
                   leftElement={
-                    isEditable &&
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === PRESENT) && (
+                    (isEditable?.[item.id] || !item?.attendance?.status) && (
                       <IconByName
                         onPress={(e) => {
                           uploadAttendence(item, ABSENT, true);
@@ -311,9 +312,7 @@ export default function ConsentForm() {
                     )
                   }
                   rightElement={
-                    isEditable &&
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === ABSENT) && (
+                    isEditable?.[item.id] || !item?.attendance?.status ? (
                       <IconByName
                         onPress={(e) => {
                           setUserData(item);
@@ -323,6 +322,19 @@ export default function ConsentForm() {
                         bg="green.100"
                         name="CheckboxCircleLineIcon"
                         _icon={{ size: "25px", color: "gray" }}
+                      />
+                    ) : (
+                      <IconByName
+                        name="EditBoxLineIcon"
+                        _icon={{ color: "garkGray", size: "15" }}
+                        bg="gray.100"
+                        rounded="full"
+                        onPress={(e) =>
+                          setIsEditable({
+                            ...isEditable,
+                            [item.id]: !isEditable?.[item.id],
+                          })
+                        }
                       />
                     )
                   }

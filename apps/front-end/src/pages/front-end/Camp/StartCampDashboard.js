@@ -187,6 +187,7 @@ export default function StartCampDashboard({ footerLinks }) {
                 setCameraUrl();
               }
             },
+            cameraSide: true,
           }}
         />
       </React.Suspense>
