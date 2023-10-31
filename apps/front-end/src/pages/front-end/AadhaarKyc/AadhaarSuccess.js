@@ -18,7 +18,7 @@ export default function AadhaarSuccess({
   const handleContinue = () => {
     if (location?.state) {
       navigate(location?.state);
-    } else if (user?.program_facilitators?.id) {
+    } else if (user?.program_faciltators?.id) {
       navigate(`/profile/${id}/aadhaardetails`);
     } else if (id) {
       navigate(`/beneficiary/${id}`);
