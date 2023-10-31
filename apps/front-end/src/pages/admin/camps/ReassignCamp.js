@@ -91,7 +91,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     const result = await benificiaryRegistoryService.getOne(user_id);
     setData(result?.result);
     const qData = await campService.getCampList(newFilter);
-    setCampData(qData?.camps);
+    const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
+    setCampData(filtered);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
   }, []);
@@ -99,7 +100,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const reassignCamp = async () => {
     const obj = {
       learner_id: parseInt(user_id),
-      camp_id: id,
+      camp_id: modal?.id,
     };
     const result = await campService.reassignCamp(obj);
     if (result) {

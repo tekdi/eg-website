@@ -90,7 +90,7 @@ export default function StartCampDashboard({ footerLinks }) {
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
-    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.name;
     if (photo_1) {
       const dataQ = {
         ...data,
@@ -195,7 +195,7 @@ export default function StartCampDashboard({ footerLinks }) {
 
   return (
     <Layout
-      _appBar={{ name: t("Attendance") }}
+      _appBar={{ name: t("ATTENDANCE") }}
       //   loading={loading}
       _footer={{ menues: footerLinks }}
     >
@@ -243,11 +243,13 @@ export default function StartCampDashboard({ footerLinks }) {
             }}
             type="warning"
           />
-          <FrontEndTypo.H3>Let's Starts your day!!</FrontEndTypo.H3>
+          <FrontEndTypo.H3>{t("STARTS_YOUR_DAY")}</FrontEndTypo.H3>
           <CardComponent
             title={
               <HStack justifyContent={"space-around"} space="4" flex={1}>
-                <FrontEndTypo.H5 bold>{"Preferred camp time"}</FrontEndTypo.H5>
+                <FrontEndTypo.H5 bold>
+                  {t("PREFERRED_CAMP_TIME")}
+                </FrontEndTypo.H5>
                 <FrontEndTypo.H5 bold>{"2:00 pm - 5:00 pm"}</FrontEndTypo.H5>
               </HStack>
             }
@@ -294,7 +296,9 @@ export default function StartCampDashboard({ footerLinks }) {
                             rounded="full"
                             p="5"
                           />
-                          <FrontEndTypo.H5>Today's Activities</FrontEndTypo.H5>
+                          <FrontEndTypo.H5>
+                            {t("TODAYS_ACTIVITIES")}
+                          </FrontEndTypo.H5>
                         </VStack>
                       </Pressable>
                     </CardComponent>
@@ -314,23 +318,23 @@ export default function StartCampDashboard({ footerLinks }) {
                             p="5"
                           />
                           <FrontEndTypo.H5 textAlign="center">
-                            Learner Attendance
+                            {t("LEARNER_ATTENDANCE")}
                           </FrontEndTypo.H5>
                         </VStack>
                       </Pressable>
                     </CardComponent>
                   </HStack>
                   <FrontEndTypo.Primarybutton onPress={(e) => endCamp()}>
-                    End Camp
+                    {t("END_CAMP")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               ) : (
                 <VStack space="4">
                   <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
-                    Start Camp
+                    {t("START_CAMP")}
                   </FrontEndTypo.Primarybutton>
                   <FrontEndTypo.Secondarybutton>
-                    Apply For Leave
+                    {t("APPLY_FOR_LEAVE")}
                   </FrontEndTypo.Secondarybutton>
                 </VStack>
               )}
@@ -338,12 +342,14 @@ export default function StartCampDashboard({ footerLinks }) {
           </CardComponent>
         </VStack>
         <VStack pt="6" space="4">
-          <FrontEndTypo.H3>Other Activites,</FrontEndTypo.H3>
+          <FrontEndTypo.H3>{t("OTHER_ACTIVITIES")}</FrontEndTypo.H3>
           <HStack space="6">
-            <Pressable onPress={(e) => navigate(`/camps/${id}/attendance`)}>
+            <Pressable
+              onPress={(e) => navigate(`/camps/${id}/attendance-view`)}
+            >
               <VStack alignItems="center" space={3}>
                 <IconByName name="CalendarEventLineIcon" color="gray.400" />
-                <FrontEndTypo.H5>View Attendance</FrontEndTypo.H5>
+                <FrontEndTypo.H5>{t("VIEW_ATTENDANCE")}</FrontEndTypo.H5>
               </VStack>
             </Pressable>
             <Pressable
@@ -353,7 +359,7 @@ export default function StartCampDashboard({ footerLinks }) {
             >
               <VStack alignItems="center" space={3}>
                 <IconByName name="UserAddLineIcon" color="gray.400" />
-                <FrontEndTypo.H5>Add Learner</FrontEndTypo.H5>
+                <FrontEndTypo.H5>{t("ADD_LEARNER")}</FrontEndTypo.H5>
               </VStack>
             </Pressable>
           </HStack>
