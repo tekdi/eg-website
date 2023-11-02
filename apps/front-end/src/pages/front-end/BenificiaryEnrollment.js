@@ -125,8 +125,13 @@ export default function BenificiaryEnrollment() {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
               : {})}
-            onEdit={(e) =>
-              navigate(`/beneficiary/edit/${id}/enrollment-details`)
+            onEdit={
+              benificiary?.program_beneficiaries?.status !==
+              "enrolled_ip_verified" ? (
+                (e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)
+              ) : (
+                <></>
+              )
             }
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />

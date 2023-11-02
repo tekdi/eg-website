@@ -40,12 +40,19 @@ export default function BenificiaryBasicDetails() {
     setEnumOptions(data?.data ? data?.data : {});
   }, [benificiary]);
 
+  const edit = `/beneficiary/${benificiary?.id}/upload/1`;
+
   return (
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
           <ProfilePhoto
-            editLink={`/beneficiary/${benificiary?.id}/upload/1`}
+            editLink={
+              benificiary?.program_beneficiaries?.status !==
+              "enrolled_ip_verified"
+                ? edit
+                : !edit
+            }
             profile_photo_1={benificiary?.profile_photo_1}
             profile_photo_2={benificiary?.profile_photo_2}
             profile_photo_3={benificiary?.profile_photo_3}
@@ -389,19 +396,15 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("REFERENCE_DETAILS")}
               </FrontEndTypo.H3>
-              {benificiary?.program_beneficiaries?.status ===
-              "enrolled_ip_verified" ? (
-                <></>
-              ) : (
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/reference-details`);
-                  }}
-                />
-              )}
+
+              <IconByName
+                name="EditBoxLineIcon"
+                color="iconColor.100"
+                _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/reference-details`);
+                }}
+              />
             </HStack>
             <Box>
               <Progress
