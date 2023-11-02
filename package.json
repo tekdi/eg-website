@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "react-datetime-picker": "^5.5.3",
+    "react-native-modal-datetime-picker": "^17.1.0",
     "react-time-picker": "^6.5.2"
   }
 }
