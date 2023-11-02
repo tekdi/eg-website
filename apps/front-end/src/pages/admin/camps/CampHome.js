@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -11,8 +11,8 @@ import {
   HStack,
   ScrollView,
   VStack,
-  Text,
   Input,
+  Pressable,
 } from "native-base";
 import {
   AdminTypo,
@@ -36,6 +36,7 @@ export const CustomStyles = {
   rows: {
     style: {
       minHeight: "72px",
+      cursor: "pointer",
     },
   },
   headCells: {
@@ -64,7 +65,7 @@ const columns = (navigate) => [
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id,
+    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
     sortable: true,
     attr: "PRERAK_ID",
   },
@@ -92,7 +93,11 @@ const columns = (navigate) => [
   },
   {
     name: t("CAMP_STATUS"),
-    selector: (row) => <CampChipStatus status={row?.group?.status} />,
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
+        <CampChipStatus status={row?.group?.status} />
+      </Pressable>
+    ),
     sortable: true,
     wrap: true,
     attr: "CAMP_STATUS",
@@ -151,8 +156,16 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     }
   }, [filter]);
 
+  const handleRowClick = (row) => {
+    navigate(`/admin/camps/${row.id}`);
+  };
+
   return (
-    <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
+    <Layout
+      test={Width}
+      getRefAppBar={(e) => setRefAppBar(e)}
+      _sidebar={footerLinks}
+    >
       <HStack
         space={[0, 0, "2"]}
         p="2"
@@ -191,6 +204,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
             }
+            temp={Width}
           >
             {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
@@ -201,12 +215,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <HStack pb="2">
               {CampFilterStatus?.map((item) => {
                 return (
-                  <Text
+                  <AdminTypo.H5
                     key={"table"}
                     color={
                       filter?.status == t(item?.status) ? "blueText.400" : ""
                     }
-                    bold={filter?.status == t(item?.status) ? true : false}
+                    bold={filter?.status == t(item?.status)}
                     cursor={"pointer"}
                     mx={3}
                     onPress={() => {
@@ -226,7 +240,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     {filter?.status == t(item?.status)
                       ? `(${paginationTotalRows})` + " "
                       : " "}
-                  </Text>
+                  </AdminTypo.H5>
                 );
               })}
             </HStack>
@@ -253,6 +267,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 onChangePage={(e) => {
                   setFilter({ ...filter, page: e?.toString() });
                 }}
+                onRowClicked={handleRowClick}
               />
             </Box>
           </ScrollView>
@@ -361,12 +376,14 @@ export const Filter = ({ filter, setFilter }) => {
     setFacilitatorFilter({});
   };
   React.useEffect(async () => {
-    const { error, ...result } =
-      await facilitatorRegistryService.searchByBeneficiary(facilitatorFilter);
+    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
+      facilitatorFilter
+    );
+
     if (!error) {
       let newData;
-      if (result?.data?.data) {
-        newData = result?.data?.data?.map((e) => ({
+      if (result) {
+        newData = result?.users?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
@@ -382,6 +399,7 @@ export const Filter = ({ filter, setFilter }) => {
         borderBottomWidth="2"
         borderColor="#eee"
         flexWrap="wrap"
+        Width
       >
         <HStack>
           <IconByName isDisabled name="FilterLineIcon" />
