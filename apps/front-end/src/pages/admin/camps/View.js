@@ -178,6 +178,7 @@ export default function View({ footerLinks }) {
       selector: (row) => (
         <Button.Group
           isAttached
+          divider={<h3>|</h3>}
           my="3"
           size="sm"
           borderRadius="full"
@@ -198,8 +199,11 @@ export default function View({ footerLinks }) {
               fontSize: "14px",
               fontWeight: "700",
             }}
+            onPress={() => {
+              navigate(`/admin/beneficiary/${row?.id}`);
+            }}
           >
-            {t("EDIT")}
+            {t("VIEW")}
           </Button>
           <Button variant="outline">
             <Menu
