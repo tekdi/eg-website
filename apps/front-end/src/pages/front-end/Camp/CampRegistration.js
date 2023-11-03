@@ -144,13 +144,9 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const disableEdit = () => {
-    if (["camp_ip_verified"].includes(campStatus)) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  const disableEdit = () =>
+    ["camp_ip_verified"].includes(campStatus) ? false : true;
+
 
   const SubmitCampRegistration = async () => {
     const obj = {
