@@ -1,11 +1,12 @@
 import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
-import { HStack, VStack, Image, Box } from "native-base";
+import { Alert, HStack, VStack, Image, Box } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-export default function AadharCompare({ aadhaarCompare }) {
+export default function AadharCompare({ type, aadhaarCompare }) {
   const { t } = useTranslation();
   const [data, setData] = React.useState([]);
+  const [isVerified, setIsVerified] = React.useState(true);
 
   React.useEffect(() => {
     const newData = aadhaarCompare?.data || [];
@@ -19,10 +20,34 @@ export default function AadharCompare({ aadhaarCompare }) {
         };
       }
     });
+    setIsVerified(aadhaarCompare?.isVerified);
   }, []);
 
   return (
     <VStack>
+      <Alert status={isVerified ? "success" : "error"} my="4">
+        <VStack space={2} flexShrink={1}>
+          <HStack
+            flexShrink={1}
+            space={2}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <HStack flexShrink={1} space={2} alignItems="center">
+              <Alert.Icon />
+              <FrontEndTypo.H4>
+                {type === "upload"
+                  ? isVerified
+                    ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
+                    : t("YOUR_AADHAAR_UPLOAD_FAILED")
+                  : isVerified
+                  ? t("AADHAAR_VERIFICATION_SUCCESSFUL")
+                  : t("AADHAR_KYC_VERIFICATION_FAILED")}
+              </FrontEndTypo.H4>
+            </HStack>
+          </HStack>
+        </VStack>
+      </Alert>
       <FrontEndTypo.H1 bold mt="4" color="textMaroonColor.400">
         {t("OFFLINE_AADHAAR_VERIFICATION")}
         (OKYC)

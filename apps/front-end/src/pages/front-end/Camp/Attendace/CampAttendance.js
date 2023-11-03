@@ -1,10 +1,8 @@
 import React from "react";
-import { Box, HStack, VStack } from "native-base";
+import { Alert, Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
   FrontEndTypo,
-  AdminTypo,
-  ImageView,
   IconByName,
   campService,
   Camera,
@@ -13,7 +11,7 @@ import {
   GeoLocation,
   UserCard,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -24,7 +22,6 @@ const ABSENT = "absent";
 export default function ConsentForm() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [groupUsers, setGroupUsers] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -32,6 +29,7 @@ export default function ConsentForm() {
   const [error, setError] = React.useState("");
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
+  const [isEditable, setIsEditable] = React.useState();
 
   React.useEffect(async () => {
     await getData();
@@ -63,6 +61,7 @@ export default function ConsentForm() {
 
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
     setError("");
+    setIsEditable({ ...isEditable, [user?.id]: null });
     if (user?.attendance?.status) {
       if (status === PRESENT || status === ABSENT) {
         let payLoad = {
@@ -74,27 +73,40 @@ export default function ConsentForm() {
         };
         if (status === PRESENT) {
           const photo_1 =
-            cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+            cameraFile?.data?.insert_documents?.returning?.[0]?.name;
           payLoad = { ...payLoad, photo_1: `${photo_1}` };
         }
         await campService.updateCampAttendance(payLoad);
         await getData();
       }
     } else {
-      const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
-      if (photo_1) {
+      if (status === PRESENT) {
+        const photo_1 =
+          cameraFile?.data?.insert_documents?.returning?.[0]?.name;
+        if (photo_1) {
+          const payLoad = {
+            ...data,
+            context_id: id,
+            user_id: user?.id,
+            status: PRESENT,
+            photo_1: `${photo_1}`,
+          };
+
+          await campService.markCampAttendance(payLoad);
+          await getData();
+        } else {
+          setError("Capture Picture First");
+        }
+      } else if (status === ABSENT) {
         const payLoad = {
           ...data,
           context_id: id,
           user_id: user?.id,
-          status: PRESENT,
-          photo_1: `${photo_1}`,
+          status: ABSENT,
         };
 
         await campService.markCampAttendance(payLoad);
         await getData();
-      } else {
-        setError("Capture Picture First");
       }
     }
 
@@ -122,13 +134,13 @@ export default function ConsentForm() {
                   <HStack
                     space={2}
                     divider={
-                      <AdminTypo.H6 color="white" bold>
+                      <FrontEndTypo.H6 color="white" bold>
                         :
-                      </AdminTypo.H6>
+                      </FrontEndTypo.H6>
                     }
                   >
-                    <AdminTypo.H6 color="white">{t("NAME")}</AdminTypo.H6>
-                    <AdminTypo.H6 color="white">
+                    <FrontEndTypo.H6 color="white">{t("NAME")}</FrontEndTypo.H6>
+                    <FrontEndTypo.H6 color="white">
                       {/* ${userData?.index + 1}) */}
                       {`${[
                         userData?.program_beneficiaries[0]
@@ -140,37 +152,42 @@ export default function ConsentForm() {
                       ]
                         .filter((e) => e)
                         .join(" ")}`}
-                    </AdminTypo.H6>
+                    </FrontEndTypo.H6>
                   </HStack>
                   {/* <HStack
                     space={2}
                     divider={
-                      <AdminTypo.H6 color="white" bold>
+                      <FrontEndTypo.H6 color="white" bold>
                         :
-                      </AdminTypo.H6>
+                      </FrontEndTypo.H6>
                     }
                   >
-                    <AdminTypo.H6 color="white">{t("CANDIDATES")}</AdminTypo.H6>
-                    <AdminTypo.H6 color="white">
+                    <FrontEndTypo.H6 color="white">{t("CANDIDATES")}</FrontEndTypo.H6>
+                    <FrontEndTypo.H6 color="white">
                       {groupUsers?.length ? groupUsers?.length : 0}
-                    </AdminTypo.H6>
+                    </FrontEndTypo.H6>
                   </HStack> */}
+                  {error && (
+                    <FrontEndTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </FrontEndTypo.H4>
+                  )}
                 </VStack>
               }
               // footerComponent={
               //   <HStack space={3} width="100%" justifyContent="space-between">
               //     {error && (
-              //       <AdminTypo.H4 style={{ color: "red" }}>
+              //       <FrontEndTypo.H4 style={{ color: "red" }}>
               //         {error}
-              //       </AdminTypo.H4>
+              //       </FrontEndTypo.H4>
               //     )}
-              //     <AdminTypo.Secondarybutton
+              //     <FrontEndTypo.Secondarybutton
               //       shadow="BlueOutlineShadow"
               //       onPress={() => uploadAttendence(userData, PRESENT, true)}
               //     >
               //       {t("FINISH")}
-              //     </AdminTypo.Secondarybutton>
-              //     <AdminTypo.Secondarybutton
+              //     </FrontEndTypo.Secondarybutton>
+              //     <FrontEndTypo.Secondarybutton
               //       isDisabled={userData?.index + 1 === groupUsers.length}
               //       variant="secondary"
               //       ml="4"
@@ -178,9 +195,21 @@ export default function ConsentForm() {
               //       onPress={() => uploadAttendence(userData)}
               //     >
               //       {t("NEXT")}
-              //     </AdminTypo.Secondarybutton>
+              //     </FrontEndTypo.Secondarybutton>
               //   </HStack>
               // }
+              messageComponent={
+                cameraUrl && (
+                  <Alert status="success">
+                    <HStack alignItems="center" space="2">
+                      <Alert.Icon />
+                      <FrontEndTypo.H4>
+                        {t("ATTENDANCE_SUCCESS")}
+                      </FrontEndTypo.H4>
+                    </HStack>
+                  </Alert>
+                )
+              }
               {...{
                 cameraModal: true,
                 setCameraModal: async (item) => {
@@ -203,6 +232,7 @@ export default function ConsentForm() {
                     }
                     setCameraUrl({ url, file });
                   } else {
+                    setCameraUrl();
                     setUserData();
                   }
                 },
@@ -213,7 +243,7 @@ export default function ConsentForm() {
       </Box>
     );
   }
-
+  console.log({ isEditable });
   return (
     <Layout
       loading={loading}
@@ -224,9 +254,9 @@ export default function ConsentForm() {
       }}
     >
       <GeoLocation
-        getLocation={(lat, long, error) => {
-          if (error) {
-            setError(error);
+        getLocation={(lat, long, err) => {
+          if (err) {
+            setError(err);
           } else {
             setData({ ...data, lat: `${lat}`, long: `${long}` });
           }
@@ -234,10 +264,12 @@ export default function ConsentForm() {
       />
       <VStack py={6} px={4} space="6">
         <HStack justifyContent={"space-between"}>
-          <AdminTypo.H3 color={"textMaroonColor.400"}>
-            {t("LEARNERS")}
-          </AdminTypo.H3>
-          <AdminTypo.H3>({groupUsers?.length || 0})</AdminTypo.H3>
+          <HStack>
+            <FrontEndTypo.H3 color={"textMaroonColor.400"}>
+              {t("LEARNERS")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H3>({groupUsers?.length || 0})</FrontEndTypo.H3>
+          </HStack>
         </HStack>
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
@@ -247,12 +279,28 @@ export default function ConsentForm() {
             return (
               <HStack key={item} flex="1">
                 <UserCard
-                  _hstack={{ p: 0, space: 1, flex: 1 }}
+                  _hstack={{
+                    ...(!isEditable?.[item.id] && item?.attendance?.status
+                      ? { py: 0 }
+                      : // : item?.attendance?.status &&
+                        //   item?.attendance?.status !== PRESENT
+                        // ? { p: 0, pl: 4 }
+                        { p: 0 }),
+                    space: 1,
+                    flex: 1,
+                    bg:
+                      isEditable?.[item.id] || !item?.attendance?.status
+                        ? "white"
+                        : item?.attendance?.status === PRESENT
+                        ? "green.100"
+                        : item?.attendance?.status === ABSENT
+                        ? "red.100"
+                        : "",
+                  }}
                   _vstack={{ py: 2 }}
-                  _image={{ size: 45 }}
+                  _image={{ size: 45, color: "gray" }}
                   leftElement={
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === PRESENT) && (
+                    (isEditable?.[item.id] || !item?.attendance?.status) && (
                       <IconByName
                         onPress={(e) => {
                           uploadAttendence(item, ABSENT, true);
@@ -266,8 +314,7 @@ export default function ConsentForm() {
                     )
                   }
                   rightElement={
-                    (!item?.attendance?.status ||
-                      item?.attendance?.status === ABSENT) && (
+                    isEditable?.[item.id] || !item?.attendance?.status ? (
                       <IconByName
                         onPress={(e) => {
                           setUserData(item);
@@ -277,6 +324,19 @@ export default function ConsentForm() {
                         bg="green.100"
                         name="CheckboxCircleLineIcon"
                         _icon={{ size: "25px", color: "gray" }}
+                      />
+                    ) : (
+                      <IconByName
+                        name="EditBoxLineIcon"
+                        _icon={{ color: "garkGray", size: "15" }}
+                        bg="gray.100"
+                        rounded="full"
+                        onPress={(e) =>
+                          setIsEditable({
+                            ...isEditable,
+                            [item.id]: !isEditable?.[item.id],
+                          })
+                        }
                       />
                     )
                   }
@@ -313,7 +373,7 @@ const RenderAttendee = ({ row, t }) => (
     label={
       <FrontEndTypo.H5 bold>
         {row?.fa_is_processed === null
-          ? "-"
+          ? t("NO")
           : row?.fa_is_processed === true
           ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
           : t("NO")}
