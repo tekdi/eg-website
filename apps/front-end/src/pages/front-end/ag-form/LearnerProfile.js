@@ -54,7 +54,7 @@ const LearnerProfile = () => {
         onPressBackButton: (e) => {
           navigate("/");
         },
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
     >
       {alreadyreg && (
