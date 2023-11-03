@@ -394,6 +394,8 @@ export const Filter = ({ filter, setFilter }) => {
         } else {
           setFacilitator(newFilterData);
         }
+      } else {
+        setFacilitator([]);
       }
     };
     facilitatorDetails();
