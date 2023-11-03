@@ -590,7 +590,7 @@ export default function App() {
       loading={loading}
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         name: t("ENROLLMENT_DETAILS"),
         lang,
         setLang,
