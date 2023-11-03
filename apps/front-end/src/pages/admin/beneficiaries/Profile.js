@@ -228,6 +228,7 @@ export default function AgAdminProfile({ footerLinks }) {
       setAdhaarModalVisible(false);
     }
   };
+  console.log("data", data);
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -544,7 +545,7 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
             </HStack>
 
-            <HStack justifyContent="space-between">
+            <HStack justifyContent="space-between" space="4" p="2">
               <VStack
                 space={"5"}
                 w="50%"
@@ -567,7 +568,7 @@ export default function AgAdminProfile({ footerLinks }) {
                   </AdminTypo.H5>
                 </HStack>
 
-                <VStack>
+                <VStack space="3">
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("LAST_STANDARD_OF_EDUCATION")}:
                   </AdminTypo.H5>
@@ -623,65 +624,123 @@ export default function AgAdminProfile({ footerLinks }) {
                   </AdminTypo.H5>
                 </VStack>
               </VStack>
+              <VStack w="100%" space="2">
+                <VStack
+                  space={"5"}
+                  w="50%"
+                  bg="light.100"
+                  p="6"
+                  rounded="xl"
+                  borderWidth={"1px"}
+                  borderColor={"primary.200"}
+                  borderStyle={"solid"}
+                >
+                  <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                    <VStack space="20px" w="100%">
+                      <VStack space="20px" w="100%" rounded="xl">
+                        <HStack
+                          justifyContent="space-between"
+                          alignItems="center"
+                          borderColor="light.400"
+                          pb="1"
+                          borderBottomWidth="1"
+                        >
+                          <AdminTypo.H5 color="textGreyColor" bold>
+                            {t("CAREER_ASPIRATION_FURTHER_STUDIES")}
+                          </AdminTypo.H5>
+                        </HStack>
+                        <HStack>
+                          <AdminTypo.H5
+                            flex="0.8"
+                            bold
+                            color="textGreyColor.550"
+                          >
+                            {t("REACTIVATE_REASONS_CAREER_ASPIRATIONS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                            {data?.program_beneficiaries
+                              ?.learning_motivation ? (
+                              <GetOptions
+                                array={
+                                  data?.program_beneficiaries
+                                    ?.learning_motivation
+                                }
+                                enumApiData={enumOptions}
+                                enumType={"LEARNING_MOTIVATION"}
+                              />
+                            ) : (
+                              "-"
+                            )}
+                          </AdminTypo.H5>
+                        </HStack>
 
-              <VStack
-                space={"5"}
-                w="50%"
-                bg="light.100"
-                p="6"
-                rounded="xl"
-                ml="3"
-                borderWidth={"1px"}
-                borderColor={"primary.200"}
-                borderStyle={"solid"}
-              >
-                <HStack bg="light.100" p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="100%">
-                    <VStack space="20px" w="100%" rounded="xl">
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.400"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <AdminTypo.H5 color="textGreyColor" bold>
-                          {t("CAREER_ASPIRATION_FURTHER_STUDIES")}
-                        </AdminTypo.H5>
-                      </HStack>
-                      <HStack>
-                        <AdminTypo.H5 flex="0.8" bold color="textGreyColor.550">
-                          {t("REACTIVATE_REASONS_CAREER_ASPIRATIONS")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 color="textGreyColor.800" bold>
-                          {data?.program_beneficiaries?.learning_motivation ? (
-                            <GetOptions
-                              array={
-                                data?.program_beneficiaries?.learning_motivation
-                              }
-                              enumApiData={enumOptions}
-                              enumType={"LEARNING_MOTIVATION"}
-                            />
-                          ) : (
-                            "-"
-                          )}
-                        </AdminTypo.H5>
-                      </HStack>
-
-                      <VStack space="2">
-                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                          {t("REMARKS")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
-                          {data?.core_beneficiaries?.career_aspiration_details
-                            ? data?.core_beneficiaries
-                                ?.career_aspiration_details
-                            : "-"}
-                        </AdminTypo.H5>
+                        <VStack space="2">
+                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                            {t("REMARKS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H5
+                            flex="0.7"
+                            color="textGreyColor.800"
+                            bold
+                          >
+                            {data?.core_beneficiaries?.career_aspiration_details
+                              ? data?.core_beneficiaries
+                                  ?.career_aspiration_details
+                              : "-"}
+                          </AdminTypo.H5>
+                        </VStack>
                       </VStack>
                     </VStack>
-                  </VStack>
-                </HStack>
+                  </HStack>
+                </VStack>
+                <VStack
+                  space={"5"}
+                  w="50%"
+                  bg="light.100"
+                  p="6"
+                  rounded="xl"
+                  borderWidth={"1px"}
+                  borderColor={"primary.200"}
+                  borderStyle={"solid"}
+                >
+                  <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                    <VStack space="20px" w="100%">
+                      <VStack space="20px" w="100%" rounded="xl">
+                        <HStack
+                          justifyContent="space-between"
+                          alignItems="center"
+                          borderColor="light.400"
+                          pb="1"
+                          borderBottomWidth="1"
+                        >
+                          <AdminTypo.H5 color="textGreyColor" bold>
+                            {t("ADDRESS_DETAILS")}
+                          </AdminTypo.H5>
+                        </HStack>
+                        <HStack>
+                          <AdminTypo.H5
+                            flex="0.8"
+                            bold
+                            color="textGreyColor.550"
+                          >
+                            {t("ADDRESS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H6 color="textGreyColor.600" bold>
+                            {[
+                              data?.state,
+                              data?.district,
+                              data?.block,
+                              data?.village,
+                              data?.grampanchayat,
+                            ]
+                              .filter((e) => e)
+                              .join(",")}
+                          </AdminTypo.H6>
+                        </HStack>
+                      </VStack>
+                    </VStack>
+                  </HStack>
+                </VStack>
               </VStack>
             </HStack>
 
