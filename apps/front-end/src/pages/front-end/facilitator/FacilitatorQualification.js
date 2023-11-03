@@ -63,7 +63,7 @@ export default function FacilitatorQualification({
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
         leftIcon: (
           <FrontEndTypo.H2>{t("QUALIFICATION_DETAILS")}</FrontEndTypo.H2>

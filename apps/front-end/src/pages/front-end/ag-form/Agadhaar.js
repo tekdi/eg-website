@@ -275,7 +275,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
