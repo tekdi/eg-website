@@ -472,7 +472,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "langBtn"],
+        onlyIconsShow: ["backBtn", "langBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,
