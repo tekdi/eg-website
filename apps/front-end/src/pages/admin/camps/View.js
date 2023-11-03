@@ -15,7 +15,16 @@ import {
   GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert } from "native-base";
+import {
+  HStack,
+  Stack,
+  VStack,
+  Modal,
+  Alert,
+  Button,
+  Menu,
+  Pressable,
+} from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -116,7 +125,15 @@ export default function View({ footerLinks }) {
       setStatus();
     }
   };
-
+  const dropDown = (triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack>
+          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  };
   React.useEffect(async () => {
     setLoading(true);
     const qData = await enumRegistryService.listOfEnum();
@@ -176,14 +193,58 @@ export default function View({ footerLinks }) {
     {
       name: t("ACTION"),
       selector: (row) => (
-        <AdminTypo.Secondarybutton
-          my={3}
-          onPress={() => {
-            navigate(`/admin/camps/${id}/reassign/${row?.id}`);
+        <Button.Group
+          isAttached
+          divider={<h3>|</h3>}
+          my="3"
+          size="sm"
+          borderRadius="full"
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderWidth="1px"
+          borderColor="#084B82"
+          _text={{
+            color: "blueText.400",
+            fontSize: "14px",
+            fontWeight: "700",
           }}
         >
-          {t("REASSIGN")}
-        </AdminTypo.Secondarybutton>
+          <Button
+            background="white"
+            _text={{
+              color: "blueText.400",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+            onPress={() => {
+              navigate(`/admin/beneficiary/${row?.id}`);
+            }}
+          >
+            {t("VIEW")}
+          </Button>
+          <Button variant="outline">
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => dropDown(triggerProps, t)}
+            >
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/beneficiary/${row?.id}`);
+                }}
+              >
+                {t("VIEW")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/camps/${id}/reassign/${row?.id}`);
+                }}
+              >
+                {t("REASSIGN")}
+              </Menu.Item>
+            </Menu>
+          </Button>
+        </Button.Group>
       ),
     },
   ];
