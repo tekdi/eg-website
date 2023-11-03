@@ -8,14 +8,31 @@ import {
   tableCustomStyles,
   campService,
   useWindowSize,
+  setQueryParameters,
+  geolocationRegistryService,
+  facilitatorRegistryService,
+  debounce,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { Box, HStack, Modal, VStack, ScrollView, useToast } from "native-base";
+import {
+  Box,
+  HStack,
+  Modal,
+  VStack,
+  ScrollView,
+  useToast,
+  Button,
+  Input,
+  Alert,
+} from "native-base";
 import { CampChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import { MultiCheck, validator } from "component/BaseInput";
+import Form from "@rjsf/core";
 
 const columns = (navigate, t, setModal) => [
   {
@@ -95,7 +112,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     setCampData(filtered);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
-  }, []);
+  }, [filter]);
 
   const reassignCamp = async () => {
     const obj = {
@@ -103,16 +120,24 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       camp_id: modal?.id,
     };
     const result = await campService.reassignCamp(obj);
-    if (result) {
+    if (result?.status !== 200) {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t(result?.message)}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    } else {
       setModal("");
       navigate(-1);
-    } else {
-      toast.show({
-        description: "Hello world",
-      });
     }
   };
-
   return (
     <Layout
       _sidebar={footerLinks}
@@ -231,42 +256,39 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               )}
             </HStack>
           </HStack>
-          {/* <HStack mt="6" justifyContent={"space-between"}>
-              <AdminTypo.Secondarybutton
-                rightIcon={<IconByName name="MessageLineIcon" />}
-              >
-                {t("Add Comment For Prerak")}
-              </AdminTypo.Secondarybutton>
-              <Button rounded={"full"}>{t("Assign to Other Prerak")}</Button>
-            </HStack> */}
         </Box>
-        <ScrollView
-          maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
-        >
-          <DataTable
-            filter={filter}
-            setFilter={(e) => {
-              setFilter(e);
-              setQueryParameters(e);
-            }}
-            customStyles={tableCustomStyles}
-            columns={[...columns(navigate, t, setModal)]}
-            persistTableHead
-            facilitator={userTokenInfo?.authUser}
-            pagination
-            paginationTotalRows={paginationTotalRows}
-            paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-            defaultSortAsc
-            paginationServer
-            data={campData}
-            onChangeRowsPerPage={(e) => {
-              setFilter({ ...filter, limit: e?.toString() });
-            }}
-            onChangePage={(e) => {
-              setFilter({ ...filter, page: e?.toString() });
-            }}
-          />
-        </ScrollView>
+        <HStack>
+          <Filter {...{ filter, setFilter, t }} />
+          <ScrollView
+            maxH={
+              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+            }
+          >
+            <DataTable
+              filter={filter}
+              setFilter={(e) => {
+                setFilter(e);
+                setQueryParameters(e);
+              }}
+              customStyles={tableCustomStyles}
+              columns={[...columns(navigate, t, setModal)]}
+              persistTableHead
+              facilitator={userTokenInfo?.authUser}
+              pagination
+              paginationTotalRows={paginationTotalRows}
+              paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+              defaultSortAsc
+              paginationServer
+              data={campData}
+              onChangeRowsPerPage={(e) => {
+                setFilter({ ...filter, limit: e?.toString() });
+              }}
+              onChangePage={(e) => {
+                setFilter({ ...filter, page: e?.toString() });
+              }}
+            />
+          </ScrollView>
+        </HStack>
       </VStack>
 
       <Modal isOpen={modal} size="lg">
@@ -292,6 +314,12 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 {t("ADDRESS")}:
                 {`${modal?.properties?.district}, ${modal?.properties?.block}`}
               </AdminTypo.H4>
+              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{t("REASSIGN_MSG")}</BodyMedium>
+                </HStack>
+              </Alert>
             </VStack>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-between"}>
@@ -307,3 +335,186 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+export const Filter = ({ filter, setFilter, t }) => {
+  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
+  const [facilitator, setFacilitator] = React.useState([]);
+
+  const setFilterObject = (data) => {
+    if (data?.district) {
+      const { district, block } = data;
+      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+    }
+    setFilter(data);
+    setQueryParameters(data);
+  };
+
+  const schema = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: t("DISTRICT"),
+        grid: 1,
+        _hstack: { maxH: 135, overflowY: "scroll" },
+        items: {
+          type: "string",
+          enum: getDistrictsAll?.map((item, i) => item?.district_name),
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
+          }),
+          enum: getBlocksAll?.map((item, i) => {
+            return item?.block_name;
+          }),
+        },
+        uniqueItems: true,
+      },
+    },
+  };
+
+  const uiSchema = {
+    district: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+    block: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+  };
+  React.useEffect(async () => {
+    let name = "RAJASTHAN";
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name,
+    });
+    setgetDistrictsAll(getDistricts?.districts);
+  }, []);
+
+  React.useEffect(async () => {
+    let blockData = [];
+    if (filter?.district?.length > 0) {
+      blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filter?.district,
+      });
+    }
+    setGetBlocksAll(blockData);
+  }, [filter?.district]);
+
+  const onChange = async (data) => {
+    const { district: newDistrict, block: newBlock } = data?.formData || {};
+    const { district, block, ...remainData } = filter;
+    setFilterObject({
+      ...remainData,
+      ...(newDistrict?.length > 0
+        ? {
+            district: newDistrict,
+            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+          }
+        : {}),
+    });
+  };
+
+  const clearFilter = () => {
+    setFilter({});
+    setFilterObject({});
+    setFacilitatorFilter({});
+  };
+  React.useEffect(async () => {
+    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
+      facilitatorFilter
+    );
+
+    if (!error) {
+      let newData;
+      if (result) {
+        newData = result?.users?.map((e) => ({
+          value: e?.id,
+          label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+        }));
+      }
+      setFacilitator(newData);
+    }
+  }, [facilitatorFilter, filter]);
+
+  return (
+    <VStack space={3}>
+      <HStack
+        alignItems="center"
+        justifyContent="space-between"
+        borderBottomWidth="2"
+        borderColor="#eee"
+        flexWrap="wrap"
+        Width
+      >
+        <HStack>
+          <IconByName isDisabled name="FilterLineIcon" />
+          <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+        </HStack>
+        <Button variant="link" pt="3" onPress={clearFilter}>
+          <AdminTypo.H6 color="blueText.400" underline bold>
+            {t("CLEAR_FILTER")}
+          </AdminTypo.H6>
+        </Button>
+      </HStack>
+      <Box p={[0, 0, 3]} pr="3">
+        <Form
+          schema={schema}
+          uiSchema={uiSchema}
+          onChange={onChange}
+          validator={validator}
+          formData={filter}
+        >
+          <Button display={"none"} type="submit"></Button>
+        </Form>
+      </Box>
+      <AdminTypo.H5>{t("PRERAK")}</AdminTypo.H5>
+      <Input
+        w="100%"
+        height="32px"
+        placeholder={t("SEARCH")}
+        variant="outline"
+        onChange={(e) => {
+          debounce(
+            setFacilitatorFilter({
+              ...facilitatorFilter,
+              search: e.nativeEvent.text,
+              page: 1,
+            }),
+            3000
+          );
+        }}
+      />
+      <MultiCheck
+        value={filter?.facilitator ? filter?.facilitator : []}
+        onChange={(e) => {
+          setFilterObject({ ...filter, facilitator: e });
+        }}
+        schema={{
+          grid: 1,
+          _hstack: {
+            maxH: 130,
+            overflowY: "scroll",
+          },
+        }}
+        options={{
+          enumOptions: facilitator,
+        }}
+      />
+    </VStack>
+  );
+};
