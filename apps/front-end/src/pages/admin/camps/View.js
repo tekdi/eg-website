@@ -452,9 +452,9 @@ export default function View({ footerLinks }) {
                     {t("CHANGES_REQUIRED")}
                   </FrontEndTypo.H2> */}
                   <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                    <VStack space="2" color>
+                    <HStack space="2" color>
                       <BodyMedium>{t("CONTACT_PRERAK_AND_DISCUSS")}</BodyMedium>
-                    </VStack>
+                    </HStack>
                   </Alert>
                 </Modal.Body>
               )}

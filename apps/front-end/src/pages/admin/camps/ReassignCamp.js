@@ -9,9 +9,6 @@ import {
   campService,
   useWindowSize,
   setQueryParameters,
-  geolocationRegistryService,
-  facilitatorRegistryService,
-  debounce,
   BodyMedium,
 } from "@shiksha/common-lib";
 import {
@@ -21,8 +18,6 @@ import {
   VStack,
   ScrollView,
   useToast,
-  Button,
-  Input,
   Alert,
 } from "native-base";
 import { CampChipStatus } from "component/Chip";
@@ -31,8 +26,6 @@ import React from "react";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
-import { MultiCheck, validator } from "component/BaseInput";
-import Form from "@rjsf/core";
 import { Filter } from "./CampHome";
 
 const columns = (navigate, t, setModal) => [
