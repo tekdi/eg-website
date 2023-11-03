@@ -42,6 +42,18 @@ const ConsentForm = ({ consentData, row, t }) => {
   );
 };
 
+const mapDirection = ({ row, t, data }) => {
+  return (
+    <a
+      href={`https://www.google.com/maps/dir/${row?.properties?.lat},${row?.properties?.long}/'${data?.properties?.lat},${data?.properties?.long}'/`}
+      target="_blank"
+      style={{ textDecoration: "none" }}
+    >
+      {t("VIEW")}
+    </a>
+  );
+};
+
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -154,6 +166,11 @@ export default function View({ footerLinks }) {
     {
       name: t("CONSENT_FORM"),
       selector: (row) => ConsentForm({ t, row, consentData }),
+      wrap: true,
+    },
+    {
+      name: t("MAP"),
+      selector: (row) => mapDirection({ t, row, data }),
       wrap: true,
     },
     {
