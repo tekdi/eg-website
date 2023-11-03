@@ -161,8 +161,8 @@ export default function AadhaarDetails() {
                         }}
                       >
                         {t("SCAN_QR_CODE")}
-                      </FrontEndTypo.Secondarybutton> */}
-                      {/* {facilitator?.aadhaar_verification_mode !== "upload" && (
+                      </FrontEndTypo.Secondarybutton> 
+                       {facilitator?.aadhaar_verification_mode !== "upload" && (
                         <FrontEndTypo.Secondarybutton
                           onPress={() => {
                             navigate(`/aadhaar-kyc/${id}/upload`, {
