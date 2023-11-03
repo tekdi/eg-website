@@ -267,7 +267,7 @@ export default function App({ onClick, id }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         name: t("EDUCATION_DETAILS"),
         lang,
         setLang,

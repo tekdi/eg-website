@@ -64,7 +64,13 @@ export default function BenificiaryEducation() {
     setEnumOptions(data?.data ? data?.data : {});
   }, [benificiary]);
   return (
-    <Layout _appBar={{ name: t("EDUCATION_DETAILS"), onPressBackButton }}>
+    <Layout
+      _appBar={{
+        name: t("EDUCATION_DETAILS"),
+        onlyIconsShow: ["langBtn"],
+        onPressBackButton,
+      }}
+    >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
           <VStack
