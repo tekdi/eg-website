@@ -76,7 +76,7 @@ export default function View({ footerLinks }) {
       const camp = result?.data?.camp;
       setDataa(camp);
       setUserData(result?.data?.camp?.beneficiaries);
-      setEdit(data?.group?.status === "change_required");
+      setEdit(camp?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
       setProperties(camp?.properties);
       let properData = camp?.properties;
@@ -340,7 +340,6 @@ export default function View({ footerLinks }) {
             </VStack>
           </CardComponent>
         </HStack>
-
         <HStack space={4}>
           <CardComponent
             isHideProgressBar={true}
@@ -376,7 +375,6 @@ export default function View({ footerLinks }) {
               "kit_ratings",
               "kit_feedback",
             ]}
-            onEdit={edit && navTOedit("edit_kit_details")}
           />
 
           <CardComponent
@@ -423,16 +421,14 @@ export default function View({ footerLinks }) {
                 status="info"
                 onPress={() => setStatus("change_required")}
               >
-                {t("CHANGES_NEEDED")}
+                {t("CHANGE_REQUIRED")}
               </AdminTypo.Secondarybutton>
             </>
           )}
 
           {data?.group?.status === "camp_ip_verified" && (
             <AdminTypo.Secondarybutton
-              onPress={() => {
-                setEdit(true);
-              }}
+              onPress={() => setStatus("change_required")}
             >
               {t("MODIFY")}
             </AdminTypo.Secondarybutton>
@@ -456,8 +452,8 @@ export default function View({ footerLinks }) {
                     {t("CHANGES_REQUIRED")}
                   </FrontEndTypo.H2> */}
                   <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                    <HStack alignItems="center" space="2" color>
-                      <BodyMedium> {t("CHANGES_REQUIRED")}</BodyMedium>
+                    <HStack space="2" color>
+                      <BodyMedium>{t("CONTACT_PRERAK_AND_DISCUSS")}</BodyMedium>
                     </HStack>
                   </Alert>
                 </Modal.Body>
@@ -477,7 +473,7 @@ export default function View({ footerLinks }) {
                       updateCampStatus();
                     }}
                   >
-                    {t("CONFIRM")}
+                    {t("OK")}
                   </AdminTypo.Secondarybutton>
                 </HStack>
               </Modal.Footer>

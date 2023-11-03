@@ -133,7 +133,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   // Check if all specified names have the color "green.300"
   const isDisabled = () => {
-    if (campStatus === "registered") {
+    if (["registered", "camp_ip_verified"].includes(campStatus)) {
       return false;
     } else if (
       ["CAMP_LOCATION", "FACILITIES", "KIT"].every((name) =>
@@ -143,6 +143,11 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       return true;
     }
   };
+
+  const disableEdit = () =>
+    ["camp_ip_verified"].includes(campStatus) ? false : true;
+
+
   const SubmitCampRegistration = async () => {
     const obj = {
       id: camp_id?.id,
@@ -185,7 +190,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           shadow="AlertShadow"
           borderRadius="10px"
           onPress={async () => {
-            navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
+            disableEdit() &&
+              navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
           }}
         >
           <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
@@ -198,11 +204,13 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
               <FrontEndTypo.H3 ml={5}>{t("UPDATE_LEARNER")}</FrontEndTypo.H3>
             </HStack>
-            <IconByName
-              isDisabled
-              name="ArrowRightSLineIcon"
-              _icon={{ size: "30px" }}
-            />
+            {disableEdit() && (
+              <IconByName
+                isDisabled
+                name="ArrowRightSLineIcon"
+                _icon={{ size: "30px" }}
+              />
+            )}
           </HStack>
         </Pressable>
 
@@ -215,6 +223,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
               NavName={item?.Name}
               step={item?.step}
               color={item?.color}
+              disableEdit={disableEdit()}
             />
           );
         })}
@@ -248,12 +257,20 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   );
 }
 
-const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
+const NavigationBox = ({
+  IconName,
+  NavName,
+  camp_id,
+  color,
+  step,
+  disableEdit,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
   const navToForm = (step) => {
-    navigate(`/camps/${camp_id?.id}/${step}`);
+    if (disableEdit) {
+      navigate(`/camps/${camp_id?.id}/${step}`);
+    }
   };
 
   return (
@@ -294,12 +311,14 @@ const NavigationBox = ({ IconName, NavName, camp_id, color, step }) => {
             )}
           </FrontEndTypo.H3>
         </HStack>
-        <IconByName
-          isDisabled
-          name="ArrowRightSLineIcon"
-          //color="amber.400"
-          _icon={{ size: "30px" }}
-        />
+        {disableEdit && (
+          <IconByName
+            isDisabled
+            name="ArrowRightSLineIcon"
+            //color="amber.400"
+            _icon={{ size: "30px" }}
+          />
+        )}
       </HStack>
     </Pressable>
   );
