@@ -70,22 +70,28 @@ export default function AadharCompare({ type, aadhaarCompare }) {
               <Box w="120" h="120" flex="1" display={["none", "unset"]} />
               <VStack space="1" flex="1">
                 <FrontEndTypo.H3>{t("PROFILE_DETAILS")}</FrontEndTypo.H3>
-                {item?.user ? (
-                  <ImageView
-                    w="120"
-                    h="120"
-                    source={{ document_id: item?.user }}
-                    alt="user photo"
-                  />
-                ) : (
-                  <IconByName
-                    isDisabled
-                    name="AccountCircleLineIcon"
-                    color="iconColor.350"
-                    _icon={{ size: "120" }}
-                    justifySelf="Center"
-                  />
-                )}
+                <HStack flexWrap={"wrap"} space="2">
+                  {item?.user ? (
+                    item?.user?.map((e) => (
+                      <HStack pt="2" key={e}>
+                        <ImageView
+                          w="60"
+                          h="60"
+                          source={{ document_id: e }}
+                          alt="user photo"
+                        />
+                      </HStack>
+                    ))
+                  ) : (
+                    <IconByName
+                      isDisabled
+                      name="AccountCircleLineIcon"
+                      color="iconColor.350"
+                      _icon={{ size: "120" }}
+                      justifySelf="Center"
+                    />
+                  )}
+                </HStack>
               </VStack>
               {item?.aadhaar && (
                 <VStack space="1" flex="1">
