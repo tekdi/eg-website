@@ -128,6 +128,7 @@ const PcrDetails = React.lazy(() =>
 const PcrView = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrView")
 );
+const FileView = React.lazy(() => import("pages/FileView"));
 
 export default [
   { path: "/form", component: Home },
@@ -269,10 +270,13 @@ export default [
     path: "/camps/new/learners",
     component: CampLeanerList,
   },
-
-  { path: "*", component: Dashboard },
+  {
+    path: "/file/:id/view",
+    component: FileView,
+  },
   {
     path: "/community-references",
     component: CommunityView,
   },
+  { path: "*", component: Dashboard },
 ];
