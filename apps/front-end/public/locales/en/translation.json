@@ -210,6 +210,7 @@
   "CAMP_REGISTER": "Camp Registration",
   "CAMP_SETTINGS": "Camp Settings",
   "CAMP_STATUS": "Camp Status",
+  "CAMP_PROFILE": "Camp Profile",
   "CAMP_VALIDATION_MESSAGE_CREATING_CAMP_DETAILS": "Camp registration failed.",
   "CAMP_VALIDATION_MESSAGE_CREATING_USER_FOR_CAMP": "Error occured during creating group user.",
   "CAMP_VALIDATION_MESSAGE_FACILITATOR_DIDNT_SHORTLISTED_FOR_ORIENTATION": "Faciltator access denied",

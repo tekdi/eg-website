@@ -256,13 +256,14 @@ export default function CampDashboard({ footerLinks }) {
           <Modal.Body p={5} marginTop={"20px"}>
             <VStack space={4}>
               <FrontEndTypo.Primarybutton
+                m="2"
                 onPress={() => {
                   navigate(`/camps/${campId}`);
                 }}
               >
-                {t("PROFILE")}
+                {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton>
+              {/* <FrontEndTypo.Secondarybutton>
                 {t("CAMP_SETTINGS")}
               </FrontEndTypo.Secondarybutton>
               <FrontEndTypo.Primarybutton
@@ -271,7 +272,7 @@ export default function CampDashboard({ footerLinks }) {
                 }}
               >
                 {t("CAMP_EXECUTION")}
-              </FrontEndTypo.Primarybutton>
+              </FrontEndTypo.Primarybutton> */}
             </VStack>
           </Modal.Body>
         </Modal.Content>
