@@ -322,7 +322,7 @@ export default function AgAdminProfile({ footerLinks }) {
           </AdminTypo.Dangerbutton>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
   function renderReactivateButton() {
@@ -336,7 +336,7 @@ export default function AgAdminProfile({ footerLinks }) {
           </AdminTypo.Secondarybutton>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
 
@@ -361,7 +361,7 @@ export default function AgAdminProfile({ footerLinks }) {
           </AdminTypo.Dangerbutton>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
   return (

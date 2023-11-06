@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  HStack,
-  VStack,
-  Box,
-  Progress,
-  Image,
-  Alert,
-  Stack,
-} from "native-base";
+import { HStack, VStack, Box, Progress, Alert } from "native-base";
 import {
   arrList,
   IconByName,
