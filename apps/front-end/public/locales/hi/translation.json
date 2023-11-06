@@ -545,6 +545,7 @@
   "GROUPS_STATUS_INACTIVE": "निष्क्रिय",
   "GROUPS_STATUS_NOT_REGISTERED": "रजिस्टर नहीं है",
   "GROUPS_STATUS_REGISTERED": "रजिस्टर",
+  "CAMP_REASSIGN_WARNING_MESSAGE": "आप इस शिक्षार्थी को दूसरे शिविर में ले जाने वाले हैं",
   "HAVE_YOU_UPDATED_AADHAAR_CARD": "क्या आपने आधार कार्ड को अपडेट किया है?",
   "HELP": "मदद ?",
   "HINDI": "हिंदी",

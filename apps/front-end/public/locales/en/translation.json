@@ -544,6 +544,7 @@
   "GROUPS_STATUS_CAMP_INITIATED": "Camp Initiated",
   "GROUPS_STATUS_CAMP_IP_VERIFIED": "Camp Ip Verified",
   "GROUPS_STATUS_CHANGE_REQUIRED": "Change Required",
+  "CAMP_REASSIGN_WARNING_MESSAGE": "You are about to move this learner to another camp",
   "GROUPS_STATUS_INACTIVE": "Inactive",
   "GROUPS_STATUS_NOT_REGISTERED": "Not Registered",
   "GROUPS_STATUS_REGISTERED": "Registered",
