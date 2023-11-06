@@ -15,6 +15,11 @@ export default function FileView() {
   const [height, setHeight] = React.useState(0);
   const con = React.useRef();
 
+  const downloadImage = () => {
+    const FileSaver = require("file-saver");
+    FileSaver.saveAs(`${receiptUrl?.fileUrl}`);
+  };
+
   React.useEffect(async () => {
     const newResult = await uploadRegistryService.getOne({
       document_id: id,
@@ -55,6 +60,7 @@ export default function FileView() {
                   <IconByName
                     p="0"
                     color="light.400"
+                    rounded="full"
                     _icon={{ size: "30" }}
                     name="AddCircleLineIcon"
                     onPress={(e) => zoomIn()}
@@ -62,6 +68,7 @@ export default function FileView() {
                   <IconByName
                     p="0"
                     color="light.400"
+                    rounded="full"
                     _icon={{ size: "30" }}
                     name="IndeterminateCircleLineIcon"
                     onPress={(e) => zoomOut()}
@@ -69,10 +76,22 @@ export default function FileView() {
                   <IconByName
                     p="0"
                     color="light.400"
+                    rounded="full"
                     _icon={{ size: "30" }}
                     name="RefreshLineIcon"
                     onPress={(e) => resetTransform()}
                   />
+                  <HStack p="1.5px">
+                    <IconByName
+                      p="2px"
+                      color="light.400"
+                      borderWidth="2"
+                      rounded="full"
+                      _icon={{ size: "19" }}
+                      name="DownloadLineIcon"
+                      onPress={downloadImage}
+                    />
+                  </HStack>
                 </HStack>
                 <VStack
                   justifyContent="center"
