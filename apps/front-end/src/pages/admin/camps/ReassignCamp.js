@@ -230,7 +230,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 </AdminTypo.H6>
               </HStack>
             </VStack>
-            <HStack flex="0.5" mt={"-5"} justifyContent={"space-between"}>
+            <HStack flex="0.5" justifyContent={"center"}>
               {data?.profile_photo_1?.id ? (
                 <ImageView
                   source={{
@@ -251,6 +251,14 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             </HStack>
           </HStack>
         </Box>
+        <HStack justifyContent={"center"}>
+          <Alert status="warning" mb="3" mt="4">
+            <HStack space="2" color>
+              <Alert.Icon />
+              <BodyMedium>{t("CAMP_REASSIGN_WARNING_MESSAGE")}</BodyMedium>
+            </HStack>
+          </Alert>
+        </HStack>
         <HStack>
           <Filter {...{ filter, setFilter, t }} />
           <ScrollView
@@ -329,5 +337,3 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
-
-
