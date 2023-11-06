@@ -384,19 +384,18 @@ export const Filter = ({ filter, setFilter }) => {
           parseInt(`${result?.data?.currentPage}`) <
             parseInt(`${result?.data?.totalPages}`)
         );
-        const newData = result?.data?.data?.map((e) => ({
+        const newFilterData = result?.data?.data?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
-        const newFilterData = newData?.filter(
-          (e) =>
-            facilitator?.filter((subE) => subE.value === e?.value).length === 0
-        );
-        if (filter?.page > 1) {
+
+        if (facilitatorFilter?.page > 1) {
           setFacilitator([...facilitator, ...newFilterData]);
         } else {
           setFacilitator(newFilterData);
         }
+      } else {
+        setFacilitator([]);
       }
     };
     facilitatorDetails();
@@ -404,7 +403,7 @@ export const Filter = ({ filter, setFilter }) => {
 
   const onChange = async (data) => {
     const { district: newDistrict, block: newBlock } = data?.formData || {};
-    const { district, block, ...remainData } = filter;
+    const { district, block, ...remainData } = filter || {};
     setFilterObject({
       ...remainData,
       ...(newDistrict?.length > 0
@@ -471,6 +470,7 @@ export const Filter = ({ filter, setFilter }) => {
           }}
         />
         <MultiCheck
+          key={facilitator}
           value={filter?.facilitator ? filter?.facilitator : []}
           onChange={(e) => {
             setFilterObject({ ...filter, facilitator: e });
