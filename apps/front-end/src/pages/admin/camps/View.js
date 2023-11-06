@@ -24,6 +24,9 @@ import {
   Button,
   Menu,
   Pressable,
+  Divider,
+  Flex,
+  Text,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
@@ -129,7 +132,7 @@ export default function View({ footerLinks }) {
     return (
       <Pressable accessibilityLabel="More options menu" {...triggerProps}>
         <HStack>
-          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+          <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
         </HStack>
       </Pressable>
     );
@@ -198,11 +201,14 @@ export default function View({ footerLinks }) {
           divider={<h3>|</h3>}
           my="3"
           size="sm"
+          h="10"
+          marginTop="8px"
           borderRadius="full"
           background="white"
           shadow="BlueOutlineShadow"
           borderWidth="1px"
           borderColor="#084B82"
+          lineHeight={8}
           _text={{
             color: "blueText.400",
             fontSize: "14px",
@@ -301,7 +307,7 @@ export default function View({ footerLinks }) {
             {data?.id}
           </AdminTypo.H1>
         </HStack>
-        <HStack flexWrap="wrap">
+        <HStack>
           <VStack>
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
@@ -346,41 +352,45 @@ export default function View({ footerLinks }) {
                 })}
             </HStack>
           </VStack>
-          {[
-            properties?.photo_other,
-            properties.photo_building,
-            properties?.photo_classroom,
-          ].map(
-            (item) =>
-              item && (
-                <HStack key={item}>
-                  <ImageView
-                    isImageTag={!item}
-                    urlObject={item || {}}
-                    _button={{ p: 0 }}
-                    text={
+          <VStack>
+            <HStack>
+              {[
+                properties?.photo_other,
+                properties.photo_building,
+                properties?.photo_classroom,
+              ].map(
+                (item) =>
+                  item && (
+                    <HStack key={item}>
                       <ImageView
-                        isImageTag
+                        isImageTag={!item}
                         urlObject={item || {}}
-                        width="260px"
-                        height="250px"
-                        m={"10px"}
-                        p={"2"}
-                        border="2px solid #eee"
-                        borderRadius={"4"}
-                        alignItems="left"
+                        _button={{ p: 0 }}
+                        text={
+                          <ImageView
+                            isImageTag
+                            urlObject={item || {}}
+                            width="240px"
+                            height="250px"
+                            m={"10px"}
+                            p={"2"}
+                            border="2px solid #eee"
+                            borderRadius={"4"}
+                            alignItems="left"
+                          />
+                        }
                       />
-                    }
-                  />
-                </HStack>
-              )
-          )}
-          <Stack flex="1">
+                    </HStack>
+                  )
+              )}
+            </HStack>
+          </VStack>
+          <VStack flex="1">
             <MapComponent
               latitude={data?.properties?.lat}
               longitude={data?.properties?.long}
             />
-          </Stack>
+          </VStack>
         </HStack>
         <HStack space={4}>
           <CardComponent
