@@ -557,7 +557,7 @@ export default function View({ footerLinks }) {
                       updateCampStatus();
                     }}
                   >
-                    {t("OK")}
+                    {t("CONFIRM")}
                   </AdminTypo.Secondarybutton>
                 </HStack>
               </Modal.Footer>
