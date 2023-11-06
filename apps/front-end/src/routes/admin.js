@@ -50,6 +50,14 @@ const ReassignBeneficiariesList = React.lazy(() =>
   import("pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList")
 );
 const FileView = React.lazy(() => import("pages/FileView"));
+const CampHome = React.lazy(() => import("pages/admin/camps/CampHome"));
+// const CampsView = React.lazy(() => import("pages/admin/camps/View"));
+const ViewCamp = React.lazy(() => import("pages/admin/camps/View"));
+const ReassignCamp = React.lazy(() => import("pages/admin/camps/ReassignCamp"));
+const CampForm = React.lazy(() =>
+  import("pages/admin/camps/CampFormEdit/Form")
+);
+const Attendances = React.lazy(() => import("pages/admin/attendances/List"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -106,5 +114,16 @@ export default [
     component: FileView,
   },
   { path: "/", component: Orientation },
+  { path: "/admin/camps", component: CampHome },
+  { path: "/admin/camps/:id", component: ViewCamp },
+  { path: "/admin/camps/:id/reassign/:user_id", component: ReassignCamp },
+  {
+    path: "/admin/camps/:id/:step",
+    component: CampForm,
+  },
+  {
+    path: "/admin/attendances",
+    component: Attendances,
+  },
   { path: "*", component: NotFound },
 ];

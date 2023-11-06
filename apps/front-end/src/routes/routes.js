@@ -2,7 +2,7 @@ import React from "react";
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
-  import("../pages/front-end/ag-edit/basicDetails")
+  import("../pages/front-end/ag-edit/parts/basicDetails")
 );
 const educationDetails = React.lazy(() =>
   import(
@@ -128,7 +128,23 @@ const PcrDetails = React.lazy(() =>
 const PcrView = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrView")
 );
+
 const FileView = React.lazy(() => import("pages/FileView"));
+const StartCampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/StartCampDashboard")
+);
+
+const CampAttendance = React.lazy(() =>
+  import("pages/front-end/Camp/Attendace/CampAttendance")
+);
+
+const Attendance = React.lazy(() =>
+  import("pages/front-end/Camp/Attendace/Attendance")
+);
+
+const CampTodayActivities = React.lazy(() =>
+  import("pages/front-end/Camp/CampTodayActivities")
+);
 
 export default [
   { path: "/form", component: Home },
@@ -278,5 +294,15 @@ export default [
     path: "/community-references",
     component: CommunityView,
   },
+  {
+    path: "/camps/:id/attendance",
+    component: CampAttendance,
+  },
+  {
+    path: "/camps/:id/attendance-view",
+    component: Attendance,
+  },
+  { path: "/camps/:id/start", component: StartCampDashboard },
+  { path: "/camps/:id/activities", component: CampTodayActivities },
   { path: "*", component: Dashboard },
 ];

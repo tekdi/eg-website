@@ -15,13 +15,13 @@ export default function Chip({ label, children, isActive, ...props }) {
       m="1"
       {...props}
     >
-      {children ? children : label}
+      {children || label}
     </Box>
   );
 }
 
 // ChipStatus
-export function ChipStatus({ status, ...props }) {
+export function ChipStatus({ width, status, ...props }) {
   const [color, setColor] = React.useState("appliedColor");
   const [newStatus, setNewStatus] = React.useState(status);
 
@@ -68,8 +68,68 @@ export function ChipStatus({ status, ...props }) {
         setNewStatus(t("FACILITATOR_STATUS_ON_HOLD"));
         setColor("rejectedColor");
         break;
+      case "registered":
+        setNewStatus(t("GROUPS_STATUS_REGISTERED"));
+        setColor("selectedColor");
+        break;
+      case "not_registered":
+        setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
+        setColor("rejectedColor");
+        break;
       default:
         setNewStatus(t("APPLIED"));
+        setColor("appliedColor");
+    }
+  }, [status]);
+
+  return (
+    <Chip
+      px="4"
+      py="2"
+      width={width || "100px"}
+      bg={color}
+      label={newStatus}
+      _text={{
+        textTransform: "capitalize",
+        fontSize: "10px",
+        fontWeight: "500",
+        textAlign: "center",
+      }}
+      rounded="sm"
+      {...props}
+    />
+  );
+}
+
+// ChipStatus
+export function CampChipStatus({ status, ...props }) {
+  const [color, setColor] = React.useState("appliedColor");
+  const [newStatus, setNewStatus] = React.useState(status);
+
+  React.useEffect(() => {
+    switch (status && status?.toLowerCase()) {
+      case "rejected":
+        setNewStatus(t("REJECTED"));
+        setColor("rejectedColor");
+        break;
+      case "registered":
+        setNewStatus(t("GROUPS_STATUS_REGISTERED"));
+        setColor("warningColor");
+        break;
+      case "not_registered":
+        setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
+        setColor("rejectedColor");
+        break;
+      case "camp_ip_verified":
+        setNewStatus(t("GROUPS_STATUS_CAMP_IP_VERIFIED"));
+        setColor("selectedColor");
+        break;
+      case "change_required":
+        setNewStatus(t("GROUPS_STATUS_CHANGE_REQUIRED"));
+        setColor("green.200");
+        break;
+      default:
+        setNewStatus(t("NA"));
         setColor("appliedColor");
     }
   }, [status]);

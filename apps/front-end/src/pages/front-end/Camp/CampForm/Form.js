@@ -11,7 +11,7 @@ import {
   enumRegistryService,
   getOptions,
   validation,
-  CampService,
+  campService,
   jsonParse,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -95,11 +95,11 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const result = await CampService.getCampDetails({ id });
+    const result = await campService.getCampDetails({ id });
     setCampDetails(result?.data);
     setLoading(false);
   }, []);
-  
+
   React.useEffect(async () => {
     setLoading(true);
     if (step === "edit_camp_location") {
@@ -264,7 +264,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const formSubmitUpdate = async (data, overide) => {
     if (id) {
       setLoading(true);
-      const result = await CampService.updateCampDetails({
+      const result = await campService.updateCampDetails({
         ...data,
         edit_page_type: step,
         ...(overide || {}),
@@ -472,7 +472,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "langBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,

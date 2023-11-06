@@ -1,11 +1,9 @@
 import React from "react";
-import { HStack, VStack, Box, Progress, Text, Alert } from "native-base";
+import { HStack, VStack, Text } from "native-base";
 import {
-  arrList,
   IconByName,
   FrontEndTypo,
   benificiaryRegistoryService,
-  t,
   Layout,
   ImageView,
   enumRegistryService,
@@ -13,14 +11,15 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 export default function BenificiaryJourney() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [contextId, setcontextId] = React.useState();
   const [auditLogs, setauditLogs] = React.useState([]);
-  const [auditDate, setauditDate] = React.useState([]);
   const [auditMonth, setauditMonth] = React.useState([]);
   const [auditYear, setauditYear] = React.useState([]);
 
@@ -122,8 +121,8 @@ export default function BenificiaryJourney() {
         <VStack width={"100%"}>
           {auditYear.map((item, i) => {
             return (
-              <React.Fragment>
-                <HStack key={i} alignItems={"center"}>
+              <React.Fragment key={item}>
+                <HStack alignItems={"center"}>
                   <Text width={"50px"}>{JSON.parse(item)}</Text>
                   <HStack
                     height="50px"
@@ -135,8 +134,8 @@ export default function BenificiaryJourney() {
                 </HStack>
                 {auditMonth.map((month, i) => {
                   return (
-                    <React.Fragment>
-                      <HStack key={i} alignItems={"center"}>
+                    <React.Fragment key={month}>
+                      <HStack alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
                           height="25px"
@@ -148,8 +147,8 @@ export default function BenificiaryJourney() {
                       </HStack>
                       {auditLogs.map((logs, i) => {
                         return (
-                          <React.Fragment>
-                            <HStack key={i} alignItems={"center"}>
+                          <React.Fragment key={logs}>
+                            <HStack alignItems={"center"}>
                               <Text width={"50px"}>{logs?.date}</Text>;
                               <FrontEndTypo.Timeline
                                 status={logs?.status?.status}
@@ -167,8 +166,8 @@ export default function BenificiaryJourney() {
                                 <FrontEndTypo.H4>
                                   <Text>By &nbsp;</Text>
                                   {logs?.first_name}&nbsp;
-                                  {logs?.middle_name && logs?.middle_name}&nbsp;
-                                  {logs?.last_name && logs?.last_name}
+                                  {logs?.middle_name}&nbsp;
+                                  {logs?.last_name}
                                 </FrontEndTypo.H4>
                               </FrontEndTypo.Timeline>
                             </HStack>

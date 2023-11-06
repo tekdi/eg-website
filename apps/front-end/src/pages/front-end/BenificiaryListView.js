@@ -278,7 +278,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
-        onlyIconsShow: ["userInfo", "loginBtn"],
+        onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
         isEnableSearchBtn: "true",
         setSearch: (value) => {
           setFilter({ ...filter, search: value, page: 1 });

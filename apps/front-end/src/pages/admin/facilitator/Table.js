@@ -6,7 +6,7 @@ import {
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, VStack, Text, ScrollView } from "native-base";
+import { HStack, VStack, ScrollView, Pressable } from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -25,27 +25,34 @@ const columns = (t, navigate) => [
   {
     name: t("NAME"),
     selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_photo_1?.name ? (
-          <ImageView
-            source={{
-              uri: row?.profile_photo_1?.name,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        <AdminTypo.H6 bold>
-          {`${row?.first_name} ${row?.last_name || ""}`}
-        </AdminTypo.H6>
+      <HStack>
+        <Pressable
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+          onPress={() => navigate(`/admin/view/${row?.id}`)}
+        >
+          <HStack alignItems={"center"} space={2}>
+            {row?.profile_photo_1?.name ? (
+              <ImageView
+                source={{
+                  uri: row?.profile_photo_1?.name,
+                }}
+                // alt="Alternate Text"
+                width={"35px"}
+                height={"35px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "35" }}
+              />
+            )}
+            <AdminTypo.H6 bold>
+              {`${row?.first_name} ${row?.last_name || ""}`}
+            </AdminTypo.H6>
+          </HStack>
+        </Pressable>
       </HStack>
     ),
     attr: "name",
@@ -57,8 +64,9 @@ const columns = (t, navigate) => [
     selector: (row) => (row?.district ? row?.district : "-"),
   },
   {
-    name: t("QUALIFICATION"),
-    selector: (row) => row?.qualifications?.qualification_master?.name || "-",
+    name: t("OKYC_VERIFICATION"),
+    wrap: true,
+    selector: (row) => (row?.aadhar_verified === "yes" ? t("YES") : t("NO")),
   },
   {
     name: t("MOBILE_NUMBER"),
@@ -68,7 +76,11 @@ const columns = (t, navigate) => [
   },
   {
     name: t("STATUS"),
-    selector: (row) => <ChipStatus status={row?.program_faciltators?.status} />,
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/view/${row?.id}`)}>
+        <ChipStatus status={row?.program_faciltators?.status} />
+      </Pressable>
+    ),
     wrap: true,
     attr: "status",
     width: "150px",
@@ -114,34 +126,37 @@ function Table({
     <VStack>
       <ScrollView horizontal={true} mb="2">
         <HStack pb="2">
-          {facilitaorStatus?.map((item) => {
-            return (
-              <Text
-                key={"table"}
-                color={filter?.status == t(item?.status) ? "blueText.400" : ""}
-                bold={filter?.status == t(item?.status) ? true : false}
-                cursor={"pointer"}
-                mx={3}
-                onPress={() => {
-                  setFilter({ ...filter, status: item?.status, page: 1 });
-                }}
-              >
-                {item.status === "all" ? (
-                  <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
-                ) : (
-                  <GetEnumValue
-                    t={t}
-                    enumType={"FACILITATOR_STATUS"}
-                    enumOptionValue={item?.status}
-                    enumApiData={enumOptions}
-                  />
-                )}
-                {filter?.status == t(item?.status)
-                  ? `(${paginationTotalRows})` + " "
-                  : " "}
-              </Text>
-            );
-          })}
+          {Array?.isArray(facilitaorStatus) &&
+            facilitaorStatus.map((item) => {
+              return (
+                <AdminTypo.H5
+                  key={"table"}
+                  color={
+                    filter?.status == t(item?.status) ? "blueText.400" : ""
+                  }
+                  bold={filter?.status == t(item?.status) ? true : false}
+                  cursor={"pointer"}
+                  mx={3}
+                  onPress={() => {
+                    setFilter({ ...filter, status: item?.status, page: 1 });
+                  }}
+                >
+                  {item.status === "all" ? (
+                    <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                  ) : (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"FACILITATOR_STATUS"}
+                      enumOptionValue={item?.status}
+                      enumApiData={enumOptions}
+                    />
+                  )}
+                  {filter?.status == t(item?.status)
+                    ? `(${paginationTotalRows})` + " "
+                    : " "}
+                </AdminTypo.H5>
+              );
+            })}
         </HStack>
       </ScrollView>
       <DataTable

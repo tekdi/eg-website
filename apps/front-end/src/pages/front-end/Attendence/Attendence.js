@@ -1,14 +1,8 @@
 import {
-  H1,
-  H4,
   IconByName,
   AdminLayout as Layout,
-  t,
-  changeLanguage,
-  facilitatorRegistryService,
   useWindowSize,
   Camera,
-  getBase64,
   AdminTypo,
   FrontEndTypo,
   uploadRegistryService,
@@ -16,7 +10,7 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import Chip, { ChipStatus } from "component/Chip";
+import Chip from "component/Chip";
 import {
   Box,
   Button,
@@ -27,29 +21,18 @@ import {
   Modal,
   ScrollView,
   Stack,
-  Select,
   Radio,
-  Checkbox,
   Switch,
   Badge,
-  Input,
 } from "native-base";
-import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
-import { useNavigate } from "react-router-dom";
 import schema from "./schema";
+import { useTranslation } from "react-i18next";
 
-const stylesheet = {
-  modalxxl: {
-    maxWidth: "950px",
-    width: "100%",
-    height: "100%",
-  },
-};
 const customStyles = {
   headCells: {
     style: {
@@ -64,100 +47,142 @@ const customStyles = {
     },
   },
 };
-const columns = (e) => [
+
+const renderNameColumn = (row, t) => {
+  const name = row?.user?.first_name + " " + row?.user?.last_name;
+  const hasProfileUrl = !!row?.profile_url;
+
+  return (
+    <HStack alignItems="center" space="2">
+      {hasProfileUrl ? (
+        <Avatar source={{ uri: row?.profile_url }} width="35px" height="35px" />
+      ) : (
+        <IconByName
+          isDisabled
+          name="AccountCircleLineIcon"
+          color="gray.300"
+          _icon={{ size: "35" }}
+        />
+      )}
+      <Text>{name}</Text>
+    </HStack>
+  );
+};
+
+const renderStatusColumn = (row, t) => <Text>{row?.rsvp || ""}</Text>;
+
+const renderAttendanceColumn = (row, t, onSwitchToggle) => (
+  <HStack space="2">
+    <Text key={row?.id}>
+      {row?.status === "present" ? "Present" : "Absent"}
+    </Text>
+    <Switch
+      offTrackColor="dangerColor"
+      onTrackColor="successColor"
+      onThumbColor="appliedColor"
+      offThumbColor="appliedColor"
+      value={row.status === "present"}
+      onValueChange={() => onSwitchToggle(row)}
+    />
+  </HStack>
+);
+
+const renderAadharKycColumn = (row, t) => (
+  <Chip
+    bg={
+      row?.user?.aadhar_verified !== null &&
+      row?.user?.aadhar_verified !== "pending"
+        ? "potentialColor"
+        : "dangerColor"
+    }
+    label={
+      row?.user?.aadhar_verified === "in_progress"
+        ? t("AADHAR_KYC_IN_PROGRESS")
+        : row?.user?.aadhar_verified === "pending"
+        ? t("AADHAR_KYC_PENDING")
+        : row?.user?.aadhar_verified !== null
+        ? t("YES")
+        : t("NO")
+    }
+    rounded="sm"
+  />
+);
+
+const renderAttendeeListColumn = (row, t) => (
+  <Chip
+    label={
+      row?.fa_is_processed === null
+        ? "-"
+        : row?.fa_is_processed === true
+        ? t("YES") +
+          " " +
+          Math.floor(row?.fa_similarity_percentage * 100) / 100 +
+          "%"
+        : t("NO")
+    }
+    rounded="sm"
+  />
+);
+
+const scheduleCandidates = (t, onSwitchToggle) => [
   {
     name: t("NAME"),
-    selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_url ? (
-          <Avatar
-            source={{
-              uri: row?.profile_url,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        <Text textOverflow="ellipsis">
-          {row?.first_name + " " + row.last_name}
-        </Text>
-      </HStack>
-    ),
+    selector: (row) => renderNameColumn(row, t),
     sortable: false,
     attr: "name",
   },
   {
-    name: t("QUALIFICATION"),
-    selector: (row) =>
-      row?.qualifications?.map((val) => {
-        return " " + val.qualification_master.name;
-      }),
+    name: t("INVITE_STATUS"),
+    selector: (row) => renderStatusColumn(row, t),
     sortable: false,
-    attr: "qualification",
+    attr: "invite",
   },
   {
-    name: t("DISTRICT"),
-    selector: (row) => (row?.district ? row?.district : ""),
+    name: t("MARK_ATTENDANCE"),
+    selector: (row) => renderAttendanceColumn(row, t, onSwitchToggle),
     sortable: false,
-    attr: "city",
+    attr: "marks",
   },
   {
-    name: t("ELIGIBILITY"),
-    selector: (row) => row?.gender,
+    name: t("ADHAR_KYC"),
+    selector: (row) => renderAadharKycColumn(row, t),
     sortable: false,
-    attr: "city",
+    attr: "adhar_kyc",
   },
   {
-    name: t("STATUS"),
-    selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
+    name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
+    selector: (row) => renderAttendeeListColumn(row, t),
     sortable: false,
-    attr: "email",
-  },
-  {
-    name: t("COMMENT"),
-    // selector: (row, index) => <ChipStatus key={index} status={row?.status} />,
-    sortable: false,
-    attr: "email",
+    attr: "attendence_verified",
   },
 ];
 
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
   const [Height] = useWindowSize();
-  const location = useLocation();
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const [users, setUsers] = React.useState([]);
   const [limit, setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [filterObj, setFilterObj] = React.useState();
   const [refAppBar, setRefAppBar] = React.useState();
-  const [rowData, setRowData] = React.useState();
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const [locationData, setlocationData] = useState("");
+  const [locationData, setlocationData] = React.useState("");
   const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
-  const [event, setEvent] = useState("");
+  const [event, setEvent] = React.useState("");
   const [loading, setLoading] = React.useState(true);
-  const uplodInputRef = React.useRef();
   const formRef = React.useRef();
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({});
+  const [error, setError] = React.useState("");
+  const [formData, setFormData] = React.useState({});
 
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = React.useState({});
 
-  const [cameraFile, setcameraFile] = useState();
-  useEffect(() => {
+  const [cameraFile, setcameraFile] = React.useState();
+  React.useEffect(() => {
     getLocation();
   }, []);
 
@@ -208,120 +233,6 @@ export default function Attendence({ footerLinks }) {
     }
   };
 
-  const scheduleCandidates = (e) => [
-    {
-      name: t("NAME"),
-      selector: (row) => (
-        <HStack alignItems={"center"} space="2">
-          {row?.profile_url ? (
-            <Avatar
-              source={{
-                uri: row?.profile_url,
-              }}
-              // alt="Alternate Text"
-              width={"35px"}
-              height={"35px"}
-            />
-          ) : (
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              color="gray.300"
-              _icon={{ size: "35" }}
-            />
-          )}
-          <Text>{row?.user?.first_name + " " + row?.user?.last_name}</Text>
-        </HStack>
-      ),
-      sortable: false,
-      attr: "name",
-    },
-    {
-      name: t("INVITE_STATUS"),
-      selector: (row) => {
-        <Text>{row?.rsvp ? row?.rsvp : ""}</Text>;
-      },
-      sortable: false,
-      attr: "email",
-    },
-    {
-      name: t("MARK_ATTENDANCE"),
-      selector: (row) => (
-        <>
-          <HStack space={"2"}>
-            <Text key={row?.id}>
-              {row?.status === "present" ? "Present" : "Absent"}
-            </Text>
-            <Switch
-              // defaultIsChecked
-              offTrackColor="#DC2626"
-              onTrackColor="#00D790"
-              onThumbColor="#E0E0E0"
-              offThumbColor="#E0E0E0"
-              value={row.status === "present" ? true : false}
-              onValueChange={() => {
-                onSwitchToggle(row);
-              }}
-            />
-          </HStack>
-        </>
-      ),
-      sortable: false,
-      attr: "marks",
-    },
-    {
-      name: t("ADHAR_KYC"),
-      selector: (row, index) => (
-        <Chip
-          bg={
-            row?.user?.aadhar_verified !== null &&
-            row?.user?.aadhar_verified !== "pending"
-              ? "potentialColor"
-              : "dangerColor"
-          }
-          label={
-            row?.user?.aadhar_verified === "in_progress"
-              ? t("AADHAR_KYC_IN_PROGRESS")
-              : row?.user?.aadhar_verified === "pending"
-              ? t("AADHAR_KYC_PENDING")
-              : row?.user?.aadhar_verified !== null
-              ? t("YES")
-              : t("NO")
-          }
-          rounded={"sm"}
-        />
-      ),
-      sortable: false,
-      attr: "adhar_kyc",
-    },
-
-    {
-      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-      selector: (row, index) => (
-        <Chip
-          label={
-            row?.fa_is_processed === null
-              ? "-"
-              : row?.fa_is_processed === true
-              ? t("YES") +
-                " " +
-                Math.floor(row?.fa_similarity_percentage * 100) / 100 +
-                "%"
-              : t("NO")
-          }
-          rounded={"sm"}
-        />
-      ),
-      sortable: false,
-      attr: "attendence_verified",
-    },
-    // {
-    //   name: t("VERIFIED_DOCUMENTS"),
-    //   selector: (row) => row?.gender,
-    //   sortable: false,
-    //   attr: "city",
-    // },
-  ];
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
@@ -478,7 +389,6 @@ export default function Attendence({ footerLinks }) {
                     onPress={() => {
                       updateUserData();
                       cameraFile ? setUserData() : error;
-                      // setCameraModal(false);
                       setcameraFile("");
                       setCameraUrl();
                     }}
@@ -540,6 +450,7 @@ export default function Attendence({ footerLinks }) {
         pb: "0px",
       }}
       _sidebar={footerLinks}
+      loading={loading}
     >
       <ScrollView
         maxH={Height - refAppBar?.clientHeight}
@@ -948,7 +859,7 @@ export default function Attendence({ footerLinks }) {
                             schema={schema}
                             ref={formRef}
                             uiSchema={uiSchema}
-                            formData={formData ? formData : {}}
+                            formData={formData || {}}
                             validator={validator}
                             onChange={handleFormChange}
                             onSubmit={onSubmit}
@@ -990,7 +901,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(),
+                ...scheduleCandidates(t, onSwitchToggle),
                 {
                   name: t(""),
                   selector: (row) => (

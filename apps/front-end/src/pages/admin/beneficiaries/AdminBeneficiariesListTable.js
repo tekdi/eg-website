@@ -7,7 +7,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import { HStack, VStack, Text, ScrollView } from "native-base";
+import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -23,35 +23,41 @@ const columns = (t, navigate) => [
   {
     name: t("LEARNERS_NAME"),
     selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_photo_1?.name ? (
-          <ImageView
-            urlObject={row?.profile_photo_1}
-            alt={row?.profile_photo_1?.name}
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
-          <AdminTypo.H6 bold>
-            {row?.program_beneficiaries?.enrollment_first_name + " "}
-            {row?.program_beneficiaries?.enrollment_last_name
-              ? row?.program_beneficiaries?.enrollment_last_name
-              : ""}
-          </AdminTypo.H6>
-        ) : (
-          <AdminTypo.H6 bold>
-            {row?.first_name + " "}
-            {row?.last_name ? row?.last_name : ""}
-          </AdminTypo.H6>
-        )}
+      <HStack>
+        <Pressable onPress={() => navigate(`/admin/beneficiary/${row?.id}`)}>
+          <HStack alignItems={"center"} space={2}>
+            {row?.profile_photo_1?.name ? (
+              <ImageView
+                source={{
+                  uri: row?.profile_photo_1?.name,
+                }}
+                // alt="Alternate Text"
+                width={"35px"}
+                height={"35px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "35" }}
+              />
+            )}
+            {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+              <AdminTypo.H6 bold>
+                {row?.program_beneficiaries?.enrollment_first_name + " "}
+                {row?.program_beneficiaries?.enrollment_last_name
+                  ? row?.program_beneficiaries?.enrollment_last_name
+                  : ""}
+              </AdminTypo.H6>
+            ) : (
+              <AdminTypo.H6 bold>
+                {row?.first_name + " "}
+                {row?.last_name ? row?.last_name : ""}
+              </AdminTypo.H6>
+            )}
+          </HStack>
+        </Pressable>
       </HStack>
     ),
     attr: "name",
@@ -99,12 +105,14 @@ const columns = (t, navigate) => [
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <ChipStatus
-        key={index}
-        is_duplicate={row?.is_duplicate}
-        is_deactivated={row?.is_deactivated}
-        status={row?.program_beneficiaries?.status}
-      />
+      <Pressable onPress={() => navigate(`/admin/beneficiary/${row?.id}`)}>
+        <ChipStatus
+          key={index}
+          is_duplicate={row?.is_duplicate}
+          is_deactivated={row?.is_deactivated}
+          status={row?.program_beneficiaries?.status}
+        />
+      </Pressable>
     ),
 
     attr: "email",

@@ -738,7 +738,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,
@@ -749,15 +749,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
         {page && page !== "" && (
           <Form
@@ -791,16 +789,14 @@ export default function App({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <Box>
-                {step !== "aadhaar_details" && (
-                  <FrontEndTypo.Primarybutton
-                    isLoading={loading}
-                    p="4"
-                    mt="4"
-                    onPress={() => onClickSubmit(false)}
-                  >
-                    {t("SAVE_AND_NEXT")}
-                  </FrontEndTypo.Primarybutton>
-                )}
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("SAVE_AND_NEXT")}
+                </FrontEndTypo.Primarybutton>
 
                 <FrontEndTypo.Secondarybutton
                   isLoading={loading}

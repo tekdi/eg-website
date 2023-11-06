@@ -23,9 +23,8 @@ import {
   CustomOTPBox,
   AdminTypo,
   chunk,
-  sprintF,
+  CustomRadio,
 } from "@shiksha/common-lib";
-import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
@@ -352,7 +351,7 @@ export const Aadhaar = (props) => {
 // rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label, title } = schema ? schema : {};
+  const { label, title } = schema || {};
   const { t } = useTranslation();
 
   return (
@@ -384,7 +383,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           }}
         >
           <Text fontSize="12" fontWeight="400">
-            {t(label ? label : title)}
+            {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
             ) : (
@@ -398,8 +397,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
       <Select
         key={value + items}
         selectedValue={value}
-        accessibilityLabel={t(label ? label : title)}
-        placeholder={t(label ? label : title)}
+        accessibilityLabel={t(label || title)}
+        placeholder={t(label || title)}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
@@ -420,8 +419,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
 };
 
 // rjsf custom readOnly field
-export const readOnly = ({ value, onChange, required, schema }) => {
-  const { title } = schema ? schema : {};
+export const ReadOnly = ({ value, onChange, required, schema }) => {
+  const { title } = schema || {};
   const { t } = useTranslation();
   return (
     <HStack gap="2">
@@ -510,8 +509,8 @@ export const MultiCheck = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { _hstack, icons, grid, label, format } = schema ? schema : {};
-  const { enumOptions } = options ? options : {};
+  const { _hstack, icons, grid, label, format } = schema || {};
+  const { enumOptions } = options || {};
   let items = [enumOptions];
   if (grid && enumOptions?.constructor.name === "Array") {
     items = chunk(enumOptions, grid);
@@ -525,7 +524,7 @@ export const MultiCheck = ({
       });
     }
 
-    var updatedList = [...newValue];
+    let updatedList = [...newValue];
     if (event.target.checked) {
       updatedList = [...newValue, event.target.value];
     } else {
@@ -544,9 +543,9 @@ export const MultiCheck = ({
       )}
       <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
-          <Box gap={"2"} key={subKey} flexDirection="row" flexWrap="wrap">
+          <Box gap={"2"} key={subItem} flexDirection="row" flexWrap="wrap">
             {subItem?.map((item, key) => (
-              <label key={key}>
+              <label key={item}>
                 <HStack alignItems="center" space="3" flex="1">
                   {icons?.[key] && icons?.[key].name && (
                     <IconByName
@@ -615,7 +614,7 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
 };
 
 // rjsf custom textarea field
-const textarea = ({
+const Textarea = ({
   schema,
   options,
   value,
@@ -624,7 +623,7 @@ const textarea = ({
   isInvalid,
 }) => {
   const [isFocus, setIsfocus] = React.useState(false);
-  const { label, title, help, rows } = schema ? schema : {};
+  const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
   return (
     <FormControl isInvalid={isInvalid || false}>
@@ -667,13 +666,13 @@ const textarea = ({
         </FormControl.Label>
       )}
       <TextArea
-        totalLines={rows ? rows : 3}
+        totalLines={rows || 3}
         key={title}
         onFocus={(e) => setIsfocus(true)}
         onBlur={(e) => setIsfocus(false)}
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        placeholder={t(label ? label : schema?.label)}
+        placeholder={t(label || schema?.label)}
       />
       {help && isInvalid ? (
         <FormControl.ErrorMessage>{t(help)}</FormControl.ErrorMessage>
@@ -695,12 +694,12 @@ const widgets = {
   CustomR,
   Aadhaar,
   select,
-  textarea,
+  Textarea,
   CustomOTPBox,
   FileUpload,
   MobileNumber,
   MultiCheck,
-  readOnly,
+  ReadOnly,
   StarRating,
   CheckUncheck,
 };
@@ -742,65 +741,40 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
-  return errors.map((error) => {
-    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
-    if (error.name === "required") {
-      if (schemaItem) {
-        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
-        if (schemaItem?.format === "FileUpload") {
-          error.message = `${t("REQUIRED_MESSAGE_UPLOAD")} "${t(title)}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(title)}"`;
-        }
-      } else {
-        error.message = `${t("REQUIRED_MESSAGE")}`;
-      }
-    } else if (error.name === "minItems") {
-      if (schemaItem) {
-        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
-        error.message = sprintF(
-          t("SELECT_MINIMUM"),
-          error?.params?.limit,
-          t(title)
-        );
-      } else {
-        error.message = sprintF(t("SELECT_MINIMUM"), error?.params?.limit, "");
-      }
-    } else if (error.name === "maxItems") {
-      if (schemaItem) {
-        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
-        error.message = sprintF(
-          t("SELECT_MAXIMUM"),
-          error?.params?.limit,
-          t(title)
-        );
-      } else {
-        error.message = sprintF(t("SELECT_MAXIMUM"), error?.params?.limit, "");
-      }
-    } else if (error.name === "enum") {
-      error.message = `${t("SELECT_MESSAGE")}`;
-    } else if (error.name === "format") {
-      const { format } = error?.params ? error?.params : {};
-      let message = "REQUIRED_MESSAGE";
-      if (format === "email") {
-        message = "PLEASE_ENTER_VALID_EMAIL";
-      }
-      if (format === "string") {
-        message = "PLEASE_ENTER_VALID_STREING";
-      } else if (format === "number") {
-        message = "PLEASE_ENTER_VALID_NUMBER";
-      }
+  const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
-      if (schema?.properties?.[error?.property]?.title) {
-        error.message = `${t(message)} "${t(
-          schema?.properties?.[error?.property]?.title
-        )}"`;
-      } else {
-        error.message = `${t(message)}`;
-      }
+  const getMessage = (error) => {
+    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
+    const title = getTitle(schemaItem);
+
+    switch (error.name) {
+      case "required":
+        return `${t(
+          schemaItem?.format === "FileUpload"
+            ? "REQUIRED_MESSAGE_UPLOAD"
+            : "REQUIRED_MESSAGE"
+        )} "${t(title)}"`;
+      case "minItems":
+        return t("SELECT_MINIMUM", error?.params?.limit, title);
+      case "maxItems":
+        return t("SELECT_MAXIMUM", error?.params?.limit, title);
+      case "enum":
+        return t("SELECT_MESSAGE");
+      case "format":
+        const { format } = error?.params || {};
+        const messageKey =
+          {
+            email: "PLEASE_ENTER_VALID_EMAIL",
+            string: "PLEASE_ENTER_VALID_STRING",
+            number: "PLEASE_ENTER_VALID_NUMBER",
+          }[format] || "REQUIRED_MESSAGE";
+        return t(messageKey, title ? t(title) : "");
+      default:
+        return error.message;
     }
-    return error;
-  });
+  };
+
+  return errors.map((error) => ({ ...error, message: getMessage(error) }));
 };
 
 // rjsf onerror parmaeter for common
