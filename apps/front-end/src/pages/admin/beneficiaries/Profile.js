@@ -257,7 +257,9 @@ export default function AgAdminProfile({ footerLinks }) {
       reason_for_status_update: reasonValue,
     };
 
-    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+    const result = await benificiaryRegistoryService.learnerAdminStatusUpdate(
+      bodyData
+    );
 
     if (result) {
       setReasonValue("");
