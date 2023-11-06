@@ -17,16 +17,12 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import {
   HStack,
-  Stack,
   VStack,
   Modal,
   Alert,
   Button,
   Menu,
   Pressable,
-  Divider,
-  Flex,
-  Text,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
@@ -370,7 +366,7 @@ export default function View({ footerLinks }) {
                           <ImageView
                             isImageTag
                             urlObject={item || {}}
-                            width="240px"
+                            width="220px"
                             height="250px"
                             m={"10px"}
                             p={"2"}
