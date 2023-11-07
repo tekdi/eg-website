@@ -60,7 +60,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       loading={loading}
       _appBar={{
         onPressBackButton: (e) => navigate("/"),
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}

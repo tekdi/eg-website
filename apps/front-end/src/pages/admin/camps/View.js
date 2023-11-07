@@ -15,7 +15,15 @@ import {
   GetEnumValue,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Stack, VStack, Modal, Alert } from "native-base";
+import {
+  HStack,
+  VStack,
+  Modal,
+  Alert,
+  Button,
+  Menu,
+  Pressable,
+} from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -39,6 +47,18 @@ const ConsentForm = ({ consentData, row, t }) => {
         />
       }
     />
+  );
+};
+
+const mapDirection = ({ row, t, data }) => {
+  return (
+    <a
+      href={`https://www.google.com/maps/dir/${row?.properties?.lat},${row?.properties?.long}/'${data?.properties?.lat},${data?.properties?.long}'/`}
+      target="_blank"
+      style={{ textDecoration: "none" }}
+    >
+      {t("VIEW")}
+    </a>
   );
 };
 
@@ -76,7 +96,7 @@ export default function View({ footerLinks }) {
       const camp = result?.data?.camp;
       setDataa(camp);
       setUserData(result?.data?.camp?.beneficiaries);
-      setEdit(data?.group?.status === "change_required");
+      setEdit(camp?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
       setProperties(camp?.properties);
       let properData = camp?.properties;
@@ -104,7 +124,15 @@ export default function View({ footerLinks }) {
       setStatus();
     }
   };
-
+  const dropDown = (triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack>
+          <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  };
   React.useEffect(async () => {
     setLoading(true);
     const qData = await enumRegistryService.listOfEnum();
@@ -157,16 +185,68 @@ export default function View({ footerLinks }) {
       wrap: true,
     },
     {
+      name: t("MAP"),
+      selector: (row) => mapDirection({ t, row, data }),
+      wrap: true,
+    },
+    {
       name: t("ACTION"),
       selector: (row) => (
-        <AdminTypo.Secondarybutton
-          my={3}
-          onPress={() => {
-            navigate(`/admin/camps/${id}/reassign/${row?.id}`);
+        <Button.Group
+          isAttached
+          divider={<h3>|</h3>}
+          my="3"
+          size="sm"
+          h="10"
+          marginTop="8px"
+          borderRadius="full"
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderWidth="1px"
+          borderColor="#084B82"
+          lineHeight={8}
+          _text={{
+            color: "blueText.400",
+            fontSize: "14px",
+            fontWeight: "700",
           }}
         >
-          {t("REASSIGN")}
-        </AdminTypo.Secondarybutton>
+          <Button
+            background="white"
+            _text={{
+              color: "blueText.400",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+            onPress={() => {
+              navigate(`/admin/beneficiary/${row?.id}`);
+            }}
+          >
+            {t("VIEW")}
+          </Button>
+          <Button variant="outline">
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => dropDown(triggerProps, t)}
+            >
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/beneficiary/${row?.id}`);
+                }}
+              >
+                {t("VIEW")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/camps/${id}/reassign/${row?.id}`);
+                }}
+              >
+                {t("REASSIGN")}
+              </Menu.Item>
+            </Menu>
+          </Button>
+        </Button.Group>
       ),
     },
   ];
@@ -223,7 +303,7 @@ export default function View({ footerLinks }) {
             {data?.id}
           </AdminTypo.H1>
         </HStack>
-        <HStack flexWrap="wrap">
+        <HStack>
           <VStack>
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
@@ -268,41 +348,45 @@ export default function View({ footerLinks }) {
                 })}
             </HStack>
           </VStack>
-          {[
-            properties?.photo_other,
-            properties.photo_building,
-            properties?.photo_classroom,
-          ].map(
-            (item) =>
-              item && (
-                <HStack key={item}>
-                  <ImageView
-                    isImageTag={!item}
-                    urlObject={item || {}}
-                    _button={{ p: 0 }}
-                    text={
+          <VStack>
+            <HStack>
+              {[
+                properties?.photo_other,
+                properties.photo_building,
+                properties?.photo_classroom,
+              ].map(
+                (item) =>
+                  item && (
+                    <HStack key={item}>
                       <ImageView
-                        isImageTag
+                        isImageTag={!item}
                         urlObject={item || {}}
-                        width="260px"
-                        height="250px"
-                        m={"10px"}
-                        p={"2"}
-                        border="2px solid #eee"
-                        borderRadius={"4"}
-                        alignItems="left"
+                        _button={{ p: 0 }}
+                        text={
+                          <ImageView
+                            isImageTag
+                            urlObject={item || {}}
+                            width="220px"
+                            height="250px"
+                            m={"10px"}
+                            p={"2"}
+                            border="2px solid #eee"
+                            borderRadius={"4"}
+                            alignItems="left"
+                          />
+                        }
                       />
-                    }
-                  />
-                </HStack>
-              )
-          )}
-          <Stack flex="1">
+                    </HStack>
+                  )
+              )}
+            </HStack>
+          </VStack>
+          <VStack flex="1">
             <MapComponent
               latitude={data?.properties?.lat}
               longitude={data?.properties?.long}
             />
-          </Stack>
+          </VStack>
         </HStack>
         <HStack space={4}>
           <CardComponent
@@ -340,7 +424,6 @@ export default function View({ footerLinks }) {
             </VStack>
           </CardComponent>
         </HStack>
-
         <HStack space={4}>
           <CardComponent
             isHideProgressBar={true}
@@ -376,7 +459,6 @@ export default function View({ footerLinks }) {
               "kit_ratings",
               "kit_feedback",
             ]}
-            onEdit={edit && navTOedit("edit_kit_details")}
           />
 
           <CardComponent
@@ -423,16 +505,14 @@ export default function View({ footerLinks }) {
                 status="info"
                 onPress={() => setStatus("change_required")}
               >
-                {t("CHANGES_NEEDED")}
+                {t("CHANGE_REQUIRED")}
               </AdminTypo.Secondarybutton>
             </>
           )}
 
           {data?.group?.status === "camp_ip_verified" && (
             <AdminTypo.Secondarybutton
-              onPress={() => {
-                setEdit(true);
-              }}
+              onPress={() => setStatus("change_required")}
             >
               {t("MODIFY")}
             </AdminTypo.Secondarybutton>
@@ -456,8 +536,8 @@ export default function View({ footerLinks }) {
                     {t("CHANGES_REQUIRED")}
                   </FrontEndTypo.H2> */}
                   <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                    <HStack alignItems="center" space="2" color>
-                      <BodyMedium> {t("CHANGES_REQUIRED")}</BodyMedium>
+                    <HStack space="2" color>
+                      <BodyMedium>{t("CONTACT_PRERAK_AND_DISCUSS")}</BodyMedium>
                     </HStack>
                   </Alert>
                 </Modal.Body>
