@@ -100,7 +100,6 @@ export default [
     path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
   },
-
   {
     path: "/admin/beneficiary/:id",
     component: BeneficiaryAdminProfile,
