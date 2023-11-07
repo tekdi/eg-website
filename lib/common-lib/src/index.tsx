@@ -43,7 +43,9 @@ import CustomRadio from './components/frontend_component/CustomRadio'
 import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
-import GeoLocation from './components/frontend_component/GeoLocation'
+import GeoLocation, {
+  useLocationData
+} from './components/frontend_component/GeoLocation'
 
 // export
 export {
@@ -94,7 +96,8 @@ export {
   CheckUncheck,
   CustomRadio,
   UserCard,
-  GeoLocation
+  GeoLocation,
+  useLocationData
 }
 
 export * from './services/RestClient'
