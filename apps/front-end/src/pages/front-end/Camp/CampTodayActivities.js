@@ -7,6 +7,7 @@ import {
   IconByName,
   Layout,
   enumRegistryService,
+  campService,
 } from "@shiksha/common-lib";
 import {
   Actionsheet,
@@ -20,15 +21,59 @@ import {
 import Drawer from "react-modern-drawer";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
-// import { useNavigate } from "react-router-dom";
 
 export default function CampTodayActivities({ footerLinks }) {
   // const navigate = useNavigate();
   const { t } = useTranslation();
   const [enums, setEnums] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState();
+  // console.log(enums);
+
+  const [enumOptions, setEnumOptions] = React.useState(null);
   const [selectValue, setSelectValue] = React.useState([]);
-  console.log(enums);
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [campActivities, setCampActivities] = React.useState(null);
+  const [campList, setCampList] = React.useState([]);
+
+  React.useEffect(() => {
+    async function fetchCampActivities() {
+      try {
+        const activities_response = await campService.getCampActivities();
+        setCampActivities(activities_response);
+      } catch (e) {
+        console.warn("error", e);
+      }
+    }
+    fetchCampActivities();
+  }, []);
+
+  React.useEffect(async () => {
+    const getListActivities = await campService.getActivitiesList();
+    setCampList(getListActivities?.data?.activities);
+    console.log("getList_activities", getListActivities?.data?.activities);
+  }, []);
+
+  const dataToSave = {
+    user_id: campList?.user_id,
+    type: campList?.type,
+    academic_year_id: campList?.academic_year_id,
+    program_id: campList?.program_id,
+    activity_data: campList?.activity_data,
+    selectedValues: selectValue,
+  };
+  console.log("dataToSave", dataToSave);
+
+  const handleSubmitData = async () => {
+    try {
+      setIsSaving(true);
+
+      setSelectValue([dataToSave]);
+    } catch (error) {
+      console.error("Error saving data:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   React.useEffect(async () => {
     const qData = await enumRegistryService.listOfEnum();
     const LearningActivitydata = qData?.data;
@@ -41,14 +86,12 @@ export default function CampTodayActivities({ footerLinks }) {
       //   loading={loading}
       _footer={{ menues: footerLinks }}
     >
+      {/* {console.log("campList", campList)} */}
       <VStack p="4" space={4}>
         <HStack space={4}>
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
-              schema={{ label: t() }}
-              onPress={(e) =>
-                setEnums(enumOptions?.LEARNING_ACTIVITIES || null)
-              }
+              onPress={() => setEnums(enumOptions?.LEARNING_ACTIVITIES || null)}
             >
               <VStack alignItems="center" space={3}>
                 <IconByName
@@ -151,16 +194,20 @@ export default function CampTodayActivities({ footerLinks }) {
                       schema={{
                         grid: 1,
                       }}
-                      onChange={(e) => {
-                        setSelectValue(e);
+                      onChange={(newSelectValue) => {
+                        setSelectValue(newSelectValue);
                       }}
                     />
                   </React.Suspense>
                 </VStack>
               </VStack>
               <VStack space="5" pt="5">
-                <FrontEndTypo.Primarybutton flex={1} onPress={() => {}}>
-                  {t("MARK_AS_DROPOUT")}
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={isSaving ? null : handleSubmitData}
+                  isLoading={isSaving}
+                >
+                  {isSaving ? "Saving..." : t("Save")}
                 </FrontEndTypo.Primarybutton>
               </VStack>
             </VStack>
