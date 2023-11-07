@@ -306,13 +306,6 @@ export default function StatusButton({ data, setData }) {
                   >
                     {t("CONFIRM")}
                   </AdminTypo.PrimaryButton>
-                  <AdminTypo.PrimaryButton
-                    onPress={() => {
-                      setShowModal();
-                    }}
-                  >
-                    {t("CHANGE_REQUIRED")}
-                  </AdminTypo.PrimaryButton>
                 </HStack>
               </VStack>
             </Modal.Body>

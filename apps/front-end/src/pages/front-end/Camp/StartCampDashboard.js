@@ -303,24 +303,6 @@ export default function StartCampDashboard({ footerLinks }) {
               {localStorage.getItem("startCamp") ? (
                 <VStack space={4}>
                   <HStack space={4}>
-                    <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-                      <Pressable
-                        onPress={(e) => navigate(`/camps/${id}/activities`)}
-                      >
-                        <VStack alignItems="center" space={3}>
-                          <IconByName
-                            name="CalendarEventLineIcon"
-                            color="gray.600"
-                            bg="gray.300"
-                            rounded="full"
-                            p="5"
-                          />
-                          <FrontEndTypo.H5>
-                            {t("TODAYS_ACTIVITIES")}
-                          </FrontEndTypo.H5>
-                        </VStack>
-                      </Pressable>
-                    </CardComponent>
                     <CardComponent
                       _vstack={{ flex: 1, alignItems: "center" }}
                       _body={{ pt: 4 }}
@@ -338,6 +320,24 @@ export default function StartCampDashboard({ footerLinks }) {
                           />
                           <FrontEndTypo.H5 textAlign="center">
                             {t("LEARNER_ATTENDANCE")}
+                          </FrontEndTypo.H5>
+                        </VStack>
+                      </Pressable>
+                    </CardComponent>
+                    <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+                      <Pressable
+                        onPress={(e) => navigate(`/camps/${id}/activities`)}
+                      >
+                        <VStack alignItems="center" space={3}>
+                          <IconByName
+                            name="CalendarEventLineIcon"
+                            color="gray.600"
+                            bg="gray.300"
+                            rounded="full"
+                            p="5"
+                          />
+                          <FrontEndTypo.H5>
+                            {t("TODAYS_ACTIVITIES")}
                           </FrontEndTypo.H5>
                         </VStack>
                       </Pressable>
@@ -376,10 +376,10 @@ export default function StartCampDashboard({ footerLinks }) {
                 navigate(`/camps/${id}/edit_camp_selected_learners`)
               }
             >
-              <VStack alignItems="center" space={3}>
+              {/* <VStack alignItems="center" space={3}>
                 <IconByName name="UserAddLineIcon" color="gray.400" />
                 <FrontEndTypo.H5>{t("ADD_LEARNER")}</FrontEndTypo.H5>
-              </VStack>
+              </VStack> */}
             </Pressable>
           </HStack>
         </VStack>

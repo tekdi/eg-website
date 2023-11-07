@@ -98,6 +98,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, []);
 
+
   React.useEffect(async () => {
     setLoading(true);
     if (step === "edit_camp_location") {
@@ -113,32 +114,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         property_photo_other:
           camp_venue_photos?.property_photo_other || undefined,
       });
-    } else if (step === "edit_kit_details") {
-      const kit = campDetails;
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      const newStep = step || newSteps[0];
-      let schemaData = properties[newStep];
-      if (campDetails?.kit_received === null) {
-        const { kit_received } = schemaData.properties;
-        const required = schemaData?.required.filter((item) =>
-          ["kit_received"].includes(item)
-        );
-        const newSchema = {
-          ...schemaData,
-          properties: { kit_received },
-          required: required,
-        };
-        setSchema(newSchema);
-      } else {
-        setFormData({
-          ...formData,
-          kit_was_sufficient: kit?.kit_was_sufficient || undefined,
-          kit_received: kit?.kit_received || undefined,
-          kit_ratings: kit?.kit_ratings || undefined,
-          kit_feedback: kit?.kit_feedback || undefined,
-        });
-      }
     }
     setLoading(false);
   }, [step, campDetails]);
@@ -230,25 +205,6 @@ export default function App({ userTokenInfo, footerLinks }) {
       setPage(newStep);
       setSchema(schemaData);
       setPages(newSteps);
-
-      if (step === "edit_kit_details") {
-        if (formData?.kit_received == "yes") {
-          setSchema(schemaData);
-        } else if (formData?.kit_received === "no") {
-          const { kit_received } = schemaData.properties;
-          const required = schemaData?.required.filter((item) =>
-            ["kit_received"].includes(item)
-          );
-          const newSchema = {
-            ...schemaData,
-            properties: { kit_received },
-            required: required,
-          };
-          setSchema(newSchema);
-        }
-      } else {
-        setSchema(schemaData);
-      }
     }
   }, [step, formData]);
 
