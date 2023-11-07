@@ -2,13 +2,12 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Button, HStack } from "native-base";
+import { Alert, Box, HStack } from "native-base";
 
 import {
   geolocationRegistryService,
   Layout,
   t,
-  filtersByObject,
   BodyMedium,
   enumRegistryService,
   benificiaryRegistoryService,
@@ -26,7 +25,6 @@ export default function AddressEdit({ ip }) {
   const [schema, setSchema] = React.useState({});
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
-  const [data, setData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
