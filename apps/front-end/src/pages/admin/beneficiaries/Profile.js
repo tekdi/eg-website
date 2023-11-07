@@ -85,6 +85,8 @@ export default function AgAdminProfile({ footerLinks }) {
   const [auditYear, setauditYear] = React.useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [editAccessModalVisible, setEditAccessModalVisible] =
+    React.useState(false);
   const { t } = useTranslation();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
@@ -228,7 +230,6 @@ export default function AgAdminProfile({ footerLinks }) {
       setAdhaarModalVisible(false);
     }
   };
-  console.log("data", data);
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -460,7 +461,7 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
               >
                 <HStack p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="auto">
+                  <VStack space="20px" w="100%">
                     <VStack space="20px" w="auto" rounded="xl">
                       <HStack
                         justifyContent="space-between"
@@ -472,6 +473,14 @@ export default function AgAdminProfile({ footerLinks }) {
                         <AdminTypo.H5 color="textGreyColor" bold>
                           {t("FAMILY_DETAILS")}
                         </AdminTypo.H5>
+                        <IconByName
+                          bg="white"
+                          color="textMaroonColor.400"
+                          name="PencilLineIcon"
+                          onPress={(e) => {
+                            setEditAccessModalVisible(true);
+                          }}
+                        />
                       </HStack>
                       <VStack>
                         <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -520,6 +529,14 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("PERSONAL_DETAILS")}
                   </AdminTypo.H5>
+                  <IconByName
+                    bg="white"
+                    color="textMaroonColor.400"
+                    name="PencilLineIcon"
+                    onPress={(e) => {
+                      setEditAccessModalVisible(true);
+                    }}
+                  />
                 </HStack>
                 <VStack>
                   <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -566,9 +583,33 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("EDUCATION_DETAILS")}
                   </AdminTypo.H5>
+                  <IconByName
+                    bg="white"
+                    color="textMaroonColor.400"
+                    name="PencilLineIcon"
+                    onPress={(e) => {
+                      setEditAccessModalVisible(true);
+                    }}
+                  />
                 </HStack>
-
-                <VStack space="3">
+                <VStack space="1">
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("TYPE_OF_LEARNER")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {data?.core_beneficiaries?.type_of_learner ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"TYPE_OF_LEARNER"}
+                        enumOptionValue={
+                          data?.core_beneficiaries?.type_of_learner
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </AdminTypo.H5>
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("LAST_STANDARD_OF_EDUCATION")}:
                   </AdminTypo.H5>
@@ -615,6 +656,23 @@ export default function AgAdminProfile({ footerLinks }) {
                         enumType={"REASON_OF_LEAVING_EDUCATION"}
                         enumOptionValue={
                           data?.core_beneficiaries?.reason_of_leaving_education
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("Learning level of learner")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {data?.program_beneficiaries?.learning_level ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"BENEFICIARY_LEARNING_LEVEL"}
+                        enumOptionValue={
+                          data?.program_beneficiaries?.learning_level
                         }
                         enumApiData={enumOptions}
                       />
@@ -751,7 +809,6 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
                 space={"5"}
                 p="5"
-                mt="4"
                 rounded="xl"
                 w={"50%"}
               >
@@ -1080,7 +1137,6 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
                 space={"5"}
                 p="5"
-                mt="4"
                 rounded="xl"
                 w={"50%"}
               >
@@ -1276,6 +1332,32 @@ export default function AgAdminProfile({ footerLinks }) {
                 {t("CANCEL")}
               </AdminTypo.Secondarybutton>
               <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+                {t("SAVE")}
+              </AdminTypo.PrimaryButton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal isOpen={editAccessModalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H1 color="textGreyColor.500">
+              {t("Give edit access")}
+            </AdminTypo.H1>
+          </Modal.Header>
+          <Modal.Body>
+            <AdminTypo.H1>Are you sure?</AdminTypo.H1>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack justifyContent={"space-between"} width={"100%"}>
+              <AdminTypo.Secondarybutton
+                onPress={() => setEditAccessModalVisible(false)}
+              >
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton
+              // onPress={updateAadhaar}
+              >
                 {t("SAVE")}
               </AdminTypo.PrimaryButton>
             </HStack>
