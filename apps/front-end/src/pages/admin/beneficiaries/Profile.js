@@ -368,6 +368,15 @@ export default function AgAdminProfile({ footerLinks }) {
         return null;
     }
   }
+  const confirmAccess = async () => {
+    const obj = editAccessModalVisible.toLowerCase();
+    const result = await benificiaryRegistoryService.createEditRequest({
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+      fields: [obj],
+    });
+    setEditAccessModalVisible(false);
+  };
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -576,7 +585,6 @@ export default function AgAdminProfile({ footerLinks }) {
                         {data?.aadhar_no}
                       </AdminTypo.H5>
                       <IconByName
-                        bg="white"
                         color="textMaroonColor.400"
                         name="PencilLineIcon"
                         onPress={(e) => {
@@ -612,11 +620,10 @@ export default function AgAdminProfile({ footerLinks }) {
                           {t("FAMILY_DETAILS")}
                         </AdminTypo.H5>
                         <IconByName
-                          bg="white"
                           color="textMaroonColor.400"
                           name="PencilLineIcon"
                           onPress={(e) => {
-                            setEditAccessModalVisible(true);
+                            setEditAccessModalVisible("FAMILY_DETAILS");
                           }}
                         />
                       </HStack>
@@ -668,11 +675,10 @@ export default function AgAdminProfile({ footerLinks }) {
                     {t("PERSONAL_DETAILS")}
                   </AdminTypo.H5>
                   <IconByName
-                    bg="white"
                     color="textMaroonColor.400"
                     name="PencilLineIcon"
                     onPress={(e) => {
-                      setEditAccessModalVisible(true);
+                      setEditAccessModalVisible("PERSONAL_DETAILS");
                     }}
                   />
                 </HStack>
@@ -722,11 +728,10 @@ export default function AgAdminProfile({ footerLinks }) {
                     {t("EDUCATION_DETAILS")}
                   </AdminTypo.H5>
                   <IconByName
-                    bg="white"
                     color="textMaroonColor.400"
                     name="PencilLineIcon"
                     onPress={(e) => {
-                      setEditAccessModalVisible(true);
+                      setEditAccessModalVisible("EDUCATION_DETAILS");
                     }}
                   />
                 </HStack>
@@ -802,7 +807,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     )}
                   </AdminTypo.H5>
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                    {t("Learning level of learner")}:
+                    {t("LEARNING_LEVEL_OF_LEARNER")}:
                   </AdminTypo.H5>
                   <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
                     {data?.program_beneficiaries?.learning_level ? (
@@ -912,6 +917,13 @@ export default function AgAdminProfile({ footerLinks }) {
                           <AdminTypo.H5 color="textGreyColor" bold>
                             {t("ADDRESS_DETAILS")}
                           </AdminTypo.H5>
+                          <IconByName
+                            color="textMaroonColor.400"
+                            name="PencilLineIcon"
+                            onPress={(e) => {
+                              setEditAccessModalVisible("ADDRESS_DETAILS");
+                            }}
+                          />
                         </HStack>
                         <HStack>
                           <AdminTypo.H5
@@ -1484,12 +1496,21 @@ export default function AgAdminProfile({ footerLinks }) {
       <Modal isOpen={editAccessModalVisible} avoidKeyboard size="xl">
         <Modal.Content>
           <Modal.Header textAlign={"Center"}>
-            <AdminTypo.H1 color="textGreyColor.500">
-              {t("Give edit access")}
-            </AdminTypo.H1>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("GIVE_EDIT_ACCESS")}
+            </AdminTypo.H2>
           </Modal.Header>
           <Modal.Body>
-            <AdminTypo.H1>Are you sure?</AdminTypo.H1>
+            <VStack space="1">
+              <AdminTypo.H4>{t("YOURE_GIVING_ACCESS_TO_EDIT")}</AdminTypo.H4>
+              <VStack justifyContent="left">
+                <DataOfFamilyDetails
+                  editAccessModalVisible={editAccessModalVisible}
+                  data={data}
+                  t={t}
+                />
+              </VStack>
+            </VStack>
           </Modal.Body>
           <Modal.Footer>
             <HStack justifyContent={"space-between"} width={"100%"}>
@@ -1498,10 +1519,8 @@ export default function AgAdminProfile({ footerLinks }) {
               >
                 {t("CANCEL")}
               </AdminTypo.Secondarybutton>
-              <AdminTypo.PrimaryButton
-              // onPress={updateAadhaar}
-              >
-                {t("SAVE")}
+              <AdminTypo.PrimaryButton onPress={confirmAccess}>
+                {t("CONFIRM")}
               </AdminTypo.PrimaryButton>
             </HStack>
           </Modal.Footer>
@@ -1794,3 +1813,47 @@ function BeneficiaryJourney({
     </Stack>
   );
 }
+
+const DataOfFamilyDetails = ({ editAccessModalVisible, t }) => {
+  return (
+    <VStack>
+      <AdminTypo.H7 bold color="textGreyColor.550">
+        {(() => {
+          switch (editAccessModalVisible) {
+            case "FAMILY_DETAILS":
+              return (
+                <ol type="1">
+                  <li>{t("FATHER_NAME")}</li>
+                  <li>{t("MOTHER_NAME")}</li>
+                </ol>
+              );
+
+            case "PERSONAL_DETAILS":
+              return (
+                <ol type="1">
+                  <li>{t("SOCIAL_CATEGORY")}</li>
+                  <li>{t("MARITAL_STATUS")}</li>
+                </ol>
+              );
+            case "EDUCATION_DETAILS":
+              return (
+                <ol type="1">
+                  <li>{t("TYPE_OF_LEARNER")}</li>
+                  <li>{t("LAST_STANDARD_OF_EDUCATION")}</li>
+                  <li>{t("LAST_YEAR_OF_EDUCATION")}</li>
+                  <li>{t("PREVIOUS_SCHOOL_TYPE")}</li>
+                  <li>{t("REASON_FOR_LEAVING")}</li>
+                  <li>{t("LEARNING_LEVEL_OF_LEARNER")}</li>
+                </ol>
+              );
+            case "ADDRESS_DETAILS":
+              return t("ADDRESS");
+
+            default:
+              return null;
+          }
+        })()}
+      </AdminTypo.H7>
+    </VStack>
+  );
+};
