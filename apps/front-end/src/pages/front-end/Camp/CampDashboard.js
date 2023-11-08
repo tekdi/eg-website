@@ -263,11 +263,9 @@ export default function CampDashboard({ footerLinks }) {
               >
                 {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-
               {/* <FrontEndTypo.Secondarybutton>
                 {t("CAMP_SETTINGS")}
               </FrontEndTypo.Secondarybutton> */}
-
               <FrontEndTypo.Primarybutton
                 onPress={() => {
                   navigate(`/camps/${campId}/start`);
