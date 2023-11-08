@@ -26,7 +26,6 @@ import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
-import Admin from "routes/admin";
 
 const renderMessages = (condition) => {
   switch (condition) {
@@ -277,12 +276,12 @@ export default function FacilitatorView({ footerLinks }) {
 
   const confirmAccess = async () => {
     const obj = editAccessModalVisible.toLowerCase();
-    console.log(obj);
-    const result = await benificiaryRegistoryService.createEditRequest({
+    await benificiaryRegistoryService.createEditRequest({
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
       fields: [obj],
     });
+
     setEditAccessModalVisible(false);
   };
 
