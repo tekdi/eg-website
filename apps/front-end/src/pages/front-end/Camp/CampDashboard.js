@@ -78,7 +78,7 @@ export default function CampDashboard({ footerLinks }) {
                     <VStack flex={1}>
                       <AdminTypo.H4 color="textMaroonColor.400">
                         {`${nonRegisteredUser?.length} `}
-                        {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")}
+                        {t("UNMAPPED_LEARNERS")}
                       </AdminTypo.H4>
                       <AdminTypo.H4 color="textMaroonColor.400">
                         {t("LEARNERS")}
@@ -150,8 +150,20 @@ export default function CampDashboard({ footerLinks }) {
                           <HStack>
                             <IconByName
                               isDisabled
-                              name="ErrorWarningLineIcon"
-                              color="textMaroonColor.400"
+                              name={
+                                ["camp_ip_verified"].includes(
+                                  item?.group?.status
+                                )
+                                  ? "CheckLineIcon"
+                                  : "ErrorWarningLineIcon"
+                              }
+                              color={
+                                ["camp_ip_verified"].includes(
+                                  item?.group?.status
+                                )
+                                  ? "textGreen.700"
+                                  : "textMaroonColor.400"
+                              }
                               _icon={{ size: "20px" }}
                             />
                             <GetEnumValue
@@ -159,7 +171,13 @@ export default function CampDashboard({ footerLinks }) {
                               enumType={"GROUPS_STATUS"}
                               enumOptionValue={item?.group?.status}
                               enumApiData={enumOptions}
-                              color="textMaroonColor.400"
+                              color={
+                                ["camp_ip_verified"].includes(
+                                  item?.group?.status
+                                )
+                                  ? "textGreen.700"
+                                  : "textMaroonColor.400"
+                              }
                               ml={2}
                             />
                           </HStack>
@@ -238,13 +256,14 @@ export default function CampDashboard({ footerLinks }) {
           <Modal.Body p={5} marginTop={"20px"}>
             <VStack space={4}>
               <FrontEndTypo.Primarybutton
+                m="2"
                 onPress={() => {
                   navigate(`/camps/${campId}`);
                 }}
               >
-                {t("PROFILE")}
+                {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton>
+              {/* <FrontEndTypo.Secondarybutton>
                 {t("CAMP_SETTINGS")}
               </FrontEndTypo.Secondarybutton>
               <FrontEndTypo.Primarybutton
@@ -253,7 +272,7 @@ export default function CampDashboard({ footerLinks }) {
                 }}
               >
                 {t("CAMP_EXECUTION")}
-              </FrontEndTypo.Primarybutton>
+              </FrontEndTypo.Primarybutton> */}
             </VStack>
           </Modal.Body>
         </Modal.Content>

@@ -128,12 +128,18 @@ const PcrDetails = React.lazy(() =>
 const PcrView = React.lazy(() =>
   import("pages/front-end/PCRDetails.js/PcrView")
 );
+
+const FileView = React.lazy(() => import("pages/FileView"));
 const StartCampDashboard = React.lazy(() =>
   import("pages/front-end/Camp/StartCampDashboard")
 );
 
 const CampAttendance = React.lazy(() =>
-  import("pages/front-end/Camp/CampAttendance")
+  import("pages/front-end/Camp/Attendace/CampAttendance")
+);
+
+const Attendance = React.lazy(() =>
+  import("pages/front-end/Camp/Attendace/Attendance")
 );
 
 const CampTodayActivities = React.lazy(() =>
@@ -280,7 +286,10 @@ export default [
     path: "/camps/new/learners",
     component: CampLeanerList,
   },
-
+  {
+    path: "/file/:id/view",
+    component: FileView,
+  },
   {
     path: "/community-references",
     component: CommunityView,
@@ -288,6 +297,10 @@ export default [
   {
     path: "/camps/:id/attendance",
     component: CampAttendance,
+  },
+  {
+    path: "/camps/:id/attendance-view",
+    component: Attendance,
   },
   { path: "/camps/:id/start", component: StartCampDashboard },
   { path: "/camps/:id/activities", component: CampTodayActivities },

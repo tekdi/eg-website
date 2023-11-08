@@ -52,7 +52,7 @@ const Agduplicate = () => {
         lang,
         setLang,
         onPressBackButton: (e) => {},
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
     >
       {alreadyreg && (

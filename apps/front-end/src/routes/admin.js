@@ -49,6 +49,7 @@ const ReassignBeneficiaries = React.lazy(() =>
 const ReassignBeneficiariesList = React.lazy(() =>
   import("pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList")
 );
+const FileView = React.lazy(() => import("pages/FileView"));
 const CampHome = React.lazy(() => import("pages/admin/camps/CampHome"));
 // const CampsView = React.lazy(() => import("pages/admin/camps/View"));
 const ViewCamp = React.lazy(() => import("pages/admin/camps/View"));
@@ -59,6 +60,7 @@ const ReassignPrerak = React.lazy(() =>
 const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
+const Attendances = React.lazy(() => import("pages/admin/attendances/List"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -101,7 +103,6 @@ export default [
     path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
   },
-
   {
     path: "/admin/beneficiary/:id",
     component: BeneficiaryAdminProfile,
@@ -109,6 +110,10 @@ export default [
   {
     path: "/admin/beneficiary/:id/editEnrollmentDetails",
     component: enrollmentForm,
+  },
+  {
+    path: "/file/:id/view",
+    component: FileView,
   },
   { path: "/", component: Orientation },
   { path: "/admin/camps", component: CampHome },
@@ -121,6 +126,10 @@ export default [
   {
     path: "/admin/camps/:id/:step",
     component: CampForm,
+  },
+  {
+    path: "/admin/attendances",
+    component: Attendances,
   },
   { path: "*", component: NotFound },
 ];

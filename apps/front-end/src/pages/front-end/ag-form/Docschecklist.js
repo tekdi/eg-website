@@ -93,7 +93,7 @@ const Docschecklist = ({ footerLinks }) => {
         onPressBackButton: (e) => {
           navigate(`/beneficiary/profile/${id}`);
         },
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
     >

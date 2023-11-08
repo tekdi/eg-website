@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  HStack,
-  VStack,
-  Box,
-  Progress,
-  Image,
-  Alert,
-  Stack,
-} from "native-base";
+import { HStack, VStack, Box, Progress, Alert } from "native-base";
 import {
   arrList,
   IconByName,
@@ -136,7 +128,7 @@ export default function AadhaarDetails() {
                 </HStack>
               </VStack>
             </VStack>
-            {/* {(facilitator?.aadhar_verified !== "yes" ||
+            {(facilitator?.aadhar_verified !== "yes" ||
               facilitator?.aadhaar_verification_mode === "upload") && (
               <VStack
                 px="5"
@@ -162,15 +154,15 @@ export default function AadhaarDetails() {
                           user: facilitator,
                         }}
                       />
-                      <FrontEndTypo.Secondarybutton
+                      {/* <FrontEndTypo.Secondarybutton
                         my="4"
                         onPress={() => {
                           navigate(`/aadhaar-kyc/${id}/QR`);
                         }}
                       >
                         {t("SCAN_QR_CODE")}
-                      </FrontEndTypo.Secondarybutton>
-                      {facilitator?.aadhaar_verification_mode !== "upload" && (
+                      </FrontEndTypo.Secondarybutton> 
+                       {facilitator?.aadhaar_verification_mode !== "upload" && (
                         <FrontEndTypo.Secondarybutton
                           onPress={() => {
                             navigate(`/aadhaar-kyc/${id}/upload`, {
@@ -180,7 +172,7 @@ export default function AadhaarDetails() {
                         >
                           {t("AADHAR_UPLOAD_KYC")}
                         </FrontEndTypo.Secondarybutton>
-                      )}
+                      )} */}
                     </VStack>
                   )}
                 {facilitator?.aadhaar_verification_mode === "upload" && (
@@ -224,7 +216,7 @@ export default function AadhaarDetails() {
                   </VStack>
                 )}
               </VStack>
-            )} */}
+            )}
           </VStack>
         </VStack>
       )}

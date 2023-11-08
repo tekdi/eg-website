@@ -5,14 +5,22 @@ import {
   IconByName,
   Layout,
   GeoLocation,
-  Alert,
+  Alert as TAlert,
   Loading,
   Camera,
   uploadRegistryService,
   ImageView,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Box, HStack, Pressable, Progress, Stack, VStack } from "native-base";
+import {
+  Box,
+  HStack,
+  Pressable,
+  Progress,
+  Stack,
+  VStack,
+  Alert,
+} from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -90,7 +98,7 @@ export default function StartCampDashboard({ footerLinks }) {
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
-    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+    const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.name;
     if (photo_1) {
       const dataQ = {
         ...data,
@@ -161,6 +169,16 @@ export default function StartCampDashboard({ footerLinks }) {
           //     </FrontEndTypo.Secondarybutton>
           //   </HStack>
           // }
+          messageComponent={
+            cameraUrl && (
+              <Alert status="success">
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  <FrontEndTypo.H4>{t("ATTENDANCE_SUCCESS")}</FrontEndTypo.H4>
+                </HStack>
+              </Alert>
+            )
+          }
           {...{
             onFinish: (e) => startCamp(),
             cameraModal: start,
@@ -187,6 +205,7 @@ export default function StartCampDashboard({ footerLinks }) {
                 setCameraUrl();
               }
             },
+            cameraSide: true,
           }}
         />
       </React.Suspense>
@@ -195,7 +214,7 @@ export default function StartCampDashboard({ footerLinks }) {
 
   return (
     <Layout
-      _appBar={{ name: t("Attendance") }}
+      _appBar={{ name: t("ATTENDANCE") }}
       //   loading={loading}
       _footer={{ menues: footerLinks }}
     >
@@ -232,7 +251,7 @@ export default function StartCampDashboard({ footerLinks }) {
           </HStack>
         </Box>
         <VStack space="4">
-          <Alert
+          <TAlert
             alert={error}
             setAlert={(e) => {
               setStart(false);
@@ -243,11 +262,13 @@ export default function StartCampDashboard({ footerLinks }) {
             }}
             type="warning"
           />
-          <FrontEndTypo.H3>Let's Starts your day!!</FrontEndTypo.H3>
+          <FrontEndTypo.H3>{t("STARTS_YOUR_DAY")}</FrontEndTypo.H3>
           <CardComponent
             title={
               <HStack justifyContent={"space-around"} space="4" flex={1}>
-                <FrontEndTypo.H5 bold>{"Preferred camp time"}</FrontEndTypo.H5>
+                <FrontEndTypo.H5 bold>
+                  {t("PREFERRED_CAMP_TIME")}
+                </FrontEndTypo.H5>
                 <FrontEndTypo.H5 bold>{"2:00 pm - 5:00 pm"}</FrontEndTypo.H5>
               </HStack>
             }
@@ -282,22 +303,6 @@ export default function StartCampDashboard({ footerLinks }) {
               {localStorage.getItem("startCamp") ? (
                 <VStack space={4}>
                   <HStack space={4}>
-                    <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-                      <Pressable
-                        onPress={(e) => navigate(`/camps/${id}/activities`)}
-                      >
-                        <VStack alignItems="center" space={3}>
-                          <IconByName
-                            name="CalendarEventLineIcon"
-                            color="gray.600"
-                            bg="gray.300"
-                            rounded="full"
-                            p="5"
-                          />
-                          <FrontEndTypo.H5>Today's Activities</FrontEndTypo.H5>
-                        </VStack>
-                      </Pressable>
-                    </CardComponent>
                     <CardComponent
                       _vstack={{ flex: 1, alignItems: "center" }}
                       _body={{ pt: 4 }}
@@ -314,23 +319,41 @@ export default function StartCampDashboard({ footerLinks }) {
                             p="5"
                           />
                           <FrontEndTypo.H5 textAlign="center">
-                            Learner Attendance
+                            {t("LEARNER_ATTENDANCE")}
+                          </FrontEndTypo.H5>
+                        </VStack>
+                      </Pressable>
+                    </CardComponent>
+                    <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+                      <Pressable
+                        onPress={(e) => navigate(`/camps/${id}/activities`)}
+                      >
+                        <VStack alignItems="center" space={3}>
+                          <IconByName
+                            name="CalendarEventLineIcon"
+                            color="gray.600"
+                            bg="gray.300"
+                            rounded="full"
+                            p="5"
+                          />
+                          <FrontEndTypo.H5>
+                            {t("TODAYS_ACTIVITIES")}
                           </FrontEndTypo.H5>
                         </VStack>
                       </Pressable>
                     </CardComponent>
                   </HStack>
                   <FrontEndTypo.Primarybutton onPress={(e) => endCamp()}>
-                    End Camp
+                    {t("END_CAMP")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               ) : (
                 <VStack space="4">
                   <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
-                    Start Camp
+                    {t("START_CAMP")}
                   </FrontEndTypo.Primarybutton>
                   <FrontEndTypo.Secondarybutton>
-                    Apply For Leave
+                    {t("APPLY_FOR_LEAVE")}
                   </FrontEndTypo.Secondarybutton>
                 </VStack>
               )}
@@ -338,12 +361,14 @@ export default function StartCampDashboard({ footerLinks }) {
           </CardComponent>
         </VStack>
         <VStack pt="6" space="4">
-          <FrontEndTypo.H3>Other Activites,</FrontEndTypo.H3>
+          <FrontEndTypo.H3>{t("OTHER_ACTIVITIES")}</FrontEndTypo.H3>
           <HStack space="6">
-            <Pressable onPress={(e) => navigate(`/camps/${id}/attendance`)}>
+            <Pressable
+              onPress={(e) => navigate(`/camps/${id}/attendance-view`)}
+            >
               <VStack alignItems="center" space={3}>
                 <IconByName name="CalendarEventLineIcon" color="gray.400" />
-                <FrontEndTypo.H5>View Attendance</FrontEndTypo.H5>
+                <FrontEndTypo.H5>{t("VIEW_ATTENDANCE")}</FrontEndTypo.H5>
               </VStack>
             </Pressable>
             <Pressable
@@ -351,10 +376,10 @@ export default function StartCampDashboard({ footerLinks }) {
                 navigate(`/camps/${id}/edit_camp_selected_learners`)
               }
             >
-              <VStack alignItems="center" space={3}>
+              {/* <VStack alignItems="center" space={3}>
                 <IconByName name="UserAddLineIcon" color="gray.400" />
-                <FrontEndTypo.H5>Add Learner</FrontEndTypo.H5>
-              </VStack>
+                <FrontEndTypo.H5>{t("ADD_LEARNER")}</FrontEndTypo.H5>
+              </VStack> */}
             </Pressable>
           </HStack>
         </VStack>

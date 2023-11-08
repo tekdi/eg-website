@@ -516,6 +516,9 @@ const DEFAULT_THEME = {
       500: '#C4C4D4',
       600: '#C4C4D4'
     },
+    checkBlankcircle: '#FFEB3B',
+    attendanceUnmarkedLight: '#F0F0F4',
+    attendancedefault: '#d3d3e5',
     timeTableCardOrange: {
       500: '#FFF7F5'
     },
@@ -639,6 +642,8 @@ const DEFAULT_THEME = {
       800: '#042a48',
       900: '#010e18'
     },
+    grayInLight: '#9ca3af',
+    grayIndark: '#18181b',
     btnGray: {
       100: '#e0e0e0'
     },
