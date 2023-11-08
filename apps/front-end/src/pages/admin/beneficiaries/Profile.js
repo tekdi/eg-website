@@ -9,6 +9,7 @@ import {
   getUniqueArray,
   FrontEndTypo,
   tableCustomStyles,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -20,6 +21,8 @@ import {
   VStack,
   Text,
   Input,
+  Actionsheet,
+  ScrollView,
 } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
@@ -85,6 +88,17 @@ export default function AgAdminProfile({ footerLinks }) {
   const [auditYear, setauditYear] = React.useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [reasonValue, setReasonValue] = React.useState("");
+  const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
+  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
+  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
+  const [isOpenReject, setIsOpenReject] = React.useState(false);
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
+    React.useState();
+  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
+    React.useState();
+  const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
+    React.useState();
   const { t } = useTranslation();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
@@ -199,6 +213,13 @@ export default function AgAdminProfile({ footerLinks }) {
     setselectData(data);
     const enumData = await enumRegistryService.listOfEnum();
     setEnumOptions(enumData?.data ? enumData?.data : {});
+    setBenificiaryDropoutReasons(
+      enumData?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+    );
+    setBenificiaryReactivateReasons(enumData?.data?.REACTIVATE_REASONS);
+    setBenificiaryRejectReasons(
+      enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+    );
     setLoading(false);
   }, []);
 
@@ -228,6 +249,123 @@ export default function AgAdminProfile({ footerLinks }) {
       setAdhaarModalVisible(false);
     }
   };
+
+  const dropoutApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.result?.id?.toString(),
+      status: "dropout",
+      reason_for_status_update: reasonValue,
+    };
+
+    const result = await benificiaryRegistoryService.learnerAdminStatusUpdate(
+      bodyData
+    );
+
+    if (result) {
+      setReasonValue("");
+      setIsOpenDropOut(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  };
+
+  const reactivateApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.result?.id?.toString(),
+      status: "identified",
+      reason_for_status_update: reactivateReasonValue,
+    };
+    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+    if (result) {
+      setReactivateReasonValue("");
+      setIsOpenReactive(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  };
+
+  const RejectApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.result?.id?.toString(),
+      status: "rejected",
+      reason_for_status_update: reasonValue,
+    };
+
+    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+
+    if (result) {
+      setReasonValue("");
+      setIsOpenReject(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  };
+  function renderDropoutButton() {
+    const status = benificiary?.result?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case "enrolled_ip_verified":
+      case null:
+        return (
+          <AdminTypo.Dangerbutton
+            onPress={(e) => setIsOpenDropOut(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("MARK_AS_DROPOUT")}
+          </AdminTypo.Dangerbutton>
+        );
+      default:
+        return null;
+    }
+  }
+  function renderReactivateButton() {
+    const status = benificiary?.result?.program_beneficiaries?.status;
+    switch (status) {
+      case "rejected":
+      case "dropout":
+        return (
+          <AdminTypo.Secondarybutton onPress={(e) => setIsOpenReactive(true)}>
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+          </AdminTypo.Secondarybutton>
+        );
+      default:
+        return null;
+    }
+  }
+
+  function renderRejectButton() {
+    const status = benificiary?.result?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case "enrolled_ip_verified":
+      case null:
+        return (
+          <AdminTypo.Dangerbutton
+            onPress={(e) => setIsOpenReject(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("REJECT")}
+          </AdminTypo.Dangerbutton>
+        );
+      default:
+        return null;
+    }
+  }
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -692,7 +830,6 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
                 space={"5"}
                 p="5"
-                mt="4"
                 rounded="xl"
                 w={"50%"}
               >
@@ -1021,7 +1158,6 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
                 space={"5"}
                 p="5"
-                mt="4"
                 rounded="xl"
                 w={"50%"}
               >
@@ -1151,6 +1287,11 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
             </HStack>
           </VStack>
+          <HStack pt="0" p="3" space="6">
+            {renderDropoutButton()}
+            {renderReactivateButton()}
+            {renderRejectButton()}
+          </HStack>
         </Box>
       </VStack>
       <Modal
@@ -1223,6 +1364,178 @@ export default function AgAdminProfile({ footerLinks }) {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+
+      {/* Dropout Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenDropOut}
+        onClose={(e) => setIsOpenDropOut(false)}
+      >
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenDropOut(false)}
+              />
+            </VStack>
+
+            <AdminTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </AdminTypo.H1>
+            <AdminTypo.H4 color="textGreyColor.450">
+              {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+            </AdminTypo.H4>
+            <AdminTypo.H4 bold color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+            </AdminTypo.H4>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg" w="100%">
+                <VStack alignItems="center" space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryDropoutReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reasonValue}
+                      onChange={(e) => {
+                        setReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+              <VStack>
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    dropoutApiCall();
+                  }}
+                >
+                  {t("MARK_AS_DROPOUT")}
+                </AdminTypo.PrimaryButton>
+              </VStack>
+            </VStack>
+          </ScrollView>
+        </Stack>
+      </Actionsheet>
+
+      {/* REactivate Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenReactive}
+        onClose={(e) => setIsOpenReactive(false)}
+      >
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenReactive(false)}
+              />
+            </VStack>
+            <AdminTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </AdminTypo.H1>
+            <AdminTypo.H4 color="textGreyColor.450">
+              {t("AG_PROFILE_REACTIVAYE_MESSAGE")}
+            </AdminTypo.H4>
+            <AdminTypo.H4 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}
+            </AdminTypo.H4>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg">
+                <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryReactivateReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reactivateReasonValue}
+                      onChange={(e) => {
+                        setReactivateReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+
+              <AdminTypo.PrimaryButton
+                onPress={() => {
+                  reactivateApiCall();
+                }}
+              >
+                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+              </AdminTypo.PrimaryButton>
+            </VStack>
+          </ScrollView>
+        </Stack>
+      </Actionsheet>
+
+      {/* Reject Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenReject}
+        onClose={(e) => setIsOpenReject(false)}
+      >
+        <Actionsheet.Content>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenReject(false)}
+            />
+          </VStack>
+
+          <AdminTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </AdminTypo.H1>
+
+          <AdminTypo.H4 color="textGreyColor.200" pb="4" pl="2">
+            {t("PLEASE_MENTION_YOUR_REASON_FOR_REJECTING_THE_CANDIDATE")}
+          </AdminTypo.H4>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
+              <VStack alignItems="center" space="1" flex="1">
+                <React.Suspense fallback={<HStack>{t("LOADING")}</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryRejectReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reasonValue}
+                    onChange={(e) => {
+                      setReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
+              </VStack>
+            </VStack>
+
+            <AdminTypo.PrimaryButton
+              flex={1}
+              onPress={() => {
+                RejectApiCall();
+              }}
+            >
+              {t("REJECT")}
+            </AdminTypo.PrimaryButton>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
     </Layout>
   );
 }

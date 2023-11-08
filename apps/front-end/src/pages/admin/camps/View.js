@@ -23,6 +23,7 @@ import {
   Button,
   Menu,
   Pressable,
+  Stack,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { CampChipStatus } from "component/Chip";
@@ -50,14 +51,20 @@ const ConsentForm = ({ consentData, row, t }) => {
   );
 };
 
-const mapDirection = ({ row, t, data }) => {
+const mapDirection = ({ row, data }) => {
   return (
     <a
-      href={`https://www.google.com/maps/dir/${row?.properties?.lat},${row?.properties?.long}/'${data?.properties?.lat},${data?.properties?.long}'/`}
+      href={`https://www.google.com/maps/dir/${row?.lat},${row?.long}/'${data?.properties?.lat},${data?.properties?.long}'/`}
       target="_blank"
       style={{ textDecoration: "none" }}
     >
-      {t("VIEW")}
+      <IconByName
+        name={"MapPinLineIcon"}
+        borderWidth="1"
+        borderColor="gray.300"
+        p="1"
+        rounded="full"
+      />
     </a>
   );
 };
@@ -152,22 +159,31 @@ export default function View({ footerLinks }) {
     {
       name: "Id",
       selector: (row) => row?.id,
+      width: "90px",
       wrap: true,
     },
     {
       name: t("ENROLLMENT_NO"),
       selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
       wrap: true,
+      minWidth: "120px",
     },
     {
       name: t("LEARNERS_NAME"),
+      minWidth: "250px",
       selector: (row) => (
         <UserCard
           _hstack={{ borderWidth: 0, p: 1 }}
           key={row}
           title={
             <AdminTypo.H6 bold>
-              {`${row?.first_name} ${row?.last_name ? row?.last_name : ""}`}
+              {[
+                row?.program_beneficiaries?.[0]?.enrollment_first_name,
+                row?.program_beneficiaries?.[0]?.enrollment_middle_name,
+                row?.program_beneficiaries?.[0]?.enrollment_last_name,
+              ]
+                .filter((e) => e)
+                .join(" ")}
             </AdminTypo.H6>
           }
           image={
@@ -183,13 +199,16 @@ export default function View({ footerLinks }) {
       name: t("CONSENT_FORM"),
       selector: (row) => ConsentForm({ t, row, consentData }),
       wrap: true,
+      minWidth: "100px",
     },
     {
       name: t("MAP"),
-      selector: (row) => mapDirection({ t, row, data }),
+      selector: (row) => mapDirection({ row, data }),
+      minWidth: "60px",
       wrap: true,
     },
     {
+      minWidth: "140px",
       name: t("ACTION"),
       selector: (row) => (
         <Button.Group
@@ -251,6 +270,7 @@ export default function View({ footerLinks }) {
     },
   ];
   // Table component
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack flex={1} space={"5"} p="3" mb="5">
@@ -303,12 +323,12 @@ export default function View({ footerLinks }) {
             {data?.id}
           </AdminTypo.H1>
         </HStack>
-        <HStack>
-          <VStack>
+        <HStack flexWrap="wrap" space="2">
+          <VStack width="350px">
             <HStack py="4">
               <CampChipStatus status={data?.group?.status} />
             </HStack>
-            <HStack>
+            <VStack>
               {data?.faciltator?.length > 0 &&
                 data?.faciltator.map((facilitator) => {
                   return (
@@ -319,25 +339,29 @@ export default function View({ footerLinks }) {
                       _image={{ size: 100 }}
                       title={
                         <VStack>
-                          <AdminTypo.H6 color="textGreyColor.600">
+                          <AdminTypo.H4 color="textGreyColor.900" bold>
                             {[facilitator?.first_name, facilitator?.last_name]
                               .filter((e) => e)
                               .join(" ")}
-                          </AdminTypo.H6>
-                          <AdminTypo.H4 color="textGreyColor.600">
-                            {facilitator?.mobile}
                           </AdminTypo.H4>
+                          <AdminTypo.H5 color="textGreyColor.800">
+                            {facilitator?.mobile}
+                          </AdminTypo.H5>
                         </VStack>
                       }
-                      subTitle={[
-                        facilitator?.state,
-                        facilitator?.district,
-                        facilitator?.block,
-                        facilitator?.village,
-                        facilitator?.grampanchayat,
-                      ]
-                        .filter((e) => e)
-                        .join(", ")}
+                      subTitle={
+                        <AdminTypo.H6 color="textGreyColor.800">
+                          {[
+                            facilitator?.state,
+                            facilitator?.district,
+                            facilitator?.block,
+                            facilitator?.village,
+                            facilitator?.grampanchayat,
+                          ]
+                            .filter((e) => e)
+                            .join(", ")}
+                        </AdminTypo.H6>
+                      }
                       image={
                         facilitator?.profile_photo_1?.fileUrl
                           ? { urlObject: facilitator?.profile_photo_1 }
@@ -346,47 +370,46 @@ export default function View({ footerLinks }) {
                     />
                   );
                 })}
-            </HStack>
+            </VStack>
           </VStack>
-          <VStack>
-            <HStack>
-              {[
-                properties?.photo_other,
-                properties.photo_building,
-                properties?.photo_classroom,
-              ].map(
-                (item) =>
-                  item && (
-                    <HStack key={item}>
+          {[
+            properties?.photo_other,
+            properties.photo_building,
+            properties?.photo_classroom,
+          ].map(
+            (item) =>
+              item && (
+                <HStack key={item} paddingTop="2">
+                  <ImageView
+                    isImageTag={!item}
+                    urlObject={item || {}}
+                    _button={{ p: 0 }}
+                    text={
                       <ImageView
-                        isImageTag={!item}
+                        isImageTag
+                        style={{ borderRadius: "10px" }}
                         urlObject={item || {}}
-                        _button={{ p: 0 }}
-                        text={
-                          <ImageView
-                            isImageTag
-                            urlObject={item || {}}
-                            width="220px"
-                            height="250px"
-                            m={"10px"}
-                            p={"2"}
-                            border="2px solid #eee"
-                            borderRadius={"4"}
-                            alignItems="left"
-                          />
-                        }
+                        width="200px"
+                        height="200px"
                       />
-                    </HStack>
-                  )
-              )}
-            </HStack>
-          </VStack>
-          <VStack flex="1">
-            <MapComponent
-              latitude={data?.properties?.lat}
-              longitude={data?.properties?.long}
-            />
-          </VStack>
+                    }
+                  />
+                </HStack>
+              )
+          )}
+          <MapComponent
+            _iframe={{
+              width: "200px",
+              height: "200px",
+              style: {
+                borderRadius: "10px",
+                border: "none",
+                paddingTop: "8px",
+              },
+            }}
+            latitude={data?.properties?.lat}
+            longitude={data?.properties?.long}
+          />
         </HStack>
         <HStack space={4}>
           <CardComponent
@@ -395,7 +418,7 @@ export default function View({ footerLinks }) {
             title={t("CAMP_LOCATION_ADDRESS")}
             onEdit={edit && navTOedit("edit_camp_location")}
           >
-            <AdminTypo.H4 space={2} marginTop={"10px"}>
+            <AdminTypo.H7 marginTop={"10px"} fontWeight="400">
               {[
                 data?.properties?.state,
                 data?.properties?.district,
@@ -405,7 +428,7 @@ export default function View({ footerLinks }) {
               ]
                 .filter((e) => e)
                 .join(", ")}
-            </AdminTypo.H4>
+            </AdminTypo.H7>
           </CardComponent>
 
           <CardComponent
@@ -470,7 +493,7 @@ export default function View({ footerLinks }) {
               {facilities.map((item) => (
                 <CheckUncheck
                   key={item?.title}
-                  schema={{ label: t(item?.title) }}
+                  schema={{ readOnly: true, label: t(item?.title) }}
                   value={propertyFacilities?.[item?.value] || ""}
                 />
               ))}
@@ -492,78 +515,82 @@ export default function View({ footerLinks }) {
             <DataTable columns={columns(t, navigate)} data={userData} />
           </CardComponent>
         </HStack>
-        <HStack space={10} justifyContent={"center"}>
-          {data?.group?.status !== "camp_ip_verified" && (
-            <>
-              <AdminTypo.StatusButton
-                status="success"
-                onPress={() => setStatus("camp_ip_verified")}
-              >
-                {t("VERIFY")}
-              </AdminTypo.StatusButton>
-              <AdminTypo.Secondarybutton
-                status="info"
-                onPress={() => setStatus("change_required")}
-              >
-                {t("CHANGE_REQUIRED")}
-              </AdminTypo.Secondarybutton>
-            </>
-          )}
+        {data?.group?.status !== "inactive" && (
+          <Stack>
+            {data?.group?.status !== "camp_ip_verified" && (
+              <HStack space={4} justifyContent={"center"}>
+                <AdminTypo.StatusButton
+                  status="success"
+                  onPress={() => setStatus("camp_ip_verified")}
+                >
+                  {t("VERIFY")}
+                </AdminTypo.StatusButton>
+                <AdminTypo.Secondarybutton
+                  status="info"
+                  onPress={() => setStatus("change_required")}
+                >
+                  {t("CHANGE_REQUIRED")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+            )}
 
-          {data?.group?.status === "camp_ip_verified" && (
-            <AdminTypo.Secondarybutton
-              onPress={() => setStatus("change_required")}
-            >
-              {t("MODIFY")}
-            </AdminTypo.Secondarybutton>
-          )}
+            {data?.group?.status === "camp_ip_verified" && (
+              <HStack space={4} justifyContent={"center"}>
+                <AdminTypo.Secondarybutton
+                  onPress={() => setStatus("change_required")}
+                >
+                  {t("MODIFY")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+            )}
+          </Stack>
+        )}
 
-          <Modal isOpen={status} onClose={() => setStatus()} size="lg">
-            <Modal.Content>
-              <Modal.CloseButton />
-              <Modal.Header>{t("WELCOME_AT_CAMP")}</Modal.Header>
-              {status === "camp_ip_verified" ? (
-                <Modal.Body>
-                  <Alert status="success" alignItems={"start"} mb="3" mt="4">
-                    <HStack alignItems="center" space="2" color>
-                      <BodyMedium>{t("VERIFY_MESSAGE")}</BodyMedium>
-                    </HStack>
-                  </Alert>
-                </Modal.Body>
-              ) : (
-                <Modal.Body>
-                  {/* <FrontEndTypo.H2 bold color="textGreyColor.550">
+        <Modal isOpen={status} onClose={() => setStatus()} size="lg">
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>{t("WELCOME_AT_CAMP")}</Modal.Header>
+            {status === "camp_ip_verified" ? (
+              <Modal.Body>
+                <Alert status="success" alignItems={"start"} mb="3" mt="4">
+                  <HStack alignItems="center" space="2" color>
+                    <BodyMedium>{t("VERIFY_MESSAGE")}</BodyMedium>
+                  </HStack>
+                </Alert>
+              </Modal.Body>
+            ) : (
+              <Modal.Body>
+                {/* <FrontEndTypo.H2 bold color="textGreyColor.550">
                     {t("CHANGES_REQUIRED")}
                   </FrontEndTypo.H2> */}
-                  <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                    <HStack space="2" color>
-                      <BodyMedium>{t("CONTACT_PRERAK_AND_DISCUSS")}</BodyMedium>
-                    </HStack>
-                  </Alert>
-                </Modal.Body>
-              )}
-              <Modal.Footer>
-                <HStack justifyContent="space-between" width="100%">
-                  <AdminTypo.PrimaryButton
-                    onPress={() => {
-                      setStatus(false);
-                    }}
-                  >
-                    {t("CANCEL")}
-                  </AdminTypo.PrimaryButton>
+                <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                  <HStack space="2" color>
+                    <BodyMedium>{t("CONTACT_PRERAK_AND_DISCUSS")}</BodyMedium>
+                  </HStack>
+                </Alert>
+              </Modal.Body>
+            )}
+            <Modal.Footer>
+              <HStack justifyContent="space-between" width="100%">
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    setStatus(false);
+                  }}
+                >
+                  {t("CANCEL")}
+                </AdminTypo.PrimaryButton>
 
-                  <AdminTypo.Secondarybutton
-                    onPress={() => {
-                      updateCampStatus();
-                    }}
-                  >
-                    {t("CONFIRM")}
-                  </AdminTypo.Secondarybutton>
-                </HStack>
-              </Modal.Footer>
-            </Modal.Content>
-          </Modal>
-        </HStack>
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    updateCampStatus();
+                  }}
+                >
+                  {t("CONFIRM")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </VStack>
     </Layout>
   );
