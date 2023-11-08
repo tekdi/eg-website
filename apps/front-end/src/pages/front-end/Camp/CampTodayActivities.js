@@ -82,7 +82,7 @@ export default function CampTodayActivities({ footerLinks }) {
 
   return (
     <Layout
-      _appBar={{ name: t("Add today's activities") }}
+      _appBar={t("ADD_TODAYS_ACTIVITIES")}
       //   loading={loading}
       _footer={{ menues: footerLinks }}
     >
@@ -101,7 +101,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>{t("TODAYS_ACTIVITIES")}</FrontEndTypo.H5>
+                <FrontEndTypo.H4>{t("TODAYS_ACTIVITIES")}</FrontEndTypo.H4>
               </VStack>
             </Pressable>
           </CardComponent>
@@ -119,7 +119,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>{t("LIVELIHOOD_AWARENESS")}</FrontEndTypo.H5>
+                <FrontEndTypo.H4>{t("LIVELIHOOD_AWARENESS")}</FrontEndTypo.H4>
               </VStack>
             </Pressable>
           </CardComponent>
@@ -137,7 +137,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>{t("COMMUNITY_ENGAGEMENT")}</FrontEndTypo.H5>
+                <FrontEndTypo.H4>{t("COMMUNITY_ENGAGEMENT")}</FrontEndTypo.H4>
               </VStack>
             </Pressable>
           </CardComponent>
@@ -155,9 +155,9 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>
+                <FrontEndTypo.H4>
                   {t("OPEN_SCHOOL_GOVERNMENT_ACTIVITY")}
-                </FrontEndTypo.H5>
+                </FrontEndTypo.H4>
               </VStack>
             </Pressable>
           </CardComponent>
