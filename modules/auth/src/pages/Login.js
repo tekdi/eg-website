@@ -87,18 +87,32 @@ export default function Login() {
       }}
       getRefAppBar={(e) => setRef(e)}
     >
-      <VStack bg="bgGreyColor.200" minH={height - ref?.clientHeight} space="1">
+      <VStack
+        bg="bgGreyColor.200"
+        minH={height - ref?.clientHeight}
+        space="1"
+        style={{
+          background:
+            "linear-gradient(to right,  rgb(33 150 243 / 49%), rgb(3 169 244 / 17%))",
+        }}
+      >
         <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
         </FrontEndTypo.H1>
         <Image
           alignSelf="center"
           source={{
-            uri: "/images/logos/educate-girls200X200.png",
+            uri: "/images/logos/eg-logo(updated).png",
           }}
           alt="Educate Girls"
           resizeMode="contain"
-          size={200}
+          size={150}
+          background={"#fff"}
+          rounded={"full"}
+          style={{
+            boxShadow:
+              "0 10px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+          }}
         />
         <VStack space={5} p="5">
           <Alert status="info" colorScheme="info" textAlign="center">
