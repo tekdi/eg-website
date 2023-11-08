@@ -101,7 +101,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>Today's Activities</FrontEndTypo.H5>
+                <FrontEndTypo.H5>{t("TODAYS_ACTIVITIES")}</FrontEndTypo.H5>
               </VStack>
             </Pressable>
           </CardComponent>
@@ -119,7 +119,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>Livelihood Awareness</FrontEndTypo.H5>
+                <FrontEndTypo.H5>{t("LIVELIHOOD_AWARENESS")}</FrontEndTypo.H5>
               </VStack>
             </Pressable>
           </CardComponent>
@@ -137,7 +137,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   rounded="100%"
                   p="5"
                 />
-                <FrontEndTypo.H5>Community Engagement</FrontEndTypo.H5>
+                <FrontEndTypo.H5>{t("COMMUNITY_ENGAGEMENT")}</FrontEndTypo.H5>
               </VStack>
             </Pressable>
           </CardComponent>
@@ -156,7 +156,7 @@ export default function CampTodayActivities({ footerLinks }) {
                   p="5"
                 />
                 <FrontEndTypo.H5>
-                  Open School/Government Activity
+                  {t("OPEN_SCHOOL_GOVERNMENT_ACTIVITY")}
                 </FrontEndTypo.H5>
               </VStack>
             </Pressable>
