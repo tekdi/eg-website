@@ -140,6 +140,7 @@ export default function ConsentForm() {
                   {document?.document_id ? (
                     <HStack>
                       {t("VIEW")}
+
                       <IconByName
                         isDisabled
                         name="FileTextLineIcon"
