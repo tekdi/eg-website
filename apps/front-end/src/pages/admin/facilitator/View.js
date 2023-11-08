@@ -9,6 +9,7 @@ import {
   ImageView,
   AdminTypo,
   tableCustomStyles,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -25,6 +26,47 @@ import { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
+import Admin from "routes/admin";
+
+const renderMessages = (condition) => {
+  switch (condition) {
+    case "other_details":
+      return (
+        <VStack>
+          <AdminTypo.H5 bold color="textGreyColor.550">
+            <ol>
+              <li>{t("AVAILABILITY")}</li>
+              <li> {t("DEVICE_OWNERSHIP")}</li>
+              <li>{t("TYPE_OF_DEVICE")}</li>
+            </ol>
+          </AdminTypo.H5>
+        </VStack>
+      );
+    case "address":
+      return (
+        <VStack>
+          <AdminTypo.H5 bold color="textGreyColor.550">
+            <ol>
+              <li>{t("ADDRESS")}</li>
+            </ol>
+          </AdminTypo.H5>
+        </VStack>
+      );
+    case "profile_photo":
+      return (
+        <VStack>
+          <AdminTypo.H5 bold color="textGreyColor.550">
+            <ol>
+              <li> {t("PROFILE_PHOTO")} </li>
+            </ol>
+          </AdminTypo.H5>
+        </VStack>
+      );
+    default:
+      return null;
+  }
+};
+
 const Experience = (obj) => {
   return (
     <VStack>
@@ -98,6 +140,8 @@ export default function FacilitatorView({ footerLinks }) {
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
   const [qualifications, setQualifications] = React.useState([]);
+  const [editAccessModalVisible, setEditAccessModalVisible] =
+    React.useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -231,6 +275,17 @@ export default function FacilitatorView({ footerLinks }) {
     }
   };
 
+  const confirmAccess = async () => {
+    const obj = editAccessModalVisible.toLowerCase();
+    console.log(obj);
+    const result = await benificiaryRegistoryService.createEditRequest({
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+      fields: [obj],
+    });
+    setEditAccessModalVisible(false);
+  };
+
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -317,6 +372,16 @@ export default function FacilitatorView({ footerLinks }) {
                   _icon={{ size: "190px" }}
                 />
               )}
+              <IconByName
+                bg="white"
+                height="40px"
+                color="textGreyColor.300"
+                name="PencilLineIcon"
+                _icon={{ size: "20px" }}
+                onPress={(e) => {
+                  setEditAccessModalVisible("profile_photo");
+                }}
+              ></IconByName>
             </HStack>
           </HStack>
 
@@ -569,10 +634,11 @@ export default function FacilitatorView({ footerLinks }) {
                   <AdminTypo.H5 bold flex="0.4" color="textGreyColor.550">
                     {t("ADDRESS")}:
                   </AdminTypo.H5>
+
                   <AdminTypo.H5
                     color="textGreyColor.800"
                     flex="0.4"
-                    pl="1"
+                    pl="10"
                     bold
                   >
                     {[
@@ -593,6 +659,15 @@ export default function FacilitatorView({ footerLinks }) {
                           .join(", ")
                       : "-"}
                   </AdminTypo.H5>
+                  <IconByName
+                    bg="white"
+                    color="textGreyColor.300"
+                    name="PencilLineIcon"
+                    _icon={{ size: "20px" }}
+                    onPress={(e) => {
+                      setEditAccessModalVisible("address");
+                    }}
+                  ></IconByName>
                 </HStack>
                 <HStack>
                   <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
@@ -738,11 +813,15 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H5 color="textGreyColor" bold>
                       {t("OTHER_DETAILS")}
                     </AdminTypo.H5>
-                    {/* <IconByName
-                      color="editIcon.300"
-                      size="22px"
-                      name="EditBoxLineIcon"
-                    /> */}
+                    <IconByName
+                      bg="white"
+                      color="textGreyColor.300"
+                      name="PencilLineIcon"
+                      _icon={{ size: "20px" }}
+                      onPress={(e) => {
+                        setEditAccessModalVisible("other_details");
+                      }}
+                    />
                   </HStack>
                   <HStack>
                     <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -902,6 +981,37 @@ export default function FacilitatorView({ footerLinks }) {
           </Modal.Content>
         </Modal>
       </HStack>
+      <Modal isOpen={editAccessModalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("GIVE_EDIT_ACCESS")}
+            </AdminTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <AdminTypo.H4 mb="4">
+              {" "}
+              {t("YOURE_GIVING_ACCESS_TO_EDIT")}
+            </AdminTypo.H4>
+            {renderMessages(editAccessModalVisible)}
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack justifyContent={"space-between"} width={"100%"}>
+              <AdminTypo.Secondarybutton
+                onPress={() => setEditAccessModalVisible(false)}
+              >
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton
+                // onPress={updateAadhaar}
+                onPress={confirmAccess}
+              >
+                {t("SAVE")}
+              </AdminTypo.PrimaryButton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
