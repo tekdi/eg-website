@@ -77,7 +77,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
-  const [filter, setFilter] = React.useState({ limit: 10 });
+  const [filter, setFilter] = React.useState({ limit: 10, page: 1 });
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [prerakData, setPrerakData] = React.useState();
   const [Height] = useWindowSize();
@@ -87,14 +87,19 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const toast = useToast();
 
   React.useEffect(async () => {
-    let newFilter = filter;
-    const result = await facilitatorRegistryService.getOne({ user_id });
+    const id = user_id;
+    const result = await facilitatorRegistryService.getOne({ id });
     setData(result);
+    setLoading(false);
+  }, []);
+
+  React.useEffect(async () => {
+    let newFilter = filter;
     const qData = await campService.getPrerakDetails(newFilter);
     setPrerakData(qData?.data);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
-  }, []);
+  }, [filter]);
 
   const reassignCampToPrerak = async (user_id) => {
     const obj = {
@@ -239,14 +244,6 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               )}
             </HStack>
           </HStack>
-          {/* <HStack mt="6" justifyContent={"space-between"}>
-              <AdminTypo.Secondarybutton
-                rightIcon={<IconByName name="MessageLineIcon" />}
-              >
-                {t("Add Comment For Prerak")}
-              </AdminTypo.Secondarybutton>
-              <Button rounded={"full"}>{t("Assign to Other Prerak")}</Button>
-            </HStack> */}
         </Box>
         <ScrollView
           maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
