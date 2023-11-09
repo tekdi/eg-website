@@ -61,8 +61,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
   };
 
-  console.log("form", formData);
-
   React.useEffect(async () => {
     setLoading(true);
     const result = await campService.getCampDetails({ id });
