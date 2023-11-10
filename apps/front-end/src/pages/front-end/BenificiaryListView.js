@@ -8,6 +8,7 @@ import {
   SelectStyle,
   ImageView,
   Loading,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable } from "native-base";
 import React from "react";
@@ -61,19 +62,25 @@ const List = ({ data }) => {
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
-          <VStack
+          <CardComponent
             key={item?.id}
-            bg="white"
-            p="2"
-            shadow="FooterShadow"
-            rounded="sm"
-            space="1"
+            _header={{ px: "0", pt: "0" }}
+            _body={{ px: "0", pb: "0" }}
+            _vstack={{ p: 0, space: 0, flex: 1 }}
+            title={
+              <VStack alignItems="center" flex={1} p="1">
+                <Clipboard text={item?.id}>
+                  <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
+                </Clipboard>
+              </VStack>
+            }
           >
             <Pressable
               onPress={async () => {
                 navigate(`/beneficiary/${item?.id}`);
               }}
               flex={1}
+              p="4"
             >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="Center" flex={[1, 2, 4]}>
@@ -134,13 +141,6 @@ const List = ({ data }) => {
                         {item?.last_name &&
                           item?.last_name !== "null" &&
                           ` ${item.last_name}`}
-                        <Clipboard text={item?.id}>
-                          <Chip
-                            textAlign="center"
-                            lineHeight="15px"
-                            label={item?.id}
-                          />
-                        </Clipboard>
                       </FrontEndTypo.H3>
                     )}
 
@@ -218,7 +218,7 @@ const List = ({ data }) => {
                 />
               )}
             </VStack>
-          </VStack>
+          </CardComponent>
         ))
       ) : (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>

@@ -242,48 +242,31 @@ export default function BenificiaryProfileView(props) {
 
               {benificiary?.program_beneficiaries?.status !==
               "enrolled_ip_verified" ? (
-                <>
-                  <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                    {benificiary?.first_name}
-                    {benificiary?.middle_name &&
-                      benificiary?.middle_name !== "null" &&
-                      ` ${benificiary.middle_name}`}
-                    {benificiary?.last_name &&
-                      benificiary?.last_name !== "null" &&
-                      ` ${benificiary?.last_name}`}
-                  </FrontEndTypo.H2>
-                  <Clipboard text={benificiary?.id}>
-                    <Chip
-                      textAlign="center"
-                      lineHeight="15px"
-                      label={benificiary?.id}
-                    />
-                  </Clipboard>
-                </>
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {benificiary?.first_name}
+                  {benificiary?.middle_name &&
+                    benificiary?.middle_name !== "null" &&
+                    ` ${benificiary.middle_name}`}
+                  {benificiary?.last_name &&
+                    benificiary?.last_name !== "null" &&
+                    ` ${benificiary?.last_name}`}
+                </FrontEndTypo.H2>
               ) : (
-                <>
-                  <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                    {benificiary?.program_beneficiaries?.enrollment_first_name}
-                    {benificiary?.program_beneficiaries
-                      ?.enrollment_middle_name &&
-                      benificiary?.program_beneficiaries
-                        ?.enrollment_middle_name !== "null" &&
-                      ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
-                    {benificiary?.program_beneficiaries?.enrollment_last_name &&
-                      benificiary?.program_beneficiaries
-                        ?.enrollment_last_name !== "null" &&
-                      ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
-                  </FrontEndTypo.H2>
-                  <Clipboard text={benificiary?.id}>
-                    <Chip
-                      textAlign="center"
-                      lineHeight="15px"
-                      label={benificiary?.id}
-                    />
-                  </Clipboard>
-                </>
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {benificiary?.program_beneficiaries?.enrollment_first_name}
+                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
+                    benificiary?.program_beneficiaries
+                      ?.enrollment_middle_name !== "null" &&
+                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
+                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
+                    benificiary?.program_beneficiaries?.enrollment_last_name !==
+                      "null" &&
+                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                </FrontEndTypo.H2>
               )}
-
+              <Clipboard text={benificiary?.id}>
+                <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
+              </Clipboard>
               <ChipStatus
                 status={benificiary?.program_beneficiaries?.status}
                 is_duplicate={benificiary?.is_duplicate}
