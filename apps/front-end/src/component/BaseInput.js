@@ -24,6 +24,7 @@ import {
   AdminTypo,
   chunk,
   CustomRadio,
+  useLocationData,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -121,6 +122,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
               hasRemove,
               disabled,
               readonly,
+              Location,
               schema,
               index,
             }) => {
@@ -444,6 +446,41 @@ export const ReadOnly = ({ value, onChange, required, schema }) => {
   );
 };
 
+export const Location = ({ value, onChange, required, schema }) => {
+  const { lat, long } = schema || {};
+  const { t } = useTranslation();
+  const [latData, longData, error] = useLocationData() || [];
+
+  const updateValue = () => {
+    onChange({ [lat]: latData, [long]: longData });
+  };
+
+  React.useEffect(() => {
+    if (!(value?.[lat] && value?.[long])) {
+      updateValue();
+    }
+  }, [value]);
+  return (
+    <HStack alignItems={"center"} space={2}>
+      <VStack space={2}>
+        {[lat, long]?.map((item, index) => {
+          return (
+            <HStack alignItems={"center"} space={2} key={item}>
+              <FrontEndTypo.H3 bold color="textMaroonColor.400">
+                {index ? t("LONGITUDE") : t("LATITUDE")}
+              </FrontEndTypo.H3>
+              <Text>:{value?.[item]}</Text>
+            </HStack>
+          );
+        })}
+
+        {t(error)}
+      </VStack>
+      <Button onPress={updateValue}>{t("UPDATE")}</Button>
+    </HStack>
+  );
+};
+
 // rjsf custom HFieldTemplate title layout Template use in orientation
 export const HFieldTemplate = ({
   id,
@@ -700,6 +737,7 @@ const widgets = {
   MobileNumber,
   MultiCheck,
   ReadOnly,
+  Location,
   StarRating,
   CheckUncheck,
 };
