@@ -268,7 +268,8 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format } = schema || {};
+  const { label, format, readOnly } = schema || {};
+
   const { t } = useTranslation();
   return (
     <FormControl gap="4">
@@ -305,6 +306,7 @@ export const RadioBtn = ({
               value={item?.value}
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
+              isDisabled={readOnly}
             >
               {t(item?.label)}
             </Radio>
@@ -351,7 +353,7 @@ export const Aadhaar = (props) => {
 // rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label, title } = schema || {};
+  const { label, title, readOnly } = schema || {};
   const { t } = useTranslation();
 
   return (
@@ -396,6 +398,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
       )}
       <Select
         key={value + items}
+        isDisabled={readOnly}
         selectedValue={value}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
