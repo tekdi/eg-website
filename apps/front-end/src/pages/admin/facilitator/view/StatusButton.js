@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, Modal, Radio, Input, VStack, Box } from "native-base";
+import { HStack, Modal, Radio, Input, VStack, Box, Alert } from "native-base";
 import {
   H1,
   facilitatorRegistryService,
@@ -9,6 +9,7 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
+import moment from "moment";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
@@ -43,7 +44,10 @@ export default function StatusButton({ data, setData }) {
   const [disabledBtn, setDisabledBtn] = React.useState([]);
   const [statusList, setStatusList] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [okycResponse, setOkycResponse] = React.useState();
+  const [okycResponse] = React.useState(
+    JSON.parse(data?.program_faciltators?.okyc_response)
+  );
+  const [alertModal, setAlertModal] = React.useState();
   const { t } = useTranslation();
 
   const update = async (status) => {
@@ -53,14 +57,27 @@ export default function StatusButton({ data, setData }) {
         status: status,
         status_reason: reason,
       });
+      setAlertModal(false);
       setShowModal();
       setData({ ...data, status: status, status_reason: reason });
     }
   };
-  React.useEffect(() => {
-    const parsedData = JSON.parse(data.program_faciltators.okyc_response);
-    setOkycResponse(parsedData);
-  }, [data]);
+
+  const updateAadhaarDetails = async () => {
+    const id = data?.id;
+    const dob =
+      okycResponse?.aadhaar_data?.dateOfBirth &&
+      moment(okycResponse?.aadhaar_data?.dateOfBirth, "D-M-Y").format("Y-M-D");
+    const gender = okycResponse?.aadhaar_data?.gender;
+    const Namedata = okycResponse?.aadhaar_data?.name?.split(" ");
+    const [first_name, middle_name, last_name] = Namedata || [];
+    const fullName = { first_name, middle_name, last_name };
+    const obj = { ...fullName, id, dob, gender };
+
+    const result = await facilitatorRegistryService.updateAadhaarOkycDetails(
+      obj
+    );
+  };
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
@@ -301,12 +318,48 @@ export default function StatusButton({ data, setData }) {
                 <HStack alignSelf="center" space="4">
                   <AdminTypo.PrimaryButton
                     onPress={() => {
-                      update(showModal?.status);
+                      setAlertModal(true);
                     }}
                   >
                     {t("CONFIRM")}
                   </AdminTypo.PrimaryButton>
                 </HStack>
+              </VStack>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      )}
+      {alertModal === true && (
+        <Modal
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
+          onClose={() => setAlertModal(false)}
+          size={"lg"}
+        >
+          <Modal.CloseButton />
+          <Modal.Content rounded="2xl">
+            <Modal.Body>
+              <VStack space="3">
+                <Alert status="warning" alignItems={"start"}>
+                  <HStack alignItems="center" space="2">
+                    <Alert.Icon size="lg" />
+
+                    <AdminTypo.H5 space="4" width={"100%"}>
+                      {t("CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL")}
+                    </AdminTypo.H5>
+                  </HStack>
+                </Alert>
+
+                <AdminTypo.PrimaryButton
+                  height="35px"
+                  onPress={(e) => {
+                    update(showModal?.status);
+                    updateAadhaarDetails();
+                  }}
+                >
+                  <AdminTypo.H4 bold color="white">
+                    {t("CONFIRM")}
+                  </AdminTypo.H4>
+                </AdminTypo.PrimaryButton>
               </VStack>
             </Modal.Body>
           </Modal.Content>
