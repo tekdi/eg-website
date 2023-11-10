@@ -14,6 +14,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Clipboard from "component/Clipboard";
+import Chip from "component/Chip";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = React.useState({});
@@ -102,17 +104,27 @@ const List = ({ data }) => {
                   >
                     {item?.program_beneficiaries?.status ===
                     "enrolled_ip_verified" ? (
-                      <FrontEndTypo.H3 bold color="textGreyColor.800">
-                        {item?.program_beneficiaries?.enrollment_first_name}
-                        {item?.program_beneficiaries?.enrollment_middle_name &&
-                          item?.program_beneficiaries
-                            ?.enrollment_middle_name !== "null" &&
-                          ` ${item?.program_beneficiaries?.enrollment_middle_name}`}
-                        {item?.program_beneficiaries?.enrollment_last_name &&
-                          item?.program_beneficiaries?.enrollment_last_name !==
-                            "null" &&
-                          ` ${item?.program_beneficiaries?.enrollment_last_name}`}
-                      </FrontEndTypo.H3>
+                      <>
+                        <FrontEndTypo.H3 bold color="textGreyColor.800">
+                          {item?.program_beneficiaries?.enrollment_first_name}
+                          {item?.program_beneficiaries
+                            ?.enrollment_middle_name &&
+                            item?.program_beneficiaries
+                              ?.enrollment_middle_name !== "null" &&
+                            ` ${item?.program_beneficiaries?.enrollment_middle_name}`}
+                          {item?.program_beneficiaries?.enrollment_last_name &&
+                            item?.program_beneficiaries
+                              ?.enrollment_last_name !== "null" &&
+                            ` ${item?.program_beneficiaries?.enrollment_last_name}`}
+                          <Clipboard text={item?.program_beneficiaries?.id}>
+                            <Chip
+                              textAlign="center"
+                              lineHeight="15px"
+                              label={item?.id}
+                            />
+                          </Clipboard>
+                        </FrontEndTypo.H3>
+                      </>
                     ) : (
                       <FrontEndTypo.H3 bold color="textGreyColor.800">
                         {item?.first_name}
@@ -122,8 +134,16 @@ const List = ({ data }) => {
                         {item?.last_name &&
                           item?.last_name !== "null" &&
                           ` ${item.last_name}`}
+                        <Clipboard text={item?.id}>
+                          <Chip
+                            textAlign="center"
+                            lineHeight="15px"
+                            label={item?.id}
+                          />
+                        </Clipboard>
                       </FrontEndTypo.H3>
                     )}
+
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
                     </FrontEndTypo.H5>

@@ -31,6 +31,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import Clipboard from "component/Clipboard";
 
 const columns = (t) => [
   {
@@ -393,6 +394,14 @@ export default function AgAdminProfile({ footerLinks }) {
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
                 : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
             </AdminTypo.H1>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
+            <Clipboard text={data?.id}>
+              <Chip textAlign="center" lineHeight="15px" label={data?.id} />
+            </Clipboard>
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">

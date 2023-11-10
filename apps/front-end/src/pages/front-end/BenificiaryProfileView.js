@@ -27,6 +27,8 @@ import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
+import Clipboard from "component/Clipboard";
+import Chip from "component/Chip";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -240,27 +242,46 @@ export default function BenificiaryProfileView(props) {
 
               {benificiary?.program_beneficiaries?.status !==
               "enrolled_ip_verified" ? (
-                <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.first_name}
-                  {benificiary?.middle_name &&
-                    benificiary?.middle_name !== "null" &&
-                    ` ${benificiary.middle_name}`}
-                  {benificiary?.last_name &&
-                    benificiary?.last_name !== "null" &&
-                    ` ${benificiary?.last_name}`}
-                </FrontEndTypo.H2>
+                <>
+                  <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                    {benificiary?.first_name}
+                    {benificiary?.middle_name &&
+                      benificiary?.middle_name !== "null" &&
+                      ` ${benificiary.middle_name}`}
+                    {benificiary?.last_name &&
+                      benificiary?.last_name !== "null" &&
+                      ` ${benificiary?.last_name}`}
+                  </FrontEndTypo.H2>
+                  <Clipboard text={benificiary?.id}>
+                    <Chip
+                      textAlign="center"
+                      lineHeight="15px"
+                      label={benificiary?.id}
+                    />
+                  </Clipboard>
+                </>
               ) : (
-                <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.program_beneficiaries?.enrollment_first_name}
-                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
-                    benificiary?.program_beneficiaries
-                      ?.enrollment_middle_name !== "null" &&
-                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
-                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
-                    benificiary?.program_beneficiaries?.enrollment_last_name !==
-                      "null" &&
-                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
-                </FrontEndTypo.H2>
+                <>
+                  <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                    {benificiary?.program_beneficiaries?.enrollment_first_name}
+                    {benificiary?.program_beneficiaries
+                      ?.enrollment_middle_name &&
+                      benificiary?.program_beneficiaries
+                        ?.enrollment_middle_name !== "null" &&
+                      ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
+                    {benificiary?.program_beneficiaries?.enrollment_last_name &&
+                      benificiary?.program_beneficiaries
+                        ?.enrollment_last_name !== "null" &&
+                      ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                  </FrontEndTypo.H2>
+                  <Clipboard text={benificiary?.id}>
+                    <Chip
+                      textAlign="center"
+                      lineHeight="15px"
+                      label={benificiary?.id}
+                    />
+                  </Clipboard>
+                </>
               )}
 
               <ChipStatus
