@@ -21,11 +21,10 @@ import {
   Input,
   useToast,
 } from "native-base";
-import { ChipStatus } from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
-import Chip from "component/Chip";
 import Clipboard from "component/Clipboard";
 const Experience = (obj) => {
   return (
