@@ -241,7 +241,7 @@ export default function View({ footerLinks }) {
               navigate(`/admin/beneficiary/${row?.id}`);
             }}
           >
-            {t("VIEW")}
+            {t("VIEW_PROFILE")}
           </Button>
           <Button variant="outline">
             <Menu
@@ -254,7 +254,7 @@ export default function View({ footerLinks }) {
                   navigate(`/admin/beneficiary/${row?.id}`);
                 }}
               >
-                {t("VIEW")}
+                {t("VIEW_PROFILE")}
               </Menu.Item>
               <Menu.Item
                 onPress={() => {
