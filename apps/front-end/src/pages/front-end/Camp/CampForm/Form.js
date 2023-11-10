@@ -484,15 +484,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       loading={loading}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
         {page && page !== "" && (
           <Form
