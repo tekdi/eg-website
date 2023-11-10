@@ -71,7 +71,10 @@ export default function StatusButton({ data, setData }) {
     const gender = okycResponse?.aadhaar_data?.gender;
     const Namedata = okycResponse?.aadhaar_data?.name?.split(" ");
     const [first_name, middle_name, last_name] = Namedata || [];
-    const fullName = { first_name, middle_name, last_name };
+    let fullName = { first_name, middle_name, last_name };
+    if (!last_name || last_name === "") {
+      fullName = { first_name, last_name: middle_name };
+    }
     const obj = { ...fullName, id, dob, gender };
 
     await facilitatorRegistryService.updateAadhaarOkycDetails(obj);
@@ -348,7 +351,6 @@ export default function StatusButton({ data, setData }) {
                 </Alert>
 
                 <AdminTypo.PrimaryButton
-                  height="35px"
                   onPress={(e) => {
                     update(showModal?.status);
                     updateAadhaarDetails();
