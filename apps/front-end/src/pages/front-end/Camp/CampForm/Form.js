@@ -230,20 +230,31 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, [step, formData]);
 
   const formSubmitUpdate = async (data, overide) => {
+    setLoading(true);
     if (id) {
-      setLoading(true);
-      const result = await campService.updateCampDetails({
-        ...data,
-        edit_page_type: step,
-        ...(overide || {}),
-        id: id,
-        lat: formData?.location.lat,
-        long: formData?.location.long,
-      });
-      setLoading(false);
+      let result;
+      if (step === "edit_camp_location") {
+        result = await campService.updateCampDetails({
+          ...data,
+          edit_page_type: step,
+          ...(overide || {}),
+          id: id,
+          lat: formData?.location.lat,
+          long: formData?.location.long,
+        });
+      } else {
+        result = await campService.updateCampDetails({
+          ...data,
+          edit_page_type: step,
+          ...(overide || {}),
+          id: id,
+        });
+      }
       return result;
     }
+    setLoading(false);
   };
+
 
   const customValidate = (data, errors, c, asd) => {
     if (step === "property_details") {
