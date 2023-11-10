@@ -121,13 +121,6 @@ const List = ({ data }) => {
                           item?.program_beneficiaries?.enrollment_last_name !==
                             "null" &&
                           ` ${item?.program_beneficiaries?.enrollment_last_name}`}
-                        <Clipboard text={item?.program_beneficiaries?.id}>
-                          <Chip
-                            textAlign="center"
-                            lineHeight="15px"
-                            label={item?.id}
-                          />
-                        </Clipboard>
                       </FrontEndTypo.H3>
                     ) : (
                       <FrontEndTypo.H3 bold color="textGreyColor.800">
