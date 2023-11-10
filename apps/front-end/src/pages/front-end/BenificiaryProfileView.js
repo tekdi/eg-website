@@ -28,7 +28,6 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard";
-import Chip from "component/Chip";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
