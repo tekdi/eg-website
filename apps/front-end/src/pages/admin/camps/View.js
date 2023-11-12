@@ -241,7 +241,7 @@ export default function View({ footerLinks }) {
               navigate(`/admin/beneficiary/${row?.id}`);
             }}
           >
-            {t("VIEW")}
+            {t("VIEW_PROFILE")}
           </Button>
           <Button variant="outline">
             <Menu
@@ -254,7 +254,7 @@ export default function View({ footerLinks }) {
                   navigate(`/admin/beneficiary/${row?.id}`);
                 }}
               >
-                {t("VIEW")}
+                {t("VIEW_PROFILE")}
               </Menu.Item>
               <Menu.Item
                 onPress={() => {
@@ -338,6 +338,8 @@ export default function View({ footerLinks }) {
                       _vstack={{ py: 0 }}
                       _image={{ size: 100 }}
                       title={
+                        <HStack>
+
                         <VStack>
                           <AdminTypo.H4 color="textGreyColor.900" bold>
                             {[facilitator?.first_name, facilitator?.last_name]
@@ -348,6 +350,16 @@ export default function View({ footerLinks }) {
                             {facilitator?.mobile}
                           </AdminTypo.H5>
                         </VStack>
+                        <IconByName
+                              name="EditBoxLineIcon"
+                              color="iconColor.100"
+                              onPress={(e) =>
+                                navigate(
+                                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                                )
+                              }
+                            />
+                              </HStack>
                       }
                       subTitle={
                         <AdminTypo.H6 color="textGreyColor.800">
