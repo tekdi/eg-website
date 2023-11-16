@@ -581,9 +581,7 @@ export default function FacilitatorView({ footerLinks }) {
                   right: 10,
                 }}
               >
-                {isEditSuccess
-                  ? "{t('CLOSED_FOR_EDIT')}"
-                  : "{t('OPEN_FOR_EDIT')}"}
+                {isEditSuccess ? t("CLOSED_FOR_EDIT") : t("OPEN_FOR_EDIT")}
               </AdminTypo.Secondarybutton>
             )}
             <HStack justifyContent="space-between">
