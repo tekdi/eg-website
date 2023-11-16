@@ -122,12 +122,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     getEditAccess();
   }, [qualifications]);
 
-  // React.useEffect(() => {
-  //   if (facilitator?.aadhar_verified !== "okyc_ip_verified") {
-  //     setSchema(AccessControl(schema, fields));
-  //   }
-  // }, [formData]);
-
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
     if (data && onClick) {
