@@ -5,13 +5,18 @@ const PoAdminHome = React.lazy(() => import("pages/admin/PoAdmin/PoAdminHome"));
 const PoDuplicateView = React.lazy(() =>
   import("pages/admin/PoAdmin/PoDuplicateView")
 );
+const FileView = React.lazy(() => import("pages/FileView"));
 
 export default [
-  { path: "/", component: PoAdminHome },
   { path: "/poadmin", component: PoAdminHome },
-  { path: "*", component: NotFound },
+  {
+    path: "/file/:id/view",
+    component: FileView,
+  },
   {
     path: "/poadmin/learners/duplicates/:aadhaarNo",
     component: PoDuplicateView,
   },
+  { path: "/", component: PoAdminHome },
+  { path: "*", component: NotFound },
 ];

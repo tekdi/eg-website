@@ -276,7 +276,7 @@ export default function AgformUpdate({ userTokenInfo }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         name: t("OTHER_DETAILS"),
         lang,
         setLang,

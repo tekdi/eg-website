@@ -21,6 +21,7 @@ import * as uploadRegistryService from './services/uploadRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
 import * as campService from './services/campService'
+import * as attendanceService from './services/attendanceService'
 import * as ConsentService from './services/ConsentService'
 import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
@@ -42,7 +43,9 @@ import CustomRadio from './components/frontend_component/CustomRadio'
 import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
-import GeoLocation from './components/frontend_component/GeoLocation'
+import GeoLocation, {
+  useLocationData
+} from './components/frontend_component/GeoLocation'
 
 // export
 export {
@@ -78,6 +81,7 @@ export {
   enumRegistryService,
   benificiaryRegistoryService,
   campService,
+  attendanceService,
   ConsentService,
   CheatSheet,
   CustomOTPBox,
@@ -92,7 +96,8 @@ export {
   CheckUncheck,
   CustomRadio,
   UserCard,
-  GeoLocation
+  GeoLocation,
+  useLocationData
 }
 
 export * from './services/RestClient'

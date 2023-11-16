@@ -21,10 +21,11 @@ import {
   Input,
   useToast,
 } from "native-base";
-import { ChipStatus } from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
+import Clipboard from "component/Clipboard";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -253,6 +254,14 @@ export default function FacilitatorView({ footerLinks }) {
             >
               {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
+            <Clipboard text={data?.id}>
+              <Chip textAlign="center" lineHeight="15px" label={data?.id} />
+            </Clipboard>
           </HStack>
           <HStack justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">

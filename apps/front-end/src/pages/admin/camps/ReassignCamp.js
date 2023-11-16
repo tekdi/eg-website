@@ -8,14 +8,25 @@ import {
   tableCustomStyles,
   campService,
   useWindowSize,
+  setQueryParameters,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { Box, HStack, Modal, VStack, ScrollView, useToast } from "native-base";
+import {
+  Box,
+  HStack,
+  Modal,
+  VStack,
+  ScrollView,
+  useToast,
+  Alert,
+} from "native-base";
 import { CampChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import { Filter } from "./CampHome";
 
 const columns = (navigate, t, setModal) => [
   {
@@ -72,7 +83,7 @@ const columns = (navigate, t, setModal) => [
 ];
 
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
-  const { id } = useParams();
+  const { id, user_id } = useParams();
   const [data, setData] = React.useState();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
@@ -88,30 +99,39 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
   React.useEffect(async () => {
     let newFilter = filter;
-    const result = await benificiaryRegistoryService.getOne(id);
+    const result = await benificiaryRegistoryService.getOne(user_id);
     setData(result?.result);
     const qData = await campService.getCampList(newFilter);
-    setCampData(qData?.camps);
+    const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
+    setCampData(filtered);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
-  }, []);
+  }, [filter]);
 
   const reassignCamp = async () => {
     const obj = {
-      learner_id: parseInt(id),
-      camp_id: modal?.id,
+      learner_id: parseInt(user_id),
+      camp_id: id,
     };
     const result = await campService.reassignCamp(obj);
-    if (result) {
+    if (result?.status !== 200) {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t(result?.message)}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    } else {
       setModal("");
       navigate(-1);
-    } else {
-      toast.show({
-        description: "Hello world",
-      });
     }
   };
-
   return (
     <Layout
       _sidebar={footerLinks}
@@ -210,7 +230,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 </AdminTypo.H6>
               </HStack>
             </VStack>
-            <HStack flex="0.5" mt={"-5"} justifyContent={"space-between"}>
+            <HStack flex="0.5" justifyContent={"center"}>
               {data?.profile_photo_1?.id ? (
                 <ImageView
                   source={{
@@ -230,42 +250,47 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               )}
             </HStack>
           </HStack>
-          {/* <HStack mt="6" justifyContent={"space-between"}>
-              <AdminTypo.Secondarybutton
-                rightIcon={<IconByName name="MessageLineIcon" />}
-              >
-                {t("Add Comment For Prerak")}
-              </AdminTypo.Secondarybutton>
-              <Button rounded={"full"}>{t("Assign to Other Prerak")}</Button>
-            </HStack> */}
         </Box>
-        <ScrollView
-          maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
-        >
-          <DataTable
-            filter={filter}
-            setFilter={(e) => {
-              setFilter(e);
-              setQueryParameters(e);
-            }}
-            customStyles={tableCustomStyles}
-            columns={[...columns(navigate, t, setModal)]}
-            persistTableHead
-            facilitator={userTokenInfo?.authUser}
-            pagination
-            paginationTotalRows={paginationTotalRows}
-            paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-            defaultSortAsc
-            paginationServer
-            data={campData}
-            onChangeRowsPerPage={(e) => {
-              setFilter({ ...filter, limit: e?.toString() });
-            }}
-            onChangePage={(e) => {
-              setFilter({ ...filter, page: e?.toString() });
-            }}
-          />
-        </ScrollView>
+        <HStack justifyContent={"center"}>
+          <Alert status="warning" mb="3" mt="4">
+            <HStack space="2" color>
+              <Alert.Icon />
+              <BodyMedium>{t("CAMP_REASSIGN_WARNING_MESSAGE")}</BodyMedium>
+            </HStack>
+          </Alert>
+        </HStack>
+        <HStack>
+          <Filter {...{ filter, setFilter, t }} />
+          <ScrollView
+            maxH={
+              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+            }
+          >
+            <DataTable
+              filter={filter}
+              setFilter={(e) => {
+                setFilter(e);
+                setQueryParameters(e);
+              }}
+              customStyles={tableCustomStyles}
+              columns={[...columns(navigate, t, setModal)]}
+              persistTableHead
+              facilitator={userTokenInfo?.authUser}
+              pagination
+              paginationTotalRows={paginationTotalRows}
+              paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+              defaultSortAsc
+              paginationServer
+              data={campData}
+              onChangeRowsPerPage={(e) => {
+                setFilter({ ...filter, limit: e?.toString() });
+              }}
+              onChangePage={(e) => {
+                setFilter({ ...filter, page: e?.toString() });
+              }}
+            />
+          </ScrollView>
+        </HStack>
       </VStack>
 
       <Modal isOpen={modal} size="lg">
@@ -291,6 +316,12 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 {t("ADDRESS")}:
                 {`${modal?.properties?.district}, ${modal?.properties?.block}`}
               </AdminTypo.H4>
+              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{t("REASSIGN_MSG")}</BodyMedium>
+                </HStack>
+              </Alert>
             </VStack>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-between"}>
