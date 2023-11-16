@@ -61,6 +61,34 @@ export default function FacilitatorBasicDetails({
     );
   };
 
+  const isNameEdit = () => {
+    return !!(
+      facilitator?.status !== "enrolled_ip_verified" ||
+      (facilitator?.status === "enrolled_ip_verified" &&
+        (fields.includes("first_name") ||
+          fields.includes("middle_name") ||
+          fields.includes("last_name") ||
+          fields.includes("dob")))
+    );
+  };
+
+  const isContactEdit = () => {
+    return !!(
+      facilitator?.status !== "enrolled_ip_verified" ||
+      (facilitator?.status === "enrolled_ip_verified" &&
+        (fields.includes("device_ownership") || fields.includes("device_type")))
+    );
+  };
+  const isAddressEdit = () => {
+    return !!(
+      facilitator?.status !== "enrolled_ip_verified" ||
+      (facilitator?.status === "enrolled_ip_verified" &&
+        (fields.includes("district") || fields.includes("block")))
+    );
+  };
+
+  console.log("fields", fields);
+
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
@@ -97,14 +125,16 @@ export default function FacilitatorBasicDetails({
                   } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
                 </FrontEndTypo.H1>
 
-                <IconByName
-                  name="PencilLineIcon"
-                  color="iconColor.200"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/profile/edit/basic_details`);
-                  }}
-                />
+                {isNameEdit() && (
+                  <IconByName
+                    name="PencilLineIcon"
+                    color="iconColor.200"
+                    _icon={{ size: "20" }}
+                    onPress={(e) => {
+                      navigate(`/profile/edit/basic_details`);
+                    }}
+                  />
+                )}
               </HStack>
               <HStack alignItems="Center">
                 <IconByName name="Cake2LineIcon" color="iconColor.300" />
@@ -128,7 +158,11 @@ export default function FacilitatorBasicDetails({
               ]}
               item={facilitator}
               arr={["mobile", "alternative_mobile_number", "email_id"]}
-              onEdit={(e) => navigate(`/profile/edit/contact_details`)}
+              onEdit={
+                isContactEdit()
+                  ? (e) => navigate(`/profile/edit/contact_details`)
+                  : false
+              }
             />
             <CardComponent
               isHideProgressBar={true}
@@ -148,7 +182,11 @@ export default function FacilitatorBasicDetails({
                   .join(", "),
               }}
               arr={["home"]}
-              onEdit={(e) => navigate(`/profile/edit/address_details`)}
+              onEdit={
+                isAddressEdit()
+                  ? (e) => navigate(`/profile/edit/address_details`)
+                  : false
+              }
             />
             <CardComponent
               _vstack={{ space: 0 }}
