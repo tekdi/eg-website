@@ -1,22 +1,12 @@
 import React from "react";
+import { HStack, VStack, Alert } from "native-base";
 import {
-  HStack,
-  VStack,
-  Box,
-  Progress,
-  Divider,
-  Center,
-  Alert,
-} from "native-base";
-import {
-  arrList,
   FrontEndTypo,
   IconByName,
   facilitatorRegistryService,
   t,
   Layout,
   enumRegistryService,
-  GetEnumValue,
   BodyMedium,
   CardComponent,
 } from "@shiksha/common-lib";
@@ -28,22 +18,47 @@ export default function FacilitatorBasicDetails({
   userTokenInfo,
   footerLinks,
 }) {
-  const [facilitator, setfacilitator] = React.useState();
+  const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
-  const arrPersonal = {
-    ...facilitator?.extended_users,
-    gender: facilitator?.gender,
-  };
+
   const [enumOptions, setEnumOptions] = React.useState({});
+  const [fields, setFields] = React.useState([]);
 
   React.useEffect(() => {
     facilitatorDetails();
+    getEditRequestFields();
   }, []);
 
   const facilitatorDetails = async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     const result = await facilitatorRegistryService.getOne({ id });
-    setfacilitator(result);
+
+    setFacilitator(result);
+  };
+
+  const getEditRequestFields = async () => {
+    const { id } = userTokenInfo?.authUser || {};
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.GetEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
+  };
+
+  const isProfileEdit = () => {
+    return !!(
+      facilitator?.status !== "enrolled_ip_verified" ||
+      (facilitator?.status === "enrolled_ip_verified" &&
+        (fields.includes("profile_photo_1") ||
+          fields.includes("profile_photo_2") ||
+          fields.includes("profile_photo_3")))
+    );
   };
 
   React.useEffect(async () => {
@@ -72,6 +87,7 @@ export default function FacilitatorBasicDetails({
               profile_photo_1={facilitator?.profile_photo_1}
               profile_photo_2={facilitator?.profile_photo_2}
               profile_photo_3={facilitator?.profile_photo_3}
+              isProfileEdit={isProfileEdit()}
             />
             <VStack>
               <HStack justifyContent="space-between" alignItems="Center">
@@ -80,6 +96,7 @@ export default function FacilitatorBasicDetails({
                     facilitator?.middle_name ? facilitator?.middle_name : ""
                   } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
                 </FrontEndTypo.H1>
+
                 <IconByName
                   name="PencilLineIcon"
                   color="iconColor.200"
@@ -92,8 +109,7 @@ export default function FacilitatorBasicDetails({
               <HStack alignItems="Center">
                 <IconByName name="Cake2LineIcon" color="iconColor.300" />
                 <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                  {facilitator &&
-                  facilitator.dob &&
+                  {facilitator?.dob &&
                   moment(facilitator.dob, "YYYY-MM-DD", true).isValid()
                     ? moment(facilitator?.dob).format("DD/MM/YYYY")
                     : "-"}
@@ -163,7 +179,9 @@ export default function FacilitatorBasicDetails({
               label={["Availability", "Designation", "Contact"]}
               item={facilitator}
               arr={["name"]}
-              onEdit={(e) => navigate(`/profile/edit/work_availability_details`)}
+              onEdit={(e) =>
+                navigate(`/profile/edit/work_availability_details`)
+              }
             />
           </VStack>
         </VStack>

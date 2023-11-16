@@ -49,22 +49,26 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = React.useState();
   const [otpButton, setOtpButton] = React.useState(false);
   const [mobileConditon, setMobileConditon] = React.useState(false);
-  const [fields, setfields] = React.useState([]);
+  const [fields, setFields] = React.useState([]);
 
   const getEditAccess = async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { id } = userTokenInfo?.authUser || {};
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
     const result = await facilitatorRegistryService.GetEditRequests(obj);
-    const field = JSON.parse(result?.data[0]?.fields);
-    setfields(field);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   };
 
   React.useEffect(() => {
     const getData = async () => {
-      const { id } = userTokenInfo?.authUser;
+      const { id } = userTokenInfo?.authUser || {};
       if (id) {
         const result = await facilitatorRegistryService.getOne({ id });
         setFacilitator(result);
