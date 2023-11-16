@@ -19,7 +19,7 @@ export default function BenificiaryBasicDetails() {
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
-
+  const [requestData, setRequestData] = React.useState([]);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -38,10 +38,33 @@ export default function BenificiaryBasicDetails() {
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await benificiaryRegistoryService.getEditRequest(obj);
+    if (result?.data.length > 0) {
+      const fieldData = JSON.parse(result?.data[0]?.fields);
+      setRequestData(fieldData);
+    }
   }, [benificiary]);
 
   const edit = `/beneficiary/${benificiary?.id}/upload/1`;
 
+  const isFamilyDetailsEdit = () => {
+    return !!(
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
+      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+        requestData.includes("family_details"))
+    );
+  };
+  const isPersonalDetailsEdit = () => {
+    return !!(
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
+      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+        requestData.includes("personal_details"))
+    );
+  };
   return (
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
@@ -210,10 +233,7 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("FAMILY_DETAILS")}
               </FrontEndTypo.H3>
-              {benificiary?.program_beneficiaries?.status ===
-              "enrolled_ip_verified" ? (
-                <></>
-              ) : (
+              {isFamilyDetailsEdit() && (
                 <IconByName
                   name="EditBoxLineIcon"
                   color="iconColor.100"
@@ -312,14 +332,17 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("PERSONAL_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/personal-details`);
-                }}
-              />
+
+              {isPersonalDetailsEdit() && (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/personal-details`);
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress

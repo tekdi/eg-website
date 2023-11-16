@@ -16,8 +16,14 @@ export default function BenificiaryAddress() {
   const [userId, setUserId] = React.useState(params?.id);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [requestData, setRequestData] = React.useState([]);
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getEditRequest();
+    if (result?.data.length > 0) {
+      const fieldData = JSON.parse(result?.data[0]?.fields);
+      setRequestData(fieldData);
+    }
     benificiaryDetails();
   }, []);
 
@@ -29,7 +35,13 @@ export default function BenificiaryAddress() {
     const result = await benificiaryRegistoryService.getOne(userId);
     setbenificiary(result?.result);
   };
-
+  const isAddressDetailsEdit = () => {
+    return !!(
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
+      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+        requestData.includes("address_details"))
+    );
+  };
   return (
     <Layout _appBar={{ name: t("ADDRESS_DETAILS"), onPressBackButton }}>
       <VStack bg="bgGreyColor.200">
@@ -51,14 +63,16 @@ export default function BenificiaryAddress() {
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${userId}/address`);
-                }}
-              />
+              {isAddressDetailsEdit() && (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  _icon={{ size: "20" }}
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${userId}/address`);
+                  }}
+                />
+              )}
             </HStack>
             <Box paddingTop="2">
               <Progress

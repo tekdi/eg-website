@@ -49,6 +49,7 @@ export default function BenificiaryProfileView(props) {
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
   const navigate = useNavigate();
+  const [requestData, setRequestData] = React.useState();
 
   React.useEffect(() => {
     enumAPicall();
@@ -199,6 +200,13 @@ export default function BenificiaryProfileView(props) {
         return <React.Fragment></React.Fragment>;
     }
   }
+  React.useEffect(async () => {
+    const data = await benificiaryRegistoryService.getEditRequest();
+    if (data?.data.length > 0) {
+      const fieldData = JSON.parse(data?.data[0]?.fields);
+      setRequestData(fieldData);
+    }
+  }, []);
 
   return (
     <Layout

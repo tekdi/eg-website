@@ -10,6 +10,7 @@ import {
   FrontEndTypo,
   tableCustomStyles,
   CustomRadio,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -102,6 +103,8 @@ export default function AgAdminProfile({ footerLinks }) {
     React.useState();
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
     React.useState();
+  const [getRequestData, setGetRequestData] = React.useState();
+
   const { t } = useTranslation();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
@@ -223,9 +226,13 @@ export default function AgAdminProfile({ footerLinks }) {
     setBenificiaryRejectReasons(
       enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
     );
+    const obj = { edit_req_for_context: "users", edit_req_for_context_id: id };
+    const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
+    if (resule?.data[0]) {
+      setGetRequestData(resule?.data[0]);
+    }
     setLoading(false);
   }, []);
-
   const handleAadhaarUpdate = (event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");
@@ -369,15 +376,25 @@ export default function AgAdminProfile({ footerLinks }) {
         return null;
     }
   }
-  const confirmAccess = async () => {
-    const obj = editAccessModalVisible.toLowerCase();
-    const result = await benificiaryRegistoryService.createEditRequest({
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-      fields: [obj],
-    });
-    setEditAccessModalVisible(false);
+  const giveAccess = async () => {
+    if (getRequestData) {
+      const result = await facilitatorRegistryService.updateRequestData({
+        status: "approved",
+        fields: [editAccessModalVisible],
+        requestId: getRequestData?.id,
+      });
+      setEditAccessModalVisible(false);
+    } else {
+      const result = await benificiaryRegistoryService.createEditRequest({
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+        fields: [editAccessModalVisible],
+        edit_req_by: data?.program_beneficiaries?.facilitator_id,
+      });
+      setEditAccessModalVisible(false);
+    }
   };
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -632,7 +649,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           color="textMaroonColor.400"
                           name="PencilLineIcon"
                           onPress={(e) => {
-                            setEditAccessModalVisible("FAMILY_DETAILS");
+                            setEditAccessModalVisible("family_details");
                           }}
                         />
                       </HStack>
@@ -687,7 +704,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     color="textMaroonColor.400"
                     name="PencilLineIcon"
                     onPress={(e) => {
-                      setEditAccessModalVisible("PERSONAL_DETAILS");
+                      setEditAccessModalVisible("personal_details");
                     }}
                   />
                 </HStack>
@@ -740,7 +757,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     color="textMaroonColor.400"
                     name="PencilLineIcon"
                     onPress={(e) => {
-                      setEditAccessModalVisible("EDUCATION_DETAILS");
+                      setEditAccessModalVisible("educational_details");
                     }}
                   />
                 </HStack>
@@ -930,7 +947,7 @@ export default function AgAdminProfile({ footerLinks }) {
                             color="textMaroonColor.400"
                             name="PencilLineIcon"
                             onPress={(e) => {
-                              setEditAccessModalVisible("ADDRESS_DETAILS");
+                              setEditAccessModalVisible("address_details");
                             }}
                           />
                         </HStack>
@@ -1528,7 +1545,7 @@ export default function AgAdminProfile({ footerLinks }) {
               >
                 {t("CANCEL")}
               </AdminTypo.Secondarybutton>
-              <AdminTypo.PrimaryButton onPress={confirmAccess}>
+              <AdminTypo.PrimaryButton onPress={giveAccess}>
                 {t("CONFIRM")}
               </AdminTypo.PrimaryButton>
             </HStack>
@@ -1829,7 +1846,7 @@ const DataOfFamilyDetails = ({ editAccessModalVisible, t }) => {
       <AdminTypo.H7 bold color="textGreyColor.550">
         {(() => {
           switch (editAccessModalVisible) {
-            case "FAMILY_DETAILS":
+            case "family_details":
               return (
                 <ol type="1">
                   <li>{t("FATHER_NAME")}</li>
@@ -1837,14 +1854,14 @@ const DataOfFamilyDetails = ({ editAccessModalVisible, t }) => {
                 </ol>
               );
 
-            case "PERSONAL_DETAILS":
+            case "personal_details":
               return (
                 <ol type="1">
                   <li>{t("SOCIAL_CATEGORY")}</li>
                   <li>{t("MARITAL_STATUS")}</li>
                 </ol>
               );
-            case "EDUCATION_DETAILS":
+            case "educational_details":
               return (
                 <ol type="1">
                   <li>{t("TYPE_OF_LEARNER")}</li>
@@ -1855,7 +1872,7 @@ const DataOfFamilyDetails = ({ editAccessModalVisible, t }) => {
                   <li>{t("LEARNING_LEVEL_OF_LEARNER")}</li>
                 </ol>
               );
-            case "ADDRESS_DETAILS":
+            case "address_details":
               return t("ADDRESS");
 
             default:
