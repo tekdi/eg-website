@@ -87,7 +87,6 @@ export default function FacilitatorBasicDetails({
     );
   };
 
-  console.log("fields", fields);
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
