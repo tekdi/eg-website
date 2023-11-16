@@ -124,7 +124,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
-  const [CampFilterStatus, setCampFilterStatus] = useState([]);
+  const [campFilterStatus, setCampFilterStatus] = useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
@@ -213,7 +213,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
         <Box flex={[5, 5, 4]}>
           <ScrollView>
             <HStack pb="2">
-              {CampFilterStatus?.map((item) => {
+              {campFilterStatus?.map((item) => {
                 return (
                   <AdminTypo.H5
                     key={"table"}
@@ -278,7 +278,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 }
 
 export const Filter = ({ filter, setFilter }) => {
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getDistrictsAll, setGetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
   const [facilitator, setFacilitator] = React.useState([]);
@@ -343,7 +343,7 @@ export const Filter = ({ filter, setFilter }) => {
     const getDistricts = await geolocationRegistryService.getDistricts({
       name,
     });
-    setgetDistrictsAll(getDistricts?.districts);
+    setGetDistrictsAll(getDistricts?.districts);
   }, []);
 
   React.useEffect(async () => {
