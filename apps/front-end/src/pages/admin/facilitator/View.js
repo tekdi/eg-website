@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -9,6 +9,7 @@ import {
   ImageView,
   AdminTypo,
   tableCustomStyles,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -20,6 +21,7 @@ import {
   FormControl,
   Input,
   useToast,
+  Checkbox,
 } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
@@ -99,13 +101,57 @@ export default function FacilitatorView({ footerLinks }) {
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
   const [qualifications, setQualifications] = React.useState([]);
+  const [editModal, setEditModal] = React.useState(false);
+  const [editfields, seteditfields] = React.useState([]);
 
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+  const [selectedFields, setSelectedFields] = useState([]);
+  const [isSaveButtonEnabled, setSaveButtonEnabled] = useState(false);
+  const [isEditSuccess, setIsEditSuccess] = useState(false);
+
+  const handleCheckboxChange = (value) => {
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(value)) {
+        return prevSelected.filter((checkbox) => checkbox !== value);
+      } else {
+        return [...prevSelected, value];
+      }
+    });
+
+    // Update the state to enable the Save button if at least one checkbox is checked
+    setSaveButtonEnabled(true);
+  };
+
+  const editRequest = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+      selectedFields: selectedCheckboxes,
+    };
+
+    try {
+      const result = await benificiaryRegistoryService.editFields(obj);
+      if (result.success) {
+        setIsEditSuccess(true);
+        setEditModal(false);
+        setSelectedCheckboxes([]);
+      } else {
+        console.error("Edit fields API call not successful");
+      }
+    } catch (error) {
+      console.error("Error editing fields:", error);
+    }
+  };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const toggleConfirmPasswordVisibility = () => {
     setConfirmPassword(!confirmPassword);
+  };
+
+  const openModal = () => {
+    setEditModal(true);
   };
   const navigate = useNavigate();
 
@@ -128,6 +174,29 @@ export default function FacilitatorView({ footerLinks }) {
     };
     await profileDetails();
   }, []);
+
+  React.useEffect(() => {
+    const createData = async () => {
+      try {
+        const result = await benificiaryRegistoryService.getRequestDetails(id);
+        console.log("updatedata", updatedData);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      }
+    };
+
+    const updateData = async () => {
+      try {
+        const result = await benificiaryRegistoryService.createEditRequest();
+        console.log("createdata", result);
+      } catch (error) {
+        console.error("Error creating edit request:", error);
+      }
+    };
+
+    createData();
+    updateData();
+  }, [id]);
 
   const showData = (item) => item || "-";
 
@@ -163,6 +232,7 @@ export default function FacilitatorView({ footerLinks }) {
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
   };
+  console.log(isSaveButtonEnabled);
 
   const handleResetPassword = async (password, confirm_password) => {
     if (validate()) {
@@ -501,6 +571,21 @@ export default function FacilitatorView({ footerLinks }) {
             <AdminTypo.H4 color="textGreyColor.800" bold>
               {t("PROFILE_DETAILS").toUpperCase()}
             </AdminTypo.H4>
+            {data?.aadhar_verified === "yes" && (
+              <AdminTypo.Secondarybutton
+                my="3"
+                onPress={isEditSuccess ? undefined : openModal}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 10,
+                }}
+              >
+                {isEditSuccess
+                  ? "{t('CLOSED_FOR_EDIT')}"
+                  : "{t('OPEN_FOR_EDIT')}"}
+              </AdminTypo.Secondarybutton>
+            )}
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -904,6 +989,77 @@ export default function FacilitatorView({ footerLinks }) {
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+                  {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+        <Modal isOpen={editModal} avoidKeyboard size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"Center"}>
+              <AdminTypo.H1 color="textGreyColor.500">
+                {t("REQUESTING_FOR_CHANGE")}
+              </AdminTypo.H1>
+            </Modal.Header>
+            <Modal.Body>
+              <Center>
+                <VStack space={3}>
+                  <Checkbox
+                    value="Profile Photo"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Profile Photo")}
+                    onChange={() => handleCheckboxChange("Profile Photo")}
+                  >
+                    {t("PROFILE_PHOTO")}
+                  </Checkbox>
+                  <Checkbox
+                    value="Address"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Address")}
+                    onChange={() => handleCheckboxChange("Address")}
+                  >
+                    {t("ADDRESS")}
+                  </Checkbox>
+                  <AdminTypo.H4 borderBottomWidth="1">
+                    {t("OTHER_DETAILS")}
+                  </AdminTypo.H4>
+                  <Checkbox
+                    value="Availability"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Availability")}
+                    onChange={() => handleCheckboxChange("Availability")}
+                  >
+                    {t("AVAILABILITY")}
+                  </Checkbox>
+                  <Checkbox
+                    value="Device Ownership"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Device Ownership")}
+                    onChange={() => handleCheckboxChange("Device Ownership")}
+                  >
+                    {t("DEVICE_OWNERSHIP")}
+                  </Checkbox>
+                  <Checkbox
+                    value="Type of Device"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Type of Device")}
+                    onChange={() => handleCheckboxChange("Type of Device")}
+                  >
+                    {t("TYPE_OF_DEVICE")}
+                  </Checkbox>
+                </VStack>
+              </Center>
+            </Modal.Body>
+            <Modal.Footer>
+              <HStack justifyContent={"space-between"} width={"100%"}>
+                <AdminTypo.Secondarybutton onPress={() => setEditModal(false)}>
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton
+                  onPress={() => editRequest()}
+                  disabled={!isSaveButtonEnabled}
+                >
                   {t("SAVE")}
                 </AdminTypo.PrimaryButton>
               </HStack>
