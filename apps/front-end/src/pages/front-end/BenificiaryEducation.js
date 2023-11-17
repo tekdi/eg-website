@@ -59,7 +59,11 @@ export default function BenificiaryEducation() {
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
-    const result = await benificiaryRegistoryService.getEditRequest();
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: userId,
+    };
+    const result = await benificiaryRegistoryService.getEditRequest(obj);
     if (result?.data.length > 0) {
       const fieldData = JSON.parse(result?.data[0]?.fields);
       setRequestData(fieldData);
