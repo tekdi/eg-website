@@ -378,14 +378,14 @@ export default function AgAdminProfile({ footerLinks }) {
   }
   const giveAccess = async () => {
     if (getRequestData) {
-      const result = await facilitatorRegistryService.updateRequestData({
+      await facilitatorRegistryService.updateRequestData({
         status: "approved",
         fields: [editAccessModalVisible],
         requestId: getRequestData?.id,
       });
       setEditAccessModalVisible(false);
     } else {
-      const result = await benificiaryRegistoryService.createEditRequest({
+      await benificiaryRegistoryService.createEditRequest({
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
         fields: [editAccessModalVisible],
