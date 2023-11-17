@@ -41,7 +41,6 @@ export default function BenificiaryAadhaarDetails() {
     setbenificiary(result?.result);
   };
 
-  console.log(benificiary);
   return (
     <Layout
       _appBar={{
