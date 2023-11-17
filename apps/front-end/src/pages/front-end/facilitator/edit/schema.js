@@ -46,6 +46,7 @@ export default {
           format: "RadioBtn",
           enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
           enum: ["self", "family"],
+          readOnly: "",
         },
         device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
@@ -53,6 +54,7 @@ export default {
           format: "CustomR",
           grid: 2,
           icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
+          readOnly: "",
         },
         alternative_mobile_number: {
           type: "number",
@@ -76,25 +78,30 @@ export default {
           title: "STATE",
           type: "string",
           format: "select",
+          readOnly: "",
         },
         district: {
           title: "DISTRICT",
           type: "string",
           format: "select",
+          readOnly: "",
         },
         block: {
           title: "BLOCK",
           type: "string",
           format: "select",
+          readOnly: "",
         },
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
+          readOnly: "",
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
           type: "string",
+          readOnly: "",
         },
       },
     },
