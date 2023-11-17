@@ -55,14 +55,24 @@ export default function BenificiaryBasicDetails() {
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.includes("family_details"))
+        requestData.includes("family_details")) ||
+      requestData.includes("father_details") ||
+      requestData.includes("mother_details") ||
+      requestData.includes("father_first_name") ||
+      requestData.includes("father_middle_name") ||
+      requestData.includes("father_last_name") ||
+      requestData.includes("mother_first_name") ||
+      requestData.includes("mother_middle_name") ||
+      requestData.includes("mother_last_name")
     );
   };
   const isPersonalDetailsEdit = () => {
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.includes("personal_details"))
+        requestData.includes("personal_details")) ||
+      requestData.includes("social_category") ||
+      requestData.includes("marital_status")
     );
   };
   return (

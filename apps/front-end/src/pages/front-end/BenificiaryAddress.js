@@ -43,7 +43,13 @@ export default function BenificiaryAddress() {
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.includes("address_details"))
+        requestData.includes("address_details")) ||
+      requestData.includes("address") ||
+      requestData.includes("street") ||
+      requestData.includes("district") ||
+      requestData.includes("block") ||
+      requestData.includes("village") ||
+      requestData.includes("grampanchayat")
     );
   };
   return (

@@ -74,7 +74,13 @@ export default function BenificiaryEducation() {
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.includes("educational_details"))
+        requestData.includes("educational_details")) ||
+      requestData.includes("type_of_learner") ||
+      requestData.includes("last_standard_of_education") ||
+      requestData.includes("last_standard_of_education_year") ||
+      requestData.includes("previous_school_type") ||
+      requestData.includes("reason_of_leaving_education") ||
+      requestData.includes("learning_level")
     );
   };
   return (

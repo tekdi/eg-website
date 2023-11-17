@@ -37,6 +37,7 @@ export default function FamilyDetails({ ip }) {
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
+  const [fields, setFields] = React.useState([]);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
@@ -46,6 +47,18 @@ export default function FamilyDetails({ ip }) {
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
+
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   React.useEffect(async () => {
@@ -302,7 +315,8 @@ export default function FamilyDetails({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+      fields.length < 0 ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
