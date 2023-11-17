@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -138,7 +138,6 @@ export default function FacilitatorView({ footerLinks }) {
   const [confirmPassword, setConfirmPassword] = React.useState(false);
   const [qualifications, setQualifications] = React.useState([]);
   const [editModal, setEditModal] = React.useState(false);
-  const [editfields, seteditfields] = React.useState([]);
   const [editData, setEditData] = React.useState();
   const [requestId, setRequestId] = React.useState();
   const [fieldCheck, setFieldCheck] = React.useState();
@@ -978,9 +977,7 @@ export default function FacilitatorView({ footerLinks }) {
                   >
                     <MultiCheck
                       value={fieldCheck || []}
-                      onChange={(e) => {
-                        // setFieldCheck(e);
-                      }}
+                      onChange={(e) => {}}
                       schema={{
                         grid: 1,
                       }}
@@ -1009,9 +1006,7 @@ export default function FacilitatorView({ footerLinks }) {
                   >
                     <MultiCheck
                       value={fieldCheck || []}
-                      onChange={(e) => {
-                        // setFieldCheck(e);
-                      }}
+                      onChange={(e) => {}}
                       schema={{
                         grid: 1,
                       }}
@@ -1040,9 +1035,7 @@ export default function FacilitatorView({ footerLinks }) {
                   >
                     <MultiCheck
                       value={fieldCheck || []}
-                      onChange={(e) => {
-                        //setFieldCheck(e);
-                      }}
+                      onChange={(e) => {}}
                       schema={{
                         grid: 1,
                       }}
