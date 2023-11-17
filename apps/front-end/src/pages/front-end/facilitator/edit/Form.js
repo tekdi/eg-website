@@ -25,13 +25,14 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
+import accessControl from "./AccessControl.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
   const { step } = useParams();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
+  const [schema, setSchema] = React.useState();
   const [cameraFile, setCameraFile] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState();
@@ -48,10 +49,26 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = React.useState();
   const [otpButton, setOtpButton] = React.useState(false);
   const [mobileConditon, setMobileConditon] = React.useState(false);
+  const [fields, setFields] = React.useState([]);
+
+  const getEditAccess = async () => {
+    const { id } = userTokenInfo?.authUser || {};
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
+  };
 
   React.useEffect(() => {
     const getData = async () => {
-      const { id } = userTokenInfo?.authUser;
+      const { id } = userTokenInfo?.authUser || {};
       if (id) {
         const result = await facilitatorRegistryService.getOne({ id });
         setFacilitator(result);
@@ -100,7 +117,9 @@ export default function App({ userTokenInfo, footerLinks }) {
         }
       }
     };
+
     getData();
+    getEditAccess();
   }, [qualifications]);
 
   const onPressBackButton = async () => {
@@ -160,6 +179,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     const qData = await facilitatorRegistryService.getQualificationAll();
     setQualifications(qData);
   }, [page]);
+
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
+  };
 
   // update schema
   React.useEffect(async () => {
@@ -282,15 +305,16 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
     setLoading(false);
-    setSchema(newSchema);
+    setSchemaData(newSchema);
   }, [page, formData]);
+
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       const newStep = step || newSteps[0];
       setPage(newStep);
-      setSchema(properties[newStep]);
+      setSchemaData(properties[newStep]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
@@ -346,7 +370,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       };
       setErrors(newErrors);
     } else {
-      setSchema(newSchema);
+      setSchemaData(newSchema);
       setOtpButton(true);
     }
   };
@@ -358,7 +382,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const result = await facilitatorRegistryService.profileStapeUpdate({
         ...data,
         page_type: step,
-        ...(overide ? overide : {}),
+        ...(overide || {}),
         id: id,
       });
       setLoading(false);
@@ -461,7 +485,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       }
       if (schema?.["properties"]?.["block"]) {
         newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "district", arr: [] });
@@ -471,7 +495,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     setLoading(false);
     return newSchema;
@@ -494,14 +518,14 @@ export default function App({ userTokenInfo, footerLinks }) {
       }
       if (schema?.["properties"]?.["village"]) {
         newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
       if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     setLoading(false);
     return newSchema;
@@ -522,10 +546,10 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "village_ward_name",
         });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     } else {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     setLoading(false);
     return newSchema;
@@ -555,7 +579,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         if (schema?.properties?.otp) {
           const { otp, ...properties } = schema?.properties;
           const required = schema?.required.filter((item) => item !== "otp");
-          setSchema({ ...schema, properties, required });
+          setSchemaData({ ...schema, properties, required });
           setFormData((e) => {
             const { otp, ...fData } = e;
             return fData;
@@ -683,7 +707,7 @@ export default function App({ userTokenInfo, footerLinks }) {
             document_type: data.type_of_document,
           },
         });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
         setLoading(false);
       }
     }
@@ -757,9 +781,9 @@ export default function App({ userTokenInfo, footerLinks }) {
             </HStack>
           </Alert>
         )}
-        {page && page !== "" && (
+        {page && page !== "" && schema && (
           <Form
-            key={lang}
+            key={lang + schema}
             ref={formRef}
             extraErrors={errors}
             showErrorList={false}
@@ -768,7 +792,7 @@ export default function App({ userTokenInfo, footerLinks }) {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               customValidate,
