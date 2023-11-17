@@ -316,7 +316,7 @@ export default function FamilyDetails({ ip }) {
       _page={{ _scollView: { bg: "white" } }}
     >
       {formData?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-      fields.length < 0 ? (
+      fields.length <= 0 ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
