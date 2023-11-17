@@ -139,7 +139,6 @@ export default function FacilitatorView({ footerLinks }) {
   const [qualifications, setQualifications] = React.useState([]);
   const [editModal, setEditModal] = React.useState(false);
   const [editData, setEditData] = React.useState();
-  const [requestId, setRequestId] = React.useState();
   const [fieldCheck, setFieldCheck] = React.useState();
 
   const togglePasswordVisibility = () => {
@@ -183,7 +182,6 @@ export default function FacilitatorView({ footerLinks }) {
     const result = await benificiaryRegistoryService.getEditFields(obj);
     if (result.data[0]) {
       setEditData(result?.data[0]);
-      setRequestId(result?.data[0].id);
     }
     let field;
     const parseField = result?.data[0]?.fields;

@@ -51,7 +51,7 @@ export default function App({ userTokenInfo, footerLinks }) {
 
   React.useEffect(() => {
     const getData = async () => {
-      const { id } = userTokenInfo?.authUser;
+      const { id } = userTokenInfo?.authUser || {};
       if (id) {
         const result = await facilitatorRegistryService.getOne({ id });
         setFacilitator(result);
@@ -358,7 +358,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       const result = await facilitatorRegistryService.profileStapeUpdate({
         ...data,
         page_type: step,
-        ...(overide ? overide : {}),
+        ...(overide ?? {}),
         id: id,
       });
       setLoading(false);
@@ -768,7 +768,7 @@ export default function App({ userTokenInfo, footerLinks }) {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema ?? {},
               uiSchema,
               formData,
               customValidate,
