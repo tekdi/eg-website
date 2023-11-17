@@ -383,12 +383,28 @@ export default function AgAdminProfile({ footerLinks }) {
   }
   const familyFieldsArray = [
     {
-      label: t("FATHER_NAME"),
-      value: "father_name",
+      label: `${t("FATHER")} ${t("FIRST_NAME")}`,
+      value: "father_first_name",
     },
     {
-      label: t("MOTHER_NAME"),
-      value: "mother_name",
+      label: `${t("FATHER")} ${t("MIDDLE_NAME")}`,
+      value: "father_middle_name",
+    },
+    {
+      label: `${t("FATHER")} ${t("LAST_NAME")}`,
+      value: "father_last_name",
+    },
+    {
+      label: `${t("MOTHER")} ${t("FIRST_NAME")}`,
+      value: "mother_first_name",
+    },
+    {
+      label: `${t("MOTHER")} ${t("MIDDLE_NAME")}`,
+      value: "mother_middle_name",
+    },
+    {
+      label: `${t("MOTHER")} ${t("LAST_NAME")}`,
+      value: "mother_last_name",
     },
   ];
   const personalFieldsArray = [
@@ -430,7 +446,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const addressFieldsArray = [
     {
       label: t("STREET_ADDRESS"),
-      value: "street",
+      value: "address",
     },
     {
       label: t("DISTRICT"),
