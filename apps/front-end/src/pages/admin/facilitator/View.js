@@ -582,14 +582,14 @@ export default function FacilitatorView({ footerLinks }) {
             {data?.aadhar_verified === "yes" && (
               <AdminTypo.Secondarybutton
                 my="3"
-                onPress={isEditSuccess ? undefined : openModal}
+                onPress={openModal}
                 style={{
                   position: "absolute",
                   top: 0,
                   right: 10,
                 }}
               >
-                {isEditSuccess ? t("CLOSED_FOR_EDIT") : t("OPEN_FOR_EDIT")}
+                {t("OPEN_FOR_EDIT")}
               </AdminTypo.Secondarybutton>
             )}
             <HStack justifyContent="space-between">
