@@ -29,7 +29,7 @@ import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
-import { AsyncDependenciesBlock } from "webpack";
+import { MultiCheck } from "component/BaseInput";
 const Experience = (obj) => {
   return (
     <VStack>
@@ -105,62 +105,10 @@ export default function FacilitatorView({ footerLinks }) {
   const [qualifications, setQualifications] = React.useState([]);
   const [editModal, setEditModal] = React.useState(false);
   const [editfields, seteditfields] = React.useState([]);
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-  const [isSaveButtonEnabled, setSaveButtonEnabled] = useState(false);
   const [isEditSuccess, setIsEditSuccess] = useState(false);
   const [editData, setEditData] = React.useState();
   const [requestId, setRequestId] = React.useState();
-
-  const handleCheckboxChange = (value) => {
-    if (value === "other details") {
-      if (!selectedCheckboxes.includes("other details")) {
-        const allCheckboxValuesExceptOtherDetails = [
-          "Availability",
-          "Device Ownership",
-          "Type of Device",
-        ];
-        setSelectedCheckboxes([
-          "other details",
-          ...allCheckboxValuesExceptOtherDetails,
-        ]);
-      } else {
-        setSelectedCheckboxes([]);
-      }
-    } else {
-      // If any other checkbox is checked or unchecked, update selectedCheckboxes accordingly
-      setSelectedCheckboxes((prevSelected) => {
-        if (prevSelected.includes(value)) {
-          return prevSelected.filter((checkbox) => checkbox !== value);
-        } else {
-          return [...prevSelected, value];
-        }
-      });
-    }
-    setSaveButtonEnabled(true);
-  };
-
-  const editRequest = async () => {
-    if (!editData) {
-      const obj = {
-        edit_req_for_context: "users",
-        edit_req_for_context_id: id,
-        edit_req_by: id,
-        fields: selectedCheckboxes,
-      };
-      await benificiaryRegistoryService.createEditRequest(obj);
-    } else {
-      const updateObj = {
-        status: "approved",
-        id: editData?.id,
-        fields: selectedCheckboxes,
-      };
-      console.log(updateObj, "update call");
-      const res = await benificiaryRegistoryService.updateEditRequest(
-        updateObj
-      );
-    }
-    setEditModal(false);
-  };
+  const [fieldCheck, setFieldCheck] = React.useState();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -199,17 +147,73 @@ export default function FacilitatorView({ footerLinks }) {
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
-      edit_req_by: id,
-      fields: selectedCheckboxes,
     };
     const result = await benificiaryRegistoryService.editFields(obj);
     if (result.data[0]) {
       setEditData(result?.data[0]);
       setRequestId(result?.data[0].id);
     }
-  }, [id, selectedCheckboxes, benificiaryRegistoryService]);
-  console.log("edit", editData);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFieldCheck(field || []);
+  }, []);
 
+  const editRequest = async () => {
+    if (!editData) {
+      const obj = {
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+        edit_req_by: id,
+        fields: fieldCheck,
+      };
+      await benificiaryRegistoryService.createEditRequest(obj);
+    } else {
+      const updateObj = {
+        status: "approved",
+        id: editData?.id,
+        fields: fieldCheck,
+      };
+      await benificiaryRegistoryService.updateEditRequest(updateObj);
+    }
+    setEditModal(false);
+  };
+  const checkboxoptions = [
+    {
+      label: t("AVAILABILITY"),
+      value: "availability",
+    },
+    {
+      label: t("DEVICE_OWNERSHIP"),
+      value: "device_ownership",
+    },
+    {
+      label: t("TYPE_OF_DEVICE"),
+      value: "device_type",
+    },
+  ];
+  const addressoptions = [
+    {
+      label: t("DISTRICT"),
+      value: "district",
+    },
+    {
+      label: t("BLOCK"),
+      value: "block",
+    },
+    {
+      label: t("VILLAGE_WARD"),
+      value: "village",
+    },
+  ];
+  const profileOptions = [
+    {
+      label: t("PROFILE_PHOTO"),
+      value: "profile_photo_1",
+    },
+  ];
   const showData = (item) => item || "-";
 
   const validate = () => {
@@ -429,13 +433,6 @@ export default function FacilitatorView({ footerLinks }) {
               </AdminTypo.Secondarybutton>
             </VStack>
           </HStack>
-          {/* <Box paddingTop="32px">
-            {data?.status === "screened" ? (
-              <Interviewschedule />
-            ) : (
-              <React.Fragment />
-            )}
-          </Box> */}
           <Modal
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -582,19 +579,19 @@ export default function FacilitatorView({ footerLinks }) {
             <AdminTypo.H4 color="textGreyColor.800" bold>
               {t("PROFILE_DETAILS").toUpperCase()}
             </AdminTypo.H4>
-            {/* {data?.aadhar_verified === "yes" && ( */}
-            <AdminTypo.Secondarybutton
-              my="3"
-              onPress={isEditSuccess ? undefined : openModal}
-              style={{
-                position: "absolute",
-                top: 0,
-                right: 10,
-              }}
-            >
-              {isEditSuccess ? t("CLOSED_FOR_EDIT") : t("OPEN_FOR_EDIT")}
-            </AdminTypo.Secondarybutton>
-            {/* )} */}
+            {data?.aadhar_verified === "yes" && (
+              <AdminTypo.Secondarybutton
+                my="3"
+                onPress={isEditSuccess ? undefined : openModal}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 10,
+                }}
+              >
+                {isEditSuccess ? t("CLOSED_FOR_EDIT") : t("OPEN_FOR_EDIT")}
+              </AdminTypo.Secondarybutton>
+            )}
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -915,46 +912,6 @@ export default function FacilitatorView({ footerLinks }) {
           </VStack>
           <StatusButton {...{ data, setData }} />
         </VStack>
-        {/* <VStack
-          flex={0.18}
-          bg="white.300"
-          px="3"
-          py="5"
-          space={"5"}
-          borderColor="light.400"
-          pb="1"
-          borderLeftWidth="1"
-        >
-          <HStack justifyContent="space-between" alignItems={"center"}>
-            <IconByName isDisabled name="EditBoxLineIcon" />
-            <H3>{t("COMMENT_SECTION")}</H3>
-            <IconByName isDisabled name="ArrowRightSLineIcon" />
-          </HStack>
-          <VStack space={"3"}>
-            {[
-              { name: t("YOU"), message: t("PROFILE_NEEDS_TO_BE_COMPLETED") },
-              {
-                name: "Manoj",
-                message: t("PROFILE_NEEDS_TO_BE_COMPLETED"),
-              },
-            ].map((item, key) => (
-              <VStack key={key} space={"1"}>
-                <HStack space={"3"}>
-                  <IconByName
-                    isDisabled
-                    color="gray.300"
-                    _icon={{ size: "24px" }}
-                    name="AccountCircleLineIcon"
-                  />
-                  <BodyLarge>{item?.name}</BodyLarge>
-                </HStack>
-                <Box bg="gray.200" p="4">
-                  <BodySmall>{item?.message}</BodySmall>
-                </Box>
-              </VStack>
-            ))}
-          </VStack>
-        </VStack> */}
         <Modal isOpen={adhaarModalVisible} avoidKeyboard size="xl">
           <Modal.Content>
             <Modal.Header textAlign={"Center"}>
@@ -999,115 +956,109 @@ export default function FacilitatorView({ footerLinks }) {
             </Modal.Footer>
           </Modal.Content>
         </Modal>
-        <Modal
-          isOpen={editModal}
-          alignItems="center"
-          justifyContent="center"
-          avoidKeyboard
-          size="2xl"
-          marginLeft="25%"
-        >
+        <Modal isOpen={editModal} avoidKeyboard size="xl">
           <Modal.Content>
             <Modal.Header textAlign={"Center"}>
               <AdminTypo.H1 color="textGreyColor.500">
                 {t("REQUESTING_FOR_CHANGE")}
               </AdminTypo.H1>
+              <AdminTypo.H5>{t("REQUESTING_FOR_CHANGE_MESSAGE")}</AdminTypo.H5>
             </Modal.Header>
             <Modal.Body>
-              <HStack space={10}>
-                <CardComponent
-                  _header={{ bg: "light.100" }}
-                  _vstack={{ bg: "light.100", space: 10, pt: "2" }}
-                >
-                  <Checkbox
-                    value="basic detail"
-                    size="sm"
-                    isChecked={selectedCheckboxes.includes("Address")}
-                    onChange={() => handleCheckboxChange("Address")}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    borderColor="light.400"
-                    borderBottomWidth="1"
-                    fontWeight={800}
-                  >
-                    {t("BASIC_DETAILS")}
-                  </Checkbox>
-                  <Checkbox
-                    value="Address"
-                    size="sm"
-                    isChecked={selectedCheckboxes.includes("Address")}
-                    onChange={() => handleCheckboxChange("Address")}
-                  >
-                    {t("ADDRESS")}
-                  </Checkbox>
-                </CardComponent>
-
-                <CardComponent
-                  _header={{ bg: "light.100" }}
-                  _vstack={{ bg: "light.100", space: 10, pt: "2" }}
-                >
-                  <Checkbox
-                    value="other details"
-                    size="sm"
-                    isChecked={selectedCheckboxes.includes("other details")}
-                    onChange={() => handleCheckboxChange("other details")}
-                    style={{
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#000",
-                      fontWeight: "bold",
+              <HStack>
+                <VStack flex={1}>
+                  <CardComponent
+                    _header={{ bg: "light.100" }}
+                    _vstack={{
+                      bg: "light.100",
+                      space: 2,
+                      pt: "2",
+                      m: "1",
                     }}
+                    title={
+                      <SelectAllCheckBox
+                        fields={profileOptions.map((e) => e.value)}
+                        title={t("PROFILE_PHOTO")}
+                        {...{ setFieldCheck, fieldCheck }}
+                      />
+                    }
                   >
-                    {t("OTHER_DETAILS")}
-                  </Checkbox>
-
-                  <Checkbox
-                    value="Availability"
-                    size="sm"
-                    isChecked={selectedCheckboxes.includes("Availability")}
-                    onChange={() => handleCheckboxChange("Availability")}
+                    <MultiCheck
+                      value={fieldCheck || []}
+                      onChange={(e) => {
+                        setFieldCheck(e);
+                      }}
+                      schema={{
+                        grid: 1,
+                      }}
+                      options={{
+                        enumOptions: profileOptions,
+                      }}
+                    />
+                  </CardComponent>
+                </VStack>
+                <VStack flex={1}>
+                  <CardComponent
+                    _header={{ bg: "light.100" }}
+                    _vstack={{
+                      bg: "light.100",
+                      space: 2,
+                      pt: "2",
+                      m: "1",
+                    }}
+                    title={
+                      <SelectAllCheckBox
+                        fields={["state", "district", "block", "village"]}
+                        title={t("ADDRESS")}
+                        {...{ setFieldCheck, fieldCheck }}
+                      />
+                    }
                   >
-                    {t("AVAILABILITY")}
-                  </Checkbox>
-                  <Checkbox
-                    value="Device Ownership"
-                    size="sm"
-                    isChecked={selectedCheckboxes.includes("Device Ownership")}
-                    onChange={() => handleCheckboxChange("Device Ownership")}
+                    <MultiCheck
+                      value={fieldCheck || []}
+                      onChange={(e) => {
+                        // setFieldCheck(e);
+                      }}
+                      schema={{
+                        grid: 1,
+                      }}
+                      options={{
+                        enumOptions: addressoptions,
+                      }}
+                    />
+                  </CardComponent>
+                </VStack>
+                <VStack flex={1}>
+                  <CardComponent
+                    _header={{ bg: "light.100" }}
+                    _vstack={{
+                      bg: "light.100",
+                      space: 1,
+                      pt: "2",
+                      m: "1",
+                    }}
+                    title={
+                      <SelectAllCheckBox
+                        fields={checkboxoptions.map((e) => e.value)}
+                        title={t("OTHER_DETAILS")}
+                        {...{ setFieldCheck, fieldCheck }}
+                      />
+                    }
                   >
-                    {t("DEVICE_OWNERSHIP")}
-                  </Checkbox>
-                  <Checkbox
-                    value="Type of Device"
-                    size="sm"
-                    isChecked={selectedCheckboxes.includes("Type of Device")}
-                    onChange={() => handleCheckboxChange("Type of Device")}
-                  >
-                    {t("TYPE_OF_DEVICE")}
-                  </Checkbox>
-                </CardComponent>
-                <CardComponent
-                  _header={{ bg: "light.100" }}
-                  _vstack={{ bg: "light.100", space: 10, pt: "2" }}
-                >
-                  <Checkbox
-                    value="Profile"
-                    size="sm"
-                    mt="2"
-                    isChecked={selectedCheckboxes.includes("Profile Photo")}
-                    onChange={() => handleCheckboxChange("Profile Photo")}
-                  >
-                    Profile
-                  </Checkbox>
-                  <Checkbox
-                    value="Profile Photo"
-                    size="sm"
-                    mt="2"
-                    isChecked={selectedCheckboxes.includes("Profile Photo")}
-                    onChange={() => handleCheckboxChange("Profile Photo")}
-                  >
-                    {t("PROFILE_PHOTO")}
-                  </Checkbox>
-                </CardComponent>
+                    <MultiCheck
+                      value={fieldCheck || []}
+                      onChange={(e) => {
+                        setFieldCheck(e);
+                      }}
+                      schema={{
+                        grid: 1,
+                      }}
+                      options={{
+                        enumOptions: checkboxoptions,
+                      }}
+                    />
+                  </CardComponent>
+                </VStack>
               </HStack>
             </Modal.Body>
             <Modal.Footer>
@@ -1115,10 +1066,7 @@ export default function FacilitatorView({ footerLinks }) {
                 <AdminTypo.Secondarybutton onPress={() => setEditModal(false)}>
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
-                <AdminTypo.PrimaryButton
-                  onPress={() => editRequest()}
-                  disabled={!isSaveButtonEnabled}
-                >
+                <AdminTypo.PrimaryButton onPress={() => editRequest()}>
                   {t("SAVE")}
                 </AdminTypo.PrimaryButton>
               </HStack>
@@ -1129,3 +1077,24 @@ export default function FacilitatorView({ footerLinks }) {
     </Layout>
   );
 }
+const SelectAllCheckBox = ({ fields, title, setFieldCheck, fieldCheck }) => {
+  return (
+    <Checkbox
+      onChange={(e) => {
+        if (!e) {
+          const checkedFields = fieldCheck.filter(
+            (field) => !fields.includes(field)
+          );
+          setFieldCheck(checkedFields);
+        } else {
+          const checkedFields = fieldCheck.filter(
+            (field) => !fields.includes(field)
+          );
+          setFieldCheck([...checkedFields, ...fields]);
+        }
+      }}
+    >
+      {title}
+    </Checkbox>
+  );
+};

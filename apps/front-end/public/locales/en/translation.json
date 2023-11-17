@@ -1038,6 +1038,7 @@
   "TYPE_OF_CAMPSITE ": "Type of Campsite ",
   "TYPE_OF_DEVICE": "Type of Device",
   "REQUESTING_FOR_CHANGE": "Requesting for change",
+  "REQUESTING_FOR_CHANGE_MESSAGE": "Select the fields for which edit access to be provided",
   "PROFILE_PHOTO": "Profile Photo",
   "OPEN_FOR_EDIT": "Open for Edit",
   "CLOSED_FOR_EDIT": "Closed for Edit",
