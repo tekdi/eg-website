@@ -72,6 +72,90 @@ const columns = (t) => [
     wrap: true,
   },
 ];
+const familyFieldsArray = [
+  {
+    label: "FATHER_FIRST_NAME",
+    value: "father_first_name",
+  },
+  {
+    label: "FATHER_MIDDLE_NAME",
+    value: "father_middle_name",
+  },
+  {
+    label: "FATHER_LAST_NAME",
+    value: "father_last_name",
+  },
+  {
+    label: "MOTHER_FIRST_NAME",
+    value: "mother_first_name",
+  },
+  {
+    label: "MOTHER_MIDDLE_NAME",
+    value: "mother_middle_name",
+  },
+  {
+    label: "MOTHER_LAST_NAME",
+    value: "mother_last_name",
+  },
+];
+const personalFieldsArray = [
+  {
+    label: "SOCIAL_CATEGORY",
+    value: "social_category",
+  },
+  {
+    label: "MARITAL_STATUS",
+    value: "marital_status",
+  },
+];
+const educationalFieldsArray = [
+  {
+    label: "TYPE_OF_LEARNER",
+    value: "type_of_learner",
+  },
+  {
+    label: "LAST_STANDARD_OF_EDUCATION",
+    value: "last_standard_of_education",
+  },
+  {
+    label: "LAST_YEAR_OF_EDUCATION",
+    value: "last_standard_of_education_year",
+  },
+  {
+    label: "PREVIOUS_SCHOOL_TYPE",
+    value: "previous_school_type",
+  },
+  {
+    label: "REASON_FOR_BEING_DEPRIVED_OF_EDUCATION",
+    value: "reason_of_leaving_education",
+  },
+  {
+    label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+    value: "learning_level",
+  },
+];
+const addressFieldsArray = [
+  {
+    label: "STREET_ADDRESS",
+    value: "address",
+  },
+  {
+    label: "DISTRICT",
+    value: "district",
+  },
+  {
+    label: "BLOCK",
+    value: "block",
+  },
+  {
+    label: "VILLAGE_WARD",
+    value: "village",
+  },
+  {
+    label: "GRAMPANCHAYAT",
+    value: "grampanchayat",
+  },
+];
 
 export default function AgAdminProfile({ footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -381,90 +465,6 @@ export default function AgAdminProfile({ footerLinks }) {
         return null;
     }
   }
-  const familyFieldsArray = [
-    {
-      label: `${t("FATHER")} ${t("FIRST_NAME")}`,
-      value: "father_first_name",
-    },
-    {
-      label: `${t("FATHER")} ${t("MIDDLE_NAME")}`,
-      value: "father_middle_name",
-    },
-    {
-      label: `${t("FATHER")} ${t("LAST_NAME")}`,
-      value: "father_last_name",
-    },
-    {
-      label: `${t("MOTHER")} ${t("FIRST_NAME")}`,
-      value: "mother_first_name",
-    },
-    {
-      label: `${t("MOTHER")} ${t("MIDDLE_NAME")}`,
-      value: "mother_middle_name",
-    },
-    {
-      label: `${t("MOTHER")} ${t("LAST_NAME")}`,
-      value: "mother_last_name",
-    },
-  ];
-  const personalFieldsArray = [
-    {
-      label: t("SOCIAL_CATEGORY"),
-      value: "social_category",
-    },
-    {
-      label: t("MARITAL_STATUS"),
-      value: "marital_status",
-    },
-  ];
-  const educationalFieldsArray = [
-    {
-      label: t("TYPE_OF_LEARNER"),
-      value: "type_of_learner",
-    },
-    {
-      label: t("LAST_STANDARD_OF_EDUCATION"),
-      value: "last_standard_of_education",
-    },
-    {
-      label: t("LAST_YEAR_OF_EDUCATION"),
-      value: "last_standard_of_education_year",
-    },
-    {
-      label: t("PREVIOUS_SCHOOL_TYPE"),
-      value: "previous_school_type",
-    },
-    {
-      label: t("REASON_FOR_BEING_DEPRIVED_OF_EDUCATION"),
-      value: "reason_of_leaving_education",
-    },
-    {
-      label: t("WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER"),
-      value: "learning_level",
-    },
-  ];
-  const addressFieldsArray = [
-    {
-      label: t("STREET_ADDRESS"),
-      value: "address",
-    },
-    {
-      label: t("DISTRICT"),
-      value: "district",
-    },
-    {
-      label: t("BLOCK"),
-      value: "block",
-    },
-    {
-      label: t("VILLAGE_WARD"),
-      value: "village",
-    },
-    {
-      label: t("GRAMPANCHAYAT"),
-      value: "grampanchayat",
-    },
-  ];
 
   const giveAccess = async () => {
     if (getRequestData) {
@@ -641,7 +641,7 @@ export default function AgAdminProfile({ footerLinks }) {
                     <AdminTypo.Secondarybutton
                       onPress={() => setEditAccessModalVisible(true)}
                     >
-                      {t("GIVE_EDIT_ACCESS")}
+                      {t("OPEN_FOR_EDIT")}
                     </AdminTypo.Secondarybutton>
                   )}
                 </HStack>
@@ -1600,12 +1600,12 @@ export default function AgAdminProfile({ footerLinks }) {
             </AdminTypo.H2>
           </Modal.Header>
           <Modal.Body>
-            <VStack space="2">
+            <VStack p="4" space="4">
               <AdminTypo.H3>
                 {t("PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS")}
               </AdminTypo.H3>
 
-              <VStack space="2">
+              <VStack space="4">
                 <CardComponent
                   _header={{ bg: "light.100" }}
                   _vstack={{
@@ -1623,7 +1623,9 @@ export default function AgAdminProfile({ footerLinks }) {
                 >
                   <MultiCheck
                     value={checkedFields || []}
-                    onChange={(e) => {}}
+                    onChange={(e) => {
+                      setCheckedFields(e);
+                    }}
                     schema={{
                       grid: 1,
                     }}
