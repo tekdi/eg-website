@@ -14,15 +14,17 @@ import {
   AgRegistryService,
   FrontEndTypo,
   getOptions,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { templates, widgets } from "../../../../component/BaseInput.js";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
 export default function AddressEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
+  const [schema, setSchema] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -31,7 +33,7 @@ export default function AddressEdit({ ip }) {
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
-
+  const [fields, setFields] = React.useState([]);
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${userId}`);
   };
@@ -52,6 +54,17 @@ export default function AddressEdit({ ip }) {
       grampanchayat:
         finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
     });
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -67,7 +80,7 @@ export default function AddressEdit({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -82,7 +95,7 @@ export default function AddressEdit({ ip }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -108,7 +121,7 @@ export default function AddressEdit({ ip }) {
         district: formData?.district,
         block: formData?.block,
       });
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
   }, [formData?.state]);
 
@@ -117,7 +130,7 @@ export default function AddressEdit({ ip }) {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
     }
   }, []);
@@ -191,7 +204,7 @@ export default function AddressEdit({ ip }) {
       }
       if (schema["properties"]["block"]) {
         newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "district", arr: [] });
@@ -201,7 +214,7 @@ export default function AddressEdit({ ip }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     return newSchema;
   };
@@ -222,14 +235,14 @@ export default function AddressEdit({ ip }) {
       }
       if (schema["properties"]["village"]) {
         newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     return newSchema;
   };
@@ -248,10 +261,10 @@ export default function AddressEdit({ ip }) {
           value: "village_ward_name",
         });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     } else {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     return newSchema;
   };
@@ -329,6 +342,9 @@ export default function AddressEdit({ ip }) {
     navigate(`/beneficiary/${userId}/addressdetails`);
   };
 
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
+  };
   return (
     <Layout
       _appBar={{
