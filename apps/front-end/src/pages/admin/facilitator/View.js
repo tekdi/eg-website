@@ -105,9 +105,7 @@ export default function FacilitatorView({ footerLinks }) {
   const [qualifications, setQualifications] = React.useState([]);
   const [editModal, setEditModal] = React.useState(false);
   const [editfields, seteditfields] = React.useState([]);
-
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-  const [selectedFields, setSelectedFields] = useState([]);
   const [isSaveButtonEnabled, setSaveButtonEnabled] = useState(false);
   const [isEditSuccess, setIsEditSuccess] = useState(false);
   const [editData, setEditData] = React.useState();
@@ -115,7 +113,6 @@ export default function FacilitatorView({ footerLinks }) {
 
   const handleCheckboxChange = (value) => {
     if (value === "other details") {
-      // If "OTHER_DETAILS" checkbox is checked, check all other checkboxes
       if (!selectedCheckboxes.includes("other details")) {
         const allCheckboxValuesExceptOtherDetails = [
           "Availability",
@@ -127,16 +124,8 @@ export default function FacilitatorView({ footerLinks }) {
           ...allCheckboxValuesExceptOtherDetails,
         ]);
       } else {
-        // If "OTHER_DETAILS" checkbox is unchecked, uncheck all other checkboxes
         setSelectedCheckboxes([]);
       }
-    }
-    if (value === "basic detail") {
-      const allCheckboxValuesExceptBasicDetails = ["basic detail"];
-      setSelectedCheckboxes([
-        "basic details",
-        ...allCheckboxValuesExceptBasicDetails,
-      ]);
     } else {
       // If any other checkbox is checked or unchecked, update selectedCheckboxes accordingly
       setSelectedCheckboxes((prevSelected) => {
@@ -147,13 +136,11 @@ export default function FacilitatorView({ footerLinks }) {
         }
       });
     }
-
-    // Update the state to enable the Save button if at least one checkbox is checked
     setSaveButtonEnabled(true);
   };
 
   const editRequest = async () => {
-    if (!editData.fields) {
+    if (!editData) {
       const obj = {
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
@@ -172,6 +159,7 @@ export default function FacilitatorView({ footerLinks }) {
         updateObj
       );
     }
+    setEditModal(false);
   };
 
   const togglePasswordVisibility = () => {
@@ -208,16 +196,17 @@ export default function FacilitatorView({ footerLinks }) {
   }, []);
 
   React.useEffect(async () => {
-    console.log(id);
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
       edit_req_by: id,
-      selectedFields: selectedCheckboxes,
+      fields: selectedCheckboxes,
     };
     const result = await benificiaryRegistoryService.editFields(obj);
-    setEditData(result?.data[0]);
-    setRequestId(result?.data[0].id);
+    if (result.data[0]) {
+      setEditData(result?.data[0]);
+      setRequestId(result?.data[0].id);
+    }
   }, [id, selectedCheckboxes, benificiaryRegistoryService]);
   console.log("edit", editData);
 
@@ -255,7 +244,6 @@ export default function FacilitatorView({ footerLinks }) {
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
   };
-  console.log(isSaveButtonEnabled);
 
   const handleResetPassword = async (password, confirm_password) => {
     if (validate()) {
@@ -1011,7 +999,14 @@ export default function FacilitatorView({ footerLinks }) {
             </Modal.Footer>
           </Modal.Content>
         </Modal>
-        <Modal isOpen={editModal} avoidKeyboard size="xl">
+        <Modal
+          isOpen={editModal}
+          alignItems="center"
+          justifyContent="center"
+          avoidKeyboard
+          size="2xl"
+          marginLeft="25%"
+        >
           <Modal.Content>
             <Modal.Header textAlign={"Center"}>
               <AdminTypo.H1 color="textGreyColor.500">
@@ -1019,98 +1014,100 @@ export default function FacilitatorView({ footerLinks }) {
               </AdminTypo.H1>
             </Modal.Header>
             <Modal.Body>
-              <HStack space={2}>
-                <VStack>
-                  <CardComponent
-                    _header={{ bg: "light.100" }}
-                    _vstack={{ bg: "light.100", space: 10, pt: "2" }}
+              <HStack space={10}>
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{ bg: "light.100", space: 10, pt: "2" }}
+                >
+                  <Checkbox
+                    value="basic detail"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Address")}
+                    onChange={() => handleCheckboxChange("Address")}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderColor="light.400"
+                    borderBottomWidth="1"
+                    fontWeight={800}
                   >
-                    <Checkbox
-                      value="basic detail"
-                      size="sm"
-                      isChecked={selectedCheckboxes.includes("basic detail")}
-                      onChange={() => handleCheckboxChange("basic detail")}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      borderColor="light.400"
-                      borderBottomWidth="1"
-                      fontWeight={800}
-                    >
-                      {t("BASIC_DETAILS")}
-                    </Checkbox>
-                    <Checkbox
-                      value="Address"
-                      size="sm"
-                      isChecked={selectedCheckboxes.includes("Address")}
-                      onChange={() => handleCheckboxChange("Address")}
-                    >
-                      {t("ADDRESS")}
-                    </Checkbox>
-                  </CardComponent>
-                </VStack>
-                <VStack>
-                  <CardComponent
-                    _header={{ bg: "light.100" }}
-                    _vstack={{ bg: "light.100", space: 10, pt: "2" }}
+                    {t("BASIC_DETAILS")}
+                  </Checkbox>
+                  <Checkbox
+                    value="Address"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Address")}
+                    onChange={() => handleCheckboxChange("Address")}
                   >
-                    <Checkbox
-                      value="other details"
-                      size="sm"
-                      isChecked={selectedCheckboxes.includes("other details")}
-                      onChange={() => handleCheckboxChange("other details")}
-                      style={{
-                        borderBottomWidth: 1,
-                        borderBottomColor: "#000",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {t("OTHER_DETAILS")}
-                    </Checkbox>
+                    {t("ADDRESS")}
+                  </Checkbox>
+                </CardComponent>
 
-                    <Checkbox
-                      value="Availability"
-                      size="sm"
-                      isChecked={selectedCheckboxes.includes("Availability")}
-                      onChange={() => handleCheckboxChange("Availability")}
-                    >
-                      {t("AVAILABILITY")}
-                    </Checkbox>
-                    <Checkbox
-                      value="Device Ownership"
-                      size="sm"
-                      isChecked={selectedCheckboxes.includes(
-                        "Device Ownership"
-                      )}
-                      onChange={() => handleCheckboxChange("Device Ownership")}
-                    >
-                      {t("DEVICE_OWNERSHIP")}
-                    </Checkbox>
-                    <Checkbox
-                      value="Type of Device"
-                      size="sm"
-                      isChecked={selectedCheckboxes.includes("Type of Device")}
-                      onChange={() => handleCheckboxChange("Type of Device")}
-                    >
-                      {t("TYPE_OF_DEVICE")}
-                    </Checkbox>
-                  </CardComponent>
-                </VStack>
-                <VStack>
-                  <CardComponent
-                    _header={{ bg: "light.100" }}
-                    _vstack={{ bg: "light.100", space: 10, pt: "2" }}
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{ bg: "light.100", space: 10, pt: "2" }}
+                >
+                  <Checkbox
+                    value="other details"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("other details")}
+                    onChange={() => handleCheckboxChange("other details")}
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#000",
+                      fontWeight: "bold",
+                    }}
                   >
-                    <Checkbox
-                      value="Profile Photo"
-                      size="sm"
-                      mt="2"
-                      isChecked={selectedCheckboxes.includes("Profile Photo")}
-                      onChange={() => handleCheckboxChange("Profile Photo")}
-                    >
-                      {t("PROFILE_PHOTO")}
-                    </Checkbox>
-                  </CardComponent>
-                </VStack>
+                    {t("OTHER_DETAILS")}
+                  </Checkbox>
+
+                  <Checkbox
+                    value="Availability"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Availability")}
+                    onChange={() => handleCheckboxChange("Availability")}
+                  >
+                    {t("AVAILABILITY")}
+                  </Checkbox>
+                  <Checkbox
+                    value="Device Ownership"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Device Ownership")}
+                    onChange={() => handleCheckboxChange("Device Ownership")}
+                  >
+                    {t("DEVICE_OWNERSHIP")}
+                  </Checkbox>
+                  <Checkbox
+                    value="Type of Device"
+                    size="sm"
+                    isChecked={selectedCheckboxes.includes("Type of Device")}
+                    onChange={() => handleCheckboxChange("Type of Device")}
+                  >
+                    {t("TYPE_OF_DEVICE")}
+                  </Checkbox>
+                </CardComponent>
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{ bg: "light.100", space: 10, pt: "2" }}
+                >
+                  <Checkbox
+                    value="Profile"
+                    size="sm"
+                    mt="2"
+                    isChecked={selectedCheckboxes.includes("Profile Photo")}
+                    onChange={() => handleCheckboxChange("Profile Photo")}
+                  >
+                    Profile
+                  </Checkbox>
+                  <Checkbox
+                    value="Profile Photo"
+                    size="sm"
+                    mt="2"
+                    isChecked={selectedCheckboxes.includes("Profile Photo")}
+                    onChange={() => handleCheckboxChange("Profile Photo")}
+                  >
+                    {t("PROFILE_PHOTO")}
+                  </Checkbox>
+                </CardComponent>
               </HStack>
             </Modal.Body>
             <Modal.Footer>
