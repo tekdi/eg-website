@@ -13,14 +13,16 @@ export default function ProfilePhoto({
   return (
     <VStack alignItems="center">
       <VStack position="relative" p="4">
-        <IconByName
-          right="-20"
-          top="0"
-          p="2"
-          position="absolute"
-          name="PencilLineIcon"
-          onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
-        />
+        {editLink && (
+          <IconByName
+            right="-20"
+            top="0"
+            p="2"
+            position="absolute"
+            name="PencilLineIcon"
+            onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
+          />
+        )}
         {profile_photo_1?.id ? (
           <ImageView
             w="120"
