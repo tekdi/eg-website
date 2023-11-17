@@ -36,7 +36,6 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
-import { CheckBox } from "react-native-web";
 
 const columns = (t) => [
   {
