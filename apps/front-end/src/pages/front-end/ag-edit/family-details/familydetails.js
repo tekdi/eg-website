@@ -10,6 +10,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -21,6 +22,7 @@ import {
   BaseInputTemplate,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
 export default function FamilyDetails({ ip }) {
@@ -113,7 +115,7 @@ export default function FamilyDetails({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -128,7 +130,7 @@ export default function FamilyDetails({ ip }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -141,7 +143,7 @@ export default function FamilyDetails({ ip }) {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
 
       setSubmitBtn(t("NEXT"));
@@ -303,6 +305,10 @@ export default function FamilyDetails({ ip }) {
   const onSubmit = async (data) => {
     await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
+  };
+
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
   };
 
   return (

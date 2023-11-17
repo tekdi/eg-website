@@ -12,6 +12,7 @@ import {
   enumRegistryService,
   FrontEndTypo,
   getOptions,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import {
@@ -24,6 +25,7 @@ import {
   CustomR,
   select,
 } from "../../../../component/BaseInput.js";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
 export default function App({ onClick, id }) {
@@ -41,6 +43,7 @@ export default function App({ onClick, id }) {
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
+  const [fields, setFields] = React.useState([]);
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
@@ -64,6 +67,17 @@ export default function App({ onClick, id }) {
       previous_school_type: previous_school_type,
       learning_level: learning_level,
     });
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   React.useEffect(async () => {
@@ -113,7 +127,7 @@ export default function App({ onClick, id }) {
         value: "value",
       });
     }
-    setSchema(newSchema);
+    setSchemaData(newSchema);
   }, [formData]);
 
   const onPressBackButton = async () => {
@@ -133,7 +147,7 @@ export default function App({ onClick, id }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "13" });
         setPage("upload");
@@ -149,7 +163,7 @@ export default function App({ onClick, id }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -162,7 +176,7 @@ export default function App({ onClick, id }) {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
     }
   }, []);
@@ -263,6 +277,9 @@ export default function App({ onClick, id }) {
     }
   };
 
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
+  };
   return (
     <Layout
       _appBar={{
