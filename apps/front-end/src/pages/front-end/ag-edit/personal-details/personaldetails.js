@@ -202,7 +202,7 @@ export default function PersonalDetails({ ip }) {
   };
 
   const Submit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 

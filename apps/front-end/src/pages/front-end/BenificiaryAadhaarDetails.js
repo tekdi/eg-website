@@ -175,8 +175,8 @@ export default function BenificiaryAadhaarDetails() {
                     }}
                   >
                     {t("SCAN_QR_CODE")}
-                  </FrontEndTypo.Secondarybutton> */}
-                    {/* <FrontEndTypo.Primarybutton
+                  </FrontEndTypo.Secondarybutton> 
+                   <FrontEndTypo.Primarybutton
                       mt="10"
                       onPress={() => {
                         navigate(`/aadhaar-kyc/${id}/upload`, {

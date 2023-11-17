@@ -40,21 +40,22 @@ export default function BenificiaryAddress() {
     setbenificiary(result?.result);
   };
   const isAddressDetailsEdit = () => {
+    const data = requestData.filter((e) =>
+      [
+        "lat",
+        "long",
+        "address",
+        "street",
+        "district",
+        "block",
+        "village",
+        "grampanchayat",
+      ].includes(e)
+    );
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.filter((e) =>
-          [
-            "lat",
-            "long",
-            "address",
-            "street",
-            "district",
-            "block",
-            "village",
-            "grampanchayat",
-          ].includes(e)
-        ).length >= 0)
+        data.length > 0)
     );
   };
 

@@ -52,19 +52,20 @@ export default function BenificiaryBasicDetails() {
   const edit = `/beneficiary/${benificiary?.id}/upload/1`;
 
   const isFamilyDetailsEdit = () => {
+    const data = requestData.filter((e) =>
+      [
+        "father_first_name",
+        "father_middle_name",
+        "father_last_name",
+        "mother_first_name",
+        "mother_middle_name",
+        "mother_last_name",
+      ].includes(e)
+    );
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.filter((e) =>
-          [
-            "father_first_name",
-            "father_middle_name",
-            "father_last_name",
-            "mother_first_name",
-            "mother_middle_name",
-            "mother_last_name",
-          ].includes(e)
-        ).length >= 0)
+        data.length > 0)
     );
   };
   const isPersonalDetailsEdit = () => {
@@ -73,7 +74,7 @@ export default function BenificiaryBasicDetails() {
       (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
         requestData.filter((e) =>
           ["social_category", "marital_status"].includes(e)
-        ).length >= 0)
+        ).length > 0)
     );
   };
   return (
