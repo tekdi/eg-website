@@ -30,6 +30,40 @@ import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
+const checkboxoptions = [
+  {
+    label: "AVAILABILITY",
+    value: "availability",
+  },
+  {
+    label: "DEVICE_OWNERSHIP",
+    value: "device_ownership",
+  },
+  {
+    label: "TYPE_OF_DEVICE",
+    value: "device_type",
+  },
+];
+const addressoptions = [
+  {
+    label: "DISTRICT",
+    value: "district",
+  },
+  {
+    label: "BLOCK",
+    value: "block",
+  },
+  {
+    label: "VILLAGE_WARD",
+    value: "village",
+  },
+];
+const profileOptions = [
+  {
+    label: "PROFILE_PHOTO",
+    value: "profile_photo_1",
+  },
+];
 const Experience = (obj) => {
   return (
     <VStack>
@@ -105,7 +139,6 @@ export default function FacilitatorView({ footerLinks }) {
   const [qualifications, setQualifications] = React.useState([]);
   const [editModal, setEditModal] = React.useState(false);
   const [editfields, seteditfields] = React.useState([]);
-  const [isEditSuccess, setIsEditSuccess] = useState(false);
   const [editData, setEditData] = React.useState();
   const [requestId, setRequestId] = React.useState();
   const [fieldCheck, setFieldCheck] = React.useState();
@@ -148,7 +181,7 @@ export default function FacilitatorView({ footerLinks }) {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
-    const result = await benificiaryRegistoryService.editFields(obj);
+    const result = await benificiaryRegistoryService.getEditFields(obj);
     if (result.data[0]) {
       setEditData(result?.data[0]);
       setRequestId(result?.data[0].id);
@@ -176,44 +209,11 @@ export default function FacilitatorView({ footerLinks }) {
         id: editData?.id,
         fields: fieldCheck,
       };
-      await benificiaryRegistoryService.updateEditRequest(updateObj);
+      await benificiaryRegistoryService.updateRequestDetails(updateObj);
     }
     setEditModal(false);
   };
-  const checkboxoptions = [
-    {
-      label: t("AVAILABILITY"),
-      value: "availability",
-    },
-    {
-      label: t("DEVICE_OWNERSHIP"),
-      value: "device_ownership",
-    },
-    {
-      label: t("TYPE_OF_DEVICE"),
-      value: "device_type",
-    },
-  ];
-  const addressoptions = [
-    {
-      label: t("DISTRICT"),
-      value: "district",
-    },
-    {
-      label: t("BLOCK"),
-      value: "block",
-    },
-    {
-      label: t("VILLAGE_WARD"),
-      value: "village",
-    },
-  ];
-  const profileOptions = [
-    {
-      label: t("PROFILE_PHOTO"),
-      value: "profile_photo_1",
-    },
-  ];
+
   const showData = (item) => item || "-";
 
   const validate = () => {
@@ -422,15 +422,19 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("SEND_MESSAGE")}
               </AdminTypo.PrimaryButton>
             </VStack> */}
-            <VStack>
+            <VStack space={4}>
               <AdminTypo.Secondarybutton
-                leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
                 }}
               >
                 {t("USER_RESET_PASSWORD")}
               </AdminTypo.Secondarybutton>
+              {data?.aadhar_verified === "yes" && (
+                <AdminTypo.PrimaryButton onPress={openModal}>
+                  {t("OPEN_FOR_EDIT")}
+                </AdminTypo.PrimaryButton>
+              )}
             </VStack>
           </HStack>
           <Modal
@@ -576,22 +580,11 @@ export default function FacilitatorView({ footerLinks }) {
           </Modal>
 
           <VStack space={"5"} p="5" mt="6">
-            <AdminTypo.H4 color="textGreyColor.800" bold>
-              {t("PROFILE_DETAILS").toUpperCase()}
-            </AdminTypo.H4>
-            {data?.aadhar_verified === "yes" && (
-              <AdminTypo.Secondarybutton
-                my="3"
-                onPress={openModal}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 10,
-                }}
-              >
-                {t("OPEN_FOR_EDIT")}
-              </AdminTypo.Secondarybutton>
-            )}
+            <HStack>
+              <AdminTypo.H4 color="textGreyColor.800" bold>
+                {t("PROFILE_DETAILS").toUpperCase()}
+              </AdminTypo.H4>
+            </HStack>
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -986,7 +979,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <MultiCheck
                       value={fieldCheck || []}
                       onChange={(e) => {
-                        setFieldCheck(e);
+                        // setFieldCheck(e);
                       }}
                       schema={{
                         grid: 1,
@@ -1008,7 +1001,7 @@ export default function FacilitatorView({ footerLinks }) {
                     }}
                     title={
                       <SelectAllCheckBox
-                        fields={["state", "district", "block", "village"]}
+                        fields={addressoptions.map((e) => e.value)}
                         title={t("ADDRESS")}
                         {...{ setFieldCheck, fieldCheck }}
                       />
@@ -1048,7 +1041,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <MultiCheck
                       value={fieldCheck || []}
                       onChange={(e) => {
-                        setFieldCheck(e);
+                        //setFieldCheck(e);
                       }}
                       schema={{
                         grid: 1,
