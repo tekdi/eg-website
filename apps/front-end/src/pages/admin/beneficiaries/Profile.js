@@ -11,6 +11,7 @@ import {
   tableCustomStyles,
   CustomRadio,
   facilitatorRegistryService,
+  CardComponent,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -24,6 +25,7 @@ import {
   Input,
   Actionsheet,
   ScrollView,
+  Checkbox,
 } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
@@ -33,6 +35,8 @@ import moment from "moment";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
+import { MultiCheck } from "component/BaseInput";
+import { CheckBox } from "react-native-web";
 
 const columns = (t) => [
   {
@@ -104,8 +108,8 @@ export default function AgAdminProfile({ footerLinks }) {
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
     React.useState();
   const [getRequestData, setGetRequestData] = React.useState();
-
   const { t } = useTranslation();
+  const [checkedFields, setCheckedFields] = React.useState();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -230,6 +234,8 @@ export default function AgAdminProfile({ footerLinks }) {
     const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
     if (resule?.data[0]) {
       setGetRequestData(resule?.data[0]);
+      const data = JSON.parse(resule?.data[0]?.fields);
+      setCheckedFields(data);
     }
     setLoading(false);
   }, []);
@@ -376,11 +382,80 @@ export default function AgAdminProfile({ footerLinks }) {
         return null;
     }
   }
+  const familyFieldsArray = [
+    {
+      label: t("FATHER_NAME"),
+      value: "father_name",
+    },
+    {
+      label: t("MOTHER_NAME"),
+      value: "mother_name",
+    },
+  ];
+  const personalFieldsArray = [
+    {
+      label: t("SOCIAL_CATEGORY"),
+      value: "social_category",
+    },
+    {
+      label: t("MARITAL_STATUS"),
+      value: "marital_status",
+    },
+  ];
+  const educationalFieldsArray = [
+    {
+      label: t("TYPE_OF_LEARNER"),
+      value: "type_of_learner",
+    },
+    {
+      label: t("LAST_STANDARD_OF_EDUCATION"),
+      value: "last_standard_of_education",
+    },
+    {
+      label: t("LAST_YEAR_OF_EDUCATION"),
+      value: "last_standard_of_education_year",
+    },
+    {
+      label: t("PREVIOUS_SCHOOL_TYPE"),
+      value: "previous_school_type",
+    },
+    {
+      label: t("REASON_FOR_BEING_DEPRIVED_OF_EDUCATION"),
+      value: "reason_of_leaving_education",
+    },
+    {
+      label: t("WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER"),
+      value: "learning_level",
+    },
+  ];
+  const addressFieldsArray = [
+    {
+      label: t("STREET_ADDRESS"),
+      value: "street",
+    },
+    {
+      label: t("DISTRICT"),
+      value: "district",
+    },
+    {
+      label: t("BLOCK"),
+      value: "block",
+    },
+    {
+      label: t("VILLAGE_WARD"),
+      value: "village",
+    },
+    {
+      label: t("GRAMPANCHAYAT"),
+      value: "grampanchayat",
+    },
+  ];
+
   const giveAccess = async () => {
     if (getRequestData) {
       await facilitatorRegistryService.updateRequestData({
         status: "approved",
-        fields: [editAccessModalVisible],
+        fields: checkedFields,
         requestId: getRequestData?.id,
       });
       setEditAccessModalVisible(false);
@@ -388,7 +463,7 @@ export default function AgAdminProfile({ footerLinks }) {
       await benificiaryRegistoryService.createEditRequest({
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
-        fields: [editAccessModalVisible],
+        fields: checkedFields,
         edit_req_by: data?.program_beneficiaries?.facilitator_id,
       });
       setEditAccessModalVisible(false);
@@ -537,15 +612,26 @@ export default function AgAdminProfile({ footerLinks }) {
               <AdminTypo.H4 bold color="textGreyColor.800">
                 {t("PROFILE_DETAILS")}
               </AdminTypo.H4>
-              <AdminTypo.Secondarybutton
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
-                {t("VIEW_JOURNEY")}
-              </AdminTypo.Secondarybutton>
+              <HStack>
+                <HStack space="4">
+                  <AdminTypo.Secondarybutton
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    {t("VIEW_JOURNEY")}
+                  </AdminTypo.Secondarybutton>
+                  {benificiary?.result?.program_beneficiaries?.status ===
+                    "enrolled_ip_verified" && (
+                    <AdminTypo.Secondarybutton
+                      onPress={() => setEditAccessModalVisible(true)}
+                    >
+                      {t("GIVE_EDIT_ACCESS")}
+                    </AdminTypo.Secondarybutton>
+                  )}
+                </HStack>
+              </HStack>
             </HStack>
-
             <HStack justifyContent="space-between">
               <VStack
                 borderWidth={"1px"}
@@ -645,13 +731,6 @@ export default function AgAdminProfile({ footerLinks }) {
                         <AdminTypo.H5 color="textGreyColor" bold>
                           {t("FAMILY_DETAILS")}
                         </AdminTypo.H5>
-                        <IconByName
-                          color="textMaroonColor.400"
-                          name="PencilLineIcon"
-                          onPress={(e) => {
-                            setEditAccessModalVisible("family_details");
-                          }}
-                        />
                       </HStack>
                       <VStack>
                         <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -700,13 +779,6 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("PERSONAL_DETAILS")}
                   </AdminTypo.H5>
-                  <IconByName
-                    color="textMaroonColor.400"
-                    name="PencilLineIcon"
-                    onPress={(e) => {
-                      setEditAccessModalVisible("personal_details");
-                    }}
-                  />
                 </HStack>
                 <VStack>
                   <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -753,13 +825,6 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("EDUCATION_DETAILS")}
                   </AdminTypo.H5>
-                  <IconByName
-                    color="textMaroonColor.400"
-                    name="PencilLineIcon"
-                    onPress={(e) => {
-                      setEditAccessModalVisible("educational_details");
-                    }}
-                  />
                 </HStack>
                 <VStack space="1">
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
@@ -943,13 +1008,6 @@ export default function AgAdminProfile({ footerLinks }) {
                           <AdminTypo.H5 color="textGreyColor" bold>
                             {t("ADDRESS_DETAILS")}
                           </AdminTypo.H5>
-                          <IconByName
-                            color="textMaroonColor.400"
-                            name="PencilLineIcon"
-                            onPress={(e) => {
-                              setEditAccessModalVisible("address_details");
-                            }}
-                          />
                         </HStack>
                         <HStack>
                           <AdminTypo.H5
@@ -1527,14 +1585,121 @@ export default function AgAdminProfile({ footerLinks }) {
             </AdminTypo.H2>
           </Modal.Header>
           <Modal.Body>
-            <VStack space="1">
-              <AdminTypo.H4>{t("YOURE_GIVING_ACCESS_TO_EDIT")}</AdminTypo.H4>
-              <VStack justifyContent="left">
-                <DataOfFamilyDetails
-                  editAccessModalVisible={editAccessModalVisible}
-                  data={data}
-                  t={t}
-                />
+            <VStack space="2">
+              <AdminTypo.H3>
+                {t("PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS")}
+              </AdminTypo.H3>
+
+              <VStack space="2">
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={familyFieldsArray.map((e) => e.value)}
+                      title={t("FAMILY_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {}}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: familyFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={personalFieldsArray.map((e) => e.value)}
+                      title={t("PERSONAL_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {
+                      setCheckedFields(e);
+                    }}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: personalFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={addressFieldsArray.map((e) => e.value)}
+                      title={t("ADDRESS_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {}}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: addressFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={educationalFieldsArray.map((e) => e.value)}
+                      title={t("EDUCATION_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {
+                      setCheckedFields(e);
+                    }}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: educationalFieldsArray,
+                    }}
+                  />
+                </CardComponent>
               </VStack>
             </VStack>
           </Modal.Body>
@@ -1840,46 +2005,29 @@ function BeneficiaryJourney({
   );
 }
 
-const DataOfFamilyDetails = ({ editAccessModalVisible, t }) => {
+const SelectAllCheckBox = ({
+  fields,
+  title,
+  setCheckedFields,
+  checkedFields,
+}) => {
   return (
-    <VStack>
-      <AdminTypo.H7 bold color="textGreyColor.550">
-        {(() => {
-          switch (editAccessModalVisible) {
-            case "family_details":
-              return (
-                <ol type="1">
-                  <li>{t("FATHER_NAME")}</li>
-                  <li>{t("MOTHER_NAME")}</li>
-                </ol>
-              );
-
-            case "personal_details":
-              return (
-                <ol type="1">
-                  <li>{t("SOCIAL_CATEGORY")}</li>
-                  <li>{t("MARITAL_STATUS")}</li>
-                </ol>
-              );
-            case "educational_details":
-              return (
-                <ol type="1">
-                  <li>{t("TYPE_OF_LEARNER")}</li>
-                  <li>{t("LAST_STANDARD_OF_EDUCATION")}</li>
-                  <li>{t("LAST_YEAR_OF_EDUCATION")}</li>
-                  <li>{t("PREVIOUS_SCHOOL_TYPE")}</li>
-                  <li>{t("REASON_FOR_LEAVING")}</li>
-                  <li>{t("LEARNING_LEVEL_OF_LEARNER")}</li>
-                </ol>
-              );
-            case "address_details":
-              return t("ADDRESS");
-
-            default:
-              return null;
-          }
-        })()}
-      </AdminTypo.H7>
-    </VStack>
+    <Checkbox
+      onChange={(e) => {
+        if (!e) {
+          const checkbox = checkedFields.filter(
+            (field) => !fields.includes(field)
+          );
+          setCheckedFields(checkbox);
+        } else {
+          const checkbox = checkedFields.filter(
+            (field) => !fields.includes(field)
+          );
+          setCheckedFields([...checkbox, ...fields]);
+        }
+      }}
+    >
+      {title}
+    </Checkbox>
   );
 };
