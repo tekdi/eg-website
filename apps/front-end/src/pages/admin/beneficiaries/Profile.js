@@ -10,6 +10,7 @@ import {
   FrontEndTypo,
   tableCustomStyles,
   CustomRadio,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -89,6 +90,8 @@ export default function AgAdminProfile({ footerLinks }) {
   const [auditYear, setauditYear] = React.useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [editAccessModalVisible, setEditAccessModalVisible] =
+    React.useState(false);
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -100,6 +103,8 @@ export default function AgAdminProfile({ footerLinks }) {
     React.useState();
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
     React.useState();
+  const [getRequestData, setGetRequestData] = React.useState();
+
   const { t } = useTranslation();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
@@ -221,9 +226,13 @@ export default function AgAdminProfile({ footerLinks }) {
     setBenificiaryRejectReasons(
       enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
     );
+    const obj = { edit_req_for_context: "users", edit_req_for_context_id: id };
+    const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
+    if (resule?.data[0]) {
+      setGetRequestData(resule?.data[0]);
+    }
     setLoading(false);
   }, []);
-
   const handleAadhaarUpdate = (event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");
@@ -367,6 +376,25 @@ export default function AgAdminProfile({ footerLinks }) {
         return null;
     }
   }
+  const giveAccess = async () => {
+    if (getRequestData) {
+      await facilitatorRegistryService.updateRequestData({
+        status: "approved",
+        fields: [editAccessModalVisible],
+        requestId: getRequestData?.id,
+      });
+      setEditAccessModalVisible(false);
+    } else {
+      await benificiaryRegistoryService.createEditRequest({
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+        fields: [editAccessModalVisible],
+        edit_req_by: data?.program_beneficiaries?.facilitator_id,
+      });
+      setEditAccessModalVisible(false);
+    }
+  };
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -583,7 +611,6 @@ export default function AgAdminProfile({ footerLinks }) {
                         {data?.aadhar_no}
                       </AdminTypo.H5>
                       <IconByName
-                        bg="white"
                         color="textMaroonColor.400"
                         name="PencilLineIcon"
                         onPress={(e) => {
@@ -606,7 +633,7 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
               >
                 <HStack p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="auto">
+                  <VStack space="20px" w="100%">
                     <VStack space="20px" w="auto" rounded="xl">
                       <HStack
                         justifyContent="space-between"
@@ -618,6 +645,13 @@ export default function AgAdminProfile({ footerLinks }) {
                         <AdminTypo.H5 color="textGreyColor" bold>
                           {t("FAMILY_DETAILS")}
                         </AdminTypo.H5>
+                        <IconByName
+                          color="textMaroonColor.400"
+                          name="PencilLineIcon"
+                          onPress={(e) => {
+                            setEditAccessModalVisible("family_details");
+                          }}
+                        />
                       </HStack>
                       <VStack>
                         <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -666,6 +700,13 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("PERSONAL_DETAILS")}
                   </AdminTypo.H5>
+                  <IconByName
+                    color="textMaroonColor.400"
+                    name="PencilLineIcon"
+                    onPress={(e) => {
+                      setEditAccessModalVisible("personal_details");
+                    }}
+                  />
                 </HStack>
                 <VStack>
                   <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -691,7 +732,7 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
             </HStack>
 
-            <HStack justifyContent="space-between">
+            <HStack justifyContent="space-between" space="4" p="2">
               <VStack
                 space={"5"}
                 w="50%"
@@ -712,9 +753,32 @@ export default function AgAdminProfile({ footerLinks }) {
                   <AdminTypo.H5 color="textGreyColor" bold>
                     {t("EDUCATION_DETAILS")}
                   </AdminTypo.H5>
+                  <IconByName
+                    color="textMaroonColor.400"
+                    name="PencilLineIcon"
+                    onPress={(e) => {
+                      setEditAccessModalVisible("educational_details");
+                    }}
+                  />
                 </HStack>
-
-                <VStack>
+                <VStack space="1">
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("TYPE_OF_LEARNER")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {data?.core_beneficiaries?.type_of_learner ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"TYPE_OF_LEARNER"}
+                        enumOptionValue={
+                          data?.core_beneficiaries?.type_of_learner
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </AdminTypo.H5>
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("LAST_STANDARD_OF_EDUCATION")}:
                   </AdminTypo.H5>
@@ -768,67 +832,149 @@ export default function AgAdminProfile({ footerLinks }) {
                       "-"
                     )}
                   </AdminTypo.H5>
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("LEARNING_LEVEL_OF_LEARNER")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {data?.program_beneficiaries?.learning_level ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"BENEFICIARY_LEARNING_LEVEL"}
+                        enumOptionValue={
+                          data?.program_beneficiaries?.learning_level
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </AdminTypo.H5>
                 </VStack>
               </VStack>
+              <VStack w="100%" space="2">
+                <VStack
+                  space={"5"}
+                  w="50%"
+                  bg="light.100"
+                  p="6"
+                  rounded="xl"
+                  borderWidth={"1px"}
+                  borderColor={"primary.200"}
+                  borderStyle={"solid"}
+                >
+                  <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                    <VStack space="20px" w="100%">
+                      <VStack space="20px" w="100%" rounded="xl">
+                        <HStack
+                          justifyContent="space-between"
+                          alignItems="center"
+                          borderColor="light.400"
+                          pb="1"
+                          borderBottomWidth="1"
+                        >
+                          <AdminTypo.H5 color="textGreyColor" bold>
+                            {t("CAREER_ASPIRATION_FURTHER_STUDIES")}
+                          </AdminTypo.H5>
+                        </HStack>
+                        <HStack>
+                          <AdminTypo.H5
+                            flex="0.8"
+                            bold
+                            color="textGreyColor.550"
+                          >
+                            {t("REACTIVATE_REASONS_CAREER_ASPIRATIONS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                            {data?.program_beneficiaries
+                              ?.learning_motivation ? (
+                              <GetOptions
+                                array={
+                                  data?.program_beneficiaries
+                                    ?.learning_motivation
+                                }
+                                enumApiData={enumOptions}
+                                enumType={"LEARNING_MOTIVATION"}
+                              />
+                            ) : (
+                              "-"
+                            )}
+                          </AdminTypo.H5>
+                        </HStack>
 
-              <VStack
-                space={"5"}
-                w="50%"
-                bg="light.100"
-                p="6"
-                rounded="xl"
-                ml="3"
-                borderWidth={"1px"}
-                borderColor={"primary.200"}
-                borderStyle={"solid"}
-              >
-                <HStack bg="light.100" p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="100%">
-                    <VStack space="20px" w="100%" rounded="xl">
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.400"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <AdminTypo.H5 color="textGreyColor" bold>
-                          {t("CAREER_ASPIRATION_FURTHER_STUDIES")}
-                        </AdminTypo.H5>
-                      </HStack>
-                      <HStack>
-                        <AdminTypo.H5 flex="0.8" bold color="textGreyColor.550">
-                          {t("REACTIVATE_REASONS_CAREER_ASPIRATIONS")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 color="textGreyColor.800" bold>
-                          {data?.program_beneficiaries?.learning_motivation ? (
-                            <GetOptions
-                              array={
-                                data?.program_beneficiaries?.learning_motivation
-                              }
-                              enumApiData={enumOptions}
-                              enumType={"LEARNING_MOTIVATION"}
-                            />
-                          ) : (
-                            "-"
-                          )}
-                        </AdminTypo.H5>
-                      </HStack>
-
-                      <VStack space="2">
-                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                          {t("REMARKS")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
-                          {data?.core_beneficiaries?.career_aspiration_details
-                            ? data?.core_beneficiaries
-                                ?.career_aspiration_details
-                            : "-"}
-                        </AdminTypo.H5>
+                        <VStack space="2">
+                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                            {t("REMARKS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H5
+                            flex="0.7"
+                            color="textGreyColor.800"
+                            bold
+                          >
+                            {data?.core_beneficiaries?.career_aspiration_details
+                              ? data?.core_beneficiaries
+                                  ?.career_aspiration_details
+                              : "-"}
+                          </AdminTypo.H5>
+                        </VStack>
                       </VStack>
                     </VStack>
-                  </VStack>
-                </HStack>
+                  </HStack>
+                </VStack>
+                <VStack
+                  space={"5"}
+                  w="50%"
+                  bg="light.100"
+                  p="6"
+                  rounded="xl"
+                  borderWidth={"1px"}
+                  borderColor={"primary.200"}
+                  borderStyle={"solid"}
+                >
+                  <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                    <VStack space="20px" w="100%">
+                      <VStack space="20px" w="100%" rounded="xl">
+                        <HStack
+                          justifyContent="space-between"
+                          alignItems="center"
+                          borderColor="light.400"
+                          pb="1"
+                          borderBottomWidth="1"
+                        >
+                          <AdminTypo.H5 color="textGreyColor" bold>
+                            {t("ADDRESS_DETAILS")}
+                          </AdminTypo.H5>
+                          <IconByName
+                            color="textMaroonColor.400"
+                            name="PencilLineIcon"
+                            onPress={(e) => {
+                              setEditAccessModalVisible("address_details");
+                            }}
+                          />
+                        </HStack>
+                        <HStack>
+                          <AdminTypo.H5
+                            flex="0.8"
+                            bold
+                            color="textGreyColor.550"
+                          >
+                            {t("ADDRESS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H6 color="textGreyColor.600" bold>
+                            {[
+                              data?.state,
+                              data?.district,
+                              data?.block,
+                              data?.village,
+                              data?.grampanchayat,
+                            ]
+                              .filter((e) => e)
+                              .join(",")}
+                          </AdminTypo.H6>
+                        </HStack>
+                      </VStack>
+                    </VStack>
+                  </HStack>
+                </VStack>
               </VStack>
             </HStack>
 
@@ -1373,6 +1519,39 @@ export default function AgAdminProfile({ footerLinks }) {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      <Modal isOpen={editAccessModalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("GIVE_EDIT_ACCESS")}
+            </AdminTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack space="1">
+              <AdminTypo.H4>{t("YOURE_GIVING_ACCESS_TO_EDIT")}</AdminTypo.H4>
+              <VStack justifyContent="left">
+                <DataOfFamilyDetails
+                  editAccessModalVisible={editAccessModalVisible}
+                  data={data}
+                  t={t}
+                />
+              </VStack>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack justifyContent={"space-between"} width={"100%"}>
+              <AdminTypo.Secondarybutton
+                onPress={() => setEditAccessModalVisible(false)}
+              >
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton onPress={giveAccess}>
+                {t("CONFIRM")}
+              </AdminTypo.PrimaryButton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
 
       {/* Dropout Action  Sheet */}
       <Actionsheet
@@ -1660,3 +1839,47 @@ function BeneficiaryJourney({
     </Stack>
   );
 }
+
+const DataOfFamilyDetails = ({ editAccessModalVisible, t }) => {
+  return (
+    <VStack>
+      <AdminTypo.H7 bold color="textGreyColor.550">
+        {(() => {
+          switch (editAccessModalVisible) {
+            case "family_details":
+              return (
+                <ol type="1">
+                  <li>{t("FATHER_NAME")}</li>
+                  <li>{t("MOTHER_NAME")}</li>
+                </ol>
+              );
+
+            case "personal_details":
+              return (
+                <ol type="1">
+                  <li>{t("SOCIAL_CATEGORY")}</li>
+                  <li>{t("MARITAL_STATUS")}</li>
+                </ol>
+              );
+            case "educational_details":
+              return (
+                <ol type="1">
+                  <li>{t("TYPE_OF_LEARNER")}</li>
+                  <li>{t("LAST_STANDARD_OF_EDUCATION")}</li>
+                  <li>{t("LAST_YEAR_OF_EDUCATION")}</li>
+                  <li>{t("PREVIOUS_SCHOOL_TYPE")}</li>
+                  <li>{t("REASON_FOR_LEAVING")}</li>
+                  <li>{t("LEARNING_LEVEL_OF_LEARNER")}</li>
+                </ol>
+              );
+            case "address_details":
+              return t("ADDRESS");
+
+            default:
+              return null;
+          }
+        })()}
+      </AdminTypo.H7>
+    </VStack>
+  );
+};

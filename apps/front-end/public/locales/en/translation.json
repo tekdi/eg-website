@@ -540,6 +540,7 @@
   "GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT": "The request to get user location timed out.",
   "GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION": "User denied the request for Geolocation.",
   "GIRL_NOT_WILLING_TO_PURSUE_FURTHER_STUDIES": "Girl not willing to pursue further studies",
+  "GIVE_EDIT_ACCESS": "Give edit access",
   "GO_BACK": "Go Back",
   "GO_TO_BACK": "Go to back",
   "GOOD": "Good",
@@ -619,6 +620,7 @@
   "LEARNERS_NAME": "Learner's Name",
   "LEARNERS_SUBJECT_CSV": "Learner's subject CSV",
   "LEARNERS_WHATSAPP_NUMBER": "(WhatsApp phone number that is readily available to the learner)",
+  "LEARNING_LEVEL_OF_LEARNER": "Learning level of learner",
   "LEARNING_MOTIVATION": "Learning motivation",
   "LETTER_RECOMMENDATION_BOSS": "Letter of recommendation from my boss",
   "LOADING": "Loading...",
@@ -1138,5 +1140,6 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "YOURE_GIVING_ACCESS_TO_EDIT": "You're giving access to edit below details:-"
 }

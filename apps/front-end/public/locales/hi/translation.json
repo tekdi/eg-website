@@ -539,6 +539,7 @@
   "GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT": "उपयोगकर्ता के स्थान का समय समाप्त करने का अनुरोध।",
   "GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION": "उपयोगकर्ता ने जियोलोकेशन के अनुरोध को अस्वीकार कर दिया। ",
   "GIRL_NOT_WILLING_TO_PURSUE_FURTHER_STUDIES": "किशोरी की आगे पढ़ने की इच्छा न होने के कारण",
+  "GIVE_EDIT_ACCESS": "संपादित करने की अनुमति दे रहे हैं",
   "GO_BACK": "वापस जाओ",
   "GO_TO_BACK": "वापस जाएं",
   "GOOD": "अच्छा",
@@ -617,6 +618,7 @@
   "LEARNERS_NAME": "शिक्षार्थी का नाम",
   "LEARNERS_SUBJECT_CSV": "शिक्षार्थी के विषय CSV",
   "LEARNERS_WHATSAPP_NUMBER": "(व्हाट्सएप फ़ोन नंबर जो शिक्षार्थी के लिए आसानी से उपलब्ध हो)",
+  "LEARNING_LEVEL_OF_LEARNER": "शिक्षार्थी का सीखने का स्तर",
   "LEARNING_MOTIVATION": "सीखने की प्रेरणा",
   "LETTER_RECOMMENDATION_BOSS": "मेरे बॉस से सिफारिश का पत्र",
   "LOADING": "लोड किया जा रहा है...",
@@ -1136,5 +1138,6 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "YOURE_GIVING_ACCESS_TO_EDIT": "आप नीचे दिए गए विवरणों को संपादित करने की सुविधा दे रहे हैं:-"
 }
