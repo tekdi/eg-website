@@ -57,7 +57,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
-    const result = await facilitatorRegistryService.GetEditRequests(obj);
+    const result = await facilitatorRegistryService.getEditRequests(obj);
     let field;
     const parseField = result?.data[0]?.fields;
     if (parseField && typeof parseField === "string") {
