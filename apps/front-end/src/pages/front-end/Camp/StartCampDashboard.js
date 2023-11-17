@@ -20,10 +20,12 @@ import {
   Stack,
   VStack,
   Alert,
+  Image,
 } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import airplane from "./airoplane.gif";
 
 export default function StartCampDashboard({ footerLinks }) {
   const { t } = useTranslation();
@@ -243,13 +245,52 @@ export default function StartCampDashboard({ footerLinks }) {
                 .join(" ")}
               ,
             </FrontEndTypo.H1>
-            <ImageView
-              urlObject={facilitator?.profile_photo_1 || {}}
-              width="100"
-              height="100"
-            />
           </HStack>
         </Box>
+        <Box
+          margin={"auto"}
+          height={"200px"}
+          width={"380px"}
+          borderColor={"black"}
+          bg={"red.100"}
+          position="relative"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Image
+            source={airplane}
+            alt="Airplane GIF"
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            zIndex={-1}
+          />
+
+          <VStack alignItems="center" justifyContent="center">
+            <ImageView
+              width="80px"
+              height="80px"
+              source={{ document_id: facilitator?.profile_photo_1?.id }}
+            ></ImageView>
+
+            <FrontEndTypo.H2
+              marginTop={"15px"}
+              textAlign="center"
+              fontSize="16px"
+              fontWeight="bold"
+            >
+              {t("You're welcome! Are you ready for your dream to come true?")}
+            </FrontEndTypo.H2>
+          </VStack>
+        </Box>{" "}
+        <VStack alignItems="center" space="5">
+          <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
+            {t("Will the camp be conducted today?")}
+          </FrontEndTypo.H1>
+        </VStack>
         <VStack space="4">
           <TAlert
             alert={error}
@@ -263,7 +304,7 @@ export default function StartCampDashboard({ footerLinks }) {
             type="warning"
           />
           <FrontEndTypo.H3>{t("STARTS_YOUR_DAY")}</FrontEndTypo.H3>
-          <CardComponent
+          {/* <CardComponent
             title={
               <HStack justifyContent={"space-around"} space="4" flex={1}>
                 <FrontEndTypo.H5 bold>
@@ -350,15 +391,23 @@ export default function StartCampDashboard({ footerLinks }) {
               ) : (
                 <VStack space="4">
                   <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
-                    {t("START_CAMP")}
+                    {t("Yes, Absolutely yes.")}
                   </FrontEndTypo.Primarybutton>
                   <FrontEndTypo.Secondarybutton>
-                    {t("APPLY_FOR_LEAVE")}
+                    {t("No, I have other plans for today.")}
                   </FrontEndTypo.Secondarybutton>
                 </VStack>
               )}
             </VStack>
-          </CardComponent>
+          </CardComponent> */}
+          <VStack space="4">
+            <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
+              {t("Yes, Absolutely ")}
+            </FrontEndTypo.Primarybutton>
+            <FrontEndTypo.Secondarybutton>
+              {t("No, I have other plans for today.")}
+            </FrontEndTypo.Secondarybutton>
+          </VStack>
         </VStack>
         <VStack pt="6" space="4">
           <FrontEndTypo.H3>{t("OTHER_ACTIVITIES")}</FrontEndTypo.H3>
