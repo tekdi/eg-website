@@ -229,6 +229,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.Primarybutton>
                 </Stack>
               )}
+              {["upload"].includes(facilitator?.aadhaar_verification_mode) && (
+                <Stack space="3">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) =>
+                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                        state: "/",
+                      })
+                    }
+                  >
+                    {t("AADHAR_NUMBER_KYC")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
+              )}
             </Stack>
           )}
           {isDocumentUpload() && (
