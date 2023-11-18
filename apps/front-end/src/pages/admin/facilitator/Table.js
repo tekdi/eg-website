@@ -66,7 +66,8 @@ const columns = (t, navigate) => [
   {
     name: t("OKYC_VERIFICATION"),
     wrap: true,
-    selector: (row) => (row?.aadhar_verified === "yes" ? t("YES") : t("NO")),
+    selector: (row) =>
+      ["okyc_ip_verified"].includes(row?.aadhar_verified) ? t("YES") : t("NO"),
   },
   {
     name: t("MOBILE_NUMBER"),
