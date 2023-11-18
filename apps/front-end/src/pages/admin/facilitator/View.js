@@ -427,7 +427,7 @@ export default function FacilitatorView({ footerLinks }) {
               >
                 {t("USER_RESET_PASSWORD")}
               </AdminTypo.Secondarybutton>
-              {data?.aadhar_verified === "yes" && (
+              {data?.aadhar_verified === "okyc_ip_verified" && (
                 <AdminTypo.PrimaryButton onPress={openModal}>
                   {t("OPEN_FOR_EDIT")}
                 </AdminTypo.PrimaryButton>
