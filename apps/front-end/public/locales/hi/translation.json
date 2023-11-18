@@ -1152,5 +1152,6 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING":"प्रोफाइल आधार संख्या OKYC आधार से मेल नहीं खाती है, इसे अपडेट करें और प्रेरक को फिर से OKYC करने के लिए कहें"
 }

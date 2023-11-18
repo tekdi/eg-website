@@ -304,24 +304,35 @@ export default function StatusButton({ data, setData }) {
         >
           <Modal.CloseButton />
           <Modal.Content rounded="2xl">
-            {data?.aadhar_verified === "yes" ||
-              (data?.aadhar_verified === "okyc_ip_verified" && (
-                <Modal.Header alignItems="center">
-                  {t("IDENTITY_VERIFICATION")}
-                </Modal.Header>
-              ))}
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Header alignItems="center">
+                {t("IDENTITY_VERIFICATION")}
+              </Modal.Header>
+            )}
             <Modal.Body>
               <VStack space={4}>
                 {data?.program_faciltators?.okyc_response ? (
-                  <AadharCompare
-                    {...{
-                      user: data,
-                      aadhaarCompare: checkAadhaar(
-                        data,
-                        okycResponse?.aadhaar_data
-                      ),
-                    }}
-                  />
+                  <VStack space="4">
+                    <AadharCompare
+                      {...{
+                        user: data,
+                        aadhaarCompare: checkAadhaar(
+                          data,
+                          okycResponse?.aadhaar_data
+                        ),
+                      }}
+                    />
+                    {!["yes", "okyc_ip_verified"].includes(
+                      data?.aadhar_verified
+                    ) && (
+                      <Alert status="warning" alignItems={"start"}>
+                        <HStack alignItems="center" space="2">
+                          <Alert.Icon />
+                          {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING")}
+                        </HStack>
+                      </Alert>
+                    )}
+                  </VStack>
                 ) : (
                   <VStack p="2" flex="4">
                     <Alert status="warning" alignItems={"start"}>
@@ -334,19 +345,17 @@ export default function StatusButton({ data, setData }) {
                 )}
               </VStack>
             </Modal.Body>
-
-            {data?.aadhar_verified === "yes" ||
-              (data?.aadhar_verified === "okyc_ip_verified" && (
-                <Modal.Footer alignSelf="center">
-                  <AdminTypo.PrimaryButton
-                    onPress={() => {
-                      setAlertModal(true);
-                    }}
-                  >
-                    {t("CONFIRM")}
-                  </AdminTypo.PrimaryButton>
-                </Modal.Footer>
-              ))}
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Footer alignSelf="center">
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    setAlertModal(true);
+                  }}
+                >
+                  {t("CONFIRM")}
+                </AdminTypo.PrimaryButton>
+              </Modal.Footer>
+            )}
           </Modal.Content>
         </Modal>
       )}
