@@ -13,15 +13,11 @@ export default {
         "grampanchayat",
       ],
       properties: {
-        lat: {
-          type: "string",
-          title: "LATITUDE",
-          format: "readOnly",
-        },
-        long: {
-          type: "string",
-          title: "LONGITUDE",
-          format: "readOnly",
+        location: {
+          type: ["number", "string", "object"],
+          format: "Location",
+          lat: "lat",
+          long: "long",
         },
         property_type: {
           title: "PROPERTY_TYPE",
@@ -132,7 +128,7 @@ export default {
           label: "KIT_SUGGESTION",
           type: ["string", "number", "null"],
           grid: 2,
-          format: "textarea",
+          format: "Textarea",
         },
       },
     },

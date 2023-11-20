@@ -13,7 +13,7 @@ import {
   AdminTypo,
   ImageView,
   IconByName,
-  CampService,
+  campService,
   ConsentService,
   BodyMedium,
 } from "@shiksha/common-lib";
@@ -32,7 +32,7 @@ export default function ConsentForm() {
   const [consents, setConsents] = React.useState();
 
   React.useEffect(async () => {
-    const result = await CampService.getCampDetails({ id });
+    const result = await campService.getCampDetails({ id });
     const campConsent = await ConsentService.getConsent({ camp_id: id });
     if (Object.keys(campConsent?.data).length === 0) {
       setConsents([]);

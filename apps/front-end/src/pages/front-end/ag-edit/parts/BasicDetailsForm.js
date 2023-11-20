@@ -2,16 +2,10 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+import { Alert, Box, HStack } from "native-base";
 
 import {
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
   BodyMedium,
   benificiaryRegistoryService,
   AgRegistryService,
@@ -20,9 +14,6 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
-import { useScreenshot } from "use-screenshot-hook";
-
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -33,13 +24,14 @@ import {
   RadioBtn,
   CustomR,
 } from "../../../../component/BaseInput.js";
+import { useTranslation } from "react-i18next";
 
 // App
-export default function agFormEdit({ ip, id }) {
+export default function BasicDetailsForm({ id }) {
+  const { t } = useTranslation();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
@@ -47,18 +39,11 @@ export default function agFormEdit({ ip, id }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState(id);
+  const userId = id;
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
-  };
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
   };
 
   React.useEffect(async () => {
@@ -70,7 +55,7 @@ export default function agFormEdit({ ip, id }) {
       middle_name: qData?.middle_name,
       first_name: qData?.first_name,
       last_name: qData?.last_name,
-      dob: qData?.dob && qData?.dob,
+      dob: qData?.dob || undefined,
     });
   }, []);
 
@@ -229,7 +214,7 @@ export default function agFormEdit({ ip, id }) {
   };
 
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
@@ -253,15 +238,13 @@ export default function agFormEdit({ ip, id }) {
       ) : (
         <Box py={6} px={4} mb={5}>
           {/* Box */}
-          {alert ? (
+          {alert && (
             <Alert status="warning" alignItems={"start"} mb="3">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
                 <BodyMedium>{alert}</BodyMedium>
               </HStack>
             </Alert>
-          ) : (
-            <React.Fragment />
           )}
           {page && page !== "" ? (
             <Form
@@ -281,7 +264,7 @@ export default function agFormEdit({ ip, id }) {
               noHtml5Validate={true}
               {...{
                 validator,
-                schema: schema ? schema : {},
+                schema: schema || {},
                 uiSchema,
                 formData,
                 customValidate,
@@ -300,97 +283,10 @@ export default function agFormEdit({ ip, id }) {
               </FrontEndTypo.Primarybutton>
             </Form>
           ) : (
-            <React.Fragment />
+            <></>
           )}
         </Box>
       )}
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.username}
-                    </BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.password}
-                    </BodySmall>
-                  </HStack>
-                </Box>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

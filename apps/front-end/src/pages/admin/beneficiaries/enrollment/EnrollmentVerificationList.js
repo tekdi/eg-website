@@ -10,7 +10,6 @@ import {
   AdminLayout as Layout,
   urlData,
   setQueryParameters,
-  Breadcrumb,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -22,6 +21,7 @@ import {
   ScrollView,
   Input,
   Box,
+  Pressable,
 } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -38,37 +38,46 @@ const columns = (t, navigate, filter) => [
   {
     name: t("LEARNERS_NAME"),
     selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_photo_1?.name ? (
-          <ImageView
-            source={{
-              uri: row?.profile_photo_1?.name,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
-          <AdminTypo.H5 bold>
-            {row?.program_beneficiaries?.enrollment_first_name + " "}
-            {row?.program_beneficiaries?.enrollment_last_name
-              ? row?.program_beneficiaries?.enrollment_last_name
-              : ""}
-          </AdminTypo.H5>
-        ) : (
-          <AdminTypo.H5 bold>
-            {row?.first_name + " "}
-            {row?.last_name ? row?.last_name : ""}
-          </AdminTypo.H5>
-        )}
+      <HStack>
+        <Pressable
+          onPress={() =>
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`)
+          }
+        >
+          <HStack alignItems={"center"} space={2}>
+            {row?.profile_photo_1?.name ? (
+              <ImageView
+                source={{
+                  uri: row?.profile_photo_1?.name,
+                }}
+                // alt="Alternate Text"
+                width={"35px"}
+                height={"35px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "35" }}
+                mt="2"
+              />
+            )}
+            {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+              <AdminTypo.H5 bold>
+                {row?.program_beneficiaries?.enrollment_first_name + " "}
+                {row?.program_beneficiaries?.enrollment_last_name
+                  ? row?.program_beneficiaries?.enrollment_last_name
+                  : ""}
+              </AdminTypo.H5>
+            ) : (
+              <AdminTypo.H5 bold>
+                {row?.first_name + " "}
+                {row?.last_name ? row?.last_name : ""}
+              </AdminTypo.H5>
+            )}
+          </HStack>
+        </Pressable>
       </HStack>
     ),
     wrap: true,
@@ -92,7 +101,7 @@ const columns = (t, navigate, filter) => [
         return "-";
       }
     },
-    width: "150px",
+    // width: "150px",
   },
   {
     name: t("PRERAK_ID"),
@@ -115,15 +124,19 @@ const columns = (t, navigate, filter) => [
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <ChipStatus
-        key={index}
-        is_duplicate={row?.is_duplicate}
-        is_deactivated={row?.is_deactivated}
-        status={row?.program_beneficiaries?.status}
-      />
+      <Pressable
+        onPress={() => navigate(`/admin/learners/enrollmentReceipt/${row?.id}`)}
+      >
+        <ChipStatus
+          key={index}
+          is_duplicate={row?.is_duplicate}
+          is_deactivated={row?.is_deactivated}
+          status={row?.program_beneficiaries?.status}
+        />
+      </Pressable>
     ),
     wrap: true,
-    width: "150px",
+    width: "180px",
   },
   {
     name: t("ACTION"),
@@ -206,38 +219,26 @@ function EnrollmentVerificationList({ footerLinks }) {
       _sidebar={footerLinks}
     >
       <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
-        <Breadcrumb
-          drawer={
-            <IconByName
-              size="sm"
-              name="ArrowRightSLineIcon"
-              onPress={(e) => navigate("/admin/learners")}
-            />
-          }
-          data={[
-            <HStack key="b1" alignItems="center" space={"2"}>
-              <IconByName
-                isDisabled
-                name="GraduationCap"
-                _icon={{ size: "30" }}
-              />
-              <AdminTypo.H1 color="Activatedcolor.400">
-                {t("All_AG_LEARNERS")}
-              </AdminTypo.H1>
-            </HStack>,
-            <HStack alignItems="center" key="b2" space={"2"}>
-              <AdminTypo.H2>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H2>
-              <Image
-                source={{
-                  uri: "/box.svg",
-                }}
-                alt=""
-                size={"28px"}
-                resizeMode="contain"
-              />
-            </HStack>,
-          ]}
-        />
+        <HStack justifyContent="space-between" alignItems="center">
+          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
+          <AdminTypo.H1 color="Activatedcolor.400">
+            {t("All_AG_LEARNERS")}
+          </AdminTypo.H1>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate("/admin/learners")}
+          />
+          <AdminTypo.H1 px="3">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
+          <Image
+            source={{
+              uri: "/box.svg",
+            }}
+            alt=""
+            size={"28px"}
+            resizeMode="contain"
+          />
+        </HStack>
         <Input
           size={"xs"}
           minH="49px"
@@ -279,7 +280,7 @@ function EnrollmentVerificationList({ footerLinks }) {
             }
             pr="2"
           >
-            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+            <Filter {...{ filter, setFilter }} />
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>

@@ -13,7 +13,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import AadhaarNumberOKYC from "../../component/AadhaarNumberOKYC";
-// styles
+
 const styles = {
   inforBox: {
     style: {
@@ -86,13 +86,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         isAllow++;
       }
       if (key === "experience") {
-        if (expData?.length > 0) {
-          return false;
-        } else {
-          return true;
-        }
+        return expData?.length <= 0;
       }
     }
+
     if (key === "" || key === "vo_experience") {
       const expData = facilitator?.vo_experience?.filter(
         (e) => e?.reference?.document_id
@@ -101,11 +98,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         isAllow++;
       }
       if (key === "vo_experience") {
-        if (expData?.length > 0) {
-          return false;
-        } else {
-          return true;
-        }
+        return expData?.length <= 0;
       }
     }
 
@@ -116,11 +109,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         isAllow++;
       }
       if (key === "qualifications") {
-        if (expData) {
-          return false;
-        } else {
-          return true;
-        }
+        return !expData;
       }
     }
     return isAllow < 3;
@@ -207,19 +196,20 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             </Stack>
           )}
-          {["applied", ""]?.includes(facilitator.status) && progress !== 100 && (
-            <Stack>
-              <VStack p="5" pt={1}>
-                <FrontEndTypo.Primarybutton
-                  onPress={(e) => navigate("/profile/edit/basic_details")}
-                  bold
-                  flex="1"
-                >
-                  {t("COMPLETE_FORM")}
-                </FrontEndTypo.Primarybutton>
-              </VStack>
-            </Stack>
-          )}
+          {["applied", ""]?.includes(facilitator.status) &&
+            progress !== 100 && (
+              <Stack>
+                <VStack p="5" pt={1}>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) => navigate("/profile/edit/basic_details")}
+                    bold
+                    flex="1"
+                  >
+                    {t("COMPLETE_FORM")}
+                  </FrontEndTypo.Primarybutton>
+                </VStack>
+              </Stack>
+            )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack p="5">
               {[undefined].includes(facilitator?.aadhar_no) && (
@@ -236,6 +226,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     onPress={(e) => navigate(`/profile/edit/aadhaar_details`)}
                   >
                     {t("ADD_AADHAAR_NUMBER")}
+                  </FrontEndTypo.Primarybutton>
+                </Stack>
+              )}
+              {["upload"].includes(facilitator?.aadhaar_verification_mode) && (
+                <Stack space="3">
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
+                  <FrontEndTypo.Primarybutton
+                    onPress={(e) =>
+                      navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
+                        state: "/",
+                      })
+                    }
+                  >
+                    {t("AADHAR_NUMBER_KYC")}
                   </FrontEndTypo.Primarybutton>
                 </Stack>
               )}

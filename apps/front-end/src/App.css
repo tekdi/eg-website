@@ -48,7 +48,7 @@ fieldset {
   border: 0;
 }
 legend {
-  font-family: "Inter";
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -62,7 +62,13 @@ label {
   display: inline-block;
   max-width: 100%;
   margin-bottom: 5px;
-  font-weight: 700;
+  margin-top: 8px;
+  color: #212121;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
 }
 
 .form-group {
@@ -253,18 +259,7 @@ ul.list-inline {
 .has-error.radio-inline label {
   color: #a94442;
 }
-label {
-  color: #212121;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
-}
-img {
-  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-  filter: grayscale(100%);
-}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -296,9 +291,6 @@ img {
 ul {
   padding: 10px 0;
   list-style-type: none;
-}
-label {
-  margin-top: 8px;
 }
 
 @property --progress-value {

@@ -19,7 +19,7 @@ export default function BenificiaryBasicDetails() {
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
-
+  const [requestData, setRequestData] = React.useState([]);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -38,14 +38,56 @@ export default function BenificiaryBasicDetails() {
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await benificiaryRegistoryService.getEditRequest(obj);
+    if (result?.data.length > 0) {
+      const fieldData = JSON.parse(result?.data[0]?.fields);
+      setRequestData(fieldData);
+    }
   }, [benificiary]);
 
+  const edit = `/beneficiary/${benificiary?.id}/upload/1`;
+
+  const isFamilyDetailsEdit = () => {
+    const data = requestData.filter((e) =>
+      [
+        "father_first_name",
+        "father_middle_name",
+        "father_last_name",
+        "mother_first_name",
+        "mother_middle_name",
+        "mother_last_name",
+      ].includes(e)
+    );
+    return !!(
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
+      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+        data.length > 0)
+    );
+  };
+  const isPersonalDetailsEdit = () => {
+    return !!(
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
+      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+        requestData.filter((e) =>
+          ["social_category", "marital_status"].includes(e)
+        ).length > 0)
+    );
+  };
   return (
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
           <ProfilePhoto
-            editLink={`/beneficiary/${benificiary?.id}/upload/1`}
+            editLink={
+              benificiary?.program_beneficiaries?.status !==
+              "enrolled_ip_verified"
+                ? edit
+                : !edit
+            }
             profile_photo_1={benificiary?.profile_photo_1}
             profile_photo_2={benificiary?.profile_photo_2}
             profile_photo_3={benificiary?.profile_photo_3}
@@ -203,10 +245,7 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("FAMILY_DETAILS")}
               </FrontEndTypo.H3>
-              {benificiary?.program_beneficiaries?.status ===
-              "enrolled_ip_verified" ? (
-                <></>
-              ) : (
+              {isFamilyDetailsEdit() && (
                 <IconByName
                   name="EditBoxLineIcon"
                   color="iconColor.100"
@@ -305,14 +344,17 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("PERSONAL_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/personal-details`);
-                }}
-              />
+
+              {isPersonalDetailsEdit() && (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/personal-details`);
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
@@ -389,19 +431,15 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("REFERENCE_DETAILS")}
               </FrontEndTypo.H3>
-              {benificiary?.program_beneficiaries?.status ===
-              "enrolled_ip_verified" ? (
-                <></>
-              ) : (
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/reference-details`);
-                  }}
-                />
-              )}
+
+              <IconByName
+                name="EditBoxLineIcon"
+                color="iconColor.100"
+                _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/reference-details`);
+                }}
+              />
             </HStack>
             <Box>
               <Progress

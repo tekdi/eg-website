@@ -2,44 +2,19 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
+import { Alert, Box, HStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import Steper from "../../../../component/Steper.js";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
-  H1,
   t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
-  filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   benificiaryRegistoryService,
-  StudentEnumService,
   AgRegistryService,
   enumRegistryService,
   FrontEndTypo,
+  getOptions,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -47,36 +22,28 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-  RadioBtn,
   CustomR,
   select,
-  readOnly,
 } from "../../../../component/BaseInput.js";
-import { useScreenshot } from "use-screenshot-hook";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
-export default function App({ facilitator, ip, onClick, id }) {
-  const [userId, setuserId] = React.useState(id);
+export default function App({ onClick, id }) {
+  const userId = id;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
+  const [formData, setFormData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
-  const { form_step_number } = facilitator;
+  const { form_step_number } = {};
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
+  const [fields, setFields] = React.useState([]);
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
@@ -100,6 +67,17 @@ export default function App({ facilitator, ip, onClick, id }) {
       previous_school_type: previous_school_type,
       learning_level: learning_level,
     });
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   React.useEffect(async () => {
@@ -149,31 +127,11 @@ export default function App({ facilitator, ip, onClick, id }) {
         value: "value",
       });
     }
-    setSchema(newSchema);
+    setSchemaData(newSchema);
   }, [formData]);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/educationdetails`);
-  };
-
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
-  };
-
-  React.useEffect(() => {
-    getImage();
-  }, [page, credentials]);
-
-  const updateData = (data, deleteData = false) => {
-    if (deleteData) {
-      localStorage.removeItem(`id_data_${facilitator?.id}`);
-    } else {
-      localStorage.setItem(`id_data_${facilitator?.id}`, JSON.stringify(data));
-    }
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -189,7 +147,7 @@ export default function App({ facilitator, ip, onClick, id }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "13" });
         setPage("upload");
@@ -198,13 +156,14 @@ export default function App({ facilitator, ip, onClick, id }) {
       }
     }
   };
+
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -212,63 +171,15 @@ export default function App({ facilitator, ip, onClick, id }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
-  };
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
-      setSubmitBtn(t("NEXT"));
-    }
-    if (facilitator?.id) {
-      const data = localStorage.getItem(`id_data_${facilitator?.id}`);
-      const newData = JSON.parse(data);
-      setFormData({ ...newData, ...facilitator });
     }
   }, []);
-
-  const formSubmitUpdate = async (formData) => {
-    const { id } = facilitator;
-    if (id) {
-      updateData({}, true);
-      return await facilitatorRegistryService.stepUpdate({
-        ...formData,
-        parent_ip: ip?.id,
-        id: id,
-      });
-    }
-  };
 
   const goErrorPage = (key) => {
     if (key) {
@@ -303,7 +214,6 @@ export default function App({ facilitator, ip, onClick, id }) {
     setErrors({});
     const newData = { ...formData, ...data };
     setFormData(newData);
-    updateData(newData);
 
     if (newData?.type_of_learner === "never_enrolled") {
       setErrors({});
@@ -367,11 +277,14 @@ export default function App({ facilitator, ip, onClick, id }) {
     }
   };
 
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
+  };
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         name: t("EDUCATION_DETAILS"),
         lang,
         setLang,
@@ -379,7 +292,6 @@ export default function App({ facilitator, ip, onClick, id }) {
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* Box */}
         {alert ? (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -392,7 +304,7 @@ export default function App({ facilitator, ip, onClick, id }) {
         )}
         {page && page !== "" ? (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ select, CustomR }}
             templates={{
@@ -408,7 +320,7 @@ export default function App({ facilitator, ip, onClick, id }) {
             noHtml5Validate={true}
             {...{
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               formData,
               onChange,
               onError,
@@ -429,93 +341,6 @@ export default function App({ facilitator, ip, onClick, id }) {
           <React.Fragment />
         )}
       </Box>
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.username}
-                    </BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.password}
-                    </BodySmall>
-                  </HStack>
-                </Box>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

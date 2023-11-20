@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import { HStack, VStack, Box, Progress, Divider } from "native-base";
 import {
   IconByName,
@@ -14,7 +13,7 @@ import { objProps } from "@shiksha/common-lib";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
-  const [facilitator, setFacilitator] = useState();
+  const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [progress, setProgress] = React.useState(0);
@@ -61,7 +60,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       loading={loading}
       _appBar={{
         onPressBackButton: (e) => navigate("/"),
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
@@ -91,9 +90,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("BASIC_DETAILS")}
                 </FrontEndTypo.H3>
-                {["quit"].includes(facilitator?.status) ? (
-                  <React.Fragment></React.Fragment>
-                ) : (
+                {!["quit"].includes(facilitator?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
@@ -157,9 +154,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("QUALIFICATION_DETAILS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {["quit"].includes(facilitator?.status) ? (
-                    <React.Fragment></React.Fragment>
-                  ) : (
+                  {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
@@ -182,9 +177,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("VOLUNTEER_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {["quit"].includes(facilitator?.status) ? (
-                    <React.Fragment></React.Fragment>
-                  ) : (
+                  {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
@@ -209,9 +202,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("WORK_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {["quit"].includes(facilitator?.status) ? (
-                    <React.Fragment></React.Fragment>
-                  ) : (
+                  {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
@@ -237,9 +228,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
-                {["quit"].includes(facilitator?.status) ? (
-                  <React.Fragment></React.Fragment>
-                ) : (
+                {!["quit"].includes(facilitator?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"

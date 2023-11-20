@@ -1,28 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
-
+import { Alert, Box, Button, HStack } from "native-base";
 import {
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
   BodyMedium,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { useScreenshot } from "use-screenshot-hook";
-
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -30,43 +18,27 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-  RadioBtn,
-  CustomR,
 } from "../../../../component/BaseInput.js";
+import { useTranslation } from "react-i18next";
 
 // App
-export default function agFormEdit({ ip }) {
+export default function ReferenceDetails({ ip }) {
+  const { t } = useTranslation();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
-  const [cameraSelection, setCameraSelection] = React.useState(0);
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [userId, setuserId] = React.useState(id);
+  const userId = id;
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
-  };
-
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
   };
 
   React.useEffect(async () => {
@@ -138,16 +110,14 @@ export default function agFormEdit({ ip }) {
       setPage(newSteps[0]);
       setSchema(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 30);
-      let maxYear = moment().subtract("years", 18);
-      setYearsRange([minYear.year(), maxYear.year()]);
+
       setSubmitBtn(t("NEXT"));
     }
   }, []);
 
   const formSubmitUpdate = async (formData) => {
     if (id) {
-      const data = await enumRegistryService.editProfileById({
+      await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
@@ -236,7 +206,7 @@ export default function agFormEdit({ ip }) {
     setFormData(newData);
     if (id === "root_contact_number") {
       if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
+        await userExist({ mobile: data?.mobile });
 
         const newErrors = {
           mobile: {
@@ -265,10 +235,7 @@ export default function agFormEdit({ ip }) {
       };
       setErrors(newErrors);
     } else {
-      const updateDetails = await AgRegistryService.updateAg(
-        formData?.referencefullname,
-        userId
-      );
+      await AgRegistryService.updateAg(formData?.referencefullname, userId);
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };
@@ -293,21 +260,18 @@ export default function agFormEdit({ ip }) {
       ) : (
         <Box py={6} px={4} mb={5}>
           {/* Box */}
-          {alert ? (
+          {alert && (
             <Alert status="warning" alignItems={"start"} mb="3">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
                 <BodyMedium>{alert}</BodyMedium>
               </HStack>
             </Alert>
-          ) : (
-            <React.Fragment />
           )}
           {page && page !== "" ? (
             <Form
-              key={lang + addBtn}
+              key={lang}
               ref={formRef}
-              widgets={{ RadioBtn, CustomR }}
               templates={{
                 FieldTemplate,
                 ArrayFieldTitleTemplate,
@@ -321,7 +285,7 @@ export default function agFormEdit({ ip }) {
               noHtml5Validate={true}
               {...{
                 validator,
-                schema: schema ? schema : {},
+                schema: schema || {},
                 uiSchema,
                 formData,
                 customValidate,
@@ -345,93 +309,6 @@ export default function agFormEdit({ ip }) {
           )}
         </Box>
       )}
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.username}
-                    </BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.password}
-                    </BodySmall>
-                  </HStack>
-                </Box>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

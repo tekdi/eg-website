@@ -25,6 +25,7 @@ import {
   setQueryParameters,
   debounce,
   urlData,
+  filterObject,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";

@@ -44,14 +44,11 @@ export default function BenificiaryEducation() {
   const [enumOptions, setEnumOptions] = React.useState({});
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [requestData, setRequestData] = React.useState([]);
 
   React.useEffect(() => {
     benificiaryDetails();
   }, []);
-
-  const onPressBackButton = async () => {
-    navigate(`/beneficiary/profile/${userId}`);
-  };
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(userId);
@@ -62,9 +59,40 @@ export default function BenificiaryEducation() {
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: userId,
+    };
+    const result = await benificiaryRegistoryService.getEditRequest(obj);
+    if (result?.data.length > 0) {
+      const fieldData = JSON.parse(result?.data[0]?.fields);
+      setRequestData(fieldData);
+    }
   }, [benificiary]);
+
+  const isEducationalDetailsEdit = () => {
+    return !!(
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
+      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+        requestData.includes("educational_details")) ||
+      requestData.includes("type_of_learner") ||
+      requestData.includes("last_standard_of_education") ||
+      requestData.includes("last_standard_of_education_year") ||
+      requestData.includes("previous_school_type") ||
+      requestData.includes("reason_of_leaving_education") ||
+      requestData.includes("learning_level")
+    );
+  };
   return (
-    <Layout _appBar={{ name: t("EDUCATION_DETAILS"), onPressBackButton }}>
+    <Layout
+      _appBar={{
+        name: t("EDUCATION_DETAILS"),
+        onlyIconsShow: ["langBtn", "backBtn"],
+        onPressBackButton: (e) => {
+          navigate(`/beneficiary/profile/${userId}`);
+        },
+      }}
+    >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
           <VStack
@@ -84,14 +112,16 @@ export default function BenificiaryEducation() {
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("EDUCATION_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${userId}/education`);
-                }}
-              />
+              {isEducationalDetailsEdit() && (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  _icon={{ size: "20" }}
+                  color="iconColor.100"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${userId}/education`);
+                  }}
+                />
+              )}
             </HStack>
             <Box paddingTop="2">
               <Progress

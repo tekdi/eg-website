@@ -9,6 +9,9 @@ import {
   getUniqueArray,
   FrontEndTypo,
   tableCustomStyles,
+  CustomRadio,
+  facilitatorRegistryService,
+  CardComponent,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -20,6 +23,9 @@ import {
   VStack,
   Text,
   Input,
+  Actionsheet,
+  ScrollView,
+  Checkbox,
 } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,6 +34,8 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import Clipboard from "component/Clipboard";
+import { MultiCheck } from "component/BaseInput";
 
 const columns = (t) => [
   {
@@ -64,6 +72,90 @@ const columns = (t) => [
     wrap: true,
   },
 ];
+const familyFieldsArray = [
+  {
+    label: "FATHER_FIRST_NAME",
+    value: "father_first_name",
+  },
+  {
+    label: "FATHER_MIDDLE_NAME",
+    value: "father_middle_name",
+  },
+  {
+    label: "FATHER_LAST_NAME",
+    value: "father_last_name",
+  },
+  {
+    label: "MOTHER_FIRST_NAME",
+    value: "mother_first_name",
+  },
+  {
+    label: "MOTHER_MIDDLE_NAME",
+    value: "mother_middle_name",
+  },
+  {
+    label: "MOTHER_LAST_NAME",
+    value: "mother_last_name",
+  },
+];
+const personalFieldsArray = [
+  {
+    label: "SOCIAL_CATEGORY",
+    value: "social_category",
+  },
+  {
+    label: "MARITAL_STATUS",
+    value: "marital_status",
+  },
+];
+const educationalFieldsArray = [
+  {
+    label: "TYPE_OF_LEARNER",
+    value: "type_of_learner",
+  },
+  {
+    label: "LAST_STANDARD_OF_EDUCATION",
+    value: "last_standard_of_education",
+  },
+  {
+    label: "LAST_YEAR_OF_EDUCATION",
+    value: "last_standard_of_education_year",
+  },
+  {
+    label: "PREVIOUS_SCHOOL_TYPE",
+    value: "previous_school_type",
+  },
+  {
+    label: "REASON_FOR_BEING_DEPRIVED_OF_EDUCATION",
+    value: "reason_of_leaving_education",
+  },
+  {
+    label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+    value: "learning_level",
+  },
+];
+const addressFieldsArray = [
+  {
+    label: "STREET_ADDRESS",
+    value: "address",
+  },
+  {
+    label: "DISTRICT",
+    value: "district",
+  },
+  {
+    label: "BLOCK",
+    value: "block",
+  },
+  {
+    label: "VILLAGE_WARD",
+    value: "village",
+  },
+  {
+    label: "GRAMPANCHAYAT",
+    value: "grampanchayat",
+  },
+];
 
 export default function AgAdminProfile({ footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -85,7 +177,22 @@ export default function AgAdminProfile({ footerLinks }) {
   const [auditYear, setauditYear] = React.useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = React.useState();
   const [loading, setLoading] = React.useState(true);
+  const [editAccessModalVisible, setEditAccessModalVisible] =
+    React.useState(false);
+  const [reasonValue, setReasonValue] = React.useState("");
+  const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
+  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
+  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
+  const [isOpenReject, setIsOpenReject] = React.useState(false);
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
+    React.useState();
+  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
+    React.useState();
+  const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
+    React.useState();
+  const [getRequestData, setGetRequestData] = React.useState();
   const { t } = useTranslation();
+  const [checkedFields, setCheckedFields] = React.useState();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -199,9 +306,22 @@ export default function AgAdminProfile({ footerLinks }) {
     setselectData(data);
     const enumData = await enumRegistryService.listOfEnum();
     setEnumOptions(enumData?.data ? enumData?.data : {});
+    setBenificiaryDropoutReasons(
+      enumData?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+    );
+    setBenificiaryReactivateReasons(enumData?.data?.REACTIVATE_REASONS);
+    setBenificiaryRejectReasons(
+      enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+    );
+    const obj = { edit_req_for_context: "users", edit_req_for_context_id: id };
+    const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
+    if (resule?.data[0]) {
+      setGetRequestData(resule?.data[0]);
+      const data = JSON.parse(resule?.data[0]?.fields);
+      setCheckedFields(data);
+    }
     setLoading(false);
   }, []);
-
   const handleAadhaarUpdate = (event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");
@@ -228,6 +348,143 @@ export default function AgAdminProfile({ footerLinks }) {
       setAdhaarModalVisible(false);
     }
   };
+
+  const dropoutApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.result?.id?.toString(),
+      status: "dropout",
+      reason_for_status_update: reasonValue,
+    };
+
+    const result = await benificiaryRegistoryService.learnerAdminStatusUpdate(
+      bodyData
+    );
+
+    if (result) {
+      setReasonValue("");
+      setIsOpenDropOut(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  };
+
+  const reactivateApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.result?.id?.toString(),
+      status: "identified",
+      reason_for_status_update: reactivateReasonValue,
+    };
+    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+    if (result) {
+      setReactivateReasonValue("");
+      setIsOpenReactive(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  };
+
+  const RejectApiCall = async () => {
+    let bodyData = {
+      user_id: benificiary?.result?.id?.toString(),
+      status: "rejected",
+      reason_for_status_update: reasonValue,
+    };
+
+    const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+
+    if (result) {
+      setReasonValue("");
+      setIsOpenReject(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  };
+  function renderDropoutButton() {
+    const status = benificiary?.result?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case "enrolled_ip_verified":
+      case null:
+        return (
+          <AdminTypo.Dangerbutton
+            onPress={(e) => setIsOpenDropOut(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("MARK_AS_DROPOUT")}
+          </AdminTypo.Dangerbutton>
+        );
+      default:
+        return null;
+    }
+  }
+  function renderReactivateButton() {
+    const status = benificiary?.result?.program_beneficiaries?.status;
+    switch (status) {
+      case "rejected":
+      case "dropout":
+        return (
+          <AdminTypo.Secondarybutton onPress={(e) => setIsOpenReactive(true)}>
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+          </AdminTypo.Secondarybutton>
+        );
+      default:
+        return null;
+    }
+  }
+
+  function renderRejectButton() {
+    const status = benificiary?.result?.program_beneficiaries?.status;
+    switch (status) {
+      case "identified":
+      case "ready_to_enroll":
+      case "enrolled":
+      case "approved_ip":
+      case "registered_in_camp":
+      case "pragati_syc":
+      case "activate":
+      case "enrolled_ip_verified":
+      case null:
+        return (
+          <AdminTypo.Dangerbutton
+            onPress={(e) => setIsOpenReject(true)}
+            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          >
+            {t("REJECT")}
+          </AdminTypo.Dangerbutton>
+        );
+      default:
+        return null;
+    }
+  }
+
+  const giveAccess = async () => {
+    if (getRequestData) {
+      await facilitatorRegistryService.updateRequestData({
+        status: "approved",
+        fields: checkedFields,
+        requestId: getRequestData?.id,
+      });
+      setEditAccessModalVisible(false);
+    } else {
+      await benificiaryRegistoryService.createEditRequest({
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+        fields: checkedFields,
+        edit_req_by: data?.program_beneficiaries?.facilitator_id,
+      });
+      setEditAccessModalVisible(false);
+    }
+  };
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -255,6 +512,14 @@ export default function AgAdminProfile({ footerLinks }) {
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
                 : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
             </AdminTypo.H1>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
+            <Clipboard text={data?.id}>
+              <Chip textAlign="center" lineHeight="15px" label={data?.id} />
+            </Clipboard>
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
@@ -362,15 +627,26 @@ export default function AgAdminProfile({ footerLinks }) {
               <AdminTypo.H4 bold color="textGreyColor.800">
                 {t("PROFILE_DETAILS")}
               </AdminTypo.H4>
-              <AdminTypo.Secondarybutton
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
-                {t("VIEW_JOURNEY")}
-              </AdminTypo.Secondarybutton>
+              <HStack>
+                <HStack space="4">
+                  <AdminTypo.Secondarybutton
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    {t("VIEW_JOURNEY")}
+                  </AdminTypo.Secondarybutton>
+                  {benificiary?.result?.program_beneficiaries?.status ===
+                    "enrolled_ip_verified" && (
+                    <AdminTypo.Secondarybutton
+                      onPress={() => setEditAccessModalVisible(true)}
+                    >
+                      {t("OPEN_FOR_EDIT")}
+                    </AdminTypo.Secondarybutton>
+                  )}
+                </HStack>
+              </HStack>
             </HStack>
-
             <HStack justifyContent="space-between">
               <VStack
                 borderWidth={"1px"}
@@ -436,7 +712,6 @@ export default function AgAdminProfile({ footerLinks }) {
                         {data?.aadhar_no}
                       </AdminTypo.H5>
                       <IconByName
-                        bg="white"
                         color="textMaroonColor.400"
                         name="PencilLineIcon"
                         onPress={(e) => {
@@ -459,7 +734,7 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
               >
                 <HStack p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="auto">
+                  <VStack space="20px" w="100%">
                     <VStack space="20px" w="auto" rounded="xl">
                       <HStack
                         justifyContent="space-between"
@@ -544,7 +819,7 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
             </HStack>
 
-            <HStack justifyContent="space-between">
+            <HStack justifyContent="space-between" space="4" p="2">
               <VStack
                 space={"5"}
                 w="50%"
@@ -566,8 +841,24 @@ export default function AgAdminProfile({ footerLinks }) {
                     {t("EDUCATION_DETAILS")}
                   </AdminTypo.H5>
                 </HStack>
-
-                <VStack>
+                <VStack space="1">
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("TYPE_OF_LEARNER")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {data?.core_beneficiaries?.type_of_learner ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"TYPE_OF_LEARNER"}
+                        enumOptionValue={
+                          data?.core_beneficiaries?.type_of_learner
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </AdminTypo.H5>
                   <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
                     {t("LAST_STANDARD_OF_EDUCATION")}:
                   </AdminTypo.H5>
@@ -621,67 +912,142 @@ export default function AgAdminProfile({ footerLinks }) {
                       "-"
                     )}
                   </AdminTypo.H5>
+                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
+                    {t("LEARNING_LEVEL_OF_LEARNER")}:
+                  </AdminTypo.H5>
+                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
+                    {data?.program_beneficiaries?.learning_level ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"BENEFICIARY_LEARNING_LEVEL"}
+                        enumOptionValue={
+                          data?.program_beneficiaries?.learning_level
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </AdminTypo.H5>
                 </VStack>
               </VStack>
+              <VStack w="100%" space="2">
+                <VStack
+                  space={"5"}
+                  w="50%"
+                  bg="light.100"
+                  p="6"
+                  rounded="xl"
+                  borderWidth={"1px"}
+                  borderColor={"primary.200"}
+                  borderStyle={"solid"}
+                >
+                  <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                    <VStack space="20px" w="100%">
+                      <VStack space="20px" w="100%" rounded="xl">
+                        <HStack
+                          justifyContent="space-between"
+                          alignItems="center"
+                          borderColor="light.400"
+                          pb="1"
+                          borderBottomWidth="1"
+                        >
+                          <AdminTypo.H5 color="textGreyColor" bold>
+                            {t("CAREER_ASPIRATION_FURTHER_STUDIES")}
+                          </AdminTypo.H5>
+                        </HStack>
+                        <HStack>
+                          <AdminTypo.H5
+                            flex="0.8"
+                            bold
+                            color="textGreyColor.550"
+                          >
+                            {t("REACTIVATE_REASONS_CAREER_ASPIRATIONS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H5 color="textGreyColor.800" bold>
+                            {data?.program_beneficiaries
+                              ?.learning_motivation ? (
+                              <GetOptions
+                                array={
+                                  data?.program_beneficiaries
+                                    ?.learning_motivation
+                                }
+                                enumApiData={enumOptions}
+                                enumType={"LEARNING_MOTIVATION"}
+                              />
+                            ) : (
+                              "-"
+                            )}
+                          </AdminTypo.H5>
+                        </HStack>
 
-              <VStack
-                space={"5"}
-                w="50%"
-                bg="light.100"
-                p="6"
-                rounded="xl"
-                ml="3"
-                borderWidth={"1px"}
-                borderColor={"primary.200"}
-                borderStyle={"solid"}
-              >
-                <HStack bg="light.100" p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="100%">
-                    <VStack space="20px" w="100%" rounded="xl">
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.400"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <AdminTypo.H5 color="textGreyColor" bold>
-                          {t("CAREER_ASPIRATION_FURTHER_STUDIES")}
-                        </AdminTypo.H5>
-                      </HStack>
-                      <HStack>
-                        <AdminTypo.H5 flex="0.8" bold color="textGreyColor.550">
-                          {t("REACTIVATE_REASONS_CAREER_ASPIRATIONS")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 color="textGreyColor.800" bold>
-                          {data?.program_beneficiaries?.learning_motivation ? (
-                            <GetOptions
-                              array={
-                                data?.program_beneficiaries?.learning_motivation
-                              }
-                              enumApiData={enumOptions}
-                              enumType={"LEARNING_MOTIVATION"}
-                            />
-                          ) : (
-                            "-"
-                          )}
-                        </AdminTypo.H5>
-                      </HStack>
-
-                      <VStack space="2">
-                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                          {t("REMARKS")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
-                          {data?.core_beneficiaries?.career_aspiration_details
-                            ? data?.core_beneficiaries
-                                ?.career_aspiration_details
-                            : "-"}
-                        </AdminTypo.H5>
+                        <VStack space="2">
+                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
+                            {t("REMARKS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H5
+                            flex="0.7"
+                            color="textGreyColor.800"
+                            bold
+                          >
+                            {data?.core_beneficiaries?.career_aspiration_details
+                              ? data?.core_beneficiaries
+                                  ?.career_aspiration_details
+                              : "-"}
+                          </AdminTypo.H5>
+                        </VStack>
                       </VStack>
                     </VStack>
-                  </VStack>
-                </HStack>
+                  </HStack>
+                </VStack>
+                <VStack
+                  space={"5"}
+                  w="50%"
+                  bg="light.100"
+                  p="6"
+                  rounded="xl"
+                  borderWidth={"1px"}
+                  borderColor={"primary.200"}
+                  borderStyle={"solid"}
+                >
+                  <HStack bg="light.100" p="1" mx="1" rounded="xl">
+                    <VStack space="20px" w="100%">
+                      <VStack space="20px" w="100%" rounded="xl">
+                        <HStack
+                          justifyContent="space-between"
+                          alignItems="center"
+                          borderColor="light.400"
+                          pb="1"
+                          borderBottomWidth="1"
+                        >
+                          <AdminTypo.H5 color="textGreyColor" bold>
+                            {t("ADDRESS_DETAILS")}
+                          </AdminTypo.H5>
+                        </HStack>
+                        <HStack>
+                          <AdminTypo.H5
+                            flex="0.8"
+                            bold
+                            color="textGreyColor.550"
+                          >
+                            {t("ADDRESS")}:
+                          </AdminTypo.H5>
+                          <AdminTypo.H6 color="textGreyColor.600" bold>
+                            {[
+                              data?.state,
+                              data?.district,
+                              data?.block,
+                              data?.village,
+                              data?.grampanchayat,
+                            ]
+                              .filter((e) => e)
+                              .join(",")}
+                          </AdminTypo.H6>
+                        </HStack>
+                      </VStack>
+                    </VStack>
+                  </HStack>
+                </VStack>
               </VStack>
             </HStack>
 
@@ -692,7 +1058,6 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
                 space={"5"}
                 p="5"
-                mt="4"
                 rounded="xl"
                 w={"50%"}
               >
@@ -1021,7 +1386,6 @@ export default function AgAdminProfile({ footerLinks }) {
                 borderStyle={"solid"}
                 space={"5"}
                 p="5"
-                mt="4"
                 rounded="xl"
                 w={"50%"}
               >
@@ -1151,6 +1515,11 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
             </HStack>
           </VStack>
+          <HStack pt="0" p="3" space="6">
+            {renderDropoutButton()}
+            {renderReactivateButton()}
+            {renderRejectButton()}
+          </HStack>
         </Box>
       </VStack>
       <Modal
@@ -1223,6 +1592,320 @@ export default function AgAdminProfile({ footerLinks }) {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      <Modal isOpen={editAccessModalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("GIVE_EDIT_ACCESS")}
+            </AdminTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack p="4" space="4">
+              <AdminTypo.H3>
+                {t("PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS")}
+              </AdminTypo.H3>
+
+              <VStack space="4">
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={familyFieldsArray.map((e) => e.value)}
+                      title={t("FAMILY_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {
+                      setCheckedFields(e);
+                    }}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: familyFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={personalFieldsArray.map((e) => e.value)}
+                      title={t("PERSONAL_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {
+                      setCheckedFields(e);
+                    }}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: personalFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={addressFieldsArray.map((e) => e.value)}
+                      title={t("ADDRESS_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {}}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: addressFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+                <CardComponent
+                  _header={{ bg: "light.100" }}
+                  _vstack={{
+                    bg: "light.100",
+                    space: 2,
+                    pt: "2",
+                  }}
+                  title={
+                    <SelectAllCheckBox
+                      fields={educationalFieldsArray.map((e) => e.value)}
+                      title={t("EDUCATION_DETAILS")}
+                      {...{ setCheckedFields, checkedFields }}
+                    />
+                  }
+                >
+                  <MultiCheck
+                    value={checkedFields || []}
+                    onChange={(e) => {
+                      setCheckedFields(e);
+                    }}
+                    schema={{
+                      grid: 1,
+                    }}
+                    options={{
+                      enumOptions: educationalFieldsArray,
+                    }}
+                  />
+                </CardComponent>
+              </VStack>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack justifyContent={"space-between"} width={"100%"}>
+              <AdminTypo.Secondarybutton
+                onPress={() => setEditAccessModalVisible(false)}
+              >
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton onPress={giveAccess}>
+                {t("CONFIRM")}
+              </AdminTypo.PrimaryButton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
+      {/* Dropout Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenDropOut}
+        onClose={(e) => setIsOpenDropOut(false)}
+      >
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenDropOut(false)}
+              />
+            </VStack>
+
+            <AdminTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </AdminTypo.H1>
+            <AdminTypo.H4 color="textGreyColor.450">
+              {t("AG_PROFILE_DROPOUT_MESSAGE")}{" "}
+            </AdminTypo.H4>
+            <AdminTypo.H4 bold color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REASON_MEASSGAE")}{" "}
+            </AdminTypo.H4>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg" w="100%">
+                <VStack alignItems="center" space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryDropoutReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reasonValue}
+                      onChange={(e) => {
+                        setReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+              <VStack>
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    dropoutApiCall();
+                  }}
+                >
+                  {t("MARK_AS_DROPOUT")}
+                </AdminTypo.PrimaryButton>
+              </VStack>
+            </VStack>
+          </ScrollView>
+        </Stack>
+      </Actionsheet>
+
+      {/* REactivate Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenReactive}
+        onClose={(e) => setIsOpenReactive(false)}
+      >
+        <Stack width={"100%"} maxH={"100%"}>
+          <Actionsheet.Content>
+            <VStack alignItems="end" width="100%">
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setIsOpenReactive(false)}
+              />
+            </VStack>
+            <AdminTypo.H1 bold color="textGreyColor.450">
+              {t("AG_PROFILE_ARE_YOU_SURE")}
+            </AdminTypo.H1>
+            <AdminTypo.H4 color="textGreyColor.450">
+              {t("AG_PROFILE_REACTIVAYE_MESSAGE")}
+            </AdminTypo.H4>
+            <AdminTypo.H4 color="textGreyColor.200" pb="4" pl="2">
+              {t("AG_PROFILE_REACTIVATE_REASON_MEASSGAE")}
+            </AdminTypo.H4>
+          </Actionsheet.Content>
+          <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
+            <VStack space="5">
+              <VStack space="2" p="1" rounded="lg">
+                <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
+                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                    <CustomRadio
+                      options={{
+                        enumOptions: benificiaryReactivateReasons?.map((e) => ({
+                          ...e,
+                          label: e?.title,
+                          value: e?.value,
+                        })),
+                      }}
+                      schema={{ grid: 2 }}
+                      value={reactivateReasonValue}
+                      onChange={(e) => {
+                        setReactivateReasonValue(e);
+                      }}
+                    />
+                  </React.Suspense>
+                </VStack>
+              </VStack>
+
+              <AdminTypo.PrimaryButton
+                onPress={() => {
+                  reactivateApiCall();
+                }}
+              >
+                {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+              </AdminTypo.PrimaryButton>
+            </VStack>
+          </ScrollView>
+        </Stack>
+      </Actionsheet>
+
+      {/* Reject Action  Sheet */}
+      <Actionsheet
+        isOpen={isOpenReject}
+        onClose={(e) => setIsOpenReject(false)}
+      >
+        <Actionsheet.Content>
+          <VStack alignItems="end" width="100%">
+            <IconByName
+              name="CloseCircleLineIcon"
+              onPress={(e) => setIsOpenReject(false)}
+            />
+          </VStack>
+
+          <AdminTypo.H1 bold color="textGreyColor.450">
+            {t("AG_PROFILE_ARE_YOU_SURE")}
+          </AdminTypo.H1>
+
+          <AdminTypo.H4 color="textGreyColor.200" pb="4" pl="2">
+            {t("PLEASE_MENTION_YOUR_REASON_FOR_REJECTING_THE_CANDIDATE")}
+          </AdminTypo.H4>
+          <VStack space="5">
+            <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
+              <VStack alignItems="center" space="1" flex="1">
+                <React.Suspense fallback={<HStack>{t("LOADING")}</HStack>}>
+                  <CustomRadio
+                    options={{
+                      enumOptions: benificiaryRejectReasons?.map((e) => ({
+                        ...e,
+                        label: e?.title,
+                        value: e?.value,
+                      })),
+                    }}
+                    schema={{ grid: 2 }}
+                    value={reasonValue}
+                    onChange={(e) => {
+                      setReasonValue(e);
+                    }}
+                  />
+                </React.Suspense>
+              </VStack>
+            </VStack>
+
+            <AdminTypo.PrimaryButton
+              flex={1}
+              onPress={() => {
+                RejectApiCall();
+              }}
+            >
+              {t("REJECT")}
+            </AdminTypo.PrimaryButton>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
     </Layout>
   );
 }
@@ -1338,3 +2021,30 @@ function BeneficiaryJourney({
     </Stack>
   );
 }
+
+const SelectAllCheckBox = ({
+  fields,
+  title,
+  setCheckedFields,
+  checkedFields,
+}) => {
+  return (
+    <Checkbox
+      onChange={(e) => {
+        if (!e) {
+          const checkbox = checkedFields.filter(
+            (field) => !fields.includes(field)
+          );
+          setCheckedFields(checkbox);
+        } else {
+          const checkbox = checkedFields.filter(
+            (field) => !fields.includes(field)
+          );
+          setCheckedFields([...checkbox, ...fields]);
+        }
+      }}
+    >
+      {title}
+    </Checkbox>
+  );
+};

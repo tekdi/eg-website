@@ -5,7 +5,7 @@ import {
   GetEnumValue,
   IconByName,
   Layout,
-  CampService,
+  campService,
   enumRegistryService,
   facilitatorRegistryService,
   benificiaryRegistoryService,
@@ -13,11 +13,11 @@ import {
 import {
   HStack,
   VStack,
-  Box,
   Pressable,
   Center,
   Avatar,
   Alert,
+  Modal,
 } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -32,10 +32,12 @@ export default function CampDashboard({ footerLinks }) {
   const [enumOptions, setEnumOptions] = React.useState();
   const [communityLength, setCommunityLength] = React.useState();
   const [ipStatus, setIpStatus] = React.useState();
+  const [modal, setModal] = React.useState(false);
+  const [campId, setCampId] = React.useState("");
 
   React.useEffect(async () => {
-    const result = await CampService.campNonRegisteredUser();
-    const campList = await CampService.campList();
+    const result = await campService.campNonRegisteredUser();
+    const campList = await campService.campList();
     const enums = await enumRegistryService.listOfEnum();
     const ip_user_info = await facilitatorRegistryService.getInfo();
     const getData = await benificiaryRegistoryService.getCommunityReferences({
@@ -76,7 +78,7 @@ export default function CampDashboard({ footerLinks }) {
                     <VStack flex={1}>
                       <AdminTypo.H4 color="textMaroonColor.400">
                         {`${nonRegisteredUser?.length} `}
-                        {t("BENEFICIARY_STATUS_ENROLLED_IP_VERIFIED")}
+                        {t("UNMAPPED_LEARNERS")}
                       </AdminTypo.H4>
                       <AdminTypo.H4 color="textMaroonColor.400">
                         {t("LEARNERS")}
@@ -122,7 +124,8 @@ export default function CampDashboard({ footerLinks }) {
                       <Pressable
                         key={item}
                         onPress={() => {
-                          navigate(`/camps/${item?.id}`);
+                          setModal(true);
+                          setCampId(item?.id);
                         }}
                         bg="boxBackgroundColour.100"
                         shadow="AlertShadow"
@@ -147,8 +150,20 @@ export default function CampDashboard({ footerLinks }) {
                           <HStack>
                             <IconByName
                               isDisabled
-                              name="ErrorWarningLineIcon"
-                              color="textMaroonColor.400"
+                              name={
+                                ["camp_ip_verified"].includes(
+                                  item?.group?.status
+                                )
+                                  ? "CheckLineIcon"
+                                  : "ErrorWarningLineIcon"
+                              }
+                              color={
+                                ["camp_ip_verified"].includes(
+                                  item?.group?.status
+                                )
+                                  ? "textGreen.700"
+                                  : "textMaroonColor.400"
+                              }
                               _icon={{ size: "20px" }}
                             />
                             <GetEnumValue
@@ -156,7 +171,13 @@ export default function CampDashboard({ footerLinks }) {
                               enumType={"GROUPS_STATUS"}
                               enumOptionValue={item?.group?.status}
                               enumApiData={enumOptions}
-                              color="textMaroonColor.400"
+                              color={
+                                ["camp_ip_verified"].includes(
+                                  item?.group?.status
+                                )
+                                  ? "textGreen.700"
+                                  : "textMaroonColor.400"
+                              }
                               ml={2}
                             />
                           </HStack>
@@ -224,6 +245,38 @@ export default function CampDashboard({ footerLinks }) {
           </HStack>
         </VStack>
       </VStack>
+      <Modal
+        isOpen={modal}
+        onClose={() => setModal(false)}
+        safeAreaTop={true}
+        size="xl"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Body p={5} marginTop={"20px"}>
+            <VStack space={4}>
+              <FrontEndTypo.Primarybutton
+                m="2"
+                onPress={() => {
+                  navigate(`/camps/${campId}`);
+                }}
+              >
+                {t("CAMP_PROFILE")}
+              </FrontEndTypo.Primarybutton>
+              {/* <FrontEndTypo.Secondarybutton>
+                {t("CAMP_SETTINGS")}
+              </FrontEndTypo.Secondarybutton> 
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/camps/${campId}/start`);
+                }}
+              >
+                {t("CAMP_EXECUTION")}
+              </FrontEndTypo.Primarybutton>*/}
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
