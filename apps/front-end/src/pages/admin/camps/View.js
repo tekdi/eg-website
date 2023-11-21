@@ -123,9 +123,8 @@ export default function View({ footerLinks }) {
       facilitator_id: data?.faciltator?.[0]?.id,
       status,
     });
-
     if (result?.status === 200) {
-      navigate("/admin/camps?status=registered&page=1");
+      navigate("/admin/camps?status=all&page=1");
     } else {
       setErrorList(result?.message);
       setStatus();
@@ -339,27 +338,26 @@ export default function View({ footerLinks }) {
                       _image={{ size: 100 }}
                       title={
                         <HStack>
-
-                        <VStack>
-                          <AdminTypo.H4 color="textGreyColor.900" bold>
-                            {[facilitator?.first_name, facilitator?.last_name]
-                              .filter((e) => e)
-                              .join(" ")}
-                          </AdminTypo.H4>
-                          <AdminTypo.H5 color="textGreyColor.800">
-                            {facilitator?.mobile}
-                          </AdminTypo.H5>
-                        </VStack>
-                        <IconByName
-                              name="EditBoxLineIcon"
-                              color="iconColor.100"
-                              onPress={(e) =>
-                                navigate(
-                                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
-                                )
-                              }
-                            />
-                              </HStack>
+                          <VStack>
+                            <AdminTypo.H4 color="textGreyColor.900" bold>
+                              {[facilitator?.first_name, facilitator?.last_name]
+                                .filter((e) => e)
+                                .join(" ")}
+                            </AdminTypo.H4>
+                            <AdminTypo.H5 color="textGreyColor.800">
+                              {facilitator?.mobile}
+                            </AdminTypo.H5>
+                          </VStack>
+                          <IconByName
+                            name="EditBoxLineIcon"
+                            color="iconColor.100"
+                            onPress={(e) =>
+                              navigate(
+                                `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                              )
+                            }
+                          />
+                        </HStack>
                       }
                       subTitle={
                         <AdminTypo.H6 color="textGreyColor.800">

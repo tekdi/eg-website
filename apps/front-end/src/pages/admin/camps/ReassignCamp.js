@@ -111,7 +111,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const reassignCamp = async () => {
     const obj = {
       learner_id: parseInt(user_id),
-      camp_id: id,
+      camp_id: modal?.id,
     };
     const result = await campService.reassignCamp(obj);
     if (result?.status !== 200) {
@@ -128,8 +128,20 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         },
       });
     } else {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="success" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t("AG_ADDED_SUCCESSFULLY")}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
       setModal("");
-      navigate(-1);
+      navigate("/admin/camps");
     }
   };
   return (
