@@ -143,7 +143,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         },
       });
       setModal("");
-      navigate("/admin/camps");
+      navigate(`/admin/camps/${id}`);
     }
   };
 
