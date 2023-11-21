@@ -121,7 +121,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             <Alert status="warning" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t(result?.message)}</BodyMedium>
+                <BodyMedium>{t("LEARNER_ASSIGNED_FAILED")}</BodyMedium>
               </HStack>
             </Alert>
           );
@@ -134,7 +134,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             <Alert status="success" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t("AG_ADDED_SUCCESSFULLY")}</BodyMedium>
+                <BodyMedium>{t("LEARNER_ASSIGNED_SUCCESSFUL")}</BodyMedium>
               </HStack>
             </Alert>
           );
