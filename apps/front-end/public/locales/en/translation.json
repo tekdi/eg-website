@@ -710,7 +710,7 @@
   "OFFLINE": "Offline",
   "OFFLINE_AADHAAR_VERIFICATION": "Offline Aadhaar Verification",
   "OFFLINE_KYC_MESSAGE": "If the Aadhaar is connected to their mobile number you can do offline KYC verification.",
-  "OKYC_VERIFICATION": "OKYC Verification",
+  "OKYC_VERIFICATION": "OKYC IP Verified",
   "OLD": "Old",
   "OLD_PRERAK": "Old Prerak",
   "ON_HOLD": "On hold",
@@ -1155,5 +1155,7 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "FACILITATOR_CAMP_ASSIGNMENT_LIMIT_EXCEEDING_ERROR":"Prerak already have two Camps."
+  "FACILITATOR_CAMP_ASSIGNMENT_LIMIT_EXCEEDING_ERROR":"Prerak already have two Camps.",
+  "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING": "Profile Aadhar number doesn't match OKYC Aadhar, Update it and ask Prerak to do OKYC again.",
+  "ALREADY_CAMP_REGISTER": "Prerak is a camp owner.  Please reassign his/her camp to another prerak and then mark he/she as a reject/dropout/rusticate."
 }

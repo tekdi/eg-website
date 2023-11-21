@@ -6,10 +6,12 @@ import {
   AdminTypo,
   enumRegistryService,
   checkAadhaar,
+  campService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
@@ -44,11 +46,14 @@ export default function StatusButton({ data, setData }) {
   const [disabledBtn, setDisabledBtn] = React.useState([]);
   const [statusList, setStatusList] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
+  const [isCampList, setIsCampList] = React.useState();
   const [okycResponse] = React.useState(
     JSON.parse(data?.program_faciltators?.okyc_response)
   );
   const [alertModal, setAlertModal] = React.useState();
   const { t } = useTranslation();
+
+  const navigate = useNavigate();
 
   const update = async (status) => {
     if (data?.program_faciltator_id && status) {
@@ -81,8 +86,8 @@ export default function StatusButton({ data, setData }) {
   };
 
   React.useEffect(async () => {
-    const data = await enumRegistryService.listOfEnum();
-    const statusListNew = data?.data.FACILITATOR_STATUS.map((item) => {
+    const resultData = await enumRegistryService.listOfEnum();
+    const statusListNew = resultData?.data.FACILITATOR_STATUS.map((item) => {
       let buttonStatus = "success";
       let reasonStatus = false;
       if (["rejected", "quit", "rusticate", "on_hold"].includes(item?.value)) {
@@ -97,7 +102,7 @@ export default function StatusButton({ data, setData }) {
       };
     });
     setStatusList(statusListNew);
-    setEnumOptions(data?.data);
+    setEnumOptions(resultData?.data);
   }, []);
 
   React.useEffect(() => {
@@ -183,6 +188,21 @@ export default function StatusButton({ data, setData }) {
     }
   }, [data?.status]);
 
+  const isCampExistFunction = async ({ name, ...item }) => {
+    if (["rejected", "quit", "rusticate"].includes(item?.status)) {
+      const campExist = await campService.campIsExist({ id: data?.id || "" });
+      if (campExist?.length > 0) {
+        setIsCampList(campExist);
+      } else {
+        setShowModal({ name, ...item });
+        setReason();
+      }
+    } else {
+      setShowModal({ name, ...item });
+      setReason();
+    }
+  };
+
   return (
     <Box
       display="inline-flex"
@@ -198,14 +218,12 @@ export default function StatusButton({ data, setData }) {
           status={item?.btnStatus}
           isDisabled={!disabledBtn.includes(item?.status)}
           onPress={(e) => {
-            setShowModal({ name, ...item });
-            setReason();
+            isCampExistFunction({ name, ...item });
           }}
         >
           {t(name)}
         </AdminTypo.StatusButton>
       ))}
-
       {showModal?.status !== "selected_prerak" && (
         <Modal
           size={"xl"}
@@ -295,7 +313,6 @@ export default function StatusButton({ data, setData }) {
           </Modal.Content>
         </Modal>
       )}
-
       {showModal?.status == "selected_prerak" && (
         <Modal
           isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
@@ -304,24 +321,35 @@ export default function StatusButton({ data, setData }) {
         >
           <Modal.CloseButton />
           <Modal.Content rounded="2xl">
-            {data?.aadhar_verified === "yes" ||
-              (data?.aadhar_verified === "okyc_ip_verified" && (
-                <Modal.Header alignItems="center">
-                  {t("IDENTITY_VERIFICATION")}
-                </Modal.Header>
-              ))}
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Header alignItems="center">
+                {t("IDENTITY_VERIFICATION")}
+              </Modal.Header>
+            )}
             <Modal.Body>
               <VStack space={4}>
                 {data?.program_faciltators?.okyc_response ? (
-                  <AadharCompare
-                    {...{
-                      user: data,
-                      aadhaarCompare: checkAadhaar(
-                        data,
-                        okycResponse?.aadhaar_data
-                      ),
-                    }}
-                  />
+                  <VStack space="4">
+                    <AadharCompare
+                      {...{
+                        user: data,
+                        aadhaarCompare: checkAadhaar(
+                          data,
+                          okycResponse?.aadhaar_data
+                        ),
+                      }}
+                    />
+                    {!["yes", "okyc_ip_verified"].includes(
+                      data?.aadhar_verified
+                    ) && (
+                      <Alert status="warning" alignItems={"start"}>
+                        <HStack alignItems="center" space="2">
+                          <Alert.Icon />
+                          {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING")}
+                        </HStack>
+                      </Alert>
+                    )}
+                  </VStack>
                 ) : (
                   <VStack p="2" flex="4">
                     <Alert status="warning" alignItems={"start"}>
@@ -334,19 +362,17 @@ export default function StatusButton({ data, setData }) {
                 )}
               </VStack>
             </Modal.Body>
-
-            {data?.aadhar_verified === "yes" ||
-              (data?.aadhar_verified === "okyc_ip_verified" && (
-                <Modal.Footer alignSelf="center">
-                  <AdminTypo.PrimaryButton
-                    onPress={() => {
-                      setAlertModal(true);
-                    }}
-                  >
-                    {t("CONFIRM")}
-                  </AdminTypo.PrimaryButton>
-                </Modal.Footer>
-              ))}
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Footer alignSelf="center">
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    setAlertModal(true);
+                  }}
+                >
+                  {t("CONFIRM")}
+                </AdminTypo.PrimaryButton>
+              </Modal.Footer>
+            )}
           </Modal.Content>
         </Modal>
       )}
@@ -385,6 +411,39 @@ export default function StatusButton({ data, setData }) {
           </Modal.Content>
         </Modal>
       )}
+
+      <Modal isOpen={isCampList} onClose={() => setIsCampList()} size={"xl"}>
+        <Modal.CloseButton />
+        <Modal.Content rounded="2xl">
+          <Modal.Body>
+            <Alert status="warning">{t("ALREADY_CAMP_REGISTER")}</Alert>
+            <VStack p="4" space={4}>
+              {isCampList?.map((e) => {
+                return (
+                  <HStack key={e} justifyContent={"space-between"}>
+                    {e?.group?.camp_name}
+
+                    <AdminTypo.PrimaryButton
+                      onPress={() =>
+                        navigate(
+                          `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`
+                        )
+                      }
+                    >
+                      {t("ASSIGN")}
+                    </AdminTypo.PrimaryButton>
+                  </HStack>
+                );
+              })}
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer alignSelf="center">
+            <AdminTypo.PrimaryButton onPress={() => setIsCampList()}>
+              {t("OK")}
+            </AdminTypo.PrimaryButton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 }

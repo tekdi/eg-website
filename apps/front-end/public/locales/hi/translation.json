@@ -708,7 +708,7 @@
   "OFFLINE": "ऑफलाइन",
   "OFFLINE_AADHAAR_VERIFICATION": "ऑफलाइन आधार वेरिफिकेशन",
   "OFFLINE_KYC_MESSAGE": "अगर आधार उनके मोबाइल नंबर से जुड़ा है तो आप ऑफलाइन OKYC वेरिफिकेशन कर सकते हैं",
-  "OKYC_VERIFICATION": "OKYC वेरिफिकेशन",
+  "OKYC_VERIFICATION": "OKYC IP वेरिफाइड",
   "OLD": "पुराना",
   "OLD_PRERAK": "पुराना प्रेरक",
   "ON_HOLD": "होल्ड पर",
@@ -1097,9 +1097,9 @@
   "VERIFICATION_ID_NUMBER": "वेरिफिकेशन ID संख्या",
   "VERIFICATION_PROCESS": "वेरिफिकेशन की प्रक्रिया",
   "VERIFICATION_STATUS": "वेरिफिकेशन की स्थिति",
-  "VERIFIED": "सत्यापित",
+  "VERIFIED": "वेरिफाइड",
   "VERIFIED_DOCUMENTS": "वेरिफाइड दस्तावेज",
-  "VERIFIED_LEARNERS_IN_THIS_CAMP": "इस शिविर में नामांकित-IP सत्यापित",
+  "VERIFIED_LEARNERS_IN_THIS_CAMP": "इस शिविर में नामांकित-IP वेरिफाइड",
   "VERIFY": "वेरिफाई",
   "VERIFY_AADHAR_NUMER_KYC": "आधार संख्या OKYC का उपयोग करके वेरिफिकेशन करें",
   "VERIFY_AADHAR_QR_KYC": "आधार क्यू. आर. OKYC को वेरिफिकेशन करें",
@@ -1153,5 +1153,7 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "FACILITATOR_CAMP_ASSIGNMENT_LIMIT_EXCEEDING_ERROR":"प्रेरक के पास पहले से दो शिविर मौजूद है"
+  "FACILITATOR_CAMP_ASSIGNMENT_LIMIT_EXCEEDING_ERROR":"प्रेरक के पास पहले से दो शिविर मौजूद है",
+  "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING": "प्रोफाइल आधार संख्या OKYC आधार से मेल नहीं खाती है, इसे अपडेट करें और प्रेरक को फिर से OKYC करने के लिए कहें",
+  "ALREADY_CAMP_REGISTER": "प्रेरक एक कैंप मालिक है, कृपया उसके शिविर को किसी अन्य प्रेरक को पुनः सौंपें और फिर उसे अस्वीकृत/ड्रॉपआउट/रस्टिकेट के रूप में चिह्नित करें।"
 }
