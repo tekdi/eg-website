@@ -8,8 +8,17 @@ import {
   campService,
   useWindowSize,
   facilitatorRegistryService,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { Box, HStack, Modal, VStack, ScrollView, useToast } from "native-base";
+import {
+  Box,
+  HStack,
+  Modal,
+  VStack,
+  ScrollView,
+  useToast,
+  Alert,
+} from "native-base";
 import { ChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
@@ -121,8 +130,20 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         },
       });
     } else {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="success" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t(result?.message)}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
       setModal("");
-      navigate(-1);
+      navigate(`/admin/camps/${id}`);
     }
   };
 
