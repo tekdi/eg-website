@@ -250,65 +250,55 @@ export default function ReferenceDetails({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
-        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-          <HStack alignItems="center" space="2" color>
-            <Alert.Icon />
-            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
-          </HStack>
-        </Alert>
-      ) : (
-        <Box py={6} px={4} mb={5}>
-          {/* Box */}
-          {alert && (
-            <Alert status="warning" alignItems={"start"} mb="3">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <BodyMedium>{alert}</BodyMedium>
-              </HStack>
-            </Alert>
-          )}
-          {page && page !== "" ? (
-            <Form
-              key={lang}
-              ref={formRef}
-              templates={{
-                FieldTemplate,
-                ArrayFieldTitleTemplate,
-                ObjectFieldTemplate,
-                TitleFieldTemplate,
-                DescriptionFieldTemplate,
-                BaseInputTemplate,
-              }}
-              extraErrors={errors}
-              showErrorList={false}
-              noHtml5Validate={true}
-              {...{
-                validator,
-                schema: schema || {},
-                uiSchema,
-                formData,
-                customValidate,
-                onChange,
-                onError,
-                onSubmit,
-                transformErrors,
-              }}
+      <Box py={6} px={4} mb={5}>
+        {alert && (
+          <Alert status="warning" alignItems={"start"} mb="3">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <BodyMedium>{alert}</BodyMedium>
+            </HStack>
+          </Alert>
+        )}
+        {page && page !== "" ? (
+          <Form
+            key={lang}
+            ref={formRef}
+            templates={{
+              FieldTemplate,
+              ArrayFieldTitleTemplate,
+              ObjectFieldTemplate,
+              TitleFieldTemplate,
+              DescriptionFieldTemplate,
+              BaseInputTemplate,
+            }}
+            extraErrors={errors}
+            showErrorList={false}
+            noHtml5Validate={true}
+            {...{
+              validator,
+              schema: schema || {},
+              uiSchema,
+              formData,
+              customValidate,
+              onChange,
+              onError,
+              onSubmit,
+              transformErrors,
+            }}
+          >
+            <Button
+              mt="3"
+              variant={"primary"}
+              type="submit"
+              onPress={() => formRef?.current?.submit()}
             >
-              <Button
-                mt="3"
-                variant={"primary"}
-                type="submit"
-                onPress={() => formRef?.current?.submit()}
-              >
-                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-              </Button>
-            </Form>
-          ) : (
-            <React.Fragment />
-          )}
-        </Box>
-      )}
+              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+            </Button>
+          </Form>
+        ) : (
+          <React.Fragment />
+        )}
+      </Box>
     </Layout>
   );
 }
