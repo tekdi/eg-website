@@ -1153,5 +1153,14 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING":"प्रोफाइल आधार संख्या OKYC आधार से मेल नहीं खाती है, इसे अपडेट करें और प्रेरक को फिर से OKYC करने के लिए कहें"
+  "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING": "प्रोफाइल आधार संख्या OKYC आधार से मेल नहीं खाती है, इसे अपडेट करें और प्रेरक को फिर से OKYC करने के लिए कहें",
+  "CAMP_OTHER_PLAN": "ओह! तो हम आपसे आज नहीं  मिल पाएंगे",
+  "WHATS_YOUR_PLAN_TODAY": "क्या प्लान है आज आपका ?",
+  "LEARNER_ENVIRONMENT": "आज शिक्षार्थियों के लिए कैंप का वातावरण कैसा बनाएँगे ",
+  "COURAGEOUS": "साहस भरा",
+  "CREATIVE": "रचनात्मक",
+  "CARING": "एक दूसरे की देखभाल ",
+  "COLLABORATION": "एक दूसरे का सहयोग",
+  "FEEL_GOOD": "अच्छा लगना",
+  "ASPIRATIONS": "आकांक्षा भरा"
 }

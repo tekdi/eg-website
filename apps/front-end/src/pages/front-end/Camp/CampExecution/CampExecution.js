@@ -10,6 +10,7 @@ import {
   Camera,
   uploadRegistryService,
   ImageView,
+  useLocationData,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import {
@@ -25,9 +26,8 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import airplane from "./airoplane.gif";
 
-export default function StartCampDashboard({ footerLinks }) {
+export default function CampExecution({ footerLinks }) {
   const { t } = useTranslation();
   const [camp, setCamp] = React.useState();
   const { id } = useParams();
@@ -35,16 +35,25 @@ export default function StartCampDashboard({ footerLinks }) {
   const [data, setData] = React.useState({});
   const [facilitator, setFacilitator] = React.useState();
   const [start, setStart] = React.useState(false);
-  const [cameraFile, setcameraFile] = React.useState();
+  const [cameraFile, setCameraFile] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const [timer, setTimer] = React.useState();
   const navigate = useNavigate();
+  const [latData, longData, errors] = useLocationData() || [];
 
   React.useEffect(async () => {
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
     setFacilitator(result?.data?.faciltator?.[0] || {});
   }, [id]);
+
+  React.useEffect(async () => {
+    if (errors) {
+      setError(errors);
+    } else {
+      setData({ ...data, lat: `${latData}`, long: `${longData}` });
+    }
+  }, [latData]);
 
   React.useEffect(() => {
     const lastTime = localStorage.getItem("startCamp");
@@ -200,7 +209,8 @@ export default function StartCampDashboard({ footerLinks }) {
                   formData
                 );
                 if (uploadDoc) {
-                  setcameraFile(uploadDoc);
+                  setCameraFile(uploadDoc);
+                  navigate(`/camps/${id}/campexecutionstart`);
                 }
                 setCameraUrl({ url, file });
               } else {
@@ -216,21 +226,10 @@ export default function StartCampDashboard({ footerLinks }) {
 
   return (
     <Layout
-      _appBar={{ name: t("ATTENDANCE") }}
+      _appBar={{ name: t("CAMP_EXECUTION") }}
       //   loading={loading}
       _footer={{ menues: footerLinks }}
     >
-      {start && (
-        <GeoLocation
-          getLocation={(lat, long, error) => {
-            if (error) {
-              setError(error);
-            } else {
-              setData({ ...data, lat: `${lat}`, long: `${long}` });
-            }
-          }}
-        />
-      )}
       <VStack space="5" p="5">
         <Box alignContent="center">
           <HStack justifyContent={"space-between"}>
@@ -259,8 +258,10 @@ export default function StartCampDashboard({ footerLinks }) {
           justifyContent="center"
         >
           <Image
-            source={airplane}
-            alt="Airplane GIF"
+            source={{
+              uri: "/airoplane.gif",
+            }}
+            alt="airoplane.gif"
             position="absolute"
             top={0}
             left={0}
@@ -404,7 +405,9 @@ export default function StartCampDashboard({ footerLinks }) {
             <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
               {t("Yes, Absolutely ")}
             </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Secondarybutton
+              onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
+            >
               {t("No, I have other plans for today.")}
             </FrontEndTypo.Secondarybutton>
           </VStack>
