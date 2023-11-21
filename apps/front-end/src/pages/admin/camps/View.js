@@ -124,7 +124,7 @@ export default function View({ footerLinks }) {
       status,
     });
     if (result?.status === 200) {
-      navigate("/admin/camps?status=all&page=1");
+      navigate(`/admin/camps?status=${status}&page=1`);
     } else {
       setErrorList(result?.message);
       setStatus();

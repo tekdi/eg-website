@@ -65,6 +65,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
         setErrors(result?.message);
       }
     } else {
+      setIsDisable(false);
       setAlert(true);
     }
   };
