@@ -38,6 +38,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const validate = () => {
     let arr = {};
@@ -65,14 +66,18 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
+      setIsDisable(true);
       const { error } = credentials ? await login(credentials) : {};
       if (!error) {
+        setIsDisable(true);
         navigate("/");
         navigate(0);
       } else {
+        setIsDisable(false);
         setErrors({ alert: t(error) });
       }
     } else {
+      setIsDisable(false);
       logout();
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
@@ -227,6 +232,7 @@ export default function Login() {
               p="4"
               my="5"
               onPress={handleLogin}
+              isDisabled={isDisable}
             >
               {t("LOGIN")}
             </FrontEndTypo.Primarybutton>
