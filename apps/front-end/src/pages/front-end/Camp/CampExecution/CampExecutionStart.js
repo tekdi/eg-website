@@ -2,20 +2,20 @@ import {
   campService,
   FrontEndTypo,
   Layout,
-  Alert as TAlert,
   Loading,
   Camera,
   uploadRegistryService,
   ImageView,
   useLocationData,
 } from "@shiksha/common-lib";
+import Chip from "component/Chip";
 import moment from "moment";
-import { Box, HStack, VStack, Alert, Image } from "native-base";
+import { HStack, Pressable, VStack, Alert, Text } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampExecution({ footerLinks }) {
+export default function CampExecutionStart({ footerLinks }) {
   const { t } = useTranslation();
   const [camp, setCamp] = React.useState();
   const { id } = useParams();
@@ -25,7 +25,10 @@ export default function CampExecution({ footerLinks }) {
   const [start, setStart] = React.useState(false);
   const [cameraFile, setCameraFile] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
+  const [loading, setLoading] = React.useState(true);
   const [timer, setTimer] = React.useState();
+  const [activeChip, setActiveChip] = React.useState(null);
+
   const navigate = useNavigate();
   const [latData, longData, errors] = useLocationData() || [];
 
@@ -33,6 +36,7 @@ export default function CampExecution({ footerLinks }) {
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
     setFacilitator(result?.data?.faciltator?.[0] || {});
+    setLoading(false);
   }, [id]);
 
   React.useEffect(async () => {
@@ -42,36 +46,6 @@ export default function CampExecution({ footerLinks }) {
       setData({ ...data, lat: `${latData}`, long: `${longData}` });
     }
   }, [latData]);
-
-  React.useEffect(() => {
-    const lastTime = localStorage.getItem("startCamp");
-    let set_interval;
-    if (lastTime) {
-      set_interval = setInterval(() => {
-        const a = moment();
-        const b = moment(lastTime);
-        const h = a.diff(b, "hours");
-        const m = a.diff(b, "minutes");
-        const s = a.diff(b, "seconds");
-        if (h < 2) {
-          setTimer({
-            h,
-            m: m > 60 ? m % (h * 60) : m,
-            s: s > 60 ? s % (m * 60) : s,
-            cs: s,
-          });
-        } else {
-          endCamp();
-        }
-      }, 1000);
-    } else {
-      clearInterval(set_interval);
-    }
-
-    return (e) => {
-      clearInterval(set_interval);
-    };
-  }, [localStorage.getItem("startCamp")]);
 
   // start Camp
   const startCamp = () => {
@@ -83,22 +57,23 @@ export default function CampExecution({ footerLinks }) {
     } catch (e) {}
   };
 
-  // endCamp
-  const endCamp = () => {
-    localStorage.removeItem("startCamp");
-    setTimer({
-      h: 0,
-      m: 0,
-      s: 0,
-      cs: 0,
-    });
-  };
+  //   // endCamp
+  //   const endCamp = () => {
+  //     localStorage.removeItem("startCamp");
+  //     setTimer({
+  //       h: 0,
+  //       m: 0,
+  //       s: 0,
+  //       cs: 0,
+  //     });
+  //   };
 
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
     const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.name;
     const attendanceId = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
+
     if (photo_1) {
       const dataQ = {
         ...data,
@@ -163,98 +138,64 @@ export default function CampExecution({ footerLinks }) {
     );
   }
 
+  const pdata = [
+    "COURAGEOUS",
+    "CREATIVE",
+    "CARING",
+    "COLLABORATION",
+    "FEEL_GOOD",
+    "ASPIRATIONS",
+  ];
+
+  const handleChipClick = (item) => {
+    setActiveChip(item);
+    console.log("Clicked on chip:", item);
+  };
+
   return (
     <Layout
       _appBar={{ name: t("CAMP_EXECUTION") }}
-      //   loading={loading}
+      loading={loading}
       _footer={{ menues: footerLinks }}
     >
-      <VStack space="5" p="5">
-        <Box alignContent="center">
-          <HStack justifyContent={"space-between"}>
-            <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-              {t("WELCOME")}{" "}
-              {[
-                facilitator?.first_name,
-                facilitator?.middle_name,
-                facilitator?.last_name,
-              ]
-                .filter((e) => e)
-                .join(" ")}
-              ,
-            </FrontEndTypo.H1>
-          </HStack>
-        </Box>
-        <Box
-          margin={"auto"}
-          height={"200px"}
-          width={"380px"}
-          borderColor={"black"}
-          bg={"red.100"}
-          position="relative"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+      <VStack py={6} px={4} mb={5} space="6">
+        <FrontEndTypo.H2 color={"textMaroonColor.400"}>
+          {t("LEARNER_ENVIRONMENT")}
+        </FrontEndTypo.H2>
+
+        <HStack
+          alignItems={"center"}
+          justifyContent={"center"}
+          flexWrap={"wrap"}
+          space={5}
         >
-          <Image
-            source={{
-              uri: "/airoplane.gif",
-            }}
-            alt="airoplane.gif"
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            zIndex={-1}
-          />
-
-          <VStack alignItems="center" justifyContent="center">
-            <ImageView
-              width="80px"
-              height="80px"
-              source={{ document_id: facilitator?.profile_photo_1?.id }}
-            ></ImageView>
-
-            <FrontEndTypo.H2
-              marginTop={"15px"}
-              textAlign="center"
-              fontSize="16px"
-              fontWeight="bold"
-            >
-              {t("You're welcome! Are you ready for your dream to come true?")}
-            </FrontEndTypo.H2>
-          </VStack>
-        </Box>
-        <VStack alignItems="center" space="5">
-          <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-            {t("Will the camp be conducted today?")}
-          </FrontEndTypo.H1>
-        </VStack>
-        <VStack space="4">
-          <TAlert
-            alert={error}
-            setAlert={(e) => {
-              setStart(false);
-              setError(e);
-            }}
-            _alert={{
-              status: "warning",
-            }}
-            type="warning"
-          />
-          <FrontEndTypo.H3>{t("STARTS_YOUR_DAY")}</FrontEndTypo.H3>
-          <VStack space="4">
-            <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
-              {t("Yes, Absolutely ")}
-            </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
-            >
-              {t("No, I have other plans for today.")}
-            </FrontEndTypo.Secondarybutton>
-          </VStack>
-        </VStack>
+          {pdata.map((item) => {
+            return (
+              <VStack key={item} space={5} my={3} alignItems={"center"}>
+                <ImageView
+                  width="80px"
+                  height="80px"
+                  source={{
+                    document_id: localStorage.getItem("attendancePicture"),
+                  }}
+                />
+                <Pressable onPress={() => handleChipClick(item)}>
+                  <Chip px={5} isActive={activeChip === item}>
+                    <Text fontSize={"16px"}>{t(item)}</Text>
+                  </Chip>
+                </Pressable>
+              </VStack>
+            );
+          })}
+        </HStack>
+        <FrontEndTypo.Secondarybutton onPress={(e) => setStart(true)}>
+          {t("TAKE_ANOTHER_PHOTO")}
+        </FrontEndTypo.Secondarybutton>
+        <FrontEndTypo.Primarybutton
+          onPress={() => navigate(`/camps/${id}/campexecutionend`)}
+        >
+          {t("START_CAMP")}
+        </FrontEndTypo.Primarybutton>
       </VStack>
     </Layout>
   );
