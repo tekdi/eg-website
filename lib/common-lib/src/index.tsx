@@ -20,6 +20,9 @@ import * as authRegistryService from './services/authRegistryService'
 import * as uploadRegistryService from './services/uploadRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
+import * as campService from './services/campService'
+import * as attendanceService from './services/attendanceService'
+import * as ConsentService from './services/ConsentService'
 import * as AgRegistryService from './services/AgRegistryService'
 import { t, changeLanguage } from 'i18next'
 import Camera from './components/Camera'
@@ -33,8 +36,16 @@ import * as aadhaarService from './services/aadhaarService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
+import CardComponent from './components/frontend_component/CardComponent'
 import PoAdminLayout from './components/Po_admin_layout/Layout'
+import { MapComponent } from './components/frontend_component/MapComponent'
+import CustomRadio from './components/frontend_component/CustomRadio'
+import CheckUncheck from './components/frontend_component/CheckUncheck'
+import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
+import GeoLocation, {
+  useLocationData
+} from './components/frontend_component/GeoLocation'
 
 // export
 export {
@@ -69,6 +80,9 @@ export {
   Camera,
   enumRegistryService,
   benificiaryRegistoryService,
+  campService,
+  attendanceService,
+  ConsentService,
   CheatSheet,
   CustomOTPBox,
   eventService,
@@ -76,7 +90,14 @@ export {
   Alert,
   GetEnumValue,
   ItemComponent,
-  Breadcrumb
+  CardComponent,
+  Breadcrumb,
+  MapComponent,
+  CheckUncheck,
+  CustomRadio,
+  UserCard,
+  GeoLocation,
+  useLocationData
 }
 
 export * from './services/RestClient'

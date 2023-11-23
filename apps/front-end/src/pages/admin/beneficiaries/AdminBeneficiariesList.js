@@ -25,6 +25,7 @@ import {
   setQueryParameters,
   debounce,
   urlData,
+  filterObject,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -136,7 +137,6 @@ export default function AdminHome({ footerLinks }) {
     >
       <HStack
         p="4"
-        justifyContent="space-between"
         space={["0", "0", "0", "4"]}
         flexWrap={"wrap"}
         ref={refSubHeader}
@@ -175,7 +175,7 @@ export default function AdminHome({ footerLinks }) {
             );
           }}
         />
-        <HStack alignSelf={"center"} space="4" height={"6vh"}>
+        <HStack alignSelf={"center"} space="4" height={"5vh"}>
           <Menu
             w="190"
             placement="bottom right"
@@ -217,6 +217,20 @@ export default function AdminHome({ footerLinks }) {
           >
             {t("RESOLVE_DUPLICATION")}
           </AdminTypo.Dangerbutton>
+          <AdminTypo.PrimaryButton
+            onPress={() => {
+              navigate("/admin/learners/reassignList");
+            }}
+            rightIcon={
+              <IconByName
+                color="textGreyColor.100"
+                size="10px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("REASSIGN_LEARNERS")}
+          </AdminTypo.PrimaryButton>
         </HStack>
       </HStack>
       <HStack>
@@ -234,7 +248,7 @@ export default function AdminHome({ footerLinks }) {
             }
             pr="2"
           >
-            <Filter {...{ filter, setFilter }} />
+            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
@@ -355,34 +369,50 @@ export const Filter = ({ filter, setFilter }) => {
 
   React.useEffect(() => {
     const facilitatorDetails = async () => {
-      const result = await facilitatorRegistryService.filter(facilitatorFilter);
-      setIsMore(
-        parseInt(`${result?.data?.currentPage}`) <
-          parseInt(`${result?.data?.totalPages}`)
-      );
-      const newData = result?.data?.data?.map((e) => ({
-        value: e?.id,
-        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
-      }));
-      const newFilterData = newData.filter(
-        (e) =>
-          facilitator.filter((subE) => subE.value === e?.value).length === 0
-      );
-      if (filter?.page > 1) {
-        setFacilitator([...facilitator, ...newFilterData]);
+      let newFilter = {};
+      ["district", "block", "status"].forEach((e) => {
+        if (filter[e]) {
+          newFilter = { ...newFilter, [e]: filter[e] };
+        }
+      });
+      const { error, ...result } =
+        await facilitatorRegistryService.searchByBeneficiary({
+          ...facilitatorFilter,
+          ...newFilter,
+        });
+      if (!error) {
+        setIsMore(
+          parseInt(`${result?.data?.currentPage}`) <
+            parseInt(`${result?.data?.totalPages}`)
+        );
+        const newFilterData = result?.data?.data?.map((e) => ({
+          value: e?.id,
+          label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+        }));
+
+        if (facilitatorFilter?.page > 1) {
+          setFacilitator([...facilitator, ...newFilterData]);
+        } else {
+          setFacilitator(newFilterData);
+        }
       } else {
-        setFacilitator(newFilterData);
+        setFacilitator([]);
       }
     };
     facilitatorDetails();
-  }, [facilitatorFilter]);
+  }, [facilitatorFilter, filter]);
 
   const onChange = async (data) => {
-    const { district, block } = data?.formData || {};
+    const { district: newDistrict, block: newBlock } = data?.formData || {};
+    const { district, block, ...remainData } = filter || {};
     setFilterObject({
-      ...filter,
-      ...(district ? { district } : {}),
-      ...(block ? { block } : {}),
+      ...remainData,
+      ...(newDistrict?.length > 0
+        ? {
+            district: newDistrict,
+            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+          }
+        : {}),
     });
   };
 
@@ -401,7 +431,7 @@ export const Filter = ({ filter, setFilter }) => {
           </HStack>
           <Button variant="link" pt="3" onPress={clearFilter}>
             <AdminTypo.H6 color="blueText.400" underline bold>
-              {t("CLEAR_FILTER")} (
+              {t("CLEAR_FILTER")}(
               {
                 Object.keys(filter || {}).filter(
                   (e) => !["limit", "page"].includes(e)
@@ -427,7 +457,7 @@ export const Filter = ({ filter, setFilter }) => {
         <Input
           w="100%"
           height="32px"
-          placeholder="search"
+          placeholder={t("SEARCH")}
           variant="outline"
           onChange={(e) => {
             debounce(
@@ -441,6 +471,7 @@ export const Filter = ({ filter, setFilter }) => {
           }}
         />
         <MultiCheck
+          key={facilitator}
           value={filter?.facilitator ? filter?.facilitator : []}
           onChange={(e) => {
             setFilterObject({ ...filter, facilitator: e });

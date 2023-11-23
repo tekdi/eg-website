@@ -2,28 +2,17 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
+import { Alert, Box, HStack } from "native-base";
 import {
   Layout,
-  H1,
-  t,
-  login,
-  H3,
-  IconByName,
-  BodySmall,
-  filtersByObject,
   BodyMedium,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { useScreenshot } from "use-screenshot-hook";
-
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -31,43 +20,47 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-  RadioBtn,
-  CustomR,
 } from "../../../../component/BaseInput.js";
+import { useTranslation } from "react-i18next";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
-export default function agFormEdit({ ip }) {
+export default function FamilyDetails({ ip }) {
+  const { t } = useTranslation();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [userId, setuserId] = React.useState(id);
+  const userId = id;
   const navigate = useNavigate();
+  const [fields, setFields] = React.useState([]);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
-  };
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
   };
 
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
+
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   React.useEffect(async () => {
@@ -109,55 +102,6 @@ export default function agFormEdit({ ip }) {
     });
   }, [formData?.id]);
 
-  const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-  };
-
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
@@ -171,7 +115,7 @@ export default function agFormEdit({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -186,7 +130,7 @@ export default function agFormEdit({ ip }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -194,53 +138,21 @@ export default function agFormEdit({ ip }) {
     }
   };
 
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
-  };
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
-      let minYear = moment().subtract("years", 30);
-      let maxYear = moment().subtract("years", 18);
-      setYearsRange([minYear.year(), maxYear.year()]);
+
       setSubmitBtn(t("NEXT"));
     }
   }, []);
 
   const formSubmitUpdate = async (formData) => {
     if (id) {
-      const data = await enumRegistryService.editProfileById({
+      await enumRegistryService.editProfileById({
         ...formData,
         id: id,
       });
@@ -300,7 +212,7 @@ export default function agFormEdit({ ip }) {
     return errors;
   };
 
-  const transformErrors = (errors, uiSchema) => {
+  const transformErrors = (errors) => {
     return errors.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
@@ -391,8 +303,12 @@ export default function agFormEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
+    await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
+  };
+
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
   };
 
   return (
@@ -405,7 +321,8 @@ export default function agFormEdit({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+      fields.length <= 0 ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -427,9 +344,8 @@ export default function agFormEdit({ ip }) {
           )}
           {page && page !== "" ? (
             <Form
-              key={lang + addBtn}
+              key={lang}
               ref={formRef}
-              widgets={{ RadioBtn, CustomR }}
               templates={{
                 FieldTemplate,
                 ArrayFieldTitleTemplate,
@@ -443,8 +359,8 @@ export default function agFormEdit({ ip }) {
               noHtml5Validate={true}
               {...{
                 validator,
-                schema: schema ? schema : {},
-                uiSchema,
+                schema: schema || {},
+
                 formData,
                 customValidate,
                 onChange,
@@ -466,93 +382,6 @@ export default function agFormEdit({ ip }) {
           )}
         </Box>
       )}
-      <Modal
-        isOpen={credentials}
-        onClose={() => setCredentials(false)}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          {/* <Modal.CloseButton /> */}
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack alignItems="center">
-                <Box
-                  bg="gray.100"
-                  p="1"
-                  rounded="lg"
-                  borderWidth={1}
-                  borderColor="gray.300"
-                >
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("USERNAME")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.username}
-                    </BodySmall>
-                  </HStack>
-                  <HStack alignItems="center" space="5">
-                    <H3>{t("PASSWORD")}</H3>
-                    <BodySmall
-                      wordWrap="break-word"
-                      width="130px"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
-                      {credentials?.password}
-                    </BodySmall>
-                  </HStack>
-                </Box>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username:${credentials?.username}, password:${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <Button
-                  flex={1}
-                  variant="primary"
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

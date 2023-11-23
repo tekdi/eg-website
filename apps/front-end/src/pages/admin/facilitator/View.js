@@ -8,6 +8,9 @@ import {
   authRegistryService,
   ImageView,
   AdminTypo,
+  tableCustomStyles,
+  benificiaryRegistoryService,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -19,37 +22,105 @@ import {
   FormControl,
   Input,
   useToast,
+  Checkbox,
 } from "native-base";
-import { ChipStatus } from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
 import StatusButton from "./view/StatusButton";
+import DataTable from "react-data-table-component";
+import Clipboard from "component/Clipboard";
+import { MultiCheck } from "component/BaseInput";
+const checkboxoptions = [
+  {
+    label: "AVAILABILITY",
+    value: "availability",
+  },
+  {
+    label: "DEVICE_OWNERSHIP",
+    value: "device_ownership",
+  },
+  {
+    label: "TYPE_OF_DEVICE",
+    value: "device_type",
+  },
+];
+const addressoptions = [
+  {
+    label: "DISTRICT",
+    value: "district",
+  },
+  {
+    label: "BLOCK",
+    value: "block",
+  },
+  {
+    label: "VILLAGE_WARD",
+    value: "village",
+  },
+];
+const profileOptions = [
+  {
+    label: "PROFILE_PHOTO",
+    value: "profile_photo_1",
+  },
+];
 const Experience = (obj) => {
   return (
     <VStack>
-      {obj?.role_title ? (
+      {obj?.role_title && (
         <Text>
           {t("ROLE")} : {obj?.role_title}
         </Text>
-      ) : (
-        <React.Fragment />
       )}
-      {obj?.experience_in_years ? (
+      {obj?.experience_in_years && (
         <Text>
           {t("YEARS_OF_EX")} : {obj?.experience_in_years}
         </Text>
-      ) : (
-        <React.Fragment />
       )}
-      {obj?.description ? (
+      {obj?.description && (
         <Text>
           {t("DESCRIPTION")} : {obj?.description}
         </Text>
-      ) : (
-        <React.Fragment />
       )}
     </VStack>
   );
 };
+
+const columns = (t) => [
+  {
+    name: t("ID"),
+    selector: (row) => row?.id,
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        <AdminTypo.H5 bold>
+          {row?.first_name + " "}
+          {row?.last_name ? row?.last_name : ""}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+    wrap: true,
+  },
+  {
+    name: t("ROLE"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space="2">
+        <AdminTypo.H5 bold>
+          {row?.program_faciltators.length > 0
+            ? t("PRERAK")
+            : row?.program_beneficiaries.length > 0
+            ? t("LEARNER")
+            : ""}
+        </AdminTypo.H5>
+      </HStack>
+    ),
+    attr: "name",
+    wrap: true,
+  },
+];
 
 export default function FacilitatorView({ footerLinks }) {
   const toast = useToast();
@@ -57,11 +128,18 @@ export default function FacilitatorView({ footerLinks }) {
   const { id } = useParams();
   const [data, setData] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [adhaarModalVisible, setAdhaarModalVisible] = React.useState(false);
+  const [aadhaarValue, setAadhaarValue] = React.useState();
+  const [duplicateUserList, setDuplicateUserList] = React.useState();
+  const [aadhaarerror, setAadhaarError] = React.useState();
   const [credentials, setCredentials] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
   const [qualifications, setQualifications] = React.useState([]);
+  const [editModal, setEditModal] = React.useState(false);
+  const [editData, setEditData] = React.useState();
+  const [fieldCheck, setFieldCheck] = React.useState();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -70,12 +148,17 @@ export default function FacilitatorView({ footerLinks }) {
   const toggleConfirmPasswordVisibility = () => {
     setConfirmPassword(!confirmPassword);
   };
+
+  const openModal = () => {
+    setEditModal(true);
+  };
   const navigate = useNavigate();
 
   React.useEffect(async () => {
     const profileDetails = async () => {
       const result = await facilitatorRegistryService.getOne({ id });
       setData(result);
+      setAadhaarValue(result?.aadhar_no);
       const qualificationList =
         await facilitatorRegistryService.getQualificationAll();
       const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
@@ -91,7 +174,44 @@ export default function FacilitatorView({ footerLinks }) {
     await profileDetails();
   }, []);
 
-  const showData = (item) => (item ? item : "-");
+  React.useEffect(async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await benificiaryRegistoryService.getEditFields(obj);
+    if (result.data[0]) {
+      setEditData(result?.data[0]);
+    }
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFieldCheck(field || []);
+  }, []);
+
+  const editRequest = async () => {
+    if (!editData) {
+      const obj = {
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+        edit_req_by: id,
+        fields: fieldCheck,
+      };
+      await benificiaryRegistoryService.createEditRequest(obj);
+    } else {
+      const updateObj = {
+        status: "approved",
+        id: editData?.id,
+        fields: fieldCheck,
+      };
+      await benificiaryRegistoryService.updateRequestDetails(updateObj);
+    }
+    setEditModal(false);
+  };
+
+  const showData = (item) => item || "-";
 
   const validate = () => {
     let arr = {};
@@ -123,11 +243,7 @@ export default function FacilitatorView({ footerLinks }) {
     }
 
     setErrors(arr);
-    if (arr.password || arr.confirmPassword) {
-      return false;
-    } else {
-      return true;
-    }
+    return !(arr.password || arr.confirmPassword);
   };
 
   const handleResetPassword = async (password, confirm_password) => {
@@ -170,6 +286,34 @@ export default function FacilitatorView({ footerLinks }) {
   } else if (_.isEmpty(data) || data.error) {
     return <NotFound goBack={(e) => navigate(-1)} />;
   }
+
+  const handleAadhaarUpdate = (event) => {
+    const inputValue = event.target.value;
+    const numericValue = inputValue.replace(/\D/g, "");
+    const maxLength = 12;
+    const truncatedValue = numericValue.slice(0, maxLength);
+    setAadhaarValue(truncatedValue);
+  };
+
+  const updateAadhaar = async () => {
+    const aadhaar_no = {
+      id: id,
+      aadhar_no: aadhaarValue,
+    };
+    const result = await facilitatorRegistryService.updateAadhaarNumber(
+      aadhaar_no
+    );
+    if (aadhaarValue.length < 12) {
+      setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
+    } else if (!result?.success) {
+      setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
+      setDuplicateUserList(result?.data?.users);
+    } else {
+      setData({ ...data, aadhar_no: aadhaarValue });
+      setAdhaarModalVisible(false);
+    }
+  };
+
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -192,6 +336,14 @@ export default function FacilitatorView({ footerLinks }) {
             >
               {data?.first_name} {data?.last_name}
             </AdminTypo.H1>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(-1)}
+            />
+            <Clipboard text={data?.id}>
+              <Chip textAlign="center" lineHeight="15px" label={data?.id} />
+            </Clipboard>
           </HStack>
           <HStack justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
@@ -237,72 +389,6 @@ export default function FacilitatorView({ footerLinks }) {
                     .join(",")}
                 </AdminTypo.H6>
               </HStack>
-              {/* <AdminTypo.H4 color="textGreyColor.800" bold pb="2">
-                {t("ELIGIBILITY_CRITERIA").toUpperCase()}
-              </AdminTypo.H4>
-              <HStack width={"100%"}>
-                <Box flex={0.3}>
-                  <Steper size={100} type="circle" progress={75} bg="white" />
-                </Box>
-                <VStack flex={0.7} space="2">
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                        
-                      {t("QUALIFICATION")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        {
-                          value: 135,
-                          color: "progressBarColor.200",
-                        },
-                        { value: 80, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("WORK_EXPERIENCE")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("VOLUNTEER_EXPERIENCE")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                  <HStack alignItems={"center"} space={"2"}>
-                    <AdminTypo.H7 color="textGreyColor.500" bold>
-                      {t("AVAILABILITY")}
-                    </AdminTypo.H7>
-                    <ProgressBar
-                      flex="1"
-                      isLabelCountHide
-                      data={[
-                        { value: 25, color: "progressBarColor.200" },
-                        { value: 75, color: "textGreyColor.300" },
-                      ]}
-                    />
-                  </HStack>
-                </VStack>
-              </HStack> */}
             </VStack>
             <HStack flex="0.5" justifyContent="center">
               {data?.profile_photo_1?.name ? (
@@ -310,7 +396,7 @@ export default function FacilitatorView({ footerLinks }) {
                   source={{
                     uri: data?.profile_photo_1?.name,
                   }}
-                  // alt="Alternate Text"
+                  alt="profile photo"
                   width={"180px"}
                   height={"180px"}
                 />
@@ -333,24 +419,21 @@ export default function FacilitatorView({ footerLinks }) {
                 {t("SEND_MESSAGE")}
               </AdminTypo.PrimaryButton>
             </VStack> */}
-            <VStack>
+            <VStack space={4}>
               <AdminTypo.Secondarybutton
-                leftIcon={<IconByName isDisabled name="LockUnlockLineIcon" />}
                 onPress={() => {
                   setModalVisible(true);
                 }}
               >
                 {t("USER_RESET_PASSWORD")}
               </AdminTypo.Secondarybutton>
+              {data?.aadhar_verified === "okyc_ip_verified" && (
+                <AdminTypo.PrimaryButton onPress={openModal}>
+                  {t("OPEN_FOR_EDIT")}
+                </AdminTypo.PrimaryButton>
+              )}
             </VStack>
           </HStack>
-          {/* <Box paddingTop="32px">
-            {data?.status === "screened" ? (
-              <Interviewschedule />
-            ) : (
-              <React.Fragment />
-            )}
-          </Box> */}
           <Modal
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -409,7 +492,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H6>
                       8 characters, 1 Capital, 1 Small, 1 Number
                     </AdminTypo.H6>
-                    {"password" in errors ? (
+                    {"password" in errors && (
                       <FormControl.ErrorMessage
                         _text={{
                           fontSize: "xs",
@@ -417,14 +500,8 @@ export default function FacilitatorView({ footerLinks }) {
                           fontWeight: 500,
                         }}
                       >
-                        {!credentials?.password ? (
-                          errors.password
-                        ) : (
-                          <React.Fragment />
-                        )}
+                        {!credentials?.password && errors.password}
                       </FormControl.ErrorMessage>
-                    ) : (
-                      <React.Fragment />
                     )}
 
                     <Input
@@ -459,7 +536,7 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H6>
                       8 characters, 1 Capital, 1 Small, 1 Number
                     </AdminTypo.H6>
-                    {"confirmPassword" in errors ? (
+                    {"confirmPassword" in errors && (
                       <FormControl.ErrorMessage
                         _text={{
                           fontSize: "xs",
@@ -467,14 +544,9 @@ export default function FacilitatorView({ footerLinks }) {
                           fontWeight: 500,
                         }}
                       >
-                        {!credentials?.confirmPassword ? (
-                          errors.confirmPassword
-                        ) : (
-                          <React.Fragment />
-                        )}
+                        {!credentials?.confirmPassword &&
+                          errors.confirmPassword}
                       </FormControl.ErrorMessage>
-                    ) : (
-                      <React.Fragment />
                     )}
                   </VStack>
                 </FormControl>
@@ -491,13 +563,6 @@ export default function FacilitatorView({ footerLinks }) {
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
                     onPress={() => {
-                      credentials?.password === credentials?.confirmPassword
-                        ? handleResetPassword(
-                            credentials?.password,
-                            credentials?.confirmPassword
-                          )
-                        : credentials?.password !==
-                          credentials?.confirmPassword;
                       handleResetPassword(
                         credentials?.password,
                         credentials?.confirmPassword
@@ -512,9 +577,11 @@ export default function FacilitatorView({ footerLinks }) {
           </Modal>
 
           <VStack space={"5"} p="5" mt="6">
-            <AdminTypo.H4 color="textGreyColor.800" bold>
-              {t("PROFILE_DETAILS").toUpperCase()}
-            </AdminTypo.H4>
+            <HStack>
+              <AdminTypo.H4 color="textGreyColor.800" bold>
+                {t("PROFILE_DETAILS").toUpperCase()}
+              </AdminTypo.H4>
+            </HStack>
             <HStack justifyContent="space-between">
               <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
                 <HStack
@@ -617,14 +684,33 @@ export default function FacilitatorView({ footerLinks }) {
                       : "-"}
                   </AdminTypo.H5>
                 </HStack>
-
                 <HStack>
                   <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
                     {t("AADHAAR_NO")}:
                   </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
-                    {showData(data?.aadhar_no)}
-                  </AdminTypo.H5>
+                  <HStack
+                    flex="1"
+                    alignItems={"center"}
+                    space={"4"}
+                    justifyContent={"space-between"}
+                  >
+                    <AdminTypo.H5
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      color="textGreyColor.800"
+                      bold
+                    >
+                      {showData(data?.aadhar_no)}
+                    </AdminTypo.H5>
+                    <IconByName
+                      bg="white"
+                      color="textMaroonColor.400"
+                      name="PencilLineIcon"
+                      onPress={(e) => {
+                        setAdhaarModalVisible(!adhaarModalVisible);
+                      }}
+                    />
+                  </HStack>
                 </HStack>
               </VStack>
               <VStack
@@ -691,7 +777,7 @@ export default function FacilitatorView({ footerLinks }) {
                             <AdminTypo.H5 bold>
                               {data?.experience ? (
                                 data?.experience?.map((e, key) => (
-                                  <Experience key={key} {...e} />
+                                  <Experience key={e} {...e} />
                                 ))
                               ) : (
                                 <AdminTypo.H5
@@ -713,7 +799,7 @@ export default function FacilitatorView({ footerLinks }) {
                             <AdminTypo.H5 bold>
                               {data?.vo_experience ? (
                                 data?.vo_experience?.map((e, key) => (
-                                  <Experience key={key} {...e} />
+                                  <Experience key={e} {...e} />
                                 ))
                               ) : (
                                 <AdminTypo.H5
@@ -742,11 +828,6 @@ export default function FacilitatorView({ footerLinks }) {
                     <AdminTypo.H5 color="textGreyColor" bold>
                       {t("OTHER_DETAILS")}
                     </AdminTypo.H5>
-                    {/* <IconByName
-                      color="editIcon.300"
-                      size="22px"
-                      name="EditBoxLineIcon"
-                    /> */}
                   </HStack>
                   <HStack>
                     <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
@@ -821,47 +902,183 @@ export default function FacilitatorView({ footerLinks }) {
           </VStack>
           <StatusButton {...{ data, setData }} />
         </VStack>
-        {/* <VStack
-          flex={0.18}
-          bg="white.300"
-          px="3"
-          py="5"
-          space={"5"}
-          borderColor="light.400"
-          pb="1"
-          borderLeftWidth="1"
-        >
-          <HStack justifyContent="space-between" alignItems={"center"}>
-            <IconByName isDisabled name="EditBoxLineIcon" />
-            <H3>{t("COMMENT_SECTION")}</H3>
-            <IconByName isDisabled name="ArrowRightSLineIcon" />
-          </HStack>
-          <VStack space={"3"}>
-            {[
-              { name: t("YOU"), message: t("PROFILE_NEEDS_TO_BE_COMPLETED") },
-              {
-                name: "Manoj",
-                message: t("PROFILE_NEEDS_TO_BE_COMPLETED"),
-              },
-            ].map((item, key) => (
-              <VStack key={key} space={"1"}>
-                <HStack space={"3"}>
-                  <IconByName
-                    isDisabled
-                    color="gray.300"
-                    _icon={{ size: "24px" }}
-                    name="AccountCircleLineIcon"
-                  />
-                  <BodyLarge>{item?.name}</BodyLarge>
-                </HStack>
-                <Box bg="gray.200" p="4">
-                  <BodySmall>{item?.message}</BodySmall>
-                </Box>
-              </VStack>
-            ))}
-          </VStack>
-        </VStack> */}
+        <Modal isOpen={adhaarModalVisible} avoidKeyboard size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"Center"}>
+              <AdminTypo.H1 color="textGreyColor.500">
+                {t("UPDATE_AADHAAR")}
+              </AdminTypo.H1>
+            </Modal.Header>
+            <Modal.Body>
+              <HStack alignItems={"center"} justifyContent={"space-evenly"}>
+                {t("AADHAAR_NO")}:
+                <Input
+                  value={aadhaarValue}
+                  maxLength={12}
+                  name="numberInput"
+                  onChange={handleAadhaarUpdate}
+                />
+              </HStack>
+              <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
+                {aadhaarerror ? t(aadhaarerror) : ""}
+              </AdminTypo.H5>
+
+              {aadhaarerror === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
+                <DataTable
+                  customStyles={tableCustomStyles}
+                  columns={[...columns(t)]}
+                  data={duplicateUserList}
+                  persistTableHead
+                />
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <HStack justifyContent={"space-between"} width={"100%"}>
+                <AdminTypo.Secondarybutton
+                  onPress={() => setAdhaarModalVisible(false)}
+                >
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+                  {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+        <Modal isOpen={editModal} avoidKeyboard size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"Center"}>
+              <AdminTypo.H1 color="textGreyColor.500">
+                {t("REQUESTING_FOR_CHANGE")}
+              </AdminTypo.H1>
+              <AdminTypo.H5>{t("REQUESTING_FOR_CHANGE_MESSAGE")}</AdminTypo.H5>
+            </Modal.Header>
+            <Modal.Body>
+              <HStack>
+                <VStack flex={1}>
+                  <CardComponent
+                    _header={{ bg: "light.100" }}
+                    _vstack={{
+                      bg: "light.100",
+                      space: 2,
+                      pt: "2",
+                      m: "1",
+                    }}
+                    title={
+                      <SelectAllCheckBox
+                        fields={profileOptions.map((e) => e.value)}
+                        title={t("PROFILE_PHOTO")}
+                        {...{ setFieldCheck, fieldCheck }}
+                      />
+                    }
+                  >
+                    <MultiCheck
+                      value={fieldCheck || []}
+                      onChange={(e) => {}}
+                      schema={{
+                        grid: 1,
+                      }}
+                      options={{
+                        enumOptions: profileOptions,
+                      }}
+                    />
+                  </CardComponent>
+                </VStack>
+                <VStack flex={1}>
+                  <CardComponent
+                    _header={{ bg: "light.100" }}
+                    _vstack={{
+                      bg: "light.100",
+                      space: 2,
+                      pt: "2",
+                      m: "1",
+                    }}
+                    title={
+                      <SelectAllCheckBox
+                        fields={addressoptions.map((e) => e.value)}
+                        title={t("ADDRESS")}
+                        {...{ setFieldCheck, fieldCheck }}
+                      />
+                    }
+                  >
+                    <MultiCheck
+                      value={fieldCheck || []}
+                      onChange={(e) => {}}
+                      schema={{
+                        grid: 1,
+                      }}
+                      options={{
+                        enumOptions: addressoptions,
+                      }}
+                    />
+                  </CardComponent>
+                </VStack>
+                <VStack flex={1}>
+                  <CardComponent
+                    _header={{ bg: "light.100" }}
+                    _vstack={{
+                      bg: "light.100",
+                      space: 1,
+                      pt: "2",
+                      m: "1",
+                    }}
+                    title={
+                      <SelectAllCheckBox
+                        fields={checkboxoptions.map((e) => e.value)}
+                        title={t("OTHER_DETAILS")}
+                        {...{ setFieldCheck, fieldCheck }}
+                      />
+                    }
+                  >
+                    <MultiCheck
+                      value={fieldCheck || []}
+                      onChange={(e) => {}}
+                      schema={{
+                        grid: 1,
+                      }}
+                      options={{
+                        enumOptions: checkboxoptions,
+                      }}
+                    />
+                  </CardComponent>
+                </VStack>
+              </HStack>
+            </Modal.Body>
+            <Modal.Footer>
+              <HStack justifyContent={"space-between"} width={"100%"}>
+                <AdminTypo.Secondarybutton onPress={() => setEditModal(false)}>
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton onPress={() => editRequest()}>
+                  {t("SAVE")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </HStack>
     </Layout>
   );
 }
+const SelectAllCheckBox = ({ fields, title, setFieldCheck, fieldCheck }) => {
+  return (
+    <Checkbox
+      onChange={(e) => {
+        if (!e) {
+          const checkedFields = fieldCheck.filter(
+            (field) => !fields.includes(field)
+          );
+          setFieldCheck(checkedFields);
+        } else {
+          const checkedFields = fieldCheck.filter(
+            (field) => !fields.includes(field)
+          );
+          setFieldCheck([...checkedFields, ...fields]);
+        }
+      }}
+    >
+      {title}
+    </Checkbox>
+  );
+};

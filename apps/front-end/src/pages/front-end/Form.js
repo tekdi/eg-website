@@ -48,7 +48,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [verifyOtpData, setverifyOtpData] = React.useState();
   const [loading, setLoading] = React.useState(false);
-  const [otpButton, setOtpButton] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
   const { t } = useTranslation();
@@ -466,8 +465,8 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await userExist({ mobile });
-    if (result.isUserExist) {
+    const result = await facilitatorRegistryService.isExist({ mobile });
+    if (result?.registeredAsFacilitator) {
       const newErrors = {
         mobile: {
           __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
@@ -484,30 +483,29 @@ export default function App({ facilitator, ip, onClick }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      let { mobile, ...otherError } = errors ? errors : {};
+      let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
       if (data?.mobile?.toString()?.length === 10) {
         await checkMobileExist(data?.mobile);
       }
       if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties;
+        const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
         setFormData((e) => {
           const { otp, ...fData } = e;
           return fData;
         });
-        setOtpButton(false);
       }
     }
     if (id === "root_aadhar_no") {
-      let { aadhar_no, ...otherError } = errors ? errors : {};
+      let { aadhar_no, ...otherError } = errors || {};
       setErrors(otherError);
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
-        if (result.isUserExist) {
+        if (result?.success) {
           const newErrors = {
             aadhar_no: {
               __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
@@ -564,14 +562,13 @@ export default function App({ facilitator, ip, onClick }) {
     if (id === "root_block") {
       await setVilage({ block: data?.block, schemaData: schema });
     }
-    
+
     if (id === "root_otp") {
       if (errors?.otp) {
         const newErrors = {};
         setErrors(newErrors);
       }
     }
-    
   };
 
   const onError = (data) => {
@@ -604,7 +601,7 @@ export default function App({ facilitator, ip, onClick }) {
     };
     setFormData(newData);
 
-    if (_.isEmpty(errors)) {
+    if (_.isEmpty(errors) || errors?.otp) {
       const { id } = facilitator;
       let success = false;
       if (id) {
@@ -615,6 +612,13 @@ export default function App({ facilitator, ip, onClick }) {
       } else if (page === "2") {
         const resultCheck = await checkMobileExist(newFormData?.mobile);
         if (!resultCheck) {
+          if (!schema?.properties?.otp) {
+            const { otp: data, ...allData } = newFormData || {};
+            setFormData(allData);
+            newFormData = allData;
+            let { mobile, otp, ...otherError } = errors || {};
+            setErrors(otherError);
+          }
           const { status, otpData, newSchema } = await sendAndVerifyOtp(
             schema,
             {
@@ -651,7 +655,6 @@ export default function App({ facilitator, ip, onClick }) {
             setErrors(newErrors);
           } else {
             setSchema(newSchema);
-            setOtpButton(true);
           }
         }
       } else if (page <= 1) {
@@ -813,11 +816,7 @@ export default function App({ facilitator, ip, onClick }) {
                 {t("UPLOAD_PHOTO")}
               </FrontEndTypo.Secondarybutton>
             </Box>
-            {errors?.fileSize ? (
-              <H2 color="red.400">{errors?.fileSize}</H2>
-            ) : (
-              <React.Fragment />
-            )}
+            {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
           </VStack>
           <FrontEndTypo.Primarybutton
             isLoading={loading}
@@ -859,17 +858,15 @@ export default function App({ facilitator, ip, onClick }) {
             progress={page - 1}
           />
         </Box>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
@@ -880,7 +877,7 @@ export default function App({ facilitator, ip, onClick }) {
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               uiSchema,
               formData,
               customValidate,
@@ -899,7 +896,7 @@ export default function App({ facilitator, ip, onClick }) {
                   formRef?.current?.submit();
                 }}
               >
-                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+                {schema?.properties?.otp ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
@@ -915,8 +912,6 @@ export default function App({ facilitator, ip, onClick }) {
               </FrontEndTypo.Primarybutton>
             )}
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
       <Modal
@@ -1000,7 +995,7 @@ export default function App({ facilitator, ip, onClick }) {
                   isDisabled={!credentials?.copy}
                   onPress={async (e) => {
                     const { copy, ...cData } = credentials;
-                    const loginData = await login(cData);
+                    await login(cData);
                     navigate("/");
                     navigate(0);
                   }}

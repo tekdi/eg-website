@@ -62,11 +62,17 @@ function App() {
         {
           title: "LEARNERS",
           route: "/beneficiary/list",
-          icon: "PencilRulerLineIcon",
+          icon: "GraduationCap",
+        },
+        {
+          title: "COMMUNITY",
+          route: "/community-references",
+          icon: "TeamLineIcon",
         },
         {
           title: "MY_CAMP",
           icon: "CommunityLineIcon",
+          route: "/camps",
         },
         {
           title: "DASHBOARD",

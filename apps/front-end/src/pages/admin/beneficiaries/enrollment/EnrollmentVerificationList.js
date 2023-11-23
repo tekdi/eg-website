@@ -21,6 +21,7 @@ import {
   ScrollView,
   Input,
   Box,
+  Pressable,
 } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
@@ -28,48 +29,59 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 
-const columns = (t, navigate) => [
+const columns = (t, navigate, filter) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
+    // width: "150px",
   },
   {
     name: t("LEARNERS_NAME"),
     selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        {row?.profile_photo_1?.name ? (
-          <ImageView
-            source={{
-              uri: row?.profile_photo_1?.name,
-            }}
-            // alt="Alternate Text"
-            width={"35px"}
-            height={"35px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "35" }}
-          />
-        )}
-        {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
-          <AdminTypo.H5 bold>
-            {row?.program_beneficiaries?.enrollment_first_name + " "}
-            {row?.program_beneficiaries?.enrollment_last_name
-              ? row?.program_beneficiaries?.enrollment_last_name
-              : ""}
-          </AdminTypo.H5>
-        ) : (
-          <AdminTypo.H5 bold>
-            {row?.first_name + " "}
-            {row?.last_name ? row?.last_name : ""}
-          </AdminTypo.H5>
-        )}
+      <HStack>
+        <Pressable
+          onPress={() =>
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`)
+          }
+        >
+          <HStack alignItems={"center"} space={2}>
+            {row?.profile_photo_1?.name ? (
+              <ImageView
+                source={{
+                  uri: row?.profile_photo_1?.name,
+                }}
+                // alt="Alternate Text"
+                width={"35px"}
+                height={"35px"}
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "35" }}
+                mt="2"
+              />
+            )}
+            {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+              <AdminTypo.H5 bold>
+                {row?.program_beneficiaries?.enrollment_first_name + " "}
+                {row?.program_beneficiaries?.enrollment_last_name
+                  ? row?.program_beneficiaries?.enrollment_last_name
+                  : ""}
+              </AdminTypo.H5>
+            ) : (
+              <AdminTypo.H5 bold>
+                {row?.first_name + " "}
+                {row?.last_name ? row?.last_name : ""}
+              </AdminTypo.H5>
+            )}
+          </HStack>
+        </Pressable>
       </HStack>
     ),
     wrap: true,
+    width: "250px",
   },
   {
     name: t("LEARNERS_AGE"),
@@ -89,10 +101,12 @@ const columns = (t, navigate) => [
         return "-";
       }
     },
+    // width: "150px",
   },
   {
     name: t("PRERAK_ID"),
     selector: (row) => row?.program_beneficiaries?.id,
+    // width: "100px",
   },
   {
     name: t("PRERAK_NAME"),
@@ -105,18 +119,24 @@ const columns = (t, navigate) => [
       return first_name || last_name ? `${first_name} ${last_name || ""}` : "-";
     },
     wrap: true,
+    width: "200px",
   },
   {
     name: t("STATUS"),
     selector: (row, index) => (
-      <ChipStatus
-        key={index}
-        is_duplicate={row?.is_duplicate}
-        is_deactivated={row?.is_deactivated}
-        status={row?.program_beneficiaries?.status}
-      />
+      <Pressable
+        onPress={() => navigate(`/admin/learners/enrollmentReceipt/${row?.id}`)}
+      >
+        <ChipStatus
+          key={index}
+          is_duplicate={row?.is_duplicate}
+          is_deactivated={row?.is_deactivated}
+          status={row?.program_beneficiaries?.status}
+        />
+      </Pressable>
     ),
     wrap: true,
+    width: "180px",
   },
   {
     name: t("ACTION"),
@@ -126,12 +146,15 @@ const columns = (t, navigate) => [
         <AdminTypo.Secondarybutton
           my="3"
           onPress={() => {
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
+              state: filter,
+            });
           }}
         >
           {t("VIEW")}
         </AdminTypo.Secondarybutton>
       ),
+    width: "150px",
   },
 ];
 
@@ -151,6 +174,11 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const handleRowClick = (row) => {
+    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
+      state: filter,
+    });
+  };
 
   React.useEffect(async () => {
     if (urlFilterApply) {
@@ -193,7 +221,15 @@ function EnrollmentVerificationList({ footerLinks }) {
       <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
         <HStack justifyContent="space-between" alignItems="center">
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 px="5">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
+          <AdminTypo.H1 color="Activatedcolor.400">
+            {t("All_AG_LEARNERS")}
+          </AdminTypo.H1>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate("/admin/learners")}
+          />
+          <AdminTypo.H1 px="3">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",
@@ -317,7 +353,7 @@ function EnrollmentVerificationList({ footerLinks }) {
               </ScrollView>
               <DataTable
                 customStyles={tableCustomStyles}
-                columns={[...columns(t, navigate)]}
+                columns={[...columns(t, navigate, filter)]}
                 data={data}
                 persistTableHead
                 progressPending={loading}
@@ -330,6 +366,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                 onChangePage={(e) => {
                   setFilterObject({ ...filter, page: e });
                 }}
+                onRowClicked={handleRowClick}
               />
             </VStack>
           </ScrollView>

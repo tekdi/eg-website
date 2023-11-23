@@ -8,12 +8,15 @@ import {
   SelectStyle,
   ImageView,
   Loading,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Clipboard from "component/Clipboard";
+import Chip from "component/Chip";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = React.useState({});
@@ -45,9 +48,7 @@ const LearnerMessage = ({ program_beneficiaries }) => {
 
   return (
     <HStack color="blueText.450" alignItems="center">
-      <FrontEndTypo.H4 color="blueText.450" underline>
-        {getTitle()}
-      </FrontEndTypo.H4>
+      <FrontEndTypo.H4 color="blueText.450">{getTitle()}</FrontEndTypo.H4>
     </HStack>
   );
 };
@@ -61,21 +62,28 @@ const List = ({ data }) => {
         data &&
         data?.constructor?.name === "Array" &&
         data?.map((item) => (
-          <VStack
+          <CardComponent
             key={item?.id}
-            bg="white"
-            p="2"
-            shadow="FooterShadow"
-            rounded="sm"
-            space="1"
+            _header={{ px: "0", pt: "0" }}
+            _body={{ px: "0", pb: "0" }}
+            _vstack={{ p: 0, space: 0, flex: 1 }}
+            title={
+              <VStack alignItems="center" flex={1} p="1">
+                <Clipboard text={item?.id}>
+                  <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
+                </Clipboard>
+              </VStack>
+            }
           >
             <Pressable
               onPress={async () => {
                 navigate(`/beneficiary/${item?.id}`);
               }}
+              flex={1}
+              p="4"
             >
-              <HStack justifyContent="space-between">
-                <HStack alignItems="Center" flex="5">
+              <HStack justifyContent="space-between" space={1}>
+                <HStack alignItems="Center" flex={[1, 2, 4]}>
                   {item?.profile_photo_1?.id ? (
                     <ImageView
                       source={{
@@ -125,25 +133,27 @@ const List = ({ data }) => {
                           ` ${item.last_name}`}
                       </FrontEndTypo.H3>
                     )}
+
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.mobile}
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <Box maxW="121px">
+                <VStack alignItems="end" flex={[1]}>
                   <ChipStatus
+                    w="fit-content"
                     status={item?.program_beneficiaries?.status}
                     is_duplicate={item?.is_duplicate}
                     is_deactivated={item?.is_deactivated}
                     rounded={"sm"}
                   />
-                </Box>
+                </VStack>
               </HStack>
             </Pressable>
-            <VStack bg="white" pl="2">
+            <VStack bg="white" pl="2" mr="2">
               {item?.program_beneficiaries?.status === "identified" && (
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450">
                     {t("COMPLETE_THE_DOCUMENTATION")}
                   </FrontEndTypo.H4>
                   <IconByName
@@ -155,10 +165,9 @@ const List = ({ data }) => {
                   />
                 </HStack>
               )}
-
               {item?.program_beneficiaries?.status === "enrollment_pending" && (
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450">
                     {t("CONTINUE_ENROLLMENT")}
                   </FrontEndTypo.H4>
                   <IconByName
@@ -169,10 +178,9 @@ const List = ({ data }) => {
                   />
                 </HStack>
               )}
-
               {item?.program_beneficiaries?.status === "ready_to_enroll" && (
                 <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
+                  <FrontEndTypo.H4 color="blueText.450">
                     {t("ENTER_THE_ENROLLMENT_DETAILS")}
                   </FrontEndTypo.H4>
                   <IconByName
@@ -183,59 +191,24 @@ const List = ({ data }) => {
                   />
                 </HStack>
               )}
-
+              {["duplicated", "enrolled_ip_verified"]?.includes(
+                item?.program_beneficiaries?.status
+              ) && (
+                <HStack color="blueText.450" alignItems="center">
+                  <FrontEndTypo.H4 color="blueText.450">
+                    {item?.program_beneficiaries?.status === "duplicated"
+                      ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
+                      : t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
+                  </FrontEndTypo.H4>
+                </HStack>
+              )}
               {item?.program_beneficiaries?.status === "enrolled" && (
                 <LearnerMessage
                   program_beneficiaries={item?.program_beneficiaries}
                 />
               )}
-
-              {item?.program_beneficiaries?.status === "dropout" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4
-                    color="blueText.450"
-                    underline
-                  ></FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status === "duplicated" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("FOLLOW_UP_WITH_IP_ASSIGNMENT")}
-                  </FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status ===
-                "enrolled_ip_verified" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450" underline>
-                    {t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
-                  </FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status === "rejected" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4
-                    color="blueText.450"
-                    underline
-                  ></FrontEndTypo.H4>
-                </HStack>
-              )}
-
-              {item?.program_beneficiaries?.status ===
-                "ineligible_for_pragati_camp" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4
-                    color="blueText.450"
-                    underline
-                  ></FrontEndTypo.H4>
-                </HStack>
-              )}
             </VStack>
-          </VStack>
+          </CardComponent>
         ))
       ) : (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
@@ -315,7 +288,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
-        onlyIconsShow: ["userInfo", "loginBtn"],
+        onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
         isEnableSearchBtn: "true",
         setSearch: (value) => {
           setFilter({ ...filter, search: value, page: 1 });

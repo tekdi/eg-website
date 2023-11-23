@@ -36,14 +36,14 @@ export default {
       required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {
         lat: {
-          type: "number",
+          type: ["number", "string"],
           title: "LATITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         long: {
-          type: "number",
+          type: ["number", "string"],
           title: "LONGITUDE",
-          format: "readOnly",
+          format: "ReadOnly",
         },
         address: {
           title: "STREET_ADDRESS",

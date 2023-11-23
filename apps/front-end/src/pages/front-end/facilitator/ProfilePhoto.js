@@ -8,21 +8,23 @@ export default function ProfilePhoto({
   profile_photo_2,
   profile_photo_3,
   editLink,
+  isProfileEdit,
 }) {
   const navigate = useNavigate();
   return (
     <VStack alignItems="center">
       <VStack position="relative" p="4">
-        <IconByName
-          right="-20"
-          top="0"
-          p="2"
-          position="absolute"
-          name="PencilLineIcon"
-          onPress={(e) =>
-            navigate(editLink ? editLink : `/profile/edit/upload/1`)
-          }
-        />
+        {isProfileEdit && (
+          <IconByName
+            right="-20"
+            top="0"
+            p="2"
+            position="absolute"
+            name="PencilLineIcon"
+            onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
+          />
+        )}
+
         {profile_photo_1?.id ? (
           <ImageView
             w="120"

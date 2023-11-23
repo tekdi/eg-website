@@ -2,7 +2,7 @@ import React from "react";
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
-  import("../pages/front-end/ag-edit/basicDetails")
+  import("../pages/front-end/ag-edit/parts/basicDetails")
 );
 const educationDetails = React.lazy(() =>
   import(
@@ -104,6 +104,47 @@ const AadhaarDetails = React.lazy(() =>
 const BenificiaryAddress = React.lazy(() =>
   import("pages/front-end/BenificiaryAddress")
 );
+const CommunityView = React.lazy(() =>
+  import("pages/front-end/community/CommunityView")
+);
+
+const CampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/CampDashboard")
+);
+const CampSelectedLearners = React.lazy(() =>
+  import("pages/front-end/Camp/CampSelectedLearners")
+);
+const CampRegistration = React.lazy(() =>
+  import("pages/front-end/Camp/CampRegistration")
+);
+
+const CampForm = React.lazy(() => import("pages/front-end/Camp/CampForm/Form"));
+const CampLeanerList = React.lazy(() =>
+  import("pages/front-end/Camp/CampLearnerList")
+);
+const PcrDetails = React.lazy(() =>
+  import("pages/front-end/PCRDetails.js/PcrDetails")
+);
+const PcrView = React.lazy(() =>
+  import("pages/front-end/PCRDetails.js/PcrView")
+);
+
+const FileView = React.lazy(() => import("pages/FileView"));
+const StartCampDashboard = React.lazy(() =>
+  import("pages/front-end/Camp/StartCampDashboard")
+);
+
+const CampAttendance = React.lazy(() =>
+  import("pages/front-end/Camp/Attendace/CampAttendance")
+);
+
+const Attendance = React.lazy(() =>
+  import("pages/front-end/Camp/Attendace/Attendance")
+);
+
+const CampTodayActivities = React.lazy(() =>
+  import("pages/front-end/Camp/CampTodayActivities")
+);
 
 export default [
   { path: "/form", component: Home },
@@ -204,6 +245,14 @@ export default [
     path: "/beneficiary/:id/upload/:photoNo",
     component: BenificiaryProfilePhoto,
   },
+  {
+    path: "/beneficiary/:id/pcrdetails",
+    component: PcrDetails,
+  },
+  {
+    path: "/beneficiary/:id/pcrview",
+    component: PcrView,
+  },
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
@@ -220,5 +269,40 @@ export default [
     path: "/facilitatorqualification",
     component: FacilitatorQualification,
   },
+  {
+    path: "/camps",
+    component: CampDashboard,
+  },
+
+  {
+    path: "/camps/:id",
+    component: CampRegistration,
+  },
+  {
+    path: "/camps/:id/:step",
+    component: CampForm,
+  },
+  {
+    path: "/camps/new/learners",
+    component: CampLeanerList,
+  },
+  {
+    path: "/file/:id/view",
+    component: FileView,
+  },
+  {
+    path: "/community-references",
+    component: CommunityView,
+  },
+  {
+    path: "/camps/:id/attendance",
+    component: CampAttendance,
+  },
+  {
+    path: "/camps/:id/attendance-view",
+    component: Attendance,
+  },
+  { path: "/camps/:id/start", component: StartCampDashboard },
+  { path: "/camps/:id/activities", component: CampTodayActivities },
   { path: "*", component: Dashboard },
 ];

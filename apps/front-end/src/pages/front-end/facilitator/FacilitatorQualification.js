@@ -57,16 +57,18 @@ export default function FacilitatorQualification({
     setEnumOptions(data?.data ? data?.data : {});
   }, [facilitator]);
 
-  console.log(facilitator);
-
+  const onPressBackButton = () => {
+    navigate("/profile");
+  };
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
         leftIcon: (
           <FrontEndTypo.H2>{t("QUALIFICATION_DETAILS")}</FrontEndTypo.H2>
         ),
+        onPressBackButton,
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >

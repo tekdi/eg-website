@@ -20,13 +20,14 @@ import {
   t,
   ImageView,
   BodyMedium,
+  CustomRadio,
 } from "@shiksha/common-lib";
 
-import CustomRadio from "component/CustomRadio";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
+import Clipboard from "component/Clipboard";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -262,7 +263,9 @@ export default function BenificiaryProfileView(props) {
                     ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
                 </FrontEndTypo.H2>
               )}
-
+              <Clipboard text={benificiary?.id}>
+                <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
+              </Clipboard>
               <ChipStatus
                 status={benificiary?.program_beneficiaries?.status}
                 is_duplicate={benificiary?.is_duplicate}
@@ -436,6 +439,7 @@ export default function BenificiaryProfileView(props) {
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 {![
+                  "enrolled",
                   "dropout",
                   "rejected",
                   "ready_to_enroll",
@@ -509,9 +513,8 @@ export default function BenificiaryProfileView(props) {
                   </FrontEndTypo.H3>
 
                   {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !== "rejected" &&
                     benificiary?.program_beneficiaries?.status !==
-                      "enrolled_ip_verified" && (
+                      "rejected" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={(e) => {
@@ -522,6 +525,24 @@ export default function BenificiaryProfileView(props) {
                     )}
                 </HStack>
               )}
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="1"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("PCR_DETAILS")}
+                </FrontEndTypo.H3>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  color="#790000"
+                  size="sm"
+                  onPress={(e) => {
+                    navigate(`/beneficiary/${id}/pcrview`);
+                  }}
+                />
+              </HStack>
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"

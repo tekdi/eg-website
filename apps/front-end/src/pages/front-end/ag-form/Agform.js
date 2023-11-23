@@ -203,10 +203,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     });
   }, []);
 
-  // const userExist = async (filters) => {
-  //   return await facilitatorRegistryService.isExist(filters);
-  // };
-
   const formSubmitCreate = async (formData) => {};
 
   const goErrorPage = (key) => {

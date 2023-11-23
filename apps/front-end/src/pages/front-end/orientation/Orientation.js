@@ -58,47 +58,6 @@ export default function Orientation({ footerLinks }) {
   const nowDate = new Date();
   const [goToDate, setGoToDate] = React.useState(moment().toDate());
 
-  const SelectButton = ({ required }) => (
-    <HStack space={"4"} direction={["column", "row"]}>
-      <HStack flex={["1", "1", "1"]} alignItems="center" space={"2"}>
-        <IconByName
-          name="UserLineIcon"
-          color="textGreyColor.200"
-          isDisabled
-          _icon={{ size: "14px" }}
-        />
-        <AdminTypo.H6 color="textGreyColor.100">
-          {t("SELECT_CANDIDATE")}
-        </AdminTypo.H6>
-
-        <AdminTypo.H6 color="textGreyColor.100">
-          {required ? "*" : null}
-        </AdminTypo.H6>
-      </HStack>
-      <HStack alignItems="center" flex={["1", "3", "4"]}>
-        <AdminTypo.Secondarybutton
-          leftIcon={<Text>{userIds ? Object.values(userIds).length : ""}</Text>}
-          onPress={() => setIsOpen(true)}
-          flex="1"
-        >
-          {t("SELECT_PRERAK")}
-        </AdminTypo.Secondarybutton>
-      </HStack>
-    </HStack>
-  );
-
-  const TimePickerComponent = ({ value, onChange }) => (
-    <VStack>
-      <input
-        className="form-control"
-        type="time"
-        style={{ height: 40 }}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </VStack>
-  );
-
   React.useEffect(() => {
     getEventLists();
   }, []);
@@ -136,6 +95,45 @@ export default function Orientation({ footerLinks }) {
   const getEventLists = async () => {
     const eventResult = await eventService.getEventList();
     setEventList(eventResult);
+  };
+
+  const SelectButton = ({ required }) => {
+    const { t } = useTranslation();
+
+    return (
+      <HStack space={"4"} direction={["column", "row"]}>
+        <HStack flex={["1", "1", "1"]} alignItems="center" space={"2"}>
+          <IconByName
+            name="UserLineIcon"
+            color="textGreyColor.200"
+            isDisabled
+            _icon={{ size: "14px" }}
+          />
+          <AdminTypo.H6 color="textGreyColor.100">
+            {t("SELECT_CANDIDATE")}
+          </AdminTypo.H6>
+
+          <AdminTypo.H6 color="textGreyColor.100">
+            {required ? "*" : null}
+          </AdminTypo.H6>
+        </HStack>
+        <HStack alignItems="left" flex={["1", "3", "4"]}>
+          <AdminTypo.Secondarybutton
+            leftIcon={
+              <Text maxWidth="10px" alignItems="left">
+                {userIds ? Object.values(userIds).length : ""}
+              </Text>
+            }
+            onPress={() => setIsOpen(true)}
+            height="50px"
+            maxWidth="200px"
+            flex={1}
+          >
+            {t("SELECT_PRERAK")}
+          </AdminTypo.Secondarybutton>
+        </HStack>
+      </HStack>
+    );
   };
 
   const uiSchema = {
@@ -317,6 +315,7 @@ export default function Orientation({ footerLinks }) {
       alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
     }
   };
+
   // console.log(formData);
   return (
     <Layout

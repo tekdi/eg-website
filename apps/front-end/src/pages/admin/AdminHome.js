@@ -23,12 +23,13 @@ import {
   setQueryParameters,
   urlData,
   debounce,
+  CustomRadio,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
-import CustomRadio from "component/CustomRadio";
 import { useLocation } from "react-router-dom";
 import { MultiCheck } from "../../component/BaseInput";
+import Clipboard from "component/Clipboard";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
@@ -149,7 +150,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       work_experience: {
         type: "array",
         title: t("WORK_EXPERIENCES"),
-        _hstack: { maxH: 135, overflowY: "scroll" },
+        _hstack: { maxH: 130, overflowY: "scroll" },
         items: {
           type: "string",
           enumNames: [
@@ -291,7 +292,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           }}
         />
 
-        <HStack height={"6vh"} space={2}>
+        <HStack height={"4vh"} space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
               exportPrerakCSV();
@@ -343,25 +344,21 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                     pb="5"
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
-                    {/* <Clipboard
-                      text={`${
-                        process.env.REACT_APP_BASE_URL
-                      }/facilitator-self-onboarding/${
-                        facilitator?.program_users[0]?.organisation_id ?? ""
-                      }`}
-                    > */}
-                    <HStack space="3">
-                      <IconByName
-                        name="FileCopyLineIcon"
-                        isDisabled
-                        rounded="full"
-                        color="blue.300"
-                      />
-                      <AdminTypo.H3 color="blue.300">
-                        {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                      </AdminTypo.H3>
-                    </HStack>
-                    {/* </Clipboard> */}
+                    <Clipboard
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users[0]?.organisation_id}`}
+                    >
+                      <HStack space="3">
+                        <IconByName
+                          name="FileCopyLineIcon"
+                          isDisabled
+                          rounded="full"
+                          color="blue.300"
+                        />
+                        <AdminTypo.H3 color="blue.300">
+                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                        </AdminTypo.H3>
+                      </HStack>
+                    </Clipboard>
                   </HStack>
                 </VStack>
               </Modal.Body>

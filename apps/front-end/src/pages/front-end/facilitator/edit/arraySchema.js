@@ -22,7 +22,7 @@ export default {
         description: {
           title: "DESCRIPTION",
           type: ["string", "null"],
-          format: "textarea",
+          format: "Textarea",
           rows: 3,
         },
         experience_in_years: {
