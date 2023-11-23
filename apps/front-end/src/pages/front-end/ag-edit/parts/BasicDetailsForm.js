@@ -41,6 +41,7 @@ export default function BasicDetailsForm({ id }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const userId = id;
   const navigate = useNavigate();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
@@ -123,7 +124,6 @@ export default function BasicDetailsForm({ id }) {
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        console.log(e);
         const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
@@ -206,7 +206,6 @@ export default function BasicDetailsForm({ id }) {
   };
 
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
@@ -214,6 +213,7 @@ export default function BasicDetailsForm({ id }) {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
@@ -275,6 +275,7 @@ export default function BasicDetailsForm({ id }) {
               }}
             >
               <FrontEndTypo.Primarybutton
+                isDisabled={isDisable}
                 mt="3"
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
