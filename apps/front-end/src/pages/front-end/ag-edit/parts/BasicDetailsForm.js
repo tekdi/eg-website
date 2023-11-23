@@ -92,7 +92,6 @@ export default function BasicDetailsForm({ id }) {
         return true;
       }
     }
-    false;
   };
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -106,7 +105,6 @@ export default function BasicDetailsForm({ id }) {
         nextPreviewStep();
       }
     }
-    false;
   };
 
   React.useEffect(() => {
@@ -132,7 +130,6 @@ export default function BasicDetailsForm({ id }) {
         }
       });
     }
-    false;
   };
 
   const customValidate = (data, errors, c) => {
@@ -206,7 +203,6 @@ export default function BasicDetailsForm({ id }) {
         setFormData({ ...formData, last_name: "" });
       }
     }
-    false;
   };
 
   const onError = (data) => {
