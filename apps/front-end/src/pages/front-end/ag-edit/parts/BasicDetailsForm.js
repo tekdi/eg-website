@@ -72,7 +72,6 @@ export default function BasicDetailsForm({ id }) {
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
-    true;
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
@@ -96,7 +95,6 @@ export default function BasicDetailsForm({ id }) {
     false;
   };
   const setStep = async (pageNumber = "") => {
-    true;
     if (schema1.type === "step") {
       const properties = schema1.properties;
       if (pageNumber !== "") {
@@ -126,7 +124,6 @@ export default function BasicDetailsForm({ id }) {
   }, []);
 
   const goErrorPage = (key) => {
-    true;
     if (key) {
       pages.forEach((e) => {
         const data = schema1["properties"]?.[e]["properties"]?.[key];
@@ -180,7 +177,6 @@ export default function BasicDetailsForm({ id }) {
   };
 
   const onChange = async (e, id) => {
-    true;
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
