@@ -52,10 +52,12 @@ export default function StatusButton({ data, setData }) {
   );
   const [alertModal, setAlertModal] = React.useState();
   const { t } = useTranslation();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const navigate = useNavigate();
 
   const update = async (status) => {
+    setIsDisable(true);
     if (data?.program_faciltator_id && status) {
       await facilitatorRegistryService.update({
         id: data?.program_faciltator_id,
@@ -66,9 +68,11 @@ export default function StatusButton({ data, setData }) {
       setShowModal();
       setData({ ...data, status: status, status_reason: reason });
     }
+    setIsDisable(false);
   };
 
   const updateAadhaarDetails = async () => {
+    setIsDisable(true);
     const id = data?.id;
     const dob =
       okycResponse?.aadhaar_data?.dateOfBirth &&
@@ -290,8 +294,8 @@ export default function StatusButton({ data, setData }) {
                       !(
                         (showModal?.reason &&
                           reason &&
-                          reason?.toLowerCase() != "other") ||
-                        !showModal?.reason
+                          reason?.toLowerCase() !== "other") ||
+                        (!showModal?.reason && !isDisable)
                       )
                     }
                     onPress={() => {
@@ -397,6 +401,7 @@ export default function StatusButton({ data, setData }) {
                 </Alert>
 
                 <AdminTypo.PrimaryButton
+                  isDisabled={isDisable}
                   onPress={(e) => {
                     update(showModal?.status);
                     updateAadhaarDetails();
