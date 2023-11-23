@@ -36,6 +36,7 @@ export default function ReferenceDetails({ ip }) {
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
@@ -227,6 +228,7 @@ export default function ReferenceDetails({ ip }) {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     if (formData?.referencefullname?.contact_number.toString()?.length !== 10) {
       const newErrors = {
         contact_number: {
@@ -287,6 +289,7 @@ export default function ReferenceDetails({ ip }) {
             }}
           >
             <Button
+              isDisabled={isDisable}
               mt="3"
               variant={"primary"}
               type="submit"

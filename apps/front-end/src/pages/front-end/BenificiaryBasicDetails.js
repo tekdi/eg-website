@@ -1,7 +1,6 @@
 import React from "react";
 import { HStack, VStack } from "native-base";
 import {
-  arrList,
   FrontEndTypo,
   IconByName,
   benificiaryRegistoryService,
