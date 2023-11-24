@@ -49,6 +49,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [isExistflag, setisExistflag] = React.useState();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
+  const [isDisable, setIsDisable] = React.useState(false);
   const id = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -241,6 +242,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   }, [formData?.aadhar_no]);
 
   const onSubmit = () => {
+    setIsDisable(true);
     if (isExistflag === "registeredAsFacilitator") {
       setModalVisible(true);
     } else if (isExistflag === "underSameFacilitator") {
@@ -335,6 +337,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.Primarybutton>
             ) : (
               <FrontEndTypo.Primarybutton
+                isDisabled={isDisable}
                 mt="5"
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
