@@ -119,7 +119,8 @@ export default function CampDashboard({ footerLinks }) {
                       )}
                     </Center>
                   </HStack>
-                  {campList?.map((item) => {
+                  {campList?.map((item, i) => {
+                    const index = i + 1;
                     return (
                       <Pressable
                         key={item}
@@ -139,7 +140,8 @@ export default function CampDashboard({ footerLinks }) {
                         >
                           <VStack>
                             <FrontEndTypo.H3>
-                              {item?.group?.name}
+                              {t("CAMP")} {0}
+                              {index}
                             </FrontEndTypo.H3>
                             {item?.group?.description && (
                               <FrontEndTypo.H6>
