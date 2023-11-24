@@ -1156,5 +1156,7 @@
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
   "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING": "Profile Aadhar number doesn't match OKYC Aadhar, Update it and ask Prerak to do OKYC again.",
-  "ALREADY_CAMP_REGISTER": "Prerak is a camp owner.  Please reassign his/her camp to another prerak and then mark he/she as a reject/dropout/rusticate."
+  "ALREADY_CAMP_REGISTER": "Prerak is a camp owner.  Please reassign his/her camp to another prerak and then mark he/she as a reject/dropout/rusticate.",
+  "CAMP_PROPERTY_FACILITIES_DRINKING_WATER": "Drinking Water",
+  "CAMP_PROPERTY_FACILITIES_SUFFICIENT_AND_SUTABLE_SEATING_AREA": "Sufficient and suitable seating area"
 }
