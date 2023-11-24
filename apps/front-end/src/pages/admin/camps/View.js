@@ -27,7 +27,7 @@ import {
   Stack,
 } from "native-base";
 import { useTranslation } from "react-i18next";
-import Chip, { CampChipStatus } from "component/Chip";
+import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
 
