@@ -141,10 +141,10 @@ export default function CampExecutionStart({ footerLinks }) {
   const pdata = [
     "COURAGEOUS",
     "CREATIVE",
-    "CARING",
-    "COLLABORATION",
     "FEEL_GOOD",
     "ASPIRATIONS",
+    "CARING",
+    "COLLABORATION",
   ];
 
   const handleChipClick = (item) => {
@@ -163,25 +163,31 @@ export default function CampExecutionStart({ footerLinks }) {
           {t("LEARNER_ENVIRONMENT")}
         </FrontEndTypo.H2>
 
-        <HStack
-          alignItems={"center"}
-          justifyContent={"center"}
-          flexWrap={"wrap"}
-          space={5}
-        >
+        <HStack justifyContent={"center"} flexWrap={"wrap"}>
           {pdata.map((item) => {
             return (
-              <VStack key={item} space={5} my={3} alignItems={"center"}>
+              <VStack
+                space={4}
+                my={2}
+                mx={3}
+                alignItems={"center"}
+                key={item}
+                width={"40%"}
+              >
                 <ImageView
-                  width="80px"
-                  height="80px"
+                  w={"150"}
+                  h={"150"}
+                  borderRadius="0"
                   source={{
                     document_id: localStorage.getItem("attendancePicture"),
                   }}
+                  _image={{ rounded: 0 }}
                 />
                 <Pressable onPress={() => handleChipClick(item)}>
-                  <Chip px={5} isActive={activeChip === item}>
-                    <Text fontSize={"16px"}>{t(item)}</Text>
+                  <Chip width="150px" isActive={activeChip === item}>
+                    <Text textAlign={"center"} fontSize={"12px"}>
+                      {t(item)}
+                    </Text>
                   </Chip>
                 </Pressable>
               </VStack>
