@@ -140,8 +140,12 @@ export default function CampDashboard({ footerLinks }) {
                         >
                           <VStack>
                             <FrontEndTypo.H3>
-                              {t("CAMP")} {0}
-                              {index}
+                              <FrontEndTypo.H3>
+                                {`${t("CAMP")} ${String(index).padStart(
+                                  2,
+                                  "0"
+                                )}`}
+                              </FrontEndTypo.H3>
                             </FrontEndTypo.H3>
                             {item?.group?.description && (
                               <FrontEndTypo.H6>
