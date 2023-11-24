@@ -13,6 +13,7 @@ import {
   ImageView,
   BodyMedium,
   GetEnumValue,
+  mapDistance,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -26,7 +27,7 @@ import {
   Stack,
 } from "native-base";
 import { useTranslation } from "react-i18next";
-import { CampChipStatus } from "component/Chip";
+import Chip, { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
 
@@ -204,6 +205,12 @@ export default function View({ footerLinks }) {
       name: t("MAP"),
       selector: (row) => mapDirection({ row, data }),
       minWidth: "60px",
+      wrap: true,
+    },
+    {
+      name: t("DISTANCE"),
+      selector: (row) => mapDistance({ row, data }),
+      minWidth: "160px",
       wrap: true,
     },
     {
