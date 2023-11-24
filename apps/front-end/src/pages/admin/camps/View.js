@@ -83,6 +83,7 @@ export default function View({ footerLinks }) {
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const { id } = useParams();
 
@@ -118,6 +119,7 @@ export default function View({ footerLinks }) {
   }, []);
 
   const updateCampStatus = async () => {
+    setIsDisable(true);
     const { error, ...result } = await campService.updateCampStatus({
       id,
       facilitator_id: data?.faciltator?.[0]?.id,
@@ -126,6 +128,7 @@ export default function View({ footerLinks }) {
     if (result?.status === 200) {
       navigate(`/admin/camps?status=${status}&page=1`);
     } else {
+      setIsDisable(false);
       setErrorList(result?.message);
       setStatus();
     }
@@ -591,6 +594,7 @@ export default function View({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
 
                 <AdminTypo.Secondarybutton
+                  isDisabled={isDisable}
                   onPress={() => {
                     updateCampStatus();
                   }}
