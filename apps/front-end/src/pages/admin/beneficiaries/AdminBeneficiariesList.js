@@ -137,13 +137,13 @@ export default function AdminHome({ footerLinks }) {
     >
       <HStack
         p="4"
-        space={["0", "0", "0", "4"]}
+        space={["0", "0", "0", "10"]}
         flexWrap={"wrap"}
         ref={refSubHeader}
       >
         <HStack justifyContent="space-between" alignItems="center">
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 px="5">{t("All_AG_LEARNERS")}</AdminTypo.H1>
+          <AdminTypo.H1 mx="4">{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",
@@ -157,6 +157,7 @@ export default function AdminHome({ footerLinks }) {
           size={"xs"}
           minH="42px"
           maxH="42px"
+          ml="2px"
           InputLeftElement={
             <IconByName
               color="coolGray.500"
@@ -175,7 +176,7 @@ export default function AdminHome({ footerLinks }) {
             );
           }}
         />
-        <HStack alignSelf={"center"} space="4" height={"5.5vh"}>
+        <HStack alignSelf={"center"} space="2" height={"5.5vh"}>
           <Menu
             w="190"
             placement="bottom right"
