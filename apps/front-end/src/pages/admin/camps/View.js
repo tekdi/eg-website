@@ -218,6 +218,7 @@ export default function View({ footerLinks }) {
       minWidth: "60px",
       wrap: true,
     },
+
     {
       name: t("DISTANCE"),
       selector: (row) => {
