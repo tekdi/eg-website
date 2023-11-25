@@ -10,6 +10,7 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -21,6 +22,7 @@ import {
   BaseInputTemplate,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
 export default function FamilyDetails({ ip }) {
@@ -37,6 +39,8 @@ export default function FamilyDetails({ ip }) {
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
+  const [fields, setFields] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
@@ -46,6 +50,18 @@ export default function FamilyDetails({ ip }) {
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
+
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   React.useEffect(async () => {
@@ -88,6 +104,7 @@ export default function FamilyDetails({ ip }) {
   }, [formData?.id]);
 
   const nextPreviewStep = async (pageStape = "n") => {
+    setIsDisable(true);
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
@@ -100,7 +117,7 @@ export default function FamilyDetails({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -108,19 +125,22 @@ export default function FamilyDetails({ ip }) {
         return true;
       }
     }
+    setIsDisable(false);
   };
   const setStep = async (pageNumber = "") => {
+    setIsDisable(true);
     if (schema1.type === "step") {
       const properties = schema1.properties;
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
       }
     }
+    setIsDisable(false);
   };
 
   React.useEffect(() => {
@@ -128,7 +148,7 @@ export default function FamilyDetails({ ip }) {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
 
       setSubmitBtn(t("NEXT"));
@@ -288,8 +308,13 @@ export default function FamilyDetails({ ip }) {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
+  };
+
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
   };
 
   return (
@@ -302,7 +327,8 @@ export default function FamilyDetails({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" &&
+      fields.length <= 0 ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -350,6 +376,7 @@ export default function FamilyDetails({ ip }) {
               }}
             >
               <FrontEndTypo.Primarybutton
+                isDisabled={isDisable}
                 mt="5"
                 type="submit"
                 onPress={() => formRef?.current?.submit()}

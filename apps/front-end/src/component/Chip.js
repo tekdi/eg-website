@@ -132,6 +132,10 @@ export function CampChipStatus({ status, ...props }) {
         setNewStatus(t("GROUPS_STATUS_INACTIVE"));
         setColor("green.200");
         break;
+      case "camp_initiated":
+        setNewStatus(t("GROUPS_STATUS_CAMP_INITIATED"));
+        setColor("green.200");
+        break;
       default:
         setNewStatus(t("NA"));
         setColor("appliedColor");

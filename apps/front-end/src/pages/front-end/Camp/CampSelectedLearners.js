@@ -26,6 +26,7 @@ export default function CampSelectedLearners({
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
   const selectAllChecked = selectedIds?.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
     navigate(`/camps/${camp_id?.id}`);
@@ -51,7 +52,9 @@ export default function CampSelectedLearners({
   };
 
   const updateLearner = async () => {
+    setIsDisable(true);
     if (selectedIds.length !== 0) {
+      setIsDisable(true);
       const updateLearner = {
         learner_ids: selectedIds,
         edit_page_type: "edit_learners",
@@ -62,6 +65,7 @@ export default function CampSelectedLearners({
         navigate(`/camps/${camp_id?.id}`);
       }
     } else {
+      setIsDisable(false);
       setAlert(true);
     }
   };
@@ -184,7 +188,10 @@ export default function CampSelectedLearners({
             </HStack>
           );
         })}
-        <FrontEndTypo.Primarybutton onPress={updateLearner}>
+        <FrontEndTypo.Primarybutton
+          isDisabled={isDisable}
+          onPress={updateLearner}
+        >
           {t("SAVE_AND_CAMP_PROFILE")}
         </FrontEndTypo.Primarybutton>
       </Box>
