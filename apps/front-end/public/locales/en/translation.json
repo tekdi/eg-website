@@ -1172,5 +1172,14 @@
   "ASPIRATIONS": "Full of aspirations",
   "LETS_START_TODAYS_CAMP": "Let's start today's camp.",
   "DONT_CLOSE_SCREEN": "Don't close this screen. Be sure to share today's experience with us at the end of camp.",
-  "TODAYS_TASKS": "Today's Activities"
+  "TODAYS_TASKS": "Today's Activities",
+  "CAMP_ABSENT_REASONS_PERSONAL_LEAVE": "Personal Leave",
+  "CAMP_ABSENT_REASONS_OTHER_WEEKLY_OFF": "Other Weekly Off",
+  "CAMP_ABSENT_REASONS_FESTIVAL_HOLIDAY": "Festival Holiday",
+  "CAMP_ABSENT_REASONS_MEETING_WITH_STACKHOLDER": "Meeting With Stackholder",
+  "CAMP_ABSENT_REASONS_PCP": "PCP",
+  "CAMP_ABSENT_REASONS_PRERAK_TRAINING": "Prerak Training",
+  "CAMP_ABSENT_REASONS_LEARNER_EXPOSER_VISIT": "Learner Exposer Visit",
+  "CAMP_ABSENT_REASONS_CAMP_FACILITY_RELATED_WORK": "Camp Facility Related Work",
+  "CAMP_ABSENT_REASONS_EXAM": "Exam"
 }

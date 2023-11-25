@@ -1,14 +1,5 @@
-import { FrontEndTypo, Layout } from "@shiksha/common-lib";
-import {
-  Box,
-  HStack,
-  Pressable,
-  Progress,
-  Stack,
-  VStack,
-  Alert,
-  Image,
-} from "native-base";
+import { FrontEndTypo, Layout, enumRegistryService } from "@shiksha/common-lib";
+import { VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,24 +7,23 @@ import { RadioBtn } from "component/BaseInput";
 
 export default function CampOtherPlans({ footerLinks }) {
   const { t } = useTranslation();
-  const [camp, setCamp] = React.useState();
   const [error, setError] = React.useState(false);
   const { id } = useParams();
-  const [reasonData, setReasonData] = React.useState([
-    {
-      label: "hii",
-      value: "hii",
-    },
-    {
-      label: "sdsds",
-      value: "sdsdsdsd",
-    },
-  ]);
-
+  const [reasonData, setReasonData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
   const [reason, setReason] = React.useState();
   const navigate = useNavigate();
 
-  console.log("reason", reason);
+  React.useEffect(async () => {
+    const listOfEnum = await enumRegistryService.listOfEnum();
+    const absentReasons = listOfEnum?.data?.CAMP_ABSENT_REASONS;
+    const transformedAbsentReasons = absentReasons.map((reason) => ({
+      label: reason.title,
+      value: reason.value,
+    }));
+    setReasonData(transformedAbsentReasons);
+    setLoading(false);
+  }, []);
 
   const submitReason = () => {
     console.log("hii");
@@ -47,14 +37,14 @@ export default function CampOtherPlans({ footerLinks }) {
   return (
     <Layout
       _appBar={{ name: t("CAMP_EXECUTION") }}
-      //   loading={loading}
+      loading={loading}
       _footer={{ menues: footerLinks }}
     >
       <VStack space={2} padding={5}>
         <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
           {t("CAMP_OTHER_PLAN")}
         </FrontEndTypo.H1>
-        <VStack borderWidth={1} alignItems={"center"} padding={5}>
+        <VStack borderWidth={1} alignItems={"center"} padding={5} space={4}>
           <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
             {t("WHATS_YOUR_PLAN_TODAY")}
           </FrontEndTypo.H1>

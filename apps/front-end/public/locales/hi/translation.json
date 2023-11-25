@@ -1169,5 +1169,14 @@
   "ASPIRATIONS": "आकांक्षा भरा",
   "LETS_START_TODAYS_CAMP": "चलिये आज का कैंप शुरू करें!.",
   "DONT_CLOSE_SCREEN": "इस स्क्रीन को बंद न करें। कैंप  के अंत में हमें आज का अनुभव ज़रूर साझा करें",
-  "TODAYS_TASKS": "आज की गतिविधियां"
+  "TODAYS_TASKS": "आज की गतिविधियां",
+  "CAMP_ABSENT_REASONS_PERSONAL_LEAVE": "निजी अवकाश",
+  "CAMP_ABSENT_REASONS_OTHER_WEEKLY_OFF": "अन्य साप्ताहिक अवकाश",
+  "CAMP_ABSENT_REASONS_FESTIVAL_HOLIDAY": "त्योहार का अवकाश",
+  "CAMP_ABSENT_REASONS_MEETING_WITH_STACKHOLDER": "हितधारकों से मीटिंग",
+  "CAMP_ABSENT_REASONS_PCP": "PCP",
+  "CAMP_ABSENT_REASONS_PRERAK_TRAINING": "प्रेरक प्रशिक्षण",
+  "CAMP_ABSENT_REASONS_LEARNER_EXPOSER_VISIT": "शिक्षार्थी एक्सपोजर विजिट",
+  "CAMP_ABSENT_REASONS_CAMP_FACILITY_RELATED_WORK": "शिविर सुविधा संबंधी कार्य ",
+  "CAMP_ABSENT_REASONS_EXAM": "परीक्षा"
 }
