@@ -1143,5 +1143,6 @@
   "PLEASE_INDICATE_SUITABLE_TIME_CAMPING": "Please indicate a suitable time for camping.",
   "WEEKLY_OFF": "Weekly Off",
   "PLEASE_ENTER_THE_DAYS_YOU_WANT_TO_TAKE_THE_WEEKLY_OFF": "Please enter the days you want to take the weekly off.",
-  "LIST_OF_HOLIDAYS": "List of holidays"
+  "LIST_OF_HOLIDAYS": "List of holidays",
+  "END_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "End time should be greater than start time"
 }
