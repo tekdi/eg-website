@@ -159,12 +159,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const handleRowClick = (row) => {
     navigate(`/admin/camps/${row.id}`);
   };
-
+  const selectedMenu = localStorage.getItem("selected_cohort");
   return (
     <Layout
       test={Width}
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
+      handleCohort={(e) => console.log("check cohort", e)}
     >
       <HStack
         space={[0, 0, "2"]}
@@ -192,6 +193,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             size={"28px"}
             resizeMode="contain"
           />
+          <HStack fontSize={"lg"}>{selectedMenu}</HStack>
         </HStack>
       </HStack>
       <HStack>
