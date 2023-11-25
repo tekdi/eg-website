@@ -48,6 +48,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
+  const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -88,21 +89,22 @@ export default function BenificiaryProfileView(props) {
   };
 
   const dropoutApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.id?.toString(),
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
-
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
-
     if (result) {
+      setIsDisable(false);
       setReasonValue("");
       setIsOpenDropOut(false);
     }
   };
 
   const reactivateApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.id?.toString(),
       status: "identified",
@@ -110,6 +112,7 @@ export default function BenificiaryProfileView(props) {
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     if (result) {
+      setIsDisable(false);
       setReactivateReasonValue("");
       setreactivateModalVisible(false);
       setIsOpenReactive(false);
@@ -616,6 +619,7 @@ export default function BenificiaryProfileView(props) {
               </VStack>
               <VStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
+                  isDisabled={isDisable}
                   flex={1}
                   onPress={() => {
                     dropoutApiCall();
@@ -675,6 +679,7 @@ export default function BenificiaryProfileView(props) {
               </VStack>
               <VStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
+                  isDisabled={isDisable}
                   flex={1}
                   onPress={() => {
                     reactivateApiCall();

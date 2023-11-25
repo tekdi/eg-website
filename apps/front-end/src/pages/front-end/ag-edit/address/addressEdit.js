@@ -37,6 +37,7 @@ export default function AddressEdit({ ip }) {
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${userId}`);
   };
+  const [isDisable, setIsDisable] = React.useState(false);
 
   //getting data
   React.useEffect(async () => {
@@ -332,6 +333,7 @@ export default function AddressEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     const obj = {
       ...formData,
       lat: formData?.location?.lat,
@@ -388,6 +390,7 @@ export default function AddressEdit({ ip }) {
             }}
           >
             <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
               mt="3"
               type="submit"
               onPress={() => formRef?.current?.submit()}
