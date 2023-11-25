@@ -137,13 +137,13 @@ export default function AdminHome({ footerLinks }) {
     >
       <HStack
         p="4"
-        space={["0", "0", "0", "10"]}
+        space={["4", "0", "0", "4"]}
         flexWrap={"wrap"}
         ref={refSubHeader}
       >
-        <HStack justifyContent="space-between" alignItems="center">
+        <HStack justifyContent="space-between" alignItems="center" space={4}>
           <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 mx="4">{t("All_AG_LEARNERS")}</AdminTypo.H1>
+          <AdminTypo.H1>{t("All_AG_LEARNERS")}</AdminTypo.H1>
           <Image
             source={{
               uri: "/box.svg",

@@ -258,7 +258,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         >
           <HStack justifyContent="space-between" alignItems="center">
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1 mx="4">{t("ALL_PRERAKS")}</AdminTypo.H1>
+            <AdminTypo.H1> {t("ALL_PRERAKS")}</AdminTypo.H1>
           </HStack>
           <Image
             source={{
