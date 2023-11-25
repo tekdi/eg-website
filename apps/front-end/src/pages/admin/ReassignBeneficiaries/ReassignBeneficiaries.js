@@ -123,7 +123,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   const [filter, setFilter] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const [prerak, setPrerak] = React.useState({});
-
+  const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
 
   const handleSelectRow = (state) => {
@@ -197,6 +197,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   }, [filter]);
 
   const assignToPrerak = async () => {
+    setIsDisable(true);
     const beneficiary_Ids = selectedRows.map((item) => {
       return item?.id;
     });
@@ -209,6 +210,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     );
 
     if (!result?.success) {
+      setIsDisable(false);
       seterrormsg(true);
     }
     setModalVisible(false);
@@ -371,6 +373,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
+                    isDisabled={isDisable}
                     onPress={() => {
                       assignToPrerak();
                     }}

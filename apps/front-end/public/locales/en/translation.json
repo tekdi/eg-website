@@ -370,6 +370,7 @@
   "DUPLICATE": "Duplicate",
   "DUPLICATE_CAMP_BENEFICIARY_ASSIGNMENT": "Duplicate Camp Beneficiary Assignment",
   "DUPLICATE_LIST": "Duplicate List",
+  "DISTANCE": "Distance",
   "E_AADHAAR_CARD_VERIFICATION": "E-Aadhaar card verification",
   "ECONOMIC_DIFFICULTIES": "Economic Difficulties",
   "EDIT": "Edit",
@@ -744,7 +745,7 @@
   "PCR_EVALUATION_1": "Evaluation -1 (Evaluate the first day of the camp)",
   "PCR_EVALUATION_2": "Evaluation -2(Evaluate the first day of the camp)",
   "PCR_FINAL_EVALUATON": "Final learning level (Evaluate on the first day of camp)",
-  "PCR_INITIAL_LEVEL": "Initial learning leven (Evaluate on the first day of the camp)",
+  "PCR_INITIAL_LEVEL": "Initial learning level (Evaluate on the first day of the camp)",
   "PCR_SCORES_BASELINE_AND_ENDLINE_A": "A",
   "PCR_SCORES_BASELINE_AND_ENDLINE_A+": "A+",
   "PCR_SCORES_BASELINE_AND_ENDLINE_B": "B",
@@ -1159,5 +1160,7 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
+  "CAMP_PROPERTY_FACILITIES_DRINKING_WATER": "Drinking Water",
+  "CAMP_PROPERTY_FACILITIES_SUFFICIENT_AND_SUTABLE_SEATING_AREA": "Sufficient and suitable seating area",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
 }

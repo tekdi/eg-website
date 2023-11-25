@@ -44,6 +44,7 @@ export default function App({ onClick, id }) {
     navigate("/dashboard");
   }
   const [fields, setFields] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
@@ -269,6 +270,7 @@ export default function App({ onClick, id }) {
     }
   };
   const onSubmit = async (data) => {
+    setIsDisable(true);
     if (!Object.keys(errors).length) {
       const updateDetails = await AgRegistryService.updateAg(formData, userId);
       if (updateDetails) {
@@ -333,6 +335,7 @@ export default function App({ onClick, id }) {
               variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
+              isDisabled={isDisable}
             >
               {t("SAVE")}
             </FrontEndTypo.Primarybutton>
