@@ -10,24 +10,27 @@ import { VStack, HStack, Pressable, Stack, Alert } from "native-base";
 
 import TimePicker from "rc-time-picker";
 import "rc-time-picker/assets/index.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import moment from "moment";
 
 export default function CampSetting({ footerLinks }) {
   const weeks = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    "WEEK_SUNDAY",
+    "WEEK_MONDAY",
+    "WEEK_TUESDAY",
+    "WEEK_WEDNESDAY",
+    "WEEK_THURSDAY",
+    "WEEK_FRIDAY",
+    "WEEK_SATURDAY",
   ];
   const camp_id = useParams();
   const [selectedDays, setSelectedDays] = React.useState("");
-  const [selectedStartTime, setSelectedStartTime] = React.useState("");
-  const [selectedEndTime, setSelectedEndTime] = React.useState("");
+  const [selectedStartTime, setSelectedStartTime] = React.useState();
+  const [selectedEndTime, setSelectedEndTime] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
   const [error, setError] = React.useState();
+
+  const navigate = useNavigate();
 
   const handleDayClick = (day) => {
     if (selectedDays?.includes(day)) {
@@ -37,13 +40,21 @@ export default function CampSetting({ footerLinks }) {
     }
   };
 
+  React.useEffect(async () => {
+    const data = await campService.getCampDetails(camp_id);
+    const camp = data?.data;
+    setSelectedStartTime(camp?.preferred_start_time);
+    setSelectedEndTime(camp?.preferred_end_time);
+    setSelectedDays(camp?.week_off);
+  }, []);
+
   const handleSubmit = async () => {
     setIsDisable(true);
     const START_TIME = new Date(selectedStartTime);
     const END_TIME = new Date(selectedEndTime);
     const obj = {
-      id: camp_id?.id,
-      edit_page_type: "camp_settings",
+      id: JSON.parse(camp_id?.id),
+      edit_page_type: "edit_camp_settings",
       preferred_start_time: `${START_TIME}`,
       preferred_end_time: `${END_TIME}`,
       week_off: selectedDays,
@@ -55,8 +66,8 @@ export default function CampSetting({ footerLinks }) {
       setError("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME");
       setIsDisable(false);
     } else {
-      const data = await campService.updateIpCampDetails(obj);
-      setIsDisable(false);
+      await campService.updateCampDetails(obj);
+      navigate("/camps");
     }
   };
 
@@ -80,6 +91,7 @@ export default function CampSetting({ footerLinks }) {
             <TimePicker
               placeholder="Select Time"
               use12Hours
+              value={selectedStartTime ? moment(selectedStartTime) : ""}
               showSecond={false}
               focusOnOpen={true}
               format="hh:mm A"
@@ -89,6 +101,7 @@ export default function CampSetting({ footerLinks }) {
             <TimePicker
               placeholder="Select Time"
               use12Hours
+              value={selectedEndTime ? moment(selectedEndTime) : ""}
               showSecond={false}
               focusOnOpen={true}
               format="hh:mm A"
@@ -129,7 +142,7 @@ export default function CampSetting({ footerLinks }) {
                   marginTop: "10px",
                 }}
               >
-                {day}
+                {t(day)}
               </Pressable>
             ))}
           </HStack>
