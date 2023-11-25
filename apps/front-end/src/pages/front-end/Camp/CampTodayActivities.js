@@ -8,6 +8,7 @@ import {
   Layout,
   enumRegistryService,
   campService,
+  ImageView,
 } from "@shiksha/common-lib";
 import {
   Actionsheet,
@@ -17,6 +18,8 @@ import {
   ScrollView,
   Stack,
   VStack,
+  Image,
+  Alert,
 } from "native-base";
 import Drawer from "react-modern-drawer";
 import { useTranslation } from "react-i18next";
@@ -64,7 +67,7 @@ export default function CampTodayActivities({ footerLinks }) {
     >
       <VStack p="4" space={4}>
         <HStack space={4}>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
               onPress={() => {
                 handleActivities("LEARNING_ACTIVITIES");
@@ -81,8 +84,57 @@ export default function CampTodayActivities({ footerLinks }) {
                 <FrontEndTypo.H4>{t("TODAYS_ACTIVITIES")}</FrontEndTypo.H4>
               </VStack>
             </Pressable>
+          </CardComponent> */}
+          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+            <Pressable
+            // onPress={() => {
+            //   handleActivities("OPEN_SCHOOL_GOVERNMENT_ACTIVITY");
+            // }}
+            >
+              <VStack alignItems="center" space={3}>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  alt=""
+                  size={"28px"}
+                  resizeMode="contain"
+                  color="gray.600"
+                  bg="gray.300"
+                  rounded="100%"
+                  p="10"
+                />
+                <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
+              </VStack>
+            </Pressable>
           </CardComponent>
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+            <Pressable
+              onPress={() => {
+                handleActivities("LIVELIHOOD_AWARENESS");
+                // for miscellaneous activity enum MISCELLANEOUS_ACTIVITIES
+              }}
+            >
+              <VStack alignItems="center" space={3}>
+                <Image
+                  source={{
+                    uri: "/images/activities/missilaneous-activity.png",
+                  }}
+                  alt=""
+                  size={"28px"}
+                  resizeMode="contain"
+                  color="gray.600"
+                  bg="gray.300"
+                  rounded="100%"
+                  p="10"
+                />
+                <FrontEndTypo.H4>
+                  {t("MISCELLANEOUS_ACTIVITIES")}
+                </FrontEndTypo.H4>
+              </VStack>
+            </Pressable>
+          </CardComponent>
+          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
               onPress={() => {
                 handleActivities("LIVELIHOOD_AWARENESS");
@@ -99,10 +151,10 @@ export default function CampTodayActivities({ footerLinks }) {
                 <FrontEndTypo.H4>{t("LIVELIHOOD_AWARENESS")}</FrontEndTypo.H4>
               </VStack>
             </Pressable>
-          </CardComponent>
+          </CardComponent> */}
         </HStack>
         <HStack space={4}>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
               onPress={() => {
                 handleActivities("COMMUNITY_ENGAGEMENT");
@@ -119,8 +171,8 @@ export default function CampTodayActivities({ footerLinks }) {
                 <FrontEndTypo.H4>{t("COMMUNITY_ENGAGEMENT")}</FrontEndTypo.H4>
               </VStack>
             </Pressable>
-          </CardComponent>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          </CardComponent> */}
+          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
               onPress={() => {
                 handleActivities("OPEN_SCHOOL_GOVERNMENT_ACTIVITY");
@@ -139,7 +191,7 @@ export default function CampTodayActivities({ footerLinks }) {
                 </FrontEndTypo.H4>
               </VStack>
             </Pressable>
-          </CardComponent>
+          </CardComponent> */}
         </HStack>
       </VStack>
 
@@ -161,35 +213,42 @@ export default function CampTodayActivities({ footerLinks }) {
             </HStack>
           </Actionsheet.Content>
           <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
-            <VStack space="5">
-              <VStack space="2" p="1" rounded="lg" w="100%">
-                <VStack alignItems="center" space="1" flex="1">
-                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
-                    <MultiCheck
-                      value={selectValue}
-                      options={{
-                        enumOptions: enums?.data || [],
-                      }}
-                      schema={{
-                        grid: 1,
-                      }}
-                      onChange={(newSelectValue) => {
-                        setSelectValue(newSelectValue);
-                      }}
-                    />
-                    {console.log("newSelected_value", selectValue)}
-                  </React.Suspense>
-                </VStack>
+            <VStack space="2" p="1" rounded="lg" w="100%">
+              <VStack alignItems="center" space="1" flex="1">
+                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <MultiCheck
+                    value={selectValue}
+                    options={{
+                      enumOptions: enums?.data || [],
+                    }}
+                    schema={{
+                      grid: 1,
+                      minItems: 1,
+                      maxItems: 4,
+                    }}
+                    onChange={(newSelectValue) => {
+                      setSelectValue(newSelectValue);
+                    }}
+                  />
+                  {console.log("newSelected_value", selectValue)}
+                </React.Suspense>
               </VStack>
-              <VStack space="5" pt="5">
-                <FrontEndTypo.Primarybutton
-                  flex={1}
-                  onPress={handleSubmitData}
-                  isLoading={isSaving}
-                >
-                  {isSaving ? "Saving..." : t("SAVE")}
-                </FrontEndTypo.Primarybutton>
-              </VStack>
+            </VStack>
+            <VStack space="5" pt="5">
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  Please select min 1 and max 3 options
+                </HStack>
+              </Alert>
+              <FrontEndTypo.Primarybutton
+                flex={1}
+                onPress={handleSubmitData}
+                isLoading={isSaving}
+                isDisabled={selectValue.length >= 4 || selectValue.length <= 0}
+              >
+                {isSaving ? "Saving..." : t("SAVE")}
+              </FrontEndTypo.Primarybutton>
             </VStack>
           </ScrollView>
         </Stack>
