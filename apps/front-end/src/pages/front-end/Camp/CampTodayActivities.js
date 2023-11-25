@@ -138,7 +138,7 @@ export default function CampTodayActivities({ footerLinks }) {
                     dropoutApiCall();
                   }}
                 >
-                  {t("SAVE")}
+                  {t("MARK_AS_DROPOUT")}
                 </FrontEndTypo.Primarybutton>
               </VStack>
             </VStack>
