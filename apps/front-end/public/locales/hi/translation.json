@@ -1158,7 +1158,19 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "END_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "समाप्ति समय प्रारंभ समय से अधिक होना चाहिए।",
   "CAMP_PROPERTY_FACILITIES_DRINKING_WATER": "पीने का पानी",
   "CAMP_PROPERTY_FACILITIES_SUFFICIENT_AND_SUTABLE_SEATING_AREA": "बैठने की पर्याप्त एवं उचित व्यवस्था",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "PREFERRED_TIME": "पसंदीदा समय",
+  "PLEASE_INDICATE_SUITABLE_TIME_CAMPING": "कृपया शिविर के लिए उपयुक्त समय बताएं।",
+  "WEEKLY_OFF": "साप्ताहिक अवकाश",
+  "PLEASE_ENTER_THE_DAYS_YOU_WANT_TO_TAKE_THE_WEEKLY_OFF": "कृपया वे दिन दर्ज करें जिन दिन आप साप्ताहिक अवकाश लेना चाहते हैं।",
+  "WEEK_SUNDAY":"रविवार",
+  "WEEK_MONDAY":"सोमवार",
+  "WEEK_TUESDAY":"मंगलवार",
+  "WEEK_WEDNESDAY":"बुधवार",
+  "WEEK_THURSDAY":"गुरुवार",
+  "WEEK_FRIDAY":"शुक्रवार",
+  "WEEK_SATURDAY":"शनिवार"
 }
