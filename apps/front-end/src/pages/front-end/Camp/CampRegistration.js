@@ -124,16 +124,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       step: "edit_kit_details",
       color: getColor(kit, kitarr),
     },
-    // {
-    //   Icon: "MapPinLineIcon",
-    //   Name: ["registered", "inactive,verified"].includes(
-    //     campDetails?.group?.status
-    //   )
-    //     ? "Update Kit Material"
-    //     : "KIT_MATERIAL",
-    //   step: "edit_kit_material_details",
-    //   color: getColor(kit, kitarr),
-    // },
     {
       Icon: "CheckboxLineIcon",
       Name: "FAMILY_CONSENT",

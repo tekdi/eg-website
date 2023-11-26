@@ -5,7 +5,7 @@ import {
   campService,
   t,
 } from "@shiksha/common-lib";
-import { Box, HStack, VStack } from "native-base";
+import { Alert, Box, HStack, VStack } from "native-base";
 import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
@@ -47,47 +47,37 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const onPressBackButton = () => {
-    navigate(`/camps/80`);
+    navigate(`/camps/${id}`);
   };
 
-  //when tushar completed his apis,Update the apis here:-
-  const onClickSubmit = async () => {
-    const result = await campService.updateCampDetails({
-      id: id,
-      edit_page_type: "edit_kit_material_details",
-    });
-    if (result.success) {
-      navigate(`camps/${id}`);
-    }
-  };
   const data = [
-    "Satra Yojana",
-    "Mind maps (Home science, Social sciences, ICH)",
-    "Mock Test Question Papers (Home science-3 sets, Social sciences-3 sets, ICH-3 sets)",
-    "Answer Keys (Home science-3 sets, Social sciences-3 sets, ICH-3 sets)",
-    "YPP/CPP/POSH Poster",
-    "Pass book- Hindi, Home science, Social sciences, ICH (Indian culture and Heritage)",
-    "One-week series: Hindi, Home Sciences, Social sciences, ICH",
-    "Banner and Poster (already given)  बैनर व पोस्टर (पहले से मिला)",
-    "Prerak hand book",
-    "Text books -  Hindi, Home science, Social sciences, ICH",
-    "Government consent letter for camp",
+    t("KIT_MATERIAL_SATRA_YOJANA"),
+    t("KIT_MATERIAL_MIND_MAPS"),
+    t("KIT_MATERIAL_MOCK_TEST_QUESTION_PAPERS"),
+    t("KIT_MATERIAL_ANSWER_KEYS"),
+    t("KIT_MATERIAL_YPP_CPP_POSH"),
+    t("KIT_MATERIAL_PASS_BOOKS"),
+    t("KIT_MATERIAL_ONE_WEEK_SERIES"),
+    t("KIT_MATERIAL_BANNER_AND_POSTER"),
+    t("KIT_MATERIAL_PRERAK_HAND_BOOK"),
+    t("KIT_MATERIAL_TEXT_BOOK"),
+    t("KIT_MATERIAL_GOVERNMENT_CONSENT_LETTER_FOR_CAMP"),
   ];
   const quantity = [
-    "1 सेट",
-    "1-1-1 सेट",
-    "3-3-3- सेट",
-    "3-3-3 सेट",
+    `1 ${t("SET")}`,
+    `1-1-1 ${t("SET")}`,
+    `3-3-3 ${t("SET")}`,
+    `3-3-3 ${t("SET")}`,
     "1",
-    "1-1-1-1 सेट",
-    "1-1-1-1 सेट",
-    "बैनर - 1,पोस्टर - 4",
+    `1-1-1-1 ${t("SET")}`,
+    `1-1-1-1 ${t("SET")}`,
+    `${t("BANNER")} - 1, ${t("POSTER")}- 4`,
     "1",
     "1-1-1-1",
-    "3 सेट",
+    `3 ${t("SET")}`,
   ];
   const initialData = data.map((item, index) => ({
-    id: index,
+    indexId: index,
     item,
     quantity: quantity[index],
     complete: false,
@@ -99,53 +89,53 @@ export default function CampKitMaterialDetails({ footerLinks }) {
 
   const columns = [
     {
-      name: "Item",
+      name: t("ITEM"),
       selector: "item",
       wrap: true,
       sortable: true,
     },
     {
-      name: "Quantity",
+      name: t("QUANTITY"),
       wrap: true,
       selector: "quantity",
       sortable: true,
     },
     {
-      name: "Complete",
+      name: t("COMPLETE"),
       selector: "complete",
       sortable: true,
       cell: (row) => (
         <input
           type="radio"
           checked={row.complete}
-          onChange={() => handleCheckboxChange(row.id, "complete")}
-          name={`status-${row.id}`}
+          onChange={() => handleCheckboxChange(row.indexId, "complete")}
+          name={`status-${row.indexId}`}
         />
       ),
     },
     {
-      name: "Partially",
+      name: t("PARTIALLY"),
       selector: "partially",
       sortable: true,
       cell: (row) => (
         <input
           type="radio"
           checked={row.partially}
-          onChange={() => handleCheckboxChange(row.id, "partially")}
-          name={`status-${row.id}`}
+          onChange={() => handleCheckboxChange(row.indexId, "partially")}
+          name={`status-${row.indexId}`}
         />
       ),
     },
     {
-      name: "Incomplete",
+      name: t("INCOMPLETE"),
       selector: "incomplete",
       sortable: true,
       cell: (row) => (
         <input
           type="radio"
           checked={row.incomplete}
-          onChange={() => handleCheckboxChange(row.id, "incomplete")}
-          name={`status-${row.id}`}
+          onChange={() => handleCheckboxChange(row.indexId, "incomplete")}
+          name={`status-${row.indexId}`}
         />
       ),
     },
@@ -153,7 +143,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   const handleCheckboxChange = (item, columnName) => {
     setTableData((prevData) => {
       return prevData.map((row) => {
-        if (row.id === item) {
+        if (row.indexId === item) {
           return { ...row, [columnName]: !row[columnName] };
         } else {
           return row;
@@ -162,13 +152,23 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     });
   };
 
+  const isSaveDisabled = !tableData.every(
+    (row) => row.complete || row.partially || row.incomplete
+  );
+  const handleSave = () => {
+    console.log("Data saved:", tableData);
+    if (tableData?.[0]) {
+      navigate(`/camps/${id}`);
+    }
+  };
+
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "langBtn", "langBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: (
-          <FrontEndTypo.H2>{t("Kit material Details")}</FrontEndTypo.H2>
+          <FrontEndTypo.H2>{t("CAMP_KIT_MATERIAL_DETAILS")}</FrontEndTypo.H2>
         ),
         lang,
         setLang,
@@ -188,11 +188,20 @@ export default function CampKitMaterialDetails({ footerLinks }) {
           persistTableHead
         />
         <Box>
+          {isSaveDisabled && (
+            <Alert status="warning" alignItems={"start"}>
+              <HStack alignItems="center" space="2">
+                <Alert.Icon />
+                {t("PLEASE_SELECT_ALL_ITEMS_MESSAGE")}
+              </HStack>
+            </Alert>
+          )}
           <FrontEndTypo.Primarybutton
             // isLoading={loading}
             p="4"
             mt="4"
-            onPress={() => onClickSubmit()}
+            isDisabled={isSaveDisabled}
+            onPress={handleSave}
           >
             {t("SAVE_AND_CAMP_PROFILE")}
           </FrontEndTypo.Primarybutton>
