@@ -37,6 +37,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [kitMaterial, setKitMaterial] = React.useState([]);
   const [consent, setConsent] = React.useState("amber.300");
   const [campDetails, setCampDetails] = React.useState();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     setLoading(true);
@@ -162,6 +163,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     ["camp_ip_verified"].includes(campStatus) ? false : true;
 
   const SubmitCampRegistration = async () => {
+    setIsDisable(true);
     const obj = {
       id: camp_id?.id,
       status: "registered",
@@ -292,7 +294,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         )}
         <HStack my={3} mx={"auto"} w={"90%"}>
           <FrontEndTypo.Primarybutton
-            isDisabled={!isDisabled()}
+            isDisabled={isDisable && !isDisabled()}
             width={"100%"}
             onPress={() => {
               SubmitCampRegistration();

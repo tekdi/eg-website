@@ -57,7 +57,11 @@ export default {
     edit_photo_details: {
       step_name: "CAMP_VENUE_PHOTOS",
       type: "object",
-
+      required: [
+        "property_photo_other",
+        "property_photo_building",
+        "property_photo_classroom",
+      ],
       properties: {
         property_photo_building: {
           label: "CAMP_FRONT_VIEW",
