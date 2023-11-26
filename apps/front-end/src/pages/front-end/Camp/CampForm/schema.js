@@ -132,7 +132,46 @@ export default {
         },
       },
     },
-
+    edit_kit_material_details: {
+      step_name: "KIT_MATERIAL",
+      type: "object",
+      required: [
+        "kit_received",
+        "kit_was_sufficient",
+        "kit_feedback",
+        "kit_ratings",
+      ],
+      properties: {
+        kit_received: {
+          label: "DID_YOU_RECEIVE_A_KIT",
+          type: "string",
+          format: "radio",
+          enumNames: ["YES", "NO"],
+          enum: ["yes", "no"],
+        },
+        kit_was_sufficient: {
+          label: "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT",
+          type: ["string", "null"],
+          grid: 2,
+          format: "radio",
+          enumNames: ["YES", "NO"],
+          enum: ["yes", "no"],
+        },
+        kit_ratings: {
+          label: "RATE_KIT",
+          type: ["string", "number", "null"],
+          format: "StarRating",
+          totalStars: 5,
+          ratingLabels: ["POOR", "NOT_BAD", "AVERAGE", "GOOD", "AMAZING"],
+        },
+        kit_feedback: {
+          label: "KIT_SUGGESTION",
+          type: ["string", "number", "null"],
+          grid: 2,
+          format: "Textarea",
+        },
+      },
+    },
     edit_family_consent: {
       step_name: "LEARNER_CONSENT_FORM",
       type: "object",
