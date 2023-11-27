@@ -130,8 +130,15 @@ const PcrView = React.lazy(() =>
 );
 
 const FileView = React.lazy(() => import("pages/FileView"));
-const StartCampDashboard = React.lazy(() =>
-  import("pages/front-end/Camp/StartCampDashboard")
+
+const CampExecution = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampExecution")
+);
+const CampExecutionStart = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampExecutionStart")
+);
+const CampExecutionEnd = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampExecutionEnd")
 );
 
 const CampAttendance = React.lazy(() =>
@@ -151,6 +158,10 @@ const CampKitMaterialDetails = React.lazy(() =>
 
 const CampSettings = React.lazy(() =>
   import("pages/front-end/Camp/CampSetting")
+);
+
+const CampOtherPlans = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampOtherPlans")
 );
 
 export default [
@@ -309,7 +320,10 @@ export default [
     path: "/camps/:id/settings",
     component: CampSettings,
   },
-  { path: "/camps/:id/start", component: StartCampDashboard },
+  { path: "/camps/:id/Campexecution", component: CampExecution },
+  { path: "/camps/:id/campexecutionstart", component: CampExecutionStart },
+  { path: "/camps/:id/campexecutionend", component: CampExecutionEnd },
+  { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   { path: "/camps/:id/activities", component: CampTodayActivities },
   {
     path: "/camps/:id/kit_material_deatails",
