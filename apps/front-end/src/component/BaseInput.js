@@ -611,7 +611,7 @@ export const MultiCheck = ({
                     value={item?.value}
                     onChange={handleCheck}
                   />
-                  {t(item?.label)}
+                  {t(item?.label || item?.title)}
                 </HStack>
               </label>
             ))}
