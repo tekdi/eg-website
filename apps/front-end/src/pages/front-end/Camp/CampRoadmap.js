@@ -1,11 +1,15 @@
 import { Layout } from "@shiksha/common-lib";
-import Chip from "component/Chip";
-import { ChipStatus } from "component/Chip";
 import { Box, VStack, Image, Text } from "native-base";
 import React, { useEffect, useRef } from "react";
+import { campService } from "@shiksha/common-lib";
 
 export default function CampRoadmap() {
   const canvasRef = useRef(null);
+
+  //   useEffect(() => {
+  //     const responseData = campService.getCampRoadmap();
+  //     console.log("responseData roadmap", responseData);
+  //   }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -13,34 +17,27 @@ export default function CampRoadmap() {
 
     const drawCurve = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Dark transparent background for the road
       context.fillStyle = "transparent";
       context.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Move the origin to the center of the canvas
       context.translate(canvas.width / 2, 0);
-
-      // Cubic Bezier curve for a more pronounced curve
       context.beginPath();
       context.moveTo(0, 0);
+
       context.bezierCurveTo(
         100,
-        canvas.height / 4,
+        (canvas.height * 1) / 7,
         -100,
-        (3 * canvas.height) / 4,
+        (canvas.height * 6) / 7,
         0,
         canvas.height
       );
-
-      // Set the road color and width
-      context.strokeStyle = "#666"; // Dark gray
-      context.lineWidth = 40; // Increased road width
+      context.strokeStyle = "#666";
+      context.lineWidth = 40;
       context.stroke();
 
       context.strokeStyle = " rgba(255, 190, 24, 1)";
-      context.lineWidth = 5; // Adjust line width as needed
-      context.setLineDash([10, 10, 10]); // Set dash pattern
+      context.lineWidth = 5;
+      context.setLineDash([10, 10, 10]);
 
       const curveDash = context.bezierCurveTo(
         100,
@@ -51,11 +48,11 @@ export default function CampRoadmap() {
         canvas.height
       );
 
-      const centerX = curveDash; // X-coordinate for the vertical line
+      const centerX = curveDash;
 
       for (let i = 0; i <= canvas.height; i += 20) {
         const startY = i;
-        const endY = i + 90; // Adjust the dash length as needed
+        const endY = i + 90;
 
         context.moveTo(centerX, startY);
         context.lineTo(centerX, endY);
@@ -67,8 +64,7 @@ export default function CampRoadmap() {
     };
 
     const handleResize = () => {
-      //   canvas.width = 100;
-      canvas.height = window.innerHeight * 10;
+      canvas.height = window.outerHeight * 1.5;
       drawCurve();
     };
 
@@ -82,44 +78,6 @@ export default function CampRoadmap() {
     };
   }, []);
 
-  //   const [dynamicBoxess, setDynamicBoxes] = React.useState([
-  //     {
-  //       id: 1,
-  //       top: "20px",
-  //       left: "25%",
-  //     },
-  //     {
-  //       id: 2,
-  //       top: "100px",
-  //       left: "62%",
-  //     },
-  //     {
-  //       id: 3,
-  //       top: "200px",
-  //       left: "28%",
-  //     },
-
-  //     {
-  //       id: 4,
-  //       name: "satra 4",
-  //       top: "300px",
-  //       left: "57%",
-  //     },
-  //     {
-  //       id: 5,
-  //       top: "400px",
-  //       left: "20%",
-  //     },
-
-  //     {
-  //       id: 6,
-  //       top: "500px",
-  //       left: "48%",
-  //     },
-
-  //     // Add more box positions as needed
-  //   ]);
-
   const renderDynamicBoxes = () => {
     return dynamicBoxes.map((box, index) => (
       <Box
@@ -132,10 +90,7 @@ export default function CampRoadmap() {
         bg={index % 2 === 0 ? "rgba(121, 0, 0, 1)" : "rgba(0, 140, 14, 1)"}
         justifyContent="center"
         alignItems="center"
-        alignSelf={`flex-start`}
-        marginTop={`${index * 90}px`} // Adjusted marginTop for even and odd boxes
-
-        // marginTop={index > 0 ? (index % 2 === 0 ? "280px" : "150px") : "0"} // Adjusted marginTop for even and odd boxes
+        marginTop={`${index * 95}px`}
       >
         <Box position="absolute" left="5%" transform="translateY(-50%)">
           <Image
@@ -148,13 +103,6 @@ export default function CampRoadmap() {
         <Text marginLeft={index % 2 === 0 ? "30%" : "30%"} color="white">
           {box.name || `सत्र ${box.id}`}
         </Text>
-        <Image
-          color={"red"}
-          bgColor={"red"}
-          alt="Profile Image"
-          marginLeft={index % 2 === 0 ? "35%" : "35%"}
-          source={require("./arrow.png")}
-        />
       </Box>
     ));
   };
@@ -164,7 +112,7 @@ export default function CampRoadmap() {
     for (let i = 1; i <= count; i++) {
       boxes.push({
         id: i,
-        left: `${(i % 2 === 0 ? 4 : 8) + (i % 2) * 60}%`, // Adjust left position based on index
+        left: `${(i % 2 === 0 ? 10 : 6) + (i % 2) * 60}%`,
         borderRadius: "20px",
         width: "106px",
         height: "42px",
@@ -173,11 +121,7 @@ export default function CampRoadmap() {
     return boxes;
   };
 
-  const dynamicBoxes = generateDynamicBoxes(90);
-
-  // ...
-
-  // Render the dynamic boxes
+  const dynamicBoxes = generateDynamicBoxes(9);
 
   renderDynamicBoxes();
 
@@ -185,8 +129,7 @@ export default function CampRoadmap() {
     <React.Fragment>
       <Layout>
         <VStack>
-          <canvas height={"100%"} ref={canvasRef} />
-          {/* Road element */}
+          <canvas ref={canvasRef} />
           <Box>
             <Box
               width="20%"
@@ -199,10 +142,6 @@ export default function CampRoadmap() {
             ></Box>
           </Box>
 
-          {/* Dynamic boxes */}
-          {/* Profile Image */}
-
-          {/* Text */}
           {renderDynamicBoxes()}
         </VStack>
       </Layout>
