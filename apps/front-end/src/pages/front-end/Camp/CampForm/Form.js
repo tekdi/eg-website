@@ -25,6 +25,7 @@ import {
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
 import CampSelectedLearners from "../CampSelectedLearners.js";
+import CampKitMaterialDetails from "../CampKitMaterialDetails.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -255,7 +256,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
   };
 
-
   const customValidate = (data, errors, c, asd) => {
     if (step === "property_details") {
       if (data?.OWNER_OF_THE_PROPERTY?.mobile) {
@@ -447,6 +447,9 @@ export default function App({ userTokenInfo, footerLinks }) {
     return <ConsentForm />;
   } else if (page === "edit_camp_selected_learners") {
     return <CampSelectedLearners isEdit={isEdit} />;
+  }
+  if (page === "edit_kit_material_details") {
+    return <CampKitMaterialDetails schema={schema} />;
   }
 
   return (

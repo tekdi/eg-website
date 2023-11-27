@@ -245,7 +245,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     setIsDisable(true);
     if (isExistflag === "registeredAsFacilitator") {
       setModalVisible(true);
+      setIsDisable(false);
     } else if (isExistflag === "underSameFacilitator") {
+      setIsDisable(false);
       setModalVisible(true);
     } else if (isExistflag === "registeredAsBeneficiaries") {
       setFormData({
@@ -253,6 +255,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         aadhar_no: formData?.aadhar_no,
         is_duplicate: "yes",
       });
+      setIsDisable(false);
       setModalVisible(true);
     } else if (!isExistflag) {
       addAdhaar();
@@ -260,6 +263,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const addAdhaarduplicate = async () => {
+    setIsDisable(true);
     const text = textAreaRef.current.value;
     if (text !== "") {
       await AgRegistryService.updateAg(formData, userId);
@@ -269,6 +273,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       settextVisible(false);
       setaddmodal(!addmodal);
     } else {
+      setIsDisable(false);
       settextVisible(true);
     }
   };
@@ -435,6 +440,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 </FrontEndTypo.H2>
               )}
               <FrontEndTypo.Primarybutton
+                isDisabled={isDisable}
                 width={250}
                 marginTop={"1em"}
                 onPress={() => {

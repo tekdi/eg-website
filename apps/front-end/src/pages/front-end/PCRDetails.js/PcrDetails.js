@@ -79,6 +79,7 @@ const PcrDetails = () => {
   const [selectRapidData, setselectRapidData] = useState();
   const [pcrCreated, setPcrCreated] = useState();
   const [data, setData] = React.useState({});
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -88,7 +89,9 @@ const PcrDetails = () => {
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = Array.isArray(result?.data)?result?.data.filter((item) => item?.user_id == id):[];
+    const userData = Array.isArray(result?.data)
+      ? result?.data.filter((item) => item?.user_id == id)
+      : [];
     const {
       baseline_learning_level,
       rapid_assessment_first_learning_level,
@@ -106,6 +109,7 @@ const PcrDetails = () => {
   }, []);
 
   const createPcr = async () => {
+    setIsDisable(true);
     const result = await benificiaryRegistoryService.createPCRScores({
       ...data,
       user_id: id,
@@ -287,6 +291,7 @@ const PcrDetails = () => {
               onPress={() => {
                 createPcr();
               }}
+              isDisabled={isDisable}
             >
               {t("SAVE")}
             </FrontEndTypo.Primarybutton>
