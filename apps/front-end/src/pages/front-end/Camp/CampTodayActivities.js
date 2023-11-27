@@ -67,131 +67,48 @@ export default function CampTodayActivities({ footerLinks }) {
     >
       <VStack p="4" space={4}>
         <HStack space={4}>
-          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-              onPress={() => {
-                handleActivities("LEARNING_ACTIVITIES");
-              }}
-            >
-              <VStack alignItems="center" space={3}>
-                <IconByName
-                  name="CalendarEventLineIcon"
-                  color="gray.600"
-                  bg="gray.300"
-                  rounded="100%"
-                  p="5"
-                />
-                <FrontEndTypo.H4>{t("TODAYS_ACTIVITIES")}</FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent> */}
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-            // onPress={() => {
-            //   handleActivities("OPEN_SCHOOL_GOVERNMENT_ACTIVITY");
-            // }}
-            >
-              <VStack alignItems="center" space={3}>
+            <VStack alignItems="center" space={3}>
+              <VStack bg="gray.300" rounded="100%" p="2">
                 <Image
                   source={{
                     uri: "/images/activities/learning-activity.png",
                   }}
                   alt=""
-                  size={"28px"}
                   resizeMode="contain"
                   color="gray.600"
-                  bg="gray.300"
-                  rounded="100%"
-                  p="10"
+                  alignSelf={"center"}
+                  padding="6"
                 />
-                <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
               </VStack>
-            </Pressable>
+              <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
+            </VStack>
           </CardComponent>
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
               onPress={() => {
-                handleActivities("LIVELIHOOD_AWARENESS");
-                // for miscellaneous activity enum MISCELLANEOUS_ACTIVITIES
+                handleActivities("MISCELLANEOUS_ACTIVITIES");
               }}
             >
               <VStack alignItems="center" space={3}>
-                <Image
-                  source={{
-                    uri: "/images/activities/missilaneous-activity.png",
-                  }}
-                  alt=""
-                  size={"28px"}
-                  resizeMode="contain"
-                  color="gray.600"
-                  bg="gray.300"
-                  rounded="100%"
-                  p="10"
-                />
+                <VStack bg="gray.300" rounded="100%" p="2">
+                  <Image
+                    source={{
+                      uri: "/images/activities/missilaneous-activity.png",
+                    }}
+                    resizeMode="contain"
+                    color="gray.600"
+                    bg="gray.300"
+                    rounded="100%"
+                    p="6"
+                  />
+                </VStack>
                 <FrontEndTypo.H4>
                   {t("MISCELLANEOUS_ACTIVITIES")}
                 </FrontEndTypo.H4>
               </VStack>
             </Pressable>
           </CardComponent>
-          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-              onPress={() => {
-                handleActivities("LIVELIHOOD_AWARENESS");
-              }}
-            >
-              <VStack alignItems="center" space={3}>
-                <IconByName
-                  name="BookOpenLineIcon"
-                  color="gray.600"
-                  bg="gray.300"
-                  rounded="100%"
-                  p="5"
-                />
-                <FrontEndTypo.H4>{t("LIVELIHOOD_AWARENESS")}</FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent> */}
-        </HStack>
-        <HStack space={4}>
-          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-              onPress={() => {
-                handleActivities("COMMUNITY_ENGAGEMENT");
-              }}
-            >
-              <VStack alignItems="center" space={3}>
-                <IconByName
-                  name="CalendarEventLineIcon"
-                  color="gray.600"
-                  bg="gray.300"
-                  rounded="100%"
-                  p="5"
-                />
-                <FrontEndTypo.H4>{t("COMMUNITY_ENGAGEMENT")}</FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent> */}
-          {/* <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-              onPress={() => {
-                handleActivities("OPEN_SCHOOL_GOVERNMENT_ACTIVITY");
-              }}
-            >
-              <VStack alignItems="center" space={3}>
-                <IconByName
-                  name="BookOpenLineIcon"
-                  color="gray.600"
-                  bg="gray.300"
-                  rounded="100%"
-                  p="5"
-                />
-                <FrontEndTypo.H4>
-                  {t("OPEN_SCHOOL_GOVERNMENT_ACTIVITY")}
-                </FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent> */}
         </HStack>
       </VStack>
 
@@ -238,7 +155,7 @@ export default function CampTodayActivities({ footerLinks }) {
               <Alert status="warning" alignItems={"start"}>
                 <HStack alignItems="center" space="2">
                   <Alert.Icon />
-                  Please select min 1 and max 3 options
+                  {t("PLEASE_SELECT_OPTION_1_TO_3")}
                 </HStack>
               </Alert>
               <FrontEndTypo.Primarybutton

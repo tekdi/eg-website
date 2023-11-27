@@ -1173,5 +1173,6 @@
   "COMMUNITY_ENGAGEMENT": "Community Engagement",
   "OPEN_SCHOOL_GOVERNMENT_ACTIVITY": "Open School Government Activity",
   "MISCELLANEOUS_ACTIVITIES": "Miscellaneous Activities",
-  "LEARNING_ACTIVITIES": "Learning activity"
+  "LEARNING_ACTIVITIES": "Learning activity",
+  "PLEASE_SELECT_OPTION_1_TO_3": "Please select min 1 and max 3 options"
 }

@@ -1172,5 +1172,6 @@
   "COMMUNITY_ENGAGEMENT": "सामुदायिक सहभागिता",
   "OPEN_SCHOOL_GOVERNMENT_ACTIVITY": "ओपन स्कूल/सरकारी गतिविधि",
   "MISCELLANEOUS_ACTIVITIES": "विविध गतिविधियाँ",
-  "LEARNING_ACTIVITIES": "सीखने की गतिविधि"
+  "LEARNING_ACTIVITIES": "सीखने की गतिविधि",
+  "PLEASE_SELECT_OPTION_1_TO_3": "कृपया न्यूनतम 1 और अधिकतम 3 विकल्पों का चयन करें"
 }
