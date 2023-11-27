@@ -1,14 +1,17 @@
 import React from "react";
-import { HStack, Modal, Radio, Input, VStack, Box } from "native-base";
+import { HStack, Modal, Radio, Input, VStack, Box, Alert } from "native-base";
 import {
   H1,
   facilitatorRegistryService,
   AdminTypo,
   enumRegistryService,
   checkAadhaar,
+  campService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
@@ -43,28 +46,52 @@ export default function StatusButton({ data, setData }) {
   const [disabledBtn, setDisabledBtn] = React.useState([]);
   const [statusList, setStatusList] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [okycResponse, setOkycResponse] = React.useState();
+  const [isCampList, setIsCampList] = React.useState();
+  const [okycResponse] = React.useState(
+    JSON.parse(data?.program_faciltators?.okyc_response)
+  );
+  const [alertModal, setAlertModal] = React.useState();
   const { t } = useTranslation();
+  const [isDisable, setIsDisable] = React.useState(false);
+
+  const navigate = useNavigate();
 
   const update = async (status) => {
+    setIsDisable(true);
     if (data?.program_faciltator_id && status) {
       await facilitatorRegistryService.update({
         id: data?.program_faciltator_id,
         status: status,
         status_reason: reason,
       });
+      setAlertModal(false);
       setShowModal();
       setData({ ...data, status: status, status_reason: reason });
     }
+    setIsDisable(false);
   };
-  React.useEffect(() => {
-    const parsedData = JSON.parse(data.program_faciltators.okyc_response);
-    setOkycResponse(parsedData);
-  }, [data]);
+
+  const updateAadhaarDetails = async () => {
+    setIsDisable(true);
+    const id = data?.id;
+    const dob =
+      okycResponse?.aadhaar_data?.dateOfBirth &&
+      moment(okycResponse?.aadhaar_data?.dateOfBirth, "D-M-Y").format("Y-M-D");
+    const gender = okycResponse?.aadhaar_data?.gender;
+    const Namedata = okycResponse?.aadhaar_data?.name?.split(" ");
+    const [first_name, middle_name, last_name] = Namedata || [];
+    let fullName = { first_name, middle_name, last_name };
+    if (!last_name || last_name === "") {
+      fullName = { first_name, last_name: middle_name };
+    }
+    const obj = { ...fullName, id, dob, gender };
+
+    await facilitatorRegistryService.updateAadhaarOkycDetails(obj);
+  };
 
   React.useEffect(async () => {
-    const data = await enumRegistryService.listOfEnum();
-    const statusListNew = data?.data.FACILITATOR_STATUS.map((item) => {
+    const resultData = await enumRegistryService.listOfEnum();
+    const statusListNew = resultData?.data.FACILITATOR_STATUS.map((item) => {
       let buttonStatus = "success";
       let reasonStatus = false;
       if (["rejected", "quit", "rusticate", "on_hold"].includes(item?.value)) {
@@ -79,7 +106,7 @@ export default function StatusButton({ data, setData }) {
       };
     });
     setStatusList(statusListNew);
-    setEnumOptions(data?.data);
+    setEnumOptions(resultData?.data);
   }, []);
 
   React.useEffect(() => {
@@ -165,6 +192,21 @@ export default function StatusButton({ data, setData }) {
     }
   }, [data?.status]);
 
+  const isCampExistFunction = async ({ name, ...item }) => {
+    if (["rejected", "quit", "rusticate"].includes(item?.status)) {
+      const campExist = await campService.campIsExist({ id: data?.id || "" });
+      if (campExist?.length > 0) {
+        setIsCampList(campExist);
+      } else {
+        setShowModal({ name, ...item });
+        setReason();
+      }
+    } else {
+      setShowModal({ name, ...item });
+      setReason();
+    }
+  };
+
   return (
     <Box
       display="inline-flex"
@@ -180,14 +222,12 @@ export default function StatusButton({ data, setData }) {
           status={item?.btnStatus}
           isDisabled={!disabledBtn.includes(item?.status)}
           onPress={(e) => {
-            setShowModal({ name, ...item });
-            setReason();
+            isCampExistFunction({ name, ...item });
           }}
         >
           {t(name)}
         </AdminTypo.StatusButton>
       ))}
-
       {showModal?.status !== "selected_prerak" && (
         <Modal
           size={"xl"}
@@ -254,8 +294,8 @@ export default function StatusButton({ data, setData }) {
                       !(
                         (showModal?.reason &&
                           reason &&
-                          reason?.toLowerCase() != "other") ||
-                        !showModal?.reason
+                          reason?.toLowerCase() !== "other") ||
+                        (!showModal?.reason && !isDisable)
                       )
                     }
                     onPress={() => {
@@ -277,7 +317,6 @@ export default function StatusButton({ data, setData }) {
           </Modal.Content>
         </Modal>
       )}
-
       {showModal?.status == "selected_prerak" && (
         <Modal
           isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
@@ -286,32 +325,130 @@ export default function StatusButton({ data, setData }) {
         >
           <Modal.CloseButton />
           <Modal.Content rounded="2xl">
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Header alignItems="center">
+                {t("IDENTITY_VERIFICATION")}
+              </Modal.Header>
+            )}
             <Modal.Body>
               <VStack space={4}>
-                <AadharCompare
-                  {...{
-                    user: data,
-                    aadhaarCompare: checkAadhaar(
-                      data,
-                      okycResponse?.aadhaar_data
-                    ),
+                {data?.program_faciltators?.okyc_response ? (
+                  <VStack space="4">
+                    <AadharCompare
+                      {...{
+                        user: data,
+                        aadhaarCompare: checkAadhaar(
+                          data,
+                          okycResponse?.aadhaar_data
+                        ),
+                      }}
+                    />
+                    {!["yes", "okyc_ip_verified"].includes(
+                      data?.aadhar_verified
+                    ) && (
+                      <Alert status="warning" alignItems={"start"}>
+                        <HStack alignItems="center" space="2">
+                          <Alert.Icon />
+                          {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING")}
+                        </HStack>
+                      </Alert>
+                    )}
+                  </VStack>
+                ) : (
+                  <VStack p="2" flex="4">
+                    <Alert status="warning" alignItems={"start"}>
+                      <HStack alignItems="center" space="2">
+                        <Alert.Icon />
+                        {t("AADHAAR_OKYC_NOT_COMPLETED_BY_PRERAK")}
+                      </HStack>
+                    </Alert>
+                  </VStack>
+                )}
+              </VStack>
+            </Modal.Body>
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Footer alignSelf="center">
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    setAlertModal(true);
                   }}
-                />
+                >
+                  {t("CONFIRM")}
+                </AdminTypo.PrimaryButton>
+              </Modal.Footer>
+            )}
+          </Modal.Content>
+        </Modal>
+      )}
+      {alertModal === true && (
+        <Modal
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
+          onClose={() => setAlertModal(false)}
+          size={"lg"}
+        >
+          <Modal.CloseButton />
+          <Modal.Content rounded="2xl">
+            <Modal.Body>
+              <VStack space="3">
+                <Alert status="warning" alignItems={"start"}>
+                  <HStack alignItems="center" space="2">
+                    <Alert.Icon size="lg" />
 
-                <HStack alignSelf="center" space="4">
-                  <AdminTypo.PrimaryButton
-                    onPress={() => {
-                      update(showModal?.status);
-                    }}
-                  >
+                    <AdminTypo.H5 space="4" width={"100%"}>
+                      {t("CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL")}
+                    </AdminTypo.H5>
+                  </HStack>
+                </Alert>
+
+                <AdminTypo.PrimaryButton
+                  isDisabled={isDisable}
+                  onPress={(e) => {
+                    update(showModal?.status);
+                    updateAadhaarDetails();
+                  }}
+                >
+                  <AdminTypo.H4 bold color="white">
                     {t("CONFIRM")}
-                  </AdminTypo.PrimaryButton>
-                </HStack>
+                  </AdminTypo.H4>
+                </AdminTypo.PrimaryButton>
               </VStack>
             </Modal.Body>
           </Modal.Content>
         </Modal>
       )}
+
+      <Modal isOpen={isCampList} onClose={() => setIsCampList()} size={"xl"}>
+        <Modal.CloseButton />
+        <Modal.Content rounded="2xl">
+          <Modal.Body>
+            <Alert status="warning">{t("ALREADY_CAMP_REGISTER")}</Alert>
+            <VStack p="4" space={4}>
+              {isCampList?.map((e) => {
+                return (
+                  <HStack key={e} justifyContent={"space-between"}>
+                    {e?.group?.camp_name}
+
+                    <AdminTypo.PrimaryButton
+                      onPress={() =>
+                        navigate(
+                          `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`
+                        )
+                      }
+                    >
+                      {t("ASSIGN")}
+                    </AdminTypo.PrimaryButton>
+                  </HStack>
+                );
+              })}
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer alignSelf="center">
+            <AdminTypo.PrimaryButton onPress={() => setIsCampList()}>
+              {t("OK")}
+            </AdminTypo.PrimaryButton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 }

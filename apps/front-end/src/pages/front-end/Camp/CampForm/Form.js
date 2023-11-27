@@ -25,6 +25,7 @@ import {
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
 import CampSelectedLearners from "../CampSelectedLearners.js";
+import CampKitMaterialDetails from "../CampKitMaterialDetails.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -44,23 +45,12 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [isEdit] = React.useState(true);
   const [campDetails, setCampDetails] = React.useState();
 
-  const getLocation = () => {
-    const location = navigator?.geolocation;
-    if (location) {
-      location?.getCurrentPosition(showPosition, showError);
-    } else {
-      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
-    }
-  };
-
-  const showPosition = async (position) => {
+  const getLocation = async () => {
     setLoading(true);
-    let lati = position?.coords?.latitude;
-    let longi = position?.coords?.longitude;
+    const { lat, long } = campDetails?.properties || {};
     setFormData({
       ...formData,
-      lat: lati.toString(),
-      long: longi.toString(),
+      location: { lat, long },
       property_type: campDetails?.properties?.property_type || undefined,
       state: campDetails?.properties?.state || undefined,
       district: campDetails?.properties?.district || undefined,
@@ -71,27 +61,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     });
     setLoading(false);
   };
-
-  function showError(error) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
-
-        break;
-      case error.POSITION_UNAVAILABLE:
-        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
-
-        break;
-      case error.TIMEOUT:
-        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
-
-        break;
-      case error.UNKNOWN_ERROR:
-        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
-
-        break;
-    }
-  }
 
   React.useEffect(async () => {
     setLoading(true);
@@ -262,17 +231,29 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, [step, formData]);
 
   const formSubmitUpdate = async (data, overide) => {
+    setLoading(true);
     if (id) {
-      setLoading(true);
-      const result = await campService.updateCampDetails({
-        ...data,
-        edit_page_type: step,
-        ...(overide || {}),
-        id: id,
-      });
-      setLoading(false);
+      let result;
+      if (step === "edit_camp_location") {
+        result = await campService.updateCampDetails({
+          ...data,
+          edit_page_type: step,
+          ...(overide || {}),
+          id: id,
+          lat: formData?.location.lat,
+          long: formData?.location.long,
+        });
+      } else {
+        result = await campService.updateCampDetails({
+          ...data,
+          edit_page_type: step,
+          ...(overide || {}),
+          id: id,
+        });
+      }
       return result;
     }
+    setLoading(false);
   };
 
   const customValidate = (data, errors, c, asd) => {
@@ -467,6 +448,9 @@ export default function App({ userTokenInfo, footerLinks }) {
   } else if (page === "edit_camp_selected_learners") {
     return <CampSelectedLearners isEdit={isEdit} />;
   }
+  if (page === "edit_kit_material_details") {
+    return <CampKitMaterialDetails schema={schema} />;
+  }
 
   return (
     <Layout
@@ -484,15 +468,13 @@ export default function App({ userTokenInfo, footerLinks }) {
       loading={loading}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
         {page && page !== "" && (
           <Form

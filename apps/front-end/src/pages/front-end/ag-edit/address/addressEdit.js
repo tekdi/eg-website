@@ -8,22 +8,23 @@ import {
   geolocationRegistryService,
   Layout,
   t,
-  filtersByObject,
   BodyMedium,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
+  getOptions,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { templates, widgets } from "../../../../component/BaseInput.js";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
 export default function AddressEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-
+  const [schema, setSchema] = React.useState();
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -32,72 +33,20 @@ export default function AddressEdit({ ip }) {
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
-
+  const [fields, setFields] = React.useState([]);
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${userId}`);
   };
-
-  const getLocation = () => {
-    const location = navigator.geolocation;
-    if (location) {
-      location.getCurrentPosition(showPosition, showError);
-    } else {
-      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
-    }
-  };
-
-  const showPosition = async (position) => {
-    let lati = position.coords.latitude;
-    let longi = position.coords.longitude;
-
-    const qData = await benificiaryRegistoryService.getOne(id);
-    const finalData = qData.result;
-    setFormData(qData.result);
-    setFormData({
-      ...formData,
-      lat: lati.toString(),
-      long: longi.toString(),
-      address: finalData?.address == "null" ? "" : finalData?.address,
-      state: finalData?.state,
-      district: finalData?.district,
-      block: finalData?.block,
-      village: finalData?.village,
-      grampanchayat:
-        finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
-    });
-  };
-
-  function showError(error) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
-
-        break;
-      case error.POSITION_UNAVAILABLE:
-        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
-
-        break;
-      case error.TIMEOUT:
-        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
-
-        break;
-      case error.UNKNOWN_ERROR:
-        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
-
-        break;
-    }
-  }
+  const [isDisable, setIsDisable] = React.useState(false);
 
   //getting data
   React.useEffect(async () => {
-    getLocation();
     const qData = await benificiaryRegistoryService.getOne(id);
-    const finalData = qData.result;
-    setFormData(qData.result);
+    const finalData = qData?.result;
+    const { lat, long } = finalData;
     setFormData({
       ...formData,
-      lat: finalData?.lat,
-      long: finalData?.long,
+      location: { lat, long },
       address: finalData?.address == "null" ? "" : finalData?.address,
       state: finalData?.state,
       district: finalData?.district,
@@ -106,6 +55,17 @@ export default function AddressEdit({ ip }) {
       grampanchayat:
         finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
     });
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -121,7 +81,7 @@ export default function AddressEdit({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -136,42 +96,12 @@ export default function AddressEdit({ ip }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
       }
     }
-  };
-
-  const getOptions = (schema, { key, arr, title, value, filters } = {}) => {
-    let enumObj = {};
-    let arrData = arr;
-    if (!_.isEmpty(filters)) {
-      arrData = filtersByObject(arr, filters);
-    }
-    enumObj = {
-      ...enumObj,
-      ["enumNames"]: arrData.map((e) => `${e?.[title]}`),
-    };
-    enumObj = { ...enumObj, ["enum"]: arrData.map((e) => `${e?.[value]}`) };
-    const newProperties = schema["properties"][key];
-    let properties = {};
-    if (newProperties) {
-      if (newProperties.enum) delete newProperties.enum;
-      let { enumNames, ...remainData } = newProperties;
-      properties = remainData;
-    }
-    return {
-      ...schema,
-      ["properties"]: {
-        ...schema["properties"],
-        [key]: {
-          ...properties,
-          ...(_.isEmpty(arr) ? {} : enumObj),
-        },
-      },
-    };
   };
 
   React.useEffect(async () => {
@@ -192,16 +122,16 @@ export default function AddressEdit({ ip }) {
         district: formData?.district,
         block: formData?.block,
       });
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
-  }, [formData?.id]);
+  }, [formData?.state]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
     }
   }, []);
@@ -275,7 +205,7 @@ export default function AddressEdit({ ip }) {
       }
       if (schema["properties"]["block"]) {
         newSchema = await setBlock({ district, block, schemaData: newSchema });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "district", arr: [] });
@@ -285,7 +215,7 @@ export default function AddressEdit({ ip }) {
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     return newSchema;
   };
@@ -306,14 +236,14 @@ export default function AddressEdit({ ip }) {
       }
       if (schema["properties"]["village"]) {
         newSchema = await setVilage({ block, schemaData: newSchema });
-        setSchema(newSchema);
+        setSchemaData(newSchema);
       }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
       if (schema["properties"]["village"]) {
         newSchema = getOptions(newSchema, { key: "village", arr: [] });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     return newSchema;
   };
@@ -332,10 +262,10 @@ export default function AddressEdit({ ip }) {
           value: "village_ward_name",
         });
       }
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     } else {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
     return newSchema;
   };
@@ -403,10 +333,20 @@ export default function AddressEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    await AgRegistryService.updateAg(formData, userId);
+    setIsDisable(true);
+    const obj = {
+      ...formData,
+      lat: formData?.location?.lat,
+      long: formData?.location?.long,
+    };
+
+    await AgRegistryService.updateAg(obj, userId);
     navigate(`/beneficiary/${userId}/addressdetails`);
   };
 
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
+  };
   return (
     <Layout
       _appBar={{
@@ -450,6 +390,7 @@ export default function AddressEdit({ ip }) {
             }}
           >
             <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
               mt="3"
               type="submit"
               onPress={() => formRef?.current?.submit()}

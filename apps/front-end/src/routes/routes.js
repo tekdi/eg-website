@@ -145,6 +145,13 @@ const Attendance = React.lazy(() =>
 const CampTodayActivities = React.lazy(() =>
   import("pages/front-end/Camp/CampTodayActivities")
 );
+const CampKitMaterialDetails = React.lazy(() =>
+  import("pages/front-end/Camp/CampKitMaterialDetails")
+);
+
+const CampSettings = React.lazy(() =>
+  import("pages/front-end/Camp/CampSetting")
+);
 
 export default [
   { path: "/form", component: Home },
@@ -299,10 +306,14 @@ export default [
     component: CampAttendance,
   },
   {
-    path: "/camps/:id/attendance-view",
-    component: Attendance,
+    path: "/camps/:id/settings",
+    component: CampSettings,
   },
   { path: "/camps/:id/start", component: StartCampDashboard },
   { path: "/camps/:id/activities", component: CampTodayActivities },
+  {
+    path: "/camps/:id/kit_material_deatails",
+    component: CampKitMaterialDetails,
+  },
   { path: "*", component: Dashboard },
 ];

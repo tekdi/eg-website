@@ -12,6 +12,7 @@ import {
   AgRegistryService,
   FrontEndTypo,
   getOptions,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -24,6 +25,7 @@ import {
   CustomR,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
+import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
 export default function PersonalDetails({ ip }) {
@@ -38,6 +40,8 @@ export default function PersonalDetails({ ip }) {
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
+  const [fields, setFields] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const userId = id;
   const navigate = useNavigate();
@@ -50,6 +54,17 @@ export default function PersonalDetails({ ip }) {
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const result = await facilitatorRegistryService.getEditRequests(obj);
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
   }, []);
 
   React.useEffect(async () => {
@@ -77,7 +92,7 @@ export default function PersonalDetails({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        setSchemaData(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -92,7 +107,7 @@ export default function PersonalDetails({ ip }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchemaData(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -119,7 +134,7 @@ export default function PersonalDetails({ ip }) {
         title: "title",
         value: "value",
       });
-      setSchema(newSchema);
+      setSchemaData(newSchema);
     }
   }, [page]);
 
@@ -128,7 +143,7 @@ export default function PersonalDetails({ ip }) {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
+      setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
 
       setSubmitBtn(t("NEXT"));
@@ -188,11 +203,14 @@ export default function PersonalDetails({ ip }) {
   };
 
   const Submit = async (data) => {
-    const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    console.log("page3.....", updateDetails);
+    setIsDisable(true);
+    await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
+  const setSchemaData = (newSchema) => {
+    setSchema(accessControl(newSchema, fields));
+  };
   return (
     <Layout
       _appBar={{
@@ -241,6 +259,7 @@ export default function PersonalDetails({ ip }) {
             }}
           >
             <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
               mt="3"
               variant={"primary"}
               type="submit"

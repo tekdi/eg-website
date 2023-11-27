@@ -24,6 +24,7 @@ import {
   AdminTypo,
   chunk,
   CustomRadio,
+  useLocationData,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -121,6 +122,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
               hasRemove,
               disabled,
               readonly,
+              Location,
               schema,
               index,
             }) => {
@@ -268,7 +270,8 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format } = schema || {};
+  const { label, format, readOnly } = schema || {};
+
   const { t } = useTranslation();
   return (
     <FormControl gap="4">
@@ -305,6 +308,7 @@ export const RadioBtn = ({
               value={item?.value}
               size="lg"
               _text={{ fontSize: 12, fontWeight: 500 }}
+              isDisabled={readOnly}
             >
               {t(item?.label)}
             </Radio>
@@ -351,7 +355,7 @@ export const Aadhaar = (props) => {
 // rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label, title } = schema || {};
+  const { label, title, readOnly } = schema || {};
   const { t } = useTranslation();
 
   return (
@@ -396,6 +400,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
       )}
       <Select
         key={value + items}
+        isDisabled={readOnly}
         selectedValue={value}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
@@ -440,6 +445,41 @@ export const ReadOnly = ({ value, onChange, required, schema }) => {
           </Text>
         )}
       </Text>
+    </HStack>
+  );
+};
+
+export const Location = ({ value, onChange, required, schema }) => {
+  const { lat, long } = schema || {};
+  const { t } = useTranslation();
+  const [latData, longData, error] = useLocationData() || [];
+
+  const updateValue = () => {
+    onChange({ [lat]: latData, [long]: longData });
+  };
+
+  React.useEffect(() => {
+    if (!(value?.[lat] && value?.[long])) {
+      updateValue();
+    }
+  }, [value]);
+  return (
+    <HStack alignItems={"center"} space={2}>
+      <VStack space={2}>
+        {[lat, long]?.map((item, index) => {
+          return (
+            <HStack alignItems={"center"} space={2} key={item}>
+              <FrontEndTypo.H3 bold color="textMaroonColor.400">
+                {index ? t("LONGITUDE") : t("LATITUDE")}
+              </FrontEndTypo.H3>
+              <Text>:{value?.[item]}</Text>
+            </HStack>
+          );
+        })}
+
+        {t(error)}
+      </VStack>
+      <Button onPress={updateValue}>{t("UPDATE")}</Button>
     </HStack>
   );
 };
@@ -700,6 +740,7 @@ const widgets = {
   MobileNumber,
   MultiCheck,
   ReadOnly,
+  Location,
   StarRating,
   CheckUncheck,
 };

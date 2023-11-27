@@ -34,11 +34,16 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [facilities, setFacilities] = React.useState();
   const [kit, setKit] = React.useState();
   const [kitarr, setKitarr] = React.useState([]);
+  const [kitMaterial, setKitMaterial] = React.useState([]);
   const [consent, setConsent] = React.useState("amber.300");
+  const [campDetails, setCampDetails] = React.useState();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     setLoading(true);
     const result = await campService.getCampDetails(camp_id);
+    console.log(result?.data);
+    setCampDetails(result?.data);
     setCampStatus(result?.data?.group?.status);
     const campConsent = await ConsentService.getConsent({
       camp_id: camp_id?.id,
@@ -78,9 +83,9 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       "kit_feedback",
     ]);
 
+    console.log(data);
     setLoading(false);
   }, []);
-
   const Navdata = [
     {
       Icon: "MapPinLineIcon",
@@ -147,8 +152,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const disableEdit = () =>
     ["camp_ip_verified"].includes(campStatus) ? false : true;
 
-
   const SubmitCampRegistration = async () => {
+    setIsDisable(true);
     const obj = {
       id: camp_id?.id,
       status: "registered",
@@ -227,6 +232,42 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
             />
           );
         })}
+        {campDetails?.kit_received === "yes" && (
+          <Pressable
+            bg="boxBackgroundColour.100"
+            shadow="AlertShadow"
+            borderRadius="10px"
+            onPress={async () => {
+              disableEdit() &&
+                navigate(`/camps/${camp_id?.id}/kit_material_deatails`);
+            }}
+          >
+            <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
+              <HStack alignItems={"center"}>
+                <Image
+                  source={{
+                    uri: "/boxline.svg",
+                  }}
+                  alt=""
+                  size={"28px"}
+                  resizeMode="contain"
+                />
+
+                <FrontEndTypo.H3 ml={5}>
+                  {["registered", "inactive", "verified"].includes(campStatus)
+                    ? t("UPDATE_CAMP_KIT_DETAILS")
+                    : t("KIT_MATERIAL")}
+                </FrontEndTypo.H3>
+              </HStack>
+
+              <IconByName
+                isDisabled
+                name="ArrowRightSLineIcon"
+                _icon={{ size: "30px" }}
+              />
+            </HStack>
+          </Pressable>
+        )}
         {campStatus === "registered" && (
           <Alert
             status="warning"
@@ -243,7 +284,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         )}
         <HStack my={3} mx={"auto"} w={"90%"}>
           <FrontEndTypo.Primarybutton
-            isDisabled={!isDisabled()}
+            isDisabled={isDisable && !isDisabled()}
             width={"100%"}
             onPress={() => {
               SubmitCampRegistration();

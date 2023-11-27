@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { arrList } from "@shiksha/common-lib";
 import { objProps } from "@shiksha/common-lib";
+import Clipboard from "component/Clipboard";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -47,6 +48,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
+  const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -87,21 +89,22 @@ export default function BenificiaryProfileView(props) {
   };
 
   const dropoutApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.id?.toString(),
       status: "dropout",
       reason_for_status_update: reasonValue,
     };
-
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
-
     if (result) {
+      setIsDisable(false);
       setReasonValue("");
       setIsOpenDropOut(false);
     }
   };
 
   const reactivateApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.id?.toString(),
       status: "identified",
@@ -109,6 +112,7 @@ export default function BenificiaryProfileView(props) {
     };
     const result = await benificiaryRegistoryService.statusUpdate(bodyData);
     if (result) {
+      setIsDisable(false);
       setReactivateReasonValue("");
       setreactivateModalVisible(false);
       setIsOpenReactive(false);
@@ -262,7 +266,9 @@ export default function BenificiaryProfileView(props) {
                     ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
                 </FrontEndTypo.H2>
               )}
-
+              <Clipboard text={benificiary?.id}>
+                <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
+              </Clipboard>
               <ChipStatus
                 status={benificiary?.program_beneficiaries?.status}
                 is_duplicate={benificiary?.is_duplicate}
@@ -613,6 +619,7 @@ export default function BenificiaryProfileView(props) {
               </VStack>
               <VStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
+                  isDisabled={isDisable}
                   flex={1}
                   onPress={() => {
                     dropoutApiCall();
@@ -672,6 +679,7 @@ export default function BenificiaryProfileView(props) {
               </VStack>
               <VStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
+                  isDisabled={isDisable}
                   flex={1}
                   onPress={() => {
                     reactivateApiCall();

@@ -68,7 +68,7 @@ const columns = (t, navigate) => [
     name: t("LEARNERS_AGE"),
     selector: (row) => {
       if (row?.program_beneficiaries?.status === "enrolled_ip_verified") {
-        if (row?.program_beneficiaries_enrollment_dob) {
+        if (row?.program_beneficiaries?.enrollment_dob) {
           return moment().diff(
             row?.program_beneficiaries.enrollment_dob,
             "years"

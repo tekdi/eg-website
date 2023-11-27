@@ -2,13 +2,12 @@ import {
   IconByName,
   AdminLayout as Layout,
   AdminTypo,
-  benificiaryRegistoryService,
   ImageView,
   FrontEndTypo,
   tableCustomStyles,
   campService,
   useWindowSize,
-  setQueryParameters,
+  facilitatorRegistryService,
   BodyMedium,
 } from "@shiksha/common-lib";
 import {
@@ -20,55 +19,54 @@ import {
   useToast,
   Alert,
 } from "native-base";
-import { CampChipStatus } from "component/Chip";
+import { ChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
-import { ChipStatus } from "component/BeneficiaryStatus";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
-import { Filter } from "./CampHome";
 
 const columns = (navigate, t, setModal) => [
   {
-    name: t("CAMP_ID"),
-    selector: (row) => row?.id,
-    sortable: true,
-    attr: "CAMP_ID",
-  },
-  {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id,
+    selector: (row) => row?.id,
     sortable: true,
     attr: "PRERAK_ID",
   },
   {
     name: t("PRERAK"),
-    selector: (row) =>
-      row?.faciltator?.user?.first_name +
-      " " +
-      row?.faciltator?.user?.last_name,
+    selector: (row) => row?.first_name + " " + row?.last_name,
     sortable: true,
     attr: "PRERAK",
   },
   {
     name: t("DISTRICT"),
-    selector: (row) =>
-      row?.properties?.district ? row?.properties?.district : "-",
+    selector: (row) => (row?.district ? row?.district : "-"),
     sortable: true,
     attr: "DISTRICT",
   },
   {
     name: t("BLOCK"),
-    selector: (row) => (row?.properties?.block ? row?.properties?.block : "-"),
+    selector: (row) => (row?.block ? row?.block : "-"),
     sortable: true,
     attr: "BLOCK",
   },
   {
-    name: t("CAMP_STATUS"),
-    selector: (row) => <CampChipStatus status={row?.group?.status} />,
+    name: t("LEARNER_COUNT"),
+    selector: (row) =>
+      row?.sum_camp_learner_count ? row?.sum_camp_learner_count : "0",
     sortable: true,
     wrap: true,
-    attr: "CAMP_STATUS",
+    attr: "LEARNER_COUNT",
+  },
+  {
+    name: t("CAMP_COUNT"),
+    selector: (row) =>
+      row?.camp_count?.aggregate?.count
+        ? row?.camp_count?.aggregate?.count
+        : "0",
+    sortable: true,
+    wrap: true,
+    attr: "CAMP_COUNT",
   },
   {
     name: t("ACTION"),
@@ -88,9 +86,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const { t } = useTranslation();
-  const [filter, setFilter] = React.useState({ limit: 10 });
+  const [filter, setFilter] = React.useState({ limit: 10, page: 1 });
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [campData, setCampData] = React.useState();
+  const [prerakData, setPrerakData] = React.useState();
   const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
@@ -99,23 +97,27 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
+    const id = user_id;
+    const result = await facilitatorRegistryService.getOne({ id });
+    setData(result);
+    setLoading(false);
+  }, []);
+
+  React.useEffect(async () => {
     let newFilter = filter;
-    const result = await benificiaryRegistoryService.getOne(user_id);
-    setData(result?.result);
-    const qData = await campService.getCampList(newFilter);
-    const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
-    setCampData(filtered);
+    const qData = await campService.getPrerakDetails(newFilter);
+    setPrerakData(qData?.data);
     setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     setLoading(false);
   }, [filter]);
 
-  const reassignCamp = async () => {
+  const reassignCampToPrerak = async (user_id) => {
     setIsDisable(true);
     const obj = {
-      learner_id: parseInt(user_id),
-      camp_id: modal?.id,
+      facilitator_id: user_id,
+      camp_id: id,
     };
-    const result = await campService.reassignCamp(obj);
+    const result = await campService.reassignCampToPrerak(obj);
     if (result?.status !== 200) {
       setIsDisable(false);
       toast.show({
@@ -124,7 +126,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             <Alert status="warning" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t("LEARNER_ASSIGNED_FAILED")}</BodyMedium>
+                <BodyMedium>{t(result?.message)}</BodyMedium>
               </HStack>
             </Alert>
           );
@@ -137,16 +139,17 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             <Alert status="success" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t("LEARNER_ASSIGNED_SUCCESSFUL")}</BodyMedium>
+                <BodyMedium>{t(result?.message)}</BodyMedium>
               </HStack>
             </Alert>
           );
         },
       });
       setModal("");
-      navigate(`/admin/camps/${modal?.id}`);
+      navigate(`/admin/camps/${id}`);
     }
   };
+
   return (
     <Layout
       _sidebar={footerLinks}
@@ -181,7 +184,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
-              <ChipStatus status={data?.program_beneficiaries?.status} />
+              <ChipStatus status={data?.status} />
               <HStack
                 bg="badgeColor.400"
                 rounded={"md"}
@@ -245,7 +248,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 </AdminTypo.H6>
               </HStack>
             </VStack>
-            <HStack flex="0.5" justifyContent={"center"}>
+            <HStack flex="0.5" mt={"-5"} justifyContent={"space-between"}>
               {data?.profile_photo_1?.id ? (
                 <ImageView
                   source={{
@@ -266,46 +269,33 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             </HStack>
           </HStack>
         </Box>
-        <HStack justifyContent={"center"}>
-          <Alert status="warning" mb="3" mt="4">
-            <HStack space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{t("CAMP_REASSIGN_WARNING_MESSAGE")}</BodyMedium>
-            </HStack>
-          </Alert>
-        </HStack>
-        <HStack>
-          <Filter {...{ filter, setFilter, t }} />
-          <ScrollView
-            maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
-            }
-          >
-            <DataTable
-              filter={filter}
-              setFilter={(e) => {
-                setFilter(e);
-                setQueryParameters(e);
-              }}
-              customStyles={tableCustomStyles}
-              columns={[...columns(navigate, t, setModal)]}
-              persistTableHead
-              facilitator={userTokenInfo?.authUser}
-              pagination
-              paginationTotalRows={paginationTotalRows}
-              paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-              defaultSortAsc
-              paginationServer
-              data={campData}
-              onChangeRowsPerPage={(e) => {
-                setFilter({ ...filter, limit: e?.toString() });
-              }}
-              onChangePage={(e) => {
-                setFilter({ ...filter, page: e?.toString() });
-              }}
-            />
-          </ScrollView>
-        </HStack>
+        <ScrollView
+          maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
+        >
+          <DataTable
+            filter={filter}
+            setFilter={(e) => {
+              setFilter(e);
+              setQueryParameters(e);
+            }}
+            customStyles={tableCustomStyles}
+            columns={[...columns(navigate, t, setModal)]}
+            persistTableHead
+            facilitator={userTokenInfo?.authUser}
+            pagination
+            paginationTotalRows={paginationTotalRows}
+            paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+            defaultSortAsc
+            paginationServer
+            data={prerakData}
+            onChangeRowsPerPage={(e) => {
+              setFilter({ ...filter, limit: e?.toString() });
+            }}
+            onChangePage={(e) => {
+              setFilter({ ...filter, page: e?.toString() });
+            }}
+          />
+        </ScrollView>
       </VStack>
 
       <Modal isOpen={modal} size="lg">
@@ -316,27 +306,14 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           <Modal.Body p="5">
             <VStack>
               <AdminTypo.H4>
-                {t("CAMP_ID")}: {modal?.id}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("CAMP_NAME")}: {modal?.group?.name}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("PRERAK_NAME")}:
-                {modal?.faciltator?.user?.first_name +
-                  " " +
-                  modal?.faciltator?.user?.last_name}
+                {t("PRERAK_NAME")}:{`${modal?.first_name} `}
+                {modal?.last_name ? modal?.last_name : ""}
               </AdminTypo.H4>
               <AdminTypo.H4>
                 {t("ADDRESS")}:
-                {`${modal?.properties?.district}, ${modal?.properties?.block}`}
+                {/* {`${modal?.district ? modal?.district modal?.block : "-"}`} */}
+                {modal?.district ? `${modal?.district}, ${modal?.block}` : "NA"}
               </AdminTypo.H4>
-              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>{t("REASSIGN_MSG")}</BodyMedium>
-                </HStack>
-              </Alert>
             </VStack>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-between"}>
@@ -345,7 +322,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
-              onPress={() => reassignCamp()}
+              onPress={() => reassignCampToPrerak(modal?.id)}
             >
               {t("CONFIRM")}
             </FrontEndTypo.Primarybutton>
