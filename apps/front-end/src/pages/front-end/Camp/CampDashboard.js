@@ -121,6 +121,7 @@ export default function CampDashboard({ footerLinks }) {
                   </HStack>
                   {campList?.map((item, i) => {
                     const index = i + 1;
+
                     return (
                       <Pressable
                         key={item}
