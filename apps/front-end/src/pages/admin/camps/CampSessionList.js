@@ -5,7 +5,8 @@ import {
   Layout,
   campService,
 } from "@shiksha/common-lib";
-import { Box, HStack, Pressable, VStack } from "native-base";
+import moment from "moment";
+import { HStack, Pressable, VStack } from "native-base";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,19 +15,45 @@ export default function CampSessionList({ footerLinks }) {
   const { id } = useParams();
   const [sessionList, setSessionList] = React.useState();
   const [sessionActive, setSessionActive] = React.useState();
-  const sessionId = `2`;
 
   React.useEffect(async () => {
     const result = await campService.getCampSessionsList({ id: id });
     const data = result?.data?.learning_lesson_plans_master || [];
     setSessionList(data);
-    let ordering;
+    let dataSession;
     data.forEach((e, i) => {
       if (!i || e.session_tracks?.[0]?.status) {
-        ordering = e.ordering;
+        dataSession = {
+          ...(e.session_tracks?.[0] || {}),
+          ordering: e.ordering,
+        };
       }
     });
-    setSessionActive(ordering);
+    if (
+      dataSession.status === "complete" &&
+      dataSession.updated_at &&
+      moment(dataSession.updated_at).format("YYYY-MM-DD") ===
+        moment().format("YYYY-MM-DD")
+    ) {
+      setSessionActive(dataSession?.ordering);
+    }
+    if (dataSession.status === "incomplete") {
+      const result = data.find(
+        (item) => item?.ordering === dataSession?.ordering - 1
+      );
+      if (
+        result?.session_tracks?.[0]?.status === "complete" &&
+        result?.session_tracks?.[0]?.updated_at &&
+        moment(result?.session_tracks?.[0]?.updated_at).format("YYYY-MM-DD") ===
+          moment().format("YYYY-MM-DD")
+      ) {
+        setSessionActive(dataSession?.ordering - 1);
+      } else {
+        setSessionActive(dataSession?.ordering);
+      }
+    } else {
+      setSessionActive(dataSession?.ordering + 1);
+    }
   }, []);
 
   return (
@@ -59,9 +86,7 @@ export default function CampSessionList({ footerLinks }) {
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
             <Pressable
-              onPress={(e) =>
-                navigate(`/camps/${id}/sessionslist/${sessionId}`)
-              }
+              onPress={(e) => navigate(`/camps/${id}/sessionslist/${item?.id}`)}
               isDisabled={sessionActive !== item?.ordering}
             >
               <HStack justifyContent={"space-between"}>
