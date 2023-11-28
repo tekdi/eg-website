@@ -42,6 +42,7 @@ export default function CampRoadmap() {
 
           {item?.session_tracks?.[0]?.status ? (
             <IconByName
+              onClick={() => handleIncompleteClick(item)}
               color="white"
               key={""}
               name="CheckLineIcon"
@@ -49,6 +50,7 @@ export default function CampRoadmap() {
             />
           ) : (
             <IconByName
+              onClick={() => handleIncompleteClick(item)}
               isDisabled
               color="white"
               key={""}
@@ -60,6 +62,17 @@ export default function CampRoadmap() {
       </Box>
     ));
   };
+
+  function handleIncompleteClick(item) {
+    if (
+      item?.session_tracks?.[0]?.status !== "complete" &&
+      item?.session_tracks?.[0]?.status !== "incomplete"
+    ) {
+      navigate("/camps/50/roadmap");
+    } else {
+      navigate("/");
+    }
+  }
 
   useEffect(async () => {
     console.log("id", id);
