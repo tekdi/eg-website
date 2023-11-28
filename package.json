@@ -5,7 +5,9 @@
     "packages": [
       "apps/*",
       "modules/*",
-      "lib/*"
+      "lib/*",
+      "assessment",
+      "players"
     ]
   },
   "scripts": {
