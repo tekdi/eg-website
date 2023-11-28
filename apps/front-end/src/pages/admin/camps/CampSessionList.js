@@ -1,0 +1,83 @@
+import {
+  CardComponent,
+  FrontEndTypo,
+  IconByName,
+  Layout,
+  campService,
+} from "@shiksha/common-lib";
+import { Box, HStack, Pressable, VStack } from "native-base";
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+export default function CampSessionList({ footerLinks }) {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [sessionList, setSessionList] = React.useState();
+  const [sessionActive, setSessionActive] = React.useState();
+  const sessionId = `2`;
+
+  React.useEffect(async () => {
+    const result = await campService.getCampSessionsList({ id: id });
+    const data = result?.data?.learning_lesson_plans_master || [];
+    setSessionList(data);
+    let ordering;
+    data.forEach((e, i) => {
+      if (!i || e.session_tracks?.[0]?.status) {
+        ordering = e.ordering;
+      }
+    });
+    setSessionActive(ordering);
+  }, []);
+
+  return (
+    <Layout
+      _appBar={{
+        onPressBackButton: (e) => navigate(-1),
+        onlyIconsShow: ["backBtn", "langBtn"],
+        leftIcon: <FrontEndTypo.H2>{"पाठ्यक्रम सूची"}</FrontEndTypo.H2>,
+      }}
+      _footer={{ menues: footerLinks }}
+    >
+      <VStack flex={1} space={"5"} p="5" background={"bgGreyColor.200"}>
+        <HStack space="2">
+          <IconByName name="BookOpenLineIcon" />
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            पाठ्यक्रम
+          </FrontEndTypo.H2>
+        </HStack>
+
+        {sessionList?.map((item) => (
+          <CardComponent
+            key={item?.id}
+            _header={{ px: "0", pt: "0" }}
+            _body={{
+              px: "4",
+              py: "2",
+              // pt: "0",
+              bg: sessionActive !== item?.ordering ? "gray.100" : "white",
+            }}
+            _vstack={{ p: 0, space: 0, flex: 1 }}
+          >
+            <Pressable
+              onPress={(e) =>
+                navigate(`/camps/${id}/sessionslist/${sessionId}`)
+              }
+              isDisabled={sessionActive !== item?.ordering}
+            >
+              <HStack justifyContent={"space-between"}>
+                <FrontEndTypo.H2 alignItem="center">
+                  {"Session" + " " + item?.ordering}
+                </FrontEndTypo.H2>
+
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  _icon={{ size: "25px" }}
+                />
+              </HStack>
+            </Pressable>
+          </CardComponent>
+        ))}
+      </VStack>
+    </Layout>
+  );
+}

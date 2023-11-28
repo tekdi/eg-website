@@ -24,8 +24,11 @@ import {
 import Drawer from "react-modern-drawer";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function CampTodayActivities({ footerLinks }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [enums, setEnums] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState(null);
@@ -68,21 +71,23 @@ export default function CampTodayActivities({ footerLinks }) {
       <VStack p="4" space={4}>
         <HStack space={4}>
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <VStack alignItems="center" space={3}>
-              <VStack bg="gray.300" rounded="100%" p="2">
-                <Image
-                  source={{
-                    uri: "/images/activities/learning-activity.png",
-                  }}
-                  alt=""
-                  resizeMode="contain"
-                  color="gray.600"
-                  alignSelf={"center"}
-                  padding="6"
-                />
+            <Pressable onPress={() => navigate(`/camps/${id}/sessions`)}>
+              <VStack alignItems="center" space={3}>
+                <VStack bg="gray.300" rounded="100%" p="2">
+                  <Image
+                    source={{
+                      uri: "/images/activities/learning-activity.png",
+                    }}
+                    alt=""
+                    resizeMode="contain"
+                    color="gray.600"
+                    alignSelf={"center"}
+                    padding="6"
+                  />
+                </VStack>
+                <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
               </VStack>
-              <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
-            </VStack>
+            </Pressable>
           </CardComponent>
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
             <Pressable
@@ -120,9 +125,7 @@ export default function CampTodayActivities({ footerLinks }) {
               justifyContent={"space-between"}
               alignItems="center"
             >
-              <FrontEndTypo.H1 bold color="textGreyColor.450">
-                {t("AG_PROFILE_ARE_YOU_SURE")}
-              </FrontEndTypo.H1>
+              <FrontEndTypo.H1 bold color="textGreyColor.450"></FrontEndTypo.H1>
               <IconByName
                 name="CloseCircleLineIcon"
                 onPress={(e) => setEnums()}
