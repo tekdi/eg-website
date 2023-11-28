@@ -1,15 +1,71 @@
-import { Layout } from "@shiksha/common-lib";
-import { Box, VStack, Image, Text } from "native-base";
-import React, { useEffect, useRef } from "react";
+import { IconByName, Layout } from "@shiksha/common-lib";
+import { Box, VStack, Image, Text, HStack } from "native-base";
+import React, { useEffect, useRef, useState } from "react";
 import { campService } from "@shiksha/common-lib";
+import { useParams } from "react-router-dom";
 
 export default function CampRoadmap() {
   const canvasRef = useRef(null);
+  const { id } = useParams();
+  const [lessonList, setLessonList] = useState([]);
+  const [dynamicBoxes, setDynamicBoxes] = useState([]);
 
-  //   useEffect(() => {
-  //     const responseData = campService.getCampRoadmap();
-  //     console.log("responseData roadmap", responseData);
-  //   }, []);
+  const renderDynamicBoxes = () => {
+    return lessonList.map((item, i) => (
+      <Box
+        top={"25px"}
+        key={item?.ordering}
+        position="absolute"
+        left={`${(i % 2 === 0 ? 10 : 0) + (i % 2) * 60}%`}
+        borderRadius={"25px"}
+        width={"110px"}
+        height={"45px"}
+        bg={
+          item?.session_tracks?.[0]?.status === "complete"
+            ? "rgba(0, 140, 14, 1)"
+            : item?.session_tracks?.[0]?.status === "incomplete"
+            ? "rgba(255, 168, 0, 1)"
+            : "rgba(121, 0, 0, 1)"
+        }
+        justifyContent="center"
+        alignItems="center"
+        marginTop={`${i * 90}px`}
+      >
+        <HStack space={3} alignItems={"space-between"}>
+          <Text fontWeight={"bold"} color="white">
+            {item?.name || `सत्र ${item?.ordering}`}
+          </Text>
+
+          {item?.session_tracks?.[0]?.status ? (
+            <IconByName
+              color="white"
+              key={""}
+              name="CheckLineIcon"
+              isDisabled
+              _icon={{ size: "20px" }}
+            />
+          ) : (
+            <IconByName
+              color="white"
+              key={""}
+              name="ArrowRightSLineIcon"
+              isDisabled
+              _icon={{ size: "20px" }}
+            />
+          )}
+        </HStack>
+      </Box>
+    ));
+  };
+
+  useEffect(async () => {
+    console.log("id", id);
+    const responseData = await campService.getLearningLessonList({ id });
+    setLessonList(responseData?.data?.learning_lesson_plans_master || []);
+    console.log("data", responseData?.data?.learning_lesson_plans_master);
+
+    setDynamicBoxes(responseData?.data?.learning_lesson_plans_master || []);
+  }, [id]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,15 +80,15 @@ export default function CampRoadmap() {
       context.moveTo(0, 0);
 
       context.bezierCurveTo(
-        100,
-        (canvas.height * 1) / 7,
-        -100,
-        (canvas.height * 6) / 7,
         0,
+        (canvas.height * 1) / 1,
+        -0,
+        (canvas.height * 6) / 1,
+        3,
         canvas.height
       );
       context.strokeStyle = "#666";
-      context.lineWidth = 40;
+      context.lineWidth = 70;
       context.stroke();
 
       context.strokeStyle = " rgba(255, 190, 24, 1)";
@@ -41,10 +97,10 @@ export default function CampRoadmap() {
 
       const curveDash = context.bezierCurveTo(
         100,
-        canvas.height / 0,
+        canvas.height * 1,
         -100,
-        (3 * canvas.height) / 0,
-        0,
+        (6 * canvas.height) / 1,
+        3,
         canvas.height
       );
 
@@ -64,7 +120,7 @@ export default function CampRoadmap() {
     };
 
     const handleResize = () => {
-      canvas.height = window.outerHeight * 1.5;
+      canvas.height = window.innerHeight * 10;
       drawCurve();
     };
 
@@ -77,53 +133,6 @@ export default function CampRoadmap() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const renderDynamicBoxes = () => {
-    return dynamicBoxes.map((box, index) => (
-      <Box
-        key={box.id}
-        position="absolute"
-        left={box.left}
-        borderRadius={box.borderRadius}
-        width={box.width}
-        height={box.height}
-        bg={index % 2 === 0 ? "rgba(121, 0, 0, 1)" : "rgba(0, 140, 14, 1)"}
-        justifyContent="center"
-        alignItems="center"
-        marginTop={`${index * 95}px`}
-      >
-        <Box position="absolute" left="5%" transform="translateY(-50%)">
-          <Image
-            source={require("./profile.jpeg")}
-            alt="Profile Image"
-            size="40px"
-            borderRadius="full"
-          />
-        </Box>
-        <Text marginLeft={index % 2 === 0 ? "30%" : "30%"} color="white">
-          {box.name || `सत्र ${box.id}`}
-        </Text>
-      </Box>
-    ));
-  };
-
-  const generateDynamicBoxes = (count) => {
-    const boxes = [];
-    for (let i = 1; i <= count; i++) {
-      boxes.push({
-        id: i,
-        left: `${(i % 2 === 0 ? 10 : 6) + (i % 2) * 60}%`,
-        borderRadius: "20px",
-        width: "106px",
-        height: "42px",
-      });
-    }
-    return boxes;
-  };
-
-  const dynamicBoxes = generateDynamicBoxes(9);
-
-  renderDynamicBoxes();
 
   return (
     <React.Fragment>
@@ -141,8 +150,7 @@ export default function CampRoadmap() {
               height="100%"
             ></Box>
           </Box>
-
-          {renderDynamicBoxes()}
+          {renderDynamicBoxes(dynamicBoxes)}
         </VStack>
       </Layout>
     </React.Fragment>
