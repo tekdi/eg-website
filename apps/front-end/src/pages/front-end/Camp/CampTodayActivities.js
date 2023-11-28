@@ -120,9 +120,7 @@ export default function CampTodayActivities({ footerLinks }) {
               justifyContent={"space-between"}
               alignItems="center"
             >
-              <FrontEndTypo.H1 bold color="textGreyColor.450">
-                {t("AG_PROFILE_ARE_YOU_SURE")}
-              </FrontEndTypo.H1>
+              <FrontEndTypo.H1 bold color="textGreyColor.450"></FrontEndTypo.H1>
               <IconByName
                 name="CloseCircleLineIcon"
                 onPress={(e) => setEnums()}
