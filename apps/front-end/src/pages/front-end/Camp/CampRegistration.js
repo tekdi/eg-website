@@ -42,7 +42,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     setLoading(true);
     const result = await campService.getCampDetails(camp_id);
-    console.log(result?.data);
     setCampDetails(result?.data);
     setCampStatus(result?.data?.group?.status);
     const campConsent = await ConsentService.getConsent({
@@ -83,7 +82,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       "kit_feedback",
     ]);
 
-    console.log(data);
     setLoading(false);
   }, []);
   const Navdata = [
@@ -256,7 +254,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 ml={5}>
                   {["registered", "inactive", "verified"].includes(campStatus)
                     ? t("UPDATE_CAMP_KIT_DETAILS")
-                    : t("KIT_MATERIAL")}
+                    : t("CAMP_KIT_MATERIAL_DETAILS")}
                 </FrontEndTypo.H3>
               </HStack>
 
