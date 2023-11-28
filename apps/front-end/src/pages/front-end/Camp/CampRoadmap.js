@@ -12,6 +12,8 @@ export default function CampRoadmap() {
   const [dynamicBoxes, setDynamicBoxes] = useState([]);
 
   const renderDynamicBoxes = () => {
+    let isFirstCompletedEncountered = false;
+
     return lessonList.map((item, i) => (
       <Box
         top={"25px"}
@@ -22,7 +24,7 @@ export default function CampRoadmap() {
         width={"110px"}
         height={"45px"}
         bg={
-          item?.session_tracks?.[0]?.status === "complete"
+          i === 0 && item?.session_tracks?.[0]?.status === "complete"
             ? "rgba(0, 140, 14, 1)"
             : item?.session_tracks?.[0]?.status === "incomplete"
             ? "rgba(255, 168, 0, 1)"
@@ -39,16 +41,14 @@ export default function CampRoadmap() {
           alignItems={"space-between"}
         >
           {t(`सत्र ${item?.ordering}`)}
-
-          {item?.session_tracks?.[0]?.status ? (
+          {item?.session_tracks?.[0]?.status === "complete" ? (
             <IconByName
-              onClick={() => handleIncompleteClick(item)}
               color="white"
               key={""}
               name="CheckLineIcon"
               _icon={{ size: "20px" }}
             />
-          ) : (
+          ) : item?.session_tracks?.[0]?.status === "incomplete" ? (
             <IconByName
               onClick={() => handleIncompleteClick(item)}
               isDisabled
@@ -57,7 +57,8 @@ export default function CampRoadmap() {
               name="ArrowRightSLineIcon"
               _icon={{ size: "20px" }}
             />
-          )}
+          ) : // Status is in progress, don't render any icon
+          null}
         </HStack>
       </Box>
     ));
@@ -68,7 +69,7 @@ export default function CampRoadmap() {
       item?.session_tracks?.[0]?.status !== "complete" &&
       item?.session_tracks?.[0]?.status !== "incomplete"
     ) {
-      navigate("/camps/50/roadmap");
+      navigate(`/camps/${id}/roadmap`);
     } else {
       navigate("/");
     }
