@@ -1,11 +1,12 @@
 import { IconByName, Layout } from "@shiksha/common-lib";
-import { Box, VStack, Image, Text, HStack } from "native-base";
+import { Box, VStack, HStack, Pressable } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
-import { campService } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { campService, t } from "@shiksha/common-lib";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function CampRoadmap() {
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
   const { id } = useParams();
   const [lessonList, setLessonList] = useState([]);
   const [dynamicBoxes, setDynamicBoxes] = useState([]);
@@ -31,25 +32,27 @@ export default function CampRoadmap() {
         alignItems="center"
         marginTop={`${i * 90}px`}
       >
-        <HStack space={3} alignItems={"space-between"}>
-          <Text fontWeight={"bold"} color="white">
-            {item?.name || `सत्र ${item?.ordering}`}
-          </Text>
+        <HStack
+          fontWeight={"bold"}
+          color={"white"}
+          space={4}
+          alignItems={"space-between"}
+        >
+          {t(`सत्र ${item?.ordering}`)}
 
           {item?.session_tracks?.[0]?.status ? (
             <IconByName
               color="white"
               key={""}
               name="CheckLineIcon"
-              isDisabled
               _icon={{ size: "20px" }}
             />
           ) : (
             <IconByName
+              isDisabled
               color="white"
               key={""}
               name="ArrowRightSLineIcon"
-              isDisabled
               _icon={{ size: "20px" }}
             />
           )}
