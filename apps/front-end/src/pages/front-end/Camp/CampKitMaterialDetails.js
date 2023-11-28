@@ -46,13 +46,13 @@ const customStyles = {
 
 const columns = (handleCheckboxChange, kitFeadback, t) => [
   {
-    name: t("TITLE"),
+    name: t("KIT_LIST"),
     cell: (row) => t(row?.title),
     wrap: true,
     sortable: true,
   },
   {
-    name: t("subTitle"),
+    name: t("QUANTITY"),
     cell: (row) => t(row?.subTitle),
     wrap: true,
     sortable: true,
