@@ -113,12 +113,11 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     // enum api all
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.KIT_MATERIALS_CHECKLISTS;
-    console.log("tt", list);
     setTableData(list);
     const result = await campService.campMaterialKit({
       id,
     });
-    console.log(result);
+    setKitFeadback(result?.kit?.list_of_materials || {});
   }, []);
 
   const handleCheckboxChange = (item, columnName) => {
@@ -130,7 +129,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     console.log("Data saved:", kitFeadback);
     const result = await campService.campMaterialKitUpdate({
       camp_id: id,
-      date: kitFeadback,
+      list_of_materials: kitFeadback,
     });
     console.log(result);
     // if (tableData?.[0]) {
