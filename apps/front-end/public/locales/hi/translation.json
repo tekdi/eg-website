@@ -1253,5 +1253,12 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "SESSION_COMPLETED_THE_SESSION_COULD_NOT_BE_IMPLEMENTED_PROPERLY_DUE_TO_LACK_OF_UNDERSTANDING": "The session could not be implemented properly due to lack of understanding",
+  "SESSION_COMPLETED_MORE_WORK_NEEDED_TO_IMPLEMENT_THE_SESSION_WELL": "More work needed to implement the session well",
+  "SESSION_COMPLETED_SESSION_SUCCESSFULLY_IMPLEMENTED": "Session successfully implemented",
+  "SESSION_PARTIALLY_COMPLETE_COMPLEXITY_OF_CONCEPTS": "Complexity of concepts",
+  "SESSION_PARTIALLY_COMPLETE_TIME_ALLOCATION": "Time allocation",
+  "SESSION_PARTIALLY_COMPLETE_LEARNING_ACTIVITIES": "Learning activites",
+  "SESSION_PARTIALLY_COMPLETE_OTHER": "Other"
 }
