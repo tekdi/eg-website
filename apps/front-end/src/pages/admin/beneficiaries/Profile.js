@@ -193,6 +193,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const [getRequestData, setGetRequestData] = React.useState();
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = React.useState();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -331,6 +332,7 @@ export default function AgAdminProfile({ footerLinks }) {
   };
 
   const updateAadhaar = async () => {
+    setIsDisable(true);
     const aadhaar_no = {
       id: id,
       aadhar_no: aadhaarValue,
@@ -339,17 +341,21 @@ export default function AgAdminProfile({ footerLinks }) {
       aadhaar_no
     );
     if (aadhaarValue.length < 12) {
+      setIsDisable(false);
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
     } else if (!result?.success) {
+      setIsDisable(false);
       setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
       setDuplicateUserList(result?.data?.users);
     } else {
+      setIsDisable(false);
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
     }
   };
 
   const dropoutApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
       status: "dropout",
@@ -361,6 +367,7 @@ export default function AgAdminProfile({ footerLinks }) {
     );
 
     if (result) {
+      setIsDisable(true);
       setReasonValue("");
       setIsOpenDropOut(false);
       setTimeout(() => {
@@ -370,6 +377,7 @@ export default function AgAdminProfile({ footerLinks }) {
   };
 
   const reactivateApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
       status: "identified",
@@ -386,6 +394,7 @@ export default function AgAdminProfile({ footerLinks }) {
   };
 
   const RejectApiCall = async () => {
+    setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
       status: "rejected",
@@ -1585,7 +1594,10 @@ export default function AgAdminProfile({ footerLinks }) {
               >
                 {t("CANCEL")}
               </AdminTypo.Secondarybutton>
-              <AdminTypo.PrimaryButton onPress={updateAadhaar}>
+              <AdminTypo.PrimaryButton
+                isDisabled={isDisable}
+                onPress={updateAadhaar}
+              >
                 {t("SAVE")}
               </AdminTypo.PrimaryButton>
             </HStack>
@@ -1783,6 +1795,7 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
               <VStack>
                 <AdminTypo.PrimaryButton
+                  isDisabled={isDisable}
                   onPress={() => {
                     dropoutApiCall();
                   }}
@@ -1842,6 +1855,7 @@ export default function AgAdminProfile({ footerLinks }) {
               </VStack>
 
               <AdminTypo.PrimaryButton
+                isDisabled={isDisable}
                 onPress={() => {
                   reactivateApiCall();
                 }}
@@ -1896,6 +1910,7 @@ export default function AgAdminProfile({ footerLinks }) {
             </VStack>
 
             <AdminTypo.PrimaryButton
+              isDisabled={isDisable}
               flex={1}
               onPress={() => {
                 RejectApiCall();
