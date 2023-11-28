@@ -49,13 +49,11 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
     name: t("KIT_LIST"),
     cell: (row) => t(row?.title),
     wrap: true,
-    sortable: true,
   },
   {
     name: t("QUANTITY"),
     cell: (row) => t(row?.subTitle),
     wrap: true,
-    sortable: true,
   },
   {
     name: t("COMPLETE"),
@@ -103,6 +101,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [kitFeadback, setKitFeadback] = React.useState({});
   const [tableData, setTableData] = React.useState();
+  const [isDisable, setIsDisable] = React.useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
   const onPressBackButton = () => {
@@ -122,19 +121,21 @@ export default function CampKitMaterialDetails({ footerLinks }) {
 
   const handleCheckboxChange = (item, columnName) => {
     setKitFeadback({ ...kitFeadback, [item]: columnName });
+
+    const isSaveDisabled = !tableData?.every((row) => kitFeadback[row.value]);
+    setIsDisable(isSaveDisabled);
   };
 
-  const isSaveDisabled = !tableData?.every((row) => kitFeadback[row.value]);
   const handleSave = async () => {
-    console.log("Data saved:", kitFeadback);
+    setIsDisable(true);
     const result = await campService.campMaterialKitUpdate({
       camp_id: id,
       list_of_materials: kitFeadback,
     });
-    console.log(result);
-    // if (tableData?.[0]) {
-    //   navigate(`/camps/${id}`);
-    // }
+    if (result?.data) {
+      setIsDisable(false);
+      navigate(`/camps/${id}`);
+    }
   };
 
   return (
@@ -163,20 +164,19 @@ export default function CampKitMaterialDetails({ footerLinks }) {
           persistTableHead
         />
         <Box>
-          {isSaveDisabled && (
-            <Alert status="warning" alignItems={"start"}>
-              <HStack alignItems="center" space="2">
-                <Alert.Icon />
-                {t("PLEASE_SELECT_ALL_ITEMS_MESSAGE")}
-              </HStack>
-            </Alert>
-          )}
+          <Alert status="warning" alignItems={"start"}>
+            <HStack alignItems="center" space="2">
+              <Alert.Icon />
+              {t("PLEASE_SELECT_ALL_ITEMS_MESSAGE")}
+            </HStack>
+          </Alert>
+
           <FrontEndTypo.Primarybutton
             // isLoading={loading}
             p="4"
             mt="4"
-            isDisabled={isSaveDisabled}
             onPress={handleSave}
+            isDisabled={isDisable}
           >
             {t("SAVE_AND_CAMP_PROFILE")}
           </FrontEndTypo.Primarybutton>
