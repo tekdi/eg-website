@@ -314,7 +314,10 @@ export default [
     component: Attendance,
   },
   { path: "/camps/:id/Campexecution", component: CampExecution },
-  { path: "/camps/:id/campexecutionstart", component: CampExecutionStart },
+  {
+    path: "/camps/:id/campexecutionstart/:activityId",
+    component: CampExecutionStart,
+  },
   { path: "/camps/:id/campexecutionend", component: CampExecutionEnd },
   { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   { path: "/camps/:id/activities", component: CampTodayActivities },
