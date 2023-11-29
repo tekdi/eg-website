@@ -35,14 +35,30 @@ export default function CampTodayActivities({ footerLinks }) {
   const [selectValue, setSelectValue] = React.useState([]);
   const [isSaving, setIsSaving] = React.useState(false);
   const [campList, setCampList] = React.useState([]);
+  const [activityId, setActivityId] = React.useState();
+  const [incompleteActivity, setIncompleteActivity] = React.useState();
 
   React.useEffect(async () => {
+    const result = await campService.getcampstatus({ id });
+    setIncompleteActivity(result?.data);
+    const activity_id = result?.data?.id;
+    setActivityId(activity_id);
     const getListActivities = await campService.getActivitiesList();
     setCampList(getListActivities?.data);
   }, []);
 
   const handleSubmitData = async () => {
-    console.log("enums_type", enums.type);
+    if (incompleteActivity) {
+      const dataToSave = {
+        edit_page_type: "edit_misc_activities",
+        id: activityId,
+        misc_activities: selectValue,
+      };
+      const activities_response = await campService.addMoodActivity(dataToSave);
+      if (activities_response) {
+        navigate(`/camps`);
+      }
+    }
   };
 
   React.useEffect(async () => {
@@ -52,13 +68,6 @@ export default function CampTodayActivities({ footerLinks }) {
   }, []);
 
   const handleActivities = async (item) => {
-    const dataToSave = {
-      user_id: 1077,
-      type: item,
-      activity_data: [selectValue],
-    };
-    const activities_response = await campService.getActivitiesList(dataToSave);
-    console.log({ activities_response });
     const data = enumOptions && enumOptions[item] ? enumOptions[item] : null;
     setEnums({ type: item, data });
   };

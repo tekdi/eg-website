@@ -45,11 +45,14 @@ export default function CampExecutionStart({ footerLinks }) {
   const [latData, longData] = useLocationData() || [];
 
   React.useEffect(async () => {
+    const incompleteData = await campService.getcampstatus({ id });
+    const incompleteDate = moment(incompleteData?.data?.start_date).format(
+      "YYYY-MM-DD"
+    );
     setLoading(true);
     const obj = {
       id: id,
-      start_date: moment(new Date()).format("YYYY-MM-DD"),
-      // start_date: "2023-11-26",
+      start_date: incompleteDate || moment(new Date()).format("YYYY-MM-DD"),
     };
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
@@ -345,4 +348,3 @@ const CampExecutionEnd = ({ disable, activityId }) => {
     </VStack>
   );
 };
-
