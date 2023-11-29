@@ -1,4 +1,9 @@
-import { FrontEndTypo, Layout, enumRegistryService } from "@shiksha/common-lib";
+import {
+  FrontEndTypo,
+  Layout,
+  campService,
+  enumRegistryService,
+} from "@shiksha/common-lib";
 import { VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -25,10 +30,15 @@ export default function CampOtherPlans({ footerLinks }) {
     setLoading(false);
   }, []);
 
-  const submitReason = () => {
-    console.log("hii");
+  const submitReason = async () => {
+    const payLoad = {
+      camp_id: id,
+      camp_day_happening: "no",
+      camp_day_not_happening_reason: reason,
+    };
     if (reason) {
-      console.log("API Call");
+      await campService.campActivity(payLoad);
+       navigate(`/camps/${id}/campexecution`);
     } else {
       setError(true);
     }
