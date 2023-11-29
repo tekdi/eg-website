@@ -4,6 +4,7 @@ module.exports = {
   name: "assessment",
   exposes: {
     "./SampleComponent": "./src/components/SampleComponent",
+    "./Assessment": "./src/pages/Assessment",
   },
   remotes: {
     auth: `auth@[window.appModules.auth.url]/moduleEntry.js`,

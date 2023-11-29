@@ -10,7 +10,7 @@ const Dashboard = () => <h1>LOGIN SUCCESS</h1>;
 function App() {
   const routes = [
     {
-      path: "/",
+      path: "/:context/:context_id/:do_id",
       component: Assessment,
     },
   ];

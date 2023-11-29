@@ -13,22 +13,15 @@ function Player() {
   const [width, height] = useWindowSize();
   const [assessmentData, setassessmentData] = useState();
   const [type , setType] = useState('Course')
-  const { context } = useParams("events");
-  const { context_id } = useParams(313);
+  const { context,context_id,do_id } = useParams();
+
  
-
-  let baseUrl = process.env.REACT_APP_ASSESSMENT_ID
-  console.log(baseUrl);
-
-
   useEffect(async () => {
     
-    console.log(baseUrl);
+    console.log(do_id);
+    const assesmentData = await courseRegistryService.getAssessment(do_id)
+    setassessmentData(assesmentData)
     
-  }, []);
-
-  useEffect(() => {
-    setassessmentData(sampleJSON);
   }, []);
 
   const navigate = useNavigate();
@@ -37,7 +30,6 @@ function Player() {
       navigate(-1);
     }
   };
-
 
   const handleTrackData = async (
     { score, attempts, ...props },
