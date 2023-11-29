@@ -35,7 +35,7 @@ function Player() {
     playerType = "quml"
   ) => {
     let data = {};
-    console.log(props)
+    console.log(props.duration)
    let trackDataold = localStorage.getItem("trackDATA")
    let trackData = JSON.parse(trackDataold)
     // const programData = await subjectListRegistryService.getProgramId();
@@ -58,10 +58,13 @@ function Player() {
         }
         return oldData;
       }, []);
+      console.log("score",score);
+      let score_txt=score ? score.toString() : "0";
+      let duration_txt=props.duration.toString();
       data = {
         test_id: "do_113935969671700480155",
-        spent_time: props.duration,
-        score: score ? score : 0,
+        spent_time: duration_txt,
+        score: score_txt,
         status: "completed",
         score_details: newFormatData,
         context:"events",
