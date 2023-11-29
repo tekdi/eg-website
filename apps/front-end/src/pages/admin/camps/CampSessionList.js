@@ -76,7 +76,7 @@ export default function CampSessionList({ footerLinks }) {
       _appBar={{
         onPressBackButton: (e) => navigate(-1),
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{"पाठ्यक्रम सूची"}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -84,7 +84,7 @@ export default function CampSessionList({ footerLinks }) {
         <HStack space="2">
           <IconByName name="BookOpenLineIcon" />
           <FrontEndTypo.H2 color="textMaroonColor.400">
-            पाठ्यक्रम
+            {t("LESSON")}
           </FrontEndTypo.H2>
         </HStack>
 
@@ -106,9 +106,8 @@ export default function CampSessionList({ footerLinks }) {
             >
               <HStack justifyContent={"space-between"}>
                 <FrontEndTypo.H2 alignItem="center">
-                  {"Session" + " " + item?.ordering}
+                  {t("LESSON") + " " + item?.ordering}
                 </FrontEndTypo.H2>
-
                 <IconByName
                   name="ArrowRightSLineIcon"
                   _icon={{ size: "25px" }}

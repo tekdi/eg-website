@@ -19,6 +19,7 @@ export default function CampSession({ footerLinks }) {
   const navigate = useNavigate();
   const [isDisable, setIsDisable] = React.useState(true);
   const [enumOptions, setEnumOptions] = React.useState({});
+  const { t } = useTranslation();
 
   const [sessionDetails, setSessionDetails] = React.useState();
 
@@ -73,7 +74,7 @@ export default function CampSession({ footerLinks }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{"पाठ्यक्रम सूची"}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -91,6 +92,7 @@ export default function CampSession({ footerLinks }) {
               setIsDisable={setIsDisable}
               enumOptions={enumOptions}
               sessionDetails={sessionDetails}
+              t={t}
             />
           )
       )}
@@ -105,11 +107,11 @@ export function SessionCard({
   item,
   previusItem,
   index,
+  t,
 }) {
   const [submitStatus, setSubmitStatus] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
   const [error, setError] = React.useState();
-  const { t } = useTranslation();
 
   const handleStartSession = async (id) => {
     setIsDisable(true);
@@ -144,7 +146,7 @@ export function SessionCard({
               color="textMaroonColor.400"
               bold
             >
-              {item?.title}
+              {t("LESSON")} {index + 1}
             </FrontEndTypo.H3>
           </VStack>
 
@@ -183,10 +185,10 @@ export function SessionCard({
                       background={"#FF0000"}
                       onPress={(e) => setSubmitStatus({ status: "complete" })}
                     >
-                      पाठ्यक्रम पूरा हो गया
+                      {t("SYLLABUS_COMPLETED")}
                     </FrontEndTypo.DefaultButton>
                     {submitStatus?.status === "complete" && (
-                      <CardComponent title={"आज का सत्र कैसा रहा?"}>
+                      <CardComponent title={t("HOW_WAS_SESSION")}>
                         <VStack space="4">
                           <CustomRadio
                             options={{
@@ -213,7 +215,7 @@ export function SessionCard({
                               isDisabled={isDisable}
                               onPress={(e) => handaleCancel()}
                             >
-                              cancel
+                              {t("CANCEL")}
                             </FrontEndTypo.DefaultButton>
                             <FrontEndTypo.DefaultButton
                               flex="1"
@@ -225,7 +227,7 @@ export function SessionCard({
                                 )
                               }
                             >
-                              save
+                              {t("SAVE")}
                             </FrontEndTypo.DefaultButton>
                           </HStack>
                         </VStack>
@@ -267,7 +269,7 @@ export function SessionCard({
                         : ""
                     }
                   >
-                    पाठ आधा पूरा हुआ
+                    {t("SYLLABUS_INCOMPLETED")}
                   </FrontEndTypo.DefaultButton>
                   {submitStatus?.status === "incomplete" && (
                     <VStack space={4}>
@@ -296,7 +298,7 @@ export function SessionCard({
                           isDisabled={isDisable}
                           onPress={(e) => handaleCancel()}
                         >
-                          cancel
+                          {t("CANCEL")}
                         </FrontEndTypo.DefaultButton>
                         <FrontEndTypo.DefaultButton
                           flex="1"
@@ -306,7 +308,7 @@ export function SessionCard({
                             handlePartiallyDone(item?.session_tracks?.[0]?.id)
                           }
                         >
-                          save
+                          {t("SAVE")}
                         </FrontEndTypo.DefaultButton>
                       </HStack>
                     </VStack>
@@ -319,7 +321,7 @@ export function SessionCard({
               borderWidth="0"
               background={"green.500"}
             >
-              पाठ्यक्रम पूरा हो गया
+              {t("SYLLABUS_COMPLETED")}
             </FrontEndTypo.DefaultButton>
           )}
         </VStack>
