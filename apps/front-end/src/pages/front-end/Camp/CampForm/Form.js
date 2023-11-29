@@ -134,7 +134,11 @@ export default function App({ userTokenInfo, footerLinks }) {
       if (pageStape === "p") {
         navigate(`/camps/${id}`);
       } else if (nextIndex !== undefined) {
-        navigate(`/camps/${id}/${nextIndex}`);
+        if (step === "edit_kit_details") {
+          navigate(`/camps/${id}/edit_family_consent`);
+        } else {
+          navigate(`/camps/${id}/${nextIndex}`);
+        }
       }
     }
   };
