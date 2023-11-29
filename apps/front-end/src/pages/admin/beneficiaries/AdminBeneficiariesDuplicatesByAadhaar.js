@@ -85,6 +85,7 @@ export default function DuplicateView({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [viewData, setViewData] = React.useState();
   const navigate = useNavigate();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const columns = (e) => [
     {
@@ -149,11 +150,13 @@ export default function DuplicateView({ footerLinks }) {
   }, [filter]);
 
   const assignToPrerak = async (id) => {
+    setIsDisable(true);
     const activeId = { activeId: id };
     const result = await benificiaryRegistoryService?.deactivateDuplicates(
       activeId
     );
     if (!result?.success) {
+      setIsDisable(false);
       seterrormsg(true);
     }
     setModalVisible(false);
@@ -312,6 +315,7 @@ export default function DuplicateView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
+                    isDisabled={isDisable}
                     onPress={() => {
                       assignToPrerak(viewData?.id);
                     }}

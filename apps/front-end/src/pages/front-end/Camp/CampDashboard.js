@@ -119,7 +119,8 @@ export default function CampDashboard({ footerLinks }) {
                       )}
                     </Center>
                   </HStack>
-                  {campList?.map((item) => {
+                  {campList?.map((item, i) => {
+                    const index = i + 1;
                     return (
                       <Pressable
                         key={item}
@@ -139,7 +140,7 @@ export default function CampDashboard({ footerLinks }) {
                         >
                           <VStack>
                             <FrontEndTypo.H3>
-                              {item?.group?.name}
+                              {`${t("CAMP")} ${String(index).padStart(2, "0")}`}
                             </FrontEndTypo.H3>
                             {item?.group?.description && (
                               <FrontEndTypo.H6>
@@ -263,12 +264,16 @@ export default function CampDashboard({ footerLinks }) {
               >
                 {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-              {/* <FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Secondarybutton
+                onPress={() => {
+                  navigate(`/camps/${campId}/settings`);
+                }}
+              >
                 {t("CAMP_SETTINGS")}
-              </FrontEndTypo.Secondarybutton> */}
+              </FrontEndTypo.Secondarybutton>
               <FrontEndTypo.Primarybutton
                 onPress={() => {
-                  navigate(`/camps/${campId}/start`);
+                  navigate(`/camps/${campId}/campexecution`);
                 }}
               >
                 {t("CAMP_EXECUTION")}

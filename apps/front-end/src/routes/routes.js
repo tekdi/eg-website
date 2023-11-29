@@ -130,8 +130,15 @@ const PcrView = React.lazy(() =>
 );
 
 const FileView = React.lazy(() => import("pages/FileView"));
-const StartCampDashboard = React.lazy(() =>
-  import("pages/front-end/Camp/StartCampDashboard")
+
+const CampExecution = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampExecution")
+);
+const CampExecutionStart = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampExecutionStart")
+);
+const CampExecutionEnd = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampExecutionEnd")
 );
 
 const CampAttendance = React.lazy(() =>
@@ -145,6 +152,22 @@ const Attendance = React.lazy(() =>
 const CampTodayActivities = React.lazy(() =>
   import("pages/front-end/Camp/CampTodayActivities")
 );
+const CampKitMaterialDetails = React.lazy(() =>
+  import("pages/front-end/Camp/CampKitMaterialDetails")
+);
+
+const CampSettings = React.lazy(() =>
+  import("pages/front-end/Camp/CampSetting")
+);
+
+const CampOtherPlans = React.lazy(() =>
+  import("pages/front-end/Camp/CampExecution/CampOtherPlans")
+);
+
+const CampSessionsList = React.lazy(() =>
+  import("pages/admin/camps/CampSessionList")
+);
+const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
 const CampRoadmap = React.lazy(() =>
   import("pages/front-end/Camp/CampRoadmap")
@@ -303,11 +326,21 @@ export default [
     component: CampAttendance,
   },
   {
-    path: "/camps/:id/attendance-view",
-    component: Attendance,
+    path: "/camps/:id/settings",
+    component: CampSettings,
   },
-  { path: "/camps/:id/start", component: StartCampDashboard },
+  { path: "/camps/:id/Campexecution", component: CampExecution },
+  { path: "/camps/:id/campexecutionstart", component: CampExecutionStart },
+  { path: "/camps/:id/campexecutionend", component: CampExecutionEnd },
+  { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   { path: "/camps/:id/activities", component: CampTodayActivities },
+  {
+    path: "/camps/:id/kit_material_deatails",
+    component: CampKitMaterialDetails,
+  },
+  { path: "/camps/:id/sessionslist", component: CampSessionsList },
+  { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
+
   { path: "*", component: Dashboard },
   { path: "/camps/:id/roadmap", component: CampRoadmap },
 ];

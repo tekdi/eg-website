@@ -23,6 +23,8 @@ export default function CampList({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
+
   const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
     navigate("/camps");
@@ -48,6 +50,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
   };
 
   const createCamp = async () => {
+    setIsDisable(true);
     if (selectedIds.length !== 0) {
       const ids = {
         learner_ids: selectedIds,
@@ -55,15 +58,17 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       const result = await campService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
       if (camp_id) {
+        setIsDisable(false);
         navigate(`/camps/${camp_id}`);
       } else {
+        setIsDisable(false);
         setErrors(result?.message);
       }
     } else {
+      setIsDisable(false);
       setAlert(true);
     }
   };
-
   React.useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
     setNonRegisteredUser(result?.data?.user);
@@ -193,7 +198,10 @@ export default function CampList({ userTokenInfo, footerLinks }) {
             </Alert>
           )}
 
-          <FrontEndTypo.Primarybutton onPress={createCamp}>
+          <FrontEndTypo.Primarybutton
+            isDisabled={isDisable}
+            onPress={createCamp}
+          >
             {t("CREATE_CAMP")}
           </FrontEndTypo.Primarybutton>
         </Box>
