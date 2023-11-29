@@ -136,7 +136,6 @@ export default function CampDashboard({ footerLinks }) {
                         py={3}
                         px={5}
                       >
-                        {console.log("dddd", item?.group?.status)}
                         <HStack
                           alignItems={"center"}
                           justifyContent={"space-between"}
