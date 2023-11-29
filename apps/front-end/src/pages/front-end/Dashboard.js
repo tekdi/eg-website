@@ -12,8 +12,7 @@ import {
 import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import AadhaarNumberOKYC from "../../component/AadhaarNumberOKYC";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 const styles = {
@@ -52,14 +51,20 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         await facilitatorRegistryService.getPrerakCertificateDetails({
           id: fa_id,
         });
-      setCertificateData(c_data);
+      const data =
+        c_data?.events.filter(
+          (e) => e?.type === "prerak_camp_execution_training"
+        )?.[0] || {};
+      setCertificateData(data);
 
-      const eventActive =
-        moment.utc(c_data.events[0].start_date).isSame(moment(), "day") &&
-        moment.utc(
-          `${c_data.events[0].end_time} >= ${c_data.events[0].start_time}`
-        );
-      setIsEventActive(eventActive);
+      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+      const format = "hh:mm:ss";
+      const time = moment(moment().format(format), format);
+      const beforeTime = moment(data?.start_time, format);
+      const afterTime = moment(data?.end_time, format);
+      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+        setIsEventActive(true);
+      }
     }
     setLoading(false);
   }, []);
@@ -149,18 +154,17 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           <Stack>
             {facilitator?.program_faciltators?.status ===
-              "selected_for_onboarding" && progress !== 100 ? (
-              <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>
-                    {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
-                  </BodyMedium>
-                </HStack>
-              </Alert>
-            ) : (
-              ""
-            )}
+              "selected_for_onboarding" &&
+              progress !== 100 && (
+                <Alert status="warning" alignItems={"start"}>
+                  <HStack alignItems="center" space="2" color>
+                    <Alert.Icon />
+                    <BodyMedium>
+                      {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+                    </BodyMedium>
+                  </HStack>
+                </Alert>
+              )}
             <HStack py="4" flex="1" px="4">
               <Image
                 source={{
@@ -175,7 +179,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.H1>
             </HStack>
             {isEventActive &&
-              c_data.events[0].type == "prerak_camp_execution_training" && (
+              certificateData?.type == "prerak_camp_execution_training" && (
                 <HStack py="4" flex="1" px="6">
                   <AdminTypo.Dangerbutton
                     onPress={() => {
