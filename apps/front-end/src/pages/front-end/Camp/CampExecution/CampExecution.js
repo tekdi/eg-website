@@ -27,6 +27,7 @@ export default function CampExecution({ footerLinks }) {
   const [cameraUrl, setCameraUrl] = React.useState();
   const [timer, setTimer] = React.useState();
   const [activityId, setActivityId] = React.useState();
+  const [todaysData, setTodaysData] = React.useState();
   const navigate = useNavigate();
   const [latData, longData, errors] = useLocationData() || [];
 
@@ -37,11 +38,18 @@ export default function CampExecution({ footerLinks }) {
   }, [id]);
 
   React.useEffect(async () => {
+    const obj = {
+      id: id,
+      start_date: moment(new Date()).format("YYYY-MM-DD"),
+    };
     const result = await campService.getcampstatus({ id });
+    const todaysActivity = await campService.getActivity(obj);
+    setTodaysData(todaysActivity?.data?.camp_days_activities_tracker);
     const endDate = result?.data?.end_date;
     const startDate = result?.data?.start_date;
+    const camp_day_happening = result?.data?.camp_day_happening;
     const activity_id = result?.data?.id;
-    if (!endDate && startDate) {
+    if (!endDate && startDate && camp_day_happening !== "no") {
       navigate(`/camps/${id}/campexecutionstart/${activity_id}`, {
         state: "campInprogress",
       });
@@ -92,12 +100,21 @@ export default function CampExecution({ footerLinks }) {
 
   const campBegin = async () => {
     setStart(true);
-    const payLoad = {
-      camp_id: id,
-      camp_day_happening: "yes",
-    };
-    const data = await campService.campActivity(payLoad);
-    setActivityId(data?.insert_camp_days_activities_tracker_one?.id);
+    if (todaysData?.[0]?.id) {
+      const payLoad = {
+        edit_page_type: "edit_camp_day_happening",
+        camp_day_happening: "yes",
+        id: todaysData?.[0]?.id,
+      };
+      await campService.addMoodActivity(payLoad);
+    } else {
+      const payLoad = {
+        camp_id: id,
+        camp_day_happening: "yes",
+      };
+      const data = await campService.campActivity(payLoad);
+      setActivityId(data?.insert_camp_days_activities_tracker_one?.id);
+    }
   };
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
@@ -107,7 +124,7 @@ export default function CampExecution({ footerLinks }) {
     if (photo_1) {
       const dataQ = {
         ...data,
-        context_id: activityId,
+        context_id: todaysData?.[0]?.id || activityId,
         user_id: facilitator?.id,
         status: "present",
         reason: "camp_started",
@@ -115,7 +132,9 @@ export default function CampExecution({ footerLinks }) {
       };
       await campService.markCampAttendance(dataQ);
       localStorage.setItem("attendancePicture", attendanceId);
-      navigate(`/camps/${id}/campexecutionstart/${activityId}`);
+      navigate(
+        `/camps/${id}/campexecutionstart/${todaysData?.[0]?.id || activityId}`
+      );
     } else {
       setError("Capture Picture First");
     }
@@ -191,7 +210,7 @@ export default function CampExecution({ footerLinks }) {
         <Box
           margin={"auto"}
           height={"200px"}
-          width={"380px"}
+          width={"340px"}
           borderColor={"black"}
           bg={"red.100"}
           position="relative"
