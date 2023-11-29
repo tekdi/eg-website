@@ -89,12 +89,12 @@ export default function CampExecutionStart({ footerLinks }) {
     const listOfEnum = await enumRegistryService.listOfEnum();
     const moodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
     const images = [
-      "/smiley_1.png",
-      "/smiley_2.png",
-      "/smiley_3.png",
-      "/smiley_4.png",
-      "/smiley_5.png",
-      "/smiley_6.png",
+      "/smiley_1.svg",
+      "/smiley_2.svg",
+      "/smiley_3.svg",
+      "/smiley_4.svg",
+      "/smiley_5.svg",
+      "/smiley_6.svg",
     ];
     const moodListWithImages = moodList?.map((mood, index) => ({
       ...mood,
