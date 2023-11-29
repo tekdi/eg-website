@@ -52,7 +52,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           id: fa_id,
         });
       const data =
-        c_data?.events.filter(
+        c_data?.events?.filter(
           (e) => e?.type === "prerak_camp_execution_training"
         )?.[0] || {};
       setCertificateData(data);
