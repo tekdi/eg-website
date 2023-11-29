@@ -342,5 +342,5 @@ export default [
   { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
 
   { path: "*", component: Dashboard },
-  { path: "/camps/:id/roadmap", component: CampRoadmap },
+  { path: "/camps/roadmap/:id", component: CampRoadmap },
 ];

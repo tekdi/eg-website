@@ -14,54 +14,64 @@ export default function CampRoadmap() {
   const renderDynamicBoxes = () => {
     let isFirstCompletedEncountered = false;
 
-    return lessonList.map((item, i) => (
-      <Box
-        top={"25px"}
-        key={item?.ordering}
-        position="absolute"
-        left={`${(i % 2 === 0 ? 10 : 0) + (i % 2) * 60}%`}
-        borderRadius={"25px"}
-        width={"110px"}
-        height={"45px"}
-        bg={
-          i === 0 && item?.session_tracks?.[0]?.status === "complete"
-            ? "rgba(0, 140, 14, 1)"
-            : item?.session_tracks?.[0]?.status === "incomplete"
-            ? "rgba(255, 168, 0, 1)"
-            : "rgba(121, 0, 0, 1)"
-        }
-        justifyContent="center"
-        alignItems="center"
-        marginTop={`${i * 90}px`}
-      >
-        <HStack
-          fontWeight={"bold"}
-          color={"white"}
-          space={4}
-          alignItems={"space-between"}
+    return lessonList.map((item, i) => {
+      const isCompleted = item?.session_tracks?.[0]?.status === "complete";
+
+      if (isCompleted && !isFirstCompletedEncountered) {
+        isFirstCompletedEncountered = true;
+      }
+
+      return (
+        <Box
+          top={"25px"}
+          key={item?.ordering}
+          position="absolute"
+          left={`${(i % 2 === 0 ? 10 : 0) + (i % 2) * 60}%`}
+          borderRadius={"25px"}
+          width={"110px"}
+          height={"45px"}
+          bg={
+            isFirstCompletedEncountered && isCompleted
+              ? "rgba(0, 140, 14, 1)"
+              : isCompleted
+              ? "rgba(0, 140, 14, 1)"
+              : item?.session_tracks?.[0]?.status === "incomplete"
+              ? "rgba(255, 168, 0, 1)"
+              : "rgba(121, 0, 0, 1)"
+          }
+          justifyContent="center"
+          alignItems="center"
+          marginTop={`${i * 90}px`}
         >
-          {t(`सत्र ${item?.ordering}`)}
-          {item?.session_tracks?.[0]?.status === "complete" ? (
-            <IconByName
-              color="white"
-              key={""}
-              name="CheckLineIcon"
-              _icon={{ size: "20px" }}
-            />
-          ) : item?.session_tracks?.[0]?.status === "incomplete" ? (
-            <IconByName
-              onClick={() => handleIncompleteClick(item)}
-              isDisabled
-              color="white"
-              key={""}
-              name="ArrowRightSLineIcon"
-              _icon={{ size: "20px" }}
-            />
-          ) : // Status is in progress, don't render any icon
-          null}
-        </HStack>
-      </Box>
-    ));
+          <HStack
+            fontWeight={"bold"}
+            color={"white"}
+            space={4}
+            alignItems={"space-between"}
+          >
+            {t(`सत्र ${item?.ordering}`)}
+            {isCompleted ? (
+              <IconByName
+                color="white"
+                key={""}
+                name="CheckLineIcon"
+                _icon={{ size: "20px" }}
+              />
+            ) : item?.session_tracks?.[0]?.status === "incomplete" ? (
+              <IconByName
+                onClick={() => handleIncompleteClick(item)}
+                isDisabled
+                color="white"
+                key={""}
+                name="ArrowRightSLineIcon"
+                _icon={{ size: "20px" }}
+              />
+            ) : // Status is in progress, don't render any icon
+            null}
+          </HStack>
+        </Box>
+      );
+    });
   };
 
   function handleIncompleteClick(item) {
