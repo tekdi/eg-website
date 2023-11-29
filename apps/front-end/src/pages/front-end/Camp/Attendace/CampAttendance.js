@@ -354,11 +354,11 @@ export default function ConsentForm() {
                   ]
                     .filter((e) => e)
                     .join(" ")}
-                  subTitle={
-                    <HStack>
-                      <RenderAttendee row={item?.attendance || {}} t={t} />
-                    </HStack>
-                  }
+                  // subTitle={
+                  //   <HStack>
+                  //     <RenderAttendee row={item?.attendance || {}} t={t} />
+                  //   </HStack>
+                  // }
                   image={
                     item?.profile_photo_1?.fileUrl
                       ? { urlObject: item?.profile_photo_1 }

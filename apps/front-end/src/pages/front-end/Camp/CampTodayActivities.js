@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampTodayActivities({ footerLinks }) {
+export default function CampTodayActivities({ footerLinks, setAlert }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -35,14 +35,32 @@ export default function CampTodayActivities({ footerLinks }) {
   const [selectValue, setSelectValue] = React.useState([]);
   const [isSaving, setIsSaving] = React.useState(false);
   const [campList, setCampList] = React.useState([]);
+  const [activityId, setActivityId] = React.useState();
 
   React.useEffect(async () => {
+    let result = await campService.getcampstatus({ id });
+    let activity_id = result?.data?.id;
+    if (!activity_id) {
+      result = await campService.getActivity({ id });
+      activity_id = result?.data?.id;
+    }
+    setSelectValue(result?.data?.misc_activities || []);
+    setActivityId(activity_id);
     const getListActivities = await campService.getActivitiesList();
     setCampList(getListActivities?.data);
   }, []);
 
   const handleSubmitData = async () => {
-    console.log("enums_type", enums.type);
+    const dataToSave = {
+      edit_page_type: "edit_misc_activities",
+      id: activityId,
+      misc_activities: selectValue,
+    };
+    const activities_response = await campService.addMoodActivity(dataToSave);
+    if (activities_response) {
+      setEnums();
+      setAlert("sussess");
+    }
   };
 
   React.useEffect(async () => {
@@ -52,13 +70,6 @@ export default function CampTodayActivities({ footerLinks }) {
   }, []);
 
   const handleActivities = async (item) => {
-    const dataToSave = {
-      user_id: 1077,
-      type: item,
-      activity_data: [selectValue],
-    };
-    const activities_response = await campService.getActivitiesList(dataToSave);
-    console.log({ activities_response });
     const data = enumOptions && enumOptions[item] ? enumOptions[item] : null;
     setEnums({ type: item, data });
   };
