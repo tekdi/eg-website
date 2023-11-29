@@ -91,7 +91,7 @@ export default function CampRoadmap() {
     ) {
       navigate(`/camps/${id}/roadmap`);
     } else {
-      navigate("/camps");
+      navigate(`/camps/${id}/sessionslist`);
     }
   }
 
@@ -116,32 +116,23 @@ export default function CampRoadmap() {
       context.beginPath();
       context.moveTo(0, 0);
 
-      context.bezierCurveTo(
-        0,
-        (canvas.height * 1) / 1,
-        -0,
-        (canvas.height * 6) / 1,
-        3,
-        canvas.height
-      );
+      const controlY = (canvas.height * 1) / 1;
+      const controlX = 0;
+
+      const curveEndX = 3;
+      const curveEndY = canvas.height;
+
+      context.quadraticCurveTo(controlX, controlY, curveEndX, curveEndY);
+
       context.strokeStyle = "#666";
       context.lineWidth = 70;
       context.stroke();
 
-      context.strokeStyle = " rgba(255, 190, 24, 1)";
+      context.strokeStyle = "rgba(255, 190, 24, 1)";
       context.lineWidth = 5;
       context.setLineDash([10, 10, 10]);
 
-      const curveDash = context.bezierCurveTo(
-        100,
-        canvas.height * 3,
-        -100,
-        (6 * canvas.height) / 3,
-        3,
-        canvas.height
-      );
-
-      const centerX = curveDash;
+      const centerX = curveEndX;
 
       for (let i = 0; i <= canvas.height; i += 20) {
         const startY = i;
