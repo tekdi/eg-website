@@ -842,7 +842,7 @@
   "OWNERSHIP": "मोबाइल स्वामित्व",
   "PAGE_NOT_ACCESSABLE": "यह पेज पहुंच योग्य नहीं है, कृपया होम पेज पर जाएं और फिर नेविगेट करें।",
   "PART_TIME": "पार्ट टाइम",
-  "PARTIALLY": "थोडासा",
+  "PARTIALLY": "अपूर्ण",
   "PASSWORD": "पासवर्ड",
   "PASSWORD_IS_REQUIRED": "पासवर्ड आवश्यक है",
   "PASSWORD_REQUIREMENTS_NOTMATCH": "पासवर्ड में कम से कम आठ अक्षर, कम से कम एक अपरकेस, लोअरकेस अक्षर और एक नंबर होना चाहिए.",
@@ -1297,6 +1297,17 @@
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YES_ABSOLUTELY": "हाँ, जरूर",
   "NO_PLAN": "नहीं, आज कुछ और प्लान है",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
-
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "PRERAK_CERTIFICATION_PROGRAM": "प्रेरक प्रशिक्षण प्रमाणिकरण",
+  "TAKE_THE_TEST": "टेस्ट ले",
+  "TRAINING_NOT_COMPLETED": "प्रशिक्षण पूर्ण नहीं, टेस्ट ८०/ से पास",
+  "TRAINING_NOT_PASSED": "टेस्ट पास नहीं किया ६९",
+  "TRAINING_TEST_DOWNLOAD_CERTIFICATE": "टेस्ट ८९/ से पास, सर्टिफिकेट डाउनलोड करें",
+  "SESSION_COMPLETED_THE_SESSION_COULD_NOT_BE_IMPLEMENTED_PROPERLY_DUE_TO_LACK_OF_UNDERSTANDING": "The session could not be implemented properly due to lack of understanding",
+  "SESSION_COMPLETED_MORE_WORK_NEEDED_TO_IMPLEMENT_THE_SESSION_WELL": "More work needed to implement the session well",
+  "SESSION_COMPLETED_SESSION_SUCCESSFULLY_IMPLEMENTED": "Session successfully implemented",
+  "SESSION_PARTIALLY_COMPLETE_COMPLEXITY_OF_CONCEPTS": "Complexity of concepts",
+  "SESSION_PARTIALLY_COMPLETE_TIME_ALLOCATION": "Time allocation",
+  "SESSION_PARTIALLY_COMPLETE_LEARNING_ACTIVITIES": "Learning activites",
+  "SESSION_PARTIALLY_COMPLETE_OTHER": "Other"
 }
