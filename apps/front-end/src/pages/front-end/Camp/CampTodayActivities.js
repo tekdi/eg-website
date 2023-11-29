@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampTodayActivities({ footerLinks }) {
+export default function CampTodayActivities({ footerLinks, setAlert }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -36,28 +36,30 @@ export default function CampTodayActivities({ footerLinks }) {
   const [isSaving, setIsSaving] = React.useState(false);
   const [campList, setCampList] = React.useState([]);
   const [activityId, setActivityId] = React.useState();
-  const [incompleteActivity, setIncompleteActivity] = React.useState();
 
   React.useEffect(async () => {
-    const result = await campService.getcampstatus({ id });
-    setIncompleteActivity(result?.data);
-    const activity_id = result?.data?.id;
+    let result = await campService.getcampstatus({ id });
+    let activity_id = result?.data?.id;
+    if (!activity_id) {
+      result = await campService.getActivity({ id });
+      activity_id = result?.data?.id;
+    }
+    setSelectValue(result?.data?.misc_activities || []);
     setActivityId(activity_id);
     const getListActivities = await campService.getActivitiesList();
     setCampList(getListActivities?.data);
   }, []);
 
   const handleSubmitData = async () => {
-    if (incompleteActivity) {
-      const dataToSave = {
-        edit_page_type: "edit_misc_activities",
-        id: activityId,
-        misc_activities: selectValue,
-      };
-      const activities_response = await campService.addMoodActivity(dataToSave);
-      if (activities_response) {
-        navigate(`/camps`);
-      }
+    const dataToSave = {
+      edit_page_type: "edit_misc_activities",
+      id: activityId,
+      misc_activities: selectValue,
+    };
+    const activities_response = await campService.addMoodActivity(dataToSave);
+    if (activities_response) {
+      setEnums();
+      setAlert("sussess");
     }
   };
 
