@@ -77,20 +77,23 @@ export default function CampSession({ footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      {sessionDetails?.map((item, i) => (
-        <SessionCard
-          index={i}
-          key={item?.id}
-          startSession={startSession}
-          partiallyDoneSession={partiallyDoneSession}
-          item={item}
-          previusItem={sessionDetails?.[i - 1]}
-          isDisable={isDisable}
-          setIsDisable={setIsDisable}
-          enumOptions={enumOptions}
-          sessionDetails={sessionDetails}
-        />
-      ))}
+      {sessionDetails?.map(
+        (item, i) =>
+          item?.id && (
+            <SessionCard
+              index={i}
+              key={item?.id}
+              startSession={startSession}
+              partiallyDoneSession={partiallyDoneSession}
+              item={item}
+              previusItem={sessionDetails?.[i - 1]}
+              isDisable={isDisable}
+              setIsDisable={setIsDisable}
+              enumOptions={enumOptions}
+              sessionDetails={sessionDetails}
+            />
+          )
+      )}
     </Layout>
   );
 }
