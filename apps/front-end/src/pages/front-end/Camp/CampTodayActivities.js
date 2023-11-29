@@ -71,7 +71,7 @@ export default function CampTodayActivities({ footerLinks }) {
       <VStack p="4" space={4}>
         <HStack space={4}>
           <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable onPress={() => navigate(`/camps/${id}/sessions`)}>
+            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
               <VStack alignItems="center" space={3}>
                 <VStack bg="gray.300" rounded="100%" p="2">
                   <Image

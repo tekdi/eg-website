@@ -7,8 +7,10 @@ import {
   campService,
   enumRegistryService,
 } from "@shiksha/common-lib";
-import { HStack, VStack } from "native-base";
+import moment from "moment";
+import { Alert, HStack, VStack } from "native-base";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function CampSession({ footerLinks }) {
@@ -42,7 +44,7 @@ export default function CampSession({ footerLinks }) {
     }
   };
 
-  const startCamp = async (session_id) => {
+  const startSession = async (session_id) => {
     setIsDisable(true);
     const data = await campService.creatCampSession({
       learning_lesson_plan_id: session_id,
@@ -52,7 +54,20 @@ export default function CampSession({ footerLinks }) {
     await getData();
   };
 
-  console.log({ sessionDetails });
+  const partiallyDoneSession = async ({ id, status, reason }) => {
+    setIsDisable(true);
+
+    await campService.updateCampSession({
+      id,
+      edit_session_type:
+        status === "complete"
+          ? "edit_complete_session"
+          : "edit_incomplete_session",
+      session_feedback: reason,
+    });
+    await getData();
+  };
+
   return (
     <Layout
       _appBar={{
@@ -64,7 +79,10 @@ export default function CampSession({ footerLinks }) {
     >
       {sessionDetails?.map((item, i) => (
         <SessionCard
-          startCamp={startCamp}
+          index={i}
+          key={item?.id}
+          startSession={startSession}
+          partiallyDoneSession={partiallyDoneSession}
           item={item}
           previusItem={sessionDetails?.[i - 1]}
           isDisable={isDisable}
@@ -79,109 +97,177 @@ export default function CampSession({ footerLinks }) {
 
 export function SessionCard({
   enumOptions,
-  startCamp,
+  startSession,
+  partiallyDoneSession,
   item,
   previusItem,
-  sessionDetails,
+  index,
 }) {
   const [submitStatus, setSubmitStatus] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
+  const [error, setError] = React.useState();
+  const { t } = useTranslation();
 
   const handleStartSession = async (id) => {
     setIsDisable(true);
-    await startCamp(id);
+    await startSession(id);
     setIsDisable(false);
+  };
+
+  const handlePartiallyDone = async (id) => {
+    setError();
+    setIsDisable(true);
+    if (submitStatus?.reason) {
+      await partiallyDoneSession({ ...submitStatus, id });
+      setSubmitStatus();
+    } else {
+      setError("PLEASE_SELECT");
+    }
+    setIsDisable(false);
+  };
+
+  const handaleCancel = () => {
+    setError();
+    setSubmitStatus();
   };
 
   return (
     <VStack flex={1} space={"5"} p="5" background={"bgGreyColor.200"}>
-      <CardComponent
-        children={
-          <VStack p="5" space="4">
-            <VStack alignItems="center">
-              <FrontEndTypo.H3
-                alignContent={"Center"}
-                color="textMaroonColor.400"
-                bold
-              >
-                {item?.title}
-              </FrontEndTypo.H3>
-            </VStack>
+      <CardComponent>
+        <VStack p="5" space="4">
+          <VStack alignItems="center">
+            <FrontEndTypo.H3
+              alignContent={"Center"}
+              color="textMaroonColor.400"
+              bold
+            >
+              {item?.title}
+            </FrontEndTypo.H3>
+          </VStack>
 
-            {!["incomplete", "complete"].includes(
-              item?.session_tracks?.[0]?.status
-            ) ? (
-              <FrontEndTypo.DefaultButton
-                textColor={"textMaroonColor.400"}
-                icon={
-                  <IconByName
-                    name="ArrowRightLineIcon"
-                    _icon={{ color: "textMaroonColor.400", size: "25px" }}
-                  />
-                }
-                isDisable={
-                  !previusItem ||
-                  previusItem?.session_tracks?.[0]?.status === "complete" ||
-                  isDisable
-                }
-                onPress={() => startCamp(item?.id)}
-              >
-                सत्र शुरू किया?
-              </FrontEndTypo.DefaultButton>
-            ) : item?.session_tracks?.[0]?.status !== "complete" ? (
-              <VStack space="4">
-                <VStack>
-                  <FrontEndTypo.DefaultButton
-                    background={"#FF0000"}
-                    onPress={(e) => setSubmitStatus("completed")}
-                  >
-                    पाठ्यक्रम पूरा हो गया
-                  </FrontEndTypo.DefaultButton>
-                  {submitStatus === "completed" && (
-                    <VStack bg="red.100 ">
-                      <CustomRadio
-                        options={{
-                          enumOptions: enumOptions?.SESSION_COMPLETED?.map(
-                            (e) => ({
-                              ...e,
-                              label: e?.title,
-                              value: e?.value,
-                            })
-                          ),
-                        }}
-                        schema={{ grid: 1 }}
-                        value={
-                          sessionDetails?.data
-                            ?.learning_lesson_plans_master?.[0]
-                            ?.session_tracks?.[0]?.lesson_plan_complete_feedback
-                        }
-                        // onChange={(e) => {
-                        //   setReasonValue(e);
-                        // }}
-                      />
-                      <HStack>
-                        <FrontEndTypo.Primarybutton
-                          onPress={(e) => setSubmitStatus()}
-                        >
-                          cancel
-                        </FrontEndTypo.Primarybutton>
-                        <FrontEndTypo.Primarybutton>
-                          save
-                        </FrontEndTypo.Primarybutton>
-                      </HStack>
-                    </VStack>
-                  )}
-                </VStack>
+          {!["incomplete", "complete"].includes(
+            item?.session_tracks?.[0]?.status
+          ) ? (
+            <FrontEndTypo.DefaultButton
+              textColor={"textMaroonColor.400"}
+              icon={
+                <IconByName
+                  name="ArrowRightLineIcon"
+                  _icon={{ color: "textMaroonColor.400", size: "25px" }}
+                />
+              }
+              isDisabled={
+                (index !== 0 &&
+                  previusItem?.session_tracks?.[0]?.status !== "complete") ||
+                isDisable
+              }
+              onPress={() => handleStartSession(item?.id)}
+            >
+              सत्र शुरू किया?
+            </FrontEndTypo.DefaultButton>
+          ) : item?.session_tracks?.[0]?.status !== "complete" ? (
+            <VStack space="4">
+              {(!submitStatus?.status || submitStatus?.status === "complete") &&
+                (!previusItem?.session_tracks?.[0]?.status ||
+                  (previusItem?.session_tracks?.[0]?.status === "complete" &&
+                    previusItem?.session_tracks?.[0]?.updated_at &&
+                    moment(previusItem?.session_tracks?.[0]?.updated_at).format(
+                      "YYYY-MM-DD"
+                    ) !== moment().format("YYYY-MM-DD"))) && (
+                  <VStack space="4">
+                    <FrontEndTypo.DefaultButton
+                      borderWidth="0"
+                      background={"#FF0000"}
+                      onPress={(e) => setSubmitStatus({ status: "complete" })}
+                    >
+                      पाठ्यक्रम पूरा हो गया
+                    </FrontEndTypo.DefaultButton>
+                    {submitStatus?.status === "complete" && (
+                      <CardComponent title={"आज का सत्र कैसा रहा?"}>
+                        <VStack space="4">
+                          <CustomRadio
+                            options={{
+                              enumOptions: enumOptions?.SESSION_COMPLETED?.map(
+                                (e) => ({
+                                  ...e,
+                                  label: e?.title,
+                                  value: e?.value,
+                                })
+                              ),
+                            }}
+                            schema={{ grid: 1 }}
+                            value={submitStatus?.reason}
+                            onChange={(e) => {
+                              setSubmitStatus({ ...submitStatus, reason: e });
+                            }}
+                          />
 
-                <VStack>
+                          {error && <Alert status="warning">{t(error)}</Alert>}
+                          <HStack space={4}>
+                            <FrontEndTypo.DefaultButton
+                              flex="1"
+                              textColor={"textMaroonColor.400"}
+                              isDisabled={isDisable}
+                              onPress={(e) => handaleCancel()}
+                            >
+                              cancel
+                            </FrontEndTypo.DefaultButton>
+                            <FrontEndTypo.DefaultButton
+                              flex="1"
+                              textColor={"textMaroonColor.400"}
+                              isDisabled={isDisable}
+                              onPress={(e) =>
+                                handlePartiallyDone(
+                                  item?.session_tracks?.[0]?.id
+                                )
+                              }
+                            >
+                              save
+                            </FrontEndTypo.DefaultButton>
+                          </HStack>
+                        </VStack>
+                      </CardComponent>
+                    )}
+                  </VStack>
+                )}
+              {(!submitStatus?.status ||
+                submitStatus?.status === "incomplete") && (
+                <VStack space={4}>
                   <FrontEndTypo.DefaultButton
-                    onPress={(e) => setSubmitStatus("incompleted")}
-                    textColor={"textMaroonColor.400"}
+                    onPress={(e) => setSubmitStatus({ status: "incomplete" })}
+                    textColor={
+                      item?.session_tracks?.[0]?.status === "incomplete" &&
+                      item?.session_tracks?.[0]?.updated_at &&
+                      moment(item?.session_tracks?.[0]?.updated_at).format(
+                        "YYYY-MM-DD"
+                      ) === moment().format("YYYY-MM-DD")
+                        ? "white"
+                        : "textMaroonColor.400"
+                    }
+                    borderWidth={
+                      item?.session_tracks?.[0]?.status === "incomplete" &&
+                      item?.session_tracks?.[0]?.updated_at &&
+                      moment(item?.session_tracks?.[0]?.updated_at).format(
+                        "YYYY-MM-DD"
+                      ) === moment().format("YYYY-MM-DD")
+                        ? "0"
+                        : "1"
+                    }
+                    borderColor="red.400"
+                    background={
+                      item?.session_tracks?.[0]?.status === "incomplete" &&
+                      item?.session_tracks?.[0]?.updated_at &&
+                      moment(item?.session_tracks?.[0]?.updated_at).format(
+                        "YYYY-MM-DD"
+                      ) === moment().format("YYYY-MM-DD")
+                        ? "yellow.500"
+                        : ""
+                    }
                   >
                     पाठ आधा पूरा हुआ
                   </FrontEndTypo.DefaultButton>
-                  {submitStatus === "incompleted" && (
-                    <VStack bg="red.100 ">
+                  {submitStatus?.status === "incomplete" && (
+                    <VStack space={4}>
                       <CustomRadio
                         options={{
                           enumOptions:
@@ -194,38 +280,47 @@ export function SessionCard({
                             ),
                         }}
                         schema={{ grid: 1 }}
-                        value={
-                          sessionDetails?.data
-                            ?.learning_lesson_plans_master?.[0]
-                            ?.session_tracks?.[0]
-                            ?.lesson_plan_incomplete_feedback
-                        }
-                        // onChange={(e) => {
-                        //   setReasonValue(e);
-                        // }}
+                        value={submitStatus?.reason}
+                        onChange={(e) => {
+                          setSubmitStatus({ ...submitStatus, reason: e });
+                        }}
                       />
-                      <HStack>
-                        <FrontEndTypo.Primarybutton
-                          onPress={(e) => setSubmitStatus()}
+                      {error && <Alert status="warning">{t(error)}</Alert>}
+                      <HStack space={4}>
+                        <FrontEndTypo.DefaultButton
+                          flex="1"
+                          textColor={"textMaroonColor.400"}
+                          isDisabled={isDisable}
+                          onPress={(e) => handaleCancel()}
                         >
                           cancel
-                        </FrontEndTypo.Primarybutton>
-                        <FrontEndTypo.Primarybutton>
+                        </FrontEndTypo.DefaultButton>
+                        <FrontEndTypo.DefaultButton
+                          flex="1"
+                          textColor={"textMaroonColor.400"}
+                          isDisabled={isDisable}
+                          onPress={(e) =>
+                            handlePartiallyDone(item?.session_tracks?.[0]?.id)
+                          }
+                        >
                           save
-                        </FrontEndTypo.Primarybutton>
+                        </FrontEndTypo.DefaultButton>
                       </HStack>
                     </VStack>
                   )}
                 </VStack>
-              </VStack>
-            ) : (
-              <FrontEndTypo.DefaultButton background={"green.500"}>
-                पाठ्यक्रम पूरा हो गया
-              </FrontEndTypo.DefaultButton>
-            )}
-          </VStack>
-        }
-      />
+              )}
+            </VStack>
+          ) : (
+            <FrontEndTypo.DefaultButton
+              borderWidth="0"
+              background={"green.500"}
+            >
+              पाठ्यक्रम पूरा हो गया
+            </FrontEndTypo.DefaultButton>
+          )}
+        </VStack>
+      </CardComponent>
     </VStack>
   );
 }
