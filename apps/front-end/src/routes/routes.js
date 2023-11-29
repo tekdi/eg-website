@@ -137,9 +137,7 @@ const CampExecution = React.lazy(() =>
 const CampExecutionStart = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampExecutionStart")
 );
-const CampExecutionEnd = React.lazy(() =>
-  import("pages/front-end/Camp/CampExecution/CampExecutionEnd")
-);
+
 
 const CampAttendance = React.lazy(() =>
   import("pages/front-end/Camp/Attendace/CampAttendance")
@@ -330,8 +328,10 @@ export default [
     component: CampSettings,
   },
   { path: "/camps/:id/Campexecution", component: CampExecution },
-  { path: "/camps/:id/campexecutionstart", component: CampExecutionStart },
-  { path: "/camps/:id/campexecutionend", component: CampExecutionEnd },
+  {
+    path: "/camps/:id/campexecutionstart/:activityId",
+    component: CampExecutionStart,
+  },
   { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   { path: "/camps/:id/activities", component: CampTodayActivities },
   {
