@@ -10,8 +10,9 @@ import {
   uploadRegistryService,
   GeoLocation,
   UserCard,
+  useLocationData,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -30,10 +31,16 @@ export default function ConsentForm() {
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
   const [isEditable, setIsEditable] = React.useState();
+  const [latData, longData] = useLocationData() || [];
+  const navigate = useNavigate();
 
   React.useEffect(async () => {
     await getData();
   }, [id, !userData]);
+
+  React.useEffect(async () => {
+    setData({ ...data, lat: `${latData}`, long: `${longData}` });
+  }, [latData]);
 
   const getData = async () => {
     const result = await campService.getCampDetails({ id });
@@ -243,7 +250,7 @@ export default function ConsentForm() {
       </Box>
     );
   }
-  console.log({ isEditable });
+
   return (
     <Layout
       loading={loading}
@@ -253,7 +260,7 @@ export default function ConsentForm() {
         _box: { bg: "white" },
       }}
     >
-      <GeoLocation
+      {/* <GeoLocation
         getLocation={(lat, long, err) => {
           if (err) {
             setError(err);
@@ -261,7 +268,7 @@ export default function ConsentForm() {
             setData({ ...data, lat: `${lat}`, long: `${long}` });
           }
         }}
-      />
+      /> */}
       <VStack py={6} px={4} space="6">
         <HStack justifyContent={"space-between"}>
           <HStack>

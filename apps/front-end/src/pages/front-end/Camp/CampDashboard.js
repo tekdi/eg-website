@@ -34,6 +34,7 @@ export default function CampDashboard({ footerLinks }) {
   const [ipStatus, setIpStatus] = React.useState();
   const [modal, setModal] = React.useState(false);
   const [campId, setCampId] = React.useState("");
+  const [campSelected, setCampSelected] = React.useState("");
 
   React.useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -119,13 +120,15 @@ export default function CampDashboard({ footerLinks }) {
                       )}
                     </Center>
                   </HStack>
-                  {campList?.map((item) => {
+                  {campList?.map((item, i) => {
+                    const index = i + 1;
                     return (
                       <Pressable
                         key={item}
                         onPress={() => {
                           setModal(true);
                           setCampId(item?.id);
+                          setCampSelected(item?.group?.status);
                         }}
                         bg="boxBackgroundColour.100"
                         shadow="AlertShadow"
@@ -139,7 +142,7 @@ export default function CampDashboard({ footerLinks }) {
                         >
                           <VStack>
                             <FrontEndTypo.H3>
-                              {item?.group?.name}
+                              {`${t("CAMP")} ${String(index).padStart(2, "0")}`}
                             </FrontEndTypo.H3>
                             {item?.group?.description && (
                               <FrontEndTypo.H6>
@@ -263,16 +266,25 @@ export default function CampDashboard({ footerLinks }) {
               >
                 {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-              {/* <FrontEndTypo.Secondarybutton>
-                {t("CAMP_SETTINGS")}
-              </FrontEndTypo.Secondarybutton> 
-              <FrontEndTypo.Primarybutton
-                onPress={() => {
-                  navigate(`/camps/${campId}/start`);
-                }}
-              >
-                {t("CAMP_EXECUTION")}
-              </FrontEndTypo.Primarybutton>*/}
+              {["registered", "camp_ip_verified"].includes(campSelected) && (
+                <React.Fragment>
+                  <FrontEndTypo.Secondarybutton
+                    onPress={() => {
+                      navigate(`/camps/${campId}/settings`);
+                    }}
+                  >
+                    {t("CAMP_SETTINGS")}
+                  </FrontEndTypo.Secondarybutton>
+
+                  <FrontEndTypo.Primarybutton
+                    onPress={() => {
+                      navigate(`/camps/${campId}/campexecution`);
+                    }}
+                  >
+                    {t("CAMP_EXECUTION")}
+                  </FrontEndTypo.Primarybutton>
+                </React.Fragment>
+              )}
             </VStack>
           </Modal.Body>
         </Modal.Content>

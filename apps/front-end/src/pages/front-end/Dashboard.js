@@ -7,12 +7,13 @@ import {
   objProps,
   arrList,
   BodyMedium,
+  AdminTypo,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image, Alert } from "native-base";
+import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import AadhaarNumberOKYC from "../../component/AadhaarNumberOKYC";
+import moment from "moment";
 
 const styles = {
   inforBox: {
@@ -34,17 +35,37 @@ const styles = {
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [facilitator, setFacilitator] = React.useState({});
+  const [certificateData, setCertificateData] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const [progress, setProgress] = React.useState(0);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const fa_id = localStorage.getItem("id");
+  const [isEventActive, setIsEventActive] = React.useState(false);
 
   React.useEffect(async () => {
     if (userTokenInfo) {
-      const fa_id = localStorage.getItem("id");
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
-    }
+      const c_data =
+        await facilitatorRegistryService.getPrerakCertificateDetails({
+          id: fa_id,
+        });
+      const data =
+        c_data?.events.filter(
+          (e) => e?.type === "prerak_camp_execution_training"
+        )?.[0] || {};
+      setCertificateData(data);
 
+      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+      const format = "hh:mm:ss";
+      const time = moment(moment().format(format), format);
+      const beforeTime = moment(data?.start_time, format);
+      const afterTime = moment(data?.end_time, format);
+      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+        setIsEventActive(true);
+      }
+    }
     setLoading(false);
   }, []);
 
@@ -133,19 +154,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           <Stack>
             {facilitator?.program_faciltators?.status ===
-              "selected_for_onboarding" && progress !== 100 ? (
-              <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>
-                    {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
-                  </BodyMedium>
-                </HStack>
-              </Alert>
-            ) : (
-              ""
-            )}
-            <HStack py="6" flex="1" px="4">
+              "selected_for_onboarding" &&
+              progress !== 100 && (
+                <Alert status="warning" alignItems={"start"}>
+                  <HStack alignItems="center" space="2" color>
+                    <Alert.Icon />
+                    <BodyMedium>
+                      {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+                    </BodyMedium>
+                  </HStack>
+                </Alert>
+              )}
+            <HStack py="4" flex="1" px="4">
               <Image
                 source={{
                   uri: "/hello.svg",
@@ -158,6 +178,68 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
+            {isEventActive &&
+              certificateData?.type == "prerak_camp_execution_training" && (
+                <HStack py="4" flex="1" px="6">
+                  <AdminTypo.Dangerbutton
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    {t("PRERAK_CERTIFICATION_PROGRAM")}
+                  </AdminTypo.Dangerbutton>
+                </HStack>
+              )}
+            <Modal
+              isOpen={modalVisible}
+              onClose={() => setModalVisible(false)}
+              avoidKeyboard
+              size="xl"
+            >
+              <Modal.Content>
+                <Modal.CloseButton />
+                <Modal.Header textAlign={"left"}>
+                  <HStack alignItems={"center"}>
+                    <AdminTypo.H4 color="textGreyColor.500">
+                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                    </AdminTypo.H4>
+                  </HStack>
+                </Modal.Header>
+                <Modal.Body>
+                  <HStack justifyContent="space-between">
+                    <HStack>
+                      <AdminTypo.H4 color="textGreyColor.500">
+                        {t("TRAINING_NOT_COMPLETED")}
+                      </AdminTypo.H4>
+                      {/* <AdminTypo.H3 color="textGreyColor.500">
+                        {t("TRAINING_NOT_PASSED")}
+                      </AdminTypo.H3>
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
+                      </AdminTypo.H3> */}
+                    </HStack>
+                  </HStack>
+                </Modal.Body>
+                <Modal.Footer>
+                  <HStack justifyContent="space-between" width="100%">
+                    <AdminTypo.Secondarybutton
+                      onPress={() => {
+                        setModalVisible(false);
+                      }}
+                    >
+                      Go Back
+                    </AdminTypo.Secondarybutton>
+                    <AdminTypo.Dangerbutton
+                      onPress={() => {
+                        assignToPrerak(viewData?.id);
+                      }}
+                    >
+                      Start test
+                    </AdminTypo.Dangerbutton>
+                  </HStack>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
           </Stack>
           {[
             "pragati_mobilizer",

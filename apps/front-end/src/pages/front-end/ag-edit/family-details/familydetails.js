@@ -40,6 +40,7 @@ export default function FamilyDetails({ ip }) {
   const userId = id;
   const navigate = useNavigate();
   const [fields, setFields] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
@@ -103,6 +104,7 @@ export default function FamilyDetails({ ip }) {
   }, [formData?.id]);
 
   const nextPreviewStep = async (pageStape = "n") => {
+    setIsDisable(true);
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
@@ -123,8 +125,10 @@ export default function FamilyDetails({ ip }) {
         return true;
       }
     }
+    setIsDisable(false);
   };
   const setStep = async (pageNumber = "") => {
+    setIsDisable(true);
     if (schema1.type === "step") {
       const properties = schema1.properties;
       if (pageNumber !== "") {
@@ -136,6 +140,7 @@ export default function FamilyDetails({ ip }) {
         nextPreviewStep();
       }
     }
+    setIsDisable(false);
   };
 
   React.useEffect(() => {
@@ -303,6 +308,7 @@ export default function FamilyDetails({ ip }) {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
@@ -370,6 +376,7 @@ export default function FamilyDetails({ ip }) {
               }}
             >
               <FrontEndTypo.Primarybutton
+                isDisabled={isDisable}
                 mt="5"
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
