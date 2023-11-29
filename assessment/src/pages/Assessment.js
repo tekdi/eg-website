@@ -5,12 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { sampleJSON } from "components/sampleJSON";
 import { SunbirdPlayer } from "@shiksha/common-lib";
+import { duration } from "moment";
+import { useParams } from "react-router-dom";
 
 
 function Player() {
   const [width, height] = useWindowSize();
   const [assessmentData, setassessmentData] = useState();
   const [type , setType] = useState('Course')
+  const { context } = useParams("events");
+  const { context_id } = useParams(313);
 
   useEffect(() => {
     // const storedUserString = localStorage.getItem("topicData");
@@ -27,15 +31,15 @@ function Player() {
 
 
   const handleTrackData = async (
-    { score, trackData, attempts, ...props },
+    { score, attempts, ...props },
     playerType = "quml"
   ) => {
     let data = {};
-    const duration = props.duration
-    //will be replaced by test ID
+    console.log(props)
+   let trackDataold = localStorage.getItem("trackDATA")
+   let trackData = JSON.parse(trackDataold)
     // const programData = await subjectListRegistryService.getProgramId();
-    if (playerType === "quml") {
-      
+    // if (playerType === "quml") {
       const newFormatData = trackData.reduce((oldData, newObj) => {
         const dataExist = oldData.findIndex(
           (e) => e.sectionId === newObj["item"]["sectionId"]
@@ -56,25 +60,27 @@ function Player() {
       }, []);
       data = {
         test_id: "test_123",
-        spent_time: duration.toString(),
-        score: score,
-        status: "completed",
-        scoreDetails: JSON.stringify(newFormatData),
-      };
-    } else {
-      data = {
-        test_id: "test_123",
-        spent_time: duration.toString(),
+        spent_time: props.duration,
         score: score ? score : 0,
         status: "completed",
-        scoreDetails: props,
-     
+        scoreDetails: newFormatData,
+        context:"events",
+        context_id:313,
       };
-    }
-    courseRegistryService.testTrackingCreate(data)
+    // }
+    //  else {
+    //   data = {
+        
+    //     status: "completed",
+    //     score: score ? score : 0,
+    //     scoreDetails: JSON.stringify(props),
+        
+    //   };
+    // }
+        courseRegistryService.testTrackingCreate(data)
 
-    console.log("TRACK DATA"  , data)
-
+    console.log("AFTER SUBMIT")
+   console.log(data)
   };
 
   return (
