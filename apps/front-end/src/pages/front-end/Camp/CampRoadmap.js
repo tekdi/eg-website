@@ -1,5 +1,5 @@
 import { IconByName, Layout } from "@shiksha/common-lib";
-import { Box, VStack, HStack, Pressable } from "native-base";
+import { Box, VStack, HStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import { campService, t } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,6 +16,8 @@ export default function CampRoadmap() {
 
     return lessonList.map((item, i) => {
       const isCompleted = item?.session_tracks?.[0]?.status === "complete";
+      const isPreviousCompleted =
+        i > 0 && lessonList[i - 1]?.session_tracks?.[0]?.status === "complete";
 
       if (isCompleted && !isFirstCompletedEncountered) {
         isFirstCompletedEncountered = true;
@@ -35,6 +37,8 @@ export default function CampRoadmap() {
               ? "rgba(0, 140, 14, 1)"
               : isCompleted
               ? "rgba(0, 140, 14, 1)"
+              : isPreviousCompleted
+              ? "rgba(121, 0, 0, 1)"
               : item?.session_tracks?.[0]?.status === "incomplete"
               ? "rgba(255, 168, 0, 1)"
               : "rgba(121, 0, 0, 1)"
@@ -60,14 +64,20 @@ export default function CampRoadmap() {
             ) : item?.session_tracks?.[0]?.status === "incomplete" ? (
               <IconByName
                 onClick={() => handleIncompleteClick(item)}
-                isDisabled
                 color="white"
                 key={""}
                 name="ArrowRightSLineIcon"
                 _icon={{ size: "20px" }}
               />
-            ) : // Status is in progress, don't render any icon
-            null}
+            ) : i === 0 ? (
+              <IconByName
+                onClick={() => handleIncompleteClick(item)}
+                color="white"
+                key={""}
+                name="ArrowRightSLineIcon"
+                _icon={{ size: "20px" }}
+              />
+            ) : null}
           </HStack>
         </Box>
       );
@@ -81,7 +91,7 @@ export default function CampRoadmap() {
     ) {
       navigate(`/camps/${id}/roadmap`);
     } else {
-      navigate("/");
+      navigate("/camps");
     }
   }
 
@@ -124,9 +134,9 @@ export default function CampRoadmap() {
 
       const curveDash = context.bezierCurveTo(
         100,
-        canvas.height * 1,
+        canvas.height * 3,
         -100,
-        (6 * canvas.height) / 1,
+        (6 * canvas.height) / 3,
         3,
         canvas.height
       );
