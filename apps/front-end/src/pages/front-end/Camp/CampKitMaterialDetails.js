@@ -119,11 +119,13 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     setKitFeadback(result?.kit?.list_of_materials || {});
   }, []);
 
-  const handleCheckboxChange = (item, columnName) => {
-    setKitFeadback({ ...kitFeadback, [item]: columnName });
-
+  React.useEffect(async () => {
     const isSaveDisabled = !tableData?.every((row) => kitFeadback[row.value]);
     setIsDisable(isSaveDisabled);
+  }, [tableData, kitFeadback]);
+
+  const handleCheckboxChange = (item, columnName) => {
+    setKitFeadback({ ...kitFeadback, [item]: columnName });
   };
 
   const handleSave = async () => {
