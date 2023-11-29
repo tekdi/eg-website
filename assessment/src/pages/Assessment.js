@@ -59,11 +59,11 @@ function Player() {
         return oldData;
       }, []);
       data = {
-        test_id: "test_123",
+        test_id: "do_113935969671700480155",
         spent_time: props.duration,
         score: score ? score : 0,
         status: "completed",
-        scoreDetails: newFormatData,
+        score_details: newFormatData,
         context:"events",
         context_id:313,
       };
