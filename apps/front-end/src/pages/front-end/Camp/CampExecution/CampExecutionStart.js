@@ -47,7 +47,7 @@ export default function CampExecutionStart({ footerLinks }) {
 
   React.useEffect(async () => {
     let incompleteData = await campService.getcampstatus({ id });
-    incompleteDate = moment(incompleteData?.data?.start_date).format(
+    let incompleteDate = moment(incompleteData?.data?.start_date).format(
       "YYYY-MM-DD"
     );
     setLoading(true);
