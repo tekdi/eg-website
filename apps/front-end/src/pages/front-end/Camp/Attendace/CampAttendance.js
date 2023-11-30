@@ -31,12 +31,21 @@ export default function ConsentForm() {
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
   const [isEditable, setIsEditable] = React.useState();
+  const [randomAttendance, setRandomAttendance] = React.useState(false);
   const [latData, longData] = useLocationData() || [];
   const navigate = useNavigate();
 
   React.useEffect(async () => {
     await getData();
   }, [id, !userData]);
+
+  React.useEffect(async () => {
+    const data = await campService.getrandomAttendance({ id });
+    if (data?.learner_camp_attendance_data === 1) {
+      setRandomAttendance(true);
+    }
+  }, []);
+
 
   React.useEffect(async () => {
     setData({ ...data, lat: `${latData}`, long: `${longData}` });
@@ -78,7 +87,7 @@ export default function ConsentForm() {
           user_id: user?.id,
           status,
         };
-        if (status === PRESENT) {
+        if (status === PRESENT && randomAttendance) {
           const photo_1 =
             cameraFile?.data?.insert_documents?.returning?.[0]?.name;
           payLoad = { ...payLoad, photo_1: `${photo_1}` };
@@ -88,8 +97,9 @@ export default function ConsentForm() {
       }
     } else {
       if (status === PRESENT) {
-        const photo_1 =
-          cameraFile?.data?.insert_documents?.returning?.[0]?.name;
+        const photo_1 = randomAttendance
+          ? cameraFile?.data?.insert_documents?.returning?.[0]?.name
+          : "-";
         if (photo_1) {
           const payLoad = {
             ...data,
@@ -98,7 +108,6 @@ export default function ConsentForm() {
             status: PRESENT,
             photo_1: `${photo_1}`,
           };
-
           await campService.markCampAttendance(payLoad);
           await getData();
         } else {
@@ -127,6 +136,15 @@ export default function ConsentForm() {
         setCameraUrl();
         setUserData({ ...groupUsers[coruntIndex + 1], index: coruntIndex + 1 });
       }
+    }
+  };
+
+  const addAttendance = (item) => {
+    if (randomAttendance) {
+      setUserData(item);
+    } else {
+      console.log("entered");
+      uploadAttendence(item, PRESENT, true);
     }
   };
 
@@ -181,41 +199,12 @@ export default function ConsentForm() {
                   )}
                 </VStack>
               }
-              // footerComponent={
-              //   <HStack space={3} width="100%" justifyContent="space-between">
-              //     {error && (
-              //       <FrontEndTypo.H4 style={{ color: "red" }}>
-              //         {error}
-              //       </FrontEndTypo.H4>
-              //     )}
-              //     <FrontEndTypo.Secondarybutton
-              //       shadow="BlueOutlineShadow"
-              //       onPress={() => uploadAttendence(userData, PRESENT, true)}
-              //     >
-              //       {t("FINISH")}
-              //     </FrontEndTypo.Secondarybutton>
-              //     <FrontEndTypo.Secondarybutton
-              //       isDisabled={userData?.index + 1 === groupUsers.length}
-              //       variant="secondary"
-              //       ml="4"
-              //       px="5"
-              //       onPress={() => uploadAttendence(userData)}
-              //     >
-              //       {t("NEXT")}
-              //     </FrontEndTypo.Secondarybutton>
-              //   </HStack>
-              // }
               messageComponent={
-                cameraUrl && (
-                  <Alert status="success">
-                    <HStack alignItems="center" space="2">
-                      <Alert.Icon />
-                      <FrontEndTypo.H4>
-                        {t("ATTENDANCE_SUCCESS")}
-                      </FrontEndTypo.H4>
-                    </HStack>
-                  </Alert>
-                )
+                <VStack>
+                  <FrontEndTypo.H3 color="white" textAlign="center">
+                    {t("ATTENDANCE_PHOTO_MSG")}
+                  </FrontEndTypo.H3>
+                </VStack>
               }
               {...{
                 cameraModal: true,
@@ -324,7 +313,7 @@ export default function ConsentForm() {
                     isEditable?.[item.id] || !item?.attendance?.status ? (
                       <IconByName
                         onPress={(e) => {
-                          setUserData(item);
+                          addAttendance(item);
                         }}
                         height="100%"
                         roundedLeft="0"

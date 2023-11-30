@@ -51,6 +51,13 @@ export default function CampExecutionStart({ footerLinks }) {
       "YYYY-MM-DD"
     );
     setLoading(true);
+    const today = moment();
+    const startDateMoment = moment(incompleteData?.data?.start_date);
+    if (startDateMoment.isSame(today, "day")) {
+      setError("");
+    } else if (startDateMoment.isBefore(today)) {
+      setError("PLEASE_END_YESTERDAYS_CAMP");
+    }
     incompleteData = await campService.getcampstatus({ id });
     incompleteDate = moment(incompleteData?.data?.start_date).format(
       "YYYY-MM-DD"
@@ -80,6 +87,9 @@ export default function CampExecutionStart({ footerLinks }) {
       setGroupUsers(attendance);
     });
 
+    if (incompleteData?.data?.mood) {
+      setPage("campInprogress");
+    }
     setLoading(false);
   }, [id]);
 
@@ -140,7 +150,6 @@ export default function CampExecutionStart({ footerLinks }) {
       setError("SELECT_MESSAGE");
     }
   };
-
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
@@ -223,6 +232,7 @@ export default function CampExecutionStart({ footerLinks }) {
           disable={disable}
           facilitator={facilitator}
           activityId={activityId}
+          error={error}
         />
       ) : (
         <VStack py={6} px={4} mb={5} space="6">
@@ -281,7 +291,7 @@ export default function CampExecutionStart({ footerLinks }) {
   );
 }
 
-const CampExecutionEnd = ({ disable, activityId, facilitator }) => {
+const CampExecutionEnd = ({ disable, activityId, facilitator, error }) => {
   const { t } = useTranslation();
   const { id } = useParams();
 
@@ -344,6 +354,14 @@ const CampExecutionEnd = ({ disable, activityId, facilitator }) => {
           <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
         </HStack>
       </Alert>
+      {error && (
+        <Alert status="danger">
+          <HStack alignItems={"center"} space={2}>
+            <Alert.Icon />
+            <FrontEndTypo.H3>{t(error)}</FrontEndTypo.H3>
+          </HStack>
+        </Alert>
+      )}
       <HStack space={4} alignSelf={"center"}>
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/attendance`)}
