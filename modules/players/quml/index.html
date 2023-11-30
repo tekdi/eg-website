@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QUML Player web component demo</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+      integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+      crossorigin="anonymous"
+    ></script>
+    <!-- <link rel="stylesheet" href="./carousel.css" /> -->
+    <link rel="stylesheet" href="./styles.css" />
+    <!-- <link rel="stylesheet" href="./style.css" /> -->
+    <style>
+      .quml-mcq {
+        word-break: break-all !important;
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="player-grid" id="my-player"></div>
+
+    <script type="text/javascript" src="sunbird-quml-player.min.js"></script>
+    <script type="text/javascript" src="demoData.js"></script>
+    <script type="text/javascript">
+      // Need to pass the API URL to fetch the question set
+      window.questionListUrl = "https://vdn.diksha.gov.in/api/question/v1/list";
+      console.log('window?.name',window?.name)
+      if (window?.name) {
+        const data = JSON.parse(window?.name);
+        if (data?.questionListUrl) {
+          console.log("asd", data?.questionListUrl);
+          window.questionListUrl = data?.questionListUrl;
+
+        }
+      }
+      // window.questionListUrl = "https://alt-shiksha.uniteframework.io/api/v1/list";
+
+      const qumlPlayerElement = document.createElement("sunbird-quml-player");
+      qumlPlayerElement.setAttribute(
+        "player-config",
+        JSON.stringify(playerConfig)
+      );
+      // qumlPlayerElement.addEventListener("playerEvent", (event) => {
+      // console.log("On playerEvent", event);
+      // });
+
+      qumlPlayerElement.addEventListener("telemetryEvent", (event) => {
+        console.log("On telemetryEvent", event);
+        window?.parent?.postMessage(event?.detail, "*");
+      });
+
+      var myPlayer = document.getElementById("my-player");
+      myPlayer.appendChild(qumlPlayerElement);
+      const landscape = document.getElementsByClassName("main-container");
+      const landscapeElement = landscape?.[0] ? landscape?.[0] : landscape;
+
+      function reportWindowSize() {
+        landscapeElement.setAttribute(
+          "style",
+          `height: ${window.innerHeight}px`
+        );
+        // landscapeElement.setAttribute("width", window.innerWidth - "40");
+      }
+      reportWindowSize();
+      window.onresize = reportWindowSize;
+    </script>
+  </body>
+</html>
