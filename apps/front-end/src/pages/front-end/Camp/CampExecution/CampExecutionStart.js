@@ -7,6 +7,7 @@ import {
   uploadRegistryService,
   useLocationData,
   enumRegistryService,
+  ImageView,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import moment from "moment";
@@ -45,11 +46,18 @@ export default function CampExecutionStart({ footerLinks }) {
   const [latData, longData] = useLocationData() || [];
 
   React.useEffect(async () => {
+    let incompleteData = await campService.getcampstatus({ id });
+    let incompleteDate = moment(incompleteData?.data?.start_date).format(
+      "YYYY-MM-DD"
+    );
     setLoading(true);
+    incompleteData = await campService.getcampstatus({ id });
+    incompleteDate = moment(incompleteData?.data?.start_date).format(
+      "YYYY-MM-DD"
+    );
     const obj = {
       id: id,
-      start_date: moment(new Date()).format("YYYY-MM-DD"),
-      // start_date: "2023-11-26",
+      start_date: incompleteDate || moment(new Date()).format("YYYY-MM-DD"),
     };
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
@@ -63,7 +71,7 @@ export default function CampExecutionStart({ footerLinks }) {
 
     if (
       resultAttendance?.data?.length > 0 &&
-      todaysActivity?.data?.camp_days_activities_tracker?.length > 0
+      todaysActivity?.data?.camp_days_activities_tracker?.[0]?.misc_activities
     ) {
       setDisable(false);
     }
@@ -211,7 +219,11 @@ export default function CampExecutionStart({ footerLinks }) {
       _footer={{ menues: page !== "campInprogress" ? footerLinks : [] }}
     >
       {page == "campInprogress" ? (
-        <CampExecutionEnd disable={disable} activityId={activityId} />
+        <CampExecutionEnd
+          disable={disable}
+          facilitator={facilitator}
+          activityId={activityId}
+        />
       ) : (
         <VStack py={6} px={4} mb={5} space="6">
           <FrontEndTypo.H2 color={"textMaroonColor.400"}>
@@ -269,7 +281,7 @@ export default function CampExecutionStart({ footerLinks }) {
   );
 }
 
-const CampExecutionEnd = ({ disable, activityId }) => {
+const CampExecutionEnd = ({ disable, activityId, facilitator }) => {
   const { t } = useTranslation();
   const { id } = useParams();
 
@@ -311,6 +323,11 @@ const CampExecutionEnd = ({ disable, activityId }) => {
         />
 
         <VStack alignItems="center" justifyContent="center">
+          <ImageView
+            width="80px"
+            height="80px"
+            source={{ document_id: facilitator?.profile_photo_1?.id }}
+          ></ImageView>
           <FrontEndTypo.H2
             marginTop={"15px"}
             textAlign="center"
@@ -345,4 +362,3 @@ const CampExecutionEnd = ({ disable, activityId }) => {
     </VStack>
   );
 };
-

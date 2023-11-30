@@ -335,7 +335,7 @@ export default [
   { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   { path: "/camps/:id/activities", component: CampTodayActivities },
   {
-    path: "/camps/:id/kit_material_deatails",
+    path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
   },
   { path: "/camps/:id/sessionslist", component: CampSessionsList },
