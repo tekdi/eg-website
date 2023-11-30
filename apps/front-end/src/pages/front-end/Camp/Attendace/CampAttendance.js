@@ -31,13 +31,21 @@ export default function ConsentForm() {
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
   const [isEditable, setIsEditable] = React.useState();
-  const [randomAttendance, setRandomAttendance] = React.useState(true);
+  const [randomAttendance, setRandomAttendance] = React.useState(false);
   const [latData, longData] = useLocationData() || [];
   const navigate = useNavigate();
 
   React.useEffect(async () => {
     await getData();
   }, [id, !userData]);
+
+  React.useEffect(async () => {
+    const data = await campService.getrandomAttendance({ id });
+    if (data?.learner_camp_attendance_data === 1) {
+      setRandomAttendance(true);
+    }
+  }, []);
+
 
   React.useEffect(async () => {
     setData({ ...data, lat: `${latData}`, long: `${longData}` });
