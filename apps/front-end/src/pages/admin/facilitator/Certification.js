@@ -96,6 +96,7 @@ export default function Certification({ footerLinks }) {
   const [isDisable, setIsDisable] = React.useState(false);
   const { t } = useTranslation();
   const [certificateData, setCertificateData] = React.useState();
+  const [downloadCertificate, setDownCertificate] = React.useState();
 
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
@@ -167,6 +168,13 @@ export default function Certification({ footerLinks }) {
     const result = await enumRegistryService.getCertificate(id);
     setCertificateData(result?.data);
   }, []);
+
+  React.useEffect(async () => {
+    const result = await enumRegistryService.postCertificates(id);
+    console.log("pp", result);
+    setDownCertificate(result?.data);
+  }, []);
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
