@@ -1,27 +1,19 @@
 import React from "react";
-import { courseRegistryService, useWindowSize } from "@shiksha/common-lib";
-import { Box, Center } from "native-base";
+import { testRegistryService, useWindowSize } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { sampleJSON } from "components/sampleJSON";
 import { SunbirdPlayer } from "@shiksha/common-lib";
-import { duration } from "moment";
 import { useParams } from "react-router-dom";
-
 
 function Player() {
   const [width, height] = useWindowSize();
   const [assessmentData, setassessmentData] = useState();
-  const [type , setType] = useState('Course')
-  const { context,context_id,do_id } = useParams();
+  const [type, setType] = useState("Course");
+  const { context, context_id, do_id } = useParams();
 
- 
   useEffect(async () => {
-    
-    console.log(do_id);
-    const assesmentData = await courseRegistryService.getAssessment(do_id)
-    setassessmentData(assesmentData)
-    
+    const assesmentData = await testRegistryService.getAssessment(do_id);
+    setassessmentData(assesmentData);
   }, []);
 
   const navigate = useNavigate();
@@ -36,48 +28,42 @@ function Player() {
     playerType = "quml"
   ) => {
     let data = {};
-    
-   let trackDataold = localStorage.getItem("trackDATA")
-   let trackData = JSON.parse(trackDataold)
-    // const programData = await subjectListRegistryService.getProgramId();
-    // if (playerType === "quml") {
-      const newFormatData = trackData.reduce((oldData, newObj) => {
-        const dataExist = oldData.findIndex(
-          (e) => e.sectionId === newObj["item"]["sectionId"]
-        );
-        if (dataExist >= 0) {
-          oldData[dataExist]["data"].push(newObj);
-        } else {
-          oldData = [
-            ...oldData,
-            {
-              sectionId: newObj["item"]["sectionId"],
-              sectionName: newObj["sectionName"] ? newObj["sectionName"] : "",
-              data: [newObj],
-            },
-          ];
-        }
-        return oldData;
-      }, []);
-      console.log("score",score);
-      let score_txt=score ? score.toString() : "0";
-      let duration_txt=props.duration.toString();
-      data = {
-        test_id: "do_113935969671700480155",
-        spent_time: duration_txt,
-        score: score_txt,
-        status: "completed",
-        score_details: newFormatData,
-        context:"events",
-        context_id:313,
-      };
-        courseRegistryService.testTrackingCreate(data)
 
-   
+    let trackDataold = localStorage.getItem("trackDATA");
+    let trackData = JSON.parse(trackDataold);
+    const newFormatData = trackData.reduce((oldData, newObj) => {
+      const dataExist = oldData.findIndex(
+        (e) => e.sectionId === newObj["item"]["sectionId"]
+      );
+      if (dataExist >= 0) {
+        oldData[dataExist]["data"].push(newObj);
+      } else {
+        oldData = [
+          ...oldData,
+          {
+            sectionId: newObj["item"]["sectionId"],
+            sectionName: newObj["sectionName"] ? newObj["sectionName"] : "",
+            data: [newObj],
+          },
+        ];
+      }
+      return oldData;
+    }, []);
+    let score_txt = score ? score.toString() : "0";
+    let duration_txt = props.duration.toString();
+    data = {
+      test_id: "do_113935969671700480155",
+      spent_time: duration_txt,
+      score: score_txt,
+      status: "completed",
+      score_details: newFormatData,
+      context: context,
+      context_id: context_id,
+    };
+    testRegistryService.testTrackingCreate(data);
   };
 
   return (
-    
     <SunbirdPlayer
       {...{ width, height: height - 64 }}
       {...assessmentData}
@@ -99,10 +85,7 @@ function Player() {
             assessmentData?.mimeType
           )
         ) {
-          handleTrackData(
-            data,
-            "application/vnd.sunbird.questionset"
-          );
+          handleTrackData(data, "application/vnd.sunbird.questionset");
         } else if (
           [
             "application/pdf",
@@ -135,8 +118,6 @@ function Player() {
       handleExitButton={handleExitButton}
       public_url="http://localhost:5000"
     />
-
-   
   );
 }
 

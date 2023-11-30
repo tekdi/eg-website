@@ -44,7 +44,7 @@ import CustomRadio from './components/frontend_component/CustomRadio'
 import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
-import * as courseRegistryService from './services/courseRegistryService'
+import * as testRegistryService from './services/testRegistryService'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
@@ -76,7 +76,7 @@ export {
   geolocationRegistryService,
   uploadRegistryService,
   AgRegistryService,
-  courseRegistryService,
+  testRegistryService,
   ImageView,
   t,
   changeLanguage,
