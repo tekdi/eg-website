@@ -12,6 +12,7 @@ import {
   CustomRadio,
   facilitatorRegistryService,
   CardComponent,
+  jsonParse,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -221,7 +222,7 @@ export default function AgAdminProfile({ footerLinks }) {
     const result = await benificiaryRegistoryService.getOne(id);
     setData(result?.result);
     setAadhaarValue(result?.result?.aadhar_no);
-    const subjectId = JSON.parse(
+    const subjectId = jsonParse(
       result?.result?.program_beneficiaries?.subjects
     );
     if (subjectId?.length > 0) {
