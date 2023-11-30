@@ -5,6 +5,7 @@ module.exports = {
   exposes: {},
   remotes: {
     auth: `auth@[window.appModules.auth.url]/moduleEntry.js`,
+    assessment: `assessment@[window.appModules.assessment.url]/moduleEntry.js`,
   },
   filename: "moduleEntry.js",
   shared: {

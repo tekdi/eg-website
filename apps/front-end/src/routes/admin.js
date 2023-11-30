@@ -64,6 +64,9 @@ const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
 
+const Assessment = React.lazy(() => import("assessment/Assessment"));
+
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
   { path: "/admin/Certification/:id", component: Certification },
@@ -134,5 +137,12 @@ export default [
   //   path: "/admin/attendances",
   //   component: Attendances,
   // },
+
+  {
+    path: "/assessment/:context/:context_id/:do_id",
+    component: Assessment,
+  },
+
   { path: "*", component: NotFound },
+  
 ];
