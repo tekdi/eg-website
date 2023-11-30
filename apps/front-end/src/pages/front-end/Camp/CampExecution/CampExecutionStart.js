@@ -87,6 +87,9 @@ export default function CampExecutionStart({ footerLinks }) {
       setGroupUsers(attendance);
     });
 
+    if (incompleteData?.data?.mood) {
+      setPage("campInprogress");
+    }
     setLoading(false);
   }, [id]);
 
@@ -147,7 +150,6 @@ export default function CampExecutionStart({ footerLinks }) {
       setError("SELECT_MESSAGE");
     }
   };
-
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");

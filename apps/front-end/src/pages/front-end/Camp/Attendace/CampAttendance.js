@@ -191,41 +191,12 @@ export default function ConsentForm() {
                   )}
                 </VStack>
               }
-              // footerComponent={
-              //   <HStack space={3} width="100%" justifyContent="space-between">
-              //     {error && (
-              //       <FrontEndTypo.H4 style={{ color: "red" }}>
-              //         {error}
-              //       </FrontEndTypo.H4>
-              //     )}
-              //     <FrontEndTypo.Secondarybutton
-              //       shadow="BlueOutlineShadow"
-              //       onPress={() => uploadAttendence(userData, PRESENT, true)}
-              //     >
-              //       {t("FINISH")}
-              //     </FrontEndTypo.Secondarybutton>
-              //     <FrontEndTypo.Secondarybutton
-              //       isDisabled={userData?.index + 1 === groupUsers.length}
-              //       variant="secondary"
-              //       ml="4"
-              //       px="5"
-              //       onPress={() => uploadAttendence(userData)}
-              //     >
-              //       {t("NEXT")}
-              //     </FrontEndTypo.Secondarybutton>
-              //   </HStack>
-              // }
               messageComponent={
-                cameraUrl && (
-                  <Alert status="success">
-                    <HStack alignItems="center" space="2">
-                      <Alert.Icon />
-                      <FrontEndTypo.H4>
-                        {t("ATTENDANCE_SUCCESS")}
-                      </FrontEndTypo.H4>
-                    </HStack>
-                  </Alert>
-                )
+                <VStack>
+                  <FrontEndTypo.H3 color="white" textAlign="center">
+                    {t("ATTENDANCE_PHOTO_MSG")}
+                  </FrontEndTypo.H3>
+                </VStack>
               }
               {...{
                 cameraModal: true,
