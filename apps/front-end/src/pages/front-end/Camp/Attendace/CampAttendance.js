@@ -12,7 +12,7 @@ import {
   UserCard,
   useLocationData,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -32,6 +32,7 @@ export default function ConsentForm() {
   const [data, setData] = React.useState({});
   const [isEditable, setIsEditable] = React.useState();
   const [latData, longData] = useLocationData() || [];
+  const navigate = useNavigate();
 
   React.useEffect(async () => {
     await getData();
@@ -249,8 +250,7 @@ export default function ConsentForm() {
       </Box>
     );
   }
-  console.log({ isEditable });
-  console.log({ data });
+
   return (
     <Layout
       loading={loading}
@@ -354,11 +354,11 @@ export default function ConsentForm() {
                   ]
                     .filter((e) => e)
                     .join(" ")}
-                  subTitle={
-                    <HStack>
-                      <RenderAttendee row={item?.attendance || {}} t={t} />
-                    </HStack>
-                  }
+                  // subTitle={
+                  //   <HStack>
+                  //     <RenderAttendee row={item?.attendance || {}} t={t} />
+                  //   </HStack>
+                  // }
                   image={
                     item?.profile_photo_1?.fileUrl
                       ? { urlObject: item?.profile_photo_1 }
