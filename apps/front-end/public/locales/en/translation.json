@@ -55,6 +55,7 @@
   "ADD_LEARNER": "Add Learner",
   "ADD_MORE": "Add more",
   "ADD_MORE_AG": "Add more Learners",
+  "ADD_PARTICIPANTS": "Add Participants",
   "ADD_PHOTOS": "Click and add clear Photos",
   "ADD_PROFILE_PHOTO": "Add Your Profile Photo",
   "ADD_REMINDER": "Add Reminder",
@@ -895,6 +896,7 @@
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "Please add origami-related materials to the fit. Colored paper, scissors, glue, etc.",
   "PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS": "Select the fields for give edit access",
   "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA": "Please clean your camera lense,ensure adequate light and take a picture with steady camera",
+  "PLEASE_END_YESTERDAYS_CAMP": "Please end yesterday's Camp",
   "PLEASE_ENTER_A_4_DIGIT_NUMBER": "Please enter a 4 digit number. You need not remember this code.",
   "PLEASE_ENTER_THE_DAYS_YOU_WANT_TO_TAKE_THE_WEEKLY_OFF": "Please enter the days you want to take the weekly off.",
   "PLEASE_ENTER_VALID_10_DIGIT_NUMBER": "Please enter valid 10 digit number",
@@ -1080,6 +1082,7 @@
   "SELECT_MINIMUM": "Select minimum {0} {1}",
   "SELECT_PRERAK": "Select prerak",
   "SELECT_SUBJECTS": "Select Subjects",
+  "SELECT_TIME": "select time",
   "SELECTED_FOR_INTERVIEW": "Selected for Interview",
   "SELECTED_FOR_ONBOARDING": "Selected for onboarding",
   "SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE": "Congratulations on getting selected for Prerak! Complete and recheck your profile information and photo.",
@@ -1322,5 +1325,6 @@
   "PURPOSE": "Purpose",
   "SCORE": "Score",
   "STATUS": "Status",
-  "MISSILINEOUS_SUCCESS_MESSAGE": "Miscellaneous Activities Saved Successfully"
+  "MISSILINEOUS_SUCCESS_MESSAGE": "Miscellaneous Activities Saved Successfully",
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
 }
