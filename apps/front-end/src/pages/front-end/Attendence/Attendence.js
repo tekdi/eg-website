@@ -8,6 +8,7 @@ import {
   uploadRegistryService,
   eventService,
   Loading,
+  attendanceService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip from "component/Chip";
@@ -39,17 +40,19 @@ const customStyles = {
       background: "#E0E0E0",
       fontSize: "14px",
       color: "#616161",
+      justifyContent: "center",
     },
   },
   cells: {
     style: {
+      justifyContent: "center",
       padding: "15px 0",
     },
   },
 };
 
 const renderNameColumn = (row, t) => {
-  const name = row?.user?.first_name + " " + row?.user?.last_name;
+  const name = row?.first_name + " " + row?.last_name;
   const hasProfileUrl = !!row?.profile_url;
 
   return (
@@ -69,7 +72,9 @@ const renderNameColumn = (row, t) => {
   );
 };
 
-const renderStatusColumn = (row, t) => <Text>{row?.rsvp || ""}</Text>;
+const renderStatusColumn = (row, t) => (
+  <Text>{row?.attendances?.[0]?.rsvp || "-"}</Text>
+);
 
 const renderAttendanceColumn = (row, t, onSwitchToggle) => (
   <HStack space="2">
@@ -90,17 +95,16 @@ const renderAttendanceColumn = (row, t, onSwitchToggle) => (
 const renderAadharKycColumn = (row, t) => (
   <Chip
     bg={
-      row?.user?.aadhar_verified !== null &&
-      row?.user?.aadhar_verified !== "pending"
+      row?.aadhar_verified !== null && row?.aadhar_verified !== "pending"
         ? "potentialColor"
         : "dangerColor"
     }
     label={
-      row?.user?.aadhar_verified === "in_progress"
+      row?.aadhar_verified === "in_progress"
         ? t("AADHAR_KYC_IN_PROGRESS")
-        : row?.user?.aadhar_verified === "pending"
+        : row?.aadhar_verified === "pending"
         ? t("AADHAR_KYC_PENDING")
-        : row?.user?.aadhar_verified !== null
+        : row?.aadhar_verified !== null
         ? t("YES")
         : t("NO")
     }
@@ -124,7 +128,7 @@ const renderAttendeeListColumn = (row, t) => (
   />
 );
 
-const scheduleCandidates = (t, onSwitchToggle) => [
+const scheduleCandidates = (t, onSwitchToggle, days) => [
   {
     name: t("NAME"),
     selector: (row) => renderNameColumn(row, t),
@@ -137,12 +141,8 @@ const scheduleCandidates = (t, onSwitchToggle) => [
     sortable: false,
     attr: "invite",
   },
-  {
-    name: t("MARK_ATTENDANCE"),
-    selector: (row) => renderAttendanceColumn(row, t, onSwitchToggle),
-    sortable: false,
-    attr: "marks",
-  },
+
+  ...days,
   {
     name: t("ADHAR_KYC"),
     selector: (row) => renderAadharKycColumn(row, t),
@@ -159,7 +159,7 @@ const scheduleCandidates = (t, onSwitchToggle) => [
 
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
-  const [Height] = useWindowSize();
+  const [width, Height] = useWindowSize();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [users, setUsers] = React.useState([]);
@@ -178,21 +178,52 @@ export default function Attendence({ footerLinks }) {
   const formRef = React.useRef();
   const [error, setError] = React.useState("");
   const [formData, setFormData] = React.useState({});
-
+  const [actualDates, setActualDates] = React.useState([]);
   const [userData, setUserData] = React.useState({});
-
   const [cameraFile, setcameraFile] = React.useState();
+
   React.useEffect(() => {
     getLocation();
   }, []);
 
-  const onSwitchToggle = async (value) => {
+  const getData = async () => {
+    const eventResult = await eventService.getEventListById({ id });
+    const result = await eventService.getAttendanceList({ id });
+    setUsers(result);
+    setEvent(eventResult?.event);
+    setPaginationTotalRows(eventResult?.totalCount);
+  };
+  const onSwitchToggle = async (row) => {
     getLocation();
-    setCameraUrl();
-    if (value?.status !== "present") {
-      setCameraModal(true);
-      setUserData({ ...value, index: showIndexes(users, value, "C") });
+    console.log(row);
+    if (users?.length > 0) {
+      await eventService.updateAttendance({
+        id: id,
+        status: "",
+        lat: locationData?.latitude,
+        long: locationData?.longitude,
+      });
+    } else {
+      const data = {
+        lat: locationData?.latitude,
+        long: locationData?.longitude,
+        context_id: row?.attendances?.[0]?.context_id,
+        user_id: row?.attendances?.[0]?.user_id,
+        status: "",
+      };
+      // const result = await attendanceService.createAttendance(data);
     }
+    // if (value?.status !== "present") {
+    //   const apiResponse = await eventService.updateAttendance({
+    //     id: id,
+    //     status: "present",
+    //     lat: locationData?.latitude,
+    //     long: locationData?.longitude,
+    //   });
+    //   console.log({ apiResponse });
+    //   if (apiResponse?.status === 200) {
+    //   }
+    // }
   };
 
   const handleFormChange = (props) => {
@@ -266,10 +297,48 @@ export default function Attendence({ footerLinks }) {
 
   React.useEffect(async () => {
     setLoading(true);
-    const eventResult = await eventService.getEventListById({ id: id });
-    setUsers(eventResult?.event?.attendances);
+    const eventResult = await eventService.getEventListById({ id });
+    const result = await eventService.getAttendanceList({ id });
+    setUsers(result?.users || []);
     setEvent(eventResult?.event);
     setPaginationTotalRows(eventResult?.totalCount);
+    // arrya of to days diif
+    // eventResult.event = {
+    //   ...eventResult.event,
+    //   params: { attendance_type: "one_time" },
+    // };
+
+    // please check params?.attendance_type === "one_time" condition
+    if (event?.params?.attendance_type === "one_time") {
+      setActualDates([
+        {
+          name: t("MARK_ATTENDANCE"),
+          selector: (row) => renderAttendanceColumn(row, t, onSwitchToggle),
+          sortable: false,
+          attr: "marks",
+        },
+      ]);
+    } else {
+      const startMoment = moment(event?.start_date);
+      const endMoment = moment(event?.end_date);
+      const dates = [];
+      while (startMoment.isSameOrBefore(endMoment)) {
+        dates.push({
+          name: t(startMoment.format("DD-MMM-YYYY")),
+          selector: (row) =>
+            renderAttendanceColumn(
+              { ...row, presentDate: startMoment.format("YYYY-MM-DD") },
+              t,
+              onSwitchToggle
+            ),
+          sortable: false,
+          attr: "marks",
+        });
+        startMoment.add(1, "day");
+      }
+      setActualDates(dates);
+    }
+    console.log(actualDates);
     setLoading(false);
   }, [filterObj]);
 
@@ -278,7 +347,7 @@ export default function Attendence({ footerLinks }) {
   }, [page, limit]);
 
   const uploadAttendencePicture = async (e) => {
-    setError("");
+    // setError("");
     if (cameraFile?.key) {
       const apiResponse = await eventService.updateAttendance({
         id: userData?.id,
@@ -292,25 +361,6 @@ export default function Attendence({ footerLinks }) {
         setUsers(eventResult?.event?.attendances);
         setEvent(eventResult?.event);
       }
-    } else {
-      setError("Capture Picture First");
-    }
-    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
-    if (users[coruntIndex + 1]) {
-      setCameraUrl();
-      setUserData({ ...users[coruntIndex + 1], index: coruntIndex + 1 });
-    }
-  };
-  const showIndexes = (users, userData, state) => {
-    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
-    if (state === "C") {
-      return coruntIndex;
-    }
-    if (state === "N") {
-      return coruntIndex + 1;
-    }
-    if (state === "P") {
-      return coruntIndex - 1;
     }
   };
 
@@ -441,6 +491,7 @@ export default function Attendence({ footerLinks }) {
 
   return (
     <Layout
+      width
       _appBar={{
         isShowNotificationButton: true,
       }}
@@ -528,29 +579,46 @@ export default function Attendence({ footerLinks }) {
 
                 <HStack
                   space={"3"}
-                  pt="4"
+                  alignItems={"center"}
                   direction={["column", "column", "row"]}
                 >
                   <IconByName
                     isDisabled
-                    name="TimeLineIcon"
+                    name="CalendarLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
-                    {event?.start_date
-                      ? moment(event?.start_date).format("Do MMM")
-                      : ""}{" "}
-                    {event?.start_time ? event?.start_time : ""}
-                    {/* 16th April, 11:00 to 12:00 */}
-                  </AdminTypo.H6>
+                  <HStack space={2}>
+                    <AdminTypo.H7 bold color="textGreyColor.800">
+                      {event?.start_date
+                        ? moment(event?.start_date).format("LL")
+                        : ""}{" "}
+                      {event?.start_time
+                        ? moment(event?.start_time, "HH:mm:ssZ").format(
+                            "hh:mm:ss A"
+                          )
+                        : "-"}
+                    </AdminTypo.H7>
+                    to
+                    <AdminTypo.H7 bold color="textGreyColor.800">
+                      {event?.end_date
+                        ? moment(event?.end_date).format("LL")
+                        : ""}{" "}
+                      {event?.end_time
+                        ? moment(event?.end_time, "HH:mm:ssZ").format(
+                            "hh:mm:ss A"
+                          )
+                        : "-"}
+                      {/* 16th April, 11:00 to 12:00 */}
+                    </AdminTypo.H7>
+                  </HStack>
                   <IconByName
                     isDisabled
                     name="MapPinLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
+                  <AdminTypo.H6 bold color="textGreyColor.800">
                     {event?.location}
                   </AdminTypo.H6>
                   <IconByName
@@ -559,7 +627,7 @@ export default function Attendence({ footerLinks }) {
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
+                  <AdminTypo.H6 bold color="textGreyColor.800">
                     {t("MASTER_TRAINER")} -
                   </AdminTypo.H6>
                   <Box
@@ -587,7 +655,7 @@ export default function Attendence({ footerLinks }) {
                     {t("CANDIDATES")} {users?.length}
                   </AdminTypo.H3>
                 </HStack>
-                <HStack>
+                {/* <HStack>
                   <AdminTypo.Secondarybutton
                     shadow="BlueOutlineShadow"
                     onPress={(e) => {
@@ -606,7 +674,7 @@ export default function Attendence({ footerLinks }) {
                   >
                     {t("MARK_ATTENDANCE_ALL")}
                   </AdminTypo.Secondarybutton>
-                </HStack>
+                </HStack> */}
               </HStack>
             </Stack>
 
@@ -901,7 +969,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(t, onSwitchToggle),
+                ...scheduleCandidates(t, onSwitchToggle, actualDates),
                 {
                   name: t(""),
                   selector: (row) => (
