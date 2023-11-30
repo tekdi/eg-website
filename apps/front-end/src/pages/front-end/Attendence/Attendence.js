@@ -193,37 +193,36 @@ export default function Attendence({ footerLinks }) {
     setEvent(eventResult?.event);
     setPaginationTotalRows(eventResult?.totalCount);
   };
+
   const onSwitchToggle = async (row) => {
     getLocation();
     console.log(row);
-    if (users?.length > 0) {
-      await eventService.updateAttendance({
-        id: id,
-        status: "",
-        lat: locationData?.latitude,
-        long: locationData?.longitude,
-      });
-    } else {
-      const data = {
-        lat: locationData?.latitude,
-        long: locationData?.longitude,
-        context_id: row?.attendances?.[0]?.context_id,
-        user_id: row?.attendances?.[0]?.user_id,
-        status: "",
-      };
-      // const result = await attendanceService.createAttendance(data);
-    }
-    // if (value?.status !== "present") {
-    //   const apiResponse = await eventService.updateAttendance({
+    const data = {
+      user_id: row?.attendances?.[0]?.user_id,
+      context_id: row?.attendances?.[0]?.context_id,
+      context: row?.attendances?.[0]?.context,
+      status: "",
+      lat: row?.attendances?.[0]?.lat,
+      long: row?.attendances?.[0]?.long,
+      date_time: row?.attendances?.[0]?.date_time,
+    };
+    console.log({ data });
+    // if (users?.length > 0) {
+    //   await eventService.updateAttendance({
     //     id: id,
-    //     status: "present",
+    //     status: "",
     //     lat: locationData?.latitude,
     //     long: locationData?.longitude,
     //   });
-    //   console.log({ apiResponse });
-    //   if (apiResponse?.status === 200) {
-    //   }
-    // }
+    // } else {
+    //   const data = {
+    //     lat: locationData?.latitude,
+    //     long: locationData?.longitude,
+    //     context_id: row?.attendances?.[0]?.context_id,
+    //     user_id: row?.attendances?.[0]?.user_id,
+    //     status: "",
+    //   };
+    // const result = await attendanceService.createAttendance(data);
   };
 
   const handleFormChange = (props) => {
@@ -338,7 +337,6 @@ export default function Attendence({ footerLinks }) {
       }
       setActualDates(dates);
     }
-    console.log(actualDates);
     setLoading(false);
   }, [filterObj]);
 
