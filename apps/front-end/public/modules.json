@@ -3,6 +3,6 @@
     "url": "http://localhost:2001/modules/auth"
   },
   "assessment": {
-    "url": "http://localhost:3002/modules/assessment"
+    "url": "http://localhost:3002"
   }
 }

@@ -36,7 +36,7 @@ function Player() {
     playerType = "quml"
   ) => {
     let data = {};
-    console.log(props.duration)
+    
    let trackDataold = localStorage.getItem("trackDATA")
    let trackData = JSON.parse(trackDataold)
     // const programData = await subjectListRegistryService.getProgramId();
@@ -71,20 +71,9 @@ function Player() {
         context:"events",
         context_id:313,
       };
-    // }
-    //  else {
-    //   data = {
-        
-    //     status: "completed",
-    //     score: score ? score : 0,
-    //     scoreDetails: JSON.stringify(props),
-        
-    //   };
-    // }
         courseRegistryService.testTrackingCreate(data)
 
-    console.log("AFTER SUBMIT")
-   console.log(data)
+   
   };
 
   return (
