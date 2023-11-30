@@ -51,14 +51,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         await facilitatorRegistryService.getPrerakCertificateDetails({
           id: fa_id,
         });
+
       const data =
-        c_data?.events?.filter(
+        c_data?.data?.filter(
           (e) => e?.type === "prerak_camp_execution_training"
         )?.[0] || {};
       setCertificateData(data);
 
       const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-      const format = "hh:mm:ss";
+      const format = "HH:mm:ss";
       const time = moment(moment().format(format), format);
       const beforeTime = moment(data?.start_time, format);
       const afterTime = moment(data?.end_time, format);
