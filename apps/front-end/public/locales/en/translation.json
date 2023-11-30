@@ -895,6 +895,7 @@
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "Please add origami-related materials to the fit. Colored paper, scissors, glue, etc.",
   "PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS": "Select the fields for give edit access",
   "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA": "Please clean your camera lense,ensure adequate light and take a picture with steady camera",
+  "PLEASE_END_YESTERDAYS_CAMP": "Please end yesterday's Camp",
   "PLEASE_ENTER_A_4_DIGIT_NUMBER": "Please enter a 4 digit number. You need not remember this code.",
   "PLEASE_ENTER_THE_DAYS_YOU_WANT_TO_TAKE_THE_WEEKLY_OFF": "Please enter the days you want to take the weekly off.",
   "PLEASE_ENTER_VALID_10_DIGIT_NUMBER": "Please enter valid 10 digit number",
@@ -1317,6 +1318,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "PLEASE_END_YESTERDAYS_CAMP": "Please end yesterday's Camp"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
 }

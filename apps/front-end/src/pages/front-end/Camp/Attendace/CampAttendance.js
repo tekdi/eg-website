@@ -31,6 +31,7 @@ export default function ConsentForm() {
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
   const [isEditable, setIsEditable] = React.useState();
+  const [randomAttendance, setRandomAttendance] = React.useState(true);
   const [latData, longData] = useLocationData() || [];
   const navigate = useNavigate();
 
@@ -78,7 +79,7 @@ export default function ConsentForm() {
           user_id: user?.id,
           status,
         };
-        if (status === PRESENT) {
+        if (status === PRESENT && randomAttendance) {
           const photo_1 =
             cameraFile?.data?.insert_documents?.returning?.[0]?.name;
           payLoad = { ...payLoad, photo_1: `${photo_1}` };
@@ -88,8 +89,9 @@ export default function ConsentForm() {
       }
     } else {
       if (status === PRESENT) {
-        const photo_1 =
-          cameraFile?.data?.insert_documents?.returning?.[0]?.name;
+        const photo_1 = randomAttendance
+          ? cameraFile?.data?.insert_documents?.returning?.[0]?.name
+          : "-";
         if (photo_1) {
           const payLoad = {
             ...data,
@@ -98,7 +100,6 @@ export default function ConsentForm() {
             status: PRESENT,
             photo_1: `${photo_1}`,
           };
-
           await campService.markCampAttendance(payLoad);
           await getData();
         } else {
@@ -127,6 +128,15 @@ export default function ConsentForm() {
         setCameraUrl();
         setUserData({ ...groupUsers[coruntIndex + 1], index: coruntIndex + 1 });
       }
+    }
+  };
+
+  const addAttendance = (item) => {
+    if (randomAttendance) {
+      setUserData(item);
+    } else {
+      console.log("entered");
+      uploadAttendence(item, PRESENT, true);
     }
   };
 
@@ -324,7 +334,7 @@ export default function ConsentForm() {
                     isEditable?.[item.id] || !item?.attendance?.status ? (
                       <IconByName
                         onPress={(e) => {
-                          setUserData(item);
+                          addAttendance(item);
                         }}
                         height="100%"
                         roundedLeft="0"

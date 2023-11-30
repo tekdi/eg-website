@@ -893,6 +893,7 @@
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "कृपया फिट में ओरिगामी से संबंधित सामग्री जोड़ें। रंगीन कागज, कैंची, गोंद आदि।",
   "PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS": "संपादित करने की अनुमति देने के लिए फील्ड्स को चुने ",
   "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA": "कृपया अपने कैमरे का लेंस साफ़ करें, पर्याप्त रोशनी सुनिश्चित करें और स्थिर कैमरे से फ़ोटो लें।",
+  "PLEASE_END_YESTERDAYS_CAMP": "कृपया कल का शिविर समाप्त करें",
   "PLEASE_ENTER_A_4_DIGIT_NUMBER": "कृपया 4 अंकों की संख्या दर्ज करें। आपको यह कोड याद रखने की आवश्यकता नहीं है।",
   "PLEASE_ENTER_THE_DAYS_YOU_WANT_TO_TAKE_THE_WEEKLY_OFF": "कृपया वे दिन दर्ज करें जिन दिन आप साप्ताहिक अवकाश लेना चाहते हैं।",
   "PLEASE_ENTER_VALID_10_DIGIT_NUMBER": "कृपया सही १० आंकोकी संख्या दर्ज करें",
@@ -1315,6 +1316,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "PLEASE_END_YESTERDAYS_CAMP": "कृपया कल का शिविर समाप्त करें"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
 }
