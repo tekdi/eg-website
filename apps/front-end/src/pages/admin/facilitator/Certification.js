@@ -21,46 +21,6 @@ import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { useTranslation } from "react-i18next";
 
-const columns = (t) => [
-  {
-    name: t("SR_NO"),
-    selector: (row, index) => index + 1,
-  },
-  {
-    name: t("PURPOSE"),
-    selector: (row) => row?.context,
-    attr: "name",
-    wrap: true,
-  },
-  {
-    name: t("SCORE"),
-    selector: (row) => row?.score,
-    attr: "name",
-    wrap: true,
-  },
-  // {
-  //   name: "Status",
-  //   selector: (row) => row?.status,
-  //   attr: "name",
-  //   wrap: true,
-  // },
-  {
-    name: t("STATUS"),
-    selector: (row) => (
-      <AdminTypo.Secondarybutton
-        my="3"
-        onPress={() => {
-          // navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
-          //   state: filter,
-          // });
-        }}
-      >
-        {t("DOWNLOAD")}
-      </AdminTypo.Secondarybutton>
-    ),
-  },
-];
-
 export default function Certification({ footerLinks }) {
   const [status, setStatus] = React.useState({});
   const { id } = useParams();
@@ -98,6 +58,42 @@ export default function Certification({ footerLinks }) {
   const [certificateData, setCertificateData] = React.useState();
   const [downloadCertificate, setDownCertificate] = React.useState();
 
+  const certificateDownload = async (id) => {
+    const result = await enumRegistryService.postCertificates(id);
+    setDownCertificate(result?.data);
+  };
+  const columns = (t) => [
+    {
+      name: t("SR_NO"),
+      selector: (row, index) => index + 1,
+    },
+    {
+      name: t("PURPOSE"),
+      selector: (row) => row?.context,
+      attr: "name",
+      wrap: true,
+    },
+    {
+      name: t("SCORE"),
+      selector: (row) => row?.score,
+      attr: "name",
+      wrap: true,
+    },
+    // {
+    //   name: "Status",
+    //   selector: (row) => row?.status,
+    //   attr: "name",
+    //   wrap: true,
+    // },
+    {
+      name: t("STATUS"),
+      selector: (row) => (
+        <AdminTypo.Secondarybutton my="3" onPress={() => certificateDownload()}>
+          {t("DOWNLOAD")}
+        </AdminTypo.Secondarybutton>
+      ),
+    },
+  ];
   const benificiaryDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setData(result?.result);
@@ -166,13 +162,11 @@ export default function Certification({ footerLinks }) {
 
   React.useEffect(async () => {
     const result = await enumRegistryService.getCertificate(id);
+    let test_id = result?.data?.[0].test_id;
+    let user_id = result?.data?.[0].user_id;
+    console.log("test_id", test_id);
+    console.log("user id", user_id);
     setCertificateData(result?.data);
-  }, []);
-
-  React.useEffect(async () => {
-    const result = await enumRegistryService.postCertificates(id);
-    console.log("pp", result);
-    setDownCertificate(result?.data);
   }, []);
 
   return (
