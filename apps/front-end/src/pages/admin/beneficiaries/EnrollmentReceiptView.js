@@ -55,6 +55,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       const newResult = await uploadRegistryService.getOne({
         document_id: result?.program_beneficiaries?.payment_receipt_document_id,
       });
+      console.log(newResult);
       setReceiptUrl(newResult);
       setFileType(newResult?.key?.split(".").pop());
       const subject = jsonParse(result?.program_beneficiaries.subjects, []);

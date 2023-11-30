@@ -64,6 +64,9 @@ const AgformUpdate = React.lazy(() =>
 const Agadhaar = React.lazy(() => import("pages/front-end/ag-form/Agadhaar"));
 const Success = React.lazy(() => import("pages/front-end/Success"));
 const Profile = React.lazy(() => import("pages/front-end/facilitator/Profile"));
+const Certificate = React.lazy(() =>
+  import("pages/front-end/facilitator/Certificate")
+);
 const AdharKyc = React.lazy(() =>
   import("pages/front-end/AadhaarKyc/AadhaarKyc")
 );
@@ -137,7 +140,6 @@ const CampExecution = React.lazy(() =>
 const CampExecutionStart = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampExecutionStart")
 );
-
 
 const CampAttendance = React.lazy(() =>
   import("pages/front-end/Camp/Attendace/CampAttendance")
@@ -275,6 +277,7 @@ export default [
     component: PcrView,
   },
   { path: "/profile", component: Profile },
+  { path: "/certificate", component: Certificate },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
   {
