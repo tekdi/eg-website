@@ -850,7 +850,7 @@ export default function Attendence({ footerLinks }) {
                           })
                         }
                       >
-                        {t("Confirm")}
+                        {t("CONFIRM")}
                       </AdminTypo.PrimaryButton>
                     )}
                     <AdminTypo.Secondarybutton
