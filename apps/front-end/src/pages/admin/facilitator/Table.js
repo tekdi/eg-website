@@ -6,13 +6,30 @@ import {
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, VStack, ScrollView, Pressable } from "native-base";
+import {
+  HStack,
+  VStack,
+  ScrollView,
+  Pressable,
+  Button,
+  Menu,
+} from "native-base";
 
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import Certification from "./Certification";
 
+const dropDown = (triggerProps, t) => {
+  return (
+    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+      <HStack>
+        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
+    </Pressable>
+  );
+};
 const columns = (t, navigate) => [
   {
     name: t("PRERAK_ID"),
@@ -92,17 +109,78 @@ const columns = (t, navigate) => [
     attr: "gender",
     width: "100px",
   },
+  // {
+  //   name: t("ACTION"),
+  //   selector: (row) => (
+  //     <AdminTypo.Secondarybutton
+  //       my="3"
+  //       onPress={() => {
+  //         navigate(`/admin/view/${row?.id}`);
+  //       }}
+  //     >
+  //       {t("VIEW")}
+  //     </AdminTypo.Secondarybutton>
+  //   ),
+  // },
   {
+    minWidth: "140px",
     name: t("ACTION"),
     selector: (row) => (
-      <AdminTypo.Secondarybutton
+      <Button.Group
+        isAttached
+        divider={<h3>|</h3>}
         my="3"
-        onPress={() => {
-          navigate(`/admin/view/${row?.id}`);
+        size="sm"
+        h="10"
+        marginTop="8px"
+        borderRadius="full"
+        background="white"
+        shadow="BlueOutlineShadow"
+        borderWidth="1px"
+        borderColor="#084B82"
+        lineHeight={8}
+        _text={{
+          color: "blueText.400",
+          fontSize: "14px",
+          fontWeight: "700",
         }}
       >
-        {t("VIEW")}
-      </AdminTypo.Secondarybutton>
+        <Button
+          background="white"
+          _text={{
+            color: "blueText.400",
+            fontSize: "14px",
+            fontWeight: "700",
+          }}
+          onPress={() => {
+            navigate(`/admin/beneficiary/${row?.id}`);
+          }}
+        >
+          {t("VIEW")}
+        </Button>
+        <Button variant="outline">
+          <Menu
+            w="190"
+            placement="bottom right"
+            trigger={(triggerProps) => dropDown(triggerProps, t)}
+          >
+            <Menu.Item
+              onPress={() => {
+                navigate(`/admin/beneficiary/${row?.id}`);
+              }}
+            >
+              {t("VIEW")}
+            </Menu.Item>
+            <Menu.Item
+              onPress={() => {
+                navigate(`/admin/Certification/${row?.id}`);
+              }}
+            >
+              Download Certificate
+            </Menu.Item>
+          </Menu>
+        </Button>
+      </Button.Group>
     ),
   },
 ];

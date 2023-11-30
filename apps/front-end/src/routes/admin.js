@@ -3,6 +3,9 @@ const Profile = React.lazy(() => import("pages/admin/facilitator/Profile"));
 const FacilitatorView = React.lazy(() =>
   import("pages/admin/facilitator/View")
 );
+const Certification = React.lazy(() =>
+  import("pages/admin/facilitator/Certification")
+);
 const AdminHome = React.lazy(() => import("pages/admin/AdminHome"));
 const LearnerAdminHome = React.lazy(() => import("pages/admin/AdminHome"));
 const FacilitatorForm = React.lazy(() => import("pages/admin/FacilitatorForm"));
@@ -66,6 +69,7 @@ const Assessment = React.lazy(() => import("assessment/Assessment"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
+  { path: "/admin/Certification/:id", component: Certification },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: AdminHome },
