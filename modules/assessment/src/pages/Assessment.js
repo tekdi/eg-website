@@ -49,11 +49,35 @@ function Player() {
       }
       return oldData;
     }, []);
+
+    const jsonData = newFormatData;
+
+    // Function to calculate total duration for a section
+    const calculateSectionDuration = (section) => {
+      return section.data.reduce(
+        (totalDuration, item) => totalDuration + item.duration,
+        0
+      );
+    };
+
+    // Function to calculate total duration for all sections
+    const calculateTotalDuration = (jsonData) => {
+      return jsonData.reduce(
+        (totalDuration, section) =>
+          totalDuration + calculateSectionDuration(section),
+        0
+      );
+    };
+
+    // Calculate and log the total duration
+    const totalDuration = calculateTotalDuration(jsonData);
+    console.log("Total Duration:", totalDuration, "seconds");
+
     let score_txt = score ? score.toString() : "0";
-    let duration_txt = props.duration.toString();
+    let duration_txt = props?.duration ? props.duration.toString() : "0";
     data = {
       test_id: "do_113935969671700480155",
-      spent_time: duration_txt,
+      spent_time: totalDuration,
       score: score_txt,
       status: "completed",
       score_details: newFormatData,
