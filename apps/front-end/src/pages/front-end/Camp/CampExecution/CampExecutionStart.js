@@ -352,7 +352,7 @@ const CampExecutionEnd = ({ disable, activityId, facilitator, error }) => {
           <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
         </HStack>
       </Alert>
-      {!error && (
+      {error && (
         <Alert status="danger">
           <HStack alignItems={"center"} space={2}>
             <Alert.Icon />
