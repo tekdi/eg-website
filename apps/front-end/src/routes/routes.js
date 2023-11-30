@@ -138,7 +138,6 @@ const CampExecutionStart = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampExecutionStart")
 );
 
-
 const CampAttendance = React.lazy(() =>
   import("pages/front-end/Camp/Attendace/CampAttendance")
 );
@@ -230,6 +229,7 @@ export default [
     component: BenificiaryListView,
   },
   { path: "/table", component: CountScreenView },
+
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
@@ -336,6 +336,5 @@ export default [
   },
   { path: "/camps/:id/sessionslist", component: CampSessionsList },
   { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
-
   { path: "*", component: Dashboard },
 ];
