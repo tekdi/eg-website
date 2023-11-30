@@ -8,6 +8,7 @@ import {
   uploadRegistryService,
   eventService,
   Loading,
+  attendanceService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip from "component/Chip";
@@ -39,17 +40,19 @@ const customStyles = {
       background: "#E0E0E0",
       fontSize: "14px",
       color: "#616161",
+      justifyContent: "center",
     },
   },
   cells: {
     style: {
+      justifyContent: "center",
       padding: "15px 0",
     },
   },
 };
 
 const renderNameColumn = (row, t) => {
-  const name = row?.user?.first_name + " " + row?.user?.last_name;
+  const name = row?.first_name + " " + row?.last_name;
   const hasProfileUrl = !!row?.profile_url;
 
   return (
@@ -69,38 +72,23 @@ const renderNameColumn = (row, t) => {
   );
 };
 
-const renderStatusColumn = (row, t) => <Text>{row?.rsvp || ""}</Text>;
-
-const renderAttendanceColumn = (row, t, onSwitchToggle) => (
-  <HStack space="2">
-    <Text key={row?.id}>
-      {row?.status === "present" ? "Present" : "Absent"}
-    </Text>
-    <Switch
-      offTrackColor="dangerColor"
-      onTrackColor="successColor"
-      onThumbColor="appliedColor"
-      offThumbColor="appliedColor"
-      value={row.status === "present"}
-      onValueChange={() => onSwitchToggle(row)}
-    />
-  </HStack>
+const renderStatusColumn = (row, t) => (
+  <Text>{row?.attendances?.[0]?.rsvp || "-"}</Text>
 );
 
 const renderAadharKycColumn = (row, t) => (
   <Chip
     bg={
-      row?.user?.aadhar_verified !== null &&
-      row?.user?.aadhar_verified !== "pending"
+      row?.aadhar_verified !== null && row?.aadhar_verified !== "pending"
         ? "potentialColor"
         : "dangerColor"
     }
     label={
-      row?.user?.aadhar_verified === "in_progress"
+      row?.aadhar_verified === "in_progress"
         ? t("AADHAR_KYC_IN_PROGRESS")
-        : row?.user?.aadhar_verified === "pending"
+        : row?.aadhar_verified === "pending"
         ? t("AADHAR_KYC_PENDING")
-        : row?.user?.aadhar_verified !== null
+        : row?.aadhar_verified !== null
         ? t("YES")
         : t("NO")
     }
@@ -124,42 +112,64 @@ const renderAttendeeListColumn = (row, t) => (
   />
 );
 
-const scheduleCandidates = (t, onSwitchToggle) => [
-  {
-    name: t("NAME"),
-    selector: (row) => renderNameColumn(row, t),
-    sortable: false,
-    attr: "name",
-  },
-  {
-    name: t("INVITE_STATUS"),
-    selector: (row) => renderStatusColumn(row, t),
-    sortable: false,
-    attr: "invite",
-  },
-  {
-    name: t("MARK_ATTENDANCE"),
-    selector: (row) => renderAttendanceColumn(row, t, onSwitchToggle),
-    sortable: false,
-    attr: "marks",
-  },
-  {
-    name: t("ADHAR_KYC"),
-    selector: (row) => renderAadharKycColumn(row, t),
-    sortable: false,
-    attr: "adhar_kyc",
-  },
-  {
-    name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-    selector: (row) => renderAttendeeListColumn(row, t),
-    sortable: false,
-    attr: "attendence_verified",
-  },
-];
+const scheduleCandidates = (t, days) => {
+  return [
+    {
+      name: t("NAME"),
+      selector: (row) => renderNameColumn(row, t),
+      sortable: false,
+      attr: "name",
+    },
+    {
+      name: t("INVITE_STATUS"),
+      selector: (row) => renderStatusColumn(row, t),
+      sortable: false,
+      attr: "invite",
+    },
 
+    ...days,
+    {
+      name: t("ADHAR_KYC"),
+      selector: (row) => renderAadharKycColumn(row, t),
+      sortable: false,
+      attr: "adhar_kyc",
+    },
+    {
+      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
+      selector: (row) => renderAttendeeListColumn(row, t),
+      sortable: false,
+      attr: "attendence_verified",
+    },
+  ];
+};
+
+const renderAttendanceColumn = (row, onSwitchToggle) => {
+  const attendance = row?.attendances?.[row?.index];
+  return (
+    <HStack space="2">
+      <Text key={row?.id}>
+        {attendance?.status === "present" ? "Present" : "Absent"}
+      </Text>
+      <Switch
+        // isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
+        offTrackColor="dangerColor"
+        onTrackColor="successColor"
+        onThumbColor="appliedColor"
+        offThumbColor="appliedColor"
+        defaultIsChecked={attendance?.status === "present"}
+        onValueChange={async (e) => {
+          await onSwitchToggle({
+            ...row,
+            attendance_status: e ? "present" : "absent",
+          });
+        }}
+      />
+    </HStack>
+  );
+};
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
-  const [Height] = useWindowSize();
+  const [width, Height] = useWindowSize();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [users, setUsers] = React.useState([]);
@@ -178,21 +188,43 @@ export default function Attendence({ footerLinks }) {
   const formRef = React.useRef();
   const [error, setError] = React.useState("");
   const [formData, setFormData] = React.useState({});
-
+  const [actualDates, setActualDates] = React.useState([]);
   const [userData, setUserData] = React.useState({});
-
   const [cameraFile, setcameraFile] = React.useState();
+  const [isDisabledAttBtn, setIsDisabledAttBtn] = React.useState();
+
   React.useEffect(() => {
     getLocation();
   }, []);
 
-  const onSwitchToggle = async (value) => {
-    getLocation();
-    setCameraUrl();
-    if (value?.status !== "present") {
-      setCameraModal(true);
-      setUserData({ ...value, index: showIndexes(users, value, "C") });
+  const onSwitchToggle = async (row) => {
+    // setIsDisabledAttBtn(`${row.id}-${row.presentDate}`);
+    const attendance = row?.attendances?.[row?.index];
+    if (attendance) {
+      const data = {
+        id: attendance?.id,
+        user_id: attendance.user_id,
+        lat: `${locationData?.latitude || ""}`, //attendance.lat,
+        long: `${locationData?.longitude || ""}`, //attendance.long,
+        date_time: row.presentDate,
+        status: row?.attendance_status,
+      };
+
+      const updateData = await eventService.updateAttendance(data);
+    } else {
+      const data = {
+        user_id: row.id,
+        context_id: id,
+        context: "events",
+        lat: `${locationData?.latitude || ""}`, //attendance.lat,
+        long: `${locationData?.longitude || ""}`, //attendance.long,
+        date_time: row.presentDate,
+        status: row?.attendance_status,
+      };
+      const createData = await attendanceService.createAttendance(data);
     }
+    getUsers();
+    setIsDisabledAttBtn();
   };
 
   const handleFormChange = (props) => {
@@ -245,7 +277,6 @@ export default function Attendence({ footerLinks }) {
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     setlocationData({ latitude: latitude, longitude: longitude });
-    console.log("Latitude ", "Longitude");
   }
 
   function errorCallback(error) {
@@ -264,12 +295,53 @@ export default function Attendence({ footerLinks }) {
     }
   }
 
+  const getUsers = async () => {
+    const result = await eventService.getAttendanceList({ id });
+    setUsers(result?.data || []);
+  };
+
   React.useEffect(async () => {
     setLoading(true);
-    const eventResult = await eventService.getEventListById({ id: id });
-    setUsers(eventResult?.event?.attendances);
+    const eventResult = await eventService.getEventListById({ id });
+    const result = await eventService.getAttendanceList({ id });
+    setUsers(result?.data || []);
     setEvent(eventResult?.event);
     setPaginationTotalRows(eventResult?.totalCount);
+    // please check params?.attendance_type === "one_time" condition
+    if (eventResult?.event?.params?.attendance_type === "one_time") {
+      setActualDates([
+        {
+          name: t("MARK_ATTENDANCE"),
+          selector: (row) => renderAttendanceColumn(row, onSwitchToggle),
+          sortable: false,
+          attr: "marks",
+        },
+      ]);
+    } else {
+      const startMoment = moment(eventResult?.event?.start_date);
+      const endMoment = moment(eventResult?.event?.end_date);
+      let datesD = [];
+      while (startMoment.isSameOrBefore(endMoment)) {
+        datesD.push(startMoment.format("DD-MMM-YYYY"));
+        startMoment.add(1, "day");
+      }
+
+      const dates = datesD?.map((e, i) => ({
+        name: t(moment(e).format("DD-MMM-YYYY")),
+        selector: (row) =>
+          renderAttendanceColumn(
+            {
+              ...row,
+              index: i,
+              presentDate: `${moment(e).format("YYYY-MM-DD")}`,
+            },
+            onSwitchToggle
+          ),
+        sortable: false,
+        attr: "marks",
+      }));
+      setActualDates(dates);
+    }
     setLoading(false);
   }, [filterObj]);
 
@@ -278,7 +350,7 @@ export default function Attendence({ footerLinks }) {
   }, [page, limit]);
 
   const uploadAttendencePicture = async (e) => {
-    setError("");
+    // setError("");
     if (cameraFile?.key) {
       const apiResponse = await eventService.updateAttendance({
         id: userData?.id,
@@ -292,25 +364,6 @@ export default function Attendence({ footerLinks }) {
         setUsers(eventResult?.event?.attendances);
         setEvent(eventResult?.event);
       }
-    } else {
-      setError("Capture Picture First");
-    }
-    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
-    if (users[coruntIndex + 1]) {
-      setCameraUrl();
-      setUserData({ ...users[coruntIndex + 1], index: coruntIndex + 1 });
-    }
-  };
-  const showIndexes = (users, userData, state) => {
-    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
-    if (state === "C") {
-      return coruntIndex;
-    }
-    if (state === "N") {
-      return coruntIndex + 1;
-    }
-    if (state === "P") {
-      return coruntIndex - 1;
     }
   };
 
@@ -441,6 +494,7 @@ export default function Attendence({ footerLinks }) {
 
   return (
     <Layout
+      width
       _appBar={{
         isShowNotificationButton: true,
       }}
@@ -515,7 +569,7 @@ export default function Attendence({ footerLinks }) {
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
-                </AdminTypo.Secondarybutton> */}
+                </AdminTypo.Secondarybutton> 
                   <Box>
                     <AdminTypo.Secondarybutton
                       onPress={() => setShowDeleteModal(true)}
@@ -524,33 +578,51 @@ export default function Attendence({ footerLinks }) {
                       {t("DELETE_EVENT")}
                     </AdminTypo.Secondarybutton>
                   </Box>
+                  */}
                 </HStack>
 
                 <HStack
                   space={"3"}
-                  pt="4"
+                  alignItems={"center"}
                   direction={["column", "column", "row"]}
                 >
                   <IconByName
                     isDisabled
-                    name="TimeLineIcon"
+                    name="CalendarLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
-                    {event?.start_date
-                      ? moment(event?.start_date).format("Do MMM")
-                      : ""}{" "}
-                    {event?.start_time ? event?.start_time : ""}
-                    {/* 16th April, 11:00 to 12:00 */}
-                  </AdminTypo.H6>
+                  <HStack space={2}>
+                    <AdminTypo.H7 bold color="textGreyColor.800">
+                      {event?.start_date
+                        ? moment(event?.start_date).format("LL")
+                        : ""}{" "}
+                      {event?.start_time
+                        ? moment(event?.start_time, "HH:mm:ssZ").format(
+                            "hh:mm:ss A"
+                          )
+                        : "-"}
+                    </AdminTypo.H7>
+                    to
+                    <AdminTypo.H7 bold color="textGreyColor.800">
+                      {event?.end_date
+                        ? moment(event?.end_date).format("LL")
+                        : ""}{" "}
+                      {event?.end_time
+                        ? moment(event?.end_time, "HH:mm:ssZ").format(
+                            "hh:mm:ss A"
+                          )
+                        : "-"}
+                      {/* 16th April, 11:00 to 12:00 */}
+                    </AdminTypo.H7>
+                  </HStack>
                   <IconByName
                     isDisabled
                     name="MapPinLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
+                  <AdminTypo.H6 bold color="textGreyColor.800">
                     {event?.location}
                   </AdminTypo.H6>
                   <IconByName
@@ -559,7 +631,7 @@ export default function Attendence({ footerLinks }) {
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
+                  <AdminTypo.H6 bold color="textGreyColor.800">
                     {t("MASTER_TRAINER")} -
                   </AdminTypo.H6>
                   <Box
@@ -587,7 +659,7 @@ export default function Attendence({ footerLinks }) {
                     {t("CANDIDATES")} {users?.length}
                   </AdminTypo.H3>
                 </HStack>
-                <HStack>
+                {/* <HStack>
                   <AdminTypo.Secondarybutton
                     shadow="BlueOutlineShadow"
                     onPress={(e) => {
@@ -606,7 +678,7 @@ export default function Attendence({ footerLinks }) {
                   >
                     {t("MARK_ATTENDANCE_ALL")}
                   </AdminTypo.Secondarybutton>
-                </HStack>
+                </HStack> */}
               </HStack>
             </Stack>
 
@@ -901,7 +973,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(t, onSwitchToggle),
+                ...scheduleCandidates(t, actualDates),
                 {
                   name: t(""),
                   selector: (row) => (

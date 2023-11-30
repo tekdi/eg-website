@@ -89,7 +89,7 @@ export default function CampSetting({ footerLinks }) {
             space={4}
           >
             <TimePicker
-              placeholder="Select Time"
+              placeholder={t("SELECT_TIME")}
               use12Hours
               value={selectedStartTime ? moment(selectedStartTime) : ""}
               showSecond={false}
@@ -99,7 +99,7 @@ export default function CampSetting({ footerLinks }) {
             />
             {t("TO")}
             <TimePicker
-              placeholder="Select Time"
+              placeholder={t("SELECT_TIME")}
               use12Hours
               value={selectedEndTime ? moment(selectedEndTime) : ""}
               showSecond={false}

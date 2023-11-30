@@ -1080,6 +1080,7 @@
   "SELECT_MINIMUM": "Select minimum {0} {1}",
   "SELECT_PRERAK": "Select prerak",
   "SELECT_SUBJECTS": "Select Subjects",
+  "SELECT_TIME": "select time",
   "SELECTED_FOR_INTERVIEW": "Selected for Interview",
   "SELECTED_FOR_ONBOARDING": "Selected for onboarding",
   "SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE": "Congratulations on getting selected for Prerak! Complete and recheck your profile information and photo.",
