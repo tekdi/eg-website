@@ -132,7 +132,7 @@ export default function CampSetting({ footerLinks }) {
                   borderWidth: 2,
                   borderColor: "green.500",
                 }}
-                bg={selectedDays.includes(day) ? "green.500" : "blue.500"}
+                bg={selectedDays?.includes(day) ? "green.500" : "blue.500"}
                 style={{
                   width: 100,
                   height: 50,
