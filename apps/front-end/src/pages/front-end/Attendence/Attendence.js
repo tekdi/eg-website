@@ -12,6 +12,7 @@ import {
   facilitatorRegistryService,
   CardComponent,
   ImageView,
+  debounce,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";
@@ -223,12 +224,26 @@ export default function Attendence({ footerLinks }) {
   const [cameraFile, setcameraFile] = React.useState();
   // const [updateUserData, setUpdateData] = React.useState();
 
+  //search
+  const [filteredAttendanceList, setFilteredAttendanceList] = useState([]);
+  const [inputSearch, setInputSearch] = useState("");
+  const [filter, setFilter] = useState([]);
+
   const getUserData = async () => {
     const result = await facilitatorRegistryService.getOne({
       id: inputValue,
     });
     setFacilitatorProfile(result);
   };
+
+  //search
+  React.useEffect(() => {
+    const filterFacilitatorDetail = async () => {
+      const result = await eventService.getAttendanceList({ id });
+      console.log("filter", result);
+    };
+    filterFacilitatorDetail();
+  }, [filter]);
 
   React.useEffect(() => {
     getLocation();
@@ -343,6 +358,7 @@ export default function Attendence({ footerLinks }) {
     const eventResult = await eventService.getEventListById({ id });
     const result = await eventService.getAttendanceList({ id });
     setUsers(result?.data || []);
+
     setEvent(eventResult?.event);
     setPaginationTotalRows(eventResult?.totalCount);
     // please check params?.attendance_type === "one_time" condition
@@ -426,6 +442,23 @@ export default function Attendence({ footerLinks }) {
   const handleInputChange = (event) => {
     const inputValue = event.target.value;
     setInputValue(inputValue);
+  };
+
+  const handleInputSearch = async (event) => {
+    console.log("event", event);
+    const searchValue = event.target.value;
+    setInputSearch(searchValue);
+
+    try {
+      const response = await eventService.getAttendanceList({
+        id,
+        search: searchValue,
+      });
+      const filteredList = response.data || [];
+      setFilteredAttendanceList(filteredList);
+    } catch (error) {
+      console.error("Error fetching filtered attendance list:", error);
+    }
   };
 
   const handlePageChange = (page) => {
@@ -702,7 +735,11 @@ export default function Attendence({ footerLinks }) {
                     {t("CANDIDATES")} {users?.length}
                   </AdminTypo.H3>
                 </HStack>
-                <HStack space={10}>
+                <HStack
+                  flexDirection={"end"}
+                  justifyContent={"space-between"}
+                  space={10}
+                >
                   {/* <AdminTypo.Secondarybutton
                     shadow="BlueOutlineShadow"
                     onPress={(e) => {
@@ -737,6 +774,14 @@ export default function Attendence({ footerLinks }) {
                   >
                     {t("ADD_PARTICIPANTS")}
                   </AdminTypo.Secondarybutton>
+                  <Input
+                    value={inputSearch}
+                    maxLength={12}
+                    name="numberInput"
+                    placeholder={t("SEARCH")}
+                    variant="outline"
+                    onChange={(e) => handleInputSearch()}
+                  />
                 </HStack>
               </HStack>
             </Stack>

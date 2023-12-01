@@ -330,3 +330,11 @@ ul {
 /* .css-view-1dbjc4n {
   z-index:"auto"
 } */
+
+.certificae-height .color {
+  min-height: 210mm;
+  min-width: 919px;
+  max-height: 210mm;
+  max-width: 919px;
+  margin: auto;
+}

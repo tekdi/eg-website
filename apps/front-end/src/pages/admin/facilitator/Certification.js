@@ -9,7 +9,7 @@ import {
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, Modal, VStack } from "native-base";
+import { Center, HStack, Modal, ScrollView, VStack } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
@@ -236,7 +236,7 @@ export default function Certification({ footerLinks }) {
           />
         </VStack>
       </VStack>
-      <Modal isOpen={downloadCertificate} size="xl">
+      <Modal isOpen={downloadCertificate} size="full" margin={"auto"}>
         <Modal.Content>
           <Modal.Header>
             <HStack justifyContent={"space-between"} pr="10">
@@ -250,16 +250,8 @@ export default function Certification({ footerLinks }) {
               />
             </HStack>
           </Modal.Header>
-          <Modal.Body
-            style={{
-              backgroundColor: "#f5f5f5",
-              width: "297mm",
-              minHeight: "210mm",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            <div ref={reportTemplateRef}>
+          <Modal.Body overflow={"scroll"}>
+            <div ref={reportTemplateRef} className="certificae-height">
               <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
             </div>
           </Modal.Body>
