@@ -3,6 +3,9 @@ const Profile = React.lazy(() => import("pages/admin/facilitator/Profile"));
 const FacilitatorView = React.lazy(() =>
   import("pages/admin/facilitator/View")
 );
+const Certification = React.lazy(() =>
+  import("pages/admin/facilitator/Certification")
+);
 const AdminHome = React.lazy(() => import("pages/admin/AdminHome"));
 const LearnerAdminHome = React.lazy(() => import("pages/admin/AdminHome"));
 const FacilitatorForm = React.lazy(() => import("pages/admin/FacilitatorForm"));
@@ -61,8 +64,11 @@ const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
 
+const Assessment = React.lazy(() => import("component/Assessment"));
+
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
+  { path: "/admin/Certification/:id", component: Certification },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: AdminHome },
@@ -130,5 +136,11 @@ export default [
   //   path: "/admin/attendances",
   //   component: Attendances,
   // },
+
+  {
+    path: "/assessment/:context/:context_id/:do_id",
+    component: Assessment,
+  },
+
   { path: "*", component: NotFound },
 ];

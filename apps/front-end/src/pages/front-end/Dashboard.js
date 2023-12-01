@@ -51,14 +51,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         await facilitatorRegistryService.getPrerakCertificateDetails({
           id: fa_id,
         });
+
       const data =
-        c_data?.events?.filter(
+        c_data?.data?.filter(
           (e) => e?.type === "prerak_camp_execution_training"
         )?.[0] || {};
       setCertificateData(data);
 
       const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-      const format = "hh:mm:ss";
+      const format = "HH:mm:ss";
       const time = moment(moment().format(format), format);
       const beforeTime = moment(data?.start_time, format);
       const afterTime = moment(data?.end_time, format);
@@ -183,7 +184,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <HStack py="4" flex="1" px="6">
                   <AdminTypo.Dangerbutton
                     onPress={() => {
-                      setModalVisible(true);
+                      setModalVisible(certificateData);
                     }}
                   >
                     {t("PRERAK_CERTIFICATION_PROGRAM")}
@@ -192,7 +193,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               )}
             <Modal
               isOpen={modalVisible}
-              onClose={() => setModalVisible(false)}
+              onClose={() => setModalVisible()}
               avoidKeyboard
               size="xl"
             >
@@ -208,15 +209,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <Modal.Body>
                   <HStack justifyContent="space-between">
                     <HStack>
-                      <AdminTypo.H4 color="textGreyColor.500">
+                      {/* <AdminTypo.H4 color="textGreyColor.500">
                         {t("TRAINING_NOT_COMPLETED")}
-                      </AdminTypo.H4>
+                      </AdminTypo.H4> */}
                       {/* <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
-                      </AdminTypo.H3>
+                      </AdminTypo.H3>*/}
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
-                      </AdminTypo.H3> */}
+                      </AdminTypo.H3>
                     </HStack>
                   </HStack>
                 </Modal.Body>
@@ -224,14 +225,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <HStack justifyContent="space-between" width="100%">
                     <AdminTypo.Secondarybutton
                       onPress={() => {
-                        setModalVisible(false);
+                        setModalVisible();
                       }}
                     >
                       Go Back
                     </AdminTypo.Secondarybutton>
                     <AdminTypo.Dangerbutton
                       onPress={() => {
-                        assignToPrerak(viewData?.id);
+                        navigate(
+                          `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
+                        );
                       }}
                     >
                       Start test

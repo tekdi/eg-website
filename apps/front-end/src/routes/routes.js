@@ -169,6 +169,8 @@ const CampSessionsList = React.lazy(() =>
 );
 const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
+const Assessment = React.lazy(() => import("component/Assessment"));
+
 export default [
   { path: "/form", component: Home },
   {
@@ -232,6 +234,7 @@ export default [
     component: BenificiaryListView,
   },
   { path: "/table", component: CountScreenView },
+
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
@@ -339,6 +342,9 @@ export default [
   },
   { path: "/camps/:id/sessionslist", component: CampSessionsList },
   { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
-
+  {
+    path: "/assessment/:context/:context_id/:do_id",
+    component: Assessment,
+  },
   { path: "*", component: Dashboard },
 ];
