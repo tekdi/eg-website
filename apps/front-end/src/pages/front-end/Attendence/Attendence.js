@@ -12,6 +12,7 @@ import {
   facilitatorRegistryService,
   CardComponent,
   ImageView,
+  testRegistryService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";
@@ -131,7 +132,7 @@ const renderAttendeeListColumn = (row, t) => (
   />
 );
 
-const scheduleCandidates = (t, days) => {
+const scheduleCandidates = (t, days, certificateDownload) => {
   return [
     {
       name: t("ID"),
@@ -154,18 +155,28 @@ const scheduleCandidates = (t, days) => {
     },
 
     ...days,
-    // {
-    //   name: t("ADHAR_KYC"),
-    //   selector: (row) => renderAadharKycColumn(row, t),
-    //   sortable: false,
-    //   attr: "adhar_kyc",
-    // },
-    // {
-    //   name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-    //   selector: (row) => renderAttendeeListColumn(row, t),
-    //   sortable: false,
-    //   attr: "attendence_verified",
-    // },
+    {
+      name: t("SCORE"),
+      selector: (row) => row?.lms_test_trackings?.[0]?.score || "-",
+      attr: "name",
+      wrap: true,
+    },
+    {
+      name: t("STATUS"),
+      selector: (row) =>
+        row.lms_test_trackings?.[0]?.certificate_status === true ? (
+          <AdminTypo.Secondarybutton
+            my="3"
+            onPress={() => certificateDownload(row)}
+          >
+            {t("DOWNLOAD")}
+          </AdminTypo.Secondarybutton>
+        ) : row.certificate_status === false ? (
+          <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
+        ) : (
+          <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
+        ),
+    },
   ];
 };
 
@@ -222,6 +233,14 @@ export default function Attendence({ footerLinks }) {
   const [inputValue, setInputValue] = React.useState();
   const [cameraFile, setcameraFile] = React.useState();
   // const [updateUserData, setUpdateData] = React.useState();
+  const [downloadCertificate, setDownCertificate] = React.useState();
+
+  const reportTemplateRef = React.useRef(null);
+
+  const certificateDownload = async (data) => {
+    const result = await testRegistryService.postCertificates(data);
+    setDownCertificate(result?.data?.[0]?.certificate_html);
+  };
 
   const getUserData = async () => {
     const result = await facilitatorRegistryService.getOne({
@@ -1187,7 +1206,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(t, actualDates),
+                ...scheduleCandidates(t, actualDates, certificateDownload),
                 // {
                 //   name: t(""),
                 //   selector: (row) => (
@@ -1227,6 +1246,35 @@ export default function Attendence({ footerLinks }) {
           </VStack>
         </Box>
       </ScrollView>
+      <Modal isOpen={downloadCertificate} size="xl">
+        <Modal.Content>
+          <Modal.Header>
+            <HStack justifyContent={"space-between"} pr="10">
+              <AdminTypo.H1>{t("CERTIFICATION")}</AdminTypo.H1>
+              <AdminTypo.Secondarybutton onPress={() => handleGeneratePdf()}>
+                {t("DOWNLOAD")}
+              </AdminTypo.Secondarybutton>
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setDownCertificate()}
+              />
+            </HStack>
+          </Modal.Header>
+          <Modal.Body
+            style={{
+              backgroundColor: "#f5f5f5",
+              width: "297mm",
+              minHeight: "210mm",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <div ref={reportTemplateRef}>
+              <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
+            </div>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
