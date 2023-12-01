@@ -12,6 +12,7 @@ import {
   facilitatorRegistryService,
   CardComponent,
   ImageView,
+  testRegistryService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";
@@ -38,6 +39,8 @@ import validator from "@rjsf/validator-ajv8";
 import schema from "./schema";
 import { useTranslation } from "react-i18next";
 import Clipboard from "component/Clipboard";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const customStyles = {
   headCells: {
@@ -131,7 +134,7 @@ const renderAttendeeListColumn = (row, t) => (
   />
 );
 
-const scheduleCandidates = (t, days) => {
+const scheduleCandidates = (t, days, certificateDownload) => {
   return [
     {
       name: t("ID"),
@@ -154,18 +157,28 @@ const scheduleCandidates = (t, days) => {
     },
 
     ...days,
-    // {
-    //   name: t("ADHAR_KYC"),
-    //   selector: (row) => renderAadharKycColumn(row, t),
-    //   sortable: false,
-    //   attr: "adhar_kyc",
-    // },
-    // {
-    //   name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-    //   selector: (row) => renderAttendeeListColumn(row, t),
-    //   sortable: false,
-    //   attr: "attendence_verified",
-    // },
+    {
+      name: t("SCORE"),
+      selector: (row) => row?.lms_test_trackings?.[0]?.score || "-",
+      attr: "name",
+      wrap: true,
+    },
+    {
+      name: t("STATUS"),
+      selector: (row) =>
+        row.lms_test_trackings?.[0]?.certificate_status === true ? (
+          <AdminTypo.Secondarybutton
+            my="3"
+            onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
+          >
+            {t("DOWNLOAD")}
+          </AdminTypo.Secondarybutton>
+        ) : row.certificate_status === false ? (
+          <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
+        ) : (
+          <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
+        ),
+    },
   ];
 };
 
@@ -222,6 +235,25 @@ export default function Attendence({ footerLinks }) {
   const [inputValue, setInputValue] = React.useState();
   const [cameraFile, setcameraFile] = React.useState();
   // const [updateUserData, setUpdateData] = React.useState();
+  const [downloadCertificate, setDownCertificate] = React.useState();
+
+  const reportTemplateRef = React.useRef(null);
+
+  const certificateDownload = async (data) => {
+    const result = await testRegistryService.postCertificates(data);
+    setDownCertificate(result?.data?.[0]?.certificate_html);
+  };
+
+  const handleGeneratePdf = async () => {
+    const input = reportTemplateRef.current;
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l");
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      // pdf.output('dataurlnewwindow');
+      pdf.save("download.pdf");
+    });
+  };
 
   const getUserData = async () => {
     const result = await facilitatorRegistryService.getOne({
@@ -1187,7 +1219,7 @@ export default function Attendence({ footerLinks }) {
 
             <DataTable
               columns={[
-                ...scheduleCandidates(t, actualDates),
+                ...scheduleCandidates(t, actualDates, certificateDownload),
                 // {
                 //   name: t(""),
                 //   selector: (row) => (
@@ -1227,6 +1259,35 @@ export default function Attendence({ footerLinks }) {
           </VStack>
         </Box>
       </ScrollView>
+      <Modal isOpen={downloadCertificate} size="xl">
+        <Modal.Content>
+          <Modal.Header>
+            <HStack justifyContent={"space-between"} pr="10">
+              <AdminTypo.H1>{t("CERTIFICATION")}</AdminTypo.H1>
+              <AdminTypo.Secondarybutton onPress={() => handleGeneratePdf()}>
+                {t("DOWNLOAD")}
+              </AdminTypo.Secondarybutton>
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setDownCertificate()}
+              />
+            </HStack>
+          </Modal.Header>
+          <Modal.Body
+            style={{
+              backgroundColor: "#f5f5f5",
+              width: "297mm",
+              minHeight: "210mm",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <div ref={reportTemplateRef}>
+              <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
+            </div>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
