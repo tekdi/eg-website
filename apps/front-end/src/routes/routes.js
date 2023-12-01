@@ -166,9 +166,7 @@ const CampSessionsList = React.lazy(() =>
 );
 const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
-const Assessment = React.lazy(() => import("assessment/Assessment"));
-
-const SampleComponent = React.lazy(() => import("assessment/SampleComponent"));
+const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
   { path: "/form", component: Home },
@@ -343,10 +341,6 @@ export default [
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
-  },
-  {
-    path: "/sample",
-    component: SampleComponent,
   },
   { path: "*", component: Dashboard },
 ];
