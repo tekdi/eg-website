@@ -141,7 +141,7 @@ function Player() {
         }
       }}
       handleExitButton={handleExitButton}
-      // public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
+      public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
     />
   );
 }
