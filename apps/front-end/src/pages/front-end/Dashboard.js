@@ -42,6 +42,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = React.useState(false);
+  const [lmsDEtails, setLmsDetails] = React.useState();
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -51,12 +52,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         await facilitatorRegistryService.getPrerakCertificateDetails({
           id: fa_id,
         });
-
       const data =
         c_data?.data?.filter(
           (e) => e?.type === "prerak_camp_execution_training"
         )?.[0] || {};
       setCertificateData(data);
+      setLmsDetails(data?.lms_test_tracking?.[0]);
 
       const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
       const format = "HH:mm:ss";
@@ -69,7 +70,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     setLoading(false);
   }, []);
-
   React.useEffect(() => {
     const res = objProps(facilitator);
     setProgress(
@@ -195,50 +195,73 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               isOpen={modalVisible}
               onClose={() => setModalVisible()}
               avoidKeyboard
-              size="xl"
+              size="md"
             >
               <Modal.Content>
                 <Modal.CloseButton />
-                <Modal.Header textAlign={"left"}>
+                <Modal.Header alignItems={"center"}>
                   <HStack alignItems={"center"}>
                     <AdminTypo.H4 color="textGreyColor.500">
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
                     </AdminTypo.H4>
                   </HStack>
                 </Modal.Header>
-                <Modal.Body>
-                  <HStack justifyContent="space-between">
-                    <HStack>
-                      {/* <AdminTypo.H4 color="textGreyColor.500">
-                        {t("TRAINING_NOT_COMPLETED")}
-                      </AdminTypo.H4> */}
-                      {/* <AdminTypo.H3 color="textGreyColor.500">
+                <Modal.Body alignItems="center">
+                  <VStack>
+                    {lmsDEtails === undefined && (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("TAKE_TEST")}
+                      </AdminTypo.H3>
+                    )}
+                    {lmsDEtails?.certificate_status === null && (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("CERTIFICATION_IS_PENDING")}
+                      </AdminTypo.H3>
+                    )}
+                    {lmsDEtails?.certificate_status === false && (
+                      <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
-                      </AdminTypo.H3>*/}
+                      </AdminTypo.H3>
+                    )}
+                    {lmsDEtails?.certificate_status === true && (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
                       </AdminTypo.H3>
-                    </HStack>
-                  </HStack>
+                    )}
+                  </VStack>
                 </Modal.Body>
-                <Modal.Footer>
-                  <HStack justifyContent="space-between" width="100%">
-                    <AdminTypo.Secondarybutton
+                <Modal.Footer alignSelf={"center"}>
+                  <HStack space={"6"}>
+                    <FrontEndTypo.DefaultButton
+                      textColor={"black"}
                       onPress={() => {
                         setModalVisible();
                       }}
                     >
-                      Go Back
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.Dangerbutton
-                      onPress={() => {
-                        navigate(
-                          `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
-                        );
-                      }}
-                    >
-                      Start test
-                    </AdminTypo.Dangerbutton>
+                      {lmsDEtails ? t("GO_BACK") : t("OK")}
+                    </FrontEndTypo.DefaultButton>
+                    {lmsDEtails === undefined && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={() => {
+                          navigate(
+                            `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
+                          );
+                        }}
+                      >
+                        {t("START_TEST")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
+                    {lmsDEtails?.certificate_status === true && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={() => {
+                          navigate(`/certificate`);
+                        }}
+                      >
+                        {t("VIEW_CERTIFICATE")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
                   </HStack>
                 </Modal.Footer>
               </Modal.Content>

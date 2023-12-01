@@ -157,7 +157,7 @@ export default function AdminHome({ footerLinks }) {
           size={"xs"}
           minH="42px"
           maxH="42px"
-          ml="2px"
+          ml="20px"
           InputLeftElement={
             <IconByName
               color="coolGray.500"
@@ -176,7 +176,7 @@ export default function AdminHome({ footerLinks }) {
             );
           }}
         />
-        <HStack alignSelf={"center"} space="2" height={"5.5vh"}>
+        <HStack alignSelf={"center"} space="2">
           <Menu
             w="190"
             placement="bottom right"
