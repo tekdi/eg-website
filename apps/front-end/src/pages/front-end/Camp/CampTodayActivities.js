@@ -92,13 +92,13 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                   resizeMode="contain"
                   alignSelf={"center"}
                   p="6"
+                  w="100px"
+                  h="80px"
                 />
               </HStack>
-              <HStack>
-                <FrontEndTypo.H4 color="textMaroonColor.400">
-                  {t("LEARNING_ACTIVITIES")}
-                </FrontEndTypo.H4>
-              </HStack>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("LEARNING_ACTIVITIES")}
+              </FrontEndTypo.H2>
             </HStack>
           </Pressable>
         </CardComponent>
@@ -117,11 +117,13 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                   resizeMode="contain"
                   alignSelf={"center"}
                   p="6"
+                  w="100px"
+                  h="80px"
                 />
               </HStack>
-              <FrontEndTypo.H4 color="textMaroonColor.400">
+              <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("MISCELLANEOUS_ACTIVITIES")}
-              </FrontEndTypo.H4>
+              </FrontEndTypo.H2>
             </HStack>
           </Pressable>
         </CardComponent>
