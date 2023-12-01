@@ -61,9 +61,14 @@ const renderNameColumn = (row, t) => {
   const hasProfileUrl = !!row?.profile_url;
 
   return (
-    <HStack alignItems="center" space="2">
+    <HStack alignItems={"flex-start"} space="2">
       {hasProfileUrl ? (
-        <Avatar source={{ uri: row?.profile_url }} width="35px" height="35px" />
+        <Avatar
+          alignItems={"start"}
+          source={{ uri: row?.profile_url }}
+          width="35px"
+          height="35px"
+        />
       ) : (
         <IconByName
           isDisabled
@@ -73,6 +78,15 @@ const renderNameColumn = (row, t) => {
         />
       )}
       <Text>{name}</Text>
+    </HStack>
+  );
+};
+const renderIDColumn = (row, t) => {
+  const ID = row?.id;
+
+  return (
+    <HStack alignItems="center" space="2">
+      {ID}
     </HStack>
   );
 };
@@ -120,6 +134,13 @@ const renderAttendeeListColumn = (row, t) => (
 const scheduleCandidates = (t, days) => {
   return [
     {
+      name: t("ID"),
+      selector: (row) => renderIDColumn(row, t),
+      sortable: false,
+      attr: "name",
+    },
+
+    {
       name: t("NAME"),
       selector: (row) => renderNameColumn(row, t),
       sortable: false,
@@ -133,18 +154,18 @@ const scheduleCandidates = (t, days) => {
     },
 
     ...days,
-    {
-      name: t("ADHAR_KYC"),
-      selector: (row) => renderAadharKycColumn(row, t),
-      sortable: false,
-      attr: "adhar_kyc",
-    },
-    {
-      name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-      selector: (row) => renderAttendeeListColumn(row, t),
-      sortable: false,
-      attr: "attendence_verified",
-    },
+    // {
+    //   name: t("ADHAR_KYC"),
+    //   selector: (row) => renderAadharKycColumn(row, t),
+    //   sortable: false,
+    //   attr: "adhar_kyc",
+    // },
+    // {
+    //   name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
+    //   selector: (row) => renderAttendeeListColumn(row, t),
+    //   sortable: false,
+    //   attr: "attendence_verified",
+    // },
   ];
 };
 
@@ -1167,28 +1188,28 @@ export default function Attendence({ footerLinks }) {
             <DataTable
               columns={[
                 ...scheduleCandidates(t, actualDates),
-                {
-                  name: t(""),
-                  selector: (row) => (
-                    <Button
-                      onPress={() => {
-                        setFormData({
-                          ...row,
-                          documents_status: JSON.parse(
-                            row?.user?.program_faciltators[0]?.documents_status
-                          ),
-                        });
-                      }}
-                    >
-                      <IconByName
-                        isDisabled
-                        name="EditBoxLineIcon"
-                        color="gray"
-                        _icon={{ size: "15" }}
-                      />
-                    </Button>
-                  ),
-                },
+                // {
+                //   name: t(""),
+                //   selector: (row) => (
+                //     <Button
+                //       onPress={() => {
+                //         setFormData({
+                //           ...row,
+                //           documents_status: JSON.parse(
+                //             row?.user?.program_faciltators[0]?.documents_status
+                //           ),
+                //         });
+                //       }}
+                //     >
+                //       <IconByName
+                //         isDisabled
+                //         name="EditBoxLineIcon"
+                //         color="gray"
+                //         _icon={{ size: "15" }}
+                //       />
+                //     </Button>
+                //   ),
+                // },
               ]}
               key={users}
               data={users}
