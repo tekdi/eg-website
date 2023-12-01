@@ -39,6 +39,8 @@ import validator from "@rjsf/validator-ajv8";
 import schema from "./schema";
 import { useTranslation } from "react-i18next";
 import Clipboard from "component/Clipboard";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const customStyles = {
   headCells: {
@@ -167,7 +169,7 @@ const scheduleCandidates = (t, days, certificateDownload) => {
         row.lms_test_trackings?.[0]?.certificate_status === true ? (
           <AdminTypo.Secondarybutton
             my="3"
-            onPress={() => certificateDownload(row)}
+            onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
           >
             {t("DOWNLOAD")}
           </AdminTypo.Secondarybutton>
@@ -240,6 +242,17 @@ export default function Attendence({ footerLinks }) {
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
     setDownCertificate(result?.data?.[0]?.certificate_html);
+  };
+
+  const handleGeneratePdf = async () => {
+    const input = reportTemplateRef.current;
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l");
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      // pdf.output('dataurlnewwindow');
+      pdf.save("download.pdf");
+    });
   };
 
   const getUserData = async () => {
