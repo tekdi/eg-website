@@ -141,7 +141,7 @@ function Player() {
         }
       }}
       handleExitButton={handleExitButton}
-      // public_url="http://localhost:5000"
+      public_url="https://eg-dev.uniteframework.io"
     />
   );
 }
