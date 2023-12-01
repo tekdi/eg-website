@@ -38,7 +38,7 @@ export default function CampOtherPlans({ footerLinks }) {
     };
     if (reason) {
       await campService.campActivity(payLoad);
-       navigate(`/camps/${id}/campexecution`);
+      navigate(`/camps/${id}/campexecution`);
     } else {
       setError(true);
     }
@@ -58,9 +58,6 @@ export default function CampOtherPlans({ footerLinks }) {
           <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
             {t("WHATS_YOUR_PLAN_TODAY")}
           </FrontEndTypo.H1>
-          <FrontEndTypo.H3 alignSelf={"center"} color={"textMaroonColor.400"}>
-            {t("SELECT_MESSAGE")}
-          </FrontEndTypo.H3>
           <RadioBtn
             directionColumn={"column"}
             value={reason || []}

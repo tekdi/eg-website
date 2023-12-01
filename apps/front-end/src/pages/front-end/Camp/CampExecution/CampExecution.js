@@ -250,7 +250,7 @@ export default function CampExecution({ footerLinks }) {
         </Box>
         <VStack alignItems="center" space="5">
           <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-            {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
+            {t("STARTS_YOUR_DAY")}
           </FrontEndTypo.H1>
         </VStack>
         <VStack space="4">
@@ -265,7 +265,9 @@ export default function CampExecution({ footerLinks }) {
             }}
             type="warning"
           />
-          <FrontEndTypo.H3>{t("STARTS_YOUR_DAY")}</FrontEndTypo.H3>
+          <FrontEndTypo.H3>
+            {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
+          </FrontEndTypo.H3>
           <VStack space="4">
             <FrontEndTypo.Primarybutton onPress={campBegin}>
               {t("YES_ABSOLUTELY")}

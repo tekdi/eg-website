@@ -20,6 +20,7 @@ import {
   VStack,
   Image,
   Alert,
+  Center,
 } from "native-base";
 import Drawer from "react-modern-drawer";
 import { useTranslation } from "react-i18next";
@@ -80,52 +81,50 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space={4}>
-        <HStack space={4}>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-              <VStack alignItems="center" space={3}>
-                <VStack bg="gray.300" rounded="100%" p="2">
-                  <Image
-                    source={{
-                      uri: "/images/activities/learning-activity.png",
-                    }}
-                    alt=""
-                    resizeMode="contain"
-                    color="gray.600"
-                    alignSelf={"center"}
-                    padding="6"
-                  />
-                </VStack>
-                <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-              onPress={() => {
-                handleActivities("MISCELLANEOUS_ACTIVITIES");
-              }}
-            >
-              <VStack alignItems="center" space={3}>
-                <VStack bg="gray.300" rounded="100%" p="2">
-                  <Image
-                    source={{
-                      uri: "/images/activities/missilaneous-activity.png",
-                    }}
-                    resizeMode="contain"
-                    color="gray.600"
-                    bg="gray.300"
-                    rounded="100%"
-                    p="6"
-                  />
-                </VStack>
-                <FrontEndTypo.H4>
-                  {t("MISCELLANEOUS_ACTIVITIES")}
+        <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
+            <HStack alignItems="center" justifyContent="center" space={3}>
+              <HStack>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  p="6"
+                />
+              </HStack>
+              <HStack>
+                <FrontEndTypo.H4 color="textMaroonColor.400">
+                  {t("LEARNING_ACTIVITIES")}
                 </FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent>
-        </HStack>
+              </HStack>
+            </HStack>
+          </Pressable>
+        </CardComponent>
+        <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          <Pressable
+            onPress={() => {
+              handleActivities("MISCELLANEOUS_ACTIVITIES");
+            }}
+          >
+            <HStack alignItems="center" justifyContent="center" space={3}>
+              <HStack>
+                <Image
+                  source={{
+                    uri: "/images/activities/missilaneous-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  p="6"
+                />
+              </HStack>
+              <FrontEndTypo.H4 color="textMaroonColor.400">
+                {t("MISCELLANEOUS_ACTIVITIES")}
+              </FrontEndTypo.H4>
+            </HStack>
+          </Pressable>
+        </CardComponent>
       </VStack>
 
       <Actionsheet isOpen={enums?.data} onClose={(e) => setEnums()}>
