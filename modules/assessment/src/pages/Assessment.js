@@ -18,9 +18,9 @@ function Player() {
 
   const navigate = useNavigate();
   const handleExitButton = () => {
-    {
-      navigate(-1);
-    }
+    setTimeout(() => {
+      navigate("/");
+    }, 2000); // 1000 milliseconds = 1 second
   };
 
   const handleTrackData = async (
@@ -93,6 +93,7 @@ function Player() {
       {...assessmentData}
       userData={{
         firstName: localStorage.getItem("fullName"),
+        lastName: "",
       }}
       setTrackData={(data) => {
         if (
@@ -140,7 +141,7 @@ function Player() {
         }
       }}
       handleExitButton={handleExitButton}
-      public_url="http://localhost:5000"
+      // public_url="http://localhost:5000"
     />
   );
 }
