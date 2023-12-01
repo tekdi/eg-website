@@ -48,11 +48,14 @@ export default function CampExecution({ footerLinks }) {
     const endDate = result?.data?.end_date;
     const startDate = result?.data?.start_date;
     const camp_day_happening = result?.data?.camp_day_happening;
+    const mood = result?.data?.mood;
     const activity_id = result?.data?.id;
-    if (!endDate && startDate && camp_day_happening !== "no") {
+    if (!endDate && startDate && camp_day_happening !== "no" && mood) {
       navigate(`/camps/${id}/campexecutionstart/${activity_id}`, {
         state: "campInprogress",
       });
+    } else if (!endDate && startDate && camp_day_happening !== "no" && !mood) {
+      navigate(`/camps/${id}/campexecutionstart/${activity_id}`);
     }
   }, []);
 

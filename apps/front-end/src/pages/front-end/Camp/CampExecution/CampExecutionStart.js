@@ -69,7 +69,9 @@ export default function CampExecutionStart({ footerLinks }) {
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
     setFacilitator(result?.data?.faciltator?.[0] || {});
-    const resultAttendance = await campService.CampAttendance({ id });
+    const resultAttendance = await campService.CampAttendance({
+      id: activityId,
+    });
     const todaysActivity = await campService.getActivity(obj);
     let attendances = [];
     if (resultAttendance?.data?.length > 0) {
@@ -166,7 +168,7 @@ export default function CampExecutionStart({ footerLinks }) {
         photo_1: `${photo_1}`,
       };
       await campService.updateCampAttendance(dataQ);
-      navigate(`/camps/${id}/campexecutionstart`);
+      navigate(`/camps/${id}/campexecutionstart/${activityId}`);
     } else {
       setError("Capture Picture First");
     }
