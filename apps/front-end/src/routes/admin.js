@@ -64,8 +64,7 @@ const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
 
-const Assessment = React.lazy(() => import("assessment/Assessment"));
-
+const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -144,5 +143,4 @@ export default [
   },
 
   { path: "*", component: NotFound },
-  
 ];
