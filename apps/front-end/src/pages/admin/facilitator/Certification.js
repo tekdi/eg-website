@@ -14,8 +14,8 @@ import Chip, { ChipStatus } from "component/Chip";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { useTranslation } from "react-i18next";
-
 import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const columns = (t, certificateDownload) => [
   {
@@ -70,18 +70,27 @@ export default function Certification({ footerLinks }) {
   const reportTemplateRef = React.useRef(null);
 
   const handleGeneratePdf = async () => {
-    const doc = new jsPDF({
-      format: "a4",
-      unit: "px",
-    });
+    // const doc = new jsPDF({
+    //   format: "a4",
+    //   unit: "px",
+    // });
 
-    // Adding the fonts.
-    doc.setFont("Inter-Regular", "normal");
+    // // Adding the fonts.
+    // doc.setFont("Inter-Regular", "normal");
 
-    doc.html(reportTemplateRef.current, {
-      async callback(doc) {
-        await doc.save("document");
-      },
+    // doc.html(reportTemplateRef.current, {
+    //   async callback(doc) {
+    //     await doc.save("document");
+    //   },
+    // });
+
+    const input = reportTemplateRef.current;
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l");
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      // pdf.output('dataurlnewwindow');
+      pdf.save("download.pdf");
     });
   };
   const certificateDownload = async (data) => {
@@ -241,7 +250,15 @@ export default function Certification({ footerLinks }) {
               />
             </HStack>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body
+            style={{
+              backgroundColor: "#f5f5f5",
+              width: "297mm",
+              minHeight: "210mm",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
             <div ref={reportTemplateRef}>
               <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
             </div>

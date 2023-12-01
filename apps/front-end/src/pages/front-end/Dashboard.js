@@ -184,7 +184,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <HStack py="4" flex="1" px="6">
                   <AdminTypo.Dangerbutton
                     onPress={() => {
-                      setModalVisible(true);
+                      setModalVisible(certificateData);
                     }}
                   >
                     {t("PRERAK_CERTIFICATION_PROGRAM")}
@@ -193,7 +193,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               )}
             <Modal
               isOpen={modalVisible}
-              onClose={() => setModalVisible(false)}
+              onClose={() => setModalVisible()}
               avoidKeyboard
               size="xl"
             >
@@ -209,15 +209,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 <Modal.Body>
                   <HStack justifyContent="space-between">
                     <HStack>
-                      <AdminTypo.H4 color="textGreyColor.500">
+                      {/* <AdminTypo.H4 color="textGreyColor.500">
                         {t("TRAINING_NOT_COMPLETED")}
-                      </AdminTypo.H4>
+                      </AdminTypo.H4> */}
                       {/* <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
-                      </AdminTypo.H3>
+                      </AdminTypo.H3>*/}
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
-                      </AdminTypo.H3> */}
+                      </AdminTypo.H3>
                     </HStack>
                   </HStack>
                 </Modal.Body>
@@ -225,14 +225,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <HStack justifyContent="space-between" width="100%">
                     <AdminTypo.Secondarybutton
                       onPress={() => {
-                        setModalVisible(false);
+                        setModalVisible();
                       }}
                     >
                       Go Back
                     </AdminTypo.Secondarybutton>
                     <AdminTypo.Dangerbutton
                       onPress={() => {
-                        assignToPrerak(viewData?.id);
+                        navigate(
+                          `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
+                        );
                       }}
                     >
                       Start test
