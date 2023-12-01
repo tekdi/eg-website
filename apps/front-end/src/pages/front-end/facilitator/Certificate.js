@@ -70,8 +70,8 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     <Layout
       loading={loading}
       _appBar={{
-        onPressBackButton: (e) => navigate("/"),
-        onlyIconsShow: ["loginBtn", "langBtn"],
+        onPressBackButton: (e) => navigate(-1),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("CERTIFICATE")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
