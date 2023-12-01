@@ -1,7 +1,6 @@
 import React from "react";
-import { HStack, VStack, Box, Progress } from "native-base";
+import { HStack, VStack } from "native-base";
 import {
-  arrList,
   FrontEndTypo,
   IconByName,
   benificiaryRegistoryService,
@@ -9,6 +8,7 @@ import {
   Layout,
   enumRegistryService,
   GetEnumValue,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import moment from "moment";
@@ -127,392 +127,75 @@ export default function BenificiaryBasicDetails() {
             </HStack>
           </VStack>
 
-          <VStack
-            px="5"
-            py="3"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("CONTACT_DETAILS")}
-              </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/contact-info`);
-                }}
-              />
-            </HStack>
-            <Box>
-              <Progress
-                value={arrList(
-                  {
-                    ...benificiary,
-                    device_type: benificiary?.core_beneficiaries?.device_type,
-                    device_ownership:
-                      benificiary?.core_beneficiaries?.device_ownership,
-                    mark_as_whatsapp_number:
-                      benificiary?.core_beneficiaries?.mark_as_whatsapp_number,
-                  },
-                  [
-                    "email_id",
-                    "mobile",
-                    "alternative_mobile_number",
-                    "device_type",
-                    "device_ownership",
-                    "mark_as_whatsapp_number",
-                  ]
-                )}
-                size="xs"
-                colorScheme="info"
-              />
-            </Box>
-            <VStack space="4" pt="5">
-              <HStack
-                alignItems="Center"
-                justifyContent="space-between"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
-                  {t("SELF")}
-                </FrontEndTypo.H3>
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("CONTACT_DETAILS")}
+            label={["SELF", "ALTERNATIVE_NUMBER", "EMAIL"]}
+            item={benificiary}
+            arr={["mobile", "alternative_mobile_number", "email_id"]}
+            onEdit={(e) => navigate(`/beneficiary/edit/${id}/contact-info`)}
+          />
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("FAMILY_DETAILS")}
+            label={["FATHER", "MOTHER"]}
+            item={benificiary?.core_beneficiaries}
+            arr={["father_first_name", "mother_first_name"]}
+            onEdit={
+              isFamilyDetailsEdit()
+                ? (e) => navigate(`/beneficiary/edit/${id}/family-details`)
+                : false
+            }
+          />
 
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="0.4"
-                >
-                  {benificiary?.mobile ? benificiary?.mobile : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                alignItems="Center"
-                justifyContent="space-between"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="0.3"
-                >
-                  {t("ALTERNATIVE_NUMBER")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="0.4"
-                >
-                  {benificiary?.alternative_mobile_number
-                    ? benificiary?.alternative_mobile_number
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.3">
-                  {t("EMAIL")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.4">
-                  {benificiary?.email_id !== "null"
-                    ? benificiary?.email_id
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
-
-          <VStack
-            px="5"
-            py="3"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
-                {t("FAMILY_DETAILS")}
-              </FrontEndTypo.H3>
-              {isFamilyDetailsEdit() && (
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/family-details`);
-                  }}
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("PERSONAL_DETAILS")}
+            label={["SOCIAL", "MARITAL"]}
+            item={{
+              ...benificiary?.extended_users,
+              marital_status: benificiary?.extended_users?.marital_status ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"MARITAL_STATUS"}
+                  enumOptionValue={benificiary?.extended_users?.marital_status}
+                  enumApiData={enumOptions}
                 />
-              )}
-            </HStack>
-            <Box>
-              <Progress
-                value={arrList(benificiary?.core_beneficiaries, [
-                  "father_first_name",
-                  "father_middle_name",
-                  "father_last_name",
-                  "mother_first_name",
-                  "mother_middle_name",
-                  "mother_last_name",
-                ])}
-                size="xs"
-                colorScheme="info"
-              />
-            </Box>
-            <VStack space="2" pt="5">
-              <HStack
-                alignItems="Center"
-                space="xl"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
-                  {t("FATHER")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {`${
-                    benificiary?.core_beneficiaries?.father_first_name
-                      ? benificiary?.core_beneficiaries?.father_first_name
-                      : "-"
-                  } ${
-                    benificiary?.core_beneficiaries?.father_middle_name
-                      ? benificiary?.core_beneficiaries?.father_middle_name
-                      : ""
-                  } ${
-                    benificiary?.core_beneficiaries?.father_last_name
-                      ? benificiary?.core_beneficiaries?.father_last_name
-                      : ""
-                  }`}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                alignItems="Center"
-                space="xl"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="0.4"
-                  pb="2"
-                >
-                  {t("MOTHER")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {`${
-                    benificiary?.core_beneficiaries?.mother_first_name
-                      ? benificiary?.core_beneficiaries?.mother_first_name
-                      : "-"
-                  } ${
-                    benificiary?.core_beneficiaries?.mother_middle_name
-                      ? benificiary?.core_beneficiaries?.mother_middle_name
-                      : ""
-                  } ${
-                    benificiary?.core_beneficiaries?.mother_last_name
-                      ? benificiary?.core_beneficiaries?.mother_last_name
-                      : ""
-                  }`}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
-          <VStack
-            px="5"
-            py="3"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
-                {t("PERSONAL_DETAILS")}
-              </FrontEndTypo.H3>
-
-              {isPersonalDetailsEdit() && (
-                <IconByName
-                  name="EditBoxLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/personal-details`);
-                  }}
+              ) : (
+                "-"
+              ),
+              social_category: benificiary?.extended_users?.social_category ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"BENEFICIARY_SOCIAL_STATUS"}
+                  enumOptionValue={benificiary?.extended_users?.social_category}
+                  enumApiData={enumOptions}
                 />
-              )}
-            </HStack>
-            <Box>
-              <Progress
-                value={arrList(benificiary?.extended_users, [
-                  "social_category",
-                  "marital_status",
-                ])}
-                size="xs"
-                colorScheme="info"
-              />
-            </Box>
-            <VStack space="2" pt="5">
-              <HStack
-                alignItems="Center"
-                space="xl"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
-                  {t("SOCIAL")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.extended_users?.social_category ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"BENEFICIARY_SOCIAL_STATUS"}
-                      enumOptionValue={
-                        benificiary?.extended_users?.social_category
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack alignItems="Center" space="2xl">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
-                  {t("MARITAL")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {/* {benificiary?.extended_users?.marital_status
-                    ? t(benificiary?.extended_users?.marital_status)
-                    : "-"} */}
-                  {benificiary?.extended_users?.marital_status ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"MARITAL_STATUS"}
-                      enumOptionValue={
-                        benificiary?.extended_users?.marital_status
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
-          <VStack
-            px="5"
-            py="3"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("REFERENCE_DETAILS")}
-              </FrontEndTypo.H3>
-
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/reference-details`);
-                }}
-              />
-            </HStack>
-            <Box>
-              <Progress
-                value={arrList(benificiary?.references[0], [
-                  "first_name",
-                  "middle_name",
-                  "last_name",
-                  "relation",
-                  "contact_number",
-                ])}
-                size="xs"
-                colorScheme="info"
-              />
-            </Box>
-
-            <VStack space="2" pt="5">
-              <HStack
-                alignItems="Center"
-                space="2xl"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
-                  {t("NAME")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {`${
-                    benificiary?.references[0]?.first_name
-                      ? benificiary?.references[0]?.first_name
-                      : "-"
-                  } ${
-                    benificiary?.references[0]?.middle_name
-                      ? benificiary?.references[0]?.middle_name
-                      : ""
-                  } ${
-                    benificiary?.references[0]?.last_name
-                      ? benificiary?.references[0]?.last_name
-                      : ""
-                  }`}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                alignItems="Center"
-                space="2xl"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4" pb="2">
-                  {t("RELATION")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.references[0]?.relation
-                    ? benificiary?.references[0]?.relation
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack alignItems="Center" space="2xl">
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="0.4">
-                  {t("CONTACT")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {benificiary?.references[0]?.contact_number
-                    ? benificiary?.references[0]?.contact_number
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
+              ) : (
+                "-"
+              ),
+            }}
+            arr={["social_category", "marital_status"]}
+            onEdit={
+              isPersonalDetailsEdit()
+                ? (e) => navigate(`/beneficiary/edit/${id}/personal-details`)
+                : false
+            }
+          />
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("REFERENCE_DETAILS")}
+            label={["NAME", "RELATION", "CONTACT"]}
+            item={benificiary?.references[0]}
+            arr={["first_name", "relation", "contact_number"]}
+            onEdit={(e) =>
+              navigate(`/beneficiary/edit/${id}/reference-details`)
+            }
+          />
         </VStack>
       </VStack>
     </Layout>

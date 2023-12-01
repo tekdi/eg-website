@@ -60,7 +60,7 @@ const ReassignPrerak = React.lazy(() =>
 const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
-const Attendances = React.lazy(() => import("pages/admin/attendances/List"));
+// const Attendances = React.lazy(() => import("pages/admin/attendances/List"));
 
 export default [
   { path: "/admin/view/:id", component: FacilitatorView },
@@ -127,9 +127,9 @@ export default [
     path: "/admin/camps/:id/:step",
     component: CampForm,
   },
-  {
-    path: "/admin/attendances",
-    component: Attendances,
-  },
+  // {
+  //   path: "/admin/attendances",
+  //   component: Attendances,
+  // },
   { path: "*", component: NotFound },
 ];

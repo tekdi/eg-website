@@ -83,6 +83,7 @@ export default function View({ footerLinks }) {
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const { id } = useParams();
 
@@ -118,15 +119,16 @@ export default function View({ footerLinks }) {
   }, []);
 
   const updateCampStatus = async () => {
+    setIsDisable(true);
     const { error, ...result } = await campService.updateCampStatus({
       id,
       facilitator_id: data?.faciltator?.[0]?.id,
       status,
     });
-
     if (result?.status === 200) {
-      navigate("/admin/camps?status=registered&page=1");
+      navigate(`/admin/camps?status=${status}&page=1`);
     } else {
+      setIsDisable(false);
       setErrorList(result?.message);
       setStatus();
     }
@@ -339,27 +341,26 @@ export default function View({ footerLinks }) {
                       _image={{ size: 100 }}
                       title={
                         <HStack>
-
-                        <VStack>
-                          <AdminTypo.H4 color="textGreyColor.900" bold>
-                            {[facilitator?.first_name, facilitator?.last_name]
-                              .filter((e) => e)
-                              .join(" ")}
-                          </AdminTypo.H4>
-                          <AdminTypo.H5 color="textGreyColor.800">
-                            {facilitator?.mobile}
-                          </AdminTypo.H5>
-                        </VStack>
-                        <IconByName
-                              name="EditBoxLineIcon"
-                              color="iconColor.100"
-                              onPress={(e) =>
-                                navigate(
-                                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
-                                )
-                              }
-                            />
-                              </HStack>
+                          <VStack>
+                            <AdminTypo.H4 color="textGreyColor.900" bold>
+                              {[facilitator?.first_name, facilitator?.last_name]
+                                .filter((e) => e)
+                                .join(" ")}
+                            </AdminTypo.H4>
+                            <AdminTypo.H5 color="textGreyColor.800">
+                              {facilitator?.mobile}
+                            </AdminTypo.H5>
+                          </VStack>
+                          <IconByName
+                            name="EditBoxLineIcon"
+                            color="iconColor.100"
+                            onPress={(e) =>
+                              navigate(
+                                `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                              )
+                            }
+                          />
+                        </HStack>
                       }
                       subTitle={
                         <AdminTypo.H6 color="textGreyColor.800">
@@ -593,6 +594,7 @@ export default function View({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
 
                 <AdminTypo.Secondarybutton
+                  isDisabled={isDisable}
                   onPress={() => {
                     updateCampStatus();
                   }}

@@ -38,6 +38,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(true);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/educationdetails`);
@@ -208,6 +209,7 @@ export default function AgformUpdate({ userTokenInfo }) {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     let newFormData = data.formData;
     const newdata = filterObject(newFormData, Object.keys(schema?.properties));
     const updateDetails = await AgRegistryService.updateAg(newdata, userId);
@@ -278,6 +280,7 @@ export default function AgformUpdate({ userTokenInfo }) {
             }}
           >
             <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
               mt="3"
               type="submit"
               onPress={() => formRef?.current?.submit()}
