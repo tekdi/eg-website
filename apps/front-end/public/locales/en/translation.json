@@ -264,6 +264,7 @@
   "CBOSIGN": "Marksheet With CBO Sign",
   "CBOSIGNTRANSFER": "Transfer certificate with CBO Sign",
   "CERTIFICATE": "Certificate",
+  "CERTIFICATE_ISSUED_FOR": "Certificate Issued For",
   "CERTIFICATION": "Certification",
   "CERTIFICATION_IS_PENDING": "Certification Program is Pending",
   "CHANGE_MY_PASSWORD": "Change my Password",

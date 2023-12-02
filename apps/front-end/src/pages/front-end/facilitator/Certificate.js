@@ -1,5 +1,5 @@
 import React from "react";
-import { VStack, HStack, Modal, ScrollView, Button } from "native-base";
+import { VStack, HStack, Modal, ScrollView, Button, Row } from "native-base";
 import {
   Layout,
   FrontEndTypo,
@@ -62,10 +62,8 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
-    console.log({ result });
     setDownloadCertificate(result?.data?.[0]?.certificate_html);
   };
-
   return (
     <Layout
       loading={loading}
@@ -79,6 +77,12 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     >
       <VStack space={4}>
         <VStack paddingLeft="16px" paddingRight="16px" py={4} space="4">
+          <VStack alignItems={"center"}>
+            <FrontEndTypo.H1 color="textMaroonColor.400">
+              {t("CERTIFICATE_ISSUED_FOR")}
+            </FrontEndTypo.H1>
+          </VStack>
+
           {certificateData?.map((item) => {
             return (
               <CardComponent
@@ -92,15 +96,19 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   justifyContent={"space-evenly"}
                   alignItems={"center"}
                 >
-                  <FrontEndTypo.H2>{item?.context}</FrontEndTypo.H2>
-                  <FrontEndTypo.H2>{item?.score}</FrontEndTypo.H2>
+                  <FrontEndTypo.H2>{item?.events?.[0]?.name}</FrontEndTypo.H2>
+                  <FrontEndTypo.H2>
+                    {typeof item?.score === "number"
+                      ? item?.score.toFixed(2)
+                      : "-"}
+                  </FrontEndTypo.H2>
                   {item?.certificate_status === true ? (
                     <AdminTypo.Secondarybutton
                       onPress={() => certificateDownload(item)}
                     >
-                      {t("DOWNLOAD")}
+                      {t("VIEW_CERTIFICATE")}
                     </AdminTypo.Secondarybutton>
-                  ) : row.certificate_status === false ? (
+                  ) : item.certificate_status === false ? (
                     <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
                   ) : (
                     <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
