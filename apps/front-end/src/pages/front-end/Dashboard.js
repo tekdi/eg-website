@@ -8,6 +8,7 @@ import {
   arrList,
   BodyMedium,
   AdminTypo,
+  testRegistryService,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
 import React from "react";
@@ -43,6 +44,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = React.useState(false);
   const [lmsDEtails, setLmsDetails] = React.useState();
+  const { id } = userTokenInfo?.authUser || [];
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -57,7 +59,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           (e) => e?.type === "prerak_camp_execution_training"
         )?.[0] || {};
       setCertificateData(data);
-      setLmsDetails(data?.lms_test_tracking?.[0]);
+      if (data?.lms_test_tracking?.length > 0) {
+        setLmsDetails(data?.lms_test_tracking?.[0]);
+      }
 
       const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
       const format = "HH:mm:ss";
@@ -70,6 +74,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     setLoading(false);
   }, []);
+
+  React.useEffect(async () => {
+    const getCertificate = await testRegistryService.getCertificate({
+      id,
+    });
+    if (getCertificate?.data?.length > 0) {
+      setLmsDetails(getCertificate?.data?.[0]);
+    }
+  }, []);
+
   React.useEffect(() => {
     const res = objProps(facilitator);
     setProgress(
@@ -179,18 +193,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
-            {isEventActive &&
-              certificateData?.type == "prerak_camp_execution_training" && (
-                <HStack py="4" flex="1" px="6">
-                  <AdminTypo.Dangerbutton
-                    onPress={() => {
-                      setModalVisible(certificateData);
-                    }}
-                  >
-                    {t("PRERAK_CERTIFICATION_PROGRAM")}
-                  </AdminTypo.Dangerbutton>
-                </HStack>
-              )}
+            {console.log({ lmsDEtails })}
+            {isEventActive
+              ? certificateData?.type == "prerak_camp_execution_training" && (
+                  <HStack py="4" flex="1" px="6">
+                    <AdminTypo.Dangerbutton
+                      onPress={() => {
+                        setModalVisible(certificateData);
+                      }}
+                    >
+                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                    </AdminTypo.Dangerbutton>
+                  </HStack>
+                )
+              : lmsDEtails?.id && (
+                  <HStack py="4" flex="1" px="6">
+                    <AdminTypo.Dangerbutton
+                      onPress={() => {
+                        setModalVisible(certificateData);
+                      }}
+                    >
+                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                    </AdminTypo.Dangerbutton>
+                  </HStack>
+                )}
             <Modal
               isOpen={modalVisible}
               onClose={() => setModalVisible()}
@@ -198,7 +224,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               size="md"
             >
               <Modal.Content>
-                <Modal.CloseButton />
                 <Modal.Header alignItems={"center"}>
                   <HStack alignItems={"center"}>
                     <AdminTypo.H4 color="textGreyColor.500">
@@ -232,14 +257,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
                   <HStack space={"6"}>
-                    <FrontEndTypo.DefaultButton
-                      textColor={"black"}
-                      onPress={() => {
-                        setModalVisible();
-                      }}
-                    >
-                      {lmsDEtails ? t("GO_BACK") : t("OK")}
-                    </FrontEndTypo.DefaultButton>
+                    {lmsDEtails === undefined ||
+                      (lmsDEtails?.certificate_status === true && (
+                        <FrontEndTypo.DefaultButton
+                          textColor={"black"}
+                          onPress={() => {
+                            setModalVisible();
+                          }}
+                        >
+                          {t("GO_BACK")}
+                        </FrontEndTypo.DefaultButton>
+                      ))}
+                    {lmsDEtails?.certificate_status === false && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={() => {
+                          setModalVisible();
+                        }}
+                      >
+                        {t("OK")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
                     {lmsDEtails === undefined && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
