@@ -1,26 +1,41 @@
 import React from "react";
-import { testRegistryService, useWindowSize } from "@shiksha/common-lib";
+import {
+  BodyLarge,
+  H2,
+  t,
+  testRegistryService,
+  useWindowSize,
+} from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { SunbirdPlayer } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
+import { Button, HStack, VStack } from "native-base";
+import { useTranslation } from "react-i18next";
 
-function Player() {
+function Player({ setAlert }) {
+  const { t } = useTranslation();
   const [width, height] = useWindowSize();
   const [assessmentData, setassessmentData] = useState();
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
+  const [isEnd, setIsEnd] = React.useState();
 
   useEffect(async () => {
-    const assesmentData = await testRegistryService.getAssessment(do_id);
-    setassessmentData(assesmentData);
+    const { error, ...assesmentData } = await testRegistryService.getAssessment(
+      do_id
+    );
+    if (!error) {
+      setassessmentData(assesmentData);
+    } else {
+      console.log(error);
+      setAlert(error);
+    }
   }, []);
 
   const navigate = useNavigate();
   const handleExitButton = () => {
-    setTimeout(() => {
-      navigate("/");
-    }, 2000); // 1000 milliseconds = 1 second
+    navigate("/");
   };
 
   const handleTrackData = async (
@@ -88,61 +103,68 @@ function Player() {
   };
 
   return (
-    <SunbirdPlayer
-      {...{ width, height: height - 64 }}
-      {...assessmentData}
-      userData={{
-        firstName: localStorage.getItem("fullName"),
-        lastName: "",
-      }}
-      setTrackData={(data) => {
-        if (
-          [
-            "assessment",
-            "SelfAssess",
-            "QuestionSet",
-            "QuestionSetImage",
-          ].includes(type)
-        ) {
-          handleTrackData(data);
-        } else if (
-          ["application/vnd.sunbird.questionset"].includes(
-            assessmentData?.mimeType
-          )
-        ) {
-          handleTrackData(data, "application/vnd.sunbird.questionset");
-        } else if (
-          [
-            "application/pdf",
-            "video/mp4",
-            "video/webm",
-            "video/x-youtube",
-            "application/vnd.ekstep.h5p-archive",
-          ].includes(assessmentData?.mimeType)
-        ) {
-          handleTrackData(data, "pdf-video");
-        } else {
-          if (
-            ["application/vnd.ekstep.ecml-archive"].includes(
-              assessmentData?.mimeType
-            )
-          ) {
-            if (Array.isArray(data)) {
-              const score = data.reduce(
-                (old, newData) => old + newData?.score,
-                0
-              );
-              handleTrackData({ ...data, score: `${score}` }, "ecml");
-              setTrackData(data);
+    <VStack>
+      <VStack p="5" bg="textRed.400" alignItems={"center"}>
+        <H2 color="white">{localStorage.getItem("fullName")}</H2>
+      </VStack>
+      <VStack alignItems={"center"}>
+        <SunbirdPlayer
+          {...{ width, height: height - 64 }}
+          {...assessmentData}
+          userData={{
+            firstName: localStorage.getItem("fullName"),
+            lastName: "",
+          }}
+          setTrackData={(data) => {
+            if (
+              [
+                "assessment",
+                "SelfAssess",
+                "QuestionSet",
+                "QuestionSetImage",
+              ].includes(type)
+            ) {
+              handleTrackData(data);
+            } else if (
+              ["application/vnd.sunbird.questionset"].includes(
+                assessmentData?.mimeType
+              )
+            ) {
+              handleTrackData(data, "application/vnd.sunbird.questionset");
+            } else if (
+              [
+                "application/pdf",
+                "video/mp4",
+                "video/webm",
+                "video/x-youtube",
+                "application/vnd.ekstep.h5p-archive",
+              ].includes(assessmentData?.mimeType)
+            ) {
+              handleTrackData(data, "pdf-video");
             } else {
-              handleTrackData({ ...data, score: `0` }, "ecml");
+              if (
+                ["application/vnd.ekstep.ecml-archive"].includes(
+                  assessmentData?.mimeType
+                )
+              ) {
+                if (Array.isArray(data)) {
+                  const score = data.reduce(
+                    (old, newData) => old + newData?.score,
+                    0
+                  );
+                  handleTrackData({ ...data, score: `${score}` }, "ecml");
+                  setTrackData(data);
+                } else {
+                  handleTrackData({ ...data, score: `0` }, "ecml");
+                }
+              }
             }
-          }
-        }
-      }}
-      handleExitButton={handleExitButton}
-      public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
-    />
+          }}
+          handleExitButton={handleExitButton}
+          public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
+        />
+      </VStack>
+    </VStack>
   );
 }
 

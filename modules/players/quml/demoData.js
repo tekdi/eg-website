@@ -1,5 +1,4 @@
 const sectionContent = {
-  
   showStartPage: true,
   copyright: "tn",
   lastStatusChangedOn: "2021-07-29T06:01:27.194+0000",
@@ -247,9 +246,6 @@ const sectionContent = {
   },
   pkgVersion: 1,
 };
-
-
-
 
 let metadata = window.name ? JSON.parse(window.name) : sectionContent;
 const playerConfig = {
