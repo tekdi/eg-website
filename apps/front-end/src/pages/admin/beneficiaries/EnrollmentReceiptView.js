@@ -127,7 +127,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
-              {t("ENROLLMENT_DETAILS_VERIFICATION")}
+              {t("ENROLLMENT_DETAILS_VERIFICATION")} ss
             </AdminTypo.H5>
 
             <HStack space="2">

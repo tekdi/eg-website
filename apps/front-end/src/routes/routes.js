@@ -64,6 +64,9 @@ const AgformUpdate = React.lazy(() =>
 const Agadhaar = React.lazy(() => import("pages/front-end/ag-form/Agadhaar"));
 const Success = React.lazy(() => import("pages/front-end/Success"));
 const Profile = React.lazy(() => import("pages/front-end/facilitator/Profile"));
+const Certificate = React.lazy(() =>
+  import("pages/front-end/facilitator/Certificate")
+);
 const AdharKyc = React.lazy(() =>
   import("pages/front-end/AadhaarKyc/AadhaarKyc")
 );
@@ -137,9 +140,6 @@ const CampExecution = React.lazy(() =>
 const CampExecutionStart = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampExecutionStart")
 );
-const CampExecutionEnd = React.lazy(() =>
-  import("pages/front-end/Camp/CampExecution/CampExecutionEnd")
-);
 
 const CampAttendance = React.lazy(() =>
   import("pages/front-end/Camp/Attendace/CampAttendance")
@@ -168,6 +168,8 @@ const CampSessionsList = React.lazy(() =>
   import("pages/admin/camps/CampSessionList")
 );
 const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
+
+const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
   { path: "/form", component: Home },
@@ -232,6 +234,7 @@ export default [
     component: BenificiaryListView,
   },
   { path: "/table", component: CountScreenView },
+
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
@@ -277,6 +280,7 @@ export default [
     component: PcrView,
   },
   { path: "/profile", component: Profile },
+  { path: "/certificate", component: Certificate },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
   {
@@ -326,16 +330,21 @@ export default [
     component: CampSettings,
   },
   { path: "/camps/:id/Campexecution", component: CampExecution },
-  { path: "/camps/:id/campexecutionstart", component: CampExecutionStart },
-  { path: "/camps/:id/campexecutionend", component: CampExecutionEnd },
+  {
+    path: "/camps/:id/campexecutionstart/:activityId",
+    component: CampExecutionStart,
+  },
   { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   { path: "/camps/:id/activities", component: CampTodayActivities },
   {
-    path: "/camps/:id/kit_material_deatails",
+    path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
   },
   { path: "/camps/:id/sessionslist", component: CampSessionsList },
   { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
-
+  {
+    path: "/assessment/:context/:context_id/:do_id",
+    component: Assessment,
+  },
   { path: "*", component: Dashboard },
 ];

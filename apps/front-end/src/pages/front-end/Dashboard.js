@@ -8,6 +8,7 @@ import {
   arrList,
   BodyMedium,
   AdminTypo,
+  testRegistryService,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
 import React from "react";
@@ -42,6 +43,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = React.useState(false);
+  const [lmsDEtails, setLmsDetails] = React.useState();
+  const { id } = userTokenInfo?.authUser || [];
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -52,13 +55,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           id: fa_id,
         });
       const data =
-        c_data?.events?.filter(
+        c_data?.data?.filter(
           (e) => e?.type === "prerak_camp_execution_training"
         )?.[0] || {};
       setCertificateData(data);
+      if (data?.lms_test_tracking?.length > 0) {
+        setLmsDetails(data?.lms_test_tracking?.[0]);
+      }
 
       const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-      const format = "hh:mm:ss";
+      const format = "HH:mm:ss";
       const time = moment(moment().format(format), format);
       const beforeTime = moment(data?.start_time, format);
       const afterTime = moment(data?.end_time, format);
@@ -67,6 +73,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }
     }
     setLoading(false);
+  }, []);
+
+  React.useEffect(async () => {
+    const getCertificate = await testRegistryService.getCertificate({
+      id,
+    });
+    if (getCertificate?.data?.length > 0) {
+      setLmsDetails(getCertificate?.data?.[0]);
+    }
   }, []);
 
   React.useEffect(() => {
@@ -178,64 +193,113 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
-            {isEventActive &&
-              certificateData?.type == "prerak_camp_execution_training" && (
-                <HStack py="4" flex="1" px="6">
-                  <AdminTypo.Dangerbutton
-                    onPress={() => {
-                      setModalVisible(true);
-                    }}
-                  >
-                    {t("PRERAK_CERTIFICATION_PROGRAM")}
-                  </AdminTypo.Dangerbutton>
-                </HStack>
-              )}
+            {console.log({ lmsDEtails })}
+            {isEventActive
+              ? certificateData?.type == "prerak_camp_execution_training" && (
+                  <HStack py="4" flex="1" px="6">
+                    <AdminTypo.Dangerbutton
+                      onPress={() => {
+                        setModalVisible(certificateData);
+                      }}
+                    >
+                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                    </AdminTypo.Dangerbutton>
+                  </HStack>
+                )
+              : lmsDEtails?.id && (
+                  <HStack py="4" flex="1" px="6">
+                    <AdminTypo.Dangerbutton
+                      onPress={() => {
+                        setModalVisible(certificateData);
+                      }}
+                    >
+                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                    </AdminTypo.Dangerbutton>
+                  </HStack>
+                )}
             <Modal
               isOpen={modalVisible}
-              onClose={() => setModalVisible(false)}
+              onClose={() => setModalVisible()}
               avoidKeyboard
-              size="xl"
+              size="md"
             >
               <Modal.Content>
-                <Modal.CloseButton />
-                <Modal.Header textAlign={"left"}>
+                <Modal.Header alignItems={"center"}>
                   <HStack alignItems={"center"}>
                     <AdminTypo.H4 color="textGreyColor.500">
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
                     </AdminTypo.H4>
                   </HStack>
                 </Modal.Header>
-                <Modal.Body>
-                  <HStack justifyContent="space-between">
-                    <HStack>
-                      <AdminTypo.H4 color="textGreyColor.500">
-                        {t("TRAINING_NOT_COMPLETED")}
-                      </AdminTypo.H4>
-                      {/* <AdminTypo.H3 color="textGreyColor.500">
+                <Modal.Body alignItems="center">
+                  <VStack>
+                    {lmsDEtails === undefined && (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("TAKE_TEST")}
+                      </AdminTypo.H3>
+                    )}
+                    {lmsDEtails?.certificate_status === null && (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("CERTIFICATION_IS_PENDING")}
+                      </AdminTypo.H3>
+                    )}
+                    {lmsDEtails?.certificate_status === false && (
+                      <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
+                    )}
+                    {lmsDEtails?.certificate_status === true && (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
-                      </AdminTypo.H3> */}
-                    </HStack>
-                  </HStack>
+                      </AdminTypo.H3>
+                    )}
+                  </VStack>
                 </Modal.Body>
-                <Modal.Footer>
-                  <HStack justifyContent="space-between" width="100%">
-                    <AdminTypo.Secondarybutton
-                      onPress={() => {
-                        setModalVisible(false);
-                      }}
-                    >
-                      Go Back
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.Dangerbutton
-                      onPress={() => {
-                        assignToPrerak(viewData?.id);
-                      }}
-                    >
-                      Start test
-                    </AdminTypo.Dangerbutton>
+                <Modal.Footer alignSelf={"center"}>
+                  <HStack space={"6"}>
+                    {lmsDEtails === undefined ||
+                      (lmsDEtails?.certificate_status === true && (
+                        <FrontEndTypo.DefaultButton
+                          textColor={"black"}
+                          onPress={() => {
+                            setModalVisible();
+                          }}
+                        >
+                          {t("GO_BACK")}
+                        </FrontEndTypo.DefaultButton>
+                      ))}
+                    {lmsDEtails?.certificate_status === false && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={() => {
+                          setModalVisible();
+                        }}
+                      >
+                        {t("OK")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
+                    {lmsDEtails === undefined && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={() => {
+                          navigate(
+                            `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
+                          );
+                        }}
+                      >
+                        {t("START_TEST")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
+                    {lmsDEtails?.certificate_status === true && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={() => {
+                          navigate(`/certificate`);
+                        }}
+                      >
+                        {t("VIEW_CERTIFICATE")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
                   </HStack>
                 </Modal.Footer>
               </Modal.Content>

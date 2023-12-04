@@ -26,6 +26,8 @@ export default function CampExecution({ footerLinks }) {
   const [cameraFile, setCameraFile] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
   const [timer, setTimer] = React.useState();
+  const [activityId, setActivityId] = React.useState();
+  const [todaysData, setTodaysData] = React.useState();
   const navigate = useNavigate();
   const [latData, longData, errors] = useLocationData() || [];
 
@@ -36,11 +38,29 @@ export default function CampExecution({ footerLinks }) {
   }, [id]);
 
   React.useEffect(async () => {
-    if (errors) {
-      setError(errors);
-    } else {
-      setData({ ...data, lat: `${latData}`, long: `${longData}` });
+    const obj = {
+      id: id,
+      start_date: moment(new Date()).format("YYYY-MM-DD"),
+    };
+    const result = await campService.getcampstatus({ id });
+    const todaysActivity = await campService.getActivity(obj);
+    setTodaysData(todaysActivity?.data?.camp_days_activities_tracker);
+    const endDate = result?.data?.end_date;
+    const startDate = result?.data?.start_date;
+    const camp_day_happening = result?.data?.camp_day_happening;
+    const mood = result?.data?.mood;
+    const activity_id = result?.data?.id;
+    if (!endDate && startDate && camp_day_happening !== "no" && mood) {
+      navigate(`/camps/${id}/campexecutionstart/${activity_id}`, {
+        state: "campInprogress",
+      });
+    } else if (!endDate && startDate && camp_day_happening !== "no" && !mood) {
+      navigate(`/camps/${id}/campexecutionstart/${activity_id}`);
     }
+  }, []);
+
+  React.useEffect(async () => {
+    setData({ ...data, lat: `${latData}`, long: `${longData}` });
   }, [latData]);
 
   React.useEffect(() => {
@@ -60,8 +80,6 @@ export default function CampExecution({ footerLinks }) {
             s: s > 60 ? s % (m * 60) : s,
             cs: s,
           });
-        } else {
-          endCamp();
         }
       }, 1000);
     } else {
@@ -83,17 +101,24 @@ export default function CampExecution({ footerLinks }) {
     } catch (e) {}
   };
 
-  // endCamp
-  const endCamp = () => {
-    localStorage.removeItem("startCamp");
-    setTimer({
-      h: 0,
-      m: 0,
-      s: 0,
-      cs: 0,
-    });
+  const campBegin = async () => {
+    setStart(true);
+    if (todaysData?.[0]?.id) {
+      const payLoad = {
+        edit_page_type: "edit_camp_day_happening",
+        camp_day_happening: "yes",
+        id: todaysData?.[0]?.id,
+      };
+      await campService.addMoodActivity(payLoad);
+    } else {
+      const payLoad = {
+        camp_id: id,
+        camp_day_happening: "yes",
+      };
+      const data = await campService.campActivity(payLoad);
+      setActivityId(data?.insert_camp_days_activities_tracker_one?.id);
+    }
   };
-
   // uploadAttendencePicture from start camp
   const uploadAttendencePicture = async (e) => {
     setError("");
@@ -102,14 +127,17 @@ export default function CampExecution({ footerLinks }) {
     if (photo_1) {
       const dataQ = {
         ...data,
-        context_id: id,
+        context_id: todaysData?.[0]?.id || activityId,
         user_id: facilitator?.id,
         status: "present",
+        reason: "camp_started",
         photo_1: `${photo_1}`,
       };
       await campService.markCampAttendance(dataQ);
       localStorage.setItem("attendancePicture", attendanceId);
-      navigate(`/camps/${id}/campexecutionstart`);
+      navigate(
+        `/camps/${id}/campexecutionstart/${todaysData?.[0]?.id || activityId}`
+      );
     } else {
       setError("Capture Picture First");
     }
@@ -121,14 +149,11 @@ export default function CampExecution({ footerLinks }) {
       <React.Suspense fallback={<Loading />}>
         <Camera
           messageComponent={
-            cameraUrl && (
-              <Alert status="success">
-                <HStack alignItems="center" space="2">
-                  <Alert.Icon />
-                  <FrontEndTypo.H4>{t("ATTENDANCE_SUCCESS")}</FrontEndTypo.H4>
-                </HStack>
-              </Alert>
-            )
+            <VStack>
+              <FrontEndTypo.H3 color="white" textAlign="center">
+                {t("ATTENDANCE_PHOTO_MSG")}
+              </FrontEndTypo.H3>
+            </VStack>
           }
           {...{
             onFinish: (e) => startCamp(),
@@ -188,7 +213,7 @@ export default function CampExecution({ footerLinks }) {
         <Box
           margin={"auto"}
           height={"200px"}
-          width={"380px"}
+          width={"340px"}
           borderColor={"black"}
           bg={"red.100"}
           position="relative"
@@ -222,13 +247,13 @@ export default function CampExecution({ footerLinks }) {
               fontSize="16px"
               fontWeight="bold"
             >
-              {t("You're welcome! Are you ready for your dream to come true?")}
+              {t("YOUR_WELCOME_READY_TO_FLY")}
             </FrontEndTypo.H2>
           </VStack>
         </Box>
         <VStack alignItems="center" space="5">
           <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-            {t("Will the camp be conducted today?")}
+            {t("STARTS_YOUR_DAY")}
           </FrontEndTypo.H1>
         </VStack>
         <VStack space="4">
@@ -243,15 +268,17 @@ export default function CampExecution({ footerLinks }) {
             }}
             type="warning"
           />
-          <FrontEndTypo.H3>{t("STARTS_YOUR_DAY")}</FrontEndTypo.H3>
+          <FrontEndTypo.H3>
+            {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
+          </FrontEndTypo.H3>
           <VStack space="4">
-            <FrontEndTypo.Primarybutton onPress={(e) => setStart(true)}>
-              {t("Yes, Absolutely ")}
+            <FrontEndTypo.Primarybutton onPress={campBegin}>
+              {t("YES_ABSOLUTELY")}
             </FrontEndTypo.Primarybutton>
             <FrontEndTypo.Secondarybutton
               onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
             >
-              {t("No, I have other plans for today.")}
+              {t("NO_PLAN")}
             </FrontEndTypo.Secondarybutton>
           </VStack>
         </VStack>

@@ -4,17 +4,30 @@ import {
   IconByName,
   Layout,
   campService,
+  Loading,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, Pressable, VStack } from "native-base";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
+const checkNext = (status, updated_at) => {
+  return (
+    status === "complete" &&
+    updated_at &&
+    moment.utc(updated_at).format("YYYY-MM-DD") ===
+      moment.utc().format("YYYY-MM-DD")
+  );
+};
+
 export default function CampSessionList({ footerLinks }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [sessionList, setSessionList] = React.useState();
   const [sessionActive, setSessionActive] = React.useState();
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(async () => {
     const result = await campService.getCampSessionsList({ id: id });
@@ -29,39 +42,41 @@ export default function CampSessionList({ footerLinks }) {
         };
       }
     });
-    if (
-      dataSession.status === "complete" &&
-      dataSession.updated_at &&
-      moment(dataSession.updated_at).format("YYYY-MM-DD") ===
-        moment().format("YYYY-MM-DD")
-    ) {
+
+    if (!dataSession.status) {
       setSessionActive(dataSession?.ordering);
-    }
-    if (dataSession.status === "incomplete") {
+    } else if (dataSession.status === "incomplete") {
       const result = data.find(
         (item) => item?.ordering === dataSession?.ordering - 1
       );
       if (
-        result?.session_tracks?.[0]?.status === "complete" &&
-        result?.session_tracks?.[0]?.updated_at &&
-        moment(result?.session_tracks?.[0]?.updated_at).format("YYYY-MM-DD") ===
-          moment().format("YYYY-MM-DD")
+        checkNext(
+          result?.session_tracks?.[0]?.status,
+          result?.session_tracks?.[0]?.updated_at
+        )
       ) {
         setSessionActive(dataSession?.ordering - 1);
       } else {
         setSessionActive(dataSession?.ordering);
       }
+    } else if (checkNext(dataSession.status, dataSession.updated_at)) {
+      setSessionActive(dataSession?.ordering);
     } else {
       setSessionActive(dataSession?.ordering + 1);
     }
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Layout
       _appBar={{
         onPressBackButton: (e) => navigate(-1),
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{"पाठ्यक्रम सूची"}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -69,7 +84,7 @@ export default function CampSessionList({ footerLinks }) {
         <HStack space="2">
           <IconByName name="BookOpenLineIcon" />
           <FrontEndTypo.H2 color="textMaroonColor.400">
-            पाठ्यक्रम
+            {t("LESSON")}
           </FrontEndTypo.H2>
         </HStack>
 
@@ -91,9 +106,8 @@ export default function CampSessionList({ footerLinks }) {
             >
               <HStack justifyContent={"space-between"}>
                 <FrontEndTypo.H2 alignItem="center">
-                  {"Session" + " " + item?.ordering}
+                  {t("LESSON") + " " + item?.ordering}
                 </FrontEndTypo.H2>
-
                 <IconByName
                   name="ArrowRightSLineIcon"
                   _icon={{ size: "25px" }}

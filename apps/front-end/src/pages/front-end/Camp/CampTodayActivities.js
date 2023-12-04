@@ -20,13 +20,14 @@ import {
   VStack,
   Image,
   Alert,
+  Center,
 } from "native-base";
 import Drawer from "react-modern-drawer";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampTodayActivities({ footerLinks }) {
+export default function CampTodayActivities({ footerLinks, setAlert }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -35,14 +36,32 @@ export default function CampTodayActivities({ footerLinks }) {
   const [selectValue, setSelectValue] = React.useState([]);
   const [isSaving, setIsSaving] = React.useState(false);
   const [campList, setCampList] = React.useState([]);
+  const [activityId, setActivityId] = React.useState();
 
   React.useEffect(async () => {
+    let result = await campService.getcampstatus({ id });
+    let activity_id = result?.data?.id;
+    if (!activity_id) {
+      result = await campService.getActivity({ id });
+      activity_id = result?.data?.id;
+    }
+    setSelectValue(result?.data?.misc_activities || []);
+    setActivityId(activity_id);
     const getListActivities = await campService.getActivitiesList();
     setCampList(getListActivities?.data);
   }, []);
 
   const handleSubmitData = async () => {
-    console.log("enums_type", enums.type);
+    const dataToSave = {
+      edit_page_type: "edit_misc_activities",
+      id: activityId,
+      misc_activities: selectValue,
+    };
+    const activities_response = await campService.addMoodActivity(dataToSave);
+    if (activities_response) {
+      setEnums();
+      setAlert(t("MISSILINEOUS_SUCCESS_MESSAGE"));
+    }
   };
 
   React.useEffect(async () => {
@@ -52,13 +71,6 @@ export default function CampTodayActivities({ footerLinks }) {
   }, []);
 
   const handleActivities = async (item) => {
-    const dataToSave = {
-      user_id: 1077,
-      type: item,
-      activity_data: [selectValue],
-    };
-    const activities_response = await campService.getActivitiesList(dataToSave);
-    console.log({ activities_response });
     const data = enumOptions && enumOptions[item] ? enumOptions[item] : null;
     setEnums({ type: item, data });
   };
@@ -69,52 +81,52 @@ export default function CampTodayActivities({ footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space={4}>
-        <HStack space={4}>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-              <VStack alignItems="center" space={3}>
-                <VStack bg="gray.300" rounded="100%" p="2">
-                  <Image
-                    source={{
-                      uri: "/images/activities/learning-activity.png",
-                    }}
-                    alt=""
-                    resizeMode="contain"
-                    color="gray.600"
-                    alignSelf={"center"}
-                    padding="6"
-                  />
-                </VStack>
-                <FrontEndTypo.H4>{t("LEARNING_ACTIVITIES")}</FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent>
-          <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
-            <Pressable
-              onPress={() => {
-                handleActivities("MISCELLANEOUS_ACTIVITIES");
-              }}
-            >
-              <VStack alignItems="center" space={3}>
-                <VStack bg="gray.300" rounded="100%" p="2">
-                  <Image
-                    source={{
-                      uri: "/images/activities/missilaneous-activity.png",
-                    }}
-                    resizeMode="contain"
-                    color="gray.600"
-                    bg="gray.300"
-                    rounded="100%"
-                    p="6"
-                  />
-                </VStack>
-                <FrontEndTypo.H4>
-                  {t("MISCELLANEOUS_ACTIVITIES")}
-                </FrontEndTypo.H4>
-              </VStack>
-            </Pressable>
-          </CardComponent>
-        </HStack>
+        <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
+            <HStack alignItems="center" justifyContent="center" space={3}>
+              <HStack>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  p="6"
+                  w="100px"
+                  h="80px"
+                />
+              </HStack>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("LEARNING_ACTIVITIES")}
+              </FrontEndTypo.H2>
+            </HStack>
+          </Pressable>
+        </CardComponent>
+        <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+          <Pressable
+            onPress={() => {
+              handleActivities("MISCELLANEOUS_ACTIVITIES");
+            }}
+          >
+            <HStack alignItems="center" justifyContent="center" space={3}>
+              <HStack>
+                <Image
+                  source={{
+                    uri: "/images/activities/missilaneous-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  p="6"
+                  w="100px"
+                  h="80px"
+                />
+              </HStack>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("MISCELLANEOUS_ACTIVITIES")}
+              </FrontEndTypo.H2>
+            </HStack>
+          </Pressable>
+        </CardComponent>
       </VStack>
 
       <Actionsheet isOpen={enums?.data} onClose={(e) => setEnums()}>

@@ -13,6 +13,7 @@ import AppShell from './components/AppShell'
 import ProgressBar from './components/ProgressBar'
 import Tab from './components/Tab'
 import Loading from './components/Loading'
+import SunbirdPlayer from './components/SunbirdPlayer'
 import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import * as enumRegistryService from './services/enumRegistryService'
@@ -43,6 +44,7 @@ import CustomRadio from './components/frontend_component/CustomRadio'
 import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
+import * as testRegistryService from './services/testRegistryService'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
@@ -77,6 +79,7 @@ export {
   geolocationRegistryService,
   uploadRegistryService,
   AgRegistryService,
+  testRegistryService,
   ImageView,
   t,
   changeLanguage,
@@ -103,7 +106,8 @@ export {
   useLocationData,
   dbService,
   syncService,
-  useOnlineStatus
+  useOnlineStatus,
+  SunbirdPlayer
 }
 
 export * from './services/RestClient'
