@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QUML Player web component demo</title>
+    <link rel="stylesheet" href="./theme.css" />
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
       integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
@@ -44,13 +46,16 @@
     <script type="text/javascript">
       // Need to pass the API URL to fetch the question set
       window.questionListUrl = "https://vdn.diksha.gov.in/api/question/v1/list";
-      console.log('window?.name',window?.name)
+      if (localStorage.getItem("console")) {
+        console.log("window?.name", window?.name);
+      }
       if (window?.name) {
         const data = JSON.parse(window?.name);
         if (data?.questionListUrl) {
-          console.log("asd", data?.questionListUrl);
+          if (localStorage.getItem("console")) {
+            console.log("asd", data?.questionListUrl);
+          }
           window.questionListUrl = data?.questionListUrl;
-
         }
       }
       // window.questionListUrl = "https://alt-shiksha.uniteframework.io/api/v1/list";
@@ -65,7 +70,9 @@
       // });
 
       qumlPlayerElement.addEventListener("telemetryEvent", (event) => {
-        console.log("On telemetryEvent", event);
+        if (localStorage.getItem("console")) {
+          console.log("On telemetryEvent", event);
+        }
         window?.parent?.postMessage(event?.detail, "*");
       });
 
