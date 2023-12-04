@@ -13,6 +13,8 @@ import {
   getOptions,
   validation,
   sendAndVerifyOtp,
+  useOnlineStatus,
+  dbService
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,6 +31,7 @@ import accessControl from "./AccessControl.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
+  const isOnline  = useOnlineStatus();
   const { step } = useParams();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -388,12 +391,23 @@ export default function App({ userTokenInfo, footerLinks }) {
     const { id } = userTokenInfo?.authUser;
     if (id) {
       setLoading(true);
-      const result = await facilitatorRegistryService.profileStapeUpdate({
+      let result;
+      const payload = {
         ...data,
         page_type: step,
         ...(overide || {}),
         id: id,
-      });
+      }
+      if (isOnline) {
+        result = await facilitatorRegistryService.profileStapeUpdate(payload);
+      } else {
+        const dataKey = `form_${step}`;
+        const dataToSave = {
+          payload,
+          formServiceFunction: 'profileStapeUpdate'
+        }
+        dbService.setData(dataKey, dataToSave);
+      }
       setLoading(false);
       return result;
     }

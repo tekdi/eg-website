@@ -46,6 +46,9 @@ import Breadcrumb from './components/Breadcrumb'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
+import * as dbService from './services/DBService'
+import * as syncService from './services/syncService'
+import useOnlineStatus from './hooks/useOnlineStatus'
 
 // export
 export {
@@ -97,7 +100,10 @@ export {
   CustomRadio,
   UserCard,
   GeoLocation,
-  useLocationData
+  useLocationData,
+  dbService,
+  syncService,
+  useOnlineStatus
 }
 
 export * from './services/RestClient'

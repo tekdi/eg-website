@@ -3,6 +3,7 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
+import useOnlineStatus from "@shiksha/common-lib";
 
 import {
   Layout,
@@ -213,9 +214,10 @@ export default function BasicDetailsForm({ id }) {
   };
 
   const onSubmit = async (data) => {
-    setIsDisable(true);
-    await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    
+    // setIsDisable(true);
+    // await AgRegistryService.updateAg(formData, userId);
+    // navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (

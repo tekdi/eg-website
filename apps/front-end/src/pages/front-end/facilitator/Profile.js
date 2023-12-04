@@ -9,7 +9,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { objProps } from "@shiksha/common-lib";
+import { objProps, syncService } from "@shiksha/common-lib";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
@@ -51,6 +51,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     const result = await facilitatorRegistryService.getOne({ id });
     setFacilitator(result);
+    await syncService.syncForms();
   }, []);
 
   const res = objProps(facilitator);
