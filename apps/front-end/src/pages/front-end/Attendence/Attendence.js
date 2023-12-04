@@ -10,9 +10,9 @@ import {
   Loading,
   attendanceService,
   facilitatorRegistryService,
-  CardComponent,
   ImageView,
   testRegistryService,
+  debounce,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";
@@ -159,21 +159,26 @@ const scheduleCandidates = (t, days, certificateDownload) => {
     ...days,
     {
       name: t("SCORE"),
-      selector: (row) => row?.lms_test_trackings?.[0]?.score || "-",
+      selector: (row) => {
+        const score = row?.lms_test_trackings?.[0]?.score;
+        const roundedScore = typeof score === "number" ? score.toFixed(2) : "-";
+        return roundedScore;
+      },
       attr: "name",
       wrap: true,
     },
+
     {
       name: t("STATUS"),
       selector: (row) =>
-        row.lms_test_trackings?.[0]?.certificate_status === true ? (
+        row?.lms_test_trackings?.[0]?.certificate_status === true ? (
           <AdminTypo.Secondarybutton
             my="3"
             onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
           >
             {t("DOWNLOAD")}
           </AdminTypo.Secondarybutton>
-        ) : row.certificate_status === false ? (
+        ) : row?.lms_test_trackings?.[0]?.certificate_status === false ? (
           <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
         ) : (
           <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
@@ -228,15 +233,13 @@ export default function Attendence({ footerLinks }) {
   const [error, setError] = React.useState("");
   const [formData, setFormData] = React.useState({});
   const [actualDates, setActualDates] = React.useState([]);
-  const [isDisabledAttBtn, setIsDisabledAttBtn] = React.useState();
   const [showModal, setShowModal] = React.useState(false);
   const [userData, setUserData] = React.useState({});
   const [getFacilitator, setFacilitatorProfile] = React.useState();
   const [inputValue, setInputValue] = React.useState();
   const [cameraFile, setcameraFile] = React.useState();
-  // const [updateUserData, setUpdateData] = React.useState();
   const [downloadCertificate, setDownCertificate] = React.useState();
-
+  const [inputSearch, setInputSearch] = useState("");
   const reportTemplateRef = React.useRef(null);
 
   const certificateDownload = async (data) => {
@@ -267,7 +270,6 @@ export default function Attendence({ footerLinks }) {
   }, []);
 
   const onSwitchToggle = async (row) => {
-    // setIsDisabledAttBtn(`${row.id}-${row.presentDate}`);
     const attendance = row?.attendances?.[row?.index];
     if (attendance) {
       const data = {
@@ -292,8 +294,7 @@ export default function Attendence({ footerLinks }) {
       };
       await attendanceService.createAttendance(data);
     }
-    getUsers();
-    setIsDisabledAttBtn();
+    await getUsers();
     setShowModal(false);
   };
 
@@ -366,15 +367,22 @@ export default function Attendence({ footerLinks }) {
   }
 
   const getUsers = async () => {
-    const result = await eventService.getAttendanceList({ id });
+    let filter = { id };
+    if (inputSearch != "") {
+      filter = { id, search: inputSearch };
+    }
+    const result = await eventService.getAttendanceList(filter);
     setUsers(result?.data || []);
   };
 
   React.useEffect(async () => {
+    await getUsers();
+  }, [inputSearch]);
+
+  React.useEffect(async () => {
     setLoading(true);
     const eventResult = await eventService.getEventListById({ id });
-    const result = await eventService.getAttendanceList({ id });
-    setUsers(result?.data || []);
+
     setEvent(eventResult?.event);
     setPaginationTotalRows(eventResult?.totalCount);
     // please check params?.attendance_type === "one_time" condition
@@ -456,10 +464,14 @@ export default function Attendence({ footerLinks }) {
     }
   };
   const handleInputChange = (event) => {
-    const inputValue = event.target.value;
-    setInputValue(inputValue);
+    const inputValues = event.target.value;
+    setInputValue(inputValues);
   };
 
+  const handleInputSearch = async (event) => {
+    const searchValue = event.target.value;
+    setInputSearch(searchValue);
+  };
   const handlePageChange = (page) => {
     setPage(page);
   };
@@ -566,7 +578,6 @@ export default function Attendence({ footerLinks }) {
       </Box>
     );
   }
-
   return (
     <Layout
       width
@@ -734,7 +745,7 @@ export default function Attendence({ footerLinks }) {
                     {t("CANDIDATES")} {users?.length}
                   </AdminTypo.H3>
                 </HStack>
-                <HStack space={10}>
+                <HStack justifyContent={"space-between"} space={10}>
                   {/* <AdminTypo.Secondarybutton
                     shadow="BlueOutlineShadow"
                     onPress={(e) => {
@@ -769,6 +780,14 @@ export default function Attendence({ footerLinks }) {
                   >
                     {t("ADD_PARTICIPANTS")}
                   </AdminTypo.Secondarybutton>
+                  <Input
+                    value={inputSearch}
+                    maxLength={12}
+                    name="numberInput"
+                    placeholder={t("SEARCH")}
+                    variant="outline"
+                    onChange={handleInputSearch}
+                  />
                 </HStack>
               </HStack>
             </Stack>
@@ -1216,34 +1235,12 @@ export default function Attendence({ footerLinks }) {
                 </Modal.Body>
               </Modal.Content>
             </Modal>
-
             <DataTable
               columns={[
                 ...scheduleCandidates(t, actualDates, certificateDownload),
-                // {
-                //   name: t(""),
-                //   selector: (row) => (
-                //     <Button
-                //       onPress={() => {
-                //         setFormData({
-                //           ...row,
-                //           documents_status: JSON.parse(
-                //             row?.user?.program_faciltators[0]?.documents_status
-                //           ),
-                //         });
-                //       }}
-                //     >
-                //       <IconByName
-                //         isDisabled
-                //         name="EditBoxLineIcon"
-                //         color="gray"
-                //         _icon={{ size: "15" }}
-                //       />
-                //     </Button>
-                //   ),
-                // },
               ]}
               key={users}
+              // filter={filter}
               data={users}
               subHeader
               persistTableHead
@@ -1254,7 +1251,6 @@ export default function Attendence({ footerLinks }) {
               paginationTotalRows={paginationTotalRows}
               onChangePage={handlePageChange}
               onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
             />
           </VStack>
         </Box>

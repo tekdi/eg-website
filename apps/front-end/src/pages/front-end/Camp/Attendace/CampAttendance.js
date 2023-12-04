@@ -64,7 +64,7 @@ export default function ConsentForm() {
       attendances = resultAttendance?.data;
     }
     setGroupUsers(
-      result?.data?.group_users.map((item, index) => {
+      result?.data?.group_users?.map((item, index) => {
         let attendance = attendances.find((e) => e?.user?.id === item.id);
         return { ...item, index, attendance };
       })
@@ -148,7 +148,6 @@ export default function ConsentForm() {
     if (randomAttendance) {
       setUserData(item);
     } else {
-      console.log("entered");
       uploadAttendence(item, PRESENT, true);
     }
   };
