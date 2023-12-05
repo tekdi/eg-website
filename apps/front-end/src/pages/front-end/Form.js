@@ -825,7 +825,7 @@ export default function App({ facilitator, ip, onClick }) {
               if (onClick) onClick("success");
             }}
           >
-            {t("SKIP_SUBMIT")}
+            {t("SKIP_SUBMIT")}ss
           </FrontEndTypo.Primarybutton>
         </VStack>
       </Layout>

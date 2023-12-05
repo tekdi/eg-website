@@ -530,6 +530,7 @@ const Docschecklist = ({ footerLinks }) => {
 
           <FrontEndTypo.Primarybutton
             isDisabled={isDisable}
+            isLoading={isDisable}
             mt="4"
             mb={8}
             type="submit"

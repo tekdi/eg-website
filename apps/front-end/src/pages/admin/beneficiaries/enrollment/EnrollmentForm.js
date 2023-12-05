@@ -175,6 +175,7 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const [uiSchema, setUiSchema] = React.useState({
     subjects: {
@@ -561,7 +562,6 @@ export default function App(footerLinks) {
   };
 
   const handleFormSubmission = async () => {
-
     const newFormData = formData;
     let newdata = filterObject(
       newFormData,
@@ -589,8 +589,10 @@ export default function App(footerLinks) {
 
   const onSubmit = async () => {
     setBtnLoading(true);
+    setIsDisable(true);
     await handleValidationErrors();
     setBtnLoading(false);
+    setIsDisable(false);
   };
 
   return (
@@ -659,6 +661,7 @@ export default function App(footerLinks) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
+              isDisabled={isDisable}
               isLoading={btnLoading}
               onPress={() => {
                 if (formRef.current.validateForm()) {

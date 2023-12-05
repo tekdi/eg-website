@@ -233,6 +233,7 @@ export default function Login() {
               my="5"
               onPress={handleLogin}
               isDisabled={isDisable}
+              isLoading={isDisable}
             >
               {t("LOGIN")}
             </FrontEndTypo.Primarybutton>

@@ -43,6 +43,7 @@ export default function AdharKyc({ footerLinks }) {
   const { t } = useTranslation();
   const [aadhaarCompare, setAadhaarCompare] = React.useState();
   const [loadingHeight, setLoadingHeight] = React.useState(0);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     if (page === "aadhaar-number") {
@@ -403,6 +404,7 @@ export default function AdharKyc({ footerLinks }) {
                   !data?.aadhaarNumber || !data?.captchaCode || !data?.checkMark
                 }
                 onPress={sendData}
+                isLoading={isDisable}
               >
                 {t("CONTINUE")}
               </FrontEndTypo.Secondarybutton>

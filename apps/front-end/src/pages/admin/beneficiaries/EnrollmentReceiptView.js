@@ -402,6 +402,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             </HStack>
             <HStack space="4">
               <AdminTypo.Successbutton
+                isLoading={isDisable}
                 isDisabled={
                   isDisable ||
                   reason?.enrollment_details === "no" ||
@@ -426,6 +427,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
               </AdminTypo.Dangerbutton> */}
               <AdminTypo.Secondarybutton
+                isLoading={isDisable}
                 isDisabled={
                   reason?.enrollment_details === "yes" &&
                   reason?.learner_enrollment_details === "yes"

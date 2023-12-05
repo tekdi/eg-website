@@ -572,6 +572,7 @@ export default function FacilitatorView({ footerLinks }) {
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
                     isDisabled={isDisable}
+                    isLoading={isDisable}
                     onPress={() => {
                       handleResetPassword(
                         credentials?.password,

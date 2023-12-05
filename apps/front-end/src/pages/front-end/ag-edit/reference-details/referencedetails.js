@@ -9,6 +9,7 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -288,15 +289,16 @@ export default function ReferenceDetails({ ip }) {
               transformErrors,
             }}
           >
-            <Button
+            <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
+              isLoading={isDisable}
               mt="3"
               variant={"primary"}
               type="submit"
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </Button>
+            </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
           <React.Fragment />

@@ -343,6 +343,7 @@ export default function ForgetPassword() {
                 handleLogin(credentials?.username);
               }}
               isDisabled={isDisable}
+              isLoading={isDisable}
             >
               {t("SEND")}
             </FrontEndTypo.Primarybutton>
