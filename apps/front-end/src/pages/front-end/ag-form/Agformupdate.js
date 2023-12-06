@@ -51,6 +51,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const location = useLocation();
   const [agroute, setagroute] = React.useState(location?.state?.route);
   const [loading, setLoading] = React.useState(true);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const id = useParams();
 
@@ -663,6 +664,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const uploadProfile = async () => {
     const { id } = authUser;
     if (id) {
+      setIsDisable(false);
       const form_data = new FormData();
       const item = {
         file: cameraFile,
@@ -676,6 +678,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       if (uploadDoc) {
+        setIsDisable(false);
         navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
       }
     }
@@ -710,7 +713,12 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
               size="324px"
             />
           </Center>
-          <Button variant={"primary"} onPress={uploadProfile}>
+          <Button
+            variant={"primary"}
+            onPress={uploadProfile}
+            isDisabled={isDisable}
+            isLoading={isDisable}
+          >
             {t("SUBMIT")}
           </Button>
           <Button
@@ -884,6 +892,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
+              isDisabled={isDisable}
+              isLoading={isDisable}
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}

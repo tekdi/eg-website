@@ -345,6 +345,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
+              isLoading={isDisable}
               onPress={() => reassignCamp()}
             >
               {t("CONFIRM")}

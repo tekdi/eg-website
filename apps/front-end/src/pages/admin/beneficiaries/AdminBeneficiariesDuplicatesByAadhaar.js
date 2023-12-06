@@ -231,10 +231,9 @@ export default function DuplicateView({ footerLinks }) {
                     color="textGreyColor.100"
                     size="xs"
                   />
-                  <AdminTypo.H1
-                    marginLeft="10px"
-                    color="textGreyColor.500"
-                  >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
+                  <AdminTypo.H1 marginLeft="10px" color="textGreyColor.500">
+                    {`${t("ASSIGN_TO_PRERAK")}`}
+                  </AdminTypo.H1>
                 </HStack>
               </Modal.Header>
               <Modal.Body>
@@ -316,6 +315,7 @@ export default function DuplicateView({ footerLinks }) {
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
                     isDisabled={isDisable}
+                    isLoading={isDisable}
                     onPress={() => {
                       assignToPrerak(viewData?.id);
                     }}

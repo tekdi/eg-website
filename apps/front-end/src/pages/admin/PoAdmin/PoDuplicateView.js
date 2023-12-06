@@ -250,10 +250,9 @@ export default function PoDuplicateView({ footerLinks }) {
                     color="textGreyColor.100"
                     size="xs"
                   />
-                  <AdminTypo.H1
-                    marginLeft="10px"
-                    color="textGreyColor.500"
-                  >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
+                  <AdminTypo.H1 marginLeft="10px" color="textGreyColor.500">
+                    {`${t("ASSIGN_TO_PRERAK")}`}
+                  </AdminTypo.H1>
                 </HStack>
               </Modal.Header>
               <Modal.Body>
