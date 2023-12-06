@@ -74,6 +74,7 @@ export default function BenificiaryBasicDetails() {
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
           <ProfilePhoto
+            isProfileEdit={true}
             editLink={
               benificiary?.program_beneficiaries?.status !==
               "enrolled_ip_verified"

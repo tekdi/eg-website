@@ -264,9 +264,9 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     if (!error) {
       setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
       if (filter?.page > 1) {
-        setData([...data, ...(result.data ? result.data : [])]);
+        setData([...data, ...(result.data || [])]);
       } else {
-        setData(result.data ? result.data : []);
+        setData(result.data || []);
       }
     } else {
       setData([]);
