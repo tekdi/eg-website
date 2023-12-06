@@ -12,11 +12,8 @@ import {
   facilitatorRegistryService,
   CardComponent,
   ImageView,
-<<<<<<< HEAD
   debounce,
-=======
   testRegistryService,
->>>>>>> b2280e86fb8b6470bf5f00950d2a4b8ade1f9c2f
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";

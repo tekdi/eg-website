@@ -13,7 +13,6 @@ import {
   ImageView,
   BodyMedium,
   GetEnumValue,
-  mapDistance,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -27,7 +26,7 @@ import {
   Stack,
 } from "native-base";
 import { useTranslation } from "react-i18next";
-import Chip, { CampChipStatus } from "component/Chip";
+import { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
 
@@ -84,7 +83,6 @@ export default function View({ footerLinks }) {
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
-  const [isDisable, setIsDisable] = React.useState(false);
 
   const { id } = useParams();
 
@@ -98,7 +96,6 @@ export default function View({ footerLinks }) {
       console.error("An error occurred:", error);
     }
   };
-
   React.useEffect(async () => {
     setLoading(true);
     try {
@@ -121,21 +118,19 @@ export default function View({ footerLinks }) {
   }, []);
 
   const updateCampStatus = async () => {
-    setIsDisable(true);
     const { error, ...result } = await campService.updateCampStatus({
       id,
       facilitator_id: data?.faciltator?.[0]?.id,
       status,
     });
+
     if (result?.status === 200) {
-      navigate(`/admin/camps?status=${status}&page=1`);
+      navigate("/admin/camps?status=registered&page=1");
     } else {
-      setIsDisable(false);
       setErrorList(result?.message);
       setStatus();
     }
   };
-
   const dropDown = (triggerProps, t) => {
     return (
       <Pressable accessibilityLabel="More options menu" {...triggerProps}>
@@ -145,7 +140,6 @@ export default function View({ footerLinks }) {
       </Pressable>
     );
   };
-
   React.useEffect(async () => {
     setLoading(true);
     const qData = await enumRegistryService.listOfEnum();
@@ -154,14 +148,6 @@ export default function View({ footerLinks }) {
     setFacilities(data);
     setLoading(false);
   }, []);
-
-  const totalDistance = ({ row, data }) =>
-    mapDistance(
-      row?.lat,
-      row?.long,
-      data?.properties?.lat,
-      data?.properties?.long
-    );
 
   const navTOedit = (item) => {
     const send = () => {
@@ -219,29 +205,6 @@ export default function View({ footerLinks }) {
       name: t("MAP"),
       selector: (row) => mapDirection({ row, data }),
       minWidth: "60px",
-      wrap: true,
-    },
-
-    {
-      name: t("DISTANCE"),
-      selector: (row) => {
-        const distance = totalDistance({ row, data });
-        return (
-          <HStack>
-            {
-              <Chip
-                px="2"
-                py="1"
-                bg="transparent"
-                _text={{ color: distance >= 3.5 ? "textRed.100" : "" }}
-              >
-                {`${distance} Km`}
-              </Chip>
-            }
-          </HStack>
-        );
-      },
-      minWidth: "160px",
       wrap: true,
     },
     {
@@ -629,7 +592,6 @@ export default function View({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
 
                 <AdminTypo.Secondarybutton
-                  isDisabled={isDisable}
                   onPress={() => {
                     updateCampStatus();
                   }}
