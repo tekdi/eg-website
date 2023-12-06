@@ -11,7 +11,7 @@ defaults:
 jobs:
   build:
     name: Build Deploy to UAT S3 Bucket
-    environment: UAT
+    environment: QA
     runs-on: ubuntu-latest
     steps:
       - name: List contents
