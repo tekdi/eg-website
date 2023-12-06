@@ -403,7 +403,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             </HStack>
             <HStack space="4">
               <AdminTypo.Successbutton
-                isLoading={isButtonLoading}
                 isDisabled={
                   isButtonLoading ||
                   reason?.enrollment_details === "no" ||

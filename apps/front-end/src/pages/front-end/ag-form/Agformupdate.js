@@ -717,7 +717,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             variant={"primary"}
             onPress={uploadProfile}
             isDisabled={isButtonLoading}
-            isLoading={isButtonLoading}
           >
             {t("SUBMIT")}
           </Button>

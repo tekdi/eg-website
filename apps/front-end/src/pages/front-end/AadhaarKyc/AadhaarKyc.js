@@ -404,7 +404,6 @@ export default function AdharKyc({ footerLinks }) {
                   !data?.aadhaarNumber || !data?.captchaCode || !data?.checkMark
                 }
                 onPress={sendData}
-                isLoading={isButtonLoading}
               >
                 {t("CONTINUE")}
               </FrontEndTypo.Secondarybutton>

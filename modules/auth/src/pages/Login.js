@@ -69,7 +69,6 @@ export default function Login() {
       setIsButtonLoading(true);
       const { error } = credentials ? await login(credentials) : {};
       if (!error) {
-        setIsButtonLoading(true);
         navigate("/");
         navigate(0);
       } else {
