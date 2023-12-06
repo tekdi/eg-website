@@ -22,68 +22,159 @@ import {
   enumRegistryService,
   setQueryParameters,
   urlData,
-  debounce,
   CustomRadio,
+  getOptions,
 } from "@shiksha/common-lib";
 import Table from "./facilitator/Table";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 import { MultiCheck } from "../../component/BaseInput";
 import Clipboard from "component/Clipboard";
+import { debounce } from "lodash";
+
+const uiSchema = {
+  district: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+  qualificationIds: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+  work_experience: {
+    "ui:widget": CustomRadio,
+  },
+  block: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+};
+
+const schemat = {
+  type: "object",
+  properties: {
+    district: {
+      type: "array",
+      title: "DISTRICT",
+      grid: 1,
+      _hstack: { maxH: 135, overflowY: "scroll" },
+      items: {
+        type: "string",
+      },
+      uniqueItems: true,
+    },
+    block: {
+      type: "array",
+      title: "BLOCKS",
+      grid: 1,
+      _hstack: {
+        maxH: 130,
+        overflowY: "scroll",
+      },
+      items: {
+        type: "string",
+      },
+      uniqueItems: true,
+    },
+    qualificationIds: {
+      type: "array",
+      title: "QUALIFICATION",
+      grid: 1,
+      _hstack: { maxH: 135, overflowY: "scroll" },
+      items: {
+        type: "string",
+      },
+      uniqueItems: true,
+    },
+    work_experience: {
+      type: "array",
+      title: "WORK_EXPERIENCES",
+      _hstack: { maxH: 130, overflowY: "scroll" },
+      items: {
+        type: "string",
+        enumNames: [
+          "All",
+          "0 yrs",
+          "1 yrs",
+          "2 yrs",
+          "3 yrs",
+          "4 yrs",
+          "5 yrs",
+        ],
+        enum: ["All", "0", "1", "2", "3", "4", "5"],
+      },
+      uniqueItems: true,
+    },
+  },
+};
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const location = useLocation();
 
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
 
+  const [schema, setSchema] = React.useState();
   const [filter, setFilter] = React.useState({});
 
   const [loading, setLoading] = React.useState(true);
-  const [facilitaorStatus, setfacilitaorStatus] = React.useState();
+  const [facilitaorStatus, setFacilitaorStatus] = React.useState();
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
 
-  // facilitator pagination
-  const [getQualificationAll, setgetQualificationAll] = React.useState();
-
   React.useEffect(async () => {
+    const result = await enumRegistryService.statuswiseCount();
+    setFacilitaorStatus(result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+
     const getQualification =
       await facilitatorRegistryService.getQualificationAll();
-    setgetQualificationAll(getQualification);
+    let newSchema = getOptions(schemat, {
+      key: "qualificationIds",
+      arr: getQualification,
+      title: "name",
+      value: "id",
+    });
     let name = "RAJASTHAN";
     const getDistricts = await geolocationRegistryService.getDistricts({
       name,
     });
-    setgetDistrictsAll(getDistricts?.districts);
-  }, []);
-
-  React.useEffect(async () => {
-    let blockData = [];
-    if (filter?.district?.length > 0) {
-      blockData = await geolocationRegistryService.getMultipleBlocks({
-        districts: filter?.district,
-      });
-    }
-    setGetBlocksAll(blockData);
-  }, [filter?.district]);
-
-  React.useEffect(async () => {
-    const result = await enumRegistryService.statuswiseCount();
-    setfacilitaorStatus(result);
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
+    newSchema = getOptions(newSchema, {
+      key: "district",
+      arr: getDistricts?.districts,
+      title: "district_name",
+      value: "district_name",
+    });
+    setSchema(newSchema);
     setLoading(false);
   }, []);
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.filter(filter);
+    if (schema) {
+      let blockData = [];
+      if (filter?.district?.length > 0) {
+        blockData = await geolocationRegistryService.getMultipleBlocks({
+          districts: filter?.district,
+        });
+      }
+      let newSchema = getOptions(schema, {
+        key: "block",
+        arr: blockData,
+        title: "block_name",
+        value: "block_name",
+      });
+      setSchema(newSchema);
+    }
+  }, [filter?.district]);
+
+  React.useEffect(async () => {
+    const result = await facilitatorRegistryService.filter({
+      ...filter,
+      limit: filter.limit || 10,
+    });
     setData(result.data?.data);
     setPaginationTotalRows(
       result?.data?.totalCount ? result?.data?.totalCount : 0
@@ -100,92 +191,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       urlData(["district", "block", "qualificationIds", "work_experience"])
     );
   }, []);
-
-  const schema = {
-    type: "object",
-    properties: {
-      district: {
-        type: "array",
-        title: t("DISTRICT"),
-        grid: 1,
-        _hstack: { maxH: 135, overflowY: "scroll" },
-        items: {
-          type: "string",
-          // enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
-          enum: getDistrictsAll?.map((item, i) => item?.district_name),
-        },
-        uniqueItems: true,
-      },
-      block: {
-        type: "array",
-        title: t("BLOCKS"),
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-        },
-        items: {
-          type: "string",
-          enumNames: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
-          enum: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
-        },
-        uniqueItems: true,
-      },
-      qualificationIds: {
-        type: "array",
-        title: t("QUALIFICATION"),
-        grid: 1,
-        _hstack: { maxH: 135, overflowY: "scroll" },
-        items: {
-          type: "string",
-          enumNames: getQualificationAll?.map((item, i) => item?.name),
-          enum: getQualificationAll?.map((item, i) => item?.id),
-        },
-        uniqueItems: true,
-      },
-      work_experience: {
-        type: "array",
-        title: t("WORK_EXPERIENCES"),
-        _hstack: { maxH: 130, overflowY: "scroll" },
-        items: {
-          type: "string",
-          enumNames: [
-            "All",
-            "0 yrs",
-            "1 yrs",
-            "2 yrs",
-            "3 yrs",
-            "4 yrs",
-            "5 yrs",
-          ],
-          enum: ["All", "0", "1", "2", "3", "4", "5"],
-        },
-        uniqueItems: true,
-      },
-    },
-  };
-
-  const uiSchema = {
-    district: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-    qualificationIds: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-    work_experience: {
-      "ui:widget": CustomRadio,
-    },
-    block: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-  };
 
   const onChange = async (data) => {
     const { district, qualificationIds, work_experience, block } =
@@ -208,33 +213,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const exportPrerakCSV = async () => {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
-  function CustomFieldTemplate({ id, label, children }) {
-    return (
-      <VStack>
-        <HStack style={{ justifyContent: "space-between" }}>
-          {id !== "root" && (
-            <HStack style={{ justifyContent: "space-between" }} width="100%">
-              <label
-                style={{
-                  fontWeight: "bold",
-                  color: "textGreyColor.400",
-                  paddingBottom: "12px",
-                }}
-              >
-                {label}
-              </label>
-              <IconByName
-                name="SearchLineIcon"
-                isDisabled
-                _icon={{ size: "15px" }}
-              />
-            </HStack>
-          )}
-        </HStack>
-        {children}
-      </VStack>
-    );
-  }
+
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+  };
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
 
   return (
     <Layout
@@ -284,12 +270,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           }
           placeholder={t("SEARCH_BY_PRERAK_NAME")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              3000
-            );
-          }}
+          onChange={debouncedHandleSearch}
         />
 
         <HStack height={"5vh"} space={2}>
@@ -433,5 +414,30 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         </Box>
       </HStack>
     </Layout>
+  );
+}
+
+function CustomFieldTemplate({ id, label, children }) {
+  const { t } = useTranslation();
+
+  return (
+    <VStack>
+      <HStack style={{ justifyContent: "space-between" }}>
+        {id !== "root" && (
+          <HStack style={{ justifyContent: "space-between" }} width="100%">
+            <label
+              style={{
+                fontWeight: "bold",
+                color: "textGreyColor.400",
+                paddingBottom: "12px",
+              }}
+            >
+              {t(label)}
+            </label>
+          </HStack>
+        )}
+      </HStack>
+      {children}
+    </VStack>
   );
 }
