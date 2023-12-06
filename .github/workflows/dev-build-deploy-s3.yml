@@ -1,6 +1,6 @@
-name: Deploy to DEV S3 Test
-on: 
-  push: 
+name: Deploy to DEV S3
+on:
+  push:
     branches:
       - gha-deploy2s3
 
@@ -10,7 +10,7 @@ defaults:
     
 jobs:
   build:
-    name: Build Deploy To DEV S3 Test2
+    name: Build Deploy To DEV S3
     environment: DEV
     runs-on: ubuntu-latest
     steps:
