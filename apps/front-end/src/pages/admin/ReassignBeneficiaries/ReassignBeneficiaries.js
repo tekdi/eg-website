@@ -49,6 +49,7 @@ function CustomFieldTemplate({ id, schema, label, required, children }) {
                   {t(label)}
                   {required ? "*" : null}
                 </label>
+                {/* <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} /> */}
               </HStack>
             )}
           </Box>
