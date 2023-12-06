@@ -8,9 +8,14 @@ import {
   uploadRegistryService,
   eventService,
   Loading,
+  attendanceService,
+  facilitatorRegistryService,
+  ImageView,
+  testRegistryService,
+  debounce,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import Chip from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import {
   Box,
   Button,
@@ -24,14 +29,18 @@ import {
   Radio,
   Switch,
   Badge,
+  Input,
 } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema from "./schema";
 import { useTranslation } from "react-i18next";
+import Clipboard from "component/Clipboard";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const customStyles = {
   headCells: {
@@ -39,23 +48,30 @@ const customStyles = {
       background: "#E0E0E0",
       fontSize: "14px",
       color: "#616161",
+      justifyContent: "center",
     },
   },
   cells: {
     style: {
+      justifyContent: "center",
       padding: "15px 0",
     },
   },
 };
 
 const renderNameColumn = (row, t) => {
-  const name = row?.user?.first_name + " " + row?.user?.last_name;
+  const name = row?.first_name + " " + row?.last_name;
   const hasProfileUrl = !!row?.profile_url;
 
   return (
-    <HStack alignItems="center" space="2">
+    <HStack alignItems={"flex-start"} space="2">
       {hasProfileUrl ? (
-        <Avatar source={{ uri: row?.profile_url }} width="35px" height="35px" />
+        <Avatar
+          alignItems={"start"}
+          source={{ uri: row?.profile_url }}
+          width="35px"
+          height="35px"
+        />
       ) : (
         <IconByName
           isDisabled
@@ -68,39 +84,33 @@ const renderNameColumn = (row, t) => {
     </HStack>
   );
 };
+const renderIDColumn = (row, t) => {
+  const ID = row?.id;
 
-const renderStatusColumn = (row, t) => <Text>{row?.rsvp || ""}</Text>;
+  return (
+    <HStack alignItems="center" space="2">
+      {ID}
+    </HStack>
+  );
+};
 
-const renderAttendanceColumn = (row, t, onSwitchToggle) => (
-  <HStack space="2">
-    <Text key={row?.id}>
-      {row?.status === "present" ? "Present" : "Absent"}
-    </Text>
-    <Switch
-      offTrackColor="dangerColor"
-      onTrackColor="successColor"
-      onThumbColor="appliedColor"
-      offThumbColor="appliedColor"
-      value={row.status === "present"}
-      onValueChange={() => onSwitchToggle(row)}
-    />
-  </HStack>
+const renderStatusColumn = (row, t) => (
+  <Text>{row?.attendances?.[0]?.rsvp || "-"}</Text>
 );
 
 const renderAadharKycColumn = (row, t) => (
   <Chip
     bg={
-      row?.user?.aadhar_verified !== null &&
-      row?.user?.aadhar_verified !== "pending"
+      row?.aadhar_verified !== null && row?.aadhar_verified !== "pending"
         ? "potentialColor"
         : "dangerColor"
     }
     label={
-      row?.user?.aadhar_verified === "in_progress"
+      row?.aadhar_verified === "in_progress"
         ? t("AADHAR_KYC_IN_PROGRESS")
-        : row?.user?.aadhar_verified === "pending"
+        : row?.aadhar_verified === "pending"
         ? t("AADHAR_KYC_PENDING")
-        : row?.user?.aadhar_verified !== null
+        : row?.aadhar_verified !== null
         ? t("YES")
         : t("NO")
     }
@@ -124,42 +134,86 @@ const renderAttendeeListColumn = (row, t) => (
   />
 );
 
-const scheduleCandidates = (t, onSwitchToggle) => [
-  {
-    name: t("NAME"),
-    selector: (row) => renderNameColumn(row, t),
-    sortable: false,
-    attr: "name",
-  },
-  {
-    name: t("INVITE_STATUS"),
-    selector: (row) => renderStatusColumn(row, t),
-    sortable: false,
-    attr: "invite",
-  },
-  {
-    name: t("MARK_ATTENDANCE"),
-    selector: (row) => renderAttendanceColumn(row, t, onSwitchToggle),
-    sortable: false,
-    attr: "marks",
-  },
-  {
-    name: t("ADHAR_KYC"),
-    selector: (row) => renderAadharKycColumn(row, t),
-    sortable: false,
-    attr: "adhar_kyc",
-  },
-  {
-    name: t("ATTENDEE_LIST_ATTENDENCE_VERIFIED"),
-    selector: (row) => renderAttendeeListColumn(row, t),
-    sortable: false,
-    attr: "attendence_verified",
-  },
-];
+const scheduleCandidates = (t, days, certificateDownload) => {
+  return [
+    {
+      name: t("ID"),
+      selector: (row) => renderIDColumn(row, t),
+      sortable: false,
+      attr: "name",
+    },
 
+    {
+      name: t("NAME"),
+      selector: (row) => renderNameColumn(row, t),
+      sortable: false,
+      attr: "name",
+    },
+    {
+      name: t("INVITE_STATUS"),
+      selector: (row) => renderStatusColumn(row, t),
+      sortable: false,
+      attr: "invite",
+    },
+
+    ...days,
+    {
+      name: t("SCORE"),
+      selector: (row) => {
+        const score = row?.lms_test_trackings?.[0]?.score;
+        const roundedScore = typeof score === "number" ? score.toFixed(2) : "-";
+        return roundedScore;
+      },
+      attr: "name",
+      wrap: true,
+    },
+
+    {
+      name: t("STATUS"),
+      selector: (row) =>
+        row?.lms_test_trackings?.[0]?.certificate_status === true ? (
+          <AdminTypo.Secondarybutton
+            my="3"
+            onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
+          >
+            {t("DOWNLOAD")}
+          </AdminTypo.Secondarybutton>
+        ) : row?.lms_test_trackings?.[0]?.certificate_status === false ? (
+          <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
+        ) : (
+          <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
+        ),
+    },
+  ];
+};
+
+const renderAttendanceColumn = (row, onSwitchToggle) => {
+  const attendance = row?.attendances?.[row?.index];
+  return (
+    <HStack space="2">
+      <Text key={row?.id}>
+        {attendance?.status === "present" ? "Present" : "Absent"}
+      </Text>
+      <Switch
+        // isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
+        offTrackColor="dangerColor"
+        onTrackColor="successColor"
+        onThumbColor="appliedColor"
+        offThumbColor="appliedColor"
+        defaultIsChecked={attendance?.status === "present"}
+        onValueChange={async (e) => {
+          await onSwitchToggle({
+            ...row,
+            attendance_status: e ? "present" : "absent",
+          });
+        }}
+      />
+    </HStack>
+  );
+};
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
-  const [Height] = useWindowSize();
+  const [width, Height] = useWindowSize();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [users, setUsers] = React.useState([]);
@@ -178,21 +232,70 @@ export default function Attendence({ footerLinks }) {
   const formRef = React.useRef();
   const [error, setError] = React.useState("");
   const [formData, setFormData] = React.useState({});
-
+  const [actualDates, setActualDates] = React.useState([]);
+  const [showModal, setShowModal] = React.useState(false);
   const [userData, setUserData] = React.useState({});
-
+  const [getFacilitator, setFacilitatorProfile] = React.useState();
+  const [inputValue, setInputValue] = React.useState();
   const [cameraFile, setcameraFile] = React.useState();
+  const [downloadCertificate, setDownCertificate] = React.useState();
+  const [inputSearch, setInputSearch] = useState("");
+  const reportTemplateRef = React.useRef(null);
+
+  const certificateDownload = async (data) => {
+    const result = await testRegistryService.postCertificates(data);
+    setDownCertificate(result?.data?.[0]?.certificate_html);
+  };
+
+  const handleGeneratePdf = async () => {
+    const input = reportTemplateRef.current;
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l");
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      // pdf.output('dataurlnewwindow');
+      pdf.save("download.pdf");
+    });
+  };
+
+  const getUserData = async () => {
+    const result = await facilitatorRegistryService.getOne({
+      id: inputValue,
+    });
+    setFacilitatorProfile(result);
+  };
+
   React.useEffect(() => {
     getLocation();
   }, []);
 
-  const onSwitchToggle = async (value) => {
-    getLocation();
-    setCameraUrl();
-    if (value?.status !== "present") {
-      setCameraModal(true);
-      setUserData({ ...value, index: showIndexes(users, value, "C") });
+  const onSwitchToggle = async (row) => {
+    const attendance = row?.attendances?.[row?.index];
+    if (attendance) {
+      const data = {
+        id: attendance?.id,
+        user_id: attendance.user_id,
+        lat: `${locationData?.latitude || ""}`, //attendance.lat,
+        long: `${locationData?.longitude || ""}`, //attendance.long,
+        date_time: row?.presentDate,
+        status: row?.attendance_status,
+      };
+
+      await eventService.updateAttendance(data);
+    } else {
+      const data = {
+        user_id: row.id,
+        context_id: id,
+        context: "events",
+        lat: `${locationData?.latitude || ""}`, //attendance.lat,
+        long: `${locationData?.longitude || ""}`, //attendance.long,
+        date_time: row?.presentDate,
+        status: row?.attendance_status,
+      };
+      await attendanceService.createAttendance(data);
     }
+    await getUsers();
+    setShowModal(false);
   };
 
   const handleFormChange = (props) => {
@@ -245,7 +348,6 @@ export default function Attendence({ footerLinks }) {
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     setlocationData({ latitude: latitude, longitude: longitude });
-    console.log("Latitude ", "Longitude");
   }
 
   function errorCallback(error) {
@@ -264,12 +366,60 @@ export default function Attendence({ footerLinks }) {
     }
   }
 
+  const getUsers = async () => {
+    let filter = { id };
+    if (inputSearch != "") {
+      filter = { id, search: inputSearch };
+    }
+    const result = await eventService.getAttendanceList(filter);
+    setUsers(result?.data || []);
+  };
+
+  React.useEffect(async () => {
+    await getUsers();
+  }, [inputSearch]);
+
   React.useEffect(async () => {
     setLoading(true);
-    const eventResult = await eventService.getEventListById({ id: id });
-    setUsers(eventResult?.event?.attendances);
+    const eventResult = await eventService.getEventListById({ id });
+
     setEvent(eventResult?.event);
     setPaginationTotalRows(eventResult?.totalCount);
+    // please check params?.attendance_type === "one_time" condition
+    if (eventResult?.event?.params?.attendance_type === "one_time") {
+      setActualDates([
+        {
+          name: t("MARK_ATTENDANCE"),
+          selector: (row) => renderAttendanceColumn(row, onSwitchToggle),
+          sortable: false,
+          attr: "marks",
+        },
+      ]);
+    } else {
+      const startMoment = moment(eventResult?.event?.start_date);
+      const endMoment = moment(eventResult?.event?.end_date);
+      let datesD = [];
+      while (startMoment.isSameOrBefore(endMoment)) {
+        datesD.push(startMoment.format("DD-MMM-YYYY"));
+        startMoment.add(1, "day");
+      }
+
+      const dates = datesD?.map((e, i) => ({
+        name: t(moment(e).format("DD-MMM-YYYY")),
+        selector: (row) =>
+          renderAttendanceColumn(
+            {
+              ...row,
+              index: i,
+              presentDate: `${moment(e).format("YYYY-MM-DD")}`,
+            },
+            onSwitchToggle
+          ),
+        sortable: false,
+        attr: "marks",
+      }));
+      setActualDates(dates);
+    }
     setLoading(false);
   }, [filterObj]);
 
@@ -278,7 +428,7 @@ export default function Attendence({ footerLinks }) {
   }, [page, limit]);
 
   const uploadAttendencePicture = async (e) => {
-    setError("");
+    // setError("");
     if (cameraFile?.key) {
       const apiResponse = await eventService.updateAttendance({
         id: userData?.id,
@@ -292,25 +442,6 @@ export default function Attendence({ footerLinks }) {
         setUsers(eventResult?.event?.attendances);
         setEvent(eventResult?.event);
       }
-    } else {
-      setError("Capture Picture First");
-    }
-    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
-    if (users[coruntIndex + 1]) {
-      setCameraUrl();
-      setUserData({ ...users[coruntIndex + 1], index: coruntIndex + 1 });
-    }
-  };
-  const showIndexes = (users, userData, state) => {
-    const coruntIndex = users.findIndex((item) => item?.id === userData?.id);
-    if (state === "C") {
-      return coruntIndex;
-    }
-    if (state === "N") {
-      return coruntIndex + 1;
-    }
-    if (state === "P") {
-      return coruntIndex - 1;
     }
   };
 
@@ -332,10 +463,19 @@ export default function Attendence({ footerLinks }) {
       setError("Capture Picture First");
     }
   };
+  const handleInputChange = (event) => {
+    const inputValues = event.target.value;
+    setInputValue(inputValues);
+  };
 
+  const handleInputSearch = async (event) => {
+    const searchValue = event.target.value;
+    setInputSearch(searchValue);
+  };
   const handlePageChange = (page) => {
     setPage(page);
   };
+
   if (userData?.id) {
     return (
       <Box>
@@ -438,9 +578,9 @@ export default function Attendence({ footerLinks }) {
       </Box>
     );
   }
-
   return (
     <Layout
+      width
       _appBar={{
         isShowNotificationButton: true,
       }}
@@ -515,7 +655,7 @@ export default function Attendence({ footerLinks }) {
                   shadow="BlueOutlineShadow"
                 >
                   {t("EDIT_DETAILS")}
-                </AdminTypo.Secondarybutton> */}
+                </AdminTypo.Secondarybutton> 
                   <Box>
                     <AdminTypo.Secondarybutton
                       onPress={() => setShowDeleteModal(true)}
@@ -524,33 +664,51 @@ export default function Attendence({ footerLinks }) {
                       {t("DELETE_EVENT")}
                     </AdminTypo.Secondarybutton>
                   </Box>
+                  */}
                 </HStack>
 
                 <HStack
                   space={"3"}
-                  pt="4"
+                  alignItems={"center"}
                   direction={["column", "column", "row"]}
                 >
                   <IconByName
                     isDisabled
-                    name="TimeLineIcon"
+                    name="CalendarLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
-                    {event?.start_date
-                      ? moment(event?.start_date).format("Do MMM")
-                      : ""}{" "}
-                    {event?.start_time ? event?.start_time : ""}
-                    {/* 16th April, 11:00 to 12:00 */}
-                  </AdminTypo.H6>
+                  <HStack space={2}>
+                    <AdminTypo.H7 bold color="textGreyColor.800">
+                      {event?.start_date
+                        ? moment(event?.start_date).format("LL")
+                        : ""}{" "}
+                      {event?.start_time
+                        ? moment(event?.start_time, "HH:mm:ssZ").format(
+                            "hh:mm:ss A"
+                          )
+                        : "-"}
+                    </AdminTypo.H7>
+                    to
+                    <AdminTypo.H7 bold color="textGreyColor.800">
+                      {event?.end_date
+                        ? moment(event?.end_date).format("LL")
+                        : ""}{" "}
+                      {event?.end_time
+                        ? moment(event?.end_time, "HH:mm:ssZ").format(
+                            "hh:mm:ss A"
+                          )
+                        : "-"}
+                      {/* 16th April, 11:00 to 12:00 */}
+                    </AdminTypo.H7>
+                  </HStack>
                   <IconByName
                     isDisabled
                     name="MapPinLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
+                  <AdminTypo.H6 bold color="textGreyColor.800">
                     {event?.location}
                   </AdminTypo.H6>
                   <IconByName
@@ -559,7 +717,7 @@ export default function Attendence({ footerLinks }) {
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <AdminTypo.H6 color="textGreyColor.800">
+                  <AdminTypo.H6 bold color="textGreyColor.800">
                     {t("MASTER_TRAINER")} -
                   </AdminTypo.H6>
                   <Box
@@ -587,8 +745,8 @@ export default function Attendence({ footerLinks }) {
                     {t("CANDIDATES")} {users?.length}
                   </AdminTypo.H3>
                 </HStack>
-                <HStack>
-                  <AdminTypo.Secondarybutton
+                <HStack justifyContent={"space-between"} space={10}>
+                  {/* <AdminTypo.Secondarybutton
                     shadow="BlueOutlineShadow"
                     onPress={(e) => {
                       setCameraModal(true);
@@ -605,10 +763,189 @@ export default function Attendence({ footerLinks }) {
                     }
                   >
                     {t("MARK_ATTENDANCE_ALL")}
+                  </AdminTypo.Secondarybutton> */}
+                  <AdminTypo.Secondarybutton
+                    shadow="BlueOutlineShadow"
+                    onPress={(e) => {
+                      setShowModal(true);
+                      setFacilitatorProfile();
+                    }}
+                    endIcon={
+                      <IconByName
+                        isDisabled
+                        name="AddFillIcon"
+                        _icon={{ size: "15" }}
+                      />
+                    }
+                  >
+                    {t("ADD_PARTICIPANTS")}
                   </AdminTypo.Secondarybutton>
+                  <Input
+                    value={inputSearch}
+                    maxLength={12}
+                    name="numberInput"
+                    placeholder={t("SEARCH")}
+                    variant="outline"
+                    onChange={handleInputSearch}
+                  />
                 </HStack>
               </HStack>
             </Stack>
+            <Modal
+              avoidKeyboard
+              size="xl"
+              isOpen={showModal}
+              onClose={() => setShowModal(false)}
+            >
+              <Modal.Content>
+                <Modal.Header textAlign={"Center"}>
+                  <AdminTypo.H1 color="textGreyColor.500">
+                    {t("ADD_PARTICIPANTS")}
+                  </AdminTypo.H1>
+                </Modal.Header>
+                <Modal.Body>
+                  {!getFacilitator?.id ? (
+                    <HStack
+                      alignItems={"center"}
+                      justifyContent={"space-evenly"}
+                    >
+                      {t("USER_ID")}:
+                      <Input
+                        value={inputValue}
+                        maxLength={12}
+                        name="numberInput"
+                        onChange={handleInputChange}
+                      />
+                    </HStack>
+                  ) : (
+                    <VStack flex={1} space={"5"} p="3" mb="5">
+                      <HStack alignItems={"center"} space="1" pt="3">
+                        <IconByName name="UserLineIcon" size="md" />
+                        <AdminTypo.H4
+                          color="textGreyColor.800"
+                          whiteSpace="nowrap"
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                        >
+                          {getFacilitator?.first_name}{" "}
+                          {getFacilitator?.last_name}
+                        </AdminTypo.H4>
+                        <IconByName
+                          size="sm"
+                          name="ArrowRightSLineIcon"
+                          onPress={(e) => navigate(-1)}
+                        />
+                        <Clipboard text={getFacilitator?.id}>
+                          <Chip
+                            textAlign="center"
+                            lineHeight="15px"
+                            label={getFacilitator?.id}
+                          />
+                        </Clipboard>
+                      </HStack>
+                      <HStack justifyContent={"space-between"} flexWrap="wrap">
+                        <VStack space="4" flexWrap="wrap">
+                          <ChipStatus status={getFacilitator?.status} />
+                          <HStack
+                            bg="badgeColor.400"
+                            rounded={"md"}
+                            alignItems="center"
+                            p="2"
+                          >
+                            <IconByName
+                              isDisabled
+                              _icon={{ size: "20px" }}
+                              name="CellphoneLineIcon"
+                              color="textGreyColor.300"
+                            />
+                            <AdminTypo.H6 color="textGreyColor.600" bold>
+                              {getFacilitator?.mobile}
+                            </AdminTypo.H6>
+                          </HStack>
+                          <HStack
+                            bg="badgeColor.400"
+                            rounded={"md"}
+                            p="2"
+                            alignItems="center"
+                            space="2"
+                          >
+                            <IconByName
+                              isDisabled
+                              _icon={{ size: "20px" }}
+                              name="MapPinLineIcon"
+                              color="textGreyColor.300"
+                            />
+                            <AdminTypo.H6 color="textGreyColor.600" bold>
+                              {[
+                                getFacilitator?.state,
+                                getFacilitator?.district,
+                                getFacilitator?.block,
+                                getFacilitator?.village,
+                                getFacilitator?.grampanchayat,
+                              ]
+                                .filter((e) => e)
+                                .join(",")}
+                            </AdminTypo.H6>
+                          </HStack>
+                        </VStack>
+                        <HStack flex="0.5" justifyContent="center">
+                          {getFacilitator?.profile_photo_1?.name ? (
+                            <ImageView
+                              source={{
+                                uri: getFacilitator?.profile_photo_1?.name,
+                              }}
+                              alt="profile photo"
+                              width={"100px"}
+                              height={"100px"}
+                            />
+                          ) : (
+                            <IconByName
+                              isDisabled
+                              name="AccountCircleLineIcon"
+                              color="textGreyColor.300"
+                              _icon={{ size: "100px" }}
+                            />
+                          )}
+                        </HStack>
+                      </HStack>
+                    </VStack>
+                  )}
+                </Modal.Body>
+                <Modal.Footer>
+                  <HStack justifyContent={"space-between"} width={"100%"}>
+                    {getFacilitator?.id && (
+                      <AdminTypo.PrimaryButton
+                        shadow="BlueFillShadow"
+                        onPress={() =>
+                          onSwitchToggle({
+                            id: getFacilitator?.id,
+                          })
+                        }
+                      >
+                        {t("CONFIRM")}
+                      </AdminTypo.PrimaryButton>
+                    )}
+                    <AdminTypo.Secondarybutton
+                      onPress={() => setShowModal(false)}
+                    >
+                      {t("CANCEL")}
+                    </AdminTypo.Secondarybutton>
+                    {!getFacilitator?.id && (
+                      <AdminTypo.PrimaryButton
+                        isDisabled={""}
+                        onPress={(e) => {
+                          getUserData();
+                        }}
+                      >
+                        {t("Submit")}
+                      </AdminTypo.PrimaryButton>
+                    )}
+                  </HStack>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
+
+            {/* delete modal */}
 
             <Modal
               isOpen={showDeleteModal}
@@ -898,34 +1235,12 @@ export default function Attendence({ footerLinks }) {
                 </Modal.Body>
               </Modal.Content>
             </Modal>
-
             <DataTable
               columns={[
-                ...scheduleCandidates(t, onSwitchToggle),
-                {
-                  name: t(""),
-                  selector: (row) => (
-                    <Button
-                      onPress={() => {
-                        setFormData({
-                          ...row,
-                          documents_status: JSON.parse(
-                            row?.user?.program_faciltators[0]?.documents_status
-                          ),
-                        });
-                      }}
-                    >
-                      <IconByName
-                        isDisabled
-                        name="EditBoxLineIcon"
-                        color="gray"
-                        _icon={{ size: "15" }}
-                      />
-                    </Button>
-                  ),
-                },
+                ...scheduleCandidates(t, actualDates, certificateDownload),
               ]}
               key={users}
+              // filter={filter}
               data={users}
               subHeader
               persistTableHead
@@ -936,11 +1251,39 @@ export default function Attendence({ footerLinks }) {
               paginationTotalRows={paginationTotalRows}
               onChangePage={handlePageChange}
               onChangeRowsPerPage={(e) => setLimit(e)}
-              // onChangePage={(e) => setPage(e)}
             />
           </VStack>
         </Box>
       </ScrollView>
+      <Modal isOpen={downloadCertificate} size="xl">
+        <Modal.Content>
+          <Modal.Header>
+            <HStack justifyContent={"space-between"} pr="10">
+              <AdminTypo.H1>{t("CERTIFICATION")}</AdminTypo.H1>
+              <AdminTypo.Secondarybutton onPress={() => handleGeneratePdf()}>
+                {t("DOWNLOAD")}
+              </AdminTypo.Secondarybutton>
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setDownCertificate()}
+              />
+            </HStack>
+          </Modal.Header>
+          <Modal.Body
+            style={{
+              backgroundColor: "#f5f5f5",
+              width: "297mm",
+              minHeight: "210mm",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <div ref={reportTemplateRef}>
+              <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
+            </div>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }

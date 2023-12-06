@@ -8,8 +8,17 @@ import {
   campService,
   useWindowSize,
   facilitatorRegistryService,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import { Box, HStack, Modal, VStack, ScrollView, useToast } from "native-base";
+import {
+  Box,
+  HStack,
+  Modal,
+  VStack,
+  ScrollView,
+  useToast,
+  Alert,
+} from "native-base";
 import { ChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
@@ -85,6 +94,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const ref = React.useRef(null);
   const [modal, setModal] = React.useState();
   const toast = useToast();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     const id = user_id;
@@ -102,12 +112,14 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   }, [filter]);
 
   const reassignCampToPrerak = async (user_id) => {
+    setIsDisable(true);
     const obj = {
       facilitator_id: user_id,
       camp_id: id,
     };
     const result = await campService.reassignCampToPrerak(obj);
     if (result?.status !== 200) {
+      setIsDisable(false);
       toast.show({
         render: () => {
           return (
@@ -121,8 +133,20 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         },
       });
     } else {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="success" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t(result?.message)}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
       setModal("");
-      navigate(-1);
+      navigate(`/admin/camps/${id}`);
     }
   };
 
@@ -297,6 +321,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               {t("CANCEL")}
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
               onPress={() => reassignCampToPrerak(modal?.id)}
             >
               {t("CONFIRM")}

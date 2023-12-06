@@ -41,6 +41,7 @@ export default function PersonalDetails({ ip }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [fields, setFields] = React.useState([]);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   const userId = id;
   const navigate = useNavigate();
@@ -202,6 +203,7 @@ export default function PersonalDetails({ ip }) {
   };
 
   const Submit = async (data) => {
+    setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
@@ -257,6 +259,7 @@ export default function PersonalDetails({ ip }) {
             }}
           >
             <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
               mt="3"
               variant={"primary"}
               type="submit"

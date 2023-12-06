@@ -96,6 +96,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const ref = React.useRef(null);
   const [modal, setModal] = React.useState();
   const toast = useToast();
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     let newFilter = filter;
@@ -109,27 +110,41 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   }, [filter]);
 
   const reassignCamp = async () => {
+    setIsDisable(true);
     const obj = {
       learner_id: parseInt(user_id),
-      camp_id: id,
+      camp_id: modal?.id,
     };
     const result = await campService.reassignCamp(obj);
     if (result?.status !== 200) {
+      setIsDisable(false);
       toast.show({
         render: () => {
           return (
             <Alert status="warning" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t(result?.message)}</BodyMedium>
+                <BodyMedium>{t("LEARNER_ASSIGNED_FAILED")}</BodyMedium>
               </HStack>
             </Alert>
           );
         },
       });
     } else {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="success" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t("LEARNER_ASSIGNED_SUCCESSFUL")}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
       setModal("");
-      navigate(-1);
+      navigate(`/admin/camps/${modal?.id}`);
     }
   };
   return (
@@ -328,7 +343,10 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
             <FrontEndTypo.Secondarybutton onPress={(e) => setModal()}>
               {t("CANCEL")}
             </FrontEndTypo.Secondarybutton>
-            <FrontEndTypo.Primarybutton onPress={() => reassignCamp()}>
+            <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
+              onPress={() => reassignCamp()}
+            >
               {t("CONFIRM")}
             </FrontEndTypo.Primarybutton>
           </Modal.Footer>

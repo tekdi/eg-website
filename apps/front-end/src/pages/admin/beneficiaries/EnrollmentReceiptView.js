@@ -43,7 +43,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [fileType, setFileType] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [openModal, setOpenModal] = React.useState(false);
-
+  const [isDisable, setIsDisable] = React.useState(false);
   React.useEffect(async () => {
     const profileDetails = async () => {
       const { result } = await benificiaryRegistoryService.getOne(id);
@@ -74,6 +74,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   };
 
   const submit = async (status) => {
+    setIsDisable(true);
     if (checkValidation()) {
       const data = await benificiaryRegistoryService.verifyEnrollment({
         user_id: id,
@@ -126,7 +127,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
-              {t("ENROLLMENT_DETAILS_VERIFICATION")}
+              {t("ENROLLMENT_DETAILS_VERIFICATION")} ss
             </AdminTypo.H5>
 
             <HStack space="2">
@@ -402,6 +403,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             <HStack space="4">
               <AdminTypo.Successbutton
                 isDisabled={
+                  isDisable ||
                   reason?.enrollment_details === "no" ||
                   reason?.learner_enrollment_details === "no"
                 }
@@ -447,7 +449,10 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   <AdminTypo.PrimaryButton onPress={(e) => setOpenModal()}>
                     {t("CANCEL")}
                   </AdminTypo.PrimaryButton>
-                  <AdminTypo.Secondarybutton onPress={(e) => submit(openModal)}>
+                  <AdminTypo.Secondarybutton
+                    isDisabled={isDisable}
+                    onPress={(e) => submit(openModal)}
+                  >
                     {t("CONFIRM")}
                   </AdminTypo.Secondarybutton>
                 </Modal.Footer>
