@@ -1,0 +1,86 @@
+name: Deploy to UAT S3 Bucket
+on:
+  push:
+    branches:
+      - gha-deploy2s3
+
+defaults:
+  run:
+    working-directory: .
+
+jobs:
+  build:
+    name: Build Deploy to UAT S3 Bucket
+    environment: UAT
+    runs-on: ubuntu-latest
+    steps:
+      - name: List contents
+        run: |
+          ls -lha
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.0.0
+          
+      - name: Install deps, and build
+        run: |
+          yarn install
+          yarn workspace @shiksha/common-lib build
+          yarn install
+          yarn build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+          REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
+          REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
+
+      - name: List contents
+        run: |
+          ls -lha
+
+      - name: Create Lerna Bundles
+        run: |
+          sh ./scripts/pack-prod-build.sh
+
+      - name: List contents
+        run: |
+          ls -lha
+
+#       - name: Deploy
+#         uses: reggionick/s3-deploy@v3
+#         with:
+#           folder: build
+#           bucket: ${{ secrets.S3_BUCKET }}
+#           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
+#           dist-id: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+#           invalidation: /*
+#           delete-removed: true
+#           no-cache: true
+#           private: true
+#           filesToInclude: prod-build/*
+
+      ### S3 sync
+      - name: S3 Sync
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+          SOURCE_DIR: prod-build
+
+      ### Invalidate Cloudfront
+      - name: Cloudfront Invalidation
+        uses: chetan/invalidate-cloudfront-action@master
+        env:
+          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+          PATHS: '/*'
+          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
