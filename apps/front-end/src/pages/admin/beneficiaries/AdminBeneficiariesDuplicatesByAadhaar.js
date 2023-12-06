@@ -85,7 +85,7 @@ export default function DuplicateView({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [viewData, setViewData] = React.useState();
   const navigate = useNavigate();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const columns = (e) => [
     {
@@ -150,13 +150,13 @@ export default function DuplicateView({ footerLinks }) {
   }, [filter]);
 
   const assignToPrerak = async (id) => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const activeId = { activeId: id };
     const result = await benificiaryRegistoryService?.deactivateDuplicates(
       activeId
     );
     if (!result?.success) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       seterrormsg(true);
     }
     setModalVisible(false);
@@ -231,10 +231,9 @@ export default function DuplicateView({ footerLinks }) {
                     color="textGreyColor.100"
                     size="xs"
                   />
-                  <AdminTypo.H1
-                    marginLeft="10px"
-                    color="textGreyColor.500"
-                  >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
+                  <AdminTypo.H1 marginLeft="10px" color="textGreyColor.500">
+                    {`${t("ASSIGN_TO_PRERAK")}`}
+                  </AdminTypo.H1>
                 </HStack>
               </Modal.Header>
               <Modal.Body>
@@ -315,7 +314,7 @@ export default function DuplicateView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
+                    isLoading={isButtonLoading}
                     onPress={() => {
                       assignToPrerak(viewData?.id);
                     }}

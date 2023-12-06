@@ -107,7 +107,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   const [filter, setFilter] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const [prerak, setPrerak] = React.useState({});
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState();
   const [facilitator, setFacilitator] = React.useState([]);
@@ -210,7 +210,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   }, [filter]);
 
   const assignToPrerak = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const beneficiary_Ids = selectedRows.map((item) => {
       return item?.id;
     });
@@ -223,7 +223,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     );
 
     if (!result?.success) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       seterrormsg(true);
     }
     setModalVisible(false);
@@ -391,7 +391,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
+                    isLoading={isButtonLoading}
                     onPress={() => {
                       assignToPrerak();
                     }}

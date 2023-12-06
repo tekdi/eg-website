@@ -43,7 +43,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [fileType, setFileType] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [openModal, setOpenModal] = React.useState(false);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+
   React.useEffect(async () => {
     const profileDetails = async () => {
       const { result } = await benificiaryRegistoryService.getOne(id);
@@ -74,7 +75,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   };
 
   const submit = async (status) => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     if (checkValidation()) {
       const data = await benificiaryRegistoryService.verifyEnrollment({
         user_id: id,
@@ -403,7 +404,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             <HStack space="4">
               <AdminTypo.Successbutton
                 isDisabled={
-                  isDisable ||
+                  isButtonLoading ||
                   reason?.enrollment_details === "no" ||
                   reason?.learner_enrollment_details === "no"
                 }
@@ -426,6 +427,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
               </AdminTypo.Dangerbutton> */}
               <AdminTypo.Secondarybutton
+                isLoading={isButtonLoading}
                 isDisabled={
                   reason?.enrollment_details === "yes" &&
                   reason?.learner_enrollment_details === "yes"
@@ -450,7 +452,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.PrimaryButton>
                   <AdminTypo.Secondarybutton
-                    isDisabled={isDisable}
+                    isDisabled={isButtonLoading}
                     onPress={(e) => submit(openModal)}
                   >
                     {t("CONFIRM")}

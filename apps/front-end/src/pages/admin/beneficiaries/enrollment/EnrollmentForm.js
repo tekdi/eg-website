@@ -175,6 +175,7 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const [uiSchema, setUiSchema] = React.useState({
     subjects: {
@@ -561,7 +562,6 @@ export default function App(footerLinks) {
   };
 
   const handleFormSubmission = async () => {
-
     const newFormData = formData;
     let newdata = filterObject(
       newFormData,
@@ -589,8 +589,10 @@ export default function App(footerLinks) {
 
   const onSubmit = async () => {
     setBtnLoading(true);
+    setIsButtonLoading(true);
     await handleValidationErrors();
     setBtnLoading(false);
+    setIsButtonLoading(false);
   };
 
   return (
