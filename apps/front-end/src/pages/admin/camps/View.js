@@ -569,7 +569,6 @@ export default function View({ footerLinks }) {
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.StatusButton
                   status="success"
-                  isDisabled={isDisable}
                   isLoading={isDisable}
                   onPress={() => setStatus("camp_ip_verified")}
                 >
@@ -577,7 +576,6 @@ export default function View({ footerLinks }) {
                 </AdminTypo.StatusButton>
                 <AdminTypo.Secondarybutton
                   status="info"
-                  isDisabled={isDisable}
                   isLoading={isDisable}
                   onPress={() => setStatus("change_required")}
                 >
@@ -589,7 +587,6 @@ export default function View({ footerLinks }) {
             {data?.group?.status === "camp_ip_verified" && (
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.Secondarybutton
-                  isDisabled={isDisable}
                   isLoading={isDisable}
                   onPress={() => setStatus("change_required")}
                 >

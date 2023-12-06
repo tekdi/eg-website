@@ -892,7 +892,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
-              isDisabled={isDisable}
               isLoading={isDisable}
               onPress={() => formRef?.current?.submit()}
             >

@@ -342,7 +342,6 @@ export default function ForgetPassword() {
               onPress={() => {
                 handleLogin(credentials?.username);
               }}
-              isDisabled={isDisable}
               isLoading={isDisable}
             >
               {t("SEND")}

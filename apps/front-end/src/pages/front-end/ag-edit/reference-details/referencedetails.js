@@ -290,7 +290,6 @@ export default function ReferenceDetails({ ip }) {
             }}
           >
             <FrontEndTypo.Primarybutton
-              isDisabled={isDisable}
               isLoading={isDisable}
               mt="3"
               variant={"primary"}

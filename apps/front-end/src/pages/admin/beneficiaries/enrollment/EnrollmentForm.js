@@ -661,7 +661,6 @@ export default function App(footerLinks) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
-              isDisabled={isDisable}
               isLoading={btnLoading}
               onPress={() => {
                 if (formRef.current.validateForm()) {

@@ -314,7 +314,6 @@ export default function DuplicateView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
                     isLoading={isDisable}
                     onPress={() => {
                       assignToPrerak(viewData?.id);

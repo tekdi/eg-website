@@ -373,7 +373,6 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
                     isLoading={isDisable}
                     onPress={() => {
                       assignToPrerak();

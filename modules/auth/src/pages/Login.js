@@ -232,7 +232,6 @@ export default function Login() {
               p="4"
               my="5"
               onPress={handleLogin}
-              isDisabled={isDisable}
               isLoading={isDisable}
             >
               {t("LOGIN")}
