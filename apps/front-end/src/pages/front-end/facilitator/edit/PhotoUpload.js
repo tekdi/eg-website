@@ -28,6 +28,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { FileUpload } from "component/BaseInput";
 
 export default function PhotoUpload({
   aadhar_no,
@@ -43,41 +44,6 @@ export default function PhotoUpload({
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState({});
   const [file, setFile] = React.useState();
-
-  const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file && file.size <= 1048576 * 10) {
-      setErrors({});
-      if (page < 4) {
-        const result = await uploadProfile(file, `profile_photo_${page}`);
-        setCameraFile([...(cameraFile || []), result]);
-        const data = result?.data?.insert_documents?.returning?.[0];
-        setFile(data);
-      }
-    } else {
-      setErrors({ fileSize: t("FILE_SIZE") });
-    }
-  };
-
-  const uploadProfile = async (file, document_sub_type) => {
-    const { id } = formData || {};
-    if (id) {
-      setLoading(true);
-      const form_data = new FormData();
-      const item = {
-        file: file,
-        document_type: "profile_photo",
-        document_sub_type,
-        user_id: id,
-      };
-      for (let key in item) {
-        form_data.append(key, item[key]);
-      }
-      const result = await uploadRegistryService.uploadFile(form_data);
-      setLoading(false);
-      return result;
-    }
-  };
 
   const onPressBackButton = () => {
     if (page === 1) {
@@ -110,67 +76,19 @@ export default function PhotoUpload({
       <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
         <H2 color="textMaroonColor.400">{t("ADD_ID_PHOTOS")}</H2>
         <VStack space={2}>
-          <Box
-            variant="outline"
-            borderWidth="3px"
-            borderColor="textGreyColor.100"
-            rounded="lg"
-            borderStyle="dashed"
-          >
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <VStack py={file?.id ? "4" : "20"} alignItems="center" space="2">
-              {file?.id ? (
-                <ImageView
-                  w={"150"}
-                  h="250"
-                  borderRadius="0"
-                  source={{
-                    document_id: file?.id,
-                  }}
-                  _image={{ rounded: 0 }}
-                />
-              ) : (
+          <FileUpload
+            schema={{
+              label: `ADD_FRONT_VIEW_${page}`,
+              document_type: "profile_photo",
+              document_sub_type: `profile_photo_${page}`,
+              user_id: formData?.id,
+              iconComponent: (
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
-              )}
-            </VStack>
-
-            <Pressable
-              flex="1"
-              isLoading={loading}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-              alignItems="center"
-              p="4"
-              bg="gray.200"
-              shadow={2}
-            >
-              <HStack alignItems="center" space="2">
-                <IconByName name="Upload2FillIcon" isDisabled />
-                {page === 1 ? (
-                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                    {t("ADD_FRONT_VIEW_1")}
-                  </FrontEndTypo.H2>
-                ) : page === 2 ? (
-                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                    {t("ADD_FRONT_VIEW_2")}
-                  </FrontEndTypo.H2>
-                ) : page === 3 ? (
-                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                    {t("ADD_FRONT_VIEW_3")}
-                  </FrontEndTypo.H2>
-                ) : (
-                  <></>
-                )}
-              </HStack>
-            </Pressable>
-          </Box>
+              ),
+            }}
+            value={formData?.[`profile_photo_${page}`]?.id}
+            onChange={(e) => console.log(e)}
+          />
           {errors?.fileSize ? (
             <H2 color="red.400">{errors?.fileSize}</H2>
           ) : (
