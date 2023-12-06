@@ -28,9 +28,7 @@ const columns = (t, navigate) => [
           <HStack alignItems={"center"} space={2}>
             {row?.profile_photo_1?.name ? (
               <ImageView
-                source={{
-                  uri: row?.profile_photo_1?.name,
-                }}
+                urlObject={row?.profile_photo_1}
                 // alt="Alternate Text"
                 width={"35px"}
                 height={"35px"}
@@ -207,4 +205,4 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   );
 }
 
-export default Table;
+export default React.memo(Table);
