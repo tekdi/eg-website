@@ -122,7 +122,7 @@ export default function Login() {
               </HStack>
             </VStack>
           </Alert>
-          {"alert" in errors ? (
+          {"alert" in errors && (
             <Alert w="100%" status={"error"}>
               <VStack space={2} flexShrink={1} w="100%">
                 <HStack flexShrink={1} space={2} justifyContent="space-between">
@@ -138,8 +138,6 @@ export default function Login() {
                 </HStack>
               </VStack>
             </Alert>
-          ) : (
-            <React.Fragment />
           )}
           <form>
             <VStack space="2">
@@ -164,7 +162,7 @@ export default function Login() {
                     })
                   }
                 />
-                {"username" in errors ? (
+                {"username" in errors && (
                   <FormControl.ErrorMessage
                     _text={{
                       fontSize: "xs",
@@ -174,8 +172,6 @@ export default function Login() {
                   >
                     {errors.username}
                   </FormControl.ErrorMessage>
-                ) : (
-                  <React.Fragment />
                 )}
               </FormControl>
               <FormControl isRequired isInvalid={"password" in errors}>
@@ -209,7 +205,7 @@ export default function Login() {
                     })
                   }
                 />
-                {"password" in errors ? (
+                {"password" in errors && (
                   <FormControl.ErrorMessage
                     _text={{
                       fontSize: "xs",
@@ -219,8 +215,6 @@ export default function Login() {
                   >
                     {errors.password}
                   </FormControl.ErrorMessage>
-                ) : (
-                  <React.Fragment />
                 )}
               </FormControl>
             </VStack>

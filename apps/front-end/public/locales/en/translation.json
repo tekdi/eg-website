@@ -1208,6 +1208,7 @@
   "TRAINING_NOT_COMPLETED": "Training not complete",
   "TRAINING_NOT_PASSED": "Did not pass the test",
   "TRAINING_TEST_DOWNLOAD_CERTIFICATE": "Training is complete, Download certificate",
+  "DOWNLOAD_CERTIFICATE": "Download certificate",
   "TRANSFER_CERTIFICATE": "Transfer certificate",
   "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "Transfer Certificate With CBO Sign",
   "TRY_AADHAR_NUMER_KYC": "Try Aadhaar Number KYC",

@@ -1206,6 +1206,7 @@
   "TRAINING_NOT_COMPLETED": "प्रशिक्षण पूर्ण नहीं",
   "TRAINING_NOT_PASSED": "टेस्ट पास नहीं किया",
   "TRAINING_TEST_DOWNLOAD_CERTIFICATE": "प्रशिक्षण पूर्ण, प्रमाणपत्र डाउनलोड करे",
+  "DOWNLOAD_CERTIFICATE": "प्रमाणपत्र डाउनलोड करे",
   "TRANSFER_CERTIFICATE": "ट्रांसफर सर्टिफिकेट (TC)",
   "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "CBO हस्ताक्षर के साथ हस्तांतरण प्रमाणपत्र",
   "TRY_AADHAR_NUMER_KYC": "आधार संख्या OKYC प्रयास करें",
