@@ -84,7 +84,7 @@ export default function View({ footerLinks }) {
   const [errorList, setErrorList] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const { id } = useParams();
 
@@ -121,7 +121,7 @@ export default function View({ footerLinks }) {
   }, []);
 
   const updateCampStatus = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const { error, ...result } = await campService.updateCampStatus({
       id,
       facilitator_id: data?.faciltator?.[0]?.id,
@@ -130,7 +130,7 @@ export default function View({ footerLinks }) {
     if (result?.status === 200) {
       navigate(`/admin/camps?status=${status}&page=1`);
     } else {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       setErrorList(result?.message);
       setStatus();
     }
@@ -569,12 +569,14 @@ export default function View({ footerLinks }) {
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.StatusButton
                   status="success"
+                  isDisabled={isButtonLoading}
                   onPress={() => setStatus("camp_ip_verified")}
                 >
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
                 <AdminTypo.Secondarybutton
                   status="info"
+                  isDisabled={isButtonLoading}
                   onPress={() => setStatus("change_required")}
                 >
                   {t("CHANGE_REQUIRED")}
@@ -585,6 +587,7 @@ export default function View({ footerLinks }) {
             {data?.group?.status === "camp_ip_verified" && (
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.Secondarybutton
+                  isDisabled={isButtonLoading}
                   onPress={() => setStatus("change_required")}
                 >
                   {t("MODIFY")}
@@ -629,7 +632,7 @@ export default function View({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
 
                 <AdminTypo.Secondarybutton
-                  isDisabled={isDisable}
+                  isDisabled={isButtonLoading}
                   onPress={() => {
                     updateCampStatus();
                   }}

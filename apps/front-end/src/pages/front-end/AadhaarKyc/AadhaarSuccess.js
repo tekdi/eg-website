@@ -23,7 +23,7 @@ export default function AadhaarSuccess({
     } else if (id) {
       navigate(`/beneficiary/${id}`);
     } else if (user?.id) {
-      navigate(`/admin/view/${id}`);
+      navigate(`/admin/facilitator/${id}`);
     } else {
       navigate("/beneficiary/list");
     }

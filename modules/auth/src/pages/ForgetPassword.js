@@ -37,7 +37,7 @@ export default function ForgetPassword() {
   const [errors, setErrors] = React.useState({});
   const [visible, setVisible] = useState(false);
   const [OtpValue, setOtpValue] = useState(true);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const [otpData, setotpData] = useState();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ export default function ForgetPassword() {
 
   const handleLogin = async (username) => {
     if (validate()) {
-      setIsDisable(true);
+      setIsButtonLoading(true);
       const sendotpBody = {
         username: username.toString(),
         reason: "verify-mobile",
@@ -95,12 +95,12 @@ export default function ForgetPassword() {
         sendotpBody
       );
       if (datas.success === true) {
-        setIsDisable(true);
+        setIsButtonLoading(true);
         setotpData(datas);
         setVisible(true);
         setOtpValue(false);
       } else if (datas.status === 400) {
-        setIsDisable(false);
+        setIsButtonLoading(false);
         toast.show({
           title: "Error",
           variant: "solid",
@@ -108,7 +108,7 @@ export default function ForgetPassword() {
         });
       }
     } else {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       setErrors({ alert: t("USERNAME_IS_REQUIRED") });
     }
   };
@@ -342,7 +342,7 @@ export default function ForgetPassword() {
               onPress={() => {
                 handleLogin(credentials?.username);
               }}
-              isDisabled={isDisable}
+              isLoading={isButtonLoading}
             >
               {t("SEND")}
             </FrontEndTypo.Primarybutton>

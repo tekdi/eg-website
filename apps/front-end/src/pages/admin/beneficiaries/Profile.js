@@ -218,27 +218,6 @@ export default function AgAdminProfile({ footerLinks }) {
     );
   };
 
-  const benificiaryDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setData(result?.result);
-    setAadhaarValue(result?.result?.aadhar_no);
-    const subjectId = jsonParse(
-      result?.result?.program_beneficiaries?.subjects
-    );
-    if (subjectId?.length > 0) {
-      let subjectResult = await enumRegistryService.getSubjects({
-        board: result?.result?.program_beneficiaries?.enrolled_for_board,
-      });
-      const subjectNames = subjectId.map((id) => {
-        const matchingSubject = subjectResult?.data?.find(
-          (subject) => subject.id === parseInt(id)
-        );
-        return matchingSubject ? matchingSubject.name : "Subject not found";
-      });
-      setEnrollmentSubjects(subjectNames);
-    }
-  };
-
   const getAuditData = async () => {
     const result = await benificiaryRegistoryService.getAuditLogs(contextId);
     if (result && result.length > 0) {
@@ -290,13 +269,31 @@ export default function AgAdminProfile({ footerLinks }) {
   }, [status]);
 
   React.useEffect(() => {
-    getAuditData();
-    benificiaryDetails();
-  }, [contextId, benificiary]);
+    if (contextId) {
+      getAuditData();
+    }
+  }, [contextId]);
 
   React.useEffect(async () => {
     setLoading(true);
     let newData = await benificiaryRegistoryService.getOne(id);
+    setData(newData?.result);
+    setAadhaarValue(newData?.result?.aadhar_no);
+    const subjectId = jsonParse(
+      newData?.result?.program_beneficiaries?.subjects
+    );
+    if (subjectId?.length > 0) {
+      let subjectResult = await enumRegistryService.getSubjects({
+        board: newData?.result?.program_beneficiaries?.enrolled_for_board,
+      });
+      const subjectNames = subjectId.map((id) => {
+        const matchingSubject = subjectResult?.data?.find(
+          (subject) => subject.id === parseInt(id)
+        );
+        return matchingSubject ? matchingSubject.name : "Subject not found";
+      });
+      setEnrollmentSubjects(subjectNames);
+    }
     setcontextId(newData?.result?.program_beneficiaries?.id);
     setBeneficiary(newData);
     if (newData.result?.program_beneficiaries?.documents_status) {
@@ -324,6 +321,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
     setLoading(false);
   }, []);
+
   const handleAadhaarUpdate = (event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");

@@ -82,7 +82,7 @@ export default function Orientation({ footerLinks }) {
       value: "value",
     });
     setSchema(newSchema);
-  }, [formData]);
+  }, []);
 
   React.useEffect(() => {
     setFormData({

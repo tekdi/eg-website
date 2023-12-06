@@ -98,10 +98,10 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
 
 export default function CampKitMaterialDetails({ footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = React.useState(true);
   const [kitFeadback, setKitFeadback] = React.useState({});
   const [tableData, setTableData] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(true);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const onPressBackButton = () => {
@@ -130,12 +130,14 @@ export default function CampKitMaterialDetails({ footerLinks }) {
 
   const handleSave = async () => {
     setIsDisable(true);
+    setIsLoading(true);
     const result = await campService.campMaterialKitUpdate({
       camp_id: id,
       list_of_materials: kitFeadback,
     });
     if (result?.data) {
       setIsDisable(false);
+      setIsLoading(false);
       navigate(`/camps/${id}`);
     }
   };
@@ -174,11 +176,11 @@ export default function CampKitMaterialDetails({ footerLinks }) {
           </Alert>
 
           <FrontEndTypo.Primarybutton
-            // isLoading={loading}
             p="4"
             mt="4"
             onPress={handleSave}
-            isDisabled={isDisable}
+            isDisabled={isButtonLoading}
+            isLoading={isLoading}
           >
             {t("SAVE_AND_CAMP_PROFILE")}
           </FrontEndTypo.Primarybutton>

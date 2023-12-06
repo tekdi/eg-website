@@ -193,7 +193,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
-            {console.log({ lmsDEtails })}
             {isEventActive
               ? certificateData?.type == "prerak_camp_execution_training" && (
                   <HStack py="4" flex="1" px="6">

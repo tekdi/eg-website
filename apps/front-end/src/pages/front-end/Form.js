@@ -46,7 +46,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [verifyOtpData, setverifyOtpData] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { form_step_number } = facilitator;
@@ -619,14 +618,10 @@ export default function App({ facilitator, ip, onClick }) {
             let { mobile, otp, ...otherError } = errors || {};
             setErrors(otherError);
           }
-          const { status, otpData, newSchema } = await sendAndVerifyOtp(
-            schema,
-            {
-              ...newFormData,
-              hash: localStorage.getItem("hash"),
-            }
-          );
-          setverifyOtpData(otpData);
+          const { status, newSchema } = await sendAndVerifyOtp(schema, {
+            ...newFormData,
+            hash: localStorage.getItem("hash"),
+          });
           if (status === true) {
             const data = await formSubmitCreate(newFormData);
             if (data?.error) {
