@@ -182,7 +182,6 @@ export default function List({ footerLinks, userTokenInfo }) {
   }, [filter]);
 
   const setFilterObject = (data) => {
-    console.log(data);
     setFilter(data);
     setQueryParameters(data);
   };
