@@ -401,7 +401,7 @@ export const Filter = ({ filter, setFilter }) => {
       }
     };
     facilitatorDetails();
-  }, [facilitatorFilter, filter]);
+  }, [facilitatorFilter]);
 
   const onChange = async (data) => {
     const { district: newDistrict, block: newBlock } = data?.formData || {};
