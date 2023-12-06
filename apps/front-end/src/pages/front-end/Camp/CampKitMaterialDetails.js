@@ -100,8 +100,8 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [kitFeadback, setKitFeadback] = React.useState({});
   const [tableData, setTableData] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
 
   React.useEffect(async () => {
     const isSaveDisabled = !tableData?.every((row) => kitFeadback[row.value]);
-    setIsDisable(isSaveDisabled);
+    setIsButtonLoading(isSaveDisabled);
   }, [tableData, kitFeadback]);
 
   const handleCheckboxChange = (item, columnName) => {
@@ -130,14 +130,14 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   };
 
   const handleSave = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     setIsLoading(true);
     const result = await campService.campMaterialKitUpdate({
       camp_id: id,
       list_of_materials: kitFeadback,
     });
     if (result?.data) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       setIsLoading(false);
       navigate(`/camps/${id}`);
     }
@@ -180,7 +180,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
             p="4"
             mt="4"
             onPress={handleSave}
-            isDisabled={isDisable}
+            isDisabled={isButtonLoading}
             isLoading={isLoading}
           >
             {t("SAVE_AND_CAMP_PROFILE")}

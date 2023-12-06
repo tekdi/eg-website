@@ -96,7 +96,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const ref = React.useRef(null);
   const [modal, setModal] = React.useState();
   const toast = useToast();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   React.useEffect(async () => {
     let newFilter = filter;
@@ -110,14 +110,14 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   }, [filter]);
 
   const reassignCamp = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const obj = {
       learner_id: parseInt(user_id),
       camp_id: modal?.id,
     };
     const result = await campService.reassignCamp(obj);
     if (result?.status !== 200) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       toast.show({
         render: () => {
           return (
@@ -344,7 +344,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               {t("CANCEL")}
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton
-              isLoading={isDisable}
+              isLoading={isButtonLoading}
               onPress={() => reassignCamp()}
             >
               {t("CONFIRM")}

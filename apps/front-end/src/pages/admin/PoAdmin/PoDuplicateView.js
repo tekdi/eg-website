@@ -95,8 +95,7 @@ export default function PoDuplicateView({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [viewData, setViewData] = React.useState();
   const navigate = useNavigate();
-  const [isDisable, setIsDisable] = React.useState(false);
-
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const columns = (e) => [
     {
       name: t("LEARNERS_ID"),
@@ -169,13 +168,13 @@ export default function PoDuplicateView({ footerLinks }) {
   }, [filter]);
 
   const assignToPrerak = async (id) => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const activeId = { activeId: id };
     const result = await benificiaryRegistoryService?.deactivateDuplicates(
       activeId
     );
     if (!result?.success) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       seterrormsg(true);
     }
     setModalVisible(false);
@@ -348,7 +347,7 @@ export default function PoDuplicateView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
+                    isDisabled={isButtonLoading}
                     onPress={() => {
                       assignToPrerak(viewData?.id);
                     }}

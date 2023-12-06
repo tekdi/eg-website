@@ -51,7 +51,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const location = useLocation();
   const [agroute, setagroute] = React.useState(location?.state?.route);
   const [loading, setLoading] = React.useState(true);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const id = useParams();
 
@@ -664,7 +664,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   const uploadProfile = async () => {
     const { id } = authUser;
     if (id) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       const form_data = new FormData();
       const item = {
         file: cameraFile,
@@ -678,7 +678,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       if (uploadDoc) {
-        setIsDisable(false);
+        setIsButtonLoading(false);
         navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
       }
     }
@@ -716,8 +716,8 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           <Button
             variant={"primary"}
             onPress={uploadProfile}
-            isDisabled={isDisable}
-            isLoading={isDisable}
+            isDisabled={isButtonLoading}
+            isLoading={isButtonLoading}
           >
             {t("SUBMIT")}
           </Button>
@@ -892,7 +892,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
             <FrontEndTypo.Primarybutton
               mt="3"
               type="submit"
-              isLoading={isDisable}
+              isLoading={isButtonLoading}
               onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}

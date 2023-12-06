@@ -140,7 +140,7 @@ export default function FacilitatorView({ footerLinks }) {
   const [editModal, setEditModal] = React.useState(false);
   const [editData, setEditData] = React.useState();
   const [fieldCheck, setFieldCheck] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -193,7 +193,7 @@ export default function FacilitatorView({ footerLinks }) {
   }, []);
 
   const editRequest = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     if (!editData) {
       const obj = {
         edit_req_for_context: "users",
@@ -249,7 +249,7 @@ export default function FacilitatorView({ footerLinks }) {
   };
 
   const handleResetPassword = async (password, confirm_password) => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     if (validate()) {
       if (password === confirm_password) {
         const bodyData = {
@@ -270,19 +270,19 @@ export default function FacilitatorView({ footerLinks }) {
           setModalVisible(false);
           return { status: true };
         } else if (resetPassword.success === false) {
-          setIsDisable(false);
+          setIsButtonLoading(false);
           setCredentials();
           setModalVisible(false);
           return { status: false };
         }
       } else if (password !== confirm_password) {
-        setIsDisable(false);
+        setIsButtonLoading(false);
         setCredentials();
         setModalVisible(false);
         return { status: false };
       }
     } else {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       setCredentials();
     }
   };
@@ -302,7 +302,7 @@ export default function FacilitatorView({ footerLinks }) {
   };
 
   const updateAadhaar = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const aadhaar_no = {
       id: id,
       aadhar_no: aadhaarValue,
@@ -312,11 +312,11 @@ export default function FacilitatorView({ footerLinks }) {
     );
     if (aadhaarValue.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
-      setIsDisable(false);
+      setIsButtonLoading(false);
     } else if (!result?.success) {
       setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
       setDuplicateUserList(result?.data?.users);
-      setIsDisable(false);
+      setIsButtonLoading(false);
     } else {
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
@@ -571,7 +571,7 @@ export default function FacilitatorView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isLoading={isDisable}
+                    isLoading={isButtonLoading}
                     onPress={() => {
                       handleResetPassword(
                         credentials?.password,
@@ -950,7 +950,7 @@ export default function FacilitatorView({ footerLinks }) {
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
-                  isDisabled={isDisable}
+                  isDisabled={isButtonLoading}
                   onPress={updateAadhaar}
                 >
                   {t("SAVE")}
@@ -1064,7 +1064,7 @@ export default function FacilitatorView({ footerLinks }) {
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
-                  isDisabled={isDisable}
+                  isDisabled={isButtonLoading}
                   onPress={() => editRequest()}
                 >
                   {t("SAVE")}

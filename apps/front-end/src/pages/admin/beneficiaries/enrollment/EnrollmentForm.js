@@ -175,7 +175,7 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const [uiSchema, setUiSchema] = React.useState({
     subjects: {
@@ -589,10 +589,10 @@ export default function App(footerLinks) {
 
   const onSubmit = async () => {
     setBtnLoading(true);
-    setIsDisable(true);
+    setIsButtonLoading(true);
     await handleValidationErrors();
     setBtnLoading(false);
-    setIsDisable(false);
+    setIsButtonLoading(false);
   };
 
   return (
