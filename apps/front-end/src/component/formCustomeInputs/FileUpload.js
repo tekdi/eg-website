@@ -18,6 +18,8 @@ const FileUpload = ({ value, onChange, schema }) => {
     document_type,
     document_sub_type,
     iconComponent,
+    width,
+    height,
   } = schema || {};
 
   const uplodInputRef = React.useRef();
@@ -53,15 +55,16 @@ const FileUpload = ({ value, onChange, schema }) => {
     onChange(document_id);
     setFile(document_id);
   };
-  console.log({ value });
+
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
 
     if (file && file.size <= 1048576 * 10) {
       if (file instanceof File) {
+        const maxWidthOrHeight = Math.max(width || 640, height || 480);
         const compressedImage = await imageCompression(file, {
           maxSizeMB: 1,
-          maxWidthOrHeight: Math.max(640, 480),
+          maxWidthOrHeight,
           useWebWorker: true,
         });
 
