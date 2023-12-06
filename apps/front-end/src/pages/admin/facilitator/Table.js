@@ -19,7 +19,6 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import Certification from "./Certification";
 
 const dropDown = (triggerProps, t) => {
   return (
@@ -45,7 +44,7 @@ const columns = (t, navigate) => [
       <HStack>
         <Pressable
           style={{ flexDirection: "row", justifyContent: "space-between" }}
-          onPress={() => navigate(`/admin/view/${row?.id}`)}
+          onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
         >
           <HStack alignItems={"center"} space={2}>
             {row?.profile_photo_1?.name ? (
@@ -93,7 +92,7 @@ const columns = (t, navigate) => [
   {
     name: t("STATUS"),
     selector: (row) => (
-      <Pressable onPress={() => navigate(`/admin/view/${row?.id}`)}>
+      <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
         <ChipStatus status={row?.program_faciltators?.status} />
       </Pressable>
     ),
@@ -113,7 +112,7 @@ const columns = (t, navigate) => [
   //     <AdminTypo.Secondarybutton
   //       my="3"
   //       onPress={() => {
-  //         navigate(`/admin/view/${row?.id}`);
+  //         navigate(`/admin/facilitator/${row?.id}`);
   //       }}
   //     >
   //       {t("VIEW")}
@@ -151,7 +150,7 @@ const columns = (t, navigate) => [
             fontWeight: "700",
           }}
           onPress={() => {
-            navigate(`/admin/beneficiary/${row?.id}`);
+            navigate(`/admin/facilitator/${row?.id}`);
           }}
         >
           {t("VIEW")}
@@ -164,7 +163,7 @@ const columns = (t, navigate) => [
           >
             <Menu.Item
               onPress={() => {
-                navigate(`/admin/beneficiary/${row?.id}`);
+                navigate(`/admin/facilitator/${row?.id}`);
               }}
             >
               {t("VIEW")}
@@ -174,7 +173,7 @@ const columns = (t, navigate) => [
                 navigate(`/admin/Certification/${row?.id}`);
               }}
             >
-              Download Certificate
+              {t("DOWNLOAD_CERTIFICATE")}
             </Menu.Item>
           </Menu>
         </Button>
@@ -196,7 +195,7 @@ function Table({
 
   const navigate = useNavigate();
   const handleRowClick = (row) => {
-    navigate(`/admin/view/${row?.id}`);
+    navigate(`/admin/facilitator/${row?.id}`);
   };
   //
   return (

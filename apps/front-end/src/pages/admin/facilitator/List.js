@@ -25,9 +25,9 @@ import {
   CustomRadio,
   getOptions,
 } from "@shiksha/common-lib";
-import Table from "./facilitator/Table";
+import Table from "./Table";
 import { useTranslation } from "react-i18next";
-import { MultiCheck } from "../../component/BaseInput";
+import { MultiCheck } from "../../../component/BaseInput";
 import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
 
@@ -107,7 +107,7 @@ const schemat = {
   },
 };
 
-export default function AdminHome({ footerLinks, userTokenInfo }) {
+export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
 
   const [width, Height] = useWindowSize();
@@ -182,14 +182,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   }, [filter]);
 
   const setFilterObject = (data) => {
+    console.log(data);
     setFilter(data);
     setQueryParameters(data);
   };
 
   useEffect(() => {
-    setFilter(
-      urlData(["district", "block", "qualificationIds", "work_experience"])
-    );
+    const arr = ["district", "block", "qualificationIds", "work_experience"];
+    const data = urlData(arr);
+    if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
   const onChange = async (data) => {
@@ -197,10 +198,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
       data?.formData || {};
     setFilterObject({
       ...filter,
-      ...(district ? { district } : {}),
-      ...(qualificationIds ? { qualificationIds } : {}),
-      ...(work_experience ? { work_experience } : {}),
-      ...(block ? { block } : {}),
+      ...(district && district?.length > 0 ? { district } : {}),
+      ...(qualificationIds && qualificationIds?.length > 0
+        ? { qualificationIds }
+        : {}),
+      ...(work_experience && work_experience?.length > 0
+        ? { work_experience }
+        : {}),
+      ...(block && block?.length > 0 ? { block } : {}),
     });
   };
 
