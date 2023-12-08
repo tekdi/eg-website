@@ -268,18 +268,31 @@ export default function CampExecution({ footerLinks }) {
             }}
             type="warning"
           />
-          <FrontEndTypo.H3>
-            {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
-          </FrontEndTypo.H3>
           <VStack space="4">
-            <FrontEndTypo.Primarybutton onPress={campBegin}>
-              {t("YES_ABSOLUTELY")}
-            </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
-            >
-              {t("NO_PLAN")}
-            </FrontEndTypo.Secondarybutton>
+            {todaysData?.[0]?.end_date === null ? (
+              <>
+                <FrontEndTypo.H3>
+                  {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
+                </FrontEndTypo.H3>
+                <FrontEndTypo.Primarybutton onPress={campBegin}>
+                  {t("YES_ABSOLUTELY")}
+                </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton
+                  onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
+                >
+                  {t("NO_PLAN")}
+                </FrontEndTypo.Secondarybutton>
+              </>
+            ) : (
+              <Alert status="warning" alignItems={"center"}>
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  <FrontEndTypo.H3>
+                    {t("Today's camp has been completed")}
+                  </FrontEndTypo.H3>
+                </HStack>
+              </Alert>
+            )}
           </VStack>
         </VStack>
       </VStack>

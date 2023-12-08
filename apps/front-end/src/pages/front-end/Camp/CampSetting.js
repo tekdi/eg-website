@@ -34,7 +34,7 @@ export default function CampSetting({ footerLinks }) {
 
   const handleDayClick = (day) => {
     if (selectedDays?.includes(day)) {
-      setSelectedDays(selectedDays.filter((d) => d !== day));
+      setSelectedDays(selectedDays?.filter((d) => d !== day));
     } else {
       setSelectedDays(day);
     }
