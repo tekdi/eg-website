@@ -89,20 +89,24 @@ export default function CampSetting({ footerLinks }) {
             space={4}
           >
             <TimePicker
+              readOnly
               placeholder={t("SELECT_TIME")}
               use12Hours
               value={selectedStartTime ? moment(selectedStartTime) : ""}
               showSecond={false}
               focusOnOpen={true}
+              enforceFocus={false}
               format="hh:mm A"
               onChange={(e) => setSelectedStartTime(e?._d)}
             />
             {t("TO")}
             <TimePicker
+              readOnly
               placeholder={t("SELECT_TIME")}
               use12Hours
               value={selectedEndTime ? moment(selectedEndTime) : ""}
               showSecond={false}
+              enforceFocus={false}
               focusOnOpen={true}
               format="hh:mm A"
               onChange={(e) => setSelectedEndTime(e?._d)}
