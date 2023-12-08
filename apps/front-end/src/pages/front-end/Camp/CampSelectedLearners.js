@@ -1,5 +1,14 @@
 import React from "react";
-import { Alert, Box, Checkbox, HStack, Text, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  Checkbox,
+  HStack,
+  Pressable,
+  Text,
+  VStack,
+  Modal,
+} from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -8,10 +17,12 @@ import {
   IconByName,
   ImageView,
   campService,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
+import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 
 // App
 export default function CampSelectedLearners({
@@ -26,13 +37,22 @@ export default function CampSelectedLearners({
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
+  const [registeredId, setRegisteredId] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
-  const selectAllChecked = selectedIds?.length === nonRegisteredUser?.length;
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [registeredUsers, setRegisteredUsers] = React.useState([]);
+  const selectAllChecked =
+    selectedIds?.length ===
+    nonRegisteredUser?.filter(
+      (item) => !registeredUsers.some((user) => user.id === item.id)
+    ).length;
+
   const onPressBackButton = async () => {
     navigate(`/camps/${camp_id?.id}`);
   };
 
   const handleCheckboxChange = (id) => {
+    setRegisteredId(id);
     setSelectedIds((prevSelectedIds) => {
       if (prevSelectedIds.includes(id)) {
         return prevSelectedIds.filter((selectedId) => selectedId !== id);
@@ -46,7 +66,9 @@ export default function CampSelectedLearners({
     if (selectAllChecked) {
       setSelectedIds([]);
     } else {
-      const newSelectedIds = nonRegisteredUser?.map((item) => item.id);
+      const newSelectedIds = nonRegisteredUser
+        ?.filter((item) => !registeredUsers.some((user) => user.id === item.id))
+        .map((item) => item.id);
       setSelectedIds(newSelectedIds);
     }
   };
@@ -60,7 +82,10 @@ export default function CampSelectedLearners({
         edit_page_type: "edit_learners",
         id: camp_id?.id,
       };
+
+      console.log(updateLearner.learner_ids, "updateLearner");
       const data = await campService.updateCampDetails(updateLearner);
+      console.log("updatelearner", data);
       if (data) {
         navigate(`/camps/${camp_id?.id}`);
       }
@@ -74,6 +99,7 @@ export default function CampSelectedLearners({
     const result = await campService.campNonRegisteredUser();
     const campdetails = await campService.getCampDetails(camp_id);
     const campRegisterUsers = campdetails?.data?.group_users || [];
+    setRegisteredUsers(campRegisterUsers);
     const campNotRegisterUsers = result?.data?.user || [];
     const mergedData = campRegisterUsers?.concat(campNotRegisterUsers);
     setNonRegisteredUser(mergedData);
@@ -111,7 +137,6 @@ export default function CampSelectedLearners({
             <></>
           )}
         </AdminTypo.H3>
-
         <HStack
           space={2}
           paddingRight={2}
@@ -124,68 +149,80 @@ export default function CampSelectedLearners({
             onChange={handleSelectAllChange}
           />
         </HStack>
+
         {nonRegisteredUser?.map((item) => {
           return (
-            <HStack
+            <CardComponent
               key={item}
-              w={"100%"}
-              bg="white"
-              p="2"
-              my={2}
-              shadow="FooterShadow"
-              rounded="sm"
-              space="1"
-              alignItems={"center"}
-              justifyContent={"space-between"}
+              _header={{ bg: "white" }}
+              _vstack={{
+                bg: "white",
+                m: "2",
+              }}
             >
-              <HStack justifyContent="space-between">
-                <HStack alignItems="Center" flex="5">
-                  {item?.profile_photo_1?.id ? (
-                    <ImageView
-                      source={{
-                        uri: item?.profile_photo_1?.name,
-                      }}
-                      // alt="Alternate Text"
-                      width={"45px"}
-                      height={"45px"}
-                    />
-                  ) : (
-                    <IconByName
-                      isDisabled
-                      name="AccountCircleLineIcon"
-                      color="gray.300"
-                      _icon={{ size: "51px" }}
+              <HStack
+                key={item}
+                w={"100%"}
+                bg="white"
+                my={1}
+                rounded="sm"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <HStack justifyContent="space-between">
+                  <HStack alignItems="Center" flex="5">
+                    <Pressable onPress={() => setModalVisible(item)}>
+                      {item?.profile_photo_1?.id ? (
+                        <ImageView
+                          source={{
+                            uri: item?.profile_photo_1?.name,
+                          }}
+                          // alt="Alternate Text"
+                          width={"45px"}
+                          height={"45px"}
+                        />
+                      ) : (
+                        <IconByName
+                          isDisabled
+                          name="AccountCircleLineIcon"
+                          color="gray.300"
+                          _icon={{ size: "51px" }}
+                        />
+                      )}
+                    </Pressable>
+                    <VStack
+                      pl="2"
+                      flex="1"
+                      wordWrap="break-word"
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                    >
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                        {item?.program_beneficiaries[0]?.enrollment_first_name}
+                        {item?.program_beneficiaries[0]
+                          ?.enrollment_middle_name &&
+                          ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
+                        {item?.program_beneficiaries[0]?.enrollment_last_name &&
+                          ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
+                      </FrontEndTypo.H3>
+                      <Text>{item?.district}</Text>
+                      <Text>{item?.block}</Text>
+                      <Text>{item?.village}</Text>
+                    </VStack>
+                  </HStack>
+                </HStack>
+
+                <Box maxW="121px">
+                  {!registeredUsers.find((e) => e?.id === item?.id)?.id && (
+                    <Checkbox
+                      isChecked={selectedIds.includes(item.id)}
+                      onChange={() => handleCheckboxChange(item.id)}
                     />
                   )}
-                  <VStack
-                    pl="2"
-                    flex="1"
-                    wordWrap="break-word"
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.program_beneficiaries[0]?.enrollment_first_name}
-                      {item?.program_beneficiaries[0]?.enrollment_middle_name &&
-                        ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
-                      {item?.program_beneficiaries[0]?.enrollment_last_name &&
-                        ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
-                    </FrontEndTypo.H3>
-                    <Text>{item?.district}</Text>
-                    <Text>{item?.block}</Text>
-                    <Text>{item?.village}</Text>
-                  </VStack>
-                </HStack>
+                </Box>
               </HStack>
-
-              <Box maxW="121px">
-                <Checkbox
-                  isChecked={selectedIds.includes(item.id)}
-                  onChange={() => handleCheckboxChange(item.id)}
-                />
-              </Box>
-            </HStack>
+            </CardComponent>
           );
         })}
         <FrontEndTypo.Primarybutton
@@ -195,6 +232,76 @@ export default function CampSelectedLearners({
           {t("SAVE_AND_CAMP_PROFILE")}
         </FrontEndTypo.Primarybutton>
       </Box>
+      <Modal isOpen={modalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>{t("PROFILE")}</Modal.Header>
+          <Modal.Body>
+            {console.log(modalVisible)}
+
+            <VStack alignItems={"center"}>
+              {modalVisible?.profile_photo_1?.id ? (
+                <ImageView
+                  source={{
+                    uri: modalVisible?.profile_photo_1?.name,
+                  }}
+                  // alt="Alternate Text"
+                  width={"60px"}
+                  height={"60px"}
+                />
+              ) : (
+                <IconByName
+                  isDisabled
+                  name="AccountCircleLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "60px" }}
+                />
+              )}
+
+              <FrontEndTypo.H3 bold color="textGreyColor.800">
+                {
+                  modalVisible?.program_beneficiaries?.[0]
+                    ?.enrollment_first_name
+                }
+                {modalVisible?.program_beneficiaries?.[0]
+                  ?.enrollment_middle_name &&
+                  ` ${modalVisible?.program_beneficiaries?.[0]?.enrollment_middle_name}`}
+                {modalVisible?.program_beneficiaries?.[0]
+                  ?.enrollment_last_name &&
+                  ` ${modalVisible?.program_beneficiaries?.[0]?.enrollment_last_name}`}
+              </FrontEndTypo.H3>
+              <Chip children={modalVisible?.id} />
+              <ChipStatus
+                is_duplicate={
+                  modalVisible?.program_beneficiaries?.[0]?.is_duplicate
+                }
+                is_deactivated={
+                  modalVisible?.program_beneficiaries?.[0]?.is_deactivated
+                }
+                status={modalVisible?.program_beneficiaries?.[0]?.status}
+                rounded={"sm"}
+              />
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack
+              height={"80%"}
+              justifyContent={"space-between"}
+              width={"100%"}
+            >
+              <FrontEndTypo.Secondarybutton
+                onPress={() => setModalVisible(false)}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => navigate(`/beneficiary/${modalVisible?.id}`)}
+              >
+                {t("VIEW_PROFILE")}
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
