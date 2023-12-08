@@ -9,6 +9,7 @@ import {
   enumRegistryService,
   campService,
   ImageView,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import {
   Actionsheet,
@@ -60,7 +61,8 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const activities_response = await campService.addMoodActivity(dataToSave);
     if (activities_response) {
       setEnums();
-      setAlert(t("MISSILINEOUS_SUCCESS_MESSAGE"));
+      console.log();
+      setAlert({ type: "success", title: t("MISSILINEOUS_SUCCESS_MESSAGE") });
     }
   };
 
@@ -84,18 +86,16 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
         <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
           <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
             <HStack alignItems="center" justifyContent="center" space={3}>
-              <HStack>
-                <Image
-                  source={{
-                    uri: "/images/activities/learning-activity.png",
-                  }}
-                  resizeMode="contain"
-                  alignSelf={"center"}
-                  p="6"
-                  w="100px"
-                  h="80px"
-                />
-              </HStack>
+              <Image
+                source={{
+                  uri: "/images/activities/learning-activity.png",
+                }}
+                resizeMode="contain"
+                alignSelf={"center"}
+                p="6"
+                w="100px"
+                h="80px"
+              />
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("LEARNING_ACTIVITIES")}
               </FrontEndTypo.H2>
@@ -109,18 +109,16 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
             }}
           >
             <HStack alignItems="center" justifyContent="center" space={3}>
-              <HStack>
-                <Image
-                  source={{
-                    uri: "/images/activities/missilaneous-activity.png",
-                  }}
-                  resizeMode="contain"
-                  alignSelf={"center"}
-                  p="6"
-                  w="100px"
-                  h="80px"
-                />
-              </HStack>
+              <Image
+                source={{
+                  uri: "/images/activities/missilaneous-activity.png",
+                }}
+                resizeMode="contain"
+                alignSelf={"center"}
+                p="6"
+                w="100px"
+                h="80px"
+              />
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("MISCELLANEOUS_ACTIVITIES")}
               </FrontEndTypo.H2>

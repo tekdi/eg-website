@@ -8,6 +8,7 @@ import {
   useLocationData,
   enumRegistryService,
   ImageView,
+  CardComponent,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import moment from "moment";
@@ -340,14 +341,12 @@ const CampExecutionEnd = ({ disable, activityId, facilitator, error }) => {
             height="80px"
             source={{ document_id: facilitator?.profile_photo_1?.id }}
           ></ImageView>
-          <FrontEndTypo.H2
-            marginTop={"15px"}
-            textAlign="center"
-            fontSize="16px"
-            fontWeight="bold"
+          <CardComponent
+            _header={{ bg: "light.100" }}
+            _vstack={{ bg: "light.100", space: 1, flex: 1, paddingTop: 4 }}
           >
             {t("LETS_START_TODAYS_CAMP")}
-          </FrontEndTypo.H2>
+          </CardComponent>
         </VStack>
       </Box>
       <Alert status="warning">
