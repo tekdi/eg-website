@@ -83,9 +83,7 @@ export default function CampSelectedLearners({
         id: camp_id?.id,
       };
 
-      console.log(updateLearner.learner_ids, "updateLearner");
       const data = await campService.updateCampDetails(updateLearner);
-      console.log("updatelearner", data);
       if (data) {
         navigate(`/camps/${camp_id?.id}`);
       }
@@ -236,8 +234,6 @@ export default function CampSelectedLearners({
         <Modal.Content>
           <Modal.Header textAlign={"Center"}>{t("PROFILE")}</Modal.Header>
           <Modal.Body>
-            {console.log(modalVisible)}
-
             <VStack alignItems={"center"}>
               {modalVisible?.profile_photo_1?.id ? (
                 <ImageView
@@ -284,7 +280,7 @@ export default function CampSelectedLearners({
           </Modal.Body>
           <Modal.Footer>
             <HStack
-              height={"80%"}
+              // height={"80%"}
               justifyContent={"space-between"}
               width={"100%"}
             >
