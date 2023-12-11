@@ -88,9 +88,12 @@ export default function CampSessionList({ footerLinks }) {
         </HStack>
 
         {sessionList?.map((item) => (
-          <HStack key={item} alignItems={"center"}>
+          <HStack key={item} alignItems={"center"} space={2}>
             {item?.session_tracks?.[0]?.status === "complete" && (
-              <CheckCircleIcon />
+              <CheckCircleIcon color="greenIconColor" size="24px" />
+            )}
+            {item?.session_tracks?.[0]?.status === "incomplete" && (
+              <IconByName color="warningColor" name="TimeFillIcon" _size={30} />
             )}
 
             <CardComponent

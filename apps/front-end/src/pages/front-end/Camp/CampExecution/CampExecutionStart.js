@@ -264,11 +264,14 @@ export default function CampExecutionStart({ footerLinks }) {
                       }}
                       alt="airoplane.gif"
                     />
-
                     <Chip width="150px" isActive={activeChip === item?.value}>
-                      <Text textAlign={"center"} fontSize={"12px"}>
+                      <FrontEndTypo.H4
+                        color={activeChip === item?.value ? "white" : "black"}
+                        textAlign={"center"}
+                        fontSize={"12px"}
+                      >
                         {t(item?.title)}
-                      </Text>
+                      </FrontEndTypo.H4>
                     </Chip>
                   </Pressable>
                 </VStack>

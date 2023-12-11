@@ -678,8 +678,8 @@ const DEFAULT_THEME = {
     },
     text: {
       100: '#a8e3fd'
-    }
-    
+    },
+    greenIconColor:'#008C0E'
   }
 }
 
