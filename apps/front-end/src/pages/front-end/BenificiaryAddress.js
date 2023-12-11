@@ -225,10 +225,7 @@ export default function BenificiaryAddress() {
                   ) : (
                     "-"
                   )}
-
-                  {
-                    console.log("hii")
-                  }
+                 
                 </FrontEndTypo.H3>
               </HStack>
               <HStack space={2} alignItems="Center">
