@@ -12,7 +12,6 @@ import { SunbirdPlayer } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import { Button, HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { logDOM } from "@testing-library/react";
 
 function Player({ setAlert }) {
   const { t } = useTranslation();
@@ -20,7 +19,6 @@ function Player({ setAlert }) {
   const [assessmentData, setassessmentData] = useState();
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
-  const [isEnd, setIsEnd] = React.useState();
 
   useEffect(async () => {
     const { error, ...assesmentData } = await testRegistryService.getAssessment(

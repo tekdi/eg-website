@@ -99,7 +99,7 @@ export default function BenificiaryProfilePhoto() {
                   <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
                 ),
               }}
-              // value={formData?.[`profile_photo_${page}`]?.id}
+              value={file?.id}
               onChange={(e) => console.log(e)}
             />
           }

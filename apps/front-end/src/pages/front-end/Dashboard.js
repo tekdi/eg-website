@@ -284,7 +284,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           console.log(modalVisible?.params?.do_id);
                           const randomizedDoId =
                             modalVisible?.params?.do_id[
-                              Math.floor(Math.random() * doIds.length)
+                              Math.floor(
+                                Math.random() *
+                                  modalVisible?.params?.do_id.length
+                              )
                             ];
 
                           console.log(randomizedDoId);
