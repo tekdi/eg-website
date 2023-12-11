@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
@@ -124,103 +124,108 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
 
-  React.useEffect(async () => {
-    const result = await enumRegistryService.statuswiseCount();
-    setFacilitaorStatus(result);
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const result = await enumRegistryService.statuswiseCount();
+      setFacilitaorStatus(result);
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
 
-    const getQualification =
-      await facilitatorRegistryService.getQualificationAll();
-    let newSchema = getOptions(schemat, {
-      key: "qualificationIds",
-      arr: getQualification,
-      title: "name",
-      value: "id",
-    });
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    newSchema = getOptions(newSchema, {
-      key: "district",
-      arr: getDistricts?.districts,
-      title: "district_name",
-      value: "district_name",
-    });
-    setSchema(newSchema);
-    setLoading(false);
+      const getQualification = await facilitatorRegistryService.getQualificationAll();
+      let newSchema = getOptions(schemat, {
+        key: "qualificationIds",
+        arr: getQualification,
+        title: "name",
+        value: "id",
+      });
+
+      let name = "RAJASTHAN";
+      const getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
+      newSchema = getOptions(newSchema, {
+        key: "district",
+        arr: getDistricts?.districts,
+        title: "district_name",
+        value: "district_name",
+      });
+
+      setSchema(newSchema);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
-  React.useEffect(async () => {
-    if (schema) {
-      let blockData = [];
-      if (filter?.district?.length > 0) {
-        blockData = await geolocationRegistryService.getMultipleBlocks({
+  React.useEffect(() => {
+    const fetchBlocks = async () => {
+      if (schema && filter?.district?.length > 0) {
+        const blockData = await geolocationRegistryService.getMultipleBlocks({
           districts: filter?.district,
         });
+        let newSchema = getOptions(schema, {
+          key: "block",
+          arr: blockData,
+          title: "block_name",
+          value: "block_name",
+        });
+        setSchema(newSchema);
       }
-      let newSchema = getOptions(schema, {
-        key: "block",
-        arr: blockData,
-        title: "block_name",
-        value: "block_name",
-      });
-      setSchema(newSchema);
-    }
+    };
+    fetchBlocks();
   }, [filter?.district]);
 
-  React.useEffect(async () => {
-    const result = await facilitatorRegistryService.filter({
-      ...filter,
-      limit: filter.limit || 10,
-    });
-    setData(result.data?.data);
-    setPaginationTotalRows(
-      result?.data?.totalCount ? result?.data?.totalCount : 0
-    );
+  React.useEffect(() => {
+    const fetchFilteredData = async () => {
+      const result = await facilitatorRegistryService.filter({
+        ...filter,
+        limit: filter.limit || 10,
+      });
+
+      setData(result.data?.data);
+      setPaginationTotalRows(result?.data?.totalCount || 0);
+    };
+
+    fetchFilteredData();
   }, [filter]);
 
-  const setFilterObject = (data) => {
+  const setFilterObject = React.useCallback((data) => {
     setFilter(data);
     setQueryParameters(data);
-  };
+  }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const arr = ["district", "block", "qualificationIds", "work_experience"];
     const data = urlData(arr);
+
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = async (data) => {
-    const { district, qualificationIds, work_experience, block } =
-      data?.formData || {};
+  const onChange = React.useCallback(async (data) => {
+    const { district, qualificationIds, work_experience, block } = data?.formData || {};
     setFilterObject({
       ...filter,
       ...(district && district?.length > 0 ? { district } : {}),
-      ...(qualificationIds && qualificationIds?.length > 0
-        ? { qualificationIds }
-        : {}),
-      ...(work_experience && work_experience?.length > 0
-        ? { work_experience }
-        : {}),
+      ...(qualificationIds && qualificationIds?.length > 0 ? { qualificationIds } : {}),
+      ...(work_experience && work_experience?.length > 0 ? { work_experience } : {}),
       ...(block && block?.length > 0 ? { block } : {}),
     });
-  };
+  }, [filter, setFilterObject]);
 
-  const clearFilter = () => {
+  const clearFilter = React.useCallback(() => {
     setFilter({});
     setFilterObject({});
-  };
+  }, [setFilterObject]);
 
   const [modal, setModal] = React.useState(false);
   const exportPrerakCSV = async () => {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = React.useCallback((e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-  };
+  }, [filter]);
+  
   const debouncedHandleSearch = React.useCallback(
     debounce(handleSearch, 1000),
     []
@@ -387,9 +392,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={filter}
-                  templates={{
-                    FieldTemplate: CustomFieldTemplate,
-                  }}
+                 
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
@@ -421,27 +424,4 @@ export default function List({ footerLinks, userTokenInfo }) {
   );
 }
 
-function CustomFieldTemplate({ id, label, children }) {
-  const { t } = useTranslation();
 
-  return (
-    <VStack>
-      <HStack style={{ justifyContent: "space-between" }}>
-        {id !== "root" && (
-          <HStack style={{ justifyContent: "space-between" }} width="100%">
-            <label
-              style={{
-                fontWeight: "bold",
-                color: "textGreyColor.400",
-                paddingBottom: "12px",
-              }}
-            >
-              {t(label)}
-            </label>
-          </HStack>
-        )}
-      </HStack>
-      {children}
-    </VStack>
-  );
-}

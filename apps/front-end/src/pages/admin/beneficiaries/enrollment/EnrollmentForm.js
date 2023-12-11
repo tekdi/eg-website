@@ -8,7 +8,6 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   getOptions,
-  debounce,
   getArray,
   filterObject,
   enrollmentDateOfBirth,
@@ -29,6 +28,8 @@ import {
   validator,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
+import { debounce } from "lodash";
+
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;

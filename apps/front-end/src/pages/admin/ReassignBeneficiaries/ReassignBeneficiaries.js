@@ -8,7 +8,6 @@ import {
   benificiaryRegistoryService,
   facilitatorRegistryService,
   geolocationRegistryService,
-  debounce,
   setQueryParameters,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,6 +28,7 @@ import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, RadioBtn } from "../../../component/BaseInput.js";
+import { debounce } from "lodash";
 
 function CustomFieldTemplate({ id, schema, label, required, children }) {
   const { t } = useTranslation();
@@ -230,6 +230,19 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     setModalConfirmVisible(true);
   };
 
+  const handleSearch = (e) => {
+    setFacilitatorFilter({
+      ...facilitatorFilter,
+      search: e.nativeEvent.text,
+      page: 1,
+    })
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
+
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -377,6 +390,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     facilitatorFilter,
                     isMore,
                     facilitator,
+                    debouncedHandleSearch
                   }}
                 />
                 <HStack justifyContent="space-between"></HStack>
@@ -467,6 +481,7 @@ export const Filter = ({
   facilitatorFilter,
   isMore,
   facilitator,
+  debouncedHandleSearch
 }) => {
   const { t } = useTranslation();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
@@ -590,16 +605,8 @@ export const Filter = ({
             height="32px"
             placeholder="search"
             variant="outline"
-            onChange={(e) => {
-              debounce(
-                setFacilitatorFilter({
-                  ...facilitatorFilter,
-                  search: e.nativeEvent.text,
-                  page: 1,
-                }),
-                3000
-              );
-            }}
+            onChange={debouncedHandleSearch}
+
           />
           <RadioBtn
             directionColumn={"column"}

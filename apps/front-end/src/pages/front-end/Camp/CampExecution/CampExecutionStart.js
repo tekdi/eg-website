@@ -231,6 +231,7 @@ export default function CampExecutionStart({ footerLinks }) {
     >
       {page == "campInprogress" ? (
         <CampExecutionEnd
+          setDisable={setDisable}
           disable={disable}
           facilitator={facilitator}
           activityId={activityId}
@@ -253,20 +254,24 @@ export default function CampExecutionStart({ footerLinks }) {
                   key={item}
                   width={"40%"}
                 >
-                  <Image
-                    w={"150"}
-                    h={"150"}
-                    borderRadius="0"
-                    source={{
-                      uri: `${item?.img}`,
-                    }}
-                    alt="airoplane.gif"
-                  />
                   <Pressable onPress={() => handleChipClick(item?.value)}>
+                    <Image
+                      w={"150"}
+                      h={"150"}
+                      borderRadius="0"
+                      source={{
+                        uri: `${item?.img}`,
+                      }}
+                      alt="airoplane.gif"
+                    />
                     <Chip width="150px" isActive={activeChip === item?.value}>
-                      <Text textAlign={"center"} fontSize={"12px"}>
+                      <FrontEndTypo.H4
+                        color={activeChip === item?.value ? "white" : "black"}
+                        textAlign={"center"}
+                        fontSize={"12px"}
+                      >
                         {t(item?.title)}
-                      </Text>
+                      </FrontEndTypo.H4>
                     </Chip>
                   </Pressable>
                 </VStack>
@@ -281,9 +286,6 @@ export default function CampExecutionStart({ footerLinks }) {
               </HStack>
             </Alert>
           )}
-          <FrontEndTypo.Secondarybutton onPress={(e) => setStart(true)}>
-            {t("TAKE_ANOTHER_PHOTO")}
-          </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Primarybutton onPress={addMood}>
             {t("START_CAMP")}
           </FrontEndTypo.Primarybutton>
@@ -293,19 +295,26 @@ export default function CampExecutionStart({ footerLinks }) {
   );
 }
 
-const CampExecutionEnd = ({ disable, activityId, facilitator, error }) => {
+const CampExecutionEnd = ({
+  disable,
+  setDisable,
+  activityId,
+  facilitator,
+  error,
+}) => {
   const { t } = useTranslation();
   const { id } = useParams();
 
   const navigate = useNavigate();
 
   const endCamp = async () => {
+    setDisable(true);
     const obj = {
       id: activityId,
       edit_page_type: "edit_end_date",
     };
     await campService.addMoodActivity(obj);
-    navigate(`/camps/${id}/campexecution`);
+    navigate(`/camps`);
   };
 
   return (
