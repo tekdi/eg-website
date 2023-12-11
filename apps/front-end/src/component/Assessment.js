@@ -21,14 +21,10 @@ function Player({ setAlert }) {
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
   const [isEnd, setIsEnd] = React.useState();
-  const [randomID, setRandomID] = React.useState();
-  const doIds = process.env.REACT_APP_DO_IDS.split(",");
 
   useEffect(async () => {
-    const randomizedDoId = doIds[Math.floor(Math.random() * doIds.length)];
-
     const { error, ...assesmentData } = await testRegistryService.getAssessment(
-      randomizedDoId
+      do_id
     );
     if (!error) {
       setassessmentData(assesmentData);
@@ -36,7 +32,6 @@ function Player({ setAlert }) {
       console.log(error);
       setAlert(error);
     }
-    setRandomID(randomizedDoId);
   }, []);
 
   const navigate = useNavigate();
@@ -97,7 +92,7 @@ function Player({ setAlert }) {
     let score_txt = score ? score.toString() : "0";
     let duration_txt = props?.duration ? props.duration.toString() : "0";
     data = {
-      test_id: randomID,
+      test_id: do_id,
       spent_time: totalDuration,
       score: score_txt,
       status: "completed",
@@ -168,6 +163,7 @@ function Player({ setAlert }) {
           }}
           handleExitButton={handleExitButton}
           public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
+          // public_url="http://localhost:5000"
         />
       </VStack>
     </VStack>

@@ -115,7 +115,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const isDocumentUpload = (key = "") => {
     let isAllow = 0;
     if (key === "" || key === "experience") {
-      console.log(key);
       const expData = Array.isArray(facilitator?.experience)
         ? facilitator?.experience.filter((e) => e?.reference?.document_id)
         : [];
@@ -282,8 +281,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
+                          console.log(modalVisible?.params?.do_id);
+                          const randomizedDoId =
+                            modalVisible?.params?.do_id[
+                              Math.floor(Math.random() * doIds.length)
+                            ];
+
+                          console.log(randomizedDoId);
                           navigate(
-                            `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
+                            `/assessment/events/${modalVisible.id}/${randomizedDoId}`
                           );
                         }}
                       >
