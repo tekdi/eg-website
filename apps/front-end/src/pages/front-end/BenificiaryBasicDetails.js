@@ -10,9 +10,8 @@ import {
   GetEnumValue,
   CardComponent,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
 import ProfilePhoto from "./facilitator/ProfilePhoto";
 
 export default function BenificiaryBasicDetails() {
@@ -22,32 +21,25 @@ export default function BenificiaryBasicDetails() {
   const [requestData, setRequestData] = React.useState([]);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    benificiaryDetails();
-  }, []);
-
-  const benificiaryDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(result?.result);
-  };
-
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${id}`);
   };
 
   React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
-    const result = await benificiaryRegistoryService.getEditRequest(obj);
-    if (result?.data.length > 0) {
-      const fieldData = JSON.parse(result?.data[0]?.fields);
+    const resultData = await benificiaryRegistoryService.getEditRequest(obj);
+    if (resultData?.data.length > 0) {
+      const fieldData = JSON.parse(resultData?.data[0]?.fields);
       setRequestData(fieldData);
     }
-  }, [benificiary]);
+  }, []);
 
   const edit = `/beneficiary/${benificiary?.id}/upload/1`;
 
@@ -82,6 +74,7 @@ export default function BenificiaryBasicDetails() {
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
           <ProfilePhoto
+            isProfileEdit={true}
             editLink={
               benificiary?.program_beneficiaries?.status !==
               "enrolled_ip_verified"

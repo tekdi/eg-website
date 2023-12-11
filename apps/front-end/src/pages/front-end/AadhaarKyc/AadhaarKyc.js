@@ -43,6 +43,7 @@ export default function AdharKyc({ footerLinks }) {
   const { t } = useTranslation();
   const [aadhaarCompare, setAadhaarCompare] = React.useState();
   const [loadingHeight, setLoadingHeight] = React.useState(0);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   React.useEffect(async () => {
     if (page === "aadhaar-number") {

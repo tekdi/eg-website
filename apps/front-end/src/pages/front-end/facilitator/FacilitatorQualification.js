@@ -14,32 +14,23 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 
-export default function FacilitatorQualification({
-  userTokenInfo,
-  footerLinks,
-}) {
+export default function FacilitatorQualification({ userTokenInfo }) {
   const [facilitator, setfacilitator] = React.useState();
   const [qualifications, setQualifications] = React.useState();
   const [qualification, setQualification] = React.useState();
   const navigate = useNavigate();
   const [enumOptions, setEnumOptions] = React.useState({});
 
-  React.useEffect(() => {
-    facilitatorDetails();
-  }, []);
-
-  const facilitatorDetails = async () => {
+  React.useEffect(async () => {
     const { id } = userTokenInfo?.authUser;
     const result = await facilitatorRegistryService.getOne({ id });
     setfacilitator(result);
     setQualification(result?.qualifications ? result?.qualifications : {});
-  };
+  }, []);
 
-  React.useEffect(() => {
-    getQualification();
-  }, [facilitator]);
-
-  const getQualification = async () => {
+  React.useEffect(async () => {
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
     const qua = await facilitatorRegistryService.getQualificationAll();
     const ids = JSON.parse(
       facilitator?.program_faciltators?.qualification_ids
@@ -50,11 +41,6 @@ export default function FacilitatorQualification({
       const arr = qua.filter((item) => ids.includes(item.id));
       setQualifications(arr);
     }
-  };
-
-  React.useEffect(async () => {
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
   }, [facilitator]);
 
   const onPressBackButton = () => {
@@ -206,14 +192,6 @@ export default function FacilitatorQualification({
                     flex="0.4"
                   >
                     {qualifications?.map((e) => e.name).join(", ")}
-                    {/* {qualifications?.map((e) => {
-                      <GetEnumValue
-                        t={t}
-                        enumType={"QUALIFICATION"}
-                        enumOptionValue={e.name}
-                        enumApiData={enumOptions}
-                      />;
-                    })} */}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>

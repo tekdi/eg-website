@@ -46,7 +46,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [qualifications, setQualifications] = React.useState([]);
   const [enumObj, setEnumObj] = React.useState();
-  const [verifyOtpData, setverifyOtpData] = React.useState();
   const [otpButton, setOtpButton] = React.useState(false);
   const [mobileConditon, setMobileConditon] = React.useState(false);
   const [fields, setFields] = React.useState([]);
@@ -66,68 +65,62 @@ export default function App({ userTokenInfo, footerLinks }) {
     setFields(field || []);
   };
 
-  React.useEffect(() => {
-    const getData = async () => {
-      const { id } = userTokenInfo?.authUser || {};
-      if (id) {
-        const result = await facilitatorRegistryService.getOne({ id });
-        setFacilitator(result);
-        const ListOfEnum = await enumRegistryService.listOfEnum();
-        if (!ListOfEnum?.error) {
-          setEnumObj(ListOfEnum?.data);
-        }
-        if (step === "qualification_details") {
-          const dataF = result?.qualifications;
-          const arr = result?.program_faciltators?.qualification_ids;
-          let arrData = arr
-            ? JSON.parse(arr)
-                ?.filter((e) =>
-                  qualifications.find(
-                    (item) => item.id == e && item.type === "teaching"
-                  )
+  React.useEffect(async () => {
+    const { id } = userTokenInfo?.authUser || {};
+    if (id) {
+      const result = await facilitatorRegistryService.getOne({ id });
+      setFacilitator(result);
+      const ListOfEnum = await enumRegistryService.listOfEnum();
+      if (!ListOfEnum?.error) {
+        setEnumObj(ListOfEnum?.data);
+      }
+      if (step === "qualification_details") {
+        const dataF = result?.qualifications;
+        const arr = result?.program_faciltators?.qualification_ids;
+        let arrData = arr
+          ? JSON.parse(arr)
+              ?.filter((e) =>
+                qualifications.find(
+                  (item) => item.id == e && item.type === "teaching"
                 )
-                ?.map((e) => `${e}`)
-            : [];
+              )
+              ?.map((e) => `${e}`)
+          : [];
+        const newData = {
+          ...dataF,
+          qualification_reference_document_id:
+            dataF?.qualification_reference_document_id || "",
+          qualification_ids: arrData,
+          qualification_master_id: `${
+            dataF?.qualification_master_id ? dataF?.qualification_master_id : ""
+          }`,
+          type_of_document: dataF?.document_reference?.doument_type,
+        };
+        setFormData(newData);
+      } else if (step === "reference_details") {
+        if (result?.references?.designation === "") {
           const newData = {
-            ...dataF,
-            qualification_reference_document_id:
-              dataF?.qualification_reference_document_id || "",
-            qualification_ids: arrData,
-            qualification_master_id: `${
-              dataF?.qualification_master_id
-                ? dataF?.qualification_master_id
-                : ""
-            }`,
-            type_of_document: dataF?.document_reference?.doument_type,
+            ...result?.references,
+            designation: undefined,
           };
           setFormData(newData);
-        } else if (step === "reference_details") {
-          if (result?.references?.designation === "") {
-            const newData = {
-              ...result?.references,
-              designation: undefined,
-            };
-            setFormData(newData);
-          } else {
-            const newData = result?.references;
-            setFormData(newData);
-          }
-        } else if (step === "basic_details") {
-          const formDataObject = {
-            first_name: result?.first_name,
-            middle_name:
-              result?.middle_name !== "" ? result?.middle_name : undefined,
-            last_name: result?.last_name !== "" ? result?.last_name : undefined,
-            dob: result?.dob,
-          };
-          setFormData(formDataObject);
         } else {
-          setFormData(result);
+          const newData = result?.references;
+          setFormData(newData);
         }
+      } else if (step === "basic_details") {
+        const formDataObject = {
+          first_name: result?.first_name,
+          middle_name:
+            result?.middle_name !== "" ? result?.middle_name : undefined,
+          last_name: result?.last_name !== "" ? result?.last_name : undefined,
+          dob: result?.dob,
+        };
+        setFormData(formDataObject);
+      } else {
+        setFormData(result);
       }
-    };
-
-    getData();
+    }
     getEditAccess();
   }, [qualifications]);
 
@@ -354,12 +347,11 @@ export default function App({ userTokenInfo, footerLinks }) {
       setErrors(newErrors);
     }
 
-    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+    const { status, newSchema } = await sendAndVerifyOtp(schema, {
       ...formData,
       hash: localStorage.getItem("hash"),
     });
 
-    setverifyOtpData(otpData);
     if (status === true) {
       if (errors) {
         const newErrors = {

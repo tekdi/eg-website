@@ -258,23 +258,20 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     }
   }, [bodyHeight, ref]);
 
-  React.useEffect(() => {
-    const aglist = async () => {
-      const { currentPage, totalPages, error, ...result } =
-        await benificiaryRegistoryService.getBeneficiariesList(filter);
-      if (!error) {
-        setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
-        if (filter?.page > 1) {
-          setData([...data, ...(result.data ? result.data : [])]);
-        } else {
-          setData(result.data ? result.data : []);
-        }
+  React.useEffect(async () => {
+    const { currentPage, totalPages, error, ...result } =
+      await benificiaryRegistoryService.getBeneficiariesList(filter);
+    if (!error) {
+      setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+      if (filter?.page > 1) {
+        setData([...data, ...(result.data || [])]);
       } else {
-        setData([]);
+        setData(result.data || []);
       }
-      setLoadingList(false);
-    };
-    aglist();
+    } else {
+      setData([]);
+    }
+    setLoadingList(false);
   }, [filter]);
 
   React.useEffect(async () => {
