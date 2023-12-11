@@ -115,6 +115,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const isDocumentUpload = (key = "") => {
     let isAllow = 0;
     if (key === "" || key === "experience") {
+      console.log(key);
       const expData = Array.isArray(facilitator?.experience)
         ? facilitator?.experience.filter((e) => e?.reference?.document_id)
         : [];
