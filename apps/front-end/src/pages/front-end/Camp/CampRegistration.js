@@ -138,13 +138,14 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const isDisabled = () => {
     if (["registered", "camp_ip_verified"].includes(campStatus)) {
       return false;
-    } else if (
-      ["CAMP_LOCATION", "FACILITIES", "KIT"].every((name) =>
-        Navdata.some((item) => item.Name === name && item.color === "green.300")
-      )
-    ) {
-      return true;
     }
+  };
+
+  const isDisableFields = () => {
+    return ["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
+      (name) =>
+        Navdata.some((item) => item.Name === name && item.color === "green.300")
+    );
   };
 
   const disableEdit = () =>
@@ -282,7 +283,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         )}
         <HStack my={3} mx={"auto"} w={"90%"}>
           <FrontEndTypo.Primarybutton
-            isDisabled={isDisable && !isDisabled()}
+            isDisabled={isDisable || (!isDisableFields() && !isDisabled())}
             width={"100%"}
             onPress={() => {
               SubmitCampRegistration();
@@ -345,7 +346,7 @@ const NavigationBox = ({
 
           <FrontEndTypo.H3 ml={5}>
             {t(NavName)}
-            {!["CAMP_VENUE_PHOTOS", "FAMILY_CONSENT"].includes(NavName) && (
+            {!["FAMILY_CONSENT"].includes(NavName) && (
               <FrontEndTypo.H3 color={"textMaroonColor.400"}>*</FrontEndTypo.H3>
             )}
           </FrontEndTypo.H3>
