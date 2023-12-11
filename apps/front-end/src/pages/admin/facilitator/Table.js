@@ -15,7 +15,7 @@ import {
   Menu,
 } from "native-base";
 
-import React,{ useMemo,useCallback } from "react";
+import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -183,14 +183,14 @@ function Table({
 
   const navigate = useNavigate();
   
-  const handleRowClick = useCallback(
+  const handleRowClick = React.useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
     },
     [navigate]
   );
 
-  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
+  const columnsMemoized = React.useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
