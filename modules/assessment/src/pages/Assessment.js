@@ -11,16 +11,12 @@ function Player() {
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
   const [randomID, setRandomID] = React.useState();
-  const doIds = process.env.REACT_APP_DO_IDS.split(",");
+  // const doIds = process.env.REACT_APP_DO_IDS.split(",");
 
   useEffect(async () => {
-    const randomizedDoId = doIds[Math.floor(Math.random() * doIds.length)];
-
-    const assesmentData = await testRegistryService.getAssessment(
-      randomizedDoId
-    );
+    const assesmentData = await testRegistryService.getAssessment(do_id);
     setassessmentData(assesmentData);
-    setRandomID(randomizedDoId);
+    // setRandomID(randomizedDoId);
   }, []);
 
   const navigate = useNavigate();
