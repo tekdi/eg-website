@@ -21,16 +21,14 @@ function Player({ setAlert }) {
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
   const [isEnd, setIsEnd] = React.useState();
+  const [randomID, setRandomID] = React.useState();
   const doIds = process.env.REACT_APP_DO_IDS.split(",");
 
   useEffect(async () => {
     const randomizedDoId = doIds[Math.floor(Math.random() * doIds.length)];
 
-    console.log("RANDOMIZED IDs");
-    console.log(randomizedDoId);
-
     const { error, ...assesmentData } = await testRegistryService.getAssessment(
-      do_id
+      randomizedDoId
     );
     if (!error) {
       setassessmentData(assesmentData);
@@ -38,6 +36,7 @@ function Player({ setAlert }) {
       console.log(error);
       setAlert(error);
     }
+    setRandomID(randomizedDoId);
   }, []);
 
   const navigate = useNavigate();
@@ -98,7 +97,7 @@ function Player({ setAlert }) {
     let score_txt = score ? score.toString() : "0";
     let duration_txt = props?.duration ? props.duration.toString() : "0";
     data = {
-      test_id: "do_113935969671700480155",
+      test_id: randomID,
       spent_time: totalDuration,
       score: score_txt,
       status: "completed",

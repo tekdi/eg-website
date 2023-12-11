@@ -61,7 +61,7 @@ const FileUpload = ({ value, onChange, schema }) => {
 
     if (file && file.size <= 1048576 * 10) {
       if (file instanceof File) {
-        const maxWidthOrHeight = Math.max(width || 640, height || 480);
+        const maxWidthOrHeight = Math.max(width || 1280, height || 740);
         const compressedImage = await imageCompression(file, {
           maxSizeMB: 1,
           maxWidthOrHeight,

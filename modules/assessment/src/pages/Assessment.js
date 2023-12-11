@@ -10,16 +10,17 @@ function Player() {
   const [assessmentData, setassessmentData] = useState();
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
+  const [randomID, setRandomID] = React.useState();
   const doIds = process.env.REACT_APP_DO_IDS.split(",");
 
   useEffect(async () => {
     const randomizedDoId = doIds[Math.floor(Math.random() * doIds.length)];
 
-    console.log("RANDOMIZED IDs");
-    console.log(randomizedDoId);
-
-    const assesmentData = await testRegistryService.getAssessment(do_id);
+    const assesmentData = await testRegistryService.getAssessment(
+      randomizedDoId
+    );
     setassessmentData(assesmentData);
+    setRandomID(randomizedDoId);
   }, []);
 
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ function Player() {
     let score_txt = score ? score.toString() : "0";
     let duration_txt = props?.duration ? props.duration.toString() : "0";
     data = {
-      test_id: "do_113935969671700480155",
+      test_id: randomID,
       spent_time: totalDuration,
       score: score_txt,
       status: "completed",
