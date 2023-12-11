@@ -7,7 +7,7 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Pressable, VStack } from "native-base";
+import { CheckCircleIcon, HStack, Icon, Pressable, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -66,7 +66,6 @@ export default function CampSessionList({ footerLinks }) {
     }
     setLoading(false);
   }, []);
-
   if (loading) {
     return <Loading />;
   }
@@ -89,32 +88,47 @@ export default function CampSessionList({ footerLinks }) {
         </HStack>
 
         {sessionList?.map((item) => (
-          <CardComponent
-            key={item?.id}
-            _header={{ px: "0", pt: "0" }}
-            _body={{
-              px: "4",
-              py: "2",
-              // pt: "0",
-              bg: sessionActive !== item?.ordering ? "gray.100" : "white",
-            }}
-            _vstack={{ p: 0, space: 0, flex: 1 }}
-          >
-            <Pressable
-              onPress={(e) => navigate(`/camps/${id}/sessionslist/${item?.id}`)}
-              isDisabled={sessionActive !== item?.ordering}
+          <HStack key={item} alignItems={"center"} space={2}>
+            {item?.session_tracks?.[0]?.status === "complete" && (
+              <CheckCircleIcon color="greenIconColor" size="24px" />
+            )}
+            {item?.session_tracks?.[0]?.status === "incomplete" && (
+              <IconByName
+                color="warningColor"
+                name="TimeFillIcon"
+                _icon={{ size: 30 }}
+              />
+            )}
+
+            <CardComponent
+              key={item?.id}
+              _header={{ px: "0", pt: "0" }}
+              _body={{
+                px: "4",
+                py: "2",
+                // pt: "0",
+                bg: sessionActive !== item?.ordering ? "gray.100" : "white",
+              }}
+              _vstack={{ p: 0, space: 0, flex: 1 }}
             >
-              <HStack justifyContent={"space-between"}>
-                <FrontEndTypo.H2 alignItem="center">
-                  {t("LESSON") + " " + item?.ordering}
-                </FrontEndTypo.H2>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  _icon={{ size: "25px" }}
-                />
-              </HStack>
-            </Pressable>
-          </CardComponent>
+              <Pressable
+                onPress={(e) =>
+                  navigate(`/camps/${id}/sessionslist/${item?.id}`)
+                }
+                isDisabled={sessionActive !== item?.ordering}
+              >
+                <HStack justifyContent={"space-between"}>
+                  <FrontEndTypo.H2 alignItem="center">
+                    {t("LESSON") + " " + item?.ordering}
+                  </FrontEndTypo.H2>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    _icon={{ size: "25px" }}
+                  />
+                </HStack>
+              </Pressable>
+            </CardComponent>
+          </HStack>
         ))}
       </VStack>
     </Layout>
