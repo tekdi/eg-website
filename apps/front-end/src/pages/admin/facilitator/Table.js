@@ -15,12 +15,12 @@ import {
   Menu,
 } from "native-base";
 
-import React from "react";
+import React,{ useMemo,useCallback } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-const dropDown = (triggerProps, t) => {
+  const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
       <HStack>
@@ -29,6 +29,7 @@ const dropDown = (triggerProps, t) => {
     </Pressable>
   );
 };
+
 const columns = (t, navigate) => [
   {
     name: t("PRERAK_ID"),
@@ -106,19 +107,6 @@ const columns = (t, navigate) => [
     attr: "gender",
     width: "100px",
   },
-  // {
-  //   name: t("ACTION"),
-  //   selector: (row) => (
-  //     <AdminTypo.Secondarybutton
-  //       my="3"
-  //       onPress={() => {
-  //         navigate(`/admin/facilitator/${row?.id}`);
-  //       }}
-  //     >
-  //       {t("VIEW")}
-  //     </AdminTypo.Secondarybutton>
-  //   ),
-  // },
   {
     minWidth: "140px",
     name: t("ACTION"),
@@ -194,10 +182,16 @@ function Table({
   const { t } = useTranslation();
 
   const navigate = useNavigate();
-  const handleRowClick = (row) => {
-    navigate(`/admin/facilitator/${row?.id}`);
-  };
-  //
+  
+  const handleRowClick = useCallback(
+    (row) => {
+      navigate(`/admin/facilitator/${row?.id}`);
+    },
+    [navigate]
+  );
+
+  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
+
   return (
     <VStack>
       <ScrollView horizontal={true} mb="2">
@@ -237,7 +231,7 @@ function Table({
       </ScrollView>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={columns(t, navigate)}
+        columns={columnsMemoized}
         data={data}
         persistTableHead
         progressPending={loading}
