@@ -77,7 +77,7 @@ export default function BenificiaryAddress() {
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
-              {/* {isAddressDetailsEdit() && (
+              {/* {isAddressDetailsEdit() && ( */}
                 <IconByName
                   name="EditBoxLineIcon"
                   _icon={{ size: "20" }}
@@ -86,15 +86,8 @@ export default function BenificiaryAddress() {
                     navigate(`/beneficiary/edit/${userId}/address`);
                   }}
                 />
-              )} */}
-              <IconByName
-                  name="EditBoxLineIcon"
-                  _icon={{ size: "20" }}
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${userId}/address`);
-                  }}
-                />
+              {/* )} */}
+             
             </HStack>
             <Box paddingTop="2">
               <Progress
