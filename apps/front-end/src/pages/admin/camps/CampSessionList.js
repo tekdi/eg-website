@@ -93,7 +93,11 @@ export default function CampSessionList({ footerLinks }) {
               <CheckCircleIcon color="greenIconColor" size="24px" />
             )}
             {item?.session_tracks?.[0]?.status === "incomplete" && (
-              <IconByName color="warningColor" name="TimeFillIcon" _size={30} />
+              <IconByName
+                color="warningColor"
+                name="TimeFillIcon"
+                _icon={{ size: 30 }}
+              />
             )}
 
             <CardComponent
