@@ -176,7 +176,7 @@ const scheduleCandidates = (t, days, certificateDownload) => {
             my="3"
             onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
           >
-            {t("DOWNLOAD")}
+            {t("VIEW_CERTIFICATE")}
           </AdminTypo.Secondarybutton>
         ) : row?.lms_test_trackings?.[0]?.certificate_status === false ? (
           <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
@@ -1255,7 +1255,7 @@ export default function Attendence({ footerLinks }) {
           </VStack>
         </Box>
       </ScrollView>
-      <Modal isOpen={downloadCertificate} size="xl">
+      <Modal isOpen={downloadCertificate} size="full" margin={"auto"}>
         <Modal.Content>
           <Modal.Header>
             <HStack justifyContent={"space-between"} pr="10">
