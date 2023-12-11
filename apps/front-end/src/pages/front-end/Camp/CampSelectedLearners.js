@@ -29,6 +29,7 @@ export default function CampSelectedLearners({
   const [selectedIds, setSelectedIds] = React.useState([]);
   const [registeredId, setRegisteredId] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
+  const [nonRegister, setNonRegister] = React.useState([]);
   const [registeredUsers, setRegisteredUsers] = React.useState([]);
   const selectAllChecked =
     selectedIds?.length ===
@@ -72,9 +73,7 @@ export default function CampSelectedLearners({
         id: camp_id?.id,
       };
 
-      console.log(updateLearner.learner_ids, "updateLearner");
       const data = await campService.updateCampDetails(updateLearner);
-      console.log("updatelearner", data);
       if (data) {
         navigate(`/camps/${camp_id?.id}`);
       }
@@ -90,6 +89,8 @@ export default function CampSelectedLearners({
     const campRegisterUsers = campdetails?.data?.group_users || [];
     setRegisteredUsers(campRegisterUsers);
     const campNotRegisterUsers = result?.data?.user || [];
+    const nonRegister = result?.data?.user || [];
+    setNonRegister(nonRegister);
     const mergedData = campRegisterUsers?.concat(campNotRegisterUsers);
     setNonRegisteredUser(mergedData);
     const ids = campRegisterUsers?.map((item) => item.id);
@@ -126,18 +127,20 @@ export default function CampSelectedLearners({
             <></>
           )}
         </AdminTypo.H3>
-        <HStack
-          space={2}
-          paddingRight={2}
-          alignItems={"center"}
-          justifyContent={"flex-end"}
-        >
-          {t("SELECT_ALL")}
-          <Checkbox
-            isChecked={selectAllChecked}
-            onChange={handleSelectAllChange}
-          />
-        </HStack>
+        {nonRegister.length > 0 && (
+          <HStack
+            space={2}
+            paddingRight={2}
+            alignItems={"center"}
+            justifyContent={"flex-end"}
+          >
+            {t("SELECT_ALL")}
+            <Checkbox
+              isChecked={selectAllChecked}
+              onChange={handleSelectAllChange}
+            />
+          </HStack>
+        )}
 
         {nonRegisteredUser?.map((item) => {
           return (
