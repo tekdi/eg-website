@@ -74,6 +74,8 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const data = enumOptions && enumOptions[item] ? enumOptions[item] : null;
     setEnums({ type: item, data });
   };
+  console.log({ campList });
+  console.log({ selectValue });
 
   return (
     <Layout
@@ -162,7 +164,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                       setSelectValue(newSelectValue);
                     }}
                   />
-                  {console.log("newSelected_value", selectValue)}
                 </React.Suspense>
               </VStack>
             </VStack>

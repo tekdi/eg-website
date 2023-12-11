@@ -284,14 +284,19 @@ export default function CampExecution({ footerLinks }) {
                 </FrontEndTypo.Secondarybutton>
               </>
             ) : (
-              <Alert status="warning" alignItems={"center"}>
-                <HStack alignItems="center" space="2">
-                  <Alert.Icon />
-                  <FrontEndTypo.H3>
-                    {t("Today's camp has been completed")}
-                  </FrontEndTypo.H3>
-                </HStack>
-              </Alert>
+              <>
+                <Alert status="warning" alignItems={"center"}>
+                  <HStack alignItems="center" space="2">
+                    <Alert.Icon />
+                    <FrontEndTypo.H3>
+                      {t("TODAYS_CAMP_HAS_BEEN_COMPLETED")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                </Alert>
+                <FrontEndTypo.Primarybutton onPress={(e) => navigate(`/camps`)}>
+                  {t("GO_TO_PROFILE")}
+                </FrontEndTypo.Primarybutton>
+              </>
             )}
           </VStack>
         </VStack>
