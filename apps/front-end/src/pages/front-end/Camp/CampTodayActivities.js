@@ -61,7 +61,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const activities_response = await campService.addMoodActivity(dataToSave);
     if (activities_response) {
       setEnums();
-      console.log();
       setAlert({ type: "success", title: t("MISSILINEOUS_SUCCESS_MESSAGE") });
     }
   };
