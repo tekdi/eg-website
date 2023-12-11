@@ -74,8 +74,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const data = enumOptions && enumOptions[item] ? enumOptions[item] : null;
     setEnums({ type: item, data });
   };
-  console.log({ campList });
-  console.log({ selectValue });
 
   return (
     <Layout
