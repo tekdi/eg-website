@@ -193,7 +193,7 @@ export default function AgAdminProfile({ footerLinks }) {
     React.useState();
   const [getRequestData, setGetRequestData] = React.useState();
   const { t } = useTranslation();
-  const [checkedFields, setCheckedFields] = React.useState();
+  const [checkedFields, setCheckedFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
@@ -314,7 +314,7 @@ export default function AgAdminProfile({ footerLinks }) {
     );
     const obj = { edit_req_for_context: "users", edit_req_for_context_id: id };
     const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
-    if (resule?.data[0]) {
+        if (resule?.data[0]) {
       setGetRequestData(resule?.data[0]);
       const data = JSON.parse(resule?.data[0]?.fields);
       setCheckedFields(data);
@@ -2042,15 +2042,15 @@ const SelectAllCheckBox = ({
     <Checkbox
       onChange={(e) => {
         if (!e) {
-          const checkbox = checkedFields.filter(
+          const checkbox = checkedFields?.filter(
             (field) => !fields.includes(field)
           );
           setCheckedFields(checkbox);
         } else {
-          const checkbox = checkedFields.filter(
+          const checkbox = checkedFields?.filter(
             (field) => !fields.includes(field)
           );
-          setCheckedFields([...checkbox, ...fields]);
+                    setCheckedFields([...checkbox, ...fields]);
         }
       }}
     >
