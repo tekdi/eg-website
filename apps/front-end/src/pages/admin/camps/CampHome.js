@@ -27,10 +27,11 @@ import {
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
-  debounce,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
+import { debounce } from "lodash";
+
 
 export const CustomStyles = {
   rows: {
@@ -292,6 +293,19 @@ export const Filter = ({ filter, setFilter }) => {
     setQueryParameters(data);
   };
 
+  const handleSearch = (e) => {
+    setFacilitatorFilter({
+      ...facilitatorFilter,
+      search: e.nativeEvent.text,
+      page: 1,
+    })
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
+
   const schema = {
     type: "object",
     properties: {
@@ -390,7 +404,8 @@ export const Filter = ({ filter, setFilter }) => {
       }
       setFacilitator(newData);
     }
-  }, [facilitatorFilter, filter]);
+  }, [facilitatorFilter]);
+
   return (
     <VStack space={3}>
       <HStack
@@ -428,16 +443,8 @@ export const Filter = ({ filter, setFilter }) => {
         height="32px"
         placeholder={t("SEARCH")}
         variant="outline"
-        onChange={(e) => {
-          debounce(
-            setFacilitatorFilter({
-              ...facilitatorFilter,
-              search: e.nativeEvent.text,
-              page: 1,
-            }),
-            3000
-          );
-        }}
+        onChange={debouncedHandleSearch}
+
       />
       <MultiCheck
         value={filter?.facilitator ? filter?.facilitator : []}

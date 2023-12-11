@@ -5,7 +5,6 @@ import {
   AdminTypo,
   enumRegistryService,
   tableCustomStyles,
-  debounce,
   useWindowSize,
   AdminLayout as Layout,
   urlData,
@@ -28,6 +27,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
+import { debounce } from "lodash";
 
 const columns = (t, navigate, filter) => [
   {
@@ -210,6 +210,15 @@ function EnrollmentVerificationList({ footerLinks }) {
     return data;
   };
 
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
+
   return (
     <Layout
       w={Width}
@@ -251,16 +260,8 @@ function EnrollmentVerificationList({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilterObject({
-                ...filter,
-                search: e.nativeEvent.text,
-                page: 1,
-              }),
-              2000
-            );
-          }}
+          onChange={debouncedHandleSearch}
+
         />
       </HStack>
       <HStack>
