@@ -17,7 +17,6 @@ import {
   VStack,
   Image,
   Alert,
-  CheckCircleIcon,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
@@ -110,7 +109,11 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                 {t("LEARNING_ACTIVITIES")}
               </FrontEndTypo.H2>
               {sessionList === true && (
-                <CheckCircleIcon size="36" color="successColor" />
+                <IconByName
+                  name="CheckboxCircleFillIcon"
+                  _icon={{ size: "36" }}
+                  color="successColor"
+                />
               )}
             </HStack>
           </Pressable>
@@ -141,7 +144,11 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                 {t("MISCELLANEOUS_ACTIVITIES")}
               </FrontEndTypo.H2>
               {selectValue?.[0] && (
-                <CheckCircleIcon size="36" color="successColor" />
+                <IconByName
+                  name="CheckboxCircleFillIcon"
+                  _icon={{ size: "36" }}
+                  color="successColor"
+                />
               )}
             </HStack>
           </Pressable>
