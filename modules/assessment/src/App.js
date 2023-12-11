@@ -6,6 +6,7 @@ import { AppShell, initializeI18n } from "@shiksha/common-lib";
 import Assessment from "pages/Assessment";
 import Sample from "pages/Sample";
 import SampleComponent from "components/SampleComponent";
+import ImageOtimize from "pages/ImageOtimize";
 initializeI18n(["translation"]);
 const Dashboard = () => <h1>LOGIN SUCCESS</h1>;
 
@@ -18,6 +19,10 @@ function App() {
     {
       path: "/sample",
       component: SampleComponent,
+    },
+    {
+      path: "/optimize",
+      component: ImageOtimize,
     },
   ];
   const LoginComponent = React.lazy(() => import("auth/Login"));

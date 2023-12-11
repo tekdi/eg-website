@@ -10,8 +10,14 @@ function Player() {
   const [assessmentData, setassessmentData] = useState();
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
+  const doIds = process.env.REACT_APP_DO_IDS.split(",");
 
   useEffect(async () => {
+    const randomizedDoId = doIds[Math.floor(Math.random() * doIds.length)];
+
+    console.log("RANDOMIZED IDs");
+    console.log(randomizedDoId);
+
     const assesmentData = await testRegistryService.getAssessment(do_id);
     setassessmentData(assesmentData);
   }, []);
