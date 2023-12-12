@@ -28,6 +28,7 @@
     "prettier": "^2.6.0"
   },
   "dependencies": {
+    "browser-image-compression": "^2.0.2",
     "rc-time-picker": "^3.7.3"
   }
 }
