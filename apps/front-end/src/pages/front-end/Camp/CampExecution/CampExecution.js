@@ -240,15 +240,15 @@ export default function CampExecution({ footerLinks }) {
               width="80px"
               height="80px"
               source={{ document_id: facilitator?.profile_photo_1?.id }}
-            ></ImageView>
-
+            />
             <CardComponent
               _header={{ bg: "light.100" }}
               _vstack={{
                 bg: "light.100",
                 flex: 1,
-                pt: 4,
-                mt: 10,
+                pt: 2,
+                m: 4,
+                mb: 4,
               }}
             >
               {t("YOUR_WELCOME_READY_TO_FLY")}

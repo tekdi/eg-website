@@ -105,7 +105,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                 w="75px"
                 h="60px"
               />
-
+            </HStack>
             <HStack alignItems="center" justifyContent="center" space={3}>
               <Image
                 source={{
