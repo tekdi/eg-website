@@ -11,7 +11,7 @@ import { VStack } from "native-base";
 function Player({ setAlert }) {
   const [width, height] = useWindowSize();
   const [assessmentData, setAssessmentData] = useState();
-  const [type, setType] = useState("Course");
+  const [type, setType] = useState();
   const { context, context_id, do_id } = useParams();
 
   useEffect(async () => {
@@ -20,6 +20,7 @@ function Player({ setAlert }) {
     );
     if (!error) {
       setAssessmentData(assesmentData);
+      setType("Course");
     } else {
       console.log(error);
       setAlert(error);
@@ -82,7 +83,7 @@ function Player({ setAlert }) {
     console.log("Total Duration:", totalDuration, "seconds");
 
     let score_txt = score ? score.toString() : "0";
-    let duration_txt = props?.duration ? props.duration.toString() : "0";
+
     data = {
       test_id: do_id,
       spent_time: totalDuration,
