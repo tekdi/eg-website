@@ -1,13 +1,16 @@
 import { React, useState, useEffect } from "react";
-import { H2, testRegistryService, useWindowSize } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
-import { SunbirdPlayer } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import {
+  H2,
+  testRegistryService,
+  useWindowSize,
+  SunbirdPlayer,
+} from "@shiksha/common-lib";
+import { useNavigate, useParams } from "react-router-dom";
 import { VStack } from "native-base";
 
 function Player({ setAlert }) {
   const [width, height] = useWindowSize();
-  const [assessmentData, setassessmentData] = useState();
+  const [assessmentData, setAssessmentData] = useState();
   const [type, setType] = useState("Course");
   const { context, context_id, do_id } = useParams();
 
@@ -16,7 +19,7 @@ function Player({ setAlert }) {
       do_id
     );
     if (!error) {
-      setassessmentData(assesmentData);
+      setAssessmentData(assesmentData);
     } else {
       console.log(error);
       setAlert(error);
