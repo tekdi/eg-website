@@ -2,18 +2,15 @@ import React from "react";
 
 import {
   CardComponent,
-  CustomRadio,
   FrontEndTypo,
   IconByName,
   Layout,
   enumRegistryService,
   campService,
-  ImageView,
   BodyMedium,
 } from "@shiksha/common-lib";
 import {
   Actionsheet,
-  Box,
   HStack,
   Pressable,
   ScrollView,
@@ -21,9 +18,7 @@ import {
   VStack,
   Image,
   Alert,
-  Center,
 } from "native-base";
-import Drawer from "react-modern-drawer";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,9 +30,10 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
   const [enums, setEnums] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState(null);
   const [selectValue, setSelectValue] = React.useState([]);
-  const [isSaving, setIsSaving] = React.useState(false);
+  const [isSaving] = React.useState(false);
   const [campList, setCampList] = React.useState([]);
   const [activityId, setActivityId] = React.useState();
+  const [sessionList, setSessionList] = React.useState(false);
 
   React.useEffect(async () => {
     let result = await campService.getcampstatus({ id });
@@ -69,6 +65,15 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const qData = await enumRegistryService.listOfEnum();
     const LearningActivitydata = qData?.data;
     setEnumOptions(LearningActivitydata);
+    const result = await campService.getCampSessionsList({ id: id });
+    const data = result?.data?.learning_lesson_plans_master || [];
+    data.forEach((element) => {
+      const currentDate = new Date();
+      const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
+      if (currentDate.toDateString() === createdAtDate.toDateString()) {
+        setSessionList(true);
+      }
+    });
   }, []);
 
   const handleActivities = async (item) => {
@@ -82,8 +87,25 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space={4}>
-        <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+        <CardComponent
+          _vstack={{
+            flex: 1,
+            borderColor: sessionList === true && "greenIconColor",
+          }}
+          _body={{ pt: 4 }}
+        >
           <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
+            <HStack alignItems="center" justifyContent="center" space={5}>
+              <Image
+                source={{
+                  uri: "/images/activities/learning-activity.png",
+                }}
+                resizeMode="contain"
+                alignSelf={"center"}
+                w="75px"
+                h="60px"
+              />
+
             <HStack alignItems="center" justifyContent="center" space={3}>
               <Image
                 source={{
@@ -98,34 +120,63 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("LEARNING_ACTIVITIES")}
               </FrontEndTypo.H2>
+              {sessionList === true && (
+                <IconByName
+                  name="CheckboxCircleFillIcon"
+                  _icon={{ size: "36" }}
+                  color="successColor"
+                />
+              )}
             </HStack>
           </Pressable>
         </CardComponent>
-        <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
+        <CardComponent
+          _vstack={{
+            flex: 1,
+            borderColor: selectValue?.[0] && "greenIconColor",
+          }}
+          _body={{ pl: 8, pt: 4 }}
+        >
           <Pressable
             onPress={() => {
               handleActivities("MISCELLANEOUS_ACTIVITIES");
             }}
           >
-            <HStack alignItems="center" justifyContent="center" space={3}>
+            <HStack alignItems="center" justifyContent="center" space={5}>
               <Image
                 source={{
                   uri: "/images/activities/missilaneous-activity.png",
                 }}
                 resizeMode="contain"
                 alignSelf={"center"}
-                p="6"
-                w="100px"
-                h="80px"
+                w="75px"
+                h="60px"
               />
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("MISCELLANEOUS_ACTIVITIES")}
               </FrontEndTypo.H2>
+              {selectValue?.[0] && (
+                <IconByName
+                  name="CheckboxCircleFillIcon"
+                  _icon={{ size: "36" }}
+                  color="successColor"
+                />
+              )}
             </HStack>
           </Pressable>
         </CardComponent>
+        {selectValue?.[0] && sessionList === true && (
+          <VStack pt={"10%"}>
+            <FrontEndTypo.Primarybutton
+              onPress={() =>
+                navigate(`/camps/${id}/campexecutionstart/${activityId}`)
+              }
+            >
+              {t("GO_BACK")}
+            </FrontEndTypo.Primarybutton>
+          </VStack>
+        )}
       </VStack>
-
       <Actionsheet isOpen={enums?.data} onClose={(e) => setEnums()}>
         <Stack width={"100%"} maxH={"100%"}>
           <Actionsheet.Content>
@@ -159,7 +210,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                       setSelectValue(newSelectValue);
                     }}
                   />
-                  {console.log("newSelected_value", selectValue)}
                 </React.Suspense>
               </VStack>
             </VStack>

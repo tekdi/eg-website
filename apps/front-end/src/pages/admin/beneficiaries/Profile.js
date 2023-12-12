@@ -193,7 +193,7 @@ export default function AgAdminProfile({ footerLinks }) {
     React.useState();
   const [getRequestData, setGetRequestData] = React.useState();
   const { t } = useTranslation();
-  const [checkedFields, setCheckedFields] = React.useState();
+  const [checkedFields, setCheckedFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
@@ -296,9 +296,9 @@ export default function AgAdminProfile({ footerLinks }) {
     }
     setcontextId(newData?.result?.program_beneficiaries?.id);
     setBeneficiary(newData);
-    if (newData.result?.program_beneficiaries?.documents_status) {
+    if (newData?.result?.program_beneficiaries?.documents_status) {
       setStatus(
-        JSON.parse(newData.result?.program_beneficiaries?.documents_status)
+        JSON.parse(newData?.result?.program_beneficiaries?.documents_status)
       );
     }
     let data = await benificiaryRegistoryService.getDocumentStatus();
@@ -314,7 +314,7 @@ export default function AgAdminProfile({ footerLinks }) {
     );
     const obj = { edit_req_for_context: "users", edit_req_for_context_id: id };
     const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
-    if (resule?.data[0]) {
+        if (resule?.data[0]) {
       setGetRequestData(resule?.data[0]);
       const data = JSON.parse(resule?.data[0]?.fields);
       setCheckedFields(data);
@@ -598,9 +598,7 @@ export default function AgAdminProfile({ footerLinks }) {
             <HStack flex="0.5" mt={"-5"} justifyContent={"space-between"}>
               {data?.profile_photo_1?.id ? (
                 <ImageView
-                  source={{
-                    document_id: data?.profile_photo_1?.id,
-                  }}
+                  urlObject={data?.profile_photo_1}
                   alt="Alternate Text"
                   width={"200px"}
                   height={"200px"}
@@ -1492,7 +1490,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           bold
                         >
                           <ImageView
-                            source={{
+source={{
                               document_id:
                                 data?.program_beneficiaries?.document?.id,
                             }}
@@ -1937,9 +1935,7 @@ function BeneficiaryJourney({
       <HStack alignItems={"center"} mt={5} ml={5}>
         {data?.profile_photo_1?.id ? (
           <ImageView
-            source={{
-              document_id: data?.profile_photo_1?.id,
-            }}
+          urlObject={data?.profile_photo_1}
             width={"80px"}
             height={"80px"}
           />
@@ -2046,15 +2042,15 @@ const SelectAllCheckBox = ({
     <Checkbox
       onChange={(e) => {
         if (!e) {
-          const checkbox = checkedFields.filter(
+          const checkbox = checkedFields?.filter(
             (field) => !fields.includes(field)
           );
           setCheckedFields(checkbox);
         } else {
-          const checkbox = checkedFields.filter(
+          const checkbox = checkedFields?.filter(
             (field) => !fields.includes(field)
           );
-          setCheckedFields([...checkbox, ...fields]);
+                    setCheckedFields([...checkbox, ...fields]);
         }
       }}
     >
