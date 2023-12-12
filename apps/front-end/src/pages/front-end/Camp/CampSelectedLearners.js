@@ -27,7 +27,6 @@ export default function CampSelectedLearners({
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
-  const [registeredId, setRegisteredId] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
   const [nonRegister, setNonRegister] = React.useState([]);
   const [registeredUsers, setRegisteredUsers] = React.useState([]);
@@ -38,7 +37,6 @@ export default function CampSelectedLearners({
   };
 
   const handleCheckboxChange = (id) => {
-    setRegisteredId(id);
     setSelectedIds((prevSelectedIds) => {
       if (prevSelectedIds.includes(id)) {
         return prevSelectedIds.filter((selectedId) => selectedId !== id);
@@ -112,7 +110,7 @@ export default function CampSelectedLearners({
     >
       <Box py={6} px={4} mb={5}>
         <AdminTypo.H3 color={"textMaroonColor.400"}>
-          {alert ? (
+          {alert && (
             <Alert
               status="warning"
               alignItems={"start"}
@@ -125,8 +123,6 @@ export default function CampSelectedLearners({
                 <BodyMedium>{t("SELECT_LEARNER")}</BodyMedium>
               </HStack>
             </Alert>
-          ) : (
-            <></>
           )}
         </AdminTypo.H3>
         {nonRegister.length > 0 && (
@@ -152,9 +148,9 @@ export default function CampSelectedLearners({
                 bg: "white",
                 m: "2",
               }}
+              key={item}
             >
               <HStack
-                key={item}
                 w={"100%"}
                 bg="white"
                 my={1}
