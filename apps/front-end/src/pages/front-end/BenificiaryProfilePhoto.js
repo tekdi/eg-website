@@ -11,6 +11,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { FileUpload } from "component/BaseInput";
 
 export default function BenificiaryProfilePhoto() {
   const navigate = useNavigate();
@@ -87,69 +88,21 @@ export default function BenificiaryProfilePhoto() {
       <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
         <H2 color="textMaroonColor.400">{t("ADD_ID_PHOTOS")}</H2>
         <VStack space={2}>
-          <Box>
-            <input
-              accept="image/*"
-              type="file"
-              style={{ display: "none" }}
-              ref={uplodInputRef}
-              onChange={handleFileInputChange}
-            />
-            <Pressable
-              isLoading={loading}
-              onPress={(e) => {
-                uplodInputRef?.current?.click();
-              }}
-              variant="outline"
-              borderWidth="3px"
-              borderColor="textGreyColor.100"
-              rounded="lg"
-              borderStyle="dashed"
-              alignItems="center"
-              gap="4"
-              p="4"
-            >
-              <VStack alignItems="center" py={file?.id ? "0" : "20"} space="2">
-                {file?.id ? (
-                  <ImageView
-                    w={"150"}
-                    h="250"
-                    borderRadius="0"
-                    source={{
-                      document_id: file?.id,
-                    }}
-                  />
-                ) : (
+          {
+            <FileUpload
+              schema={{
+                label: `ADD_FRONT_VIEW_${page}`,
+                document_type: "profile_photo",
+                document_sub_type: `profile_photo_${page}`,
+                user_id: id,
+                iconComponent: (
                   <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
-                )}
-                <IconByName name="Upload2FillIcon" isDisabled />
-
-                {page === 1 ? (
-                  <FrontEndTypo.H2 color="textGreyColor.100" textAlign="center">
-                    {t("ADD_FRONT_VIEW_1")}
-                  </FrontEndTypo.H2>
-                ) : <></> ? (
-                  page === 2 ? (
-                    <FrontEndTypo.H2
-                      color="textGreyColor.100"
-                      textAlign="center"
-                    >
-                      {t("ADD_FRONT_VIEW_2")}
-                    </FrontEndTypo.H2>
-                  ) : (
-                    <FrontEndTypo.H2
-                      color="textGreyColor.100"
-                      textAlign="center"
-                    >
-                      {t("ADD_FRONT_VIEW_3")}
-                    </FrontEndTypo.H2>
-                  )
-                ) : (
-                  <></>
-                )}
-              </VStack>
-            </Pressable>
-          </Box>
+                ),
+              }}
+              value={file?.id}
+              onChange={(e) => console.log(e)}
+            />
+          }
           {errors?.fileSize ? (
             <H2 color="red.400">{errors?.fileSize}</H2>
           ) : (
