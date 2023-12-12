@@ -7,7 +7,6 @@ import {
   Layout,
   enumRegistryService,
   campService,
-  BodyMedium,
 } from "@shiksha/common-lib";
 import {
   Actionsheet,
@@ -95,7 +94,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
           _body={{ pt: 4 }}
         >
           <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-            <HStack alignItems="center" justifyContent="center" space={5}>
+            <HStack alignItems="center" justifyContent="center" space={3}>
               <Image
                 source={{
                   uri: "/images/activities/learning-activity.png",
@@ -104,18 +103,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                 alignSelf={"center"}
                 w="75px"
                 h="60px"
-              />
-            </HStack>
-            <HStack alignItems="center" justifyContent="center" space={3}>
-              <Image
-                source={{
-                  uri: "/images/activities/learning-activity.png",
-                }}
-                resizeMode="contain"
-                alignSelf={"center"}
-                p="6"
-                w="100px"
-                h="80px"
               />
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("LEARNING_ACTIVITIES")}
