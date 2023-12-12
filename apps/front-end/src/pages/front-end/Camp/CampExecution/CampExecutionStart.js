@@ -388,7 +388,7 @@ const CampExecutionEnd = ({
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/attendance`)}
         >
-          {t("ATTENDANCE")}
+          {t("LEARNER_ATTENDANCE")}
         </FrontEndTypo.Secondarybutton>
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/activities`)}
