@@ -198,14 +198,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <HStack py="4" flex="1" px="6">
                     <AdminTypo.Dangerbutton
                       onPress={() => {
-                        const doIdArray = modalVisible?.params?.do_id;
-
-                        if (!doIdArray || doIdArray.length === 0) {
-                          alert(
-                            "There is no assessment availabe for this event"
-                          );
-                          return;
-                        }
                         setModalVisible(certificateData);
                       }}
                     >
@@ -292,6 +284,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           if (!crypto || !crypto.getRandomValues) {
                             console.error(
                               "Cryptographically secure random number generation not supported."
+                            );
+                            return;
+                          }
+
+                          const doIdArray = modalVisible?.params?.do_id;
+
+                          if (!doIdArray || doIdArray.length === 0) {
+                            alert(
+                              "There is no assessment availabe for this event"
                             );
                             return;
                           }

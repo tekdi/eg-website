@@ -1,20 +1,11 @@
-import React from "react";
-import {
-  BodyLarge,
-  H2,
-  t,
-  testRegistryService,
-  useWindowSize,
-} from "@shiksha/common-lib";
+import { React, useState, useEffect } from "react";
+import { H2, testRegistryService, useWindowSize } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { SunbirdPlayer } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
-import { Button, HStack, VStack } from "native-base";
-import { useTranslation } from "react-i18next";
+import { VStack } from "native-base";
 
 function Player({ setAlert }) {
-  const { t } = useTranslation();
   const [width, height] = useWindowSize();
   const [assessmentData, setassessmentData] = useState();
   const [type, setType] = useState("Course");
