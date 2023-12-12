@@ -1,5 +1,14 @@
 import React from "react";
-import { Alert, Box, Checkbox, HStack, Text, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  Checkbox,
+  HStack,
+  Pressable,
+  Text,
+  VStack,
+  Modal,
+} from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -13,13 +22,10 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
+import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 
 // App
-export default function CampSelectedLearners({
-  userTokenInfo,
-  footerLinks,
-  isEdit,
-}) {
+export default function CampSelectedLearners() {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
   const camp_id = useParams();
@@ -27,9 +33,16 @@ export default function CampSelectedLearners({
   const { t } = useTranslation();
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
+  const [registeredId, setRegisteredId] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
-  const [nonRegister, setNonRegister] = React.useState([]);
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [registeredUsers, setRegisteredUsers] = React.useState([]);
+  // const selectAllChecked =
+  //   selectedIds?.length ===
+  //   nonRegisteredUser?.filter(
+  //     (item) => !registeredUsers.some((user) => user.id === item.id)
+  //   ).length;
+  const [nonRegister, setNonRegister] = React.useState([]);
   const [selectAllChecked, setSelectAllChecked] = React.useState([]);
 
   const onPressBackButton = async () => {
@@ -37,6 +50,7 @@ export default function CampSelectedLearners({
   };
 
   const handleCheckboxChange = (id) => {
+    setRegisteredId(id);
     setSelectedIds((prevSelectedIds) => {
       if (prevSelectedIds.includes(id)) {
         return prevSelectedIds.filter((selectedId) => selectedId !== id);
@@ -160,23 +174,25 @@ export default function CampSelectedLearners({
               >
                 <HStack justifyContent="space-between">
                   <HStack alignItems="Center" flex="5">
-                    {item?.profile_photo_1?.id ? (
-                      <ImageView
-                        source={{
-                          uri: item?.profile_photo_1?.name,
-                        }}
-                        // alt="Alternate Text"
-                        width={"45px"}
-                        height={"45px"}
-                      />
-                    ) : (
-                      <IconByName
-                        isDisabled
-                        name="AccountCircleLineIcon"
-                        color="gray.300"
-                        _icon={{ size: "51px" }}
-                      />
-                    )}
+                    <Pressable onPress={() => setModalVisible(item)}>
+                      {item?.profile_photo_1?.id ? (
+                        <ImageView
+                          source={{
+                            uri: item?.profile_photo_1?.name,
+                          }}
+                          // alt="Alternate Text"
+                          width={"45px"}
+                          height={"45px"}
+                        />
+                      ) : (
+                        <IconByName
+                          isDisabled
+                          name="AccountCircleLineIcon"
+                          color="gray.300"
+                          _icon={{ size: "51px" }}
+                        />
+                      )}
+                    </Pressable>
                     <VStack
                       pl="2"
                       flex="1"
@@ -193,9 +209,9 @@ export default function CampSelectedLearners({
                         {item?.program_beneficiaries[0]?.enrollment_last_name &&
                           ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
                       </FrontEndTypo.H3>
-                      <Text>{item?.district}</Text>
-                      <Text>{item?.block}</Text>
-                      <Text>{item?.village}</Text>
+                      <FrontEndTypo.H4>{item?.district}</FrontEndTypo.H4>
+                      <FrontEndTypo.H4>{item?.block}</FrontEndTypo.H4>
+                      <FrontEndTypo.H4>{item?.village}</FrontEndTypo.H4>
                     </VStack>
                   </HStack>
                 </HStack>
@@ -219,6 +235,74 @@ export default function CampSelectedLearners({
           {t("SAVE_AND_CAMP_PROFILE")}
         </FrontEndTypo.Primarybutton>
       </Box>
+      <Modal isOpen={modalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>{t("PROFILE")}</Modal.Header>
+          <Modal.Body>
+            <VStack alignItems={"center"}>
+              {modalVisible?.profile_photo_1?.id ? (
+                <ImageView
+                  source={{
+                    uri: modalVisible?.profile_photo_1?.name,
+                  }}
+                  // alt="Alternate Text"
+                  width={"60px"}
+                  height={"60px"}
+                />
+              ) : (
+                <IconByName
+                  isDisabled
+                  name="AccountCircleLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "60px" }}
+                />
+              )}
+
+              <FrontEndTypo.H3 bold color="textGreyColor.800">
+                {
+                  modalVisible?.program_beneficiaries?.[0]
+                    ?.enrollment_first_name
+                }
+                {modalVisible?.program_beneficiaries?.[0]
+                  ?.enrollment_middle_name &&
+                  ` ${modalVisible?.program_beneficiaries?.[0]?.enrollment_middle_name}`}
+                {modalVisible?.program_beneficiaries?.[0]
+                  ?.enrollment_last_name &&
+                  ` ${modalVisible?.program_beneficiaries?.[0]?.enrollment_last_name}`}
+              </FrontEndTypo.H3>
+              <Chip children={modalVisible?.id} />
+              <ChipStatus
+                is_duplicate={
+                  modalVisible?.program_beneficiaries?.[0]?.is_duplicate
+                }
+                is_deactivated={
+                  modalVisible?.program_beneficiaries?.[0]?.is_deactivated
+                }
+                status={modalVisible?.program_beneficiaries?.[0]?.status}
+                rounded={"sm"}
+              />
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack
+              // height={"80%"}
+              justifyContent={"space-between"}
+              width={"100%"}
+            >
+              <FrontEndTypo.Secondarybutton
+                onPress={() => setModalVisible(false)}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => navigate(`/beneficiary/${modalVisible?.id}`)}
+              >
+                {t("VIEW_PROFILE")}
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
