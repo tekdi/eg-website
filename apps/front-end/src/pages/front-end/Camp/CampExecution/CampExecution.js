@@ -8,6 +8,7 @@ import {
   uploadRegistryService,
   ImageView,
   useLocationData,
+  CardComponent,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { Box, HStack, VStack, Alert, Image } from "native-base";
@@ -241,14 +242,17 @@ export default function CampExecution({ footerLinks }) {
               source={{ document_id: facilitator?.profile_photo_1?.id }}
             ></ImageView>
 
-            <FrontEndTypo.H2
-              marginTop={"15px"}
-              textAlign="center"
-              fontSize="16px"
-              fontWeight="bold"
+            <CardComponent
+              _header={{ bg: "light.100" }}
+              _vstack={{
+                bg: "light.100",
+                flex: 1,
+                pt: 4,
+                mt: 10,
+              }}
             >
               {t("YOUR_WELCOME_READY_TO_FLY")}
-            </FrontEndTypo.H2>
+            </CardComponent>
           </VStack>
         </Box>
         <VStack alignItems="center" space="5">
