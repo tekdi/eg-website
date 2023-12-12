@@ -13,6 +13,12 @@
       "sizes": "192x192"
     },
     {
+        "src": "images/logos/logo196.png",
+        "sizes": "196x196",
+        "type": "image/png",
+        "purpose": "any maskable"
+    },
+    {
       "src": "images/logos/logo512.png",
       "type": "image/png",
       "sizes": "512x512"
