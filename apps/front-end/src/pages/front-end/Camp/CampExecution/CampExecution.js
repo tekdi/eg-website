@@ -269,8 +269,8 @@ export default function CampExecution({ footerLinks }) {
             type="warning"
           />
           <VStack space="4">
-            {todaysData?.[0]?.end_date === null ? (
-              <Stack>
+            {todaysData?.[0]?.end_date === null || todaysData?.length === 0 ? (
+              <Stack space={4}>
                 <FrontEndTypo.H3>
                   {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
                 </FrontEndTypo.H3>

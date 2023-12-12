@@ -78,9 +78,20 @@ export default function CampExecutionStart({ footerLinks }) {
       attendances = resultAttendance?.data;
     }
 
+    const session = await campService.getCampSessionsList({ id: id });
+    const data = session?.data?.learning_lesson_plans_master || [];
+    let  sessionList = false
+    data.forEach((element) => {
+      const currentDate = new Date();
+      const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
+      if (currentDate.toDateString() === createdAtDate.toDateString()) {
+        sessionList = true;
+      }
+    });
+
     if (
-      resultAttendance?.data?.length > 0 &&
-      todaysActivity?.data?.camp_days_activities_tracker?.[0]?.misc_activities
+      resultAttendance?.data?.length > 1 &&
+      (todaysActivity?.data?.camp_days_activities_tracker?.[0]?.misc_activities || sessionList)
     ) {
       setDisable(false);
     }
@@ -160,7 +171,7 @@ export default function CampExecutionStart({ footerLinks }) {
     if (photo_1) {
       const dataQ = {
         ...data,
-        id: groupUsers?.id,
+        id: activityId,
         context_id: activityId,
         user_id: facilitator?.id,
         status: "present",
@@ -168,6 +179,7 @@ export default function CampExecutionStart({ footerLinks }) {
         photo_1: `${photo_1}`,
       };
       await campService.updateCampAttendance(dataQ);
+      localStorage.setItem("attendancePicture", attendanceId);
       navigate(`/camps/${id}/campexecutionstart/${activityId}`);
     } else {
       setError("Capture Picture First");
@@ -224,7 +236,7 @@ export default function CampExecutionStart({ footerLinks }) {
       _appBar={{
         name: t("CAMP_EXECUTION"),
         onPressBackButton,
-        onlyIconsShow: ["langBtn", "userInfo", "backBtn"],
+        onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
       loading={loading}
       _footer={{ menues: page !== "campInprogress" ? footerLinks : [] }}
@@ -242,8 +254,20 @@ export default function CampExecutionStart({ footerLinks }) {
           <FrontEndTypo.H2 color={"textMaroonColor.400"}>
             {t("LEARNER_ENVIRONMENT")}
           </FrontEndTypo.H2>
-
           <HStack justifyContent={"center"} flexWrap={"wrap"}>
+            <ImageView
+                source={{
+                  document_id: localStorage.getItem("attendancePicture") || null,
+                }}
+                alt={`Alternate`}
+                width={"190px"}
+                height={"190px"}
+                borderRadius="0"
+                _image={{ borderRadius: 0 }}
+              />
+          </HStack>
+          <HStack justifyContent={"center"} flexWrap={"wrap"}>
+          
             {moodList?.map((item) => {
               return (
                 <VStack
@@ -286,6 +310,9 @@ export default function CampExecutionStart({ footerLinks }) {
               </HStack>
             </Alert>
           )}
+           <FrontEndTypo.Secondarybutton onPress={(e) => setStart(true)}>
+            {t("TAKE_ANOTHER_PHOTO")}
+          </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Primarybutton onPress={addMood}>
             {t("START_CAMP")}
           </FrontEndTypo.Primarybutton>
@@ -377,7 +404,7 @@ const CampExecutionEnd = ({
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/attendance`)}
         >
-          {t("ATTENDANCE")}
+          {t("LEARNER_ATTENDANCE")}
         </FrontEndTypo.Secondarybutton>
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/activities`)}

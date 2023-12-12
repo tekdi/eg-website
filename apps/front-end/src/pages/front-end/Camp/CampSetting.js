@@ -81,13 +81,19 @@ export default function CampSetting({ footerLinks }) {
               {t("PLEASE_INDICATE_SUITABLE_TIME_CAMPING")}
             </FrontEndTypo.H3>
           </VStack>
-
+          <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2">
+                    <Alert.Icon />
+                    <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
+                </HStack>
+          </Alert>
           <HStack
             marginTop={10}
             alignItems="center"
             justifyContent={"center"}
             space={4}
           >
+            <FrontEndTypo.H4>{t("START_TIME")}:</FrontEndTypo.H4>
             <TimePicker
               placeholder={t("SELECT_TIME")}
               use12Hours
@@ -97,7 +103,8 @@ export default function CampSetting({ footerLinks }) {
               format="hh:mm A"
               onChange={(e) => setSelectedStartTime(e?._d)}
             />
-            {t("TO")}
+            <FrontEndTypo.H4>{t("END_TIME")}:</FrontEndTypo.H4>
+
             <TimePicker
               placeholder={t("SELECT_TIME")}
               use12Hours
