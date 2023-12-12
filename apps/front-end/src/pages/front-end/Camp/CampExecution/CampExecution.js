@@ -31,6 +31,7 @@ export default function CampExecution({ footerLinks }) {
   const [todaysData, setTodaysData] = React.useState();
   const navigate = useNavigate();
   const [latData, longData, errors] = useLocationData() || [];
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(async () => {
     const result = await campService.getCampDetails({ id });
@@ -58,6 +59,7 @@ export default function CampExecution({ footerLinks }) {
     } else if (!endDate && startDate && camp_day_happening !== "no" && !mood) {
       navigate(`/camps/${id}/campexecutionstart/${activity_id}`);
     }
+    setLoading(false);
   }, []);
 
   React.useEffect(async () => {
@@ -145,7 +147,7 @@ export default function CampExecution({ footerLinks }) {
     setCameraUrl();
   };
 
-  if (start && data?.lat && data?.long) {
+  if (start && data?.lat && data?.long && !loading) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Camera
@@ -192,7 +194,7 @@ export default function CampExecution({ footerLinks }) {
   return (
     <Layout
       _appBar={{ name: t("CAMP_EXECUTION") }}
-      //   loading={loading}
+      loading={loading}
       _footer={{ menues: footerLinks }}
     >
       <VStack space="5" p="5">

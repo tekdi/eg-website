@@ -12,15 +12,7 @@ import {
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import moment from "moment";
-import {
-  HStack,
-  Pressable,
-  VStack,
-  Alert,
-  Text,
-  Image,
-  Box,
-} from "native-base";
+import { HStack, Pressable, VStack, Alert, Image, Box } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -28,30 +20,26 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 export default function CampExecutionStart({ footerLinks }) {
   const { t } = useTranslation();
   const [camp, setCamp] = React.useState();
-  const { id } = useParams();
+  const { activityId, id } = useParams();
   const location = useLocation();
-  const { activityId } = useParams();
   const [error, setError] = React.useState();
   const [data, setData] = React.useState({});
   const [facilitator, setFacilitator] = React.useState();
+  const [facilitatorAttendance, setFacilitatorAttendance] = React.useState();
   const [start, setStart] = React.useState(false);
   const [disable, setDisable] = React.useState(true);
   const [cameraFile, setCameraFile] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [activeChip, setActiveChip] = React.useState(null);
-  const [groupUsers, setGroupUsers] = React.useState();
   const [page, setPage] = React.useState(location?.state || "");
   const [moodList, setMoodList] = React.useState();
   const navigate = useNavigate();
   const [latData, longData] = useLocationData() || [];
 
   React.useEffect(async () => {
-    let incompleteData = await campService.getcampstatus({ id });
-    let incompleteDate = moment(incompleteData?.data?.start_date).format(
-      "YYYY-MM-DD"
-    );
     setLoading(true);
+    let incompleteData = await campService.getcampstatus({ id });
     const today = moment();
     const startDateMoment = moment(incompleteData?.data?.start_date);
     if (startDateMoment.isSame(today, "day")) {
@@ -59,8 +47,7 @@ export default function CampExecutionStart({ footerLinks }) {
     } else if (startDateMoment.isBefore(today)) {
       setError("PLEASE_END_YESTERDAYS_CAMP");
     }
-    incompleteData = await campService.getcampstatus({ id });
-    incompleteDate = moment(incompleteData?.data?.start_date).format(
+    let incompleteDate = moment(incompleteData?.data?.start_date).format(
       "YYYY-MM-DD"
     );
     const obj = {
@@ -69,19 +56,17 @@ export default function CampExecutionStart({ footerLinks }) {
     };
     const result = await campService.getCampDetails({ id });
     setCamp(result?.data || {});
-    setFacilitator(result?.data?.faciltator?.[0] || {});
+    const facilitatorData = result?.data?.faciltator?.[0] || {};
+    setFacilitator(facilitatorData);
     const resultAttendance = await campService.CampAttendance({
       id: activityId,
     });
     const todaysActivity = await campService.getActivity(obj);
-    let attendances = [];
-    if (resultAttendance?.data?.length > 0) {
-      attendances = resultAttendance?.data;
-    }
+    let attendances = resultAttendance?.data || [];
 
     const session = await campService.getCampSessionsList({ id: id });
     const data = session?.data?.learning_lesson_plans_master || [];
-    let  sessionList = false
+    let sessionList = false;
     data.forEach((element) => {
       const currentDate = new Date();
       const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
@@ -90,20 +75,29 @@ export default function CampExecutionStart({ footerLinks }) {
       }
     });
 
+    const faciltatorAttendanceData = attendances?.find((item, index) => {
+      return facilitatorData?.id === item?.user?.id;
+    });
+
     if (
-      resultAttendance?.data?.length > 1 &&
-      (todaysActivity?.data?.camp_days_activities_tracker?.[0]?.misc_activities || sessionList)
+      attendances?.length > 1 &&
+      faciltatorAttendanceData?.id &&
+      (todaysActivity?.data?.camp_days_activities_tracker?.[0]
+        ?.misc_activities ||
+        sessionList)
     ) {
       setDisable(false);
     }
-    result?.data?.faciltator?.map((item, index) => {
-      let attendance = attendances.find((e) => e?.user?.id === item.id);
-      setGroupUsers(attendance);
-    });
 
-    if (incompleteData?.data?.mood) {
+    if (!faciltatorAttendanceData?.id) {
+      setStart(true);
+    } else if (incompleteData?.data?.mood) {
+      setFacilitatorAttendance(faciltatorAttendanceData);
       setPage("campInprogress");
+    } else {
+      setFacilitatorAttendance(faciltatorAttendanceData);
     }
+
     setLoading(false);
   }, [id]);
 
@@ -142,7 +136,6 @@ export default function CampExecutionStart({ footerLinks }) {
   // start Camp
   const startCamp = () => {
     try {
-      localStorage.setItem("startCamp", moment());
       uploadAttendencePicture();
       setCameraUrl();
       setStart(false);
@@ -168,27 +161,39 @@ export default function CampExecutionStart({ footerLinks }) {
   const uploadAttendencePicture = async (e) => {
     setError("");
     const photo_1 = cameraFile?.data?.insert_documents?.returning?.[0]?.name;
-    const attendanceId = cameraFile?.data?.insert_documents?.returning?.[0]?.id;
     if (photo_1) {
       const dataQ = {
         ...data,
-        id: activityId,
         context_id: activityId,
         user_id: facilitator?.id,
         status: "present",
         reason: "camp_started",
         photo_1: `${photo_1}`,
       };
-      await campService.updateCampAttendance(dataQ);
-      localStorage.setItem("attendancePicture", attendanceId);
+      if (facilitatorAttendance?.id) {
+        const result = await campService.updateCampAttendance({
+          ...dataQ,
+          id: facilitatorAttendance?.id,
+        });
+        if (result?.attendance?.id) {
+          setFacilitatorAttendance({ ...result?.attendance, photo_1 });
+        }
+      } else {
+        const result = await campService.markCampAttendance(dataQ);
+        if (result?.attendance?.id) {
+          setFacilitatorAttendance({ ...result?.attendance, photo_1 });
+        }
+      }
+      // markCampAttendance
       navigate(`/camps/${id}/campexecutionstart/${activityId}`);
     } else {
       setError("Capture Picture First");
     }
+
     setCameraUrl();
   };
 
-  if (start && data?.lat && data?.long) {
+  if (start && data?.lat && data?.long && !loading) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Camera
@@ -256,9 +261,10 @@ export default function CampExecutionStart({ footerLinks }) {
             {t("LEARNER_ENVIRONMENT")}
           </FrontEndTypo.H2>
           <HStack justifyContent={"center"} flexWrap={"wrap"}>
-            <ImageView
+            {facilitatorAttendance?.photo_1 && (
+              <ImageView
                 source={{
-                  document_id: localStorage.getItem("attendancePicture") || null,
+                  uri: facilitatorAttendance?.photo_1,
                 }}
                 alt={`Alternate`}
                 width={"190px"}
@@ -266,9 +272,9 @@ export default function CampExecutionStart({ footerLinks }) {
                 borderRadius="0"
                 _image={{ borderRadius: 0 }}
               />
+            )}
           </HStack>
           <HStack justifyContent={"center"} flexWrap={"wrap"}>
-          
             {moodList?.map((item) => {
               return (
                 <VStack
@@ -311,7 +317,7 @@ export default function CampExecutionStart({ footerLinks }) {
               </HStack>
             </Alert>
           )}
-           <FrontEndTypo.Secondarybutton onPress={(e) => setStart(true)}>
+          <FrontEndTypo.Secondarybutton onPress={(e) => setStart(true)}>
             {t("TAKE_ANOTHER_PHOTO")}
           </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Primarybutton onPress={addMood}>
