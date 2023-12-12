@@ -10,7 +10,7 @@ import {
   useLocationData,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Box, HStack, VStack, Alert, Image } from "native-base";
+import { Box, HStack, VStack, Alert, Image, Stack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -268,18 +268,36 @@ export default function CampExecution({ footerLinks }) {
             }}
             type="warning"
           />
-          <FrontEndTypo.H3>
-            {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
-          </FrontEndTypo.H3>
           <VStack space="4">
-            <FrontEndTypo.Primarybutton onPress={campBegin}>
-              {t("YES_ABSOLUTELY")}
-            </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
-            >
-              {t("NO_PLAN")}
-            </FrontEndTypo.Secondarybutton>
+            {todaysData?.[0]?.end_date === null ? (
+              <Stack>
+                <FrontEndTypo.H3>
+                  {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
+                </FrontEndTypo.H3>
+                <FrontEndTypo.Primarybutton onPress={campBegin}>
+                  {t("YES_ABSOLUTELY")}
+                </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton
+                  onPress={(e) => navigate(`/camps/${id}/campotherplans`)}
+                >
+                  {t("NO_PLAN")}
+                </FrontEndTypo.Secondarybutton>
+              </Stack>
+            ) : (
+              <Stack>
+                <Alert status="warning" alignItems={"center"}>
+                  <HStack alignItems="center" space="2">
+                    <Alert.Icon />
+                    <FrontEndTypo.H3>
+                      {t("TODAYS_CAMP_HAS_BEEN_COMPLETED")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                </Alert>
+                <FrontEndTypo.Primarybutton onPress={(e) => navigate(`/camps`)}>
+                  {t("GO_TO_PROFILE")}
+                </FrontEndTypo.Primarybutton>
+              </Stack>
+            )}
           </VStack>
         </VStack>
       </VStack>

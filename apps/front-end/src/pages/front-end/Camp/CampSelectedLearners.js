@@ -25,11 +25,7 @@ import { useTranslation } from "react-i18next";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 
 // App
-export default function CampSelectedLearners({
-  userTokenInfo,
-  footerLinks,
-  isEdit,
-}) {
+export default function CampSelectedLearners() {
   const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState(false);
   const camp_id = useParams();
@@ -41,11 +37,13 @@ export default function CampSelectedLearners({
   const [isDisable, setIsDisable] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [registeredUsers, setRegisteredUsers] = React.useState([]);
-  const selectAllChecked =
-    selectedIds?.length ===
-    nonRegisteredUser?.filter(
-      (item) => !registeredUsers.some((user) => user.id === item.id)
-    ).length;
+  // const selectAllChecked =
+  //   selectedIds?.length ===
+  //   nonRegisteredUser?.filter(
+  //     (item) => !registeredUsers.some((user) => user.id === item.id)
+  //   ).length;
+  const [nonRegister, setNonRegister] = React.useState([]);
+  const [selectAllChecked, setSelectAllChecked] = React.useState([]);
 
   const onPressBackButton = async () => {
     navigate(`/camps/${camp_id?.id}`);
@@ -99,11 +97,19 @@ export default function CampSelectedLearners({
     const campRegisterUsers = campdetails?.data?.group_users || [];
     setRegisteredUsers(campRegisterUsers);
     const campNotRegisterUsers = result?.data?.user || [];
+    const nonRegister = result?.data?.user || [];
+    setNonRegister(nonRegister);
     const mergedData = campRegisterUsers?.concat(campNotRegisterUsers);
     setNonRegisteredUser(mergedData);
     const ids = campRegisterUsers?.map((item) => item.id);
     setSelectedIds(ids);
     setLoading(false);
+    const selectAllChecked =
+      selectedIds?.length ===
+      nonRegisteredUser?.filter(
+        (item) => !registeredUsers.some((user) => user.id === item.id)
+      ).length;
+    setSelectAllChecked(selectAllChecked);
   }, []);
 
   return (
@@ -118,7 +124,7 @@ export default function CampSelectedLearners({
     >
       <Box py={6} px={4} mb={5}>
         <AdminTypo.H3 color={"textMaroonColor.400"}>
-          {alert ? (
+          {alert && (
             <Alert
               status="warning"
               alignItems={"start"}
@@ -131,35 +137,34 @@ export default function CampSelectedLearners({
                 <BodyMedium>{t("SELECT_LEARNER")}</BodyMedium>
               </HStack>
             </Alert>
-          ) : (
-            <></>
           )}
         </AdminTypo.H3>
-        <HStack
-          space={2}
-          paddingRight={2}
-          alignItems={"center"}
-          justifyContent={"flex-end"}
-        >
-          {t("SELECT_ALL")}
-          <Checkbox
-            isChecked={selectAllChecked}
-            onChange={handleSelectAllChange}
-          />
-        </HStack>
+        {nonRegister.length > 0 && (
+          <HStack
+            space={2}
+            paddingRight={2}
+            alignItems={"center"}
+            justifyContent={"flex-end"}
+          >
+            {t("SELECT_ALL")}
+            <Checkbox
+              isChecked={selectAllChecked}
+              onChange={handleSelectAllChange}
+            />
+          </HStack>
+        )}
 
         {nonRegisteredUser?.map((item) => {
           return (
             <CardComponent
-              key={item}
               _header={{ bg: "white" }}
               _vstack={{
                 bg: "white",
                 m: "2",
               }}
+              key={item}
             >
               <HStack
-                key={item}
                 w={"100%"}
                 bg="white"
                 my={1}
