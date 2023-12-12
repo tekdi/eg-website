@@ -253,7 +253,6 @@ export default function CampExecutionStart({ footerLinks }) {
         <VStack py={6} px={4} mb={5} space="6">
           <FrontEndTypo.H2 color={"textMaroonColor.400"}>
             {t("LEARNER_ENVIRONMENT")}
-            s
           </FrontEndTypo.H2>
           <HStack justifyContent={"center"} flexWrap={"wrap"}>
             <ImageView
