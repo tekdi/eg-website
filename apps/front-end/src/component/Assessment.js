@@ -160,8 +160,8 @@ function Player({ setAlert }) {
             }
           }}
           handleExitButton={handleExitButton}
-          public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
-          // public_url="http://localhost:5000"
+          // public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
+          public_url="http://localhost:5000"
         />
       </VStack>
     </VStack>
