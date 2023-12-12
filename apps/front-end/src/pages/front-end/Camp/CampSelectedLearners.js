@@ -31,11 +31,7 @@ export default function CampSelectedLearners({
   const [isDisable, setIsDisable] = React.useState(false);
   const [nonRegister, setNonRegister] = React.useState([]);
   const [registeredUsers, setRegisteredUsers] = React.useState([]);
-  const selectAllChecked =
-    selectedIds?.length ===
-    nonRegisteredUser?.filter(
-      (item) => !registeredUsers.some((user) => user.id === item.id)
-    ).length;
+  const [selectAllChecked, setSelectAllChecked] = React.useState([]);
 
   const onPressBackButton = async () => {
     navigate(`/camps/${camp_id?.id}`);
@@ -96,6 +92,12 @@ export default function CampSelectedLearners({
     const ids = campRegisterUsers?.map((item) => item.id);
     setSelectedIds(ids);
     setLoading(false);
+    const selectAllChecked =
+      selectedIds?.length ===
+      nonRegisteredUser?.filter(
+        (item) => !registeredUsers.some((user) => user.id === item.id)
+      ).length;
+    setSelectAllChecked(selectAllChecked);
   }, []);
 
   return (

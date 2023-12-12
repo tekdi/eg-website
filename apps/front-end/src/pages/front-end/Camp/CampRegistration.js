@@ -38,52 +38,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [campDetails, setCampDetails] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
 
-  React.useEffect(async () => {
-    setLoading(true);
-    const result = await campService.getCampDetails(camp_id);
-    setCampDetails(result?.data);
-    setCampStatus(result?.data?.group?.status);
-    const campConsent = await ConsentService.getConsent({
-      camp_id: camp_id?.id,
-    });
-    const userLength = result?.data?.group_users?.length;
-    const campConsentLength = campConsent?.data?.length;
-    if (userLength <= campConsentLength) {
-      setConsent("green.300");
-    }
-    const data = result?.data?.properties;
-    setCampLocation({
-      lat: data?.lat,
-      long: data?.long,
-      property_type: data?.property_type,
-      state: data?.state,
-      district: data?.district,
-      block: data?.block,
-      village: data?.village,
-      grampanchayat: data?.grampanchayat,
-    });
-    setCampVenue({
-      property_photo_building: data?.property_photo_building,
-      property_photo_classroom: data?.property_photo_classroom,
-      property_photo_other: data?.property_photo_other,
-    });
-    setFacilities({ property_facilities: data?.property_facilities });
-    setKit({
-      kit_feedback: result?.data?.kit_feedback,
-      kit_ratings: result?.data?.kit_ratings,
-      kit_was_sufficient: result?.data?.kit_was_sufficient,
-      kit_received: result?.data?.kit_received,
-    });
-    setKitarr([
-      "kit_received",
-      "kit_was_sufficient",
-      "kit_ratings",
-      "kit_feedback",
-    ]);
-
-    setLoading(false);
-  }, []);
-  const Navdata = [
+  const navdata = [
     {
       Icon: "MapPinLineIcon",
       Name: "CAMP_LOCATION",
@@ -129,23 +84,86 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     },
   ];
 
+  React.useEffect(async () => {
+    setLoading(true);
+    const result = await campService.getCampDetails(camp_id);
+    setCampDetails(result?.data);
+    const campStatusNew = result?.data?.group?.status;
+    setCampStatus(campStatusNew);
+    const campConsent = await ConsentService.getConsent({
+      camp_id: camp_id?.id,
+    });
+    const userLength = result?.data?.group_users?.length;
+    const campConsentLength = campConsent?.data?.length;
+    if (userLength <= campConsentLength) {
+      setConsent("green.300");
+    }
+    const data = result?.data?.properties;
+    setCampLocation({
+      lat: data?.lat,
+      long: data?.long,
+      property_type: data?.property_type,
+      state: data?.state,
+      district: data?.district,
+      block: data?.block,
+      village: data?.village,
+      grampanchayat: data?.grampanchayat,
+    });
+    setCampVenue({
+      property_photo_building: data?.property_photo_building,
+      property_photo_classroom: data?.property_photo_classroom,
+      property_photo_other: data?.property_photo_other,
+    });
+    setFacilities({ property_facilities: data?.property_facilities });
+    setKit({
+      kit_feedback: result?.data?.kit_feedback,
+      kit_ratings: result?.data?.kit_ratings,
+      kit_was_sufficient: result?.data?.kit_was_sufficient,
+      kit_received: result?.data?.kit_received,
+    });
+    setKitarr([
+      "kit_received",
+      "kit_was_sufficient",
+      "kit_ratings",
+      "kit_feedback",
+    ]);
+    setLoading(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (
+      ["registered", "camp_ip_verified"].includes(campStatus) ||
+      !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
+        (name) =>
+          navdata.some(
+            (item) => item.Name === name && item.color === "green.300"
+          )
+      )
+    ) {
+      setIsDisable(true);
+    }
+  }, [campStatus, navdata]);
+
   const onPressBackButton = async () => {
     navigate("/camps");
   };
-
+  console.log(isDisable);
   // Check if all specified names have the color "green.300"
-  const isDisabled = () => {
-    if (["registered", "camp_ip_verified"].includes(campStatus)) {
-      return false;
-    }
-  };
-
-  const isDisableFields = () => {
-    return ["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
-      (name) =>
-        Navdata.some((item) => item.Name === name && item.color === "green.300")
-    );
-  };
+  // const isDisabled = () => {
+  //   if (["registered", "camp_ip_verified"].includes(campStatus)) {
+  //     return false;
+  //   } else if (
+  //     ["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
+  //       (name) =>
+  //         navdata.some(
+  //           (item) => item.Name === name && item.color === "green.300"
+  //         )
+  //     )
+  //   ) {
+  //     return true;
+  //   }
+  //   return true;
+  // };
 
   const disableEdit = () =>
     ["camp_ip_verified"].includes(campStatus) ? false : true;
@@ -162,7 +180,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       navigate("/camps");
     }
   };
-
+  console.log(campStatus);
   return (
     <Layout
       loading={loading}
@@ -217,7 +235,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           </HStack>
         </Pressable>
 
-        {Navdata.map((item) => {
+        {navdata.map((item) => {
           return (
             <NavigationBox
               key={item}
@@ -282,7 +300,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         )}
         <HStack my={3} mx={"auto"} w={"90%"}>
           <FrontEndTypo.Primarybutton
-            isDisabled={isDisable || (!isDisableFields() && !isDisabled())}
+            isDisabled={isDisable}
             width={"100%"}
             onPress={() => {
               SubmitCampRegistration();
