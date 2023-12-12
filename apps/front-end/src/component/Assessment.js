@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  BodyLarge,
-  H2,
-  t,
-  testRegistryService,
-  useWindowSize,
-} from "@shiksha/common-lib";
+import { H2, testRegistryService, useWindowSize } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { SunbirdPlayer } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
-import { Button, HStack, VStack } from "native-base";
+import { VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 
 function Player({ setAlert }) {
