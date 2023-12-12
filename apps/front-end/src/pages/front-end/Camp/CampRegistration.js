@@ -132,16 +132,17 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   React.useEffect(() => {
     if (
-      ["registered"].includes(campStatus) ||
-      (["camp_ip_verified"].includes(campStatus) &&
-        !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
-          (name) =>
-            navdata.some(
-              (item) => item.Name === name && item.color === "green.300"
-            )
-        ))
+      ["registered", "camp_ip_verified"].includes(campStatus) ||
+      !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
+        (name) =>
+          navdata.some(
+            (item) => item.Name === name && item.color === "green.300"
+          )
+      )
     ) {
       setIsDisable(true);
+    } else {
+      setIsDisable(false);
     }
   }, [campStatus, navdata]);
 
@@ -164,7 +165,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       navigate("/camps");
     }
   };
-  console.log(campStatus);
+
   return (
     <Layout
       loading={loading}
