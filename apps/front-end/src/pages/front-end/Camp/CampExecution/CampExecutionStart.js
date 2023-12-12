@@ -78,9 +78,20 @@ export default function CampExecutionStart({ footerLinks }) {
       attendances = resultAttendance?.data;
     }
 
+    const session = await campService.getCampSessionsList({ id: id });
+    const data = session?.data?.learning_lesson_plans_master || [];
+    let  sessionList = false
+    data.forEach((element) => {
+      const currentDate = new Date();
+      const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
+      if (currentDate.toDateString() === createdAtDate.toDateString()) {
+        sessionList = true;
+      }
+    });
+
     if (
-      resultAttendance?.data?.length > 0 &&
-      todaysActivity?.data?.camp_days_activities_tracker?.[0]?.misc_activities
+      resultAttendance?.data?.length > 1 &&
+      (todaysActivity?.data?.camp_days_activities_tracker?.[0]?.misc_activities || sessionList)
     ) {
       setDisable(false);
     }
@@ -224,7 +235,7 @@ export default function CampExecutionStart({ footerLinks }) {
       _appBar={{
         name: t("CAMP_EXECUTION"),
         onPressBackButton,
-        onlyIconsShow: ["langBtn", "userInfo", "backBtn"],
+        onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
       loading={loading}
       _footer={{ menues: page !== "campInprogress" ? footerLinks : [] }}
