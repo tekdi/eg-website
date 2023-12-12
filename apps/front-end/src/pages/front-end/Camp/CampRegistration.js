@@ -34,7 +34,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const [facilities, setFacilities] = React.useState();
   const [kit, setKit] = React.useState();
   const [kitarr, setKitarr] = React.useState([]);
-  const [kitMaterial, setKitMaterial] = React.useState([]);
   const [consent, setConsent] = React.useState("amber.300");
   const [campDetails, setCampDetails] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);

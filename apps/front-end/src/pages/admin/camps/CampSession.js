@@ -168,7 +168,7 @@ export function SessionCard({
               }
               onPress={() => handleStartSession(item?.id)}
             >
-              सत्र शुरू किया?
+              {t("SESSION_STARTED")}
             </FrontEndTypo.DefaultButton>
           ) : item?.session_tracks?.[0]?.status !== "complete" ? (
             <VStack space="4">

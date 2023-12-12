@@ -38,7 +38,7 @@ export default function CampOtherPlans({ footerLinks }) {
     };
     if (reason) {
       await campService.campActivity(payLoad);
-      navigate(`/camps/${id}/campexecution`);
+      navigate(`/camps`);
     } else {
       setError(true);
     }

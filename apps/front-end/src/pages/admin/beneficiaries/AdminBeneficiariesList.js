@@ -23,13 +23,15 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
-  debounce,
+
   urlData,
   filterObject,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
+import { debounce } from "lodash";
+
 
 function CustomFieldTemplate({ id, schema, label, required, children }) {
   const { t } = useTranslation();
@@ -129,6 +131,15 @@ export default function AdminHome({ footerLinks }) {
     }
   };
 
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
+
   return (
     <Layout
       w={Width}
@@ -169,12 +180,8 @@ export default function AdminHome({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              2000
-            );
-          }}
+
+          onChange={debouncedHandleSearch}
         />
         <HStack alignSelf={"center"} space="2">
           <Menu
@@ -422,6 +429,19 @@ export const Filter = ({ filter, setFilter }) => {
     setFilterObject({});
   };
 
+  const handlePrerakSearch = (e) => {
+    setFacilitatorFilter({
+      ...facilitatorFilter,
+      search: e.nativeEvent.text,
+      page: 1,
+    })
+  };
+
+  const debouncedHandlePrerakSearch = React.useCallback(
+    debounce(handlePrerakSearch, 1000),
+    []
+  );
+
   return (
     <VStack space={8} py="5">
       <VStack space={3}>
@@ -460,16 +480,7 @@ export const Filter = ({ filter, setFilter }) => {
           height="32px"
           placeholder={t("SEARCH")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFacilitatorFilter({
-                ...facilitatorFilter,
-                search: e.nativeEvent.text,
-                page: 1,
-              }),
-              3000
-            );
-          }}
+          onChange={debouncedHandlePrerakSearch}
         />
         <MultiCheck
           key={facilitator}
