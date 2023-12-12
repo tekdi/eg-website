@@ -100,7 +100,8 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [kitFeadback, setKitFeadback] = React.useState({});
   const [tableData, setTableData] = React.useState();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isDisable, setIsDisable] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -179,7 +180,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
             p="4"
             mt="4"
             onPress={handleSave}
-            isDisabled={isButtonLoading}
+            isDisabled={isDisable}
             isLoading={isLoading}
           >
             {t("SAVE_AND_CAMP_PROFILE")}
