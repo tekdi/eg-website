@@ -171,7 +171,7 @@ export default function CampExecutionStart({ footerLinks }) {
     if (photo_1) {
       const dataQ = {
         ...data,
-        id: groupUsers?.id,
+        id: activityId,
         context_id: activityId,
         user_id: facilitator?.id,
         status: "present",
@@ -179,6 +179,7 @@ export default function CampExecutionStart({ footerLinks }) {
         photo_1: `${photo_1}`,
       };
       await campService.updateCampAttendance(dataQ);
+      localStorage.setItem("attendancePicture", attendanceId);
       navigate(`/camps/${id}/campexecutionstart/${activityId}`);
     } else {
       setError("Capture Picture First");
@@ -253,8 +254,20 @@ export default function CampExecutionStart({ footerLinks }) {
           <FrontEndTypo.H2 color={"textMaroonColor.400"}>
             {t("LEARNER_ENVIRONMENT")}
           </FrontEndTypo.H2>
-
           <HStack justifyContent={"center"} flexWrap={"wrap"}>
+            <ImageView
+                source={{
+                  document_id: localStorage.getItem("attendancePicture") || null,
+                }}
+                alt={`Alternate`}
+                width={"190px"}
+                height={"190px"}
+                borderRadius="0"
+                _image={{ borderRadius: 0 }}
+              />
+          </HStack>
+          <HStack justifyContent={"center"} flexWrap={"wrap"}>
+          
             {moodList?.map((item) => {
               return (
                 <VStack
@@ -297,6 +310,9 @@ export default function CampExecutionStart({ footerLinks }) {
               </HStack>
             </Alert>
           )}
+           <FrontEndTypo.Secondarybutton onPress={(e) => setStart(true)}>
+            {t("TAKE_ANOTHER_PHOTO")}
+          </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Primarybutton onPress={addMood}>
             {t("START_CAMP")}
           </FrontEndTypo.Primarybutton>
