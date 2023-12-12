@@ -132,13 +132,14 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
   React.useEffect(() => {
     if (
-      ["registered", "camp_ip_verified"].includes(campStatus) ||
-      !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
-        (name) =>
-          navdata.some(
-            (item) => item.Name === name && item.color === "green.300"
-          )
-      )
+      ["registered"].includes(campStatus) ||
+      (["camp_ip_verified"].includes(campStatus) &&
+        !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
+          (name) =>
+            navdata.some(
+              (item) => item.Name === name && item.color === "green.300"
+            )
+        ))
     ) {
       setIsDisable(true);
     }
@@ -147,23 +148,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const onPressBackButton = async () => {
     navigate("/camps");
   };
-  console.log(isDisable);
-  // Check if all specified names have the color "green.300"
-  // const isDisabled = () => {
-  //   if (["registered", "camp_ip_verified"].includes(campStatus)) {
-  //     return false;
-  //   } else if (
-  //     ["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
-  //       (name) =>
-  //         navdata.some(
-  //           (item) => item.Name === name && item.color === "green.300"
-  //         )
-  //     )
-  //   ) {
-  //     return true;
-  //   }
-  //   return true;
-  // };
 
   const disableEdit = () =>
     ["camp_ip_verified"].includes(campStatus) ? false : true;
