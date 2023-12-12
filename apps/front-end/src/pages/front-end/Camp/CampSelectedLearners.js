@@ -209,9 +209,9 @@ export default function CampSelectedLearners() {
                         {item?.program_beneficiaries[0]?.enrollment_last_name &&
                           ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
                       </FrontEndTypo.H3>
-                      <Text>{item?.district}</Text>
-                      <Text>{item?.block}</Text>
-                      <Text>{item?.village}</Text>
+                      <FrontEndTypo.H4>{item?.district}</FrontEndTypo.H4>
+                      <FrontEndTypo.H4>{item?.block}</FrontEndTypo.H4>
+                      <FrontEndTypo.H4>{item?.village}</FrontEndTypo.H4>
                     </VStack>
                   </HStack>
                 </HStack>
