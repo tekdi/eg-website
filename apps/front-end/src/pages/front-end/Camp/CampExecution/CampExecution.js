@@ -288,7 +288,7 @@ export default function CampExecution({ footerLinks }) {
                 </FrontEndTypo.Secondarybutton>
               </Stack>
             ) : (
-              <Stack>
+              <Stack space="3">
                 <Alert status="warning" alignItems={"center"}>
                   <HStack alignItems="center" space="2">
                     <Alert.Icon />
