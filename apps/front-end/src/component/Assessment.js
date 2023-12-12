@@ -1,32 +1,26 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
 import {
-  BodyLarge,
   H2,
-  t,
   testRegistryService,
   useWindowSize,
+  SunbirdPlayer,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { SunbirdPlayer } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
-import { Button, HStack, VStack } from "native-base";
-import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import { VStack } from "native-base";
 
 function Player({ setAlert }) {
-  const { t } = useTranslation();
   const [width, height] = useWindowSize();
-  const [assessmentData, setassessmentData] = useState();
-  const [type, setType] = useState("Course");
+  const [assessmentData, setAssessmentData] = useState();
+  const [type, setType] = useState();
   const { context, context_id, do_id } = useParams();
-  const [isEnd, setIsEnd] = React.useState();
 
   useEffect(async () => {
     const { error, ...assesmentData } = await testRegistryService.getAssessment(
       do_id
     );
     if (!error) {
-      setassessmentData(assesmentData);
+      setAssessmentData(assesmentData);
+      setType("Course");
     } else {
       console.log(error);
       setAlert(error);
@@ -89,9 +83,9 @@ function Player({ setAlert }) {
     console.log("Total Duration:", totalDuration, "seconds");
 
     let score_txt = score ? score.toString() : "0";
-    let duration_txt = props?.duration ? props.duration.toString() : "0";
+
     data = {
-      test_id: "do_113935969671700480155",
+      test_id: do_id,
       spent_time: totalDuration,
       score: score_txt,
       status: "completed",
@@ -162,6 +156,7 @@ function Player({ setAlert }) {
           }}
           handleExitButton={handleExitButton}
           public_url={process.env.REACT_APP_SUNBIRD_PLAYER_URL}
+          // public_url="http://localhost:5000"
         />
       </VStack>
     </VStack>
