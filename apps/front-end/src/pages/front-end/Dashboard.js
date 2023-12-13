@@ -46,6 +46,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [lmsDEtails, setLmsDetails] = React.useState();
   const { id } = userTokenInfo?.authUser || [];
   const [random, setRandom] = React.useState();
+  const [events, setEvents] = React.useState("");
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -115,11 +116,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const handleRandomise = async () => {
     const doIdArray = modalVisible?.params?.do_id;
-
-    if (!doIdArray || (Array.isArray(doIdArray) && doIdArray.length === 0)) {
-      alert("There is no assessment available for this event");
-    }
-
+    console.log({ doIdArray });
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
@@ -227,6 +224,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     <AdminTypo.Dangerbutton
                       onPress={() => {
                         setModalVisible(certificateData);
+                        const doIdArray = certificateData?.params?.do_id;
+                        if (doIdArray == null || doIdArray.length === 0) {
+                          setEvents(
+                            "There is no assessment available for this event"
+                          );
+                        } else {
+                          setEvents("Take Test");
+                        }
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
@@ -262,7 +267,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <VStack>
                     {lmsDEtails === undefined && (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t("TAKE_TEST")}
+                        {events}
                       </AdminTypo.H3>
                     )}
                     {lmsDEtails?.certificate_status === null && (
@@ -305,14 +310,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDEtails === undefined && (
-                      <FrontEndTypo.DefaultButton
-                        background={"textRed.400"}
-                        onPress={startTest}
-                      >
-                        {t("START_TEST")}
-                      </FrontEndTypo.DefaultButton>
-                    )}
+                    {lmsDEtails === undefined &&
+                      !(
+                        certificateData?.params?.do_id == null ||
+                        (Array.isArray(certificateData?.params?.do_id) &&
+                          certificateData?.params?.do_id?.length === 0)
+                      ) && (
+                        <FrontEndTypo.DefaultButton
+                          background={"textRed.400"}
+                          onPress={startTest}
+                        >
+                          {t("START_TEST")}
+                        </FrontEndTypo.DefaultButton>
+                      )}
                     {lmsDEtails?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
