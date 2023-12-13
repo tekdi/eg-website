@@ -45,6 +45,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = React.useState(false);
   const [lmsDEtails, setLmsDetails] = React.useState();
   const { id } = userTokenInfo?.authUser || [];
+  const [random, setRandom] = React.useState();
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -111,6 +112,48 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       )
     );
   }, [facilitator]);
+
+  // const handleRandomise = () => {
+  //   const doIdArray = modalVisible?.params?.do_id;
+
+  //   if (!doIdArray || doIdArray.length === 0) {
+  //     alert("There is no assessment availabe for this event");
+  //     return;
+  //   }
+
+  //   const array = new Uint32Array(1);
+  //   crypto.getRandomValues(array);
+  //   const randomizedDoId = doIdArray[array[0] % doIdArray.length];
+  //   setRandom(randomizedDoId);
+  // };
+
+  const handleRandomise = async () => {
+    const doIdArray = modalVisible?.params?.do_id;
+
+    if (!doIdArray || (Array.isArray(doIdArray) && doIdArray.length === 0)) {
+      alert("There is no assessment available for this event");
+      return;
+    }
+
+    if (typeof doIdArray === "string") {
+      return doIdArray;
+    }
+
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    const randomizedDoId = doIdArray[array[0] % doIdArray.length];
+    setRandom(randomizedDoId);
+    return randomizedDoId;
+  };
+
+  const startTest = async () => {
+    try {
+      const randomizedDoId = await handleRandomise();
+      navigate(`/assessment/events/${modalVisible.id}/${randomizedDoId}`);
+    } catch (error) {
+      console.error("Error handling randomization:", error);
+    }
+  };
 
   const isDocumentUpload = (key = "") => {
     let isAllow = 0;
@@ -280,32 +323,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     {lmsDEtails === undefined && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
-                        onPress={() => {
-                          if (!crypto || !crypto.getRandomValues) {
-                            console.error(
-                              "Cryptographically secure random number generation not supported."
-                            );
-                            return;
-                          }
-
-                          const doIdArray = modalVisible?.params?.do_id;
-
-                          if (!doIdArray || doIdArray.length === 0) {
-                            alert(
-                              "There is no assessment availabe for this event"
-                            );
-                            return;
-                          }
-                          const array = new Uint32Array(1);
-                          crypto.getRandomValues(array);
-                          const randomizedDoId =
-                            doIdArray[array[0] % doIdArray.length];
-
-                          console.log(randomizedDoId);
-                          navigate(
-                            `/assessment/events/${modalVisible.id}/${randomizedDoId}`
-                          );
-                        }}
+                        onPress={startTest}
                       >
                         {t("START_TEST")}
                       </FrontEndTypo.DefaultButton>
