@@ -113,26 +113,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     );
   }, [facilitator]);
 
-  // const handleRandomise = () => {
-  //   const doIdArray = modalVisible?.params?.do_id;
-
-  //   if (!doIdArray || doIdArray.length === 0) {
-  //     alert("There is no assessment availabe for this event");
-  //     return;
-  //   }
-
-  //   const array = new Uint32Array(1);
-  //   crypto.getRandomValues(array);
-  //   const randomizedDoId = doIdArray[array[0] % doIdArray.length];
-  //   setRandom(randomizedDoId);
-  // };
-
   const handleRandomise = async () => {
     const doIdArray = modalVisible?.params?.do_id;
 
     if (!doIdArray || (Array.isArray(doIdArray) && doIdArray.length === 0)) {
       alert("There is no assessment available for this event");
-      return;
     }
 
     if (typeof doIdArray === "string") {
@@ -149,7 +134,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const startTest = async () => {
     try {
       const randomizedDoId = await handleRandomise();
-      navigate(`/assessment/events/${modalVisible.id}/${randomizedDoId}`);
+      navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
     } catch (error) {
       console.error("Error handling randomization:", error);
     }
