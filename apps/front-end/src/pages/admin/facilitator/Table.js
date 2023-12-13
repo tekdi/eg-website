@@ -186,7 +186,7 @@ function Table({
         ),
       },
     ],
-    [District, Block]
+    []
   );
 
   const handleRowClick = React.useCallback(

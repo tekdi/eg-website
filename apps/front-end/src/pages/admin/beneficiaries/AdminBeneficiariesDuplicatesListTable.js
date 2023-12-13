@@ -109,7 +109,7 @@ function Table({
         attr: "count",
       },
     ],
-    [District, Block]
+    []
   );
   const navigate = useNavigate();
 

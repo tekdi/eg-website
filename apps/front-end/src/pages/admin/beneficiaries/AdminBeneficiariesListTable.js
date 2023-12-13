@@ -145,7 +145,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         wrap: true,
       },
     ],
-    [District, Block]
+    []
   );
 
   const fetchEnumRegistry = React.useCallback(async () => {
