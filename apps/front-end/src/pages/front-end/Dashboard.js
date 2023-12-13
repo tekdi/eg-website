@@ -226,11 +226,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         setModalVisible(certificateData);
                         const doIdArray = certificateData?.params?.do_id;
                         if (doIdArray == null || doIdArray.length === 0) {
-                          setEvents(
-                            "There is no assessment available for this event"
-                          );
+                          setEvents("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE");
                         } else {
-                          setEvents("Take Test");
+                          setEvents("TAKE_TEST");
                         }
                       }}
                     >
@@ -267,7 +265,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <VStack>
                     {lmsDEtails === undefined && (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {events}
+                        {t(events)}
                       </AdminTypo.H3>
                     )}
                     {lmsDEtails?.certificate_status === null && (
