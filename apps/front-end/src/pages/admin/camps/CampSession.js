@@ -74,7 +74,7 @@ export default function CampSession({ footerLinks }) {
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -146,7 +146,7 @@ export function SessionCard({
               color="textMaroonColor.400"
               bold
             >
-              {t("LESSON")} {index + 1}
+              {t("SESSION")} {item?.ordering}
             </FrontEndTypo.H3>
           </VStack>
 

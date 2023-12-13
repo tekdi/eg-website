@@ -73,9 +73,8 @@ export default function CampSessionList({ footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => navigate(-1),
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -83,52 +82,49 @@ export default function CampSessionList({ footerLinks }) {
         <HStack space="2">
           <IconByName name="BookOpenLineIcon" />
           <FrontEndTypo.H2 color="textMaroonColor.400">
-            {t("LESSON")}
+            {t("SESSION")}
           </FrontEndTypo.H2>
         </HStack>
 
         {sessionList?.map((item) => (
-          <HStack key={item} alignItems={"center"} space={2}>
-            {item?.session_tracks?.[0]?.status === "complete" && (
-              <CheckCircleIcon color="greenIconColor" size="24px" />
-            )}
-            {item?.session_tracks?.[0]?.status === "incomplete" && (
-              <IconByName
-                color="warningColor"
-                name="TimeFillIcon"
-                _icon={{ size: 30 }}
-              />
-            )}
-
-            <CardComponent
-              key={item?.id}
-              _header={{ px: "0", pt: "0" }}
-              _body={{
-                px: "4",
-                py: "2",
-                // pt: "0",
-                bg: sessionActive !== item?.ordering ? "gray.100" : "white",
-              }}
-              _vstack={{ p: 0, space: 0, flex: 1 }}
+          <CardComponent
+            key={item?.id}
+            _header={{ px: "0", pt: "0" }}
+            _body={{
+              px: "4",
+              py: "2",
+              // pt: "0",
+              bg: sessionActive !== item?.ordering ? "gray.100" : "white",
+            }}
+            _vstack={{ p: 0, space: 0, flex: 1 }}
+          >
+            <Pressable
+              onPress={(e) => navigate(`/camps/${id}/sessionslist/${item?.id}`)}
+              isDisabled={sessionActive !== item?.ordering}
             >
-              <Pressable
-                onPress={(e) =>
-                  navigate(`/camps/${id}/sessionslist/${item?.id}`)
-                }
-                isDisabled={sessionActive !== item?.ordering}
-              >
-                <HStack justifyContent={"space-between"}>
+              <HStack alignItems={"center"} justifyContent={"space-between"}>
+                <HStack alignItems={"center"} space={2}>
+                  {item?.session_tracks?.[0]?.status === "complete" && (
+                    <CheckCircleIcon color="greenIconColor" size="24px" />
+                  )}
+                  {item?.session_tracks?.[0]?.status === "incomplete" && (
+                    <IconByName
+                      color="warningColor"
+                      name="TimeFillIcon"
+                      _icon={{ size: 30 }}
+                    />
+                  )}
                   <FrontEndTypo.H2 alignItem="center">
-                    {t("LESSON") + " " + item?.ordering}
+                    {t("SESSION") + " " + item?.ordering}
                   </FrontEndTypo.H2>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    _icon={{ size: "25px" }}
-                  />
                 </HStack>
-              </Pressable>
-            </CardComponent>
-          </HStack>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  _icon={{ size: "25px" }}
+                />
+              </HStack>
+            </Pressable>
+          </CardComponent>
         ))}
       </VStack>
     </Layout>
