@@ -56,7 +56,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const activities_response = await campService.addMoodActivity(dataToSave);
     if (activities_response) {
       setEnums();
-      setAlert(t("MISSILINEOUS_SUCCESS_MESSAGE"));
+      setAlert({ type: "success", title: t("MISSILINEOUS_SUCCESS_MESSAGE") });
     }
   };
 
@@ -94,7 +94,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
           _body={{ pt: 4 }}
         >
           <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-            <HStack alignItems="center" justifyContent="center" space={5}>
+            <HStack alignItems="center" justifyContent="center" space={3}>
               <Image
                 source={{
                   uri: "/images/activities/learning-activity.png",
@@ -104,7 +104,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                 w="75px"
                 h="60px"
               />
-
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("LEARNING_ACTIVITIES")}
               </FrontEndTypo.H2>

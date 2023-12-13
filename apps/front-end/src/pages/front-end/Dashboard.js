@@ -45,6 +45,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = React.useState(false);
   const [lmsDEtails, setLmsDetails] = React.useState();
   const { id } = userTokenInfo?.authUser || [];
+  const [random, setRandom] = React.useState();
+  const [events, setEvents] = React.useState("");
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -111,6 +113,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       )
     );
   }, [facilitator]);
+
+  const handleRandomise = async () => {
+    const doIdArray = modalVisible?.params?.do_id;
+    console.log({ doIdArray });
+    if (typeof doIdArray === "string") {
+      return doIdArray;
+    }
+
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    const randomizedDoId = doIdArray[array[0] % doIdArray.length];
+    setRandom(randomizedDoId);
+    return randomizedDoId;
+  };
+
+  const startTest = async () => {
+    try {
+      const randomizedDoId = await handleRandomise();
+      navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
+    } catch (error) {
+      console.error("Error handling randomization:", error);
+    }
+  };
 
   const isDocumentUpload = (key = "") => {
     let isAllow = 0;
@@ -199,6 +224,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     <AdminTypo.Dangerbutton
                       onPress={() => {
                         setModalVisible(certificateData);
+                        const doIdArray = certificateData?.params?.do_id;
+                        if (doIdArray == null || doIdArray.length === 0) {
+                          setEvents("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE");
+                        } else {
+                          setEvents("TAKE_TEST");
+                        }
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
@@ -234,7 +265,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <VStack>
                     {lmsDEtails === undefined && (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t("TAKE_TEST")}
+                        {t(events)}
                       </AdminTypo.H3>
                     )}
                     {lmsDEtails?.certificate_status === null && (
@@ -277,18 +308,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDEtails === undefined && (
-                      <FrontEndTypo.DefaultButton
-                        background={"textRed.400"}
-                        onPress={() => {
-                          navigate(
-                            `/assessment/events/${modalVisible.id}/${modalVisible?.params?.do_id}`
-                          );
-                        }}
-                      >
-                        {t("START_TEST")}
-                      </FrontEndTypo.DefaultButton>
-                    )}
+                    {lmsDEtails === undefined &&
+                      !(
+                        certificateData?.params?.do_id == null ||
+                        (Array.isArray(certificateData?.params?.do_id) &&
+                          certificateData?.params?.do_id?.length === 0)
+                      ) && (
+                        <FrontEndTypo.DefaultButton
+                          background={"textRed.400"}
+                          onPress={startTest}
+                        >
+                          {t("START_TEST")}
+                        </FrontEndTypo.DefaultButton>
+                      )}
                     {lmsDEtails?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
