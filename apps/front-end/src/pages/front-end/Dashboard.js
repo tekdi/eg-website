@@ -189,7 +189,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 size={"30px"}
                 resizeMode="contain"
               />
-              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
+              <FrontEndTypo.H1 color="textMaroonColor.600" pl="1">
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
@@ -337,18 +337,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 mx="5"
                 p="10"
                 width="40%"
-                shadow="RedBoxShadow"
+                shadow="RedBlackShadow"
                 onPress={(e) => navigate("/beneficiary")}
               >
                 <Image
                   source={{
-                    uri: "/addAg.svg",
+                    uri: "/addAG 2.png",
                   }}
                   alt="Add AG"
                   size={"sm"}
                   resizeMode="contain"
                 />
-                <FrontEndTypo.H4 color="textMaroonColor.400" bold>
+                <FrontEndTypo.H4 mt="2" color="textBlack.400" bold>
                   {t("ADD_AN_AG")}
                 </FrontEndTypo.H4>
               </RedOutlineButton>
@@ -420,7 +420,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {isDocumentUpload() && (
             <Stack bg="bgPinkColor.300" space="6" p={4}>
-              <FrontEndTypo.H2 color="textMaroonColor.400">
+              <FrontEndTypo.H2 color="textMaroonColor.600">
                 {t("UPLOAD_YOUR_DOCUMENTS")}
               </FrontEndTypo.H2>
               <FrontEndTypo.H3>

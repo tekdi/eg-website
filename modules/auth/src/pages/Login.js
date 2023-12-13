@@ -92,7 +92,7 @@ export default function Login() {
       getRefAppBar={(e) => setRef(e)}
     >
       <VStack bg="bgGreyColor.200" minH={height - ref?.clientHeight} space="1">
-        <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
+        <FrontEndTypo.H1 color="textMaroonColor.600" ml="6" pt="6">
           {t("LOGIN")}
         </FrontEndTypo.H1>
         <Image
@@ -105,7 +105,7 @@ export default function Login() {
           size={200}
         />
         <VStack space={5} p="5">
-          <Alert status="info" colorScheme="info" textAlign="center">
+          <Alert status="info" colorScheme="info">
             <VStack space={2} flexShrink={1}>
               <HStack
                 flexShrink={1}
