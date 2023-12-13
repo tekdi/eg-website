@@ -29,51 +29,6 @@ export const CustomStyles = {
   },
 };
 
-const action = (row, t, navigate) => {
-  return (
-    <AdminTypo.Secondarybutton
-      my="3"
-      onPress={() => {
-        navigate(`/admin/learners/duplicates/${row?.aadhar_no}`);
-      }}
-    >
-      {t("VIEW")}
-    </AdminTypo.Secondarybutton>
-  );
-};
-
-const District = (row) => {
-  const districtsString = row?.districts;
-  const districtsArray = districtsString
-    .split(",")
-    .map((districts) => districts.trim());
-  const uniqueDistrictsArray = [...new Set(districtsArray)];
-  return (
-    <VStack alignItems={"center"} space="2">
-      {uniqueDistrictsArray.map((item) => {
-        return (
-          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
-        );
-      })}
-    </VStack>
-  );
-};
-
-const Block = (row) => {
-  const blockString = row?.block;
-  const blockArray = blockString.split(",").map((block) => block.trim());
-  const uniqueblockArray = [...new Set(blockArray)];
-  return (
-    <VStack alignItems={"center"} space="2">
-      {uniqueblockArray.map((item) => {
-        return (
-          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
-        );
-      })}
-    </VStack>
-  );
-};
-
 // Table component
 function Table({
   facilitator,
@@ -84,36 +39,90 @@ function Table({
   filter,
 }) {
   const { t } = useTranslation();
-  const columns = (e) => [
-    {
-      name: t("AADHAAR_NUMBER"),
-      selector: (row) => row?.aadhar_no,
-      sortable: true,
-      attr: "aadhaar",
-      wrap: true,
-    },
-    {
-      name: t("DISTRICT"),
-      selector: (row) => District(row),
 
-      attr: "name",
-      wrap: true,
-    },
-    {
-      name: t("BLOCK"),
-      selector: (row) => Block(row),
+  const action = React.useCallback((row, t, navigate) => {
+    return (
+      <AdminTypo.Secondarybutton
+        my="3"
+        onPress={() => {
+          navigate(`/admin/learners/duplicates/${row?.aadhar_no}`);
+        }}
+      >
+        {t("VIEW")}
+      </AdminTypo.Secondarybutton>
+    );
+  }, []);
 
-      attr: "name",
-      wrap: true,
-    },
-    {
-      name: t("COUNT"),
-      selector: (row) => row?.count,
-      sortable: true,
-      attr: "count",
-    },
-  ];
+  const District = React.useCallback((row) => {
+    const districtsString = row?.districts;
+    const districtsArray = districtsString
+      .split(",")
+      .map((districts) => districts.trim());
+    const uniqueDistrictsArray = [...new Set(districtsArray)];
+    return (
+      <VStack alignItems={"center"} space="2">
+        {uniqueDistrictsArray.map((item) => (
+          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
+        ))}
+      </VStack>
+    );
+  }, []);
+
+  const Block = React.useCallback((row) => {
+    const blockString = row?.block;
+    const blockArray = blockString.split(",").map((block) => block.trim());
+    const uniqueblockArray = [...new Set(blockArray)];
+    return (
+      <VStack alignItems={"center"} space="2">
+        {uniqueblockArray.map((item) => (
+          <AdminTypo.TableText key={item}>{item || ""}</AdminTypo.TableText>
+        ))}
+      </VStack>
+    );
+  }, []);
+
+  const columns = React.useCallback(
+    (t) => [
+      {
+        name: t("AADHAAR_NUMBER"),
+        selector: (row) => row?.aadhar_no,
+        sortable: true,
+        attr: "aadhaar",
+        wrap: true,
+      },
+      {
+        name: t("DISTRICT"),
+        selector: (row) => District(row),
+        attr: "name",
+        wrap: true,
+      },
+      {
+        name: t("BLOCK"),
+        selector: (row) => Block(row),
+        attr: "name",
+        wrap: true,
+      },
+      {
+        name: t("COUNT"),
+        selector: (row) => row?.count,
+        sortable: true,
+        attr: "count",
+      },
+    ],
+    [District, Block]
+  );
   const navigate = useNavigate();
+
+  const columnsMemoized = React.useMemo(
+    () => [
+      ...columns(t),
+      {
+        name: t("ACTION"),
+        selector: (row) => action(row, t, navigate),
+      },
+    ],
+    [columns, t, action, navigate]
+  );
 
   return (
     <VStack>
@@ -146,13 +155,7 @@ function Table({
       </HStack>
       <DataTable
         customStyles={CustomStyles}
-        columns={[
-          ...columns(),
-          {
-            name: t("ACTION"),
-            selector: (row) => action(row, t, navigate),
-          },
-        ]}
+        columns={columnsMemoized}
         data={duplicateData}
         persistTableHead
         progressPending={loading}
@@ -160,15 +163,21 @@ function Table({
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        onChangeRowsPerPage={(e) => {
-          setFilter({ ...filter, limit: e });
-        }}
-        onChangePage={(e) => {
-          setFilter({ ...filter, page: e });
-        }}
+        onChangeRowsPerPage={React.useCallback(
+          (e) => {
+            setFilter({ ...filter, limit: e });
+          },
+          [setFilter, filter]
+        )}
+        onChangePage={React.useCallback(
+          (e) => {
+            setFilter({ ...filter, page: e });
+          },
+          [setFilter, filter]
+        )}
       />
     </VStack>
   );
 }
 
-export default Table;
+export default React.memo(Table);
