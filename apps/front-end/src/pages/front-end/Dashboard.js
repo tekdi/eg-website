@@ -268,20 +268,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t(events)}
                       </AdminTypo.H3>
                     )}
-                    {lmsDEtails?.certificate_status === null && (
+                    {lmsDEtails?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
-                    )}
-                    {lmsDEtails?.certificate_status === false && (
+                    ) : lmsDEtails?.certificate_status === false &&
+                      lmsDEtails?.score >= 79.5 ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t(`TRAINING_INCOMPLETE`)}
+                        {lmsDEtails.score}
+                      </AdminTypo.H3>
+                    ) : lmsDEtails?.certificate_status === true ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
+                        {lmsDEtails.score}
+                      </AdminTypo.H3>
+                    ) : lmsDEtails?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
-                    )}
-                    {lmsDEtails?.certificate_status === true && (
-                      <AdminTypo.H3 color="textGreyColor.500">
-                        {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
-                      </AdminTypo.H3>
+                    ) : (
+                      <></>
                     )}
                   </VStack>
                 </Modal.Body>
