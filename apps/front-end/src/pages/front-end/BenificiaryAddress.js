@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 export default function BenificiaryAddress() {
   const params = useParams();
   const [benificiary, setbenificiary] = React.useState();
-  const [userId, setUserId] = React.useState(params?.id);
+  const [userId] = React.useState(params?.id);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [requestData, setRequestData] = React.useState([]);
@@ -28,17 +28,14 @@ export default function BenificiaryAddress() {
       const fieldData = JSON.parse(result?.data[0]?.fields);
       setRequestData(fieldData);
     }
-    benificiaryDetails();
+    const data = await benificiaryRegistoryService.getOne(userId);
+    setbenificiary(data?.result);
   }, []);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${userId}`);
   };
 
-  const benificiaryDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(userId);
-    setbenificiary(result?.result);
-  };
   const isAddressDetailsEdit = () => {
     const data = requestData.filter((e) =>
       [
@@ -80,7 +77,7 @@ export default function BenificiaryAddress() {
               <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
-              {isAddressDetailsEdit() && (
+              {/* {isAddressDetailsEdit() && ( */}
                 <IconByName
                   name="EditBoxLineIcon"
                   _icon={{ size: "20" }}
@@ -89,7 +86,8 @@ export default function BenificiaryAddress() {
                     navigate(`/beneficiary/edit/${userId}/address`);
                   }}
                 />
-              )}
+              {/* )} */}
+             
             </HStack>
             <Box paddingTop="2">
               <Progress
@@ -220,6 +218,7 @@ export default function BenificiaryAddress() {
                   ) : (
                     "-"
                   )}
+                 
                 </FrontEndTypo.H3>
               </HStack>
               <HStack space={2} alignItems="Center">

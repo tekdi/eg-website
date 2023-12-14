@@ -85,61 +85,65 @@ export default function DuplicateView({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [viewData, setViewData] = React.useState();
   const navigate = useNavigate();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
-  const columns = (e) => [
-    {
-      name: t("LEARNERS_ID"),
-      selector: (row) => row?.id,
-    },
-    {
-      name: t("LEARNERS_INFO"),
-      selector: (row) => Name(row),
-      sortable: true,
-      attr: "name",
-      wrap: true,
-    },
-    {
-      name: t("DATE_OF_ENTRY_IN_PMS"),
-      selector: (row) => moment(row?.created_at).format("DD/MM/YYYY"),
-      sortable: true,
-      attr: "name",
-    },
-    {
-      name: t("ADDRESS"),
-      selector: (row) =>
-        row?.district
-          ? `${row?.district}, ${row?.block}, ${row?.village}, ${row?.grampanchayat}`
-          : "-",
-      wrap: true,
-    },
-    {
-      name: t("PRERAK_INFO"),
-      selector: (row) => PrerakName(row),
-      sortable: true,
-      attr: "name",
-      wrap: true,
-    },
-    {
-      name: t("REASON_OF_DUPLICATION"),
-      selector: (row) =>
-        row?.duplicate_reason === "FIRST_TIME_REGISTRATION"
-          ? t("FIRST_TIME_REGISTRATION")
-          : row?.duplicate_reason,
-      sortable: true,
-      attr: "email",
-      wrap: true,
-    },
-    {
-      name: t("STATUS"),
-      selector: (row, index) => status(row, index),
-      sortable: true,
-      attr: "email",
-      wrap: true,
-    },
-  ];
+  const columns = React.useCallback(
+    (e) => [
+      {
+        name: t("LEARNERS_ID"),
+        selector: (row) => row?.id,
+      },
+      {
+        name: t("LEARNERS_INFO"),
+        selector: (row) => Name(row),
+        sortable: true,
+        attr: "name",
+        wrap: true,
+      },
+      {
+        name: t("DATE_OF_ENTRY_IN_PMS"),
+        selector: (row) => moment(row?.created_at).format("DD/MM/YYYY"),
+        sortable: true,
+        attr: "name",
+      },
+      {
+        name: t("ADDRESS"),
+        selector: (row) =>
+          row?.district
+            ? `${row?.district}, ${row?.block}, ${row?.village}, ${row?.grampanchayat}`
+            : "-",
+        wrap: true,
+      },
+      {
+        name: t("PRERAK_INFO"),
+        selector: (row) => PrerakName(row),
+        sortable: true,
+        attr: "name",
+        wrap: true,
+      },
+      {
+        name: t("REASON_OF_DUPLICATION"),
+        selector: (row) =>
+          row?.duplicate_reason === "FIRST_TIME_REGISTRATION"
+            ? t("FIRST_TIME_REGISTRATION")
+            : row?.duplicate_reason,
+        sortable: true,
+        attr: "email",
+        wrap: true,
+      },
+      {
+        name: t("STATUS"),
+        selector: (row, index) => status(row, index),
+        sortable: true,
+        attr: "email",
+        wrap: true,
+      },
+    ],
+    [t]
+  );
 
-  React.useEffect(async () => {
+  const getDuplicateBeneficiariesList = React.useCallback(async () => {
+    setLoading(true);
     const result =
       await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
         filter
@@ -149,19 +153,34 @@ export default function DuplicateView({ footerLinks }) {
     setLoading(false);
   }, [filter]);
 
-  const assignToPrerak = async (id) => {
-    setIsDisable(true);
+  React.useEffect(() => {
+    getDuplicateBeneficiariesList();
+  }, [getDuplicateBeneficiariesList]);
+
+  const assignToPrerak = React.useCallback(async (id) => {
+    setIsButtonLoading(true);
     const activeId = { activeId: id };
     const result = await benificiaryRegistoryService?.deactivateDuplicates(
       activeId
     );
     if (!result?.success) {
-      setIsDisable(false);
-      seterrormsg(true);
+      setIsButtonLoading(false);
+      setErrormsg(true);
     }
     setModalVisible(false);
     setModalConfirmVisible(true);
-  };
+  }, []);
+
+  const columnsMemoized = React.useMemo(
+    () => [
+      ...columns(),
+      {
+        name: t("ACTION"),
+        selector: (row) => action(row, setViewData, setModalVisible, t),
+      },
+    ],
+    [columns, t, action, navigate]
+  );
 
   return (
     <Layout _sidebar={footerLinks}>
@@ -194,13 +213,7 @@ export default function DuplicateView({ footerLinks }) {
           </HStack>
           <DataTable
             customStyles={tableCustomStyles}
-            columns={[
-              ...columns(),
-              {
-                name: t("ACTION"),
-                selector: (row) => action(row, setViewData, setModalVisible, t),
-              },
-            ]}
+            columns={columnsMemoized}
             data={data}
             persistTableHead
             progressPending={loading}
@@ -208,12 +221,18 @@ export default function DuplicateView({ footerLinks }) {
             paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
             paginationServer
             paginationTotalRows={paginationTotalRows}
-            onChangeRowsPerPage={(e) => {
-              setFilter({ ...filter, limit: e });
-            }}
-            onChangePage={(e) => {
-              setFilter({ ...filter, page: e });
-            }}
+            onChangeRowsPerPage={React.useCallback(
+              (e) => {
+                setFilter({ ...filter, limit: e });
+              },
+              [setFilter, filter]
+            )}
+            onChangePage={React.useCallback(
+              (e) => {
+                setFilter({ ...filter, page: e });
+              },
+              [setFilter, filter]
+            )}
           />
           <Modal
             isOpen={modalVisible}
@@ -231,10 +250,9 @@ export default function DuplicateView({ footerLinks }) {
                     color="textGreyColor.100"
                     size="xs"
                   />
-                  <AdminTypo.H1
-                    marginLeft="10px"
-                    color="textGreyColor.500"
-                  >{`${t("ASSIGN_TO_PRERAK")}`}</AdminTypo.H1>
+                  <AdminTypo.H1 marginLeft="10px" color="textGreyColor.500">
+                    {`${t("ASSIGN_TO_PRERAK")}`}
+                  </AdminTypo.H1>
                 </HStack>
               </Modal.Header>
               <Modal.Body>
@@ -315,7 +333,7 @@ export default function DuplicateView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
+                    isLoading={isButtonLoading}
                     onPress={() => {
                       assignToPrerak(viewData?.id);
                     }}

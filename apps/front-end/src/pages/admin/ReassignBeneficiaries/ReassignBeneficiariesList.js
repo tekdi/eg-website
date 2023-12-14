@@ -20,12 +20,13 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
-  debounce,
 } from "@shiksha/common-lib";
 import Table from "./ReassignBeneficiariesListTable";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
+import { debounce } from "lodash";
+
 
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
@@ -173,6 +174,16 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilterObject({});
   };
 
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
+
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
       <HStack ref={ref}>
@@ -234,16 +245,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   height="32px"
                   placeholder="search"
                   variant="outline"
-                  onChange={(e) => {
-                    debounce(
-                      setFilter({
-                        ...filter,
-                        search: e.nativeEvent.text,
-                        page: 1,
-                      }),
-                      3000
-                    );
-                  }}
+                  onChange={debouncedHandleSearch}
+
                 />
                 <Form
                   schema={schema}

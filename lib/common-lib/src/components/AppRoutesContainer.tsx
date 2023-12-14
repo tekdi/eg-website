@@ -9,7 +9,6 @@ const AppRoutesContainer = ({
   routes,
   basename,
   footerLinks,
-  appName,
   alert,
   setAlert,
   ...otherProps
@@ -33,7 +32,7 @@ const AppRoutesContainer = ({
                 path={item?.path}
                 element={
                   <item.component
-                    {...{ footerLinks, appName, setAlert, ...otherProps }}
+                    {...{ footerLinks, setAlert, ...otherProps }}
                     {...item?.props}
                   />
                 }

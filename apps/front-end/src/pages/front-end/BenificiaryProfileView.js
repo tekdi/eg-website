@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   HStack,
   VStack,
@@ -21,12 +21,10 @@ import {
   ImageView,
   BodyMedium,
   CustomRadio,
+  arrList,
+  objProps,
 } from "@shiksha/common-lib";
-
-import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
-import { arrList } from "@shiksha/common-lib";
-import { objProps } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard";
 
 export default function BenificiaryProfileView(props) {
@@ -34,11 +32,8 @@ export default function BenificiaryProfileView(props) {
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
   const [loading, setloading] = React.useState(true);
-  const [reactivatemodalVisible, setreactivateModalVisible] =
-    React.useState(false);
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
-  const [docStatus, setdocStatus] = React.useState();
   const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
     React.useState();
   const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
@@ -51,8 +46,15 @@ export default function BenificiaryProfileView(props) {
   const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    enumAPicall();
+  React.useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    setBenificiaryDropoutReasons(
+      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+    );
+    setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
+    setBenificiaryRejectReasons(
+      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+    );
   }, []);
 
   React.useEffect(() => {
@@ -64,29 +66,6 @@ export default function BenificiaryProfileView(props) {
   }, [benificiary]);
 
   const res = objProps(benificiary);
-
-  const enumAPicall = async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setBenificiaryDropoutReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
-    );
-    setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
-    setBenificiaryRejectReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
-    );
-  };
-
-  const benificiaryDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(result?.result);
-    setdocStatus(result?.result?.program_beneficiaries?.documents_status);
-    setloading(false);
-    // const contextId = result?.result?.program_beneficiaries?.id;
-    // const auditLogs = await benificiaryRegistoryService.getAuditLogs(contextId);
-    // if (auditLogs[0]) {
-    //   setprevStatus(JSON.parse(auditLogs[0]?.old_data).status);
-    // }
-  };
 
   const dropoutApiCall = async () => {
     setIsDisable(true);
@@ -114,7 +93,6 @@ export default function BenificiaryProfileView(props) {
     if (result) {
       setIsDisable(false);
       setReactivateReasonValue("");
-      setreactivateModalVisible(false);
       setIsOpenReactive(false);
     }
   };
@@ -133,8 +111,10 @@ export default function BenificiaryProfileView(props) {
       setIsOpenReject(false);
     }
   };
-  React.useEffect(() => {
-    benificiaryDetails();
+  React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
+    setloading(false);
   }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
@@ -208,7 +188,7 @@ export default function BenificiaryProfileView(props) {
       _appBar={{
         name: t("BENEFICIARY_PROFILE"),
         onPressBackButton: (e) => {
-          navigate(`/beneficiary/list`);
+          navigate(-1);
         },
       }}
       loading={loading}

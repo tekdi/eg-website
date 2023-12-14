@@ -117,9 +117,7 @@ export default function PersonalDetails({ ip }) {
 
   React.useEffect(async () => {
     const ListOfEnum = await enumRegistryService.listOfEnum();
-
     let newSchema = schema;
-
     if (schema["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
         key: "social_category",
@@ -137,7 +135,6 @@ export default function PersonalDetails({ ip }) {
       setSchemaData(newSchema);
     }
   }, [page]);
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -145,7 +142,6 @@ export default function PersonalDetails({ ip }) {
       setPage(newSteps[0]);
       setSchemaData(properties[newSteps[0]]);
       setPages(newSteps);
-
       setSubmitBtn(t("NEXT"));
     }
   }, []);
@@ -195,7 +191,6 @@ export default function PersonalDetails({ ip }) {
   };
 
   const onError = (data) => {
-    console.log(data);
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);

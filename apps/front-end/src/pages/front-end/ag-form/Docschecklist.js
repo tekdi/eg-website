@@ -20,7 +20,7 @@ const Docschecklist = ({ footerLinks }) => {
   const [benificiary, setBenificiary] = React.useState({});
   const [msgshow, setmsgshow] = React.useState(false);
   const [loading, setloading] = React.useState(true);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
@@ -69,7 +69,7 @@ const Docschecklist = ({ footerLinks }) => {
   }, [status]);
 
   const readyToEnrollApiCall = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     if (
       !benificiary?.program_beneficiaries?.enrollment_status ||
       benificiary?.program_beneficiaries?.enrollment_status === "identified"
@@ -495,7 +495,7 @@ const Docschecklist = ({ footerLinks }) => {
           {checkList ? (
             buttonPress ? (
               <FrontEndTypo.ColourPrimaryButton
-                isDisabled={isDisable}
+                isDisabled={isButtonLoading}
                 mb={1}
                 type="submit"
               >
@@ -513,7 +513,7 @@ const Docschecklist = ({ footerLinks }) => {
                 </Alert>
 
                 <FrontEndTypo.Primarybutton
-                  isDisabled={isDisable}
+                  isDisabled={isButtonLoading}
                   mb={1}
                   type="submit"
                   onPress={() => {
@@ -529,7 +529,7 @@ const Docschecklist = ({ footerLinks }) => {
           )}
 
           <FrontEndTypo.Primarybutton
-            isDisabled={isDisable}
+            isLoading={isButtonLoading}
             mt="4"
             mb={8}
             type="submit"

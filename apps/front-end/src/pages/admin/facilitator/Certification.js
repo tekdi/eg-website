@@ -68,35 +68,43 @@ export default function Certification({ footerLinks }) {
 
   const reportTemplateRef = React.useRef(null);
 
-  const handleGeneratePdf = async () => {
+  const handleGeneratePdf = React.useCallback(async () => {
     const input = reportTemplateRef.current;
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("l");
       pdf.addImage(imgData, "JPEG", 0, 0);
-      // pdf.output('dataurlnewwindow');
       pdf.save("download.pdf");
     });
-  };
-  const certificateDownload = async (data) => {
+  }, []);
+
+ const certificateDownload = React.useCallback(async (data) => {
     const result = await testRegistryService.postCertificates(data);
     setDownCertificate(result?.data?.[0]?.certificate_html);
-  };
+  }, []);
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     const profileDetails = async () => {
       setLoading(true);
       const result = await facilitatorRegistryService.getOne({ id });
       setData(result);
       setLoading(false);
     };
-    await profileDetails();
-  }, []);
+    profileDetails();
+  }, [id]);
 
-  React.useEffect(async () => {
-    const result = await testRegistryService.getCertificate({ id });
-    setCertificateData(result?.data);
-  }, []);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const result = await testRegistryService.getCertificate({ id });
+      setCertificateData(result?.data);
+    };
+    fetchData();
+  }, [id]);
+
+  const columnsMemoized = React.useMemo(() => columns(t, certificateDownload), [
+    t,
+    certificateDownload,
+  ]);
 
   return (
     <Layout _sidebar={footerLinks}>
@@ -204,7 +212,7 @@ export default function Certification({ footerLinks }) {
           <DataTable
             bg="light.100"
             customStyles={tableCustomStyles}
-            columns={[...columns(t, certificateDownload)]}
+            columns={columnsMemoized}
             data={certificateData}
             selectableRows
             persistTableHead

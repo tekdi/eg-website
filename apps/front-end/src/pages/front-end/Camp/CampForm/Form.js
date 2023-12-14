@@ -169,7 +169,7 @@ export default function App({ userTokenInfo, footerLinks }) {
       };
       setFormData(facilities);
     }
-  }, [step, schema, campDetails]);
+  }, [step, campDetails]);
 
   // update schema
   React.useEffect(async () => {

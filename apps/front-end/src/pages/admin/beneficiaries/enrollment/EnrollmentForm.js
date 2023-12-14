@@ -8,7 +8,6 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   getOptions,
-  debounce,
   getArray,
   filterObject,
   enrollmentDateOfBirth,
@@ -29,6 +28,8 @@ import {
   validator,
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
+import { debounce } from "lodash";
+
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
@@ -175,6 +176,7 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const [uiSchema, setUiSchema] = React.useState({
     subjects: {
@@ -561,7 +563,6 @@ export default function App(footerLinks) {
   };
 
   const handleFormSubmission = async () => {
-
     const newFormData = formData;
     let newdata = filterObject(
       newFormData,
@@ -589,8 +590,10 @@ export default function App(footerLinks) {
 
   const onSubmit = async () => {
     setBtnLoading(true);
+    setIsButtonLoading(true);
     await handleValidationErrors();
     setBtnLoading(false);
+    setIsButtonLoading(false);
   };
 
   return (

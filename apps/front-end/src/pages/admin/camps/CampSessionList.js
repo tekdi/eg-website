@@ -7,7 +7,7 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Pressable, VStack } from "native-base";
+import { CheckCircleIcon, HStack, Icon, Pressable, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -66,7 +66,6 @@ export default function CampSessionList({ footerLinks }) {
     }
     setLoading(false);
   }, []);
-
   if (loading) {
     return <Loading />;
   }
@@ -74,9 +73,8 @@ export default function CampSessionList({ footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => navigate(-1),
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -84,7 +82,7 @@ export default function CampSessionList({ footerLinks }) {
         <HStack space="2">
           <IconByName name="BookOpenLineIcon" />
           <FrontEndTypo.H2 color="textMaroonColor.400">
-            {t("LESSON")}
+            {t("SESSION")}
           </FrontEndTypo.H2>
         </HStack>
 
@@ -104,10 +102,22 @@ export default function CampSessionList({ footerLinks }) {
               onPress={(e) => navigate(`/camps/${id}/sessionslist/${item?.id}`)}
               isDisabled={sessionActive !== item?.ordering}
             >
-              <HStack justifyContent={"space-between"}>
-                <FrontEndTypo.H2 alignItem="center">
-                  {t("LESSON") + " " + item?.ordering}
-                </FrontEndTypo.H2>
+              <HStack alignItems={"center"} justifyContent={"space-between"}>
+                <HStack alignItems={"center"} space={2}>
+                  {item?.session_tracks?.[0]?.status === "complete" && (
+                    <CheckCircleIcon color="greenIconColor" size="24px" />
+                  )}
+                  {item?.session_tracks?.[0]?.status === "incomplete" && (
+                    <IconByName
+                      color="warningColor"
+                      name="TimeFillIcon"
+                      _icon={{ size: 30 }}
+                    />
+                  )}
+                  <FrontEndTypo.H2 alignItem="center">
+                    {t("SESSION") + " " + item?.ordering}
+                  </FrontEndTypo.H2>
+                </HStack>
                 <IconByName
                   name="ArrowRightSLineIcon"
                   _icon={{ size: "25px" }}
