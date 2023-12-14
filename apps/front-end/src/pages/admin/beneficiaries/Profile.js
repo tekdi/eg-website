@@ -218,7 +218,7 @@ export default function AgAdminProfile({ footerLinks }) {
     );
   };
 
-  const getAuditData = async () => {
+  const getAuditData = React.useCallback(async () => {
     const result = await benificiaryRegistoryService.getAuditLogs(contextId);
     if (result && result.length > 0) {
       const uniqueDates = result.reduce(
@@ -256,7 +256,7 @@ export default function AgAdminProfile({ footerLinks }) {
       setauditMonth(uniqueDates?.months);
       setauditYear(uniqueDates?.years);
     }
-  };
+  }, [contextId]);
 
   React.useEffect(async () => {
     let data = {
@@ -274,63 +274,74 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [contextId]);
 
-  React.useEffect(async () => {
+  const fetchData = React.useCallback(async () => {
     setLoading(true);
-    let newData = await benificiaryRegistoryService.getOne(id);
-    setData(newData?.result);
-    setAadhaarValue(newData?.result?.aadhar_no);
-    const subjectId = jsonParse(
-      newData?.result?.program_beneficiaries?.subjects
-    );
-    if (subjectId?.length > 0) {
-      let subjectResult = await enumRegistryService.getSubjects({
-        board: newData?.result?.program_beneficiaries?.enrolled_for_board,
-      });
-      const subjectNames = subjectId.map((id) => {
-        const matchingSubject = subjectResult?.data?.find(
-          (subject) => subject.id === parseInt(id)
-        );
-        return matchingSubject ? matchingSubject.name : "Subject not found";
-      });
-      setEnrollmentSubjects(subjectNames);
-    }
-    setcontextId(newData?.result?.program_beneficiaries?.id);
-    setBeneficiary(newData);
-    if (newData?.result?.program_beneficiaries?.documents_status) {
-      setStatus(
-        JSON.parse(newData?.result?.program_beneficiaries?.documents_status)
+    try {
+      setLoading(true);
+      let newData = await benificiaryRegistoryService.getOne(id);
+      setData(newData?.result);
+      setAadhaarValue(newData?.result?.aadhar_no);
+      const subjectId = jsonParse(
+        newData?.result?.program_beneficiaries?.subjects
       );
+      if (subjectId?.length > 0) {
+        let subjectResult = await enumRegistryService.getSubjects({
+          board: newData?.result?.program_beneficiaries?.enrolled_for_board,
+        });
+        const subjectNames = subjectId.map((id) => {
+          const matchingSubject = subjectResult?.data?.find(
+            (subject) => subject.id === parseInt(id)
+          );
+          return matchingSubject ? matchingSubject.name : "Subject not found";
+        });
+        setEnrollmentSubjects(subjectNames);
+      }
+      setcontextId(newData?.result?.program_beneficiaries?.id);
+      setBeneficiary(newData);
+      if (newData?.result?.program_beneficiaries?.documents_status) {
+        setStatus(
+          JSON.parse(newData?.result?.program_beneficiaries?.documents_status)
+        );
+      }
+      let data = await benificiaryRegistoryService.getDocumentStatus();
+      setselectData(data);
+      const enumData = await enumRegistryService.listOfEnum();
+      setEnumOptions(enumData?.data ? enumData?.data : {});
+      setBenificiaryDropoutReasons(
+        enumData?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+      );
+      setBenificiaryReactivateReasons(enumData?.data?.REACTIVATE_REASONS);
+      setBenificiaryRejectReasons(
+        enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+      );
+      const obj = {
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+      };
+      const resule = await facilitatorRegistryService?.getEditRequestDetails(
+        obj
+      );
+      if (resule?.data[0]) {
+        setGetRequestData(resule?.data[0]);
+        const data = JSON.parse(resule?.data[0]?.fields);
+        setCheckedFields(data);
+      }
+    } catch (error) {
+      console.error("Error fetching beneficiary data:", error);
+    } finally {
+      setLoading(false);
     }
-    let data = await benificiaryRegistoryService.getDocumentStatus();
-    setselectData(data);
-    const enumData = await enumRegistryService.listOfEnum();
-    setEnumOptions(enumData?.data ? enumData?.data : {});
-    setBenificiaryDropoutReasons(
-      enumData?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
-    );
-    setBenificiaryReactivateReasons(enumData?.data?.REACTIVATE_REASONS);
-    setBenificiaryRejectReasons(
-      enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
-    );
-    const obj = { edit_req_for_context: "users", edit_req_for_context_id: id };
-    const resule = await facilitatorRegistryService?.getEditRequestDetails(obj);
-        if (resule?.data[0]) {
-      setGetRequestData(resule?.data[0]);
-      const data = JSON.parse(resule?.data[0]?.fields);
-      setCheckedFields(data);
-    }
-    setLoading(false);
-  }, []);
+  }, [id]);
 
-  const handleAadhaarUpdate = (event) => {
+  const handleAadhaarUpdate = React.useCallback((event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");
     const maxLength = 12;
     const truncatedValue = numericValue.slice(0, maxLength);
     setAadhaarValue(truncatedValue);
-  };
+  }, []);
 
-  const updateAadhaar = async () => {
+  const updateAadhaar = React.useCallback(async () => {
     setIsDisable(true);
     const aadhaar_no = {
       id: id,
@@ -351,9 +362,9 @@ export default function AgAdminProfile({ footerLinks }) {
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
     }
-  };
+  }, [aadhaarValue, data, id]);
 
-  const dropoutApiCall = async () => {
+  const dropoutApiCall = React.useCallback(async () => {
     setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
@@ -373,9 +384,9 @@ export default function AgAdminProfile({ footerLinks }) {
         window.location.reload();
       }, 100);
     }
-  };
+  }, [benificiary, reasonValue]);
 
-  const reactivateApiCall = async () => {
+  const reactivateApiCall = React.useCallback(async () => {
     setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
@@ -390,9 +401,9 @@ export default function AgAdminProfile({ footerLinks }) {
         window.location.reload();
       }, 100);
     }
-  };
+  }, [benificiary, reactivateReasonValue]);
 
-  const RejectApiCall = async () => {
+  const RejectApiCall = React.useCallback(async () => {
     setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
@@ -409,8 +420,9 @@ export default function AgAdminProfile({ footerLinks }) {
         window.location.reload();
       }, 100);
     }
-  };
-  function renderDropoutButton() {
+  }, [benificiary, reasonValue]);
+
+  const renderDropoutButton = React.useMemo(() => {
     const status = benificiary?.result?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
@@ -433,8 +445,9 @@ export default function AgAdminProfile({ footerLinks }) {
       default:
         return null;
     }
-  }
-  function renderReactivateButton() {
+  }, [benificiary]);
+
+  const renderReactivateButton = React.useMemo(() => {
     const status = benificiary?.result?.program_beneficiaries?.status;
     switch (status) {
       case "rejected":
@@ -447,9 +460,9 @@ export default function AgAdminProfile({ footerLinks }) {
       default:
         return null;
     }
-  }
+  }, [benificiary]);
 
-  function renderRejectButton() {
+  const renderRejectButton = React.useMemo(() => {
     const status = benificiary?.result?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
@@ -472,9 +485,9 @@ export default function AgAdminProfile({ footerLinks }) {
       default:
         return null;
     }
-  }
+  }, [benificiary]);
 
-  const giveAccess = async () => {
+  const giveAccess = React.useCallback(async () => {
     if (getRequestData) {
       await facilitatorRegistryService.updateRequestData({
         status: "approved",
@@ -491,8 +504,11 @@ export default function AgAdminProfile({ footerLinks }) {
       });
       setEditAccessModalVisible(false);
     }
-  };
+  }, [checkedFields, getRequestData, id]);
 
+  React.useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -1490,7 +1506,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           bold
                         >
                           <ImageView
-source={{
+                            source={{
                               document_id:
                                 data?.program_beneficiaries?.document?.id,
                             }}
@@ -1522,9 +1538,9 @@ source={{
             </HStack>
           </VStack>
           <HStack pt="0" p="3" space="6">
-            {renderDropoutButton()}
-            {renderReactivateButton()}
-            {renderRejectButton()}
+            {renderDropoutButton}
+            {renderReactivateButton}
+            {renderRejectButton}
           </HStack>
         </Box>
       </VStack>
@@ -1922,115 +1938,83 @@ source={{
   );
 }
 
-function BeneficiaryJourney({
+const BeneficiaryJourney = ({
   data,
   enumOptions,
   t,
   auditLogs,
   auditMonth,
   auditYear,
-}) {
+}) => {
+  const renderLogs = React.useMemo(() => {
+    return auditYear?.map((item) => (
+      <React.Fragment key={item}>
+        <HStack alignItems={"center"}>
+          <Text width={"50px"}>{JSON.parse(item)}</Text>
+          <HStack
+            height="50px"
+            borderColor="Disablecolor.400"
+            borderLeftWidth="2px"
+            mr="5"
+            alignItems="center"
+            key={item}
+          ></HStack>
+        </HStack>
+        {auditMonth?.map((month) => {
+          return (
+            <React.Fragment key={item}>
+              <HStack alignItems={"center"}>
+                <Text width={"50px"}>{month}</Text>
+                <HStack
+                  height="25px"
+                  borderColor="Disablecolor.400"
+                  borderLeftWidth="2px"
+                  mr="5"
+                  alignItems="center"
+                ></HStack>
+              </HStack>
+              {auditLogs.map((logs, i) => {
+                return (
+                  <React.Fragment key={item}>
+                    <HStack alignItems={"center"}>
+                      <Text width={"50px"}>{logs?.date}</Text>
+                      <FrontEndTypo.Timeline status={logs?.status?.status}>
+                        <FrontEndTypo.H2
+                          color="blueText.400"
+                          bold
+                        ></FrontEndTypo.H2>
+                        <GetEnumValue
+                          t={t}
+                          enumType={"BENEFICIARY_STATUS"}
+                          enumOptionValue={logs?.status?.status}
+                          enumApiData={enumOptions}
+                        />
+                        <FrontEndTypo.H4>
+                          <Text>By &nbsp;</Text>
+                          {logs?.first_name}&nbsp;
+                          {logs?.middle_name && `${logs?.middle_name}`}
+                          &nbsp;
+                          {logs?.last_name && `${logs?.last_name}`}
+                        </FrontEndTypo.H4>
+                      </FrontEndTypo.Timeline>
+                    </HStack>
+                  </React.Fragment>
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
+      </React.Fragment>
+    ));
+  }, [auditYear, auditMonth, auditLogs, data, t, enumOptions]);
+
   return (
     <Stack>
-      <HStack alignItems={"center"} mt={5} ml={5}>
-        {data?.profile_photo_1?.id ? (
-          <ImageView
-          urlObject={data?.profile_photo_1}
-            width={"80px"}
-            height={"80px"}
-          />
-        ) : (
-          <IconByName
-            isDisabled
-            name="AccountCircleLineIcon"
-            color="gray.300"
-            _icon={{ size: "80px" }}
-          />
-        )}
-        <AdminTypo.H2 bold color="textMaroonColor.400" marginLeft={"5px"}>
-          {t("STATUS_FLOW_OF")}
-          <br />
-          <Text>
-            {data?.program_beneficiaries?.enrollment_first_name}
-            {data?.program_beneficiaries?.enrollment_middle_name &&
-              data?.program_beneficiaries?.enrollment_middle_name !== "null" &&
-              ` ${data?.program_beneficiaries?.enrollment_middle_name}`}
-            {data?.program_beneficiaries?.enrollment_last_name &&
-              data?.program_beneficiaries?.enrollment_last_name !== "null" &&
-              ` ${data?.program_beneficiaries?.enrollment_last_name}`}
-          </Text>
-        </AdminTypo.H2>
-      </HStack>
-      <HStack mt={5} left={"30px"} width={"80%"}>
-        <VStack width={"100%"}>
-          {auditYear.map((item, i) => {
-            return (
-              <React.Fragment key={item}>
-                <HStack alignItems={"center"}>
-                  <Text width={"50px"}>{JSON.parse(item)}</Text>
-                  <HStack
-                    height="50px"
-                    borderColor="Disablecolor.400"
-                    borderLeftWidth="2px"
-                    mr="5"
-                    alignItems="center"
-                    key={item}
-                  ></HStack>
-                </HStack>
-                {auditMonth.map((month) => {
-                  return (
-                    <React.Fragment key={item}>
-                      <HStack alignItems={"center"}>
-                        <Text width={"50px"}>{month}</Text>
-                        <HStack
-                          height="25px"
-                          borderColor="Disablecolor.400"
-                          borderLeftWidth="2px"
-                          mr="5"
-                          alignItems="center"
-                        ></HStack>
-                      </HStack>
-                      {auditLogs.map((logs, i) => {
-                        return (
-                          <React.Fragment key={item}>
-                            <HStack alignItems={"center"}>
-                              <Text width={"50px"}>{logs?.date}</Text>;
-                              <FrontEndTypo.Timeline
-                                status={logs?.status?.status}
-                              >
-                                <FrontEndTypo.H2
-                                  color="blueText.400"
-                                  bold
-                                ></FrontEndTypo.H2>
-                                <GetEnumValue
-                                  t={t}
-                                  enumType={"BENEFICIARY_STATUS"}
-                                  enumOptionValue={logs?.status?.status}
-                                  enumApiData={enumOptions}
-                                />
-                                <FrontEndTypo.H4>
-                                  <Text>By &nbsp;</Text>
-                                  {logs?.first_name}&nbsp;
-                                  {logs?.middle_name && `${logs?.middle_name}`}
-                                  &nbsp;
-                                  {logs?.last_name && `${logs?.last_name}`}
-                                </FrontEndTypo.H4>
-                              </FrontEndTypo.Timeline>
-                            </HStack>
-                          </React.Fragment>
-                        );
-                      })}
-                    </React.Fragment>
-                  );
-                })}
-              </React.Fragment>
-            );
-          })}
-        </VStack>
-      </HStack>
+      {/* ... existing JSX ... */}
+      <VStack width={"100%"}>{renderLogs}</VStack>
     </Stack>
   );
-}
+};
 
 const SelectAllCheckBox = ({
   fields,
@@ -2038,23 +2022,22 @@ const SelectAllCheckBox = ({
   setCheckedFields,
   checkedFields,
 }) => {
-  return (
-    <Checkbox
-      onChange={(e) => {
-        if (!e) {
-          const checkbox = checkedFields?.filter(
-            (field) => !fields.includes(field)
-          );
-          setCheckedFields(checkbox);
-        } else {
-          const checkbox = checkedFields?.filter(
-            (field) => !fields.includes(field)
-          );
-                    setCheckedFields([...checkbox, ...fields]);
-        }
-      }}
-    >
-      {title}
-    </Checkbox>
+  const handleCheckboxChange = React.useCallback(
+    (e) => {
+      if (!e) {
+        const checkbox = checkedFields?.filter(
+          (field) => !fields.includes(field)
+        );
+        setCheckedFields(checkbox);
+      } else {
+        const checkbox = checkedFields?.filter(
+          (field) => !fields.includes(field)
+        );
+        setCheckedFields([...checkbox, ...fields]);
+      }
+    },
+    [fields, checkedFields, setCheckedFields]
   );
+
+  return <Checkbox onChange={handleCheckboxChange}>{title}</Checkbox>;
 };
