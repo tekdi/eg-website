@@ -127,7 +127,7 @@ export default function CommunityView({ footerLinks }) {
               status="warning"
               p="2"
               flexDirection="row"
-              gap="2"
+              mb="4"
             >
               <Alert.Icon size="5" />
               <FrontEndTypo.H3>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H3>
@@ -135,7 +135,7 @@ export default function CommunityView({ footerLinks }) {
           ))}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
-            <FrontEndTypo.H2 color="textMaroonColor.600" bold>
+            <FrontEndTypo.H2 color="textMaroonColor.400" bold>
               {t("COMMUNITY_DETAILS")}
             </FrontEndTypo.H2>
             {data?.length > 0 &&

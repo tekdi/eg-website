@@ -214,7 +214,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 size={"30px"}
                 resizeMode="contain"
               />
-              <FrontEndTypo.H1 color="textMaroonColor.600" pl="1">
+              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
@@ -430,7 +430,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {isDocumentUpload() && (
-            <Stack bg="bgPinkColor.300" space="6" p={4}>
+            <Stack bg="bgYellowColor.400" space="6" p={4}>
               <FrontEndTypo.H2 color="textMaroonColor.600">
                 {t("UPLOAD_YOUR_DOCUMENTS")}
               </FrontEndTypo.H2>
@@ -496,6 +496,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       isDisabled
                       name="Upload2FillIcon"
                       _icon={{ size: "25px" }}
+                      color="gray.800"
                     />
                   }
                   onPress={(e) => navigate("/profile")}

@@ -194,7 +194,7 @@ const List = ({ data }) => {
               {["duplicated", "enrolled_ip_verified"]?.includes(
                 item?.program_beneficiaries?.status
               ) && (
-                <HStack color="blueText.450" alignItems="center">
+                <HStack color="blueText.450" alignItems="center" mb="2">
                   <FrontEndTypo.H4 color="blueText.450">
                     {item?.program_beneficiaries?.status === "duplicated"
                       ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")

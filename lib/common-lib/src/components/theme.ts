@@ -523,7 +523,7 @@ const DEFAULT_THEME = {
       200: '#bfbfbf',
       300: '#a6a6a6',
       400: '#8c8c8c',
-      500: '#737373',
+      500: '#3F8BF1',
       600: '#595959',
       700: '#737373',
       800: '#595959',
@@ -597,9 +597,9 @@ const DEFAULT_THEME = {
       50: 'FDCAB5',
       100: '#FFACAF',
       300: '',
-      400: '#FF0000',
+      400: '#790000',
       500: '#A93505',
-      600: '#790000'
+      600: '#FF0000'
     },
     blueText: {
       200: 'D6E8FF',
@@ -611,6 +611,9 @@ const DEFAULT_THEME = {
     },
     bgPinkColor: {
       300: '#F9E9DB'
+    },
+    bgYellowColor: {
+      400: '#FFF5E4'
     },
     editIcon: {
       300: '#3F8BF1'

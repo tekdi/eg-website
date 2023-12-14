@@ -116,6 +116,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
             <Checkbox
               isChecked={selectAllChecked}
               onChange={handleSelectAllChange}
+              colorScheme="danger"
             />
           </HStack>
           {nonRegisteredUser?.map((item) => {
@@ -177,6 +178,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
                   <Checkbox
                     isChecked={selectedIds.includes(item.id)}
                     onChange={() => handleCheckboxChange(item.id)}
+                    colorScheme="danger"
                   />
                 </Box>
               </HStack>
