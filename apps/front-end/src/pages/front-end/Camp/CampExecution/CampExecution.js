@@ -219,7 +219,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     );
   }
 
-  if (cameraFile) {
+  if (cameraFile && cameraUrl?.url) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Layout

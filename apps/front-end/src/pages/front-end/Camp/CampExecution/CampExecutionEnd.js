@@ -53,12 +53,16 @@ export default function CampExecutionEnd({
         return facilitator?.id === item?.user?.id;
       });
 
-      if (attendances?.length >= learnerCount) {
+      const learnerAttendance = attendances?.filter((item) => {
+        return facilitator?.id !== item?.user?.id;
+      });
+
+      if (learnerAttendance?.length >= learnerCount) {
         setLearnerAttendanceCount(true);
       }
 
       if (
-        attendances?.length >= learnerCount &&
+        learnerAttendance?.length >= learnerCount &&
         faciltatorAttendanceData?.id &&
         (todaysActivity?.misc_activities || sessionListData)
       ) {
