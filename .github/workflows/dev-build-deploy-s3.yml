@@ -39,7 +39,7 @@ jobs:
           
       - name: Install deps, and build
         run: |
-          yarn add -W http-server prettier
+          yarn add -W http-server
           yarn install
           yarn workspace @shiksha/common-lib build
           yarn install
