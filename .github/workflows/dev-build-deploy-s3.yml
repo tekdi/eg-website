@@ -39,7 +39,7 @@ jobs:
           
       - name: Install deps, and build
         run: |
-          yarn add http-server prettier
+          yarn add -W http-server prettier
           yarn install
           yarn workspace @shiksha/common-lib build
           yarn install
@@ -114,10 +114,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       ### Notify on Slack
-      - name: Notify on Slack channel
-        uses: iRoachie/slack-github-actions@v2.3.2
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-        if: ${{ always() }}
+      # - name: Notify on Slack channel
+      #   uses: iRoachie/slack-github-actions@v2.3.2
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #   with:
+      #     status: ${{ job.status }}
+      #   if: ${{ always() }}
