@@ -8,6 +8,7 @@ import {
   uploadRegistryService,
   ImageView,
   useLocationData,
+  CardComponent,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { Box, HStack, VStack, Alert, Image, Stack } from "native-base";
@@ -30,6 +31,7 @@ export default function CampExecution({ footerLinks }) {
   const [todaysData, setTodaysData] = React.useState();
   const navigate = useNavigate();
   const [latData, longData, errors] = useLocationData() || [];
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(async () => {
     const result = await campService.getCampDetails({ id });
@@ -57,6 +59,7 @@ export default function CampExecution({ footerLinks }) {
     } else if (!endDate && startDate && camp_day_happening !== "no" && !mood) {
       navigate(`/camps/${id}/campexecutionstart/${activity_id}`);
     }
+    setLoading(false);
   }, []);
 
   React.useEffect(async () => {
@@ -144,7 +147,7 @@ export default function CampExecution({ footerLinks }) {
     setCameraUrl();
   };
 
-  if (start && data?.lat && data?.long) {
+  if (start && data?.lat && data?.long && !loading) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Camera
@@ -191,7 +194,7 @@ export default function CampExecution({ footerLinks }) {
   return (
     <Layout
       _appBar={{ name: t("CAMP_EXECUTION") }}
-      //   loading={loading}
+      loading={loading}
       _footer={{ menues: footerLinks }}
     >
       <VStack space="5" p="5">
@@ -239,16 +242,19 @@ export default function CampExecution({ footerLinks }) {
               width="80px"
               height="80px"
               source={{ document_id: facilitator?.profile_photo_1?.id }}
-            ></ImageView>
-
-            <FrontEndTypo.H2
-              marginTop={"15px"}
-              textAlign="center"
-              fontSize="16px"
-              fontWeight="bold"
+            />
+            <CardComponent
+              _header={{ bg: "light.100" }}
+              _vstack={{
+                bg: "light.100",
+                flex: 1,
+                pt: 2,
+                m: 4,
+                mb: 4,
+              }}
             >
               {t("YOUR_WELCOME_READY_TO_FLY")}
-            </FrontEndTypo.H2>
+            </CardComponent>
           </VStack>
         </Box>
         <VStack alignItems="center" space="5">
@@ -284,7 +290,7 @@ export default function CampExecution({ footerLinks }) {
                 </FrontEndTypo.Secondarybutton>
               </Stack>
             ) : (
-              <Stack>
+              <Stack space="3">
                 <Alert status="warning" alignItems={"center"}>
                   <HStack alignItems="center" space="2">
                     <Alert.Icon />
