@@ -1243,7 +1243,25 @@
     core-js-pure "^3.30.2"
     regenerator-runtime "^0.14.0"
 
+<<<<<<< HEAD
 "@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.0", "@babel/runtime@^7.14.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.17.2", "@babel/runtime@^7.17.8", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.7", "@babel/runtime@^7.23.4", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+=======
+"@babel/runtime@7.7.2":
+  version "7.7.2"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.7.2.tgz"
+  integrity sha512-JONRbXbTXc9WQE2mAZd1p0Z3DZ/6vaQIkgYMSTP3KjRCyd7rCZCcfhCyX+YjwcKxcZ82UrxbRD358bpExNgrjw==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.17.2", "@babel/runtime@^7.17.8", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.7", "@babel/runtime@^7.5.0", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+  version "7.22.15"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.22.15.tgz"
+  integrity sha512-T0O+aa+4w0u06iNmapipJXMV4HoUir03hpx3/YqXXhu9xim3w+dVphjFWl1OH8NbZHw5Lbm9k45drDkgq2VNNA==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
+"@babel/runtime@^7.14.0":
+>>>>>>> upstream/release-1.5.6
   version "7.23.5"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.23.5.tgz"
   integrity sha512-NdUTHcPe4C99WxPub+K9l9tK5/lV4UXIoaHSYgzco9BCyjKAAwzdBI+wWtYqHt7LJdbo74ZjRPJgzVweq1sz0w==
@@ -1547,7 +1565,11 @@
   resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.8.1.tgz"
   integrity sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==
 
+<<<<<<< HEAD
 "@emotion/react@^11.0.0-rc.0", "@emotion/react@^11.11.1", "@emotion/react@^11.4.1", "@emotion/react@^11.5.0", "@emotion/react@^11.7.1":
+=======
+"@emotion/react@^11.11.1":
+>>>>>>> upstream/release-1.5.6
   version "11.11.1"
   resolved "https://registry.npmjs.org/@emotion/react/-/react-11.11.1.tgz"
   integrity sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==
@@ -1651,6 +1673,7 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.49.0.tgz"
   integrity sha512-1S8uAY/MTJqVx0SC4epBq+N2yhuwtNwLbJYNZyhL2pO1ZVKn5HFXav5T41Ryzy9K9V7ZId2JB2oy/W4aCd9/2w==
 
+<<<<<<< HEAD
 "@floating-ui/core@^1.4.2":
   version "1.5.1"
   dependencies:
@@ -1676,6 +1699,8 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.1.6.tgz"
   integrity sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==
 
+=======
+>>>>>>> upstream/release-1.5.6
 "@formatjs/ecma402-abstract@1.17.2":
   version "1.17.2"
   resolved "https://registry.npmjs.org/@formatjs/ecma402-abstract/-/ecma402-abstract-1.17.2.tgz"
@@ -2882,6 +2907,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+<<<<<<< HEAD
 "@mui/base@5.0.0-beta.25":
   version "5.0.0-beta.25"
   dependencies:
@@ -2955,6 +2981,8 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
+=======
+>>>>>>> upstream/release-1.5.6
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
   resolved "https://registry.npmjs.org/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz"
@@ -3174,11 +3202,14 @@
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
+<<<<<<< HEAD
 "@popperjs/core@^2.11.8":
   version "2.11.8"
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
+=======
+>>>>>>> upstream/release-1.5.6
 "@react-aria/checkbox@^3.2.1":
   version "3.11.0"
   resolved "https://registry.npmjs.org/@react-aria/checkbox/-/checkbox-3.11.0.tgz"
@@ -5436,7 +5467,7 @@
     lz-string "^1.5.0"
     pretty-format "^27.0.2"
 
-"@testing-library/jest-dom@^5.16.2", "@testing-library/jest-dom@^5.17.0":
+"@testing-library/jest-dom@^5.17.0":
   version "5.17.0"
   resolved "https://registry.npmjs.org/@testing-library/jest-dom/-/jest-dom-5.17.0.tgz"
   integrity sha512-ynmNeT7asXyH3aSVv4vvX4Rb+0qjOhdNHnO/3vuZNqPmhDpV/+rCSGwQ7bLcmU2cJ4dvoheIO85LQj0IbJHEtg==
@@ -5859,8 +5890,15 @@
   resolved "https://registry.npmjs.org/@types/pretty-hrtime/-/pretty-hrtime-1.0.1.tgz"
   integrity sha512-VjID5MJb1eGKthz2qUerWT8+R4b9N+CHvGCzg9fn4kWZgaF9AhdYikQio3R7wV8YY1NsQKPaCwKz1Yff+aHNUQ==
 
+<<<<<<< HEAD
 "@types/prop-types@*", "@types/prop-types@^15.7.11":
   version "15.7.11"
+=======
+"@types/prop-types@*":
+  version "15.7.5"
+  resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
+  integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
+>>>>>>> upstream/release-1.5.6
 
 "@types/q@^1.5.1":
   version "1.5.6"
@@ -5889,6 +5927,7 @@
   dependencies:
     "@types/react" "^16"
 
+<<<<<<< HEAD
 "@types/react-transition-group@^4.4.9":
   version "4.4.9"
   dependencies:
@@ -5903,6 +5942,8 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+=======
+>>>>>>> upstream/release-1.5.6
 "@types/react@^16":
   version "16.14.46"
   resolved "https://registry.npmjs.org/@types/react/-/react-16.14.46.tgz"
@@ -9483,7 +9524,7 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^3.0.2, csstype@^3.1.2:
+csstype@^3.0.2:
   version "3.1.2"
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.1.2.tgz"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
@@ -9905,7 +9946,7 @@ dom-converter@^0.2.0:
   dependencies:
     utila "~0.4"
 
-dom-helpers@^5.0.0, dom-helpers@^5.0.1:
+dom-helpers@^5.0.0:
   version "5.2.1"
   resolved "https://registry.npmjs.org/dom-helpers/-/dom-helpers-5.2.1.tgz"
   integrity sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==
@@ -10937,7 +10978,7 @@ expect@^29.0.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-expo-font@^10.0.3, expo-font@^10.2.1:
+expo-font@^10.2.1:
   version "10.2.1"
   resolved "https://registry.npmjs.org/expo-font/-/expo-font-10.2.1.tgz"
   integrity sha512-sxy5GrdtY+Ka8Wo5wnrcFFeO6MbYC6Dris5wMLqshvVK6BneJNMUsFvwRfvVgg0TzsmMAc3Rlca2xyZ8ettinw==
@@ -12694,7 +12735,11 @@ i18next-react@^0.2.2:
   resolved "https://registry.npmjs.org/i18next-react/-/i18next-react-0.2.2.tgz"
   integrity sha512-SptXIs0hVIFPis2s0797HbBJpze6ST2I02Wm3uSyMdSg5XPHW14eJVshdCfbGzgIDPKF7nrl6htbkDjYEd+HIA==
 
+<<<<<<< HEAD
 i18next@*, i18next@^21.10.0, i18next@^21.6.14, i18next@^21.6.7, "i18next@>= 19.0.0":
+=======
+i18next@^21.10.0, i18next@^21.6.14:
+>>>>>>> upstream/release-1.5.6
   version "21.10.0"
   resolved "https://registry.npmjs.org/i18next/-/i18next-21.10.0.tgz"
   integrity sha512-YeuIBmFsGjUfO3qBmMOc0rQaun4mIpGKET5WDwvu8lU7gvwpcariZLNtL0Fzj+zazcHUrlXHiptcFhBMFaxzfg==
@@ -15574,7 +15619,11 @@ module-details-from-path@^1.0.3:
   resolved "https://registry.npmjs.org/module-details-from-path/-/module-details-from-path-1.0.3.tgz"
   integrity sha512-ySViT69/76t8VhE1xXHK6Ch4NcDd26gx0MzKXLO+F7NOtnqH68d9zF94nT8ZWSxXh8ELOERsnJO/sWt1xZYw5A==
 
+<<<<<<< HEAD
 moment@^2.29.1, moment@^2.29.4, moment@2.x:
+=======
+moment@2.x, moment@^2.29.4:
+>>>>>>> upstream/release-1.5.6
   version "2.29.4"
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -15671,7 +15720,7 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-native-base@^3.2.2, native-base@^3.4.28:
+native-base@^3.4.28:
   version "3.4.28"
   resolved "https://registry.npmjs.org/native-base/-/native-base-3.4.28.tgz"
   integrity sha512-EDg9UFDNmfYXPInpRbxce+4oWFEIGaM7aG6ey4hVllcvMC3PkgCvkiXEB+7EemgC7Qr8CuFjgMTx7P0vvnwZeQ==
@@ -18048,7 +18097,11 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
+<<<<<<< HEAD
 prop-types@^15.0.0, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1, prop-types@15.x:
+=======
+prop-types@15.x, prop-types@^15.0.0, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.7.2, prop-types@^15.8.1:
+>>>>>>> upstream/release-1.5.6
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -18429,7 +18482,7 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.0.11.tgz"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
-react-i18next@^11.15.3, react-i18next@^11.18.6:
+react-i18next@^11.18.6:
   version "11.18.6"
   resolved "https://registry.npmjs.org/react-i18next/-/react-i18next-11.18.6.tgz"
   integrity sha512-yHb2F9BiT0lqoQDt8loZ5gWP331GwctHz9tYQ8A2EIEUu+CcEdjBLQWli1USG3RdWQt3W+jqQLg/d4rrQR96LA==
@@ -18493,7 +18546,11 @@ react-modern-drawer@^1.2.0:
   resolved "https://registry.npmjs.org/react-modern-drawer/-/react-modern-drawer-1.2.2.tgz"
   integrity sha512-SXUNjofHzeoEas0kdMWWafuF2+vwdtbQD1cpkHxo7oyFj3v+2l2CMeJjc/GodYsnxVhSiYj75xosMJXXed9ykQ==
 
+<<<<<<< HEAD
 react-native-safe-area-context@*, react-native-safe-area-context@^3.3.2, react-native-safe-area-context@^3.4.1, "react-native-safe-area-context@>= 3.0.0":
+=======
+react-native-safe-area-context@^3.4.1:
+>>>>>>> upstream/release-1.5.6
   version "3.4.1"
   resolved "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-3.4.1.tgz"
   integrity sha512-xfpVd0CiZR7oBhuwJ2HcZMehg5bjha1Ohu1XHpcT+9ykula0TgovH2BNU0R5Krzf/jBR1LMjR6VabxdlUjqxcA==
@@ -18540,7 +18597,11 @@ react-refresh@^0.11.0, "react-refresh@>=0.10.0 <1.0.0":
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.11.0.tgz"
   integrity sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==
 
+<<<<<<< HEAD
 react-router-dom@^6.1.1, react-router-dom@^6.15.0:
+=======
+react-router-dom@^6.15.0:
+>>>>>>> upstream/release-1.5.6
   version "6.15.0"
   resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-6.15.0.tgz"
   integrity sha512-aR42t0fs7brintwBGAv2+mGlCtgtFQeOzK0BM1/OiqEzRejOZtpMZepvgkscpMUnKb8YO84G7s3LsHnnDNonbQ==
@@ -18555,7 +18616,11 @@ react-router@6.15.0:
   dependencies:
     "@remix-run/router" "1.8.0"
 
+<<<<<<< HEAD
 react-scripts@^4.0.0, react-scripts@>=5.0.0, react-scripts@5.0.0:
+=======
+react-scripts@5.0.0:
+>>>>>>> upstream/release-1.5.6
   version "5.0.0"
   resolved "https://registry.npmjs.org/react-scripts/-/react-scripts-5.0.0.tgz"
   integrity sha512-3i0L2CyIlROz7mxETEdfif6Sfhh9Lfpzi10CtcGs1emDQStmZfWjJbAIMtRD0opVUjQuFWqHZyRZ9PPzKCFxWg==
@@ -18610,6 +18675,7 @@ react-scripts@^4.0.0, react-scripts@>=5.0.0, react-scripts@5.0.0:
   optionalDependencies:
     fsevents "^2.3.2"
 
+<<<<<<< HEAD
 "react-sunbird-player@file:/home/ttpl-rt-70/EG/eg-website/modules/players":
   version "1.0.0"
   resolved "file:modules/players"
@@ -18624,6 +18690,8 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+=======
+>>>>>>> upstream/release-1.5.6
 react-webcam@^7.0.1:
   version "7.1.1"
   resolved "https://registry.npmjs.org/react-webcam/-/react-webcam-7.1.1.tgz"
@@ -22417,6 +22485,7 @@ workbox-background-sync@^6.6.1, workbox-background-sync@6.6.1:
     idb "^7.0.1"
     workbox-core "6.6.1"
 
+<<<<<<< HEAD
 workbox-broadcast-update@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-broadcast-update/-/workbox-broadcast-update-5.1.4.tgz"
@@ -22425,6 +22494,9 @@ workbox-broadcast-update@^5.1.4:
     workbox-core "^5.1.4"
 
 workbox-broadcast-update@^6.6.1, workbox-broadcast-update@6.6.1:
+=======
+workbox-broadcast-update@6.6.1, workbox-broadcast-update@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-broadcast-update/-/workbox-broadcast-update-6.6.1.tgz"
   integrity sha512-fBhffRdaANdeQ1V8s692R9l/gzvjjRtydBOvR6WCSB0BNE2BacA29Z4r9/RHd9KaXCPl6JTdI9q0bR25YKP8TQ==
@@ -22488,16 +22560,21 @@ workbox-cacheable-response@^6.6.1, workbox-cacheable-response@6.6.1:
   dependencies:
     workbox-core "6.6.1"
 
+<<<<<<< HEAD
 workbox-core@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-core/-/workbox-core-5.1.4.tgz"
   integrity sha512-+4iRQan/1D8I81nR2L5vcbaaFskZC2CL17TLbvWVzQ4qiF/ytOGF6XeV54pVxAvKUtkLANhk8TyIUMtiMw2oDg==
 
 workbox-core@^6.6.1, workbox-core@6.6.1:
+=======
+workbox-core@6.6.1, workbox-core@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-core/-/workbox-core-6.6.1.tgz"
   integrity sha512-ZrGBXjjaJLqzVothoE12qTbVnOAjFrHDXpZe7coCb6q65qI/59rDLwuFMO4PcZ7jcbxY+0+NhUVztzR/CbjEFw==
 
+<<<<<<< HEAD
 workbox-expiration@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-expiration/-/workbox-expiration-5.1.4.tgz"
@@ -22506,6 +22583,9 @@ workbox-expiration@^5.1.4:
     workbox-core "^5.1.4"
 
 workbox-expiration@^6.6.1, workbox-expiration@6.6.1:
+=======
+workbox-expiration@6.6.1, workbox-expiration@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-expiration/-/workbox-expiration-6.6.1.tgz"
   integrity sha512-qFiNeeINndiOxaCrd2DeL1Xh1RFug3JonzjxUHc5WkvkD2u5abY3gZL1xSUNt3vZKsFFGGORItSjVTVnWAZO4A==
@@ -22513,6 +22593,7 @@ workbox-expiration@^6.6.1, workbox-expiration@6.6.1:
     idb "^7.0.1"
     workbox-core "6.6.1"
 
+<<<<<<< HEAD
 workbox-google-analytics@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-google-analytics/-/workbox-google-analytics-5.1.4.tgz"
@@ -22524,6 +22605,9 @@ workbox-google-analytics@^5.1.4:
     workbox-strategies "^5.1.4"
 
 workbox-google-analytics@^6.6.1, workbox-google-analytics@6.6.1:
+=======
+workbox-google-analytics@6.6.1, workbox-google-analytics@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-google-analytics/-/workbox-google-analytics-6.6.1.tgz"
   integrity sha512-1TjSvbFSLmkpqLcBsF7FuGqqeDsf+uAXO/pjiINQKg3b1GN0nBngnxLcXDYo1n/XxK4N7RaRrpRlkwjY/3ocuA==
@@ -22533,6 +22617,7 @@ workbox-google-analytics@^6.6.1, workbox-google-analytics@6.6.1:
     workbox-routing "6.6.1"
     workbox-strategies "6.6.1"
 
+<<<<<<< HEAD
 workbox-navigation-preload@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-navigation-preload/-/workbox-navigation-preload-5.1.4.tgz"
@@ -22541,12 +22626,16 @@ workbox-navigation-preload@^5.1.4:
     workbox-core "^5.1.4"
 
 workbox-navigation-preload@^6.6.1, workbox-navigation-preload@6.6.1:
+=======
+workbox-navigation-preload@6.6.1, workbox-navigation-preload@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-navigation-preload/-/workbox-navigation-preload-6.6.1.tgz"
   integrity sha512-DQCZowCecO+wRoIxJI2V6bXWK6/53ff+hEXLGlQL4Rp9ZaPDLrgV/32nxwWIP7QpWDkVEtllTAK5h6cnhxNxDA==
   dependencies:
     workbox-core "6.6.1"
 
+<<<<<<< HEAD
 workbox-precaching@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-precaching/-/workbox-precaching-5.1.4.tgz"
@@ -22555,6 +22644,9 @@ workbox-precaching@^5.1.4:
     workbox-core "^5.1.4"
 
 workbox-precaching@^6.6.1, workbox-precaching@6.6.1:
+=======
+workbox-precaching@6.6.1, workbox-precaching@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-precaching/-/workbox-precaching-6.6.1.tgz"
   integrity sha512-K4znSJ7IKxCnCYEdhNkMr7X1kNh8cz+mFgx9v5jFdz1MfI84pq8C2zG+oAoeE5kFrUf7YkT5x4uLWBNg0DVZ5A==
@@ -22563,6 +22655,7 @@ workbox-precaching@^6.6.1, workbox-precaching@6.6.1:
     workbox-routing "6.6.1"
     workbox-strategies "6.6.1"
 
+<<<<<<< HEAD
 workbox-range-requests@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-range-requests/-/workbox-range-requests-5.1.4.tgz"
@@ -22571,6 +22664,9 @@ workbox-range-requests@^5.1.4:
     workbox-core "^5.1.4"
 
 workbox-range-requests@^6.6.1, workbox-range-requests@6.6.1:
+=======
+workbox-range-requests@6.6.1, workbox-range-requests@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-range-requests/-/workbox-range-requests-6.6.1.tgz"
   integrity sha512-4BDzk28govqzg2ZpX0IFkthdRmCKgAKreontYRC5YsAPB2jDtPNxqx3WtTXgHw1NZalXpcH/E4LqUa9+2xbv1g==
@@ -22589,6 +22685,7 @@ workbox-recipes@6.6.1:
     workbox-routing "6.6.1"
     workbox-strategies "6.6.1"
 
+<<<<<<< HEAD
 workbox-routing@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-routing/-/workbox-routing-5.1.4.tgz"
@@ -22597,12 +22694,23 @@ workbox-routing@^5.1.4:
     workbox-core "^5.1.4"
 
 workbox-routing@^6.6.1, workbox-routing@6.6.1:
+=======
+workbox-routing@6.6.1, workbox-routing@^6.6.1:
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-routing/-/workbox-routing-6.6.1.tgz"
   integrity sha512-j4ohlQvfpVdoR8vDYxTY9rA9VvxTHogkIDwGdJ+rb2VRZQ5vt1CWwUUZBeD/WGFAni12jD1HlMXvJ8JS7aBWTg==
   dependencies:
     workbox-core "6.6.1"
 
+workbox-strategies@6.6.1, workbox-strategies@^6.6.1:
+>>>>>>> upstream/release-1.5.6
+  version "6.6.1"
+  resolved "https://registry.npmjs.org/workbox-routing/-/workbox-routing-6.6.1.tgz"
+  integrity sha512-j4ohlQvfpVdoR8vDYxTY9rA9VvxTHogkIDwGdJ+rb2VRZQ5vt1CWwUUZBeD/WGFAni12jD1HlMXvJ8JS7aBWTg==
+  dependencies:
+    workbox-core "6.6.1"
+
+<<<<<<< HEAD
 workbox-strategies@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-strategies/-/workbox-strategies-5.1.4.tgz"
@@ -22612,12 +22720,16 @@ workbox-strategies@^5.1.4:
     workbox-routing "^5.1.4"
 
 workbox-strategies@^6.6.1, workbox-strategies@6.6.1:
+=======
+workbox-streams@6.6.1, workbox-streams@^6.6.1:
+>>>>>>> upstream/release-1.5.6
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-strategies/-/workbox-strategies-6.6.1.tgz"
   integrity sha512-WQLXkRnsk4L81fVPkkgon1rZNxnpdO5LsO+ws7tYBC6QQQFJVI6v98klrJEjFtZwzw/mB/HT5yVp7CcX0O+mrw==
   dependencies:
     workbox-core "6.6.1"
 
+<<<<<<< HEAD
 workbox-streams@^5.1.4:
   version "5.1.4"
   resolved "https://registry.npmjs.org/workbox-streams/-/workbox-streams-5.1.4.tgz"
@@ -22634,6 +22746,8 @@ workbox-streams@^6.6.1, workbox-streams@6.6.1:
     workbox-core "6.6.1"
     workbox-routing "6.6.1"
 
+=======
+>>>>>>> upstream/release-1.5.6
 workbox-sw@6.6.1:
   version "6.6.1"
   resolved "https://registry.npmjs.org/workbox-sw/-/workbox-sw-6.6.1.tgz"
