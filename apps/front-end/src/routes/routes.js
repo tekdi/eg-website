@@ -171,6 +171,13 @@ const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
 const Assessment = React.lazy(() => import("component/Assessment"));
 
+//offline_falilitator_onboarding
+const FacilitatorOnboarding = React.lazy(() =>
+  import(
+    "pages/front-end/FacilitatorOffline/Self-Onboarding/FacilitatorOnboarding"
+  )
+);
+
 export default [
   { path: "/form", component: Home },
   {
@@ -347,4 +354,11 @@ export default [
     component: Assessment,
   },
   { path: "*", component: Dashboard },
+
+  //offline_facilitotor_Onboarding
+
+  {
+    path: "/offline/facilitator-self-onboarding/:id",
+    component: FacilitatorOnboarding,
+  },
 ];
