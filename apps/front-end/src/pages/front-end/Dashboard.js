@@ -342,7 +342,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 <Image
                   source={{
-                    uri: "/addAG 2.png",
+                    uri: "/images/learner/add_learner.png",
                   }}
                   alt="Add AG"
                   size={"sm"}

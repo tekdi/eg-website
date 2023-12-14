@@ -1,4 +1,5 @@
 import {
+  AdminTypo,
   CardComponent,
   FrontEndTypo,
   GetEnumValue,
@@ -35,7 +36,6 @@ export default function CommunityView({ footerLinks }) {
       newSchema = getOptions(newSchema, {
         key: "designation",
         arr: data,
-        title: "title",
         value: "value",
       });
       setSchema(newSchema);
@@ -130,11 +130,14 @@ export default function CommunityView({ footerLinks }) {
               gap="2"
             >
               <Alert.Icon size="5" />
-              <FrontEndTypo.H2>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H2>
+              <FrontEndTypo.H3>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H3>
             </Alert>
           ))}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
+            <FrontEndTypo.H2 color="textMaroonColor.600" bold>
+              {t("COMMUNITY_DETAILS")}
+            </FrontEndTypo.H2>
             {data?.length > 0 &&
               data
                 ?.slice()
