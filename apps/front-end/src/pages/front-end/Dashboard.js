@@ -47,6 +47,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser || [];
   const [random, setRandom] = React.useState();
   const [events, setEvents] = React.useState("");
+  let score = process.env.REACT_APP_SCORE;
+  let floatValue = parseFloat(score);
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -273,15 +275,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === false &&
-                      lmsDEtails?.score >= 79.5 ? (
+                      lmsDEtails?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
-                        {lmsDEtails.score}
+                        {lmsDEtails.score + "%"}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {lmsDEtails.score}
+                        {lmsDEtails.score + "%"}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
