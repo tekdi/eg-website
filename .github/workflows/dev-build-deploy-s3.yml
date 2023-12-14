@@ -17,14 +17,25 @@ jobs:
       - name: List contents
         run: |
           ls -lha
-          
+
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.0.0
+
+      - name: Install AWS CLI
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y awscli
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_S3_BUCKET_REGION }}
           
       - name: Install deps, and build
         run: |
@@ -32,16 +43,16 @@ jobs:
           yarn workspace @shiksha/common-lib build
           yarn install
           yarn build
-        env:          
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL_2 }}
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
-     
+
       - name: List contents
         run: |
           ls -lha
-               
+
       - name: Create Lerna Bundles
         run: |
           sh ./scripts/pack-prod-build.sh
@@ -49,7 +60,7 @@ jobs:
       - name: List contents
         run: |
           ls -lha
-          
+
 #       - name: Deploy
 #         uses: reggionick/s3-deploy@v3
 #         with:
@@ -63,17 +74,32 @@ jobs:
 #           private: true
 #           filesToInclude: prod-build/*
 
-      ### S3 sync
-      - name: S3 Sync
-        uses: jakejarvis/s3-sync-action@v0.5.1
-        with:
-          args: --acl public-read --follow-symlinks --delete
+      ### Invalidate Cloudfront
+      - name: Cloudfront Invalidation
+        uses: chetan/invalidate-cloudfront-action@master
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+          PATHS: '/*'
+          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-          SOURCE_DIR: prod-build
+
+      ### S3 sync
+      - name: Deploy to S3 Bucket
+        run: |
+          aws s3 sync ./prod-build/ s3://${{ secrets.AWS_S3_BUCKET }}
+
+      ### S3 sync
+      # - name: S3 Sync
+      #   uses: jakejarvis/s3-sync-action@v0.5.1
+      #   with:
+      #     args: --acl public-read --follow-symlinks --delete
+      #   env:
+      #     AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+      #     SOURCE_DIR: prod-build
 
       ### Invalidate Cloudfront
       - name: Cloudfront Invalidation
@@ -84,4 +110,12 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          
+
+      ### Notify on Slack
+      - name: Notify on Slack channel
+        uses: iRoachie/slack-github-actions@v2.3.2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+        if: ${{ always() }}
