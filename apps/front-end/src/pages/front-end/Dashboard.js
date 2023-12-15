@@ -440,7 +440,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {isDocumentUpload() && (
             <Stack bg="bgYellowColor.400" space="6" p={4}>
-              <FrontEndTypo.H2 color="textMaroonColor.600">
+              <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("UPLOAD_YOUR_DOCUMENTS")}
               </FrontEndTypo.H2>
               <FrontEndTypo.H3>

@@ -225,7 +225,7 @@ const styles = {
   inforBox: {
     style: {
       background:
-        "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.352337) -7.4%, #CAE9FF 13.31%, #CAE9FF 35.47%, #CAE9FF 79.94%, rgba(255, 255, 255, 0.580654) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
+        "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.353) -7.4%, #ff000052 13.31%, #ff00007a 35.47%, #ff00004f 79.94%, rgba(255, 255, 255, 0.58) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
     },
   },
 };
@@ -310,7 +310,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           <HStack
             p="5"
             space="5"
-            // borderBottomWidth="1"
+            borderBottomWidth="1"
             {...styles.inforBox}
             alignItems="Center"
           >
