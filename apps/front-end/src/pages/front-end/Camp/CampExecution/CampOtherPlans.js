@@ -1,3 +1,4 @@
+import React from "react";
 import {
   FrontEndTypo,
   Layout,
@@ -5,12 +6,11 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import { VStack } from "native-base";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { RadioBtn } from "component/BaseInput";
 
-export default function CampOtherPlans({ footerLinks }) {
+const CampOtherPlans = React.memo(({ footerLinks }) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState(false);
   const { id } = useParams();
@@ -19,7 +19,7 @@ export default function CampOtherPlans({ footerLinks }) {
   const [reason, setReason] = React.useState();
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
+  const enumData = React.useCallback(async () => {
     const listOfEnum = await enumRegistryService.listOfEnum();
     const absentReasons = listOfEnum?.data?.CAMP_ABSENT_REASONS;
     const transformedAbsentReasons = absentReasons.map((reason) => ({
@@ -30,7 +30,11 @@ export default function CampOtherPlans({ footerLinks }) {
     setLoading(false);
   }, []);
 
-  const submitReason = async () => {
+  React.useEffect(() => {
+    enumData();
+  }, [enumData]);
+
+  const submitReason = React.useCallback(async () => {
     const payLoad = {
       camp_id: id,
       camp_day_happening: "no",
@@ -42,7 +46,7 @@ export default function CampOtherPlans({ footerLinks }) {
     } else {
       setError(true);
     }
-  };
+  }, [id, reason, navigate]);
 
   return (
     <Layout
@@ -88,4 +92,6 @@ export default function CampOtherPlans({ footerLinks }) {
       </VStack>
     </Layout>
   );
-}
+});
+
+export default CampOtherPlans;

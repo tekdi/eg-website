@@ -240,8 +240,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
             shadow="AlertShadow"
             borderRadius="10px"
             onPress={async () => {
-              disableEdit() &&
-                navigate(`/camps/${camp_id?.id}/kit_material_details`);
+              navigate(`/camps/${camp_id?.id}/kit_material_details`);
             }}
           >
             <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
