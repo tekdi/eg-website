@@ -100,9 +100,13 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
       #     SOURCE_DIR: prod-build
+      
+      - name: Install s3-sync-action globally
+        run: yarn global add jakejarvis/s3-sync-action@v0.5.1
+      
       - name: S3 Sync
         run: |
-          output=$(sh -c 'yarn global add jakejarvis/s3-sync-action@v0.5.1 && s3-sync-action' --follow-symlinks --delete --exclude 'node_modules/**' 2>&1) || true
+          output=$(s3-sync-action --follow-symlinks --delete --exclude 'node_modules/**' 2>&1) || true
           echo "$output"
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
@@ -110,6 +114,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           SOURCE_DIR: prod-build
+
 
     
 
