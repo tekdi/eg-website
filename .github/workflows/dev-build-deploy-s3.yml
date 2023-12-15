@@ -138,15 +138,9 @@ jobs:
       - name: Check for Warnings
         run: |
           warning_output="${{ steps.s3_sync.outputs.warning }}"
-          if echo "$warning_output" | grep -q 'Skipping file /github/workspace/prod-build/node_modules/.bin/http-server. File does not exist.'; then
-            echo "Warning detected: $warning_output"
-            # Add any additional handling for this warning here
-          fi
-          if echo "$warning_output" | grep -q 'Skipping file /github/workspace/prod-build/node_modules/.bin/prettier. File does not exist.'; then
-            echo "Warning detected: $warning_output"
-            # Add any additional handling for this warning here
-          fi
-          if [ -z "$warning_output" ]; then
+          if [ -n "$warning_output" ]; then
+            echo "Warnings detected: $warning_output"
+          else
             echo "No warnings detected."
           fi
 
