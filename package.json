@@ -28,6 +28,7 @@
     "prettier": "^2.6.0"
   },
   "dependencies": {
-    "rc-time-picker": "^3.7.3"
+    "rc-time-picker": "^3.7.3",
+    "react-simple-image-slider": "^2.4.1"
   }
 }
