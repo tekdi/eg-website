@@ -12,13 +12,11 @@ import {
   facilitatorRegistryService,
   ImageView,
   testRegistryService,
-  debounce,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import Chip, { ChipStatus } from "component/Chip";
 import {
   Box,
-  Button,
   HStack,
   VStack,
   Text,
@@ -241,6 +239,7 @@ export default function Attendence({ footerLinks }) {
   const [downloadCertificate, setDownCertificate] = React.useState();
   const [inputSearch, setInputSearch] = useState("");
   const reportTemplateRef = React.useRef(null);
+  const [filter, setFilter] = React.useState({});
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
@@ -367,24 +366,30 @@ export default function Attendence({ footerLinks }) {
   }
 
   const getUsers = async () => {
-    let filter = { id };
+    let filterData = { id };
     if (inputSearch != "") {
-      filter = { id, search: inputSearch };
+      filterData = { id, search: inputSearch };
     }
-    const result = await eventService.getAttendanceList(filter);
+
+    const result = await eventService.getAttendanceList({
+      limit: 6,
+      page: 1,
+      ...filterData,
+      ...filter,
+    });
+
+    setPaginationTotalRows(result?.totalCount);
     setUsers(result?.data || []);
   };
 
   React.useEffect(async () => {
     await getUsers();
-  }, [inputSearch]);
+  }, [inputSearch, filter]);
 
   React.useEffect(async () => {
     setLoading(true);
     const eventResult = await eventService.getEventListById({ id });
-
     setEvent(eventResult?.event);
-    setPaginationTotalRows(eventResult?.totalCount);
     // please check params?.attendance_type === "one_time" condition
     if (eventResult?.event?.params?.attendance_type === "one_time") {
       setActualDates([
@@ -1244,13 +1249,26 @@ export default function Attendence({ footerLinks }) {
               data={users}
               subHeader
               persistTableHead
-              // progressPending={loading}
+              progressPending={loading}
               customStyles={customStyles}
               pagination
               paginationServer
               paginationTotalRows={paginationTotalRows}
-              onChangePage={handlePageChange}
-              onChangeRowsPerPage={(e) => setLimit(e)}
+              paginationRowsPerPageOptions={[6, 10, 15, 25, 50, 100]}
+              paginationPerPage={filter?.limit ? filter?.limit : 6}
+              paginationDefaultPage={filter?.page}
+              onChangeRowsPerPage={React.useCallback(
+                (e) => {
+                  setFilter({ ...filter, limit: e, page: 1 });
+                },
+                [filter]
+              )}
+              onChangePage={React.useCallback(
+                (e) => {
+                  setFilter({ ...filter, page: e });
+                },
+                [filter]
+              )}
             />
           </VStack>
         </Box>

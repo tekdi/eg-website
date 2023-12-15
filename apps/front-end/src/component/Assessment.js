@@ -1,20 +1,23 @@
-import { React, useState, useEffect } from "react";
+import React from "react";
 import {
   H2,
   testRegistryService,
   useWindowSize,
   SunbirdPlayer,
+  Loading,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { VStack } from "native-base";
 
 function Player({ setAlert }) {
   const [width, height] = useWindowSize();
-  const [assessmentData, setAssessmentData] = useState();
-  const [type, setType] = useState();
+  const [assessmentData, setAssessmentData] = React.useState();
+  const [type, setType] = React.useState();
   const { context, context_id, do_id } = useParams();
+  const [loading, setLoading] = React.useState(true);
+  const [showExitButton, setShowExitButton] = React.useState(false);
 
-  useEffect(async () => {
+  React.useEffect(async () => {
     const { error, ...assesmentData } = await testRegistryService.getAssessment(
       do_id
     );
@@ -25,6 +28,7 @@ function Player({ setAlert }) {
       console.log(error);
       setAlert(error);
     }
+    setLoading(false);
   }, []);
 
   const navigate = useNavigate();
@@ -80,7 +84,6 @@ function Player({ setAlert }) {
 
     // Calculate and log the total duration
     const totalDuration = calculateTotalDuration(jsonData);
-    console.log("Total Duration:", totalDuration, "seconds");
 
     let score_txt = score ? score.toString() : "0";
 
@@ -94,7 +97,12 @@ function Player({ setAlert }) {
       context_id: context_id,
     };
     testRegistryService.testTrackingCreate(data);
+    setShowExitButton(true);
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <VStack>
@@ -103,7 +111,7 @@ function Player({ setAlert }) {
       </VStack>
       <VStack alignItems={"center"}>
         <SunbirdPlayer
-          {...{ width, height: height - 64 }}
+          {...{ width, height: height - 64, showExitButton, setShowExitButton }}
           {...assessmentData}
           userData={{
             firstName: localStorage.getItem("fullName"),

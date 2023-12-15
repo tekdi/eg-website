@@ -157,9 +157,8 @@ export default function CampSessionList({ footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => navigate(-1),
         onlyIconsShow: ["backBtn", "langBtn"],
-        leftIcon: <FrontEndTypo.H2>{t("LESSON_LIST")}</FrontEndTypo.H2>,
+        leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
     >
@@ -167,7 +166,7 @@ export default function CampSessionList({ footerLinks }) {
         <HStack space="2">
           <IconByName name="BookOpenLineIcon" />
           <FrontEndTypo.H2 color="textMaroonColor.400">
-            {t("LESSON")}
+            {t("SESSION")}
           </FrontEndTypo.H2>
         </HStack>
 
@@ -207,16 +206,16 @@ export default function CampSessionList({ footerLinks }) {
               >
                 <HStack justifyContent={"space-between"}>
                   <FrontEndTypo.H2 alignItem="center">
-                    {t("LESSON") + " " + item?.ordering}
+                    {t("SESSION") + " " + item?.ordering}
                   </FrontEndTypo.H2>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    _icon={{ size: "25px" }}
-                  />
                 </HStack>
-              </Pressable>
-            </CardComponent>
-          </HStack>
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  _icon={{ size: "25px" }}
+                />
+              </HStack>
+            </Pressable>
+          </CardComponent>
         ))}
       </VStack>
 

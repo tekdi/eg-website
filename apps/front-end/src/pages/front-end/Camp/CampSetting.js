@@ -147,6 +147,7 @@ export default function CampSetting({ footerLinks }) {
                   justifyContent: "center",
                   alignItems: "center",
                   marginTop: "10px",
+                  color: "white",
                 }}
               >
                 {t(day)}

@@ -21,8 +21,13 @@ import {
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
+import moment from "moment";
 
-export default function CampTodayActivities({ footerLinks, setAlert }) {
+export default function CampTodayActivities({
+  footerLinks,
+  setAlert,
+  activityId,
+}) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -30,21 +35,17 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
   const [enumOptions, setEnumOptions] = React.useState(null);
   const [selectValue, setSelectValue] = React.useState([]);
   const [isSaving] = React.useState(false);
-  const [campList, setCampList] = React.useState([]);
-  const [activityId, setActivityId] = React.useState();
   const [sessionList, setSessionList] = React.useState(false);
 
   React.useEffect(async () => {
-    let result = await campService.getcampstatus({ id });
-    let activity_id = result?.data?.id;
-    if (!activity_id) {
-      result = await campService.getActivity({ id });
-      activity_id = result?.data?.id;
-    }
-    setSelectValue(result?.data?.misc_activities || []);
-    setActivityId(activity_id);
-    const getListActivities = await campService.getActivitiesList();
-    setCampList(getListActivities?.data);
+    const obj = {
+      id: id,
+      start_date: moment(new Date()).format("YYYY-MM-DD"),
+    };
+    const result = await campService.getActivity(obj);
+    setSelectValue(
+      result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
+    );
   }, []);
 
   const handleSubmitData = async () => {
@@ -56,7 +57,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
     const activities_response = await campService.addMoodActivity(dataToSave);
     if (activities_response) {
       setEnums();
-      setAlert(t("MISSILINEOUS_SUCCESS_MESSAGE"));
+      setAlert({ type: "success", title: t("MISSILINEOUS_SUCCESS_MESSAGE") });
     }
   };
 
@@ -94,7 +95,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
           _body={{ pt: 4 }}
         >
           <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-            <HStack alignItems="center" justifyContent="center" space={5}>
+            <HStack alignItems="center" justifyContent="center" space={3}>
               <Image
                 source={{
                   uri: "/images/activities/learning-activity.png",
@@ -104,7 +105,6 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
                 w="75px"
                 h="60px"
               />
-
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("LEARNING_ACTIVITIES")}
               </FrontEndTypo.H2>
@@ -156,9 +156,7 @@ export default function CampTodayActivities({ footerLinks, setAlert }) {
         {selectValue?.[0] && sessionList === true && (
           <VStack pt={"10%"}>
             <FrontEndTypo.Primarybutton
-              onPress={() =>
-                navigate(`/camps/${id}/campexecutionstart/${activityId}`)
-              }
+              onPress={() => navigate(`/camps/${id}/campexecution/endcamp`)}
             >
               {t("GO_BACK")}
             </FrontEndTypo.Primarybutton>
