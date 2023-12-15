@@ -137,12 +137,13 @@ jobs:
       
       - name: Check for Warnings
         run: |
-          if [[ -n "$(echo "${{ steps.s3_sync.outputs.warning }}" | grep 'your-warning-text')" ]]; then
+          if [[ -n "$(echo "${{ steps.s3_sync.outputs.warning }}" | grep 'Skipping file /github/workspace/prod-build/node_modules/.bin/http-server. File does not exist.')" ]]; then
             echo "Warning detected: ${{ steps.s3_sync.outputs.warning }}"
             # Add any additional handling for warnings here, or just proceed to the next steps
           else
             echo "No warnings detected."
           fi
+
 
       ### Invalidate Cloudfront
       - name: Cloudfront Invalidation
