@@ -126,9 +126,8 @@ jobs:
       - name: S3 Sync
         id: s3_sync
         run: |
-          # Redirect stderr to a file
-          output=$(jakejarvis/s3-sync-action@v0.5.1 --acl public-read --follow-symlinks --delete 2> s3_sync_warnings.txt) || true
-          # Save the warning output as an output variable
+          output=$(jakejarvis/s3-sync-action@v1 --acl public-read --follow-symlinks --delete 2> s3_sync_warnings.txt) || true
+          echo "$output"
           echo "::set-output name=warning::$(cat s3_sync_warnings.txt)"
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
@@ -136,6 +135,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           SOURCE_DIR: prod-build
+
       
       ## Check for Warnings
       - name: Check for Warnings
