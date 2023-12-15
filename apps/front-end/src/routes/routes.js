@@ -137,9 +137,6 @@ const FileView = React.lazy(() => import("pages/FileView"));
 const CampExecution = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampExecution")
 );
-const CampExecutionEnd = React.lazy(() =>
-  import("pages/front-end/Camp/CampExecution/CampExecutionEnd")
-);
 
 const Attendance = React.lazy(() =>
   import("pages/front-end/Camp/Attendace/Attendance")
@@ -318,14 +315,10 @@ export default [
     path: "/camps/:id/settings",
     component: CampSettings,
   },
-  { path: "/camps/:id/Campexecution", component: CampExecution },
-  { path: "/camps/:id/Campexecution/:step", component: CampExecution },
-  {
-    path: "/camps/:id/campexecutionend/:activityId",
-    component: CampExecutionEnd,
-  },
-  { path: "/camps/:id/campotherplans", component: CampOtherPlans },
-  // { path: "/camps/:id/activities/:activityId", component: CampTodayActivities },
+  // { path: "/camps/:id/Campexecution", component: CampExecution },
+  // { path: "/camps/:id/Campexecution/:step", component: CampExecution },
+
+  // { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   {
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
