@@ -47,7 +47,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser || [];
   const [random, setRandom] = React.useState();
   const [events, setEvents] = React.useState("");
-  let score = process.env.REACT_APP_SCORE;
+  let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
   React.useEffect(async () => {
