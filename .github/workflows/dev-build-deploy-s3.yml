@@ -102,14 +102,15 @@ jobs:
       #     SOURCE_DIR: prod-build
       - name: S3 Sync
         run: |
-          output=$(sh -c 'jakejarvis/s3-sync-action@v0.5.1' --follow-symlinks --delete --exclude 'node_modules/**' 2>&1) || true
+          output=$(sh -c 'yarn global add jakejarvis/s3-sync-action@v0.5.1 && s3-sync-action' --follow-symlinks --delete --exclude 'node_modules/**' 2>&1) || true
           echo "$output"
         env:
-         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-         SOURCE_DIR: prod-build
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+          SOURCE_DIR: prod-build
+
     
 
       ### Invalidate Cloudfront
