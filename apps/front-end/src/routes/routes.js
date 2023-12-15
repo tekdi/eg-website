@@ -319,7 +319,6 @@ export default [
   // { path: "/camps/:id/Campexecution/:step", component: CampExecution },
 
   // { path: "/camps/:id/campotherplans", component: CampOtherPlans },
-  // { path: "/camps/:id/activities/:activityId", component: CampTodayActivities },
   {
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
