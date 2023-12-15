@@ -335,13 +335,6 @@ export default function CampExecution({ footerLinks, setAlert }) {
       loading={loading}
       _footer={{ menues: footerLinks }}
     >
-      <Alert status="warning" alignItems={"center"}>
-        <HStack alignItems="center" space="2">
-          <Alert.Icon />
-          <FrontEndTypo.H3>{t("UAT_SERVER")}</FrontEndTypo.H3>
-        </HStack>
-      </Alert>
-
       {!todaysActivity?.id ? (
         <VStack space="5" p="5">
           <Box alignContent="center">
