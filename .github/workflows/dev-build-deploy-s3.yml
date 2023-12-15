@@ -134,26 +134,23 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           SOURCE_DIR: prod-build
-      
-      - name: Check for Warnings
+
+      - name: Check S3 Sync Exit Code
         run: |
-          warning_output="${{ steps.s3_sync.outputs.warning }}"
-          if [ -n "$warning_output" ]; then
-            echo "Warnings detected: $warning_output"
-          else
-            echo "No warnings detected."
+          if [ "${{ steps.s3_sync.outcome }}" != "success" ]; then
+            echo "S3 Sync failed."
+            exit 1
           fi
 
-
-      ### Invalidate Cloudfront
-      - name: Cloudfront Invalidation
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
-          PATHS: '/*'
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # ### Invalidate Cloudfront
+      # - name: Cloudfront Invalidation
+      #   uses: chetan/invalidate-cloudfront-action@master
+      #   env:
+      #     DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+      #     PATHS: '/*'
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       ### Notify on Slack
       # - name: Notify on Slack channel
