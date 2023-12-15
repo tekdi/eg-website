@@ -82,7 +82,7 @@ export default function Orientation({ footerLinks }) {
       value: "value",
     });
     setSchema(newSchema);
-  }, [formData]);
+  }, []);
 
   React.useEffect(() => {
     setFormData({
@@ -271,7 +271,7 @@ export default function Orientation({ footerLinks }) {
         ...newFormData,
         ["start_time"]: moment
           .utc(newFormData?.start_date)
-          .format("h:mm A")
+          .format("hh:mm:ss")
           .toString(),
       };
     }
@@ -281,7 +281,7 @@ export default function Orientation({ footerLinks }) {
         ...newFormData,
         ["end_time"]: moment
           .utc(newFormData?.end_date)
-          .format("h:mm A")
+          .format("hh:mm:ss")
           .toString(),
       };
     }
@@ -316,7 +316,7 @@ export default function Orientation({ footerLinks }) {
     }
   };
 
-  // console.log(formData);
+  console.log(formData);
   return (
     <Layout
       _appBar={{

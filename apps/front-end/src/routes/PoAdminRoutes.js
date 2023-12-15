@@ -6,6 +6,7 @@ const PoDuplicateView = React.lazy(() =>
   import("pages/admin/PoAdmin/PoDuplicateView")
 );
 const FileView = React.lazy(() => import("pages/FileView"));
+const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
   { path: "/poadmin", component: PoAdminHome },
@@ -18,5 +19,11 @@ export default [
     component: PoDuplicateView,
   },
   { path: "/", component: PoAdminHome },
+
+  {
+    path: "/assessment/:context/:context_id/:do_id",
+    component: Assessment,
+  },
+
   { path: "*", component: NotFound },
 ];

@@ -5,7 +5,6 @@ import {
   AdminTypo,
   enumRegistryService,
   tableCustomStyles,
-  debounce,
   useWindowSize,
   AdminLayout as Layout,
   urlData,
@@ -28,6 +27,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
+import { debounce } from "lodash";
 
 const columns = (t, navigate, filter) => [
   {
@@ -47,9 +47,7 @@ const columns = (t, navigate, filter) => [
           <HStack alignItems={"center"} space={2}>
             {row?.profile_photo_1?.name ? (
               <ImageView
-                source={{
-                  uri: row?.profile_photo_1?.name,
-                }}
+                urlObject={row?.profile_photo_1}
                 // alt="Alternate Text"
                 width={"35px"}
                 height={"35px"}
@@ -212,6 +210,15 @@ function EnrollmentVerificationList({ footerLinks }) {
     return data;
   };
 
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
+
   return (
     <Layout
       w={Width}
@@ -253,16 +260,8 @@ function EnrollmentVerificationList({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilterObject({
-                ...filter,
-                search: e.nativeEvent.text,
-                page: 1,
-              }),
-              2000
-            );
-          }}
+          onChange={debouncedHandleSearch}
+
         />
       </HStack>
       <HStack>
@@ -376,4 +375,4 @@ function EnrollmentVerificationList({ footerLinks }) {
   );
 }
 
-export default EnrollmentVerificationList;
+export default React.memo(EnrollmentVerificationList);

@@ -1,22 +1,30 @@
 import React from "react";
+// ip
 const Profile = React.lazy(() => import("pages/admin/facilitator/Profile"));
-const FacilitatorView = React.lazy(() =>
-  import("pages/admin/facilitator/View")
-);
-const AdminHome = React.lazy(() => import("pages/admin/AdminHome"));
-const LearnerAdminHome = React.lazy(() => import("pages/admin/AdminHome"));
-const FacilitatorForm = React.lazy(() => import("pages/admin/FacilitatorForm"));
-const NotFound = React.lazy(() => import("pages/NotFound"));
+
+// events
 const Orientation = React.lazy(() =>
   import("pages/front-end/orientation/Orientation")
 );
 const Attendence = React.lazy(() =>
   import("pages/front-end/Attendence/Attendence")
 );
-const AdharKyc = React.lazy(() =>
-  import("pages/front-end/AadhaarKyc/AadhaarKyc")
+
+// facilitator
+const FacilitatorList = React.lazy(() =>
+  import("pages/admin/facilitator/List")
+);
+const FacilitatorForm = React.lazy(() =>
+  import("pages/admin/facilitator/Form")
+);
+const Certification = React.lazy(() =>
+  import("pages/admin/facilitator/Certification")
+);
+const FacilitatorView = React.lazy(() =>
+  import("pages/admin/facilitator/View")
 );
 
+// beneficiaries
 const AdminBeneficiariesDuplicatesList = React.lazy(() =>
   import("pages/admin/beneficiaries/AdminBeneficiariesDuplicatesList")
 );
@@ -49,9 +57,9 @@ const ReassignBeneficiaries = React.lazy(() =>
 const ReassignBeneficiariesList = React.lazy(() =>
   import("pages/admin/ReassignBeneficiaries/ReassignBeneficiariesList")
 );
-const FileView = React.lazy(() => import("pages/FileView"));
+
+// camps
 const CampHome = React.lazy(() => import("pages/admin/camps/CampHome"));
-// const CampsView = React.lazy(() => import("pages/admin/camps/View"));
 const ViewCamp = React.lazy(() => import("pages/admin/camps/View"));
 const ReassignCamp = React.lazy(() => import("pages/admin/camps/ReassignCamp"));
 const ReassignPrerak = React.lazy(() =>
@@ -60,14 +68,21 @@ const ReassignPrerak = React.lazy(() =>
 const CampForm = React.lazy(() =>
   import("pages/admin/camps/CampFormEdit/Form")
 );
-// const Attendances = React.lazy(() => import("pages/admin/attendances/List"));
+
+// other
+const NotFound = React.lazy(() => import("pages/NotFound"));
+const AdharKyc = React.lazy(() =>
+  import("pages/front-end/AadhaarKyc/AadhaarKyc")
+);
+const FileView = React.lazy(() => import("pages/FileView"));
+const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
-  { path: "/admin/view/:id", component: FacilitatorView },
+  { path: "/admin/facilitator/:id", component: FacilitatorView },
+  { path: "/admin/Certification/:id", component: Certification },
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
-  { path: "/admin/facilitator", component: AdminHome },
-  { path: "/admin/learner", component: LearnerAdminHome },
+  { path: "/admin/facilitator", component: FacilitatorList },
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
   { path: "/admin/learners", component: AdminBeneficiariesList },
@@ -131,5 +146,11 @@ export default [
   //   path: "/admin/attendances",
   //   component: Attendances,
   // },
+
+  {
+    path: "/assessment/:context/:context_id/:do_id",
+    component: Assessment,
+  },
+
   { path: "*", component: NotFound },
 ];

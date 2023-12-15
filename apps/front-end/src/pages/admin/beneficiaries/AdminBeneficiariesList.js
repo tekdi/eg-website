@@ -23,61 +23,15 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
-  debounce,
+
   urlData,
-  filterObject,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
+import { debounce } from "lodash";
 
-function CustomFieldTemplate({ id, schema, label, required, children }) {
-  const { t } = useTranslation();
-  return (
-    <VStack borderTopWidth="1" borderTopColor="dividerColor">
-      {(!schema?.format || schema?.format !== "hidden") &&
-        (label || schema?.label) && (
-          <Box>
-            {(id !== "root" || schema?.label) && (
-              <HStack justifyContent="space-between" width="100%">
-                <label
-                  style={{
-                    fontWeight: "bold",
-                    color: "textGreyColor.400",
-                    paddingBottom: "12px",
-                  }}
-                >
-                  {t(label)}
-                  {required ? "*" : null}
-                </label>
-                {/* <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} /> */}
-              </HStack>
-            )}
-          </Box>
-        )}
-      <Box>{children}</Box>
-    </VStack>
-  );
-}
-const dropDown = (triggerProps, t) => {
-  return (
-    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack
-        rounded={"full"}
-        background="white"
-        shadow="BlueOutlineShadow"
-        borderRadius="full"
-        borderWidth="1px"
-        borderColor="#084B82"
-        p="2"
-        space={4}
-      >
-        <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
-        <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
-      </HStack>
-    </Pressable>
-  );
-};
+
 export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -92,6 +46,26 @@ export default function AdminHome({ footerLinks }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+
+  const dropDown = React.useCallback((triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack
+          rounded={"full"}
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderRadius="full"
+          borderWidth="1px"
+          borderColor="#084B82"
+          p="2"
+          space={4}
+        >
+          <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
+          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  }, []);
 
   React.useEffect(async () => {
     if (urlFilterApply) {
@@ -113,21 +87,33 @@ export default function AdminHome({ footerLinks }) {
     setUrlFilterApply(true);
   }, []);
 
-  const exportBeneficiaryCSV = async () => {
+  const exportBeneficiaryCSV = React.useCallback(async () => {
     await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
-  };
+  }, [filter]);
 
-  const exportSubjectCSV = async () => {
+  const exportSubjectCSV = React.useCallback(async () => {
     await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+  }, [filter]);
+
+  const setMenu = React.useCallback(
+    (e) => {
+      if (e === "export_subject") {
+        exportSubjectCSV();
+      } else {
+        exportBeneficiaryCSV();
+      }
+    },
+    [exportBeneficiaryCSV, exportSubjectCSV]
+  );
+
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
   };
 
-  const setMenu = (e) => {
-    if (e === "export_subject") {
-      exportSubjectCSV();
-    } else {
-      exportBeneficiaryCSV();
-    }
-  };
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
 
   return (
     <Layout
@@ -157,7 +143,7 @@ export default function AdminHome({ footerLinks }) {
           size={"xs"}
           minH="42px"
           maxH="42px"
-          ml="2px"
+          ml="20px"
           InputLeftElement={
             <IconByName
               color="coolGray.500"
@@ -169,14 +155,10 @@ export default function AdminHome({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFilter({ ...filter, search: e.nativeEvent.text, page: 1 }),
-              2000
-            );
-          }}
+
+          onChange={debouncedHandleSearch}
         />
-        <HStack alignSelf={"center"} space="2" height={"5.5vh"}>
+        <HStack alignSelf={"center"} space="2">
           <Menu
             w="190"
             placement="bottom right"
@@ -292,61 +274,68 @@ export const Filter = ({ filter, setFilter }) => {
   // facilitator pagination
   const [isMore, setIsMore] = React.useState("");
 
-  const setFilterObject = (data) => {
-    if (data?.district) {
-      const { district } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district });
-    }
-    setFilter(data);
-    setQueryParameters(data);
-  };
+  const setFilterObject = React.useCallback(
+    (data) => {
+      if (data?.district) {
+        const { district } = data;
+        setFacilitatorFilter({ ...facilitatorFilter, district });
+      }
+      setFilter(data);
+      setQueryParameters(data);
+    },
+    [facilitatorFilter]
+  );
 
-  const schema = {
-    type: "object",
-    properties: {
+  const schema = React.useMemo(() => {
+    return {
+      type: "object",
+      properties: {
+        district: {
+          type: "array",
+          title: "DISTRICT",
+          grid: 1,
+          _hstack: {
+            maxH: 130,
+            overflowY: "scroll",
+          },
+          items: {
+            type: "string",
+            enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
+            enum: getDistrictsAll?.map((item, i) => item?.district_name),
+          },
+          uniqueItems: true,
+        },
+        block: {
+          type: "array",
+          title: "BLOCKS",
+          grid: 1,
+          _hstack: {
+            maxH: 130,
+            overflowY: "scroll",
+          },
+          items: {
+            type: "string",
+            enumNames: getBlocksAll?.map((item, i) => item?.block_name),
+            enum: getBlocksAll?.map((item, i) => item?.block_name),
+          },
+          uniqueItems: true,
+        },
+      },
+    };
+  }, [getDistrictsAll, getBlocksAll]);
+
+  const uiSchema = React.useMemo(() => {
+    return {
       district: {
-        type: "array",
-        title: "DISTRICT",
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-        },
-        items: {
-          type: "string",
-          enumNames: getDistrictsAll?.map((item, i) => item?.district_name),
-          enum: getDistrictsAll?.map((item, i) => item?.district_name),
-        },
-        uniqueItems: true,
+        "ui:widget": MultiCheck,
+        "ui:options": {},
       },
       block: {
-        type: "array",
-        title: "BLOCKS",
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-        },
-        items: {
-          type: "string",
-          enumNames: getBlocksAll?.map((item, i) => item?.block_name),
-          enum: getBlocksAll?.map((item, i) => item?.block_name),
-        },
-        uniqueItems: true,
+        "ui:widget": MultiCheck,
+        "ui:options": {},
       },
-    },
-  };
-
-  const uiSchema = {
-    district: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-    block: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-  };
+    };
+  }, []);
 
   React.useEffect(async () => {
     let name = "RAJASTHAN";
@@ -401,26 +390,42 @@ export const Filter = ({ filter, setFilter }) => {
       }
     };
     facilitatorDetails();
-  }, [facilitatorFilter, filter]);
+  }, [facilitatorFilter]);
 
-  const onChange = async (data) => {
-    const { district: newDistrict, block: newBlock } = data?.formData || {};
-    const { district, block, ...remainData } = filter || {};
-    setFilterObject({
-      ...remainData,
-      ...(newDistrict?.length > 0
-        ? {
-            district: newDistrict,
-            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
-          }
-        : {}),
-    });
-  };
+  const onChange = React.useCallback(
+    async (data) => {
+      const { district: newDistrict, block: newBlock } = data?.formData || {};
+      const { district, block, ...remainData } = filter || {};
+      setFilterObject({
+        ...remainData,
+        ...(newDistrict?.length > 0
+          ? {
+              district: newDistrict,
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
+          : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
-  const clearFilter = () => {
+  const clearFilter = React.useCallback(() => {
     setFilter({});
     setFilterObject({});
+  }, [setFilterObject]);
+
+  const handlePrerakSearch = (e) => {
+    setFacilitatorFilter({
+      ...facilitatorFilter,
+      search: e.nativeEvent.text,
+      page: 1,
+    })
   };
+
+  const debouncedHandlePrerakSearch = React.useCallback(
+    debounce(handlePrerakSearch, 1000),
+    []
+  );
 
   return (
     <VStack space={8} py="5">
@@ -448,9 +453,6 @@ export const Filter = ({ filter, setFilter }) => {
           onChange={onChange}
           validator={validator}
           formData={filter}
-          templates={{
-            FieldTemplate: CustomFieldTemplate,
-          }}
         >
           <Button display={"none"} type="submit"></Button>
         </Form>
@@ -460,16 +462,7 @@ export const Filter = ({ filter, setFilter }) => {
           height="32px"
           placeholder={t("SEARCH")}
           variant="outline"
-          onChange={(e) => {
-            debounce(
-              setFacilitatorFilter({
-                ...facilitatorFilter,
-                search: e.nativeEvent.text,
-                page: 1,
-              }),
-              3000
-            );
-          }}
+          onChange={debouncedHandlePrerakSearch}
         />
         <MultiCheck
           key={facilitator}

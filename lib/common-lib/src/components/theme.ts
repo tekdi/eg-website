@@ -328,7 +328,17 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: `3px 2px`,
       elevation: 1
-    }
+    },
+    BlackOutlineShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 1,
+      shadowRadius: 1.0,
+      elevation: 1
+    },
   },
   bg: {
     linearGradient: {
@@ -668,7 +678,8 @@ const DEFAULT_THEME = {
     },
     text: {
       100: '#a8e3fd'
-    }
+    },
+    greenIconColor:'#008C0E'
   }
 }
 

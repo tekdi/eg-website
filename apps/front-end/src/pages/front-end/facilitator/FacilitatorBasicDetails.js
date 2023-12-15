@@ -6,7 +6,6 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
-  enumRegistryService,
   BodyMedium,
   CardComponent,
 } from "@shiksha/common-lib";
@@ -14,14 +13,9 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import ProfilePhoto from "./ProfilePhoto";
 
-export default function FacilitatorBasicDetails({
-  userTokenInfo,
-  footerLinks,
-}) {
+export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
-
-  const [enumOptions, setEnumOptions] = React.useState({});
   const [fields, setFields] = React.useState([]);
 
   React.useEffect(() => {
@@ -86,12 +80,6 @@ export default function FacilitatorBasicDetails({
         (fields.includes("district") || fields.includes("block")))
     );
   };
-
-
-  React.useEffect(async () => {
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
-  }, [facilitator]);
 
   return (
     <Layout

@@ -140,40 +140,42 @@ export default function FacilitatorView({ footerLinks }) {
   const [editModal, setEditModal] = React.useState(false);
   const [editData, setEditData] = React.useState();
   const [fieldCheck, setFieldCheck] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = React.useCallback(() => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  }, []);
 
-  const toggleConfirmPasswordVisibility = () => {
-    setConfirmPassword(!confirmPassword);
-  };
+  const toggleConfirmPasswordVisibility = React.useCallback(() => {
+    setConfirmPassword((prevConfirmPassword) => !prevConfirmPassword);
+  }, []);
 
-  const openModal = () => {
+  const openModal = React.useCallback(() => {
     setEditModal(true);
-  };
+  }, []);
+
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
-    const profileDetails = async () => {
-      const result = await facilitatorRegistryService.getOne({ id });
-      setData(result);
-      setAadhaarValue(result?.aadhar_no);
-      const qualificationList =
-        await facilitatorRegistryService.getQualificationAll();
-      const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
-      if (qual?.length > 0) {
-        const filterData = qualificationList?.filter((e) => {
-          const qualData = qual?.find((item) => `${item}` === `${e?.id}`);
-          return qualData ? true : false;
-        });
+const profileDetails = React.useCallback(async () => {
+    const result = await facilitatorRegistryService.getOne({ id });
+    setData(result);
+    setAadhaarValue(result?.aadhar_no);
+    const qualificationList = await facilitatorRegistryService.getQualificationAll();
+    const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
 
-        setQualifications(filterData);
-      }
-    };
-    await profileDetails();
-  }, []);
+    if (qual?.length > 0) {
+      const filterData = qualificationList?.filter((e) => {
+        const qualData = qual?.find((item) => `${item}` === `${e?.id}`);
+        return qualData ? true : false;
+      });
+
+      setQualifications(filterData);
+    }
+  }, [id]);
+
+  React.useEffect(() => {
+    profileDetails();
+  }, [profileDetails]);
 
   React.useEffect(async () => {
     const obj = {
@@ -193,7 +195,7 @@ export default function FacilitatorView({ footerLinks }) {
   }, []);
 
   const editRequest = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     if (!editData) {
       const obj = {
         edit_req_for_context: "users",
@@ -215,9 +217,10 @@ export default function FacilitatorView({ footerLinks }) {
 
   const showData = (item) => item || "-";
 
-  const validate = () => {
+  const validate = React.useCallback(() => {
     let arr = {};
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
     if (
       typeof credentials?.password === "undefined" ||
       credentials?.password === ""
@@ -246,10 +249,10 @@ export default function FacilitatorView({ footerLinks }) {
 
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
-  };
+  }, [credentials, t]);
 
   const handleResetPassword = async (password, confirm_password) => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     if (validate()) {
       if (password === confirm_password) {
         const bodyData = {
@@ -270,19 +273,19 @@ export default function FacilitatorView({ footerLinks }) {
           setModalVisible(false);
           return { status: true };
         } else if (resetPassword.success === false) {
-          setIsDisable(false);
+          setIsButtonLoading(false);
           setCredentials();
           setModalVisible(false);
           return { status: false };
         }
       } else if (password !== confirm_password) {
-        setIsDisable(false);
+        setIsButtonLoading(false);
         setCredentials();
         setModalVisible(false);
         return { status: false };
       }
     } else {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       setCredentials();
     }
   };
@@ -302,7 +305,7 @@ export default function FacilitatorView({ footerLinks }) {
   };
 
   const updateAadhaar = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const aadhaar_no = {
       id: id,
       aadhar_no: aadhaarValue,
@@ -312,11 +315,11 @@ export default function FacilitatorView({ footerLinks }) {
     );
     if (aadhaarValue.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
-      setIsDisable(false);
+      setIsButtonLoading(false);
     } else if (!result?.success) {
       setAadhaarError("AADHAAR_NUMBER_ALREADY_EXISTS");
       setDuplicateUserList(result?.data?.users);
-      setIsDisable(false);
+      setIsButtonLoading(false);
     } else {
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
@@ -421,13 +424,7 @@ export default function FacilitatorView({ footerLinks }) {
           </HStack>
 
           <HStack alignItems={Center} space="9">
-            {/* <VStack>
-              <AdminTypo.PrimaryButton
-                leftIcon={<IconByName isDisabled name="MessageLineIcon" />}
-              >
-                {t("SEND_MESSAGE")}
-              </AdminTypo.PrimaryButton>
-            </VStack> */}
+           
             <VStack space={4}>
               <AdminTypo.Secondarybutton
                 onPress={() => {
@@ -571,7 +568,7 @@ export default function FacilitatorView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
+                    isLoading={isButtonLoading}
                     onPress={() => {
                       handleResetPassword(
                         credentials?.password,
@@ -950,7 +947,7 @@ export default function FacilitatorView({ footerLinks }) {
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
-                  isDisabled={isDisable}
+                  isDisabled={isButtonLoading}
                   onPress={updateAadhaar}
                 >
                   {t("SAVE")}
@@ -1064,7 +1061,7 @@ export default function FacilitatorView({ footerLinks }) {
                   {t("CANCEL")}
                 </AdminTypo.Secondarybutton>
                 <AdminTypo.PrimaryButton
-                  isDisabled={isDisable}
+                  isDisabled={isButtonLoading}
                   onPress={() => editRequest()}
                 >
                   {t("SAVE")}
@@ -1077,24 +1074,28 @@ export default function FacilitatorView({ footerLinks }) {
     </Layout>
   );
 }
-const SelectAllCheckBox = ({ fields, title, setFieldCheck, fieldCheck }) => {
+
+const SelectAllCheckBox = React.memo(({ fields, title, setFieldCheck, fieldCheck }) => {
+
+  const handleChange = React.useCallback((e) => {
+    if (!e) {
+      const checkedFields = fieldCheck?.filter(
+        (field) => !fields?.includes(field)
+      );
+      setFieldCheck(checkedFields);
+    } else {
+      const checkedFields = fieldCheck?.filter(
+        (field) => !fields?.includes(field)
+      );
+      setFieldCheck([...checkedFields, ...fields]);
+    }
+  }, [fields, fieldCheck, setFieldCheck]);
+
   return (
     <Checkbox
-      onChange={(e) => {
-        if (!e) {
-          const checkedFields = fieldCheck.filter(
-            (field) => !fields.includes(field)
-          );
-          setFieldCheck(checkedFields);
-        } else {
-          const checkedFields = fieldCheck.filter(
-            (field) => !fields.includes(field)
-          );
-          setFieldCheck([...checkedFields, ...fields]);
-        }
-      }}
+      onChange={handleChange}
     >
       {title}
     </Checkbox>
   );
-};
+});

@@ -43,55 +43,61 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [fileType, setFileType] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [openModal, setOpenModal] = React.useState(false);
-  const [isDisable, setIsDisable] = React.useState(false);
-  React.useEffect(async () => {
-    const profileDetails = async () => {
-      const { result } = await benificiaryRegistoryService.getOne(id);
-      setData(result);
-      let { data: newData } = await enumRegistryService.getSubjects({
-        board: result?.program_beneficiaries?.enrolled_for_board,
-      });
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
-      const newResult = await uploadRegistryService.getOne({
-        document_id: result?.program_beneficiaries?.payment_receipt_document_id,
-      });
-      setReceiptUrl(newResult);
-      setFileType(newResult?.key?.split(".").pop());
-      const subject = jsonParse(result?.program_beneficiaries.subjects, []);
-      setSubjects(newData?.filter((e) => subject?.includes(`${e.id}`)));
-      setLoading(false);
-    };
-    await profileDetails();
-  }, []);
+  const profileDetails = useCallback(async () => {
+    const { result } = await benificiaryRegistoryService.getOne(id);
+    setData(result);
+    const { data: newData } = await enumRegistryService.getSubjects({
+      board: result?.program_beneficiaries?.enrolled_for_board,
+    });
 
-  const checkValidation = () => {
+    const newResult = await uploadRegistryService.getOne({
+      document_id: result?.program_beneficiaries?.payment_receipt_document_id,
+    });
+    setReceiptUrl(newResult);
+    setFileType(newResult?.key?.split(".").pop());
+    const subject = jsonParse(result?.program_beneficiaries.subjects, []);
+    setSubjects(newData?.filter((e) => subject?.includes(`${e.id}`)));
+    setLoading(false);
+  }, [id]);
+
+  useEffect(() => {
+    profileDetails();
+  }, [profileDetails]);
+
+  const checkValidation = useCallback(() => {
     let data = {};
     ["learner_enrollment_details", "enrollment_details"]
       .filter((e) => !reason[e])
       .map((e) => (data = { ...data, [e]: t("PLEASE_SELECT") }));
     setError(data);
     return !Object.keys(data).length;
-  };
+  }, [reason, t]);
 
-  const submit = async (status) => {
-    setIsDisable(true);
-    if (checkValidation()) {
-      const data = await benificiaryRegistoryService.verifyEnrollment({
-        user_id: id,
-        enrollment_verification_status: status,
-        enrollment_verification_reason: reason,
-      });
-
-      if (data?.success) {
-        setOpenModal(false);
-
-        navigate({
-          pathname: "/admin/learners/enrollmentVerificationList",
-          search: `?${createSearchParams(filter)}`,
+  const submit = useCallback(
+    async (status) => {
+      setIsButtonLoading(true);
+      if (checkValidation()) {
+        const data = await benificiaryRegistoryService.verifyEnrollment({
+          user_id: id,
+          enrollment_verification_status: status,
+          enrollment_verification_reason: reason,
         });
+
+        if (data?.success) {
+          setOpenModal(false);
+
+          navigate({
+            pathname: "/admin/learners/enrollmentVerificationList",
+            search: `?${createSearchParams(filter)}`,
+          });
+        }
       }
-    }
-  };
+    },
+    [checkValidation, createSearchParams, filter, id, navigate, reason]
+  );
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
@@ -127,7 +133,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
-              {t("ENROLLMENT_DETAILS_VERIFICATION")}
+              {t("ENROLLMENT_DETAILS_VERIFICATION")} ss
             </AdminTypo.H5>
 
             <HStack space="2">
@@ -403,7 +409,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             <HStack space="4">
               <AdminTypo.Successbutton
                 isDisabled={
-                  isDisable ||
+                  isButtonLoading ||
                   reason?.enrollment_details === "no" ||
                   reason?.learner_enrollment_details === "no"
                 }
@@ -426,6 +432,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
               </AdminTypo.Dangerbutton> */}
               <AdminTypo.Secondarybutton
+                isLoading={isButtonLoading}
                 isDisabled={
                   reason?.enrollment_details === "yes" &&
                   reason?.learner_enrollment_details === "yes"
@@ -450,7 +457,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.PrimaryButton>
                   <AdminTypo.Secondarybutton
-                    isDisabled={isDisable}
+                    isDisabled={isButtonLoading}
                     onPress={(e) => submit(openModal)}
                   >
                     {t("CONFIRM")}

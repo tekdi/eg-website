@@ -8,7 +8,6 @@ import {
   benificiaryRegistoryService,
   facilitatorRegistryService,
   geolocationRegistryService,
-  debounce,
   setQueryParameters,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,6 +28,7 @@ import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, RadioBtn } from "../../../component/BaseInput.js";
+import { debounce } from "lodash";
 
 function CustomFieldTemplate({ id, schema, label, required, children }) {
   const { t } = useTranslation();
@@ -75,22 +75,6 @@ const Name = (row) => {
   );
 };
 
-const PrerakName = (row) => {
-  return (
-    <VStack alignItems={"center"} space="2">
-      <Text color={"textGreyColor.100"} fontSize={"13px"}>
-        {row?.program_beneficiaries?.facilitator_user?.first_name + " "}
-        {row?.program_beneficiaries?.facilitator_user?.last_name
-          ? row?.program_beneficiaries?.facilitator_user?.last_name
-          : ""}
-      </Text>
-      <Text color={"textGreyColor.100"} fontSize={"13px"}>
-        ({row?.program_beneficiaries?.facilitator_user?.mobile})
-      </Text>
-    </VStack>
-  );
-};
-
 const status = (row, index) => {
   return row?.program_beneficiaries?.status ? (
     <ChipStatus
@@ -123,8 +107,37 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   const [filter, setFilter] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const [prerak, setPrerak] = React.useState({});
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [facilitatorFilter, setFacilitatorFilter] = React.useState();
+  const [facilitator, setFacilitator] = React.useState([]);
+  const [isMore, setIsMore] = React.useState("");
+
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const facilitatorDetails = async () => {
+      const result = await facilitatorRegistryService.filter(facilitatorFilter);
+      const newData = result?.data?.data?.map((e) => ({
+        value: e?.id,
+        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+      }));
+      setIsMore(
+        parseInt(`${result?.data?.currentPage}`) <
+          parseInt(`${result?.data?.totalPages}`)
+      );
+      setFacilitator(newData);
+    };
+    facilitatorDetails();
+  }, [facilitatorFilter]);
+
+  React.useEffect(async () => {
+    let name = "RAJASTHAN";
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name,
+    });
+    setgetDistrictsAll(getDistricts?.districts);
+  }, []);
 
   const handleSelectRow = (state) => {
     seterrormsg(false);
@@ -197,7 +210,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   }, [filter]);
 
   const assignToPrerak = async () => {
-    setIsDisable(true);
+    setIsButtonLoading(true);
     const beneficiary_Ids = selectedRows.map((item) => {
       return item?.id;
     });
@@ -210,12 +223,25 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     );
 
     if (!result?.success) {
-      setIsDisable(false);
+      setIsButtonLoading(false);
       seterrormsg(true);
     }
     setModalVisible(false);
     setModalConfirmVisible(true);
   };
+
+  const handleSearch = (e) => {
+    setFacilitatorFilter({
+      ...facilitatorFilter,
+      search: e.nativeEvent.text,
+      page: 1,
+    })
+  };
+
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
 
   return (
     <Layout _sidebar={footerLinks}>
@@ -359,6 +385,12 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     setFilterfunction,
                     clearvalue,
                     setclearvalue,
+                    getDistrictsAll,
+                    setFacilitatorFilter,
+                    facilitatorFilter,
+                    isMore,
+                    facilitator,
+                    debouncedHandleSearch
                   }}
                 />
                 <HStack justifyContent="space-between"></HStack>
@@ -373,7 +405,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={isDisable}
+                    isLoading={isButtonLoading}
                     onPress={() => {
                       assignToPrerak();
                     }}
@@ -444,21 +476,25 @@ export const Filter = ({
   setFilterfunction,
   clearvalue,
   setclearvalue,
+  getDistrictsAll,
+  setFacilitatorFilter,
+  facilitatorFilter,
+  isMore,
+  facilitator,
+  debouncedHandleSearch
 }) => {
   const { t } = useTranslation();
-  const [facilitator, setFacilitator] = React.useState([]);
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
-  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
 
   // facilitator pagination
-  const [isMore, setIsMore] = React.useState("");
 
   const setFilterObject = (data) => {
     if (data?.district) {
       const { district } = data;
       const { block } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+      if (district.length > 0) {
+        setFacilitatorFilter({ ...facilitatorFilter, district, block });
+      }
     }
     setFilterfunction(data);
     setQueryParameters(data);
@@ -512,14 +548,6 @@ export const Filter = ({
   };
 
   React.useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setgetDistrictsAll(getDistricts?.districts);
-  }, []);
-
-  React.useEffect(async () => {
     let blockData = [];
     if (filterfunction?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -531,22 +559,6 @@ export const Filter = ({
     }
   }, [filterfunction?.district]);
 
-  React.useEffect(() => {
-    const facilitatorDetails = async () => {
-      const result = await facilitatorRegistryService.filter(facilitatorFilter);
-      const newData = result?.data?.data?.map((e) => ({
-        value: e?.id,
-        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
-      }));
-      setIsMore(
-        parseInt(`${result?.data?.currentPage}`) <
-          parseInt(`${result?.data?.totalPages}`)
-      );
-      setFacilitator(newData);
-    };
-    facilitatorDetails();
-  }, [facilitatorFilter]);
-
   const onChange = async (data) => {
     const { district, block } = data?.formData || {};
     setFilterObject({
@@ -557,10 +569,12 @@ export const Filter = ({
   };
 
   React.useEffect(() => {
-    setFacilitatorFilter({});
-    setFilterfunction({});
-    setFilterObject({});
-    setclearvalue(false);
+    if (clearvalue) {
+      setFacilitatorFilter({});
+      setFilterfunction({});
+      setFilterObject({});
+      setclearvalue(false);
+    }
   }, [clearvalue]);
 
   return (
@@ -591,16 +605,8 @@ export const Filter = ({
             height="32px"
             placeholder="search"
             variant="outline"
-            onChange={(e) => {
-              debounce(
-                setFacilitatorFilter({
-                  ...facilitatorFilter,
-                  search: e.nativeEvent.text,
-                  page: 1,
-                }),
-                3000
-              );
-            }}
+            onChange={debouncedHandleSearch}
+
           />
           <RadioBtn
             directionColumn={"column"}
