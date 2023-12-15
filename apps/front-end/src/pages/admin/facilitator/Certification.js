@@ -47,7 +47,7 @@ const columns = (t, certificateDownload) => [
           my="3"
           onPress={() => certificateDownload(row)}
         >
-          {t("DOWNLOAD")}
+          {t("VIEW_CERTIFICATE")}
         </AdminTypo.Secondarybutton>
       ) : row.certificate_status === false ? (
         <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
@@ -78,7 +78,7 @@ export default function Certification({ footerLinks }) {
     });
   }, []);
 
- const certificateDownload = React.useCallback(async (data) => {
+  const certificateDownload = React.useCallback(async (data) => {
     const result = await testRegistryService.postCertificates(data);
     setDownCertificate(result?.data?.[0]?.certificate_html);
   }, []);
@@ -101,10 +101,10 @@ export default function Certification({ footerLinks }) {
     fetchData();
   }, [id]);
 
-  const columnsMemoized = React.useMemo(() => columns(t, certificateDownload), [
-    t,
-    certificateDownload,
-  ]);
+  const columnsMemoized = React.useMemo(
+    () => columns(t, certificateDownload),
+    [t, certificateDownload]
+  );
 
   return (
     <Layout _sidebar={footerLinks}>
@@ -243,7 +243,16 @@ export default function Certification({ footerLinks }) {
               />
             </HStack>
           </Modal.Header>
-          <Modal.Body overflow={"scroll"}>
+          <Modal.Body
+            style={{
+              backgroundColor: "#f5f5f5",
+              width: "297mm",
+              minHeight: "210mm",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            overflow={"scroll"}
+          >
             <div ref={reportTemplateRef} className="certificae-height">
               <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
             </div>
