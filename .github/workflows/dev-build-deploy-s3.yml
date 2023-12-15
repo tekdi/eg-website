@@ -101,27 +101,48 @@ jobs:
       #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
       #     SOURCE_DIR: prod-build
       
-      - name: Configure Yarn Registry (HTTP)
-        run: |
-          yarn config set registry http://registry.yarnpkg.com/
+      # - name: Configure Yarn Registry (HTTP)
+      #   run: |
+      #     yarn config set registry http://registry.yarnpkg.com/
 
-      - name: Install s3-sync-action
-        run: |
-          yarn global add jakejarvis/s3-sync-action@v0.5.1 || true
+      # - name: Install s3-sync-action
+      #   run: |
+      #     yarn global add jakejarvis/s3-sync-action@v0.5.1 || true
       
+      # ## S3 sync
+      # - name: S3 Sync
+      #   run: |
+      #     yarn global add jakejarvis/s3-sync-action@v0.5.1 || true
+      #     export PATH="$(yarn global bin):$PATH"
+      #     s3-sync-action --follow-symlinks --delete --exclude 'node_modules/**'
+      #   env:
+      #     AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+      #     SOURCE_DIR: prod-build
+    
       ## S3 sync
       - name: S3 Sync
-        run: |
-          yarn global add jakejarvis/s3-sync-action@v0.5.1 || true
-          export PATH="$(yarn global bin):$PATH"
-          s3-sync-action --follow-symlinks --delete --exclude 'node_modules/**'
+        id: s3_sync
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --follow-symlinks --delete
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
           SOURCE_DIR: prod-build
-    
+      
+      - name: Check for Warnings
+        run: |
+          if [[ -n "$(echo "${{ steps.s3_sync.outputs.warning }}" | grep 'your-warning-text')" ]]; then
+            echo "Warning detected: ${{ steps.s3_sync.outputs.warning }}"
+            # Add any additional handling for warnings here, or just proceed to the next steps
+          else
+            echo "No warnings detected."
+          fi
 
       ### Invalidate Cloudfront
       - name: Cloudfront Invalidation
