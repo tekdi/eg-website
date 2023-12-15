@@ -82,10 +82,10 @@ export default function CampSetting({ footerLinks }) {
             </FrontEndTypo.H3>
           </VStack>
           <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2">
-                    <Alert.Icon />
-                    <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
-                </HStack>
+            <HStack alignItems="center" space="2">
+              <Alert.Icon />
+              <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
+            </HStack>
           </Alert>
           <HStack
             marginTop={10}
@@ -135,11 +135,15 @@ export default function CampSetting({ footerLinks }) {
                 key={day}
                 onPress={() => handleDayClick(day)}
                 _pressed={{
-                  bg: "green.500",
+                  bg: "textMaroonColor.400",
                   borderWidth: 2,
-                  borderColor: "green.500",
+                  borderColor: "textMaroonColor.400",
                 }}
-                bg={selectedDays?.includes(day) ? "green.500" : "blue.500"}
+                bg={
+                  selectedDays?.includes(day)
+                    ? "textMaroonColor.600"
+                    : "textMaroonColor.400"
+                }
                 style={{
                   width: 100,
                   height: 50,
