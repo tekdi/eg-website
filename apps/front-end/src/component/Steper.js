@@ -30,8 +30,8 @@ export default function Steper({
   const [per, setPer] = React.useState(0);
   const [stepPer, setStepPer] = React.useState(0);
   const [stage, setStage] = React.useState({});
-  const ncColor = cColor ? cColor : "#084B82";
-  const nrColor = rColor ? rColor : "#CAE9FF";
+  const ncColor = cColor ? cColor : "#FF0000";
+  const nrColor = rColor ? rColor : "#ff000047";
 
   React.useEffect(() => {
     if (steps?.length > 0) {
