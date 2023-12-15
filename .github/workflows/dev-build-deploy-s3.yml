@@ -144,15 +144,28 @@ jobs:
       #     warning_output="${{ steps.s3_sync.outputs.warning }}"
       #     echo "Warnings detected: $warning_output"
 
+      # - name: AWS CLI S3 Sync
+      #   run: |
+      #     aws s3 sync prod-build s3://$AWS_S3_BUCKET --acl public-read --delete --region $AWS_REGION || true
+      #   env:
+      #     AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+
       - name: AWS CLI S3 Sync
         run: |
-          aws s3 sync prod-build s3://$AWS_S3_BUCKET --acl public-read --delete --region $AWS_REGION || true
+          aws s3 sync prod-build s3://$AWS_S3_BUCKET --acl public-read --delete --region $AWS_REGION
+          SYNC_EXIT_CODE=$?
+          if [ $SYNC_EXIT_CODE -ne 0 ]; then
+            echo "AWS S3 Sync failed with exit code $SYNC_EXIT_CODE"
+            exit $SYNC_EXIT_CODE
+          fi
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-
 
 
       ### Invalidate Cloudfront
@@ -165,11 +178,11 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      ## Notify on Slack
-      - name: Notify on Slack channel
-        uses: iRoachie/slack-github-actions@v2.3.2
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-        if: ${{ always() }}
+      # ## Notify on Slack
+      # - name: Notify on Slack channel
+      #   uses: iRoachie/slack-github-actions@v2.3.2
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #   with:
+      #     status: ${{ job.status }}
+      #   if: ${{ always() }}
