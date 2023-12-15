@@ -276,13 +276,13 @@ export default function CampDashboard({ footerLinks }) {
                     {t("CAMP_SETTINGS")}
                   </FrontEndTypo.Secondarybutton>
 
-                  {/* <FrontEndTypo.Primarybutton
+                  <FrontEndTypo.Primarybutton
                     onPress={() => {
                       navigate(`/camps/${campId}/campexecution`);
                     }}
                   >
                     {t("CAMP_EXECUTION")}
-                  </FrontEndTypo.Primarybutton> */}
+                  </FrontEndTypo.Primarybutton>
                 </React.Fragment>
               )}
             </VStack>
