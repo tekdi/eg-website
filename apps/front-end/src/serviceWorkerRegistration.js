@@ -51,6 +51,33 @@ export function register(config) {
         registerValidSW(swUrl, config);
       }
     });
+    //This for a PWA
+    let installPrompt = null;
+    const installButton = document.querySelector("#install");
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      console.log("into the addEventListener");
+      event.preventDefault();
+      installPrompt = event;
+      installButton.removeAttribute("hidden");
+    });
+    window.addEventListener("appinstalled", () => {
+      disableInAppInstallPrompt();
+    });
+    installButton.addEventListener("click", async () => {
+      console.log("into the serviceworker.install button");
+      if (!installPrompt) {
+        return;
+      }
+      const result = await installPrompt.prompt();
+      console.log(`Install prompt was: ${result.outcome}`);
+      disableInAppInstallPrompt();
+    });
+
+    function disableInAppInstallPrompt() {
+      installPrompt = null;
+      installButton.setAttribute("hidden", "");
+    }
   }
 }
 
