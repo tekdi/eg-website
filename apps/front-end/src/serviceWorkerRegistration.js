@@ -59,6 +59,7 @@ export function register(config) {
       console.log("into the addEventListener");
       event.preventDefault();
       installPrompt = event;
+      localStorage.setItem("pwa", "yes");
       installButton.removeAttribute("hidden");
     });
     window.addEventListener("appinstalled", () => {
@@ -67,6 +68,7 @@ export function register(config) {
     installButton.addEventListener("click", async () => {
       console.log("into the serviceworker.install button");
       if (!installPrompt) {
+        localStorage.setItem("pwa", "no");
         return;
       }
       const result = await installPrompt.prompt();
@@ -76,6 +78,7 @@ export function register(config) {
 
     function disableInAppInstallPrompt() {
       installPrompt = null;
+      localStorage.setItem("pwa", "no");
       installButton.setAttribute("hidden", "");
     }
   }
