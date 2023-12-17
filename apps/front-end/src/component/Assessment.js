@@ -7,22 +7,38 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { VStack } from "native-base";
+import { Modal, VStack, Text } from "native-base";
+import { useTranslation } from "react-i18next";
 
 function Player({ setAlert }) {
   const [width, height] = useWindowSize();
+  const { t } = useTranslation();
   const [assessmentData, setAssessmentData] = React.useState();
   const [type, setType] = React.useState();
   const { context, context_id, do_id } = useParams();
   const [loading, setLoading] = React.useState(true);
   const [showExitButton, setShowExitButton] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const id = localStorage.getItem("id");
+
+  React.useEffect(async () => {
+    const getCertificate = await testRegistryService.getCertificate({ id });
+    if (getCertificate?.data?.length > 0) {
+      alert(t("EXAM_ALREADY_TAKEN"));
+      navigate("/");
+      return;
+    }
+  }, []);
 
   React.useEffect(async () => {
     const { error, ...assesmentData } = await testRegistryService.getAssessment(
       do_id
     );
     if (!error) {
-      setAssessmentData(assesmentData);
+      const updatedAssessmentData = await updateAllowSkipProperty(
+        assesmentData
+      );
+      setAssessmentData(updatedAssessmentData);
       setType("Course");
     } else {
       console.log(error);
@@ -31,7 +47,28 @@ function Player({ setAlert }) {
     setLoading(false);
   }, []);
 
+  const updateAllowSkipProperty = (data) => {
+    const updatedData = JSON.parse(JSON.stringify(data));
+    // Creating a deep copy of JSON data that
+    //we are getting from SUNBIRD API
+
+    // Helper function that will recursively update "allowSkip" property from YES TO NO from all places.
+    const updateAllowSkipRecursive = (obj) => {
+      for (const key in obj) {
+        if (obj[key] && typeof obj[key] === "object") {
+          updateAllowSkipRecursive(obj[key]); // Recursive call for nested objects
+        } else if (key === "allowSkip" && obj[key] === "Yes") {
+          obj[key] = "No"; // Update "allowSkip" to "No"
+        }
+      }
+    };
+
+    updateAllowSkipRecursive(updatedData);
+
+    return updatedData;
+  };
   const navigate = useNavigate();
+
   const handleExitButton = () => {
     navigate("/");
   };
@@ -40,6 +77,7 @@ function Player({ setAlert }) {
     { score, attempts, ...props },
     playerType = "quml"
   ) => {
+    setModalVisible(true);
     let data = {};
 
     let trackDataold = localStorage.getItem("trackDATA");
@@ -96,7 +134,10 @@ function Player({ setAlert }) {
       context: context,
       context_id: context_id,
     };
-    testRegistryService.testTrackingCreate(data);
+    const response = await testRegistryService.testTrackingCreate(data);
+    window.alert(response);
+    setModalVisible(false);
+
     setShowExitButton(true);
   };
 
@@ -109,9 +150,24 @@ function Player({ setAlert }) {
       <VStack p="5" bg="textRed.400" alignItems={"center"}>
         <H2 color="white">{localStorage.getItem("fullName")}</H2>
       </VStack>
+      <Modal isOpen={modalVisible} avoidKeyboard size="lg">
+        <Modal.Content>
+          <Modal.Body alignItems="center">
+            <Text> {t("AFTER_SUBMIT")}</Text>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+
       <VStack alignItems={"center"}>
         <SunbirdPlayer
-          {...{ width, height: height - 64, showExitButton, setShowExitButton }}
+          {...{
+            width,
+            height: height - 64,
+            showExitButton,
+            setShowExitButton,
+            loading,
+            setLoading,
+          }}
           {...assessmentData}
           userData={{
             firstName: localStorage.getItem("fullName"),
