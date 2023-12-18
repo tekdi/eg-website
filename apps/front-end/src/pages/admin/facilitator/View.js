@@ -156,11 +156,12 @@ export default function FacilitatorView({ footerLinks }) {
 
   const navigate = useNavigate();
 
-const profileDetails = React.useCallback(async () => {
+  const profileDetails = React.useCallback(async () => {
     const result = await facilitatorRegistryService.getOne({ id });
     setData(result);
     setAadhaarValue(result?.aadhar_no);
-    const qualificationList = await facilitatorRegistryService.getQualificationAll();
+    const qualificationList =
+      await facilitatorRegistryService.getQualificationAll();
     const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
 
     if (qual?.length > 0) {
@@ -424,7 +425,6 @@ const profileDetails = React.useCallback(async () => {
           </HStack>
 
           <HStack alignItems={Center} space="9">
-           
             <VStack space={4}>
               <AdminTypo.Secondarybutton
                 onPress={() => {
@@ -1075,27 +1075,29 @@ const profileDetails = React.useCallback(async () => {
   );
 }
 
-const SelectAllCheckBox = React.memo(({ fields, title, setFieldCheck, fieldCheck }) => {
+const SelectAllCheckBox = React.memo(
+  ({ fields, title, setFieldCheck, fieldCheck }) => {
+    const handleChange = React.useCallback(
+      (e) => {
+        if (!e) {
+          const checkedFields = fieldCheck?.filter(
+            (field) => !fields?.includes(field)
+          );
+          setFieldCheck(checkedFields);
+        } else {
+          const checkedFields = fieldCheck?.filter(
+            (field) => !fields?.includes(field)
+          );
+          setFieldCheck([...checkedFields, ...fields]);
+        }
+      },
+      [fields, fieldCheck, setFieldCheck]
+    );
 
-  const handleChange = React.useCallback((e) => {
-    if (!e) {
-      const checkedFields = fieldCheck?.filter(
-        (field) => !fields?.includes(field)
-      );
-      setFieldCheck(checkedFields);
-    } else {
-      const checkedFields = fieldCheck?.filter(
-        (field) => !fields?.includes(field)
-      );
-      setFieldCheck([...checkedFields, ...fields]);
-    }
-  }, [fields, fieldCheck, setFieldCheck]);
-
-  return (
-    <Checkbox
-      onChange={handleChange}
-    >
-      {title}
-    </Checkbox>
-  );
-});
+    return (
+      <Checkbox onChange={handleChange} colorScheme="danger">
+        {title}
+      </Checkbox>
+    );
+  }
+);

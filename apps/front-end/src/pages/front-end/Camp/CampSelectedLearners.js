@@ -150,6 +150,7 @@ export default function CampSelectedLearners() {
             <Checkbox
               isChecked={selectAllChecked}
               onChange={handleSelectAllChange}
+              colorScheme="danger"
             />
           </HStack>
         )}
@@ -221,6 +222,7 @@ export default function CampSelectedLearners() {
                     <Checkbox
                       isChecked={selectedIds.includes(item.id)}
                       onChange={() => handleCheckboxChange(item.id)}
+                      colorScheme="danger"
                     />
                   )}
                 </Box>

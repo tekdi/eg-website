@@ -29,7 +29,7 @@ import {
   Badge,
   Input,
 } from "native-base";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
@@ -39,6 +39,7 @@ import { useTranslation } from "react-i18next";
 import Clipboard from "component/Clipboard";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { debounce } from "lodash";
 
 const customStyles = {
   headCells: {
@@ -153,7 +154,6 @@ const scheduleCandidates = (t, days, certificateDownload) => {
       sortable: false,
       attr: "invite",
     },
-
     ...days,
     {
       name: t("SCORE"),
@@ -185,30 +185,91 @@ const scheduleCandidates = (t, days, certificateDownload) => {
   ];
 };
 
-const renderAttendanceColumn = (row, onSwitchToggle) => {
+const RenderAttendanceColumn = React.memo(({ row }) => {
   const attendance = row?.attendances?.[row?.index];
+  const [status, setStatus] = React.useState("absent");
+  const [locationData, setLocationData] = React.useState("");
+  const [isDisabledAttBtn, setIsDisabledAttBtn] = React.useState();
+  const { id } = useParams();
+
+  const getLocation = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successCallback, (e) => {
+        console.log(e);
+      });
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };
+  function successCallback(position) {
+    // Location was provided
+    let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
+    setLocationData({ latitude: latitude, longitude: longitude });
+  }
+
+  React.useEffect(async () => {
+    setStatus(attendance?.status);
+    await getLocation();
+  }, [attendance?.status]);
+
+  const onSwitchToggle = async (row) => {
+    setIsDisabledAttBtn(`${row.id}-${row.presentDate}`);
+    const attendance = row?.attendances?.[row?.index];
+    if (attendance) {
+      const data = {
+        id: attendance?.id,
+        user_id: attendance.user_id,
+        lat: `${locationData?.latitude || ""}`, //attendance.lat,
+        long: `${locationData?.longitude || ""}`, //attendance.long,
+        date_time: row?.presentDate,
+        status: row?.attendance_status,
+      };
+      await eventService.updateAttendance(data);
+    } else {
+      const data = {
+        user_id: row.id,
+        context_id: id,
+        context: "events",
+        lat: `${locationData?.latitude || ""}`, //attendance.lat,
+        long: `${locationData?.longitude || ""}`, //attendance.long,
+        date_time: row?.presentDate,
+        status: row?.attendance_status,
+      };
+      await attendanceService.createAttendance(data);
+    }
+    setStatus(row?.attendance_status);
+    setIsDisabledAttBtn();
+  };
+
   return (
     <HStack space="2">
       <Text key={row?.id}>
-        {attendance?.status === "present" ? "Present" : "Absent"}
+        {status === "present"
+          ? "Present"
+          : status === "absent"
+          ? "Absent"
+          : "Mark"}
       </Text>
       <Switch
-        // isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
+        isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
         offTrackColor="dangerColor"
         onTrackColor="successColor"
         onThumbColor="appliedColor"
         offThumbColor="appliedColor"
         defaultIsChecked={attendance?.status === "present"}
         onValueChange={async (e) => {
+          const attendance_status = e ? "present" : "absent";
           await onSwitchToggle({
             ...row,
-            attendance_status: e ? "present" : "absent",
+            attendance_status,
           });
         }}
       />
     </HStack>
   );
-};
+});
+
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
   const [width, Height] = useWindowSize();
@@ -221,7 +282,7 @@ export default function Attendence({ footerLinks }) {
   const [filterObj, setFilterObj] = React.useState();
   const [refAppBar, setRefAppBar] = React.useState();
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const [locationData, setlocationData] = React.useState("");
+  const [locationData, setLocationData] = React.useState("");
   const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -237,7 +298,6 @@ export default function Attendence({ footerLinks }) {
   const [inputValue, setInputValue] = React.useState();
   const [cameraFile, setcameraFile] = React.useState();
   const [downloadCertificate, setDownCertificate] = React.useState();
-  const [inputSearch, setInputSearch] = useState("");
   const reportTemplateRef = React.useRef(null);
   const [filter, setFilter] = React.useState({});
 
@@ -267,35 +327,6 @@ export default function Attendence({ footerLinks }) {
   React.useEffect(() => {
     getLocation();
   }, []);
-
-  const onSwitchToggle = async (row) => {
-    const attendance = row?.attendances?.[row?.index];
-    if (attendance) {
-      const data = {
-        id: attendance?.id,
-        user_id: attendance.user_id,
-        lat: `${locationData?.latitude || ""}`, //attendance.lat,
-        long: `${locationData?.longitude || ""}`, //attendance.long,
-        date_time: row?.presentDate,
-        status: row?.attendance_status,
-      };
-
-      await eventService.updateAttendance(data);
-    } else {
-      const data = {
-        user_id: row.id,
-        context_id: id,
-        context: "events",
-        lat: `${locationData?.latitude || ""}`, //attendance.lat,
-        long: `${locationData?.longitude || ""}`, //attendance.long,
-        date_time: row?.presentDate,
-        status: row?.attendance_status,
-      };
-      await attendanceService.createAttendance(data);
-    }
-    await getUsers();
-    setShowModal(false);
-  };
 
   const handleFormChange = (props) => {
     const data = props?.formData;
@@ -346,7 +377,7 @@ export default function Attendence({ footerLinks }) {
     // Location was provided
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
-    setlocationData({ latitude: latitude, longitude: longitude });
+    setLocationData({ latitude: latitude, longitude: longitude });
   }
 
   function errorCallback(error) {
@@ -366,25 +397,19 @@ export default function Attendence({ footerLinks }) {
   }
 
   const getUsers = async () => {
-    let filterData = { id };
-    if (inputSearch != "") {
-      filterData = { id, search: inputSearch };
-    }
-
     const result = await eventService.getAttendanceList({
       limit: 6,
       page: 1,
-      ...filterData,
       ...filter,
+      id,
     });
-
     setPaginationTotalRows(result?.totalCount);
     setUsers(result?.data || []);
   };
 
   React.useEffect(async () => {
     await getUsers();
-  }, [inputSearch, filter]);
+  }, [filter]);
 
   React.useEffect(async () => {
     setLoading(true);
@@ -395,7 +420,11 @@ export default function Attendence({ footerLinks }) {
       setActualDates([
         {
           name: t("MARK_ATTENDANCE"),
-          selector: (row) => renderAttendanceColumn(row, onSwitchToggle),
+          selector: (row) => (
+            <React.Suspense fallback="...">
+              <RenderAttendanceColumn {...{ row }} />
+            </React.Suspense>
+          ),
           sortable: false,
           attr: "marks",
         },
@@ -411,15 +440,17 @@ export default function Attendence({ footerLinks }) {
 
       const dates = datesD?.map((e, i) => ({
         name: t(moment(e).format("DD-MMM-YYYY")),
-        selector: (row) =>
-          renderAttendanceColumn(
-            {
-              ...row,
-              index: i,
-              presentDate: `${moment(e).format("YYYY-MM-DD")}`,
-            },
-            onSwitchToggle
-          ),
+        selector: (row) => (
+          <React.Suspense fallback="...">
+            <RenderAttendanceColumn
+              row={{
+                ...row,
+                index: i,
+                presentDate: `${moment(e).format("YYYY-MM-DD")}`,
+              }}
+            />
+          </React.Suspense>
+        ),
         sortable: false,
         attr: "marks",
       }));
@@ -472,14 +503,14 @@ export default function Attendence({ footerLinks }) {
     const inputValues = event.target.value;
     setInputValue(inputValues);
   };
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+  };
 
-  const handleInputSearch = async (event) => {
-    const searchValue = event.target.value;
-    setInputSearch(searchValue);
-  };
-  const handlePageChange = (page) => {
-    setPage(page);
-  };
+  const debouncedHandleSearch = React.useCallback(
+    debounce(handleSearch, 1000),
+    []
+  );
 
   if (userData?.id) {
     return (
@@ -786,12 +817,12 @@ export default function Attendence({ footerLinks }) {
                     {t("ADD_PARTICIPANTS")}
                   </AdminTypo.Secondarybutton>
                   <Input
-                    value={inputSearch}
+                    // value={filter?.search}
                     maxLength={12}
                     name="numberInput"
                     placeholder={t("SEARCH")}
                     variant="outline"
-                    onChange={handleInputSearch}
+                    onChange={debouncedHandleSearch}
                   />
                 </HStack>
               </HStack>

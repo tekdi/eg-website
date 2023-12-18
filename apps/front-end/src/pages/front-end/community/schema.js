@@ -1,5 +1,4 @@
 export default {
-  title: "COMMUNITY_DETAILS",
   type: "object",
   required: ["first_name", "contact_number", "designation"],
   properties: {
