@@ -37,7 +37,7 @@ export default function CampSessionList({ footerLinks }) {
   const [sessionList, setSessionList] = React.useState();
   const [sessionActive, setSessionActive] = React.useState();
   const [loading, setLoading] = React.useState(true);
-  const [modaVisible, setModaVisible] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [sessionDetails, setSessionDetails] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [isDisable, setIsDisable] = React.useState(false);
@@ -46,11 +46,11 @@ export default function CampSessionList({ footerLinks }) {
 
   const getData = React.useCallback(async () => {
     const result = await campService.getCampSessionDetails({
-      id: modaVisible,
+      id: modalVisible,
       camp_id: id,
     });
     setSessionDetails(result?.data);
-  }, [modaVisible]);
+  }, [modalVisible]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -62,10 +62,10 @@ export default function CampSessionList({ footerLinks }) {
     fetchData();
   }, [getData]);
   const handleStartSession = React.useCallback(
-    async (modaVisible) => {
+    async (modalVisible) => {
       setIsDisable(true);
       const data = await campService.creatCampSession({
-        learning_lesson_plan_id: modaVisible,
+        learning_lesson_plan_id: modalVisible,
         camp_id: id,
       });
       await getData();
@@ -88,7 +88,7 @@ export default function CampSessionList({ footerLinks }) {
       });
       await getData();
       setSubmitStatus();
-      setModaVisible(false);
+      setmodalVisible(false);
       window.location.reload();
     } else {
       setIsDisable(false);
@@ -96,7 +96,7 @@ export default function CampSessionList({ footerLinks }) {
     }
   }, [getData, submitStatus]);
 
-  const handaleCancel = () => {
+  const handleCancel = () => {
     setError();
     setSubmitStatus();
   };
@@ -198,7 +198,7 @@ export default function CampSessionList({ footerLinks }) {
               _vstack={{ p: 0, space: 0, flex: 1 }}
             >
               <Pressable
-                onPress={() => setModaVisible(item?.id)}
+                onPress={() => setModalVisible(item?.id)}
                 isDisabled={
                   sessionActive !== item?.ordering ||
                   item?.session_tracks?.[0]?.status === "complete"
@@ -220,8 +220,8 @@ export default function CampSessionList({ footerLinks }) {
       </VStack>
 
       <Modal
-        isOpen={modaVisible}
-        onClose={() => setModaVisible(false)}
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
         avoidKeyboard
         size="xl"
       >
@@ -312,7 +312,7 @@ export default function CampSessionList({ footerLinks }) {
                                     flex="1"
                                     textColor={"textMaroonColor.400"}
                                     isDisabled={isDisable}
-                                    onPress={(e) => handaleCancel()}
+                                    onPress={(e) => handleCancel()}
                                   >
                                     {t("CANCEL")}
                                   </FrontEndTypo.DefaultButton>
@@ -375,7 +375,7 @@ export default function CampSessionList({ footerLinks }) {
                                   flex="1"
                                   textColor={"textMaroonColor.400"}
                                   isDisabled={isDisable}
-                                  onPress={(e) => handaleCancel()}
+                                  onPress={(e) => handleCancel()}
                                 >
                                   {t("CANCEL")}
                                 </FrontEndTypo.DefaultButton>
