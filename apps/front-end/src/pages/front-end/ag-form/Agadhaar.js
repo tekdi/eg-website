@@ -365,17 +365,24 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               <IconByName
                 name="ErrorWarningLineIcon"
                 color="textRed.300"
-                size="20px"
+                size="25px"
               />
-              <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
-                {t("AG_LEARNER_ALREADY_IDENTIFIED")}
-              </FrontEndTypo.H2>
+              {isExistflag === "registeredAsFacilitator" && (
+                <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                  {t("SAME_PRERAK_AADHAAR_NUMBER_MESSAGE")}
+                </FrontEndTypo.H2>
+              )}
+              {isExistflag === "underSameFacilitator" && (
+                <FrontEndTypo.H2 color="textGreyColor.600" pl="2">
+                  {t("AG_LEARNER_ALREADY_IDENTIFIED")}
+                </FrontEndTypo.H2>
+              )}
             </HStack>
             {isExistflag === "registeredAsBeneficiaries" && (
               <VStack pt="3">
-                <FrontEndTypo.H5 color="textGreyColor.600">
+                <FrontEndTypo.H2 color="textGreyColor.600">
                   {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-                </FrontEndTypo.H5>
+                </FrontEndTypo.H2>
               </VStack>
             )}
           </Modal.Body>
