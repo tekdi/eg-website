@@ -105,7 +105,7 @@ export default function Login() {
           size={200}
         />
         <VStack space={5} p="5">
-          <Alert status="info" colorScheme="info">
+          <Alert status="warning" colorScheme="warning">
             <VStack space={2} flexShrink={1}>
               <HStack
                 flexShrink={1}
