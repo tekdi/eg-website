@@ -73,7 +73,7 @@ export default function CampSession({ footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "langBtn"],
+        onlyIconsShow: ["backBtn", "loginBtn", "pwaBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}

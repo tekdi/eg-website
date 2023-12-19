@@ -83,7 +83,12 @@ export default function CampTodayActivities({
 
   return (
     <Layout
-      _appBar={t("ADD_TODAYS_ACTIVITIES")}
+      _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: (
+          <FrontEndTypo.H2> {t("ADD_TODAYS_ACTIVITIES")} </FrontEndTypo.H2>
+        ),
+      }}
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space={4}>

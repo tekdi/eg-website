@@ -1,5 +1,6 @@
 import {
   CardComponent,
+  FrontEndTypo,
   Layout,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
@@ -16,16 +17,17 @@ export default function PcrView() {
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = Array.isArray(result?.data) ? result.data.filter((item) => item.user_id == id) : [];
+    const userData = Array.isArray(result?.data)
+      ? result.data.filter((item) => item.user_id == id)
+      : [];
     setData(userData[0]);
   }, []);
 
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "userInfo"],
-
-        name: t("PCR_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H3> {t("PCR_DETAILS")} </FrontEndTypo.H3>,
         onPressBackButton: (e) => {
           navigate(`/beneficiary/profile/${id}`);
         },

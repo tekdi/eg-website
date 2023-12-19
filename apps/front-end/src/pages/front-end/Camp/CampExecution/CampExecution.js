@@ -223,7 +223,12 @@ export default function CampExecution({ footerLinks, setAlert }) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Layout
-          _appBar={{ name: t("CAMP_EXECUTION") }}
+          _appBar={{
+            onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+            leftIcon: (
+              <FrontEndTypo.H2> {t("CAMP_EXECUTION")} </FrontEndTypo.H2>
+            ),
+          }}
           loading={loading}
           _footer={{ menues: footerLinks }}
         >
@@ -326,7 +331,10 @@ export default function CampExecution({ footerLinks, setAlert }) {
 
   return (
     <Layout
-      _appBar={{ name: t("CAMP_EXECUTION") }}
+      _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("CAMP_EXECUTION")} </FrontEndTypo.H2>,
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
     >

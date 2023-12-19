@@ -86,8 +86,8 @@ export default function BenificiaryEducation() {
   return (
     <Layout
       _appBar={{
-        name: t("EDUCATION_DETAILS"),
-        onlyIconsShow: ["langBtn", "backBtn"],
+        leftIcon: <FrontEndTypo.H2>{t("EDUCATION_DETAILS")}</FrontEndTypo.H2>,
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
         onPressBackButton: (e) => {
           navigate(`/beneficiary/profile/${userId}`);
         },

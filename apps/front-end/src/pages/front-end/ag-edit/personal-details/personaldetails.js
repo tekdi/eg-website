@@ -210,7 +210,8 @@ export default function PersonalDetails({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("PERSONAL_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("PERSONAL_DETAILS")} </FrontEndTypo.H2>,
         lang,
         setLang,
       }}

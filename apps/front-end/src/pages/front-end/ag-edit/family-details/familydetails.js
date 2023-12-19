@@ -321,7 +321,8 @@ export default function FamilyDetails({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("FAMILY_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("FAMILY_DETAILS")} </FrontEndTypo.H2>,
         lang,
         setLang,
       }}

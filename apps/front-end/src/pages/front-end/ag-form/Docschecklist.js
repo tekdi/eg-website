@@ -89,13 +89,13 @@ const Docschecklist = ({ footerLinks }) => {
     <Layout
       loading={loading}
       _appBar={{
-        name: t("DOCUMENTS_CHECKLIST"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2>{t("DOCUMENTS_CHECKLIST")}</FrontEndTypo.H2>,
         lang,
         setLang,
         onPressBackButton: (e) => {
           navigate(`/beneficiary/profile/${id}`);
         },
-        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
     >

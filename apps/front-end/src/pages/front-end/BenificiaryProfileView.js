@@ -186,6 +186,7 @@ export default function BenificiaryProfileView(props) {
   return (
     <Layout
       _appBar={{
+        onlyIconsShow: ["backBtn", "userInfo", "loginBtn", "langBtn", "pwaBtn"],
         name: t("BENEFICIARY_PROFILE"),
         onPressBackButton: (e) => {
           navigate(-1);

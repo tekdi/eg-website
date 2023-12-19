@@ -70,7 +70,13 @@ export default function BenificiaryBasicDetails() {
     );
   };
   return (
-    <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["backBtn", "userInfo", "loginBtn", "langBtn", "pwaBtn"],
+        name: t("BASIC_DETAILS"),
+        onPressBackButton,
+      }}
+    >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
           <ProfilePhoto

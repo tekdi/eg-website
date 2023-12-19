@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "REFERENCE_DETAILS",
+      // title: "REFERENCE_DETAILS",
       type: "object",
       properties: {
         referencefullname: {

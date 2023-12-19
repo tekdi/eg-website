@@ -121,8 +121,8 @@ const PcrDetails = () => {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "userInfo"],
-        name: t("PCR_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H3> {t("PCR_DETAILS")} </FrontEndTypo.H3>,
         onPressBackButton: (e) => {
           navigate(`/beneficiary/${id}/pcrview`);
         },

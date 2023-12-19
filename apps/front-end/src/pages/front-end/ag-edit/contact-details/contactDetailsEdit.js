@@ -368,7 +368,8 @@ export default function ContactDetailsEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("CONTACT_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("CONTACT_DETAILS")} </FrontEndTypo.H2>,
         lang,
         setLang,
       }}

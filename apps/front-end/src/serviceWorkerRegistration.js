@@ -60,15 +60,18 @@ export function register(config) {
       event.preventDefault();
       installPrompt = event;
       localStorage.setItem("pwa", "yes");
+      localStorage.setItem("appInstall", "no");
       installButton.removeAttribute("hidden");
     });
     window.addEventListener("appinstalled", () => {
+      localStorage.setItem("appInstall", "yes");
       disableInAppInstallPrompt();
     });
     installButton.addEventListener("click", async () => {
       console.log("into the serviceworker.install button");
       if (!installPrompt) {
         localStorage.setItem("pwa", "no");
+        localStorage.setItem("appInstall", "no");
         return;
       }
       const result = await installPrompt.prompt();

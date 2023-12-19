@@ -81,7 +81,7 @@ export default function BenificiaryProfilePhoto() {
       _appBar={{
         onPressBackButton,
         leftIcon: <FrontEndTypo.H2>{t("PHOTOS")}</FrontEndTypo.H2>,
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
       }}
       _page={{ _scollView: { bg: "white" } }}
     >

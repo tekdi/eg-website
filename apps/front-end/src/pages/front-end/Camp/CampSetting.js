@@ -72,7 +72,13 @@ export default function CampSetting({ footerLinks }) {
   };
 
   return (
-    <Layout _appBar={{ name: t("Settings") }} _footer={{ menues: footerLinks }}>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("SETTINGS")} </FrontEndTypo.H2>,
+      }}
+      _footer={{ menues: footerLinks }}
+    >
       <VStack space={4} p={4}>
         <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
           <VStack alignItems="center" space={3}>
@@ -82,10 +88,10 @@ export default function CampSetting({ footerLinks }) {
             </FrontEndTypo.H3>
           </VStack>
           <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2">
-                    <Alert.Icon />
-                    <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
-                </HStack>
+            <HStack alignItems="center" space="2">
+              <Alert.Icon />
+              <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
+            </HStack>
           </Alert>
           <HStack
             marginTop={10}

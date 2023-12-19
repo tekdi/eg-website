@@ -221,8 +221,9 @@ export default function BasicDetailsForm({ id }) {
   return (
     <Layout
       _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("BASIC_DETAILS")} </FrontEndTypo.H2>,
         onPressBackButton,
-        name: t("BASIC_DETAILS"),
         lang,
         setLang,
       }}

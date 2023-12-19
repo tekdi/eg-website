@@ -85,8 +85,8 @@ export default function CampExecutionEnd({
   return (
     <Layout
       _appBar={{
-        name: t("CAMP_EXECUTION"),
-        onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
+        onlyIconsShow: ["loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("CAMP_EXECUTION")} </FrontEndTypo.H2>,
       }}
       loading={loading}
     >

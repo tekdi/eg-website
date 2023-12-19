@@ -350,6 +350,7 @@ export default function AddressEdit({ ip }) {
   return (
     <Layout
       _appBar={{
+        onlyIconsShow: ["backBtn", "userInfo", "loginBtn", "langBtn", "pwaBtn"],
         onPressBackButton,
         name: t("ADDRESS"),
 

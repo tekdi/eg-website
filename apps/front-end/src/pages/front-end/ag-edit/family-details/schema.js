@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "FAMILY_DETAILS",
+      // title: "FAMILY_DETAILS",
       type: "object",
       properties: {
         father_details: {

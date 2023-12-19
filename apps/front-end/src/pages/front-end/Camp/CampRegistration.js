@@ -171,7 +171,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       loading={loading}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
-        name: t("CAMP_REGISTER"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("CAMP_REGISTER")} </FrontEndTypo.H2>,
         onPressBackButton,
         _box: { bg: "white" },
       }}

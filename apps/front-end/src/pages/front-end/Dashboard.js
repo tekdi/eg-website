@@ -184,7 +184,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       _appBar={{
         profile_url: facilitator?.profile_photo_1?.name,
         name: [facilitator?.first_name, facilitator?.last_name].join(" "),
-        exceptIconsShow: ["backBtn", "userInfo"],
+        exceptIconsShow: ["backBtn", "userInfo", "pwaBtn"],
         facilitator,
       }}
       _footer={{ menues: footerLinks }}
@@ -198,9 +198,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             {facilitator?.program_faciltators?.status ===
               "selected_for_onboarding" &&
               progress !== 100 && (
-                <Alert status="warning" alignItems={"start"}>
+                <Alert status="success" alignItems={"start"}>
                   <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
+                    <Alert.Icon size={"lg"} />
                     <BodyMedium>
                       {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
                     </BodyMedium>

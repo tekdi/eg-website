@@ -247,7 +247,8 @@ export default function ReferenceDetails({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("REFERENCE_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("REFERENCE_DETAILS")} </FrontEndTypo.H2>,
         lang,
         setLang,
       }}

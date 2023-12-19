@@ -44,7 +44,7 @@ export default function BenificiaryAadhaarDetails() {
   return (
     <Layout
       _appBar={{
-        exceptIconsShow: ["menuBtn", "userInfo"],
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
         onPressBackButton,
       }}

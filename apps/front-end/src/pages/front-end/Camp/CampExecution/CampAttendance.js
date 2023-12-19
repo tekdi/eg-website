@@ -245,7 +245,9 @@ export default function CampAttendance({ activityId }) {
       loading={loading}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
-        name: t("ATTENDANCE"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("ATTENDANCE")} </FrontEndTypo.H2>,
+
         _box: { bg: "white" },
       }}
     >

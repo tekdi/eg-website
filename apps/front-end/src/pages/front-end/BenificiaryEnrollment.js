@@ -6,6 +6,7 @@ import {
   Layout,
   enumRegistryService,
   GetEnumValue,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -44,7 +45,10 @@ export default function BenificiaryEnrollment() {
       loading={loading}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
-        name: t("ENROLLMENT_DETAILS"),
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: (
+          <FrontEndTypo.H2> {t("ENROLLMENT_DETAILS")} </FrontEndTypo.H2>
+        ),
         onPressBackButton,
         _box: { bg: "white" },
       }}

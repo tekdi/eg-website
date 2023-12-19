@@ -84,7 +84,13 @@ export default function BenificiaryJourney() {
 
   return (
     <Layout
-      _appBar={{ name: t("JOURNEY_IN_PROJECT_PRAGATI"), onPressBackButton }}
+      _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: (
+          <FrontEndTypo.H3> {t("JOURNEY_IN_PROJECT_PRAGATI")} </FrontEndTypo.H3>
+        ),
+        onPressBackButton,
+      }}
     >
       <HStack alignItems={"center"} mt={5} ml={5}>
         {benificiary?.profile_photo_1?.id ? (

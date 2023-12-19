@@ -28,7 +28,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 
-
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
   const constantSchema = properties[page];
@@ -409,8 +408,6 @@ export default function App() {
     return false;
   };
 
-
-
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
@@ -569,8 +566,10 @@ export default function App() {
         loading={loading}
         _appBar={{
           onPressBackButton,
-          onlyIconsShow: ["backBtn", "userInfo"],
-          name: t("ENROLLMENT_DETAILS"),
+          onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+          leftIcon: (
+            <FrontEndTypo.H2> {t("ENROLLMENT_DETAILS")} </FrontEndTypo.H2>
+          ),
           lang,
           setLang,
           _box: { bg: "white", shadow: "appBarShadow" },

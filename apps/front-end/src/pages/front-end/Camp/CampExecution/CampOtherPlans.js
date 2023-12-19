@@ -50,7 +50,10 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
 
   return (
     <Layout
-      _appBar={{ name: t("CAMP_EXECUTION") }}
+      _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("CAMP_EXECUTION")} </FrontEndTypo.H2>,
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
     >

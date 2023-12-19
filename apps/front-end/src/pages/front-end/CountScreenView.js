@@ -29,7 +29,7 @@ export default function TableView({ footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
+        onlyIconsShow: ["backBtn", "pwaBtn", "loginBtn", "userInfo", "langBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
         _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}

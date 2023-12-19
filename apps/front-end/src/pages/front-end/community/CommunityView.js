@@ -111,7 +111,8 @@ export default function CommunityView({ footerLinks }) {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
+        onlyIconsShow: ["loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("COMMUNITY_DETAILS")} </FrontEndTypo.H2>,
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -120,19 +121,18 @@ export default function CommunityView({ footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <Box p="4">
-        {!addMore ||
-          (data?.length <= 2 && (
-            <Alert
-              alignSelf="center"
-              status="warning"
-              p="2"
-              flexDirection="row"
-              gap="2"
-            >
-              <Alert.Icon size="5" />
-              <FrontEndTypo.H2>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H2>
-            </Alert>
-          ))}
+        {!addMore && data?.length < 2 && (
+          <Alert
+            alignSelf="center"
+            status="warning"
+            p="2"
+            flexDirection="row"
+            gap="2"
+          >
+            <Alert.Icon size="5" />
+            <FrontEndTypo.H2>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H2>
+          </Alert>
+        )}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
             {data?.length > 0 &&

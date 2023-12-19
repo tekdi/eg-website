@@ -55,7 +55,10 @@ export default function CampDashboard({ footerLinks }) {
 
   return (
     <Layout
-      _appBar={{ name: t("MY_CAMP") }}
+      _appBar={{
+        onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "pwaBtn"],
+        leftIcon: <FrontEndTypo.H2> {t("MY_CAMP")} </FrontEndTypo.H2>,
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
     >
