@@ -12,14 +12,18 @@ import {
   Pressable,
 } from "native-base";
 import React, { useState, useCallback } from "react";
-import aadharImage from "./aadhar_illustration.png";
-import introductionImage from "../common/Images/Image7.png";
-import prerakDutiesImage1 from "../common/Images/Image1.png";
-import prerakDutiesImage2 from "../common/Images/Image2.png";
-import prerakDutiesImage3 from "../common/Images/Image3.png";
-import prerakDutiesImage4 from "../common/Images/Image4.png";
-import prerakDutiesImage5 from "../common/Images/Image5.png";
-import prerakDutiesImage6 from "../common/Images/Image6.png";
+import { JSONSchema7 } from "json-schema";
+import validator from "@rjsf/validator-ajv8";
+
+import Form from "@rjsf/core";
+import aadharImage from "../../../../assets/images/facilitator-duties/Aadhaar2.png";
+import introductionImage from "../../../../assets/images/facilitator-duties/img7.png";
+import prerakDutiesImage1 from "../../../../assets/images/facilitator-duties/img1.png";
+import prerakDutiesImage2 from "../../../../assets/images/facilitator-duties/img2.png";
+import prerakDutiesImage3 from "../../../../assets/images/facilitator-duties/img3.png";
+import prerakDutiesImage4 from "../../../../assets/images/facilitator-duties/img4.png";
+import prerakDutiesImage5 from "../../../../assets/images/facilitator-duties/img5.png";
+import prerakDutiesImage6 from "../../../../assets/images/facilitator-duties/img6.png";
 
 const stylesheet = {
   text1: {
@@ -41,9 +45,45 @@ const stylesheet = {
     fontWeight: "700",
     fontSize: "22px",
   },
+  languageButton: {
+    width: 150,
+    borderRadius: 14,
+    backgroundColor: "var(--Gray-10, #FAFAFA)",
+    borderWidth: 2,
+    borderColor: "var(--Secondary-Blue, #084B82)",
+    height: 91,
+  },
+  languageButtonText: {
+    color: "var(--Secondary-Blue, #084B82)",
+    textAlign: "center",
+    fontFamily: "Inter",
+    fontSize: 12,
+    fontStyle: "normal",
+    fontWeight: "600",
+    lineHeight: "normal",
+  },
+
+  defaultLanguageButton: {
+    width: 150,
+    borderRadius: 4,
+    backgroundColor: "var(--Gray-10, #FAFAFA)",
+    border: " 1px solid var(--Gray-30, #E0E0E0)",
+    borderColor: "gray",
+    height: 91,
+  },
+
+  defaulutLanguageButtonText: {
+    color: "var(--Gray-80, #424242)",
+    textAlign: "center",
+    fontFamily: "Inter",
+    fontSize: 12,
+    fontStyle: "normal",
+    fontWeight: "500",
+    lineHeight: "normal",
+  },
 };
 
-const FacilitatorOnboarding = () => {
+const FacilitatorRegistration = () => {
   const [activeScreenName, setActiveScreenName] = useState();
   const [mobileNumber, setMobileNumber] = useState("");
 
@@ -76,6 +116,33 @@ const FacilitatorOnboarding = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+
+  const schema = {
+    type: "object",
+    properties: {
+      firstName: { type: "string", title: "First Name" },
+      lastName: { type: "string", title: "Last Name" },
+      mobileNumber: {
+        type: "string",
+        title: "Mobile Number",
+        pattern: "^[0-9]{10}$",
+      },
+    },
+    required: ["firstName", "lastName", "mobileNumber"],
+  };
+
+  const uiSchema = {
+    firstName: {
+      "ui:placeholder": "Enter first name",
+    },
+    lastName: {
+      "ui:placeholder": "Enter last name",
+    },
+    mobileNumber: {
+      "ui:placeholder": "Enter mobile number",
+    },
+  };
+
   const handleInputChange = (value) => {
     setMobileNumber(value);
   };
@@ -88,7 +155,7 @@ const FacilitatorOnboarding = () => {
 
   const chooseLangauge = () => {
     return (
-      <Stack>
+      <Stack alignItems={"center"}>
         <Box p="5">
           <FrontEndTypo.H1 pt="24px" bold textAlign={"center"}>
             {t("CHOOSE_LANGUAGE")}
@@ -103,25 +170,22 @@ const FacilitatorOnboarding = () => {
 
           <HStack space={3} mt={50}>
             <Button
-              color={" var(--Gray-80, #424242)"}
-              height={"14vh"}
-              width={"40vw"}
-              padding={"16px"}
-              borderRadius={"4px"}
-              border={" 1px solid var(--Gray-30, #E0E0E0)"}
-              // background={"var(--Gray-10, #FAFAFA)"}
+              style={stylesheet.defaultLanguageButton}
               onPress={() => handleNextScreen("introductionOfProject")}
             >
-              {t("ENGLISH")}
+              <Text style={stylesheet.defaulutLanguageButtonText}>
+                {" "}
+                {t("ENGLISH")}
+              </Text>
             </Button>
             <Button
-              height={"14vh"}
-              width={"40vw"}
-              padding={"16px"}
-              borderRadius={"4px"}
+              style={stylesheet.defaultLanguageButton}
               onPress={() => handleNextScreen("introductionOfProject")}
             >
-              {t("HINDI")}
+              <Text style={stylesheet.defaulutLanguageButtonText}>
+                {" "}
+                {t("HINDI")}
+              </Text>
             </Button>
           </HStack>
         </Box>
@@ -222,19 +286,47 @@ const FacilitatorOnboarding = () => {
   );
   const enterBasicDetails = () => (
     <>
+      {/* <VStack flex={3} space={5}>
+        <FrontEndTypo.H1 bold>Sign Up in three simple steps!</FrontEndTypo.H1>
+        <Form
+          validator={validator}
+          schema={schema}
+          uiSchema={uiSchema}
+          formData={{ firstName: "", lastName: "", mobileNumber: "" }}
+          onSubmit={({ formData }) => {
+            console.log("Form data submitted:", formData);
+            handleNextScreen("contactDetails");
+          }}
+        />
+        <FrontEndTypo.Primarybutton
+          style={{ background: "#FF0000" }}
+          onPress={() => handleNextScreen("contactDetails")}
+        >
+          Next
+        </FrontEndTypo.Primarybutton>
+      </VStack> */}
+
       <VStack flex={3} space={5}>
         <FrontEndTypo.H1 bold>Sign Up in three simple steps!</FrontEndTypo.H1>
         <Text bold fontWeight={600} color={"#790000"}>
           Tell us your name
         </Text>{" "}
         <Text color={"#790000"}>(As per your Aadhar Card)</Text>
-        <Input type="text" placeholder="Enter first name" />
-        <Input type="text" placeholder="Enter last name" />
+        <Form
+          validator={validator}
+          schema={schema}
+          uiSchema={uiSchema}
+          formData={{ firstName: "", lastName: "", mobileNumber: "" }}
+          // onSubmit={({ formData }) => {
+          //   console.log("Form data submitted:", formData);
+          //   handleNextScreen("contactDetails");
+          // }}
+        />
         <Text bold fontWeight={600} color={"#790000"}>
           How can we Contact You?
         </Text>{" "}
         <Text color={"#790000"}>(As per your Aadhar Card)</Text>
-        <Input
+        {/* <Input
           type="tel"
           placeholder="Enter mobile number"
           value={mobileNumber}
@@ -246,7 +338,7 @@ const FacilitatorOnboarding = () => {
           isDisabled={!mobileNumber}
         >
           Next
-        </FrontEndTypo.Primarybutton>
+        </FrontEndTypo.Primarybutton> */}
       </VStack>
     </>
   );
@@ -402,7 +494,11 @@ const FacilitatorOnboarding = () => {
   };
 
   return (
-    <Layout>
+    <Layout
+      _appBar={{
+        onlyIconsShow: ["backBtn", "langBtn"],
+      }}
+    >
       <VStack flex={2} padding={3} space={3}>
         {renderSwitchCase()}
       </VStack>
@@ -410,4 +506,4 @@ const FacilitatorOnboarding = () => {
   );
 };
 
-export default FacilitatorOnboarding;
+export default FacilitatorRegistration;

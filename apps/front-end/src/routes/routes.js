@@ -172,9 +172,9 @@ const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
 //offline_falilitator_onboarding
-const FacilitatorOnboarding = React.lazy(() =>
+const FacilitatorRegistration = React.lazy(() =>
   import(
-    "pages/front-end/FacilitatorOffline/Self-Onboarding/FacilitatorOnboarding"
+    "pages/front-end/FacilitatorOffline/Self-Onboarding/FacilitatorRegistration"
   )
 );
 
@@ -359,6 +359,6 @@ export default [
 
   {
     path: "/offline/facilitator-self-onboarding/:id",
-    component: FacilitatorOnboarding,
+    component: FacilitatorRegistration,
   },
 ];
