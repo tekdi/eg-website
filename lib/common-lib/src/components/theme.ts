@@ -624,7 +624,7 @@ const DEFAULT_THEME = {
     Darkmaroonprimarybutton: {
       400: '#FF0000'
     },
-    TextBlack: {
+    textBlack: {
       400: '#000000'
     },
     Darkmaroonsecondarybutton: {
@@ -683,7 +683,8 @@ const DEFAULT_THEME = {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
-      400: '#ff0000'
+      400: '#ff0000',
+      500: '#ff000047'
     },
     dividerColor: '#EEEEEE',
     textGreen: {
