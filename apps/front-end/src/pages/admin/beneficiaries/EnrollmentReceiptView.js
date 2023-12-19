@@ -45,7 +45,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [openModal, setOpenModal] = React.useState(false);
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
-  const profileDetails = useCallback(async () => {
+  const profileDetails = React.useCallback(async () => {
     const { result } = await benificiaryRegistoryService.getOne(id);
     setData(result);
     const { data: newData } = await enumRegistryService.getSubjects({
@@ -62,11 +62,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     setLoading(false);
   }, [id]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     profileDetails();
   }, [profileDetails]);
 
-  const checkValidation = useCallback(() => {
+  const checkValidation = React.useCallback(() => {
     let data = {};
     ["learner_enrollment_details", "enrollment_details"]
       .filter((e) => !reason[e])
@@ -75,7 +75,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     return !Object.keys(data).length;
   }, [reason, t]);
 
-  const submit = useCallback(
+  const submit = React.useCallback(
     async (status) => {
       setIsButtonLoading(true);
       if (checkValidation()) {

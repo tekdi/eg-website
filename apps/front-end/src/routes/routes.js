@@ -315,10 +315,10 @@ export default [
     path: "/camps/:id/settings",
     component: CampSettings,
   },
-  // { path: "/camps/:id/Campexecution", component: CampExecution },
-  // { path: "/camps/:id/Campexecution/:step", component: CampExecution },
+  { path: "/camps/:id/Campexecution", component: CampExecution },
+  { path: "/camps/:id/Campexecution/:step", component: CampExecution },
 
-  // { path: "/camps/:id/campotherplans", component: CampOtherPlans },
+  { path: "/camps/:id/campotherplans", component: CampOtherPlans },
   {
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
