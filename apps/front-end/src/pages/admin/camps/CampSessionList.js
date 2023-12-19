@@ -233,168 +233,158 @@ export default function CampSessionList({ footerLinks }) {
         size="xl"
       >
         <Modal.Content>
-          <Modal.Body>
-            <VStack>
-              <CardComponent>
-                <VStack space="4">
-                  <VStack alignItems="center">
-                    <FrontEndTypo.H3
-                      alignContent={"Center"}
-                      color="textMaroonColor.400"
-                      bold
-                    >
-                      {t("LESSON")} {sessionDetails?.ordering}
-                    </FrontEndTypo.H3>
-                  </VStack>
-                  {!["incomplete", "complete"].includes(
-                    sessionDetails?.session_tracks?.[0]?.status
-                  ) ? (
-                    <FrontEndTypo.DefaultButton
-                      textColor={"textMaroonColor.400"}
-                      icon={
-                        <IconByName
-                          name="ArrowRightLineIcon"
-                          _icon={{
-                            color: "textMaroonColor.400",
-                            size: "25px",
-                          }}
-                        />
-                      }
-                      isDisabled={
-                        sessionDetails?.session_tracks?.[0] || isDisable
-                      }
-                      onPress={() => handleStartSession(sessionDetails?.id)}
-                    >
-                      {t("SESSION_STARTED")}
-                    </FrontEndTypo.DefaultButton>
-                  ) : (
-                    <VStack space={4}>
-                      {handleCompleteButton() && (
+          <Modal.Header>
+            <FrontEndTypo.H3
+              textAlign={"Center"}
+              color="textMaroonColor.400"
+              bold
+            >
+              {t("LESSON")} {sessionDetails?.ordering}
+            </FrontEndTypo.H3>
+          </Modal.Header>
+          <Modal.Body p="6">
+            {!["incomplete", "complete"].includes(
+              sessionDetails?.session_tracks?.[0]?.status
+            ) ? (
+              <FrontEndTypo.DefaultButton
+                textColor={"textMaroonColor.400"}
+                icon={
+                  <IconByName
+                    name="ArrowRightLineIcon"
+                    _icon={{
+                      color: "textMaroonColor.400",
+                      size: "25px",
+                    }}
+                  />
+                }
+                isDisabled={sessionDetails?.session_tracks?.[0] || isDisable}
+                onPress={() => handleStartSession(sessionDetails?.id)}
+              >
+                {t("SESSION_STARTED")}
+              </FrontEndTypo.DefaultButton>
+            ) : (
+              <VStack space={4}>
+                {handleCompleteButton() && (
+                  <FrontEndTypo.DefaultButton
+                    borderWidth="0"
+                    background={"#FF0000"}
+                    onPress={(e) => setSubmitStatus({ status: "complete" })}
+                  >
+                    {t("SYLLABUS_COMPLETED")}
+                  </FrontEndTypo.DefaultButton>
+                )}
+                {submitStatus?.status === "complete" && (
+                  <CardComponent title={t("HOW_WAS_SESSION")}>
+                    <VStack space="4">
+                      <CustomRadio
+                        options={{
+                          enumOptions: enumOptions?.SESSION_COMPLETED?.map(
+                            (e) => ({
+                              ...e,
+                              label: e?.title,
+                              value: e?.value,
+                            })
+                          ),
+                        }}
+                        schema={{ grid: 1, _pressable: { p: 2 } }}
+                        value={submitStatus?.reason}
+                        onChange={(e) => {
+                          setSubmitStatus({
+                            ...submitStatus,
+                            reason: e,
+                          });
+                        }}
+                      />
+
+                      {error && <Alert status="warning">{t(error)}</Alert>}
+                      <HStack space={4}>
                         <FrontEndTypo.DefaultButton
-                          borderWidth="0"
-                          background={"#FF0000"}
+                          flex="1"
+                          textColor={"textMaroonColor.400"}
+                          isDisabled={isDisable}
+                          onPress={(e) => handleCancel()}
+                        >
+                          {t("CANCEL")}
+                        </FrontEndTypo.DefaultButton>
+                        <FrontEndTypo.DefaultButton
+                          flex="1"
+                          textColor={"textMaroonColor.400"}
+                          isDisabled={isDisable}
                           onPress={(e) =>
-                            setSubmitStatus({ status: "complete" })
+                            handlePartiallyDone(
+                              sessionDetails?.session_tracks?.[0]?.id
+                            )
                           }
                         >
-                          {t("SYLLABUS_COMPLETED")}
+                          {t("SAVE")}
                         </FrontEndTypo.DefaultButton>
-                      )}
-                      {submitStatus?.status === "complete" && (
-                        <CardComponent title={t("HOW_WAS_SESSION")}>
-                          <VStack space="4">
-                            <CustomRadio
-                              options={{
-                                enumOptions:
-                                  enumOptions?.SESSION_COMPLETED?.map((e) => ({
-                                    ...e,
-                                    label: e?.title,
-                                    value: e?.value,
-                                  })),
-                              }}
-                              schema={{ grid: 1 }}
-                              value={submitStatus?.reason}
-                              onChange={(e) => {
-                                setSubmitStatus({
-                                  ...submitStatus,
-                                  reason: e,
-                                });
-                              }}
-                            />
-
-                            {error && (
-                              <Alert status="warning">{t(error)}</Alert>
-                            )}
-                            <HStack space={4}>
-                              <FrontEndTypo.DefaultButton
-                                flex="1"
-                                textColor={"textMaroonColor.400"}
-                                isDisabled={isDisable}
-                                onPress={(e) => handleCancel()}
-                              >
-                                {t("CANCEL")}
-                              </FrontEndTypo.DefaultButton>
-                              <FrontEndTypo.DefaultButton
-                                flex="1"
-                                textColor={"textMaroonColor.400"}
-                                isDisabled={isDisable}
-                                onPress={(e) =>
-                                  handlePartiallyDone(
-                                    sessionDetails?.session_tracks?.[0]?.id
-                                  )
-                                }
-                              >
-                                {t("SAVE")}
-                              </FrontEndTypo.DefaultButton>
-                            </HStack>
-                          </VStack>
-                        </CardComponent>
-                      )}
-                      {sessionDetails?.session_tracks?.[0] && (
-                        <FrontEndTypo.DefaultButton
-                          borderColor="red.400"
-                          borderWidth="1"
-                          textColor="textMaroonColor.400"
-                          background=""
-                          onPress={(e) => {
-                            setSubmitStatus({ status: "incomplete" });
-                          }}
-                        >
-                          {t("SYLLABUS_INCOMPLETED")}
-                        </FrontEndTypo.DefaultButton>
-                      )}
-                      {submitStatus?.status === "incomplete" && (
-                        <VStack space={4}>
-                          <CustomRadio
-                            options={{
-                              enumOptions:
-                                enumOptions?.SESSION_PARTIALLY_COMPLETE?.map(
-                                  (e) => ({
-                                    ...e,
-                                    label: e?.title,
-                                    value: e?.value,
-                                  })
-                                ),
-                            }}
-                            schema={{ grid: 1 }}
-                            value={submitStatus?.reason}
-                            onChange={(e) => {
-                              setSubmitStatus({
-                                ...submitStatus,
-                                reason: e,
-                              });
-                            }}
-                          />
-                          {error && <Alert status="warning">{t(error)}</Alert>}
-                          <HStack space={4}>
-                            <FrontEndTypo.DefaultButton
-                              flex="1"
-                              textColor={"textMaroonColor.400"}
-                              isDisabled={isDisable}
-                              onPress={(e) => handleCancel()}
-                            >
-                              {t("CANCEL")}
-                            </FrontEndTypo.DefaultButton>
-                            <FrontEndTypo.DefaultButton
-                              flex="1"
-                              textColor={"textMaroonColor.400"}
-                              isDisabled={isDisable}
-                              onPress={(e) =>
-                                handlePartiallyDone(
-                                  sessionDetails?.session_tracks?.[0]?.id
-                                )
-                              }
-                            >
-                              {t("SAVE")}
-                            </FrontEndTypo.DefaultButton>
-                          </HStack>
-                        </VStack>
-                      )}
+                      </HStack>
                     </VStack>
-                  )}
-                </VStack>
-              </CardComponent>
-            </VStack>
+                  </CardComponent>
+                )}
+                {sessionDetails?.session_tracks?.[0] && (
+                  <FrontEndTypo.DefaultButton
+                    borderColor="red.400"
+                    borderWidth="1"
+                    textColor="textMaroonColor.400"
+                    background=""
+                    onPress={(e) => {
+                      setSubmitStatus({ status: "incomplete" });
+                    }}
+                  >
+                    {t("SYLLABUS_INCOMPLETED")}
+                  </FrontEndTypo.DefaultButton>
+                )}
+                {submitStatus?.status === "incomplete" && (
+                  <VStack space={4} p="4">
+                    <CustomRadio
+                      options={{
+                        enumOptions:
+                          enumOptions?.SESSION_PARTIALLY_COMPLETE?.map((e) => ({
+                            ...e,
+                            label: e?.title,
+                            value: e?.value,
+                          })),
+                      }}
+                      schema={{
+                        grid: 1,
+                        _pressable: { p: 2 },
+                      }}
+                      value={submitStatus?.reason}
+                      onChange={(e) => {
+                        setSubmitStatus({
+                          ...submitStatus,
+                          reason: e,
+                        });
+                      }}
+                    />
+                    {error && <Alert status="warning">{t(error)}</Alert>}
+                    <HStack space={4}>
+                      <FrontEndTypo.DefaultButton
+                        flex="1"
+                        textColor={"textMaroonColor.400"}
+                        isDisabled={isDisable}
+                        onPress={(e) => handleCancel()}
+                      >
+                        {t("CANCEL")}
+                      </FrontEndTypo.DefaultButton>
+                      <FrontEndTypo.DefaultButton
+                        flex="1"
+                        textColor={"textMaroonColor.400"}
+                        isDisabled={isDisable}
+                        onPress={(e) =>
+                          handlePartiallyDone(
+                            sessionDetails?.session_tracks?.[0]?.id
+                          )
+                        }
+                      >
+                        {t("SAVE")}
+                      </FrontEndTypo.DefaultButton>
+                    </HStack>
+                  </VStack>
+                )}
+              </VStack>
+            )}
           </Modal.Body>
         </Modal.Content>
       </Modal>
