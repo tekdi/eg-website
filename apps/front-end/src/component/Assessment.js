@@ -188,7 +188,13 @@ function Player({ setAlert }) {
                 assessmentData?.mimeType
               )
             ) {
-              handleTrackData(data, "application/vnd.sunbird.questionset");
+              const lastData = data?.summary?.find(
+                (e) => e?.endpageseen !== undefined
+              );
+
+              if (lastData?.endpageseen === true) {
+                handleTrackData(data, "application/vnd.sunbird.questionset");
+              }
             } else if (
               [
                 "application/pdf",
