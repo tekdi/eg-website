@@ -188,9 +188,10 @@ function Player({ setAlert }) {
                 assessmentData?.mimeType
               )
             ) {
-              const lastData = data?.summary.find(
+              const lastData = data?.summary?.find(
                 (e) => e?.endpageseen !== undefined
               );
+
               if (lastData?.endpageseen === true) {
                 handleTrackData(data, "application/vnd.sunbird.questionset");
               }
