@@ -224,8 +224,7 @@ const select2 = [
 const styles = {
   inforBox: {
     style: {
-      background:
-        "linear-gradient(75.39deg, rgba(255, 255, 255, 0) -7.58%, rgba(255, 255, 255, 0) -7.57%, rgba(255, 255, 255, 0.353) -7.4%, #ff000052 13.31%, #ff00007a 35.47%, #ff00004f 79.94%, rgba(255, 255, 255, 0.58) 103.6%, rgba(255, 255, 255, 0) 108.42%)",
+      background: "textMaroonColor.50",
     },
   },
 };
@@ -307,13 +306,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
             ].includes(facilitator.status) && navigate(`/beneficiary`);
           }}
         >
-          <HStack
-            p="5"
-            space="5"
-            borderBottomWidth="1"
-            {...styles.inforBox}
-            alignItems="Center"
-          >
+          <HStack p="5" space="5" bg="textMaroonColor.50" alignItems="Center">
             <IconByName
               isDisabled
               name="UserFollowLineIcon"

@@ -5,7 +5,7 @@ import { t } from "@shiksha/common-lib";
 export default function Chip({ label, children, isActive, ...props }) {
   return (
     <Box
-      bg={isActive ? "primary.500" : "primary.100"}
+      bg={isActive ? "textMaroonColor.500" : "primary.100"}
       _text={{
         color: isActive ? "white" : "black",
       }}

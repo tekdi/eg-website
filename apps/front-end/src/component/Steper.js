@@ -31,8 +31,8 @@ export default function Steper({
   const [stepPer, setStepPer] = React.useState(0);
   const [stage, setStage] = React.useState({});
   const { colors } = useTheme();
-  const ncColor = cColor ? cColor : colors?.["textRed"]?.["400"];
-  const nrColor = rColor ? rColor : colors?.["textRed"]?.["500"];
+  const ncColor = cColor ? cColor : colors?.["textMaroonColor"]?.["400"];
+  const nrColor = rColor ? rColor : colors?.["textMaroonColor"]?.["500"];
 
   React.useEffect(() => {
     if (steps?.length > 0) {

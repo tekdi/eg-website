@@ -628,7 +628,7 @@ const DEFAULT_THEME = {
       400: '#FF0000'
     },
     textBlack: {
-      400: '#000000'
+      500: '#000000'
     },
     Darkmaroonsecondarybutton: {
       400: '#BDBDBD'
