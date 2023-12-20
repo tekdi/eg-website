@@ -5853,3 +5853,6 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
     display: none !important;
   }
 }
+.quml-navigation__previous {
+  display: none !important;
+}
