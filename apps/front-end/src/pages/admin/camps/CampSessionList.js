@@ -6,20 +6,13 @@ import {
   campService,
   Loading,
   enumRegistryService,
-  CustomRadio,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import {
-  CheckCircleIcon,
-  Alert,
-  HStack,
-  Modal,
-  Pressable,
-  VStack,
-} from "native-base";
+import { HStack, Modal, Pressable, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import SessionActions from "./CampSessionModal";
 
 const checkNext = (status, updated_at) => {
   return (
@@ -32,7 +25,6 @@ const checkNext = (status, updated_at) => {
 
 export default function CampSessionList({ footerLinks }) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { id } = useParams();
   const [sessionList, setSessionList] = React.useState();
   const [sessionActive, setSessionActive] = React.useState();
@@ -202,7 +194,11 @@ export default function CampSessionList({ footerLinks }) {
                   // justifyContent={"space-between"}
                 >
                   {item?.session_tracks?.[0]?.status === "complete" && (
-                    <CheckCircleIcon color="greenIconColor" size="24px" />
+                    <IconByName
+                      name="CheckboxCircleFillIcon"
+                      color="greenIconColor"
+                      _icon={{ size: "24px" }}
+                    />
                   )}
                   {item?.session_tracks?.[0]?.status === "incomplete" && (
                     <IconByName
@@ -244,149 +240,19 @@ export default function CampSessionList({ footerLinks }) {
             </FrontEndTypo.H3>
           </Modal.Header>
           <Modal.Body p="6">
-            {!["incomplete", "complete"].includes(
-              sessionDetails?.session_tracks?.[0]?.status
-            ) ? (
-              <FrontEndTypo.DefaultButton
-                textColor={"textMaroonColor.400"}
-                icon={
-                  <IconByName
-                    name="ArrowRightLineIcon"
-                    _icon={{
-                      color: "textMaroonColor.400",
-                      size: "25px",
-                    }}
-                  />
-                }
-                isDisabled={sessionDetails?.session_tracks?.[0] || isDisable}
-                onPress={() => handleStartSession(sessionDetails?.id)}
-              >
-                {t("SESSION_STARTED")}
-              </FrontEndTypo.DefaultButton>
-            ) : (
-              <VStack space={4}>
-                {handleCompleteButton() && (
-                  <FrontEndTypo.DefaultButton
-                    borderWidth="0"
-                    background={"#FF0000"}
-                    onPress={() => setSubmitStatus({ status: "complete" })}
-                  >
-                    {t("SYLLABUS_COMPLETED")}
-                  </FrontEndTypo.DefaultButton>
-                )}
-                {submitStatus?.status === "complete" && (
-                  <CardComponent title={t("HOW_WAS_SESSION")}>
-                    <VStack space="4">
-                      <CustomRadio
-                        options={{
-                          enumOptions: enumOptions?.SESSION_COMPLETED?.map(
-                            (e) => ({
-                              ...e,
-                              label: e?.title,
-                              value: e?.value,
-                            })
-                          ),
-                        }}
-                        schema={{ grid: 1, _pressable: { p: 2 } }}
-                        value={submitStatus?.reason}
-                        onChange={(e) => {
-                          setSubmitStatus({
-                            ...submitStatus,
-                            reason: e,
-                          });
-                        }}
-                      />
-                      {error && <Alert status="warning">{t(error)}</Alert>}
-                      <HStack space={4}>
-                        <FrontEndTypo.DefaultButton
-                          flex="1"
-                          textColor={"textMaroonColor.400"}
-                          isDisabled={isDisable}
-                          onPress={(e) => handleCancel()}
-                        >
-                          {t("CANCEL")}
-                        </FrontEndTypo.DefaultButton>
-                        <FrontEndTypo.DefaultButton
-                          flex="1"
-                          textColor={"textMaroonColor.400"}
-                          isDisabled={isDisable}
-                          onPress={(e) =>
-                            handlePartiallyDone(
-                              sessionDetails?.session_tracks?.[0]?.id
-                            )
-                          }
-                        >
-                          {t("SAVE")}
-                        </FrontEndTypo.DefaultButton>
-                      </HStack>
-                    </VStack>
-                  </CardComponent>
-                )}
-
-                {sessionDetails?.session_tracks?.[0]?.status ===
-                  "incomplete" && (
-                  <FrontEndTypo.DefaultButton
-                    borderColor="red.400"
-                    borderWidth="1"
-                    textColor="textMaroonColor.400"
-                    background=""
-                    onPress={(e) => {
-                      setSubmitStatus({ status: "incomplete" });
-                    }}
-                  >
-                    {t("SYLLABUS_INCOMPLETED")}
-                  </FrontEndTypo.DefaultButton>
-                )}
-                {submitStatus?.status === "incomplete" && (
-                  <VStack space={4} p="4">
-                    <CustomRadio
-                      options={{
-                        enumOptions:
-                          enumOptions?.SESSION_PARTIALLY_COMPLETE?.map((e) => ({
-                            ...e,
-                            label: e?.title,
-                            value: e?.value,
-                          })),
-                      }}
-                      schema={{
-                        grid: 1,
-                        _pressable: { p: 2 },
-                      }}
-                      value={submitStatus?.reason}
-                      onChange={(e) => {
-                        setSubmitStatus({
-                          ...submitStatus,
-                          reason: e,
-                        });
-                      }}
-                    />
-                    {error && <Alert status="warning">{t(error)}</Alert>}
-                    <HStack space={4}>
-                      <FrontEndTypo.DefaultButton
-                        flex="1"
-                        textColor={"textMaroonColor.400"}
-                        isDisabled={isDisable}
-                        onPress={(e) => handleCancel()}
-                      >
-                        {t("CANCEL")}
-                      </FrontEndTypo.DefaultButton>
-                      <FrontEndTypo.DefaultButton
-                        flex="1"
-                        textColor={"textMaroonColor.400"}
-                        isDisabled={isDisable}
-                        onPress={(e) =>
-                          handlePartiallyDone(
-                            sessionDetails?.session_tracks?.[0]?.id
-                          )
-                        }
-                      >
-                        {t("SAVE")}
-                      </FrontEndTypo.DefaultButton>
-                    </HStack>
-                  </VStack>
-                )}
-              </VStack>
-            )}
+            <SessionActions
+              sessionDetails={sessionDetails}
+              isDisable={isDisable}
+              handleStartSession={handleStartSession}
+              handleCompleteButton={handleCompleteButton}
+              setSubmitStatus={setSubmitStatus}
+              handlePartiallyDone={handlePartiallyDone}
+              handleCancel={handleCancel}
+              submitStatus={submitStatus}
+              enumOptions={enumOptions}
+              error={error}
+              t={t}
+            />
           </Modal.Body>
         </Modal.Content>
       </Modal>
