@@ -5844,3 +5844,15 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
 .replay-section {
   display: none !important;
 }
+
+.lanscape-mode-right {
+  display: none !important;
+}
+@media only screen and (max-width: 480px) {
+  .lanscape-mode-right[_ngcontent-pnu-c69] {
+    display: none !important;
+  }
+}
+.quml-navigation__previous {
+  display: none !important;
+}

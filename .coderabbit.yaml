@@ -1,0 +1,55 @@
+settings:
+  # Enables automatic reviewing of draft pull requests.
+  enable_draft_pr_reviews: true
+  
+  # Specifies additional base/target branches to be reviewed. Accept regex pattern.
+  additional_branches_to_be_reviewed:
+    - "master"
+    - "dev"
+    - "feat/*"
+    - "feat-*"
+    - "release-*"
+    
+  # Disables generation of release notes.
+  disable_high_level_summary: false
+  
+  # Specific review instructions for certain file paths. File paths accept glob pattern
+  path_based_instructions:
+    - path: "**/*.css"
+      instructions: 
+        "Review the CSS code against the google css style guide and point out any mismatches. Ensure that:
+        - The code adheres to best practices associated with CSS.
+        - The code adheres to best practices recommended by lighthouse or similar tools for performance.
+        - The code adheres to similar naming conventions for classes, ids.
+    - path: "**/*.html"
+      instructions: 
+        "Review the HTML code against the google html style guide and point out any mismatches. Ensure that:
+        - The code adheres to best practices recommended by lighthouse or similar tools for performance.
+    - path: "**/*.js,**/*.ts"
+      instructions: 
+        "Review the JAVASCRIPT code against the google javascript style guide and point out any mismatches. Ensure that:
+        - The code adheres to best practices associated with React.
+        - The code adheres to best practices associated with React PWA.
+        - The code adheres to best practices associated with SPA.
+        - The code adheres to best practices recommended by lighthouse or similar tools for performance.
+        - The code adheres to similar naming conventions for components, views, methods.
+    # - path: "tests/**/*"
+    #   instructions:
+    #     "Review the following unit test code written using the Mocha test library. Ensure that:
+    #     - The code adheres to best practices associated with Mocha.
+    #     - Descriptive test names are used to clearly convey the intent of each test."
+        
+  # Comma separated list of keywords in the title that should be ignored.
+  ignored_pr_titles: "WIP"
+  
+  # ISO Code for the review language.
+  review_language: "en"
+  
+  # Disables review and other status comments.
+  disable_review_status: false
+  
+  # Add walkthrough comment in a collapsible section.
+  collapse_walkthrough_comment: true
+  
+  # Disable automatic code reviews for this repository.
+  disable_review: false
