@@ -23,14 +23,12 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
-
   urlData,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
-
 
 export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
@@ -107,7 +105,7 @@ export default function AdminHome({ footerLinks }) {
   );
 
   const handleSearch = (e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -155,7 +153,6 @@ export default function AdminHome({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-
           onChange={debouncedHandleSearch}
         />
         <HStack alignSelf={"center"} space="2">
@@ -419,7 +416,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandlePrerakSearch = React.useCallback(

@@ -662,6 +662,7 @@ const DEFAULT_THEME = {
     warningColor: '#FFCF52',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
+    bgpink: '#FFE0E1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',
