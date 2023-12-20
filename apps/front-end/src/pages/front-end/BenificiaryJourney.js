@@ -105,8 +105,9 @@ export default function BenificiaryJourney() {
         )}
         <FrontEndTypo.H2 bold color="textMaroonColor.400" marginLeft={"5px"}>
           {t("STATUS_FLOW_OF")}
-          <br />
-          <Text>
+        </FrontEndTypo.H2>
+        <HStack marginLeft={"5px"}>
+          <FrontEndTypo.H2 bold color="textMaroonColor.400">
             {benificiary?.first_name}
             {benificiary?.middle_name &&
               benificiary?.middle_name !== "null" &&
@@ -114,10 +115,10 @@ export default function BenificiaryJourney() {
             {benificiary?.last_name &&
               benificiary?.last_name !== "null" &&
               ` ${benificiary?.last_name}`}
-          </Text>
-        </FrontEndTypo.H2>
+          </FrontEndTypo.H2>
+        </HStack>
       </HStack>
-      <HStack mt={5} left={"30px"} width={"80%"}>
+      <HStack mt={5} left={"30px"}>
         <VStack width={"100%"}>
           {auditYear.map((item, i) => {
             return (
