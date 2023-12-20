@@ -136,16 +136,16 @@ export default function CampSetting({ footerLinks }) {
                 borderWidth="2"
                 onPress={() => handleDayClick(day)}
                 _pressed={{
-                  bg: "textMaroonColor.600",
+                  bg: "textMaroonColor.500",
                   borderWidth: 2,
-                  borderColor: "textMaroonColor.600",
+                  borderColor: "textMaroonColor.500",
                 }}
                 bg={
-                  selectedDays?.includes(day) ? "textMaroonColor.600" : "white"
+                  selectedDays?.includes(day) ? "textMaroonColor.500" : "white"
                 }
                 borderColor={
                   selectedDays?.includes(day)
-                    ? "textMaroonColor.600"
+                    ? "textMaroonColor.500"
                     : "textGreyColor.50"
                 }
                 color={selectedDays?.includes(day) ? "white" : "black"}
