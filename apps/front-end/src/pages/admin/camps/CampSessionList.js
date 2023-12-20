@@ -146,13 +146,14 @@ export default function CampSessionList({ footerLinks }) {
 
   const handleCompleteButton = () => {
     return (
-      !submitStatus?.status &&
-      sessionDetails?.session_tracks?.[0] &&
-      sessionDetails?.session_tracks?.[0]?.status === "incomplete" &&
-      sessionDetails?.session_tracks?.[0]?.updated_at &&
-      moment(sessionDetails?.session_tracks?.[0]?.updated_at).format(
-        "YYYY-MM-DD"
-      ) !== moment().format("YYYY-MM-DD")
+      submitStatus?.status === "complete" ||
+      (!submitStatus?.status &&
+        sessionDetails?.session_tracks?.[0] &&
+        sessionDetails?.session_tracks?.[0]?.status === "incomplete" &&
+        sessionDetails?.session_tracks?.[0]?.updated_at &&
+        moment(sessionDetails?.session_tracks?.[0]?.updated_at).format(
+          "YYYY-MM-DD"
+        ) !== moment().format("YYYY-MM-DD"))
     );
   };
   return (
@@ -268,7 +269,7 @@ export default function CampSessionList({ footerLinks }) {
                   <FrontEndTypo.DefaultButton
                     borderWidth="0"
                     background={"#FF0000"}
-                    onPress={(e) => setSubmitStatus({ status: "complete" })}
+                    onPress={() => setSubmitStatus({ status: "complete" })}
                   >
                     {t("SYLLABUS_COMPLETED")}
                   </FrontEndTypo.DefaultButton>
@@ -295,7 +296,6 @@ export default function CampSessionList({ footerLinks }) {
                           });
                         }}
                       />
-
                       {error && <Alert status="warning">{t(error)}</Alert>}
                       <HStack space={4}>
                         <FrontEndTypo.DefaultButton
@@ -322,7 +322,9 @@ export default function CampSessionList({ footerLinks }) {
                     </VStack>
                   </CardComponent>
                 )}
-                {sessionDetails?.session_tracks?.[0] && (
+
+                {sessionDetails?.session_tracks?.[0]?.status ===
+                  "incomplete" && (
                   <FrontEndTypo.DefaultButton
                     borderColor="red.400"
                     borderWidth="1"
