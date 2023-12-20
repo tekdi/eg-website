@@ -157,7 +157,7 @@ const CampOtherPlans = React.lazy(() =>
 const CampSessionsList = React.lazy(() =>
   import("pages/admin/camps/CampSessionList")
 );
-// const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
+const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
 const Assessment = React.lazy(() => import("component/Assessment"));
 
@@ -324,7 +324,7 @@ export default [
     component: CampKitMaterialDetails,
   },
   { path: "/camps/:id/sessionslist", component: CampSessionsList },
-  // { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
+  { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
