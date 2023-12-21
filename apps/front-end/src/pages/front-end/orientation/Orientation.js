@@ -335,11 +335,9 @@ export default function Orientation({ footerLinks }) {
         <Box>
           <VStack>
             <Box>
-              <HStack alignItems="Center" py="4">
-                <IconByName name="Home4LineIcon" fontSize="24px" />
-                <AdminTypo.H1 color="textGreyColor.800" bold>
-                  {t("HOME")}
-                </AdminTypo.H1>
+              <HStack alignItems="Center" py="4" space="2">
+                <IconByName name="Home4LineIcon" size="md" />
+                <AdminTypo.H4 bold>{t("HOME")}</AdminTypo.H4>
               </HStack>
             </Box>
             <HStack>
@@ -353,7 +351,7 @@ export default function Orientation({ footerLinks }) {
                   <VStack alignItems={"Center"}>
                     <Image
                       source={{
-                        uri: "/orientation.svg",
+                        uri: "/orientation.png",
                       }}
                       alt="Prerak Orientation"
                       size={"sm"}
@@ -537,9 +535,9 @@ export default function Orientation({ footerLinks }) {
             <Modal.Content {...styles.modalxxl}>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0" bg="white">
-                <AdminTypo.H1 textAlign="center" bold>
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
                   {t("SCHEDULE_EVENT")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
 
               <Modal.Body pt="4" pb="10" bg="white">

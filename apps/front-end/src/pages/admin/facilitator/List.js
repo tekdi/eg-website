@@ -56,7 +56,12 @@ const schemat = {
       type: "array",
       title: "DISTRICT",
       grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
+      _hstack: {
+        maxH: 135,
+        overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
+      },
       items: {
         type: "string",
       },
@@ -69,6 +74,8 @@ const schemat = {
       _hstack: {
         maxH: 130,
         overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
       },
       items: {
         type: "string",
@@ -79,7 +86,12 @@ const schemat = {
       type: "array",
       title: "QUALIFICATION",
       grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
+      _hstack: {
+        maxH: 135,
+        overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
+      },
       items: {
         type: "string",
       },
@@ -87,7 +99,7 @@ const schemat = {
     },
     work_experience: {
       type: "array",
-      title: "WORK_EXPERIENCES",
+      title: "WORK EXPERIENCES",
       _hstack: { maxH: 130, overflowY: "scroll" },
       items: {
         type: "string",
@@ -131,7 +143,8 @@ export default function List({ footerLinks, userTokenInfo }) {
       const data = await enumRegistryService.listOfEnum();
       setEnumOptions(data?.data ? data?.data : {});
 
-      const getQualification = await facilitatorRegistryService.getQualificationAll();
+      const getQualification =
+        await facilitatorRegistryService.getQualificationAll();
       let newSchema = getOptions(schemat, {
         key: "qualificationIds",
         arr: getQualification,
@@ -201,16 +214,24 @@ export default function List({ footerLinks, userTokenInfo }) {
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = React.useCallback(async (data) => {
-    const { district, qualificationIds, work_experience, block } = data?.formData || {};
-    setFilterObject({
-      ...filter,
-      ...(district && district?.length > 0 ? { district } : {}),
-      ...(qualificationIds && qualificationIds?.length > 0 ? { qualificationIds } : {}),
-      ...(work_experience && work_experience?.length > 0 ? { work_experience } : {}),
-      ...(block && block?.length > 0 ? { block } : {}),
-    });
-  }, [filter, setFilterObject]);
+  const onChange = React.useCallback(
+    async (data) => {
+      const { district, qualificationIds, work_experience, block } =
+        data?.formData || {};
+      setFilterObject({
+        ...filter,
+        ...(district && district?.length > 0 ? { district } : {}),
+        ...(qualificationIds && qualificationIds?.length > 0
+          ? { qualificationIds }
+          : {}),
+        ...(work_experience && work_experience?.length > 0
+          ? { work_experience }
+          : {}),
+        ...(block && block?.length > 0 ? { block } : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = React.useCallback(() => {
     setFilter({});
@@ -222,10 +243,13 @@ export default function List({ footerLinks, userTokenInfo }) {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback((e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-  }, [filter]);
-  
+  const handleSearch = React.useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+
   const debouncedHandleSearch = React.useCallback(
     debounce(handleSearch, 1000),
     []
@@ -251,18 +275,10 @@ export default function List({ footerLinks, userTokenInfo }) {
           space={"4"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space="2">
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1> {t("ALL_PRERAKS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold> {t("ALL_PRERAKS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
         <Input
           size={"xs"}
@@ -321,9 +337,9 @@ export default function List({ footerLinks, userTokenInfo }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center">
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
                   {t("SEND_AN_INVITE")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -392,7 +408,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={filter}
-                 
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
@@ -423,5 +438,3 @@ export default function List({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
-
-

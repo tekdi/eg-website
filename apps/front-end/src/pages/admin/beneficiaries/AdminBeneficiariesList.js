@@ -125,17 +125,9 @@ export default function AdminHome({ footerLinks }) {
         flexWrap={"wrap"}
         ref={refSubHeader}
       >
-        <HStack justifyContent="space-between" alignItems="center" space={4}>
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1>{t("All_AG_LEARNERS")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
+        <HStack justifyContent="space-between" alignItems="center" space={2}>
+          <IconByName name="GraduationCap" />
+          <AdminTypo.H4 bold>{t("All_AG_LEARNERS")}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}

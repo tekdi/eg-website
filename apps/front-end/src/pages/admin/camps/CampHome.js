@@ -32,7 +32,6 @@ import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
 
-
 export const CustomStyles = {
   rows: {
     style: {
@@ -168,7 +167,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       _sidebar={footerLinks}
     >
       <HStack
-        space={[0, 0, "2"]}
+        space={[0, 0, "4"]}
         p="2"
         my="1"
         mb="3"
@@ -178,21 +177,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       >
         <HStack
           justifyContent={"space-between"}
-          space={"4"}
+          space={"6"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space={2}>
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1>{t("ALL_CAMPS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
       </HStack>
       <HStack>
@@ -269,6 +260,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter({ ...filter, page: e?.toString() });
                 }}
                 onRowClicked={handleRowClick}
+                dense
+                highlightOnHover
               />
             </Box>
           </ScrollView>
@@ -298,7 +291,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -444,7 +437,6 @@ export const Filter = ({ filter, setFilter }) => {
         placeholder={t("SEARCH")}
         variant="outline"
         onChange={debouncedHandleSearch}
-
       />
       <MultiCheck
         value={filter?.facilitator ? filter?.facilitator : []}

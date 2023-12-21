@@ -160,17 +160,15 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         <Box>
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
-              {t("PROFILE")}
-            </AdminTypo.H1>
+            <AdminTypo.H4>{t("PROFILE")}</AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
 
-            <AdminTypo.H1
-              color="textGreyColor.800"
+            <AdminTypo.H4
+              bold
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
@@ -180,7 +178,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
                 : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
@@ -301,7 +299,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       <Modal isOpen={modal} size="lg">
         <Modal.Content>
           <Modal.Header>
-            <FrontEndTypo.H1>{t("REASSIGN_CAMP")}</FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textMaroonColor.600">
+              {t("REASSIGN_CAMP")}
+            </FrontEndTypo.H2>
           </Modal.Header>
           <Modal.Body p="5">
             <VStack>

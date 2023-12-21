@@ -113,13 +113,13 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               />
             }
             data={[
-              <AdminTypo.H1 key="1">
+              <AdminTypo.H4 key="1">
                 {t("ENROLLMENT_VERIFICATION")}
-              </AdminTypo.H1>,
-              <AdminTypo.H2 key="2">{`${data?.first_name} ${
+              </AdminTypo.H4>,
+              <AdminTypo.H4 key="2">{`${data?.first_name} ${
                 data?.last_name ? data?.last_name : " "
-              }`}</AdminTypo.H2>,
-              <AdminTypo.H3 key="3">{`${data?.id}`}</AdminTypo.H3>,
+              }`}</AdminTypo.H4>,
+              <AdminTypo.H4 key="3" bold>{`${data?.id}`}</AdminTypo.H4>,
               <ChipStatus
                 key={"4"}
                 is_duplicate={data?.is_duplicate}
@@ -133,7 +133,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
-              {t("ENROLLMENT_DETAILS_VERIFICATION")} ss
+              {t("ENROLLMENT_DETAILS_VERIFICATION")}
             </AdminTypo.H5>
 
             <HStack space="2">

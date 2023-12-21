@@ -133,7 +133,7 @@ function Table({
             divider={<h3>|</h3>}
             my="3"
             size="sm"
-            h="10"
+            h="8"
             marginTop="8px"
             borderRadius="full"
             background="white"
@@ -208,7 +208,7 @@ function Table({
           {Array?.isArray(facilitaorStatus) &&
             facilitaorStatus.map((item) => {
               return (
-                <AdminTypo.H5
+                <AdminTypo.H6
                   key={"table"}
                   color={
                     filter?.status == t(item?.status) ? "blueText.400" : ""
@@ -221,7 +221,11 @@ function Table({
                   }}
                 >
                   {item.status === "all" ? (
-                    <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                    <AdminTypo.H6
+                      bold={filter?.status == t(item?.status) ? true : false}
+                    >
+                      {t("ALL")}
+                    </AdminTypo.H6>
                   ) : (
                     <GetEnumValue
                       t={t}
@@ -233,7 +237,7 @@ function Table({
                   {filter?.status == t(item?.status)
                     ? `(${paginationTotalRows})` + " "
                     : " "}
-                </AdminTypo.H5>
+                </AdminTypo.H6>
               );
             })}
         </HStack>
@@ -250,6 +254,8 @@ function Table({
         paginationServer
         paginationTotalRows={paginationTotalRows}
         paginationDefaultPage={filter?.page}
+        dense
+        highlightOnHover
         onChangeRowsPerPage={React.useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });

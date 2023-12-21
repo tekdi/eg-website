@@ -333,22 +333,22 @@ export default function FacilitatorView({ footerLinks }) {
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
+            <AdminTypo.H4 color="Activatedcolor.400">
               {t("ALL_PRERAK")}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1
-              color="textGreyColor.800"
+            <AdminTypo.H4
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
+              bold
             >
               {data?.first_name} {data?.last_name}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
