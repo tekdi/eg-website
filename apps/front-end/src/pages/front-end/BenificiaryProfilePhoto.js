@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Box, Image, Pressable, VStack } from "native-base";
+import { Image, VStack } from "native-base";
 import {
-  uploadRegistryService,
   Layout,
   H2,
   FrontEndTypo,
@@ -16,7 +15,6 @@ export default function BenificiaryProfilePhoto() {
   const { t } = useTranslation();
   const { id, photoNo } = useParams();
   const page = photoNo ? parseInt(photoNo) : 1;
-  const uplodInputRef = React.useRef();
   const [file, setFile] = React.useState();
   const [benificiary, setBenificiary] = useState({});
 
