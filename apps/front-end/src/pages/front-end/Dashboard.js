@@ -134,6 +134,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     try {
       const randomizedDoId = await handleRandomise();
       navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
+      navigate(0);
     } catch (error) {
       console.error("Error handling randomization:", error);
     }
@@ -222,8 +223,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </HStack>
             {isEventActive
               ? certificateData?.type == "prerak_camp_execution_training" && (
-                  <HStack py="4" flex="1" px="6">
-                    <AdminTypo.Dangerbutton
+                  <HStack py="2" flex="1" px="4">
+                    <FrontEndTypo.Primarybutton
                       onPress={() => {
                         setModalVisible(certificateData);
                         const doIdArray = certificateData?.params?.do_id;
@@ -235,18 +236,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.Dangerbutton>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 )
               : lmsDEtails?.id && (
-                  <HStack py="4" flex="1" px="6">
-                    <AdminTypo.Dangerbutton
+                  <HStack py="2" flex="1" px="4">
+                    <FrontEndTypo.Primarybutton
+                      fontSize
                       onPress={() => {
                         setModalVisible(certificateData);
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.Dangerbutton>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 )}
             <Modal
@@ -368,7 +370,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   size={"sm"}
                   resizeMode="contain"
                 />
-                <FrontEndTypo.H4 mt="2" color="textBlack.400" bold>
+                <FrontEndTypo.H4 mt="2" color="textBlack.500" bold>
                   {t("ADD_AN_AG")}
                 </FrontEndTypo.H4>
               </RedOutlineButton>

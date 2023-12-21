@@ -594,12 +594,15 @@ const DEFAULT_THEME = {
       900: '#1E1E1E'
     },
     textMaroonColor: {
-      50: 'FDCAB5',
+      50: '#FDCAB5',
       100: '#FFACAF',
-      300: '',
+      300: '#FF8080',
       400: '#790000',
-      500: '#A93505',
-      600: '#FF0000'
+      500: '#FF0000',
+      600: '#A93505',
+      700: '#7c2704',
+      800: '#4a1702',
+      900: '#190801'
     },
     blueText: {
       200: 'D6E8FF',
@@ -624,8 +627,8 @@ const DEFAULT_THEME = {
     Darkmaroonprimarybutton: {
       400: '#FF0000'
     },
-    TextBlack: {
-      400: '#000000'
+    textBlack: {
+      500: '#000000'
     },
     Darkmaroonsecondarybutton: {
       400: '#BDBDBD'
@@ -684,7 +687,8 @@ const DEFAULT_THEME = {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
-      400: '#ff0000'
+      400: '#ff0000',
+      500: '#ff000047'
     },
     dividerColor: '#EEEEEE',
     textGreen: {
@@ -702,6 +706,7 @@ const DEFAULT_THEME = {
     text: {
       100: '#a8e3fd'
     },
+    timeLineBg: '#FFE0E1',
     greenIconColor: '#008C0E'
   }
 }

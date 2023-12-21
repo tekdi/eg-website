@@ -141,6 +141,11 @@ export function ChipStatus({
         setTextColor("textGreyColor.800");
         setColor("identifiedColor");
         break;
+      case "deactivated":
+        setNewStatus(t("BENEFICIARY_STATUS_DEACTIVATED"));
+        setTextColor("textGreyColor.800");
+        setColor("textMaroonColor.100");
+        break;
       default:
         setNewStatus(t("IDENTIFIED"));
         setTextColor("textGreyColor.800");

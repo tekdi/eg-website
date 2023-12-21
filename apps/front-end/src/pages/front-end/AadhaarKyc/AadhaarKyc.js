@@ -350,7 +350,12 @@ export default function AdharKyc({ footerLinks }) {
                 )}
               </VStack>
 
-              <Alert status="info" colorScheme="info" textAlign="center" my="4">
+              <Alert
+                status="warning"
+                colorScheme="warning"
+                textAlign="center"
+                my="4"
+              >
                 <VStack space={2} flexShrink={1}>
                   <HStack
                     flexShrink={1}
