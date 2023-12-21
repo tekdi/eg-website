@@ -1,4 +1,4 @@
-import { CustomOTPBox, FrontEndTypo, Layout, t } from "@shiksha/common-lib";
+import { FrontEndTypo, Layout, t } from "@shiksha/common-lib";
 import {
   VStack,
   Text,
@@ -12,8 +12,14 @@ import {
   Pressable,
 } from "native-base";
 import React, { useState, useCallback } from "react";
-import { JSONSchema7 } from "json-schema";
+import { useNavigate } from "react-router-dom";
 import validator from "@rjsf/validator-ajv8";
+import {
+  widgets,
+  templates,
+  FieldTemplate,
+  CustomOTPBox,
+} from "../../../../component/BaseInput";
 
 import Form from "@rjsf/core";
 import aadharImage from "../../../../assets/images/facilitator-duties/Aadhaar2.png";
@@ -24,6 +30,7 @@ import prerakDutiesImage3 from "../../../../assets/images/facilitator-duties/img
 import prerakDutiesImage4 from "../../../../assets/images/facilitator-duties/img4.png";
 import prerakDutiesImage5 from "../../../../assets/images/facilitator-duties/img5.png";
 import prerakDutiesImage6 from "../../../../assets/images/facilitator-duties/img6.png";
+import Steper from "component/Steper";
 
 const stylesheet = {
   text1: {
@@ -84,6 +91,8 @@ const stylesheet = {
 };
 
 const FacilitatorRegistration = () => {
+  const navigate = useNavigate();
+
   const [activeScreenName, setActiveScreenName] = useState();
   const [mobileNumber, setMobileNumber] = useState("");
 
@@ -116,32 +125,8 @@ const FacilitatorRegistration = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
-
-  const schema = {
-    type: "object",
-    properties: {
-      firstName: { type: "string", title: "First Name" },
-      lastName: { type: "string", title: "Last Name" },
-      mobileNumber: {
-        type: "string",
-        title: "Mobile Number",
-        pattern: "^[0-9]{10}$",
-      },
-    },
-    required: ["firstName", "lastName", "mobileNumber"],
-  };
-
-  const uiSchema = {
-    firstName: {
-      "ui:placeholder": "Enter first name",
-    },
-    lastName: {
-      "ui:placeholder": "Enter last name",
-    },
-    mobileNumber: {
-      "ui:placeholder": "Enter mobile number",
-    },
-  };
+  const [formData, setFormData] = React.useState({});
+  const [page, setPage] = React.useState(0);
 
   const handleInputChange = (value) => {
     setMobileNumber(value);
@@ -149,6 +134,9 @@ const FacilitatorRegistration = () => {
 
   const handleNextScreen = (screenName) => {
     setActiveScreenName(screenName);
+    console.log("screenname", screenName);
+    if (screenName) {
+    }
   };
 
   //screen1
@@ -268,77 +256,97 @@ const FacilitatorRegistration = () => {
         alt="Alternate Text"
         size="2xl"
       />{" "}
-      <Input
-        type="tel"
-        placeholder="Enter mobile number"
-        value={mobileNumber}
-        onChangeText={handleInputChange}
-      />
-      <Text>{t("ENTER_THE_12_DIGIT_AADHAAR_CARD")}</Text>
-      <FrontEndTypo.Primarybutton
-        style={{ background: "#FF0000" }}
-        onPress={() => handleNextScreen("enterBasicDetails")}
-        isDisabled={!mobileNumber}
+      <Form
+        formData={formData}
+        onSubmit={(data) => setFormData(data.formData)}
+        // widgets={{ Test2 }}
+        {...{ templates, FieldTemplate }}
+        validator={validator}
+        schema={{
+          // title: "A registration form",
+          // description: "A simple form example.",
+          type: "object",
+          required: ["aadharName"],
+          properties: {
+            aadharName: {
+              type: "string",
+              title: "AADHAR_CARD",
+            },
+          },
+        }}
       >
-        {t("NEXT")}
-      </FrontEndTypo.Primarybutton>
+        <Text>{t("ENTER_THE_12_DIGIT_AADHAAR_CARD")}</Text>
+
+        <FrontEndTypo.Primarybutton
+          style={{ background: "#FF0000", space: "20px", mt: "5%" }}
+          onClick={(e) => setPage(page + 1)}
+          onPress={() => handleNextScreen("enterBasicDetails")}
+          // isDisabled={!mobileNumber}
+        >
+          {t("NEXT")}
+        </FrontEndTypo.Primarybutton>
+      </Form>
     </>
   );
   const enterBasicDetails = () => (
     <>
-      {/* <VStack flex={3} space={5}>
-        <FrontEndTypo.H1 bold>Sign Up in three simple steps!</FrontEndTypo.H1>
-        <Form
-          validator={validator}
-          schema={schema}
-          uiSchema={uiSchema}
-          formData={{ firstName: "", lastName: "", mobileNumber: "" }}
-          onSubmit={({ formData }) => {
-            console.log("Form data submitted:", formData);
-            handleNextScreen("contactDetails");
-          }}
-        />
-        <FrontEndTypo.Primarybutton
-          style={{ background: "#FF0000" }}
-          onPress={() => handleNextScreen("contactDetails")}
-        >
-          Next
-        </FrontEndTypo.Primarybutton>
-      </VStack> */}
-
       <VStack flex={3} space={5}>
+        {/* <Steper
+          type={"circle"}
+          steps={[
+            { value: "6", label: "BASIC_DETAILS" },
+            { value: "3", label: "WORK_DETAILS" },
+            { value: "1", label: "OTHER_DETAILS" },
+          ]}
+          progress={page === "contactDetails" ? 6 : page}
+        /> */}
         <FrontEndTypo.H1 bold>Sign Up in three simple steps!</FrontEndTypo.H1>
         <Text bold fontWeight={600} color={"#790000"}>
           Tell us your name
         </Text>{" "}
         <Text color={"#790000"}>(As per your Aadhar Card)</Text>
         <Form
+          formData={formData}
+          onSubmit={(data) => setFormData(data.formData)}
+          // widgets={{ Test2 }}
+          {...{ templates, FieldTemplate }}
           validator={validator}
-          schema={schema}
-          uiSchema={uiSchema}
-          formData={{ firstName: "", lastName: "", mobileNumber: "" }}
+          schema={{
+            // title: "A registration form",
+            // description: "A simple form example.",
+            type: "object",
+            required: ["firstName", "lastName"],
+            properties: {
+              firstName: {
+                type: "string",
+                title: "First name",
+              },
+              lastName: {
+                type: "string",
+                title: "Last name",
+              },
+              mobile: {
+                label: "HOW_CAN_CONTACT_YOU",
+                type: "number",
+                title: "MOBILE_NUMBER",
+              },
+            },
+          }}
+
           // onSubmit={({ formData }) => {
           //   console.log("Form data submitted:", formData);
           //   handleNextScreen("contactDetails");
           // }}
-        />
-        <Text bold fontWeight={600} color={"#790000"}>
-          How can we Contact You?
-        </Text>{" "}
-        <Text color={"#790000"}>(As per your Aadhar Card)</Text>
-        {/* <Input
-          type="tel"
-          placeholder="Enter mobile number"
-          value={mobileNumber}
-          onChangeText={handleInputChange}
-        />
-        <FrontEndTypo.Primarybutton
-          style={{ background: "#FF0000" }}
-          onPress={() => handleNextScreen("contactDetails")}
-          isDisabled={!mobileNumber}
         >
-          Next
-        </FrontEndTypo.Primarybutton> */}
+          <FrontEndTypo.Primarybutton
+            style={{ background: "#FF0000", space: "20px", mt: "5%" }}
+            onClick={(e) => setPage(page + 1)}
+            onPress={() => handleNextScreen("contactDetails")}
+            // isDisabled={!mobileNumber}
+          >
+            {t("NEXT")}
+          </FrontEndTypo.Primarybutton>
+        </Form>
       </VStack>
     </>
   );
@@ -349,22 +357,34 @@ const FacilitatorRegistration = () => {
           Verify your contact number
         </FrontEndTypo.H1>
         <Text color={"#790000"}>(Please enter the OTP sent to your phone)</Text>
-        <Input
-          type="tel"
-          placeholder="Enter mobile number"
-          value={""}
-          onChangeText={handleInputChange}
-        />
-        <Text color={"var(--Gray-70, #616161);"} fontSize={"12px"}>
-          {t("USER_ENTER_FOUR_DIGIT_OTP")}
-        </Text>
-        <CustomOTPBox></CustomOTPBox>
-        <FrontEndTypo.Primarybutton
-          style={{ background: "#FF0000" }}
-          onPress={() => handleNextScreen("chooseLangauge")}
+        <Form
+          formData={formData}
+          onSubmit={(data) => setFormData(data.formData)}
+          {...{ templates, FieldTemplate }}
+          validator={validator}
+          schema={{
+            type: "object",
+            required: ["aadharName"],
+            properties: {
+              mobile: {
+                label: "HOW_CAN_CONTACT_YOU",
+                type: "number",
+                title: "MOBILE_NUMBER",
+              },
+            },
+          }}
         >
-          {t("NEXT")}
-        </FrontEndTypo.Primarybutton>
+          <Text color={"var(--Gray-70, #616161);"} fontSize={"12px"}>
+            {t("USER_ENTER_FOUR_DIGIT_OTP")}
+          </Text>
+          <CustomOTPBox></CustomOTPBox>
+          <FrontEndTypo.Primarybutton
+            style={{ background: "#FF0000" }}
+            onPress={() => handleNextScreen("chooseLangauge")}
+          >
+            {t("NEXT")}
+          </FrontEndTypo.Primarybutton>
+        </Form>
       </VStack>
     </>
   );
@@ -489,7 +509,7 @@ const FacilitatorRegistration = () => {
       case "contactDetails":
         return contactDetails();
       default:
-        return chooseLangauge();
+        return idVerification();
     }
   };
 

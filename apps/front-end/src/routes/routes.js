@@ -88,7 +88,6 @@ const BenificiaryAadhaarDetails = React.lazy(() =>
 const EditForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/Form")
 );
-
 const ArrayForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/ArrayForm")
 );
@@ -174,7 +173,13 @@ const Assessment = React.lazy(() => import("component/Assessment"));
 //offline_falilitator_onboarding
 const FacilitatorRegistration = React.lazy(() =>
   import(
-    "pages/front-end/FacilitatorOffline/Self-Onboarding/FacilitatorRegistration"
+    "pages/front-end/FacilitatorOffline/FacilitatorRegistration/FacilitatorRegistration"
+  )
+);
+
+const FacilitatorOnboarding = React.lazy(() =>
+  import(
+    "pages/front-end/FacilitatorOffline/FacilitatorOnboarding/FacilitatorOnboarding"
   )
 );
 
@@ -241,7 +246,6 @@ export default [
     component: BenificiaryListView,
   },
   { path: "/table", component: CountScreenView },
-
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
@@ -360,5 +364,9 @@ export default [
   {
     path: "/offline/facilitator-self-onboarding/:id",
     component: FacilitatorRegistration,
+  },
+  {
+    path: "/offline/facilitator-self-onboarding/facilitatorOnboarding",
+    component: FacilitatorOnboarding,
   },
 ];
