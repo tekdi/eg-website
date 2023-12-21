@@ -172,7 +172,7 @@ function Player({ setAlert }) {
       >
         <Modal.Content>
           <Modal.Body alignItems="center">
-            <Text> {"TEST ALREADY TAKEN"}</Text>
+            <Text> {t("TEST_ALREADY_TAKEN")}</Text>
             <FrontEndTypo.DefaultButton
               textColor={"black"}
               onPress={() => navigate("/")}
