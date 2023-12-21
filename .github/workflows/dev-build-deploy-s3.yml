@@ -13,6 +13,9 @@ jobs:
     name: Build Deploy To DEV S3
     environment: DEV
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: List contents
         run: |
@@ -31,11 +34,11 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y awscli
 
-      - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region ${{ secrets.AWS_S3_BUCKET_REGION }}
+      # - name: Configure AWS credentials
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws configure set default.region ${{ secrets.AWS_S3_BUCKET_REGION }}
           
       - name: Install deps, and build
         run: |
@@ -57,9 +60,9 @@ jobs:
         run: |
           sh ./scripts/pack-prod-build.sh
 
-      # - name: List Contents in prod-build
-      #   run: |
-      #     ls -R $GITHUB_WORKSPACE/prod-build
+      - name: List Contents in prod-build
+        run: |
+          ls -R $GITHUB_WORKSPACE/prod-build
 
 #       - name: Deploy
 #         uses: reggionick/s3-deploy@v3
@@ -167,24 +170,24 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
 
-      - name: AWS CLI S3 Sync
-        run: ./upload_script.sh
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-        if: ${{ failure() }}
+      # - name: AWS CLI S3 Sync
+      #   run: ./upload_script.sh
+      #   env:
+      #     AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+      #   if: ${{ failure() }}
 
-      ### Invalidate Cloudfront
-      - name: Cloudfront Invalidation
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
-          PATHS: '/*'
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # ### Invalidate Cloudfront
+      # - name: Cloudfront Invalidation
+      #   uses: chetan/invalidate-cloudfront-action@master
+      #   env:
+      #     DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+      #     PATHS: '/*'
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # ## Notify on Slack
       # - name: Notify on Slack channel
@@ -194,3 +197,16 @@ jobs:
       #   with:
       #     status: ${{ job.status }}
       #   if: ${{ always() }}
+
+      - name: Deploy to S3, Invalidate Cloudfront Cache
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: prod-build
+          bucket: ${{ secrets.AWS_S3_BUCKET }}
+          bucket-region: ${{ secrets.AWS_S3_BUCKET_REGION }}
+          dist-id: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+          invalidation: /*
+          delete-removed: true
+          no-cache: true
+          private: true
+          files-to-include: '{.*/**,**}'
