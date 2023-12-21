@@ -5,6 +5,7 @@ import {
   useWindowSize,
   SunbirdPlayer,
   Loading,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { Modal, VStack, Text } from "native-base";
@@ -19,13 +20,15 @@ function Player({ setAlert }) {
   const [loading, setLoading] = React.useState(true);
   const [showExitButton, setShowExitButton] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalVisible2, setModalVisible2] = React.useState(false);
+  const [modalVisible3, setModalVisible3] = React.useState(false);
+  const [response, setResponse] = React.useState(false);
   const id = localStorage.getItem("id");
 
   React.useEffect(async () => {
     const getCertificate = await testRegistryService.getCertificate({ id });
     if (getCertificate?.data?.length > 0) {
-      alert(t("EXAM_ALREADY_TAKEN"));
-      navigate("/");
+      setModalVisible2(true);
       return;
     }
   }, []);
@@ -135,9 +138,13 @@ function Player({ setAlert }) {
       context_id: context_id,
     };
     const response = await testRegistryService.testTrackingCreate(data);
-    window.alert(response);
+    if (response == 200) {
+      setResponse("EXAM_SUBMITTED_SUCCESSFULLY");
+    } else {
+      setResponse("MAX_RETRY");
+    }
     setModalVisible(false);
-
+    setModalVisible3(true);
     setShowExitButton(true);
   };
 
@@ -157,7 +164,42 @@ function Player({ setAlert }) {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
+      <Modal
+        isOpen={modalVisible2}
+        avoidKeyboard
+        size="lg"
+        onClose={() => navigate("/")}
+      >
+        <Modal.Content>
+          <Modal.Body alignItems="center">
+            <Text> {"TEST ALREADY TAKEN"}</Text>
+            <FrontEndTypo.DefaultButton
+              textColor={"black"}
+              onPress={() => navigate("/")}
+            >
+              {t("GO_BACK")}
+            </FrontEndTypo.DefaultButton>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={modalVisible3}
+        avoidKeyboard
+        size="lg"
+        onClose={() => navigate("/")}
+      >
+        <Modal.Content>
+          <Modal.Body alignItems="center">
+            <Text> {t(response)}</Text>
+            <FrontEndTypo.DefaultButton
+              textColor={"black"}
+              onPress={() => navigate("/")}
+            >
+              {t("GO_BACK")}
+            </FrontEndTypo.DefaultButton>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
       <VStack alignItems={"center"}>
         <SunbirdPlayer
           {...{
