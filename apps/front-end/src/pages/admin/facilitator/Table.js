@@ -211,7 +211,9 @@ function Table({
                 <AdminTypo.H6
                   key={"table"}
                   color={
-                    filter?.status == t(item?.status) ? "blueText.400" : ""
+                    filter?.status == t(item?.status)
+                      ? "textMaroonColor.600"
+                      : ""
                   }
                   bold={filter?.status == t(item?.status) ? true : false}
                   cursor={"pointer"}

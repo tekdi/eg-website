@@ -24,6 +24,7 @@ import {
   facilitatorRegistryService,
   setQueryParameters,
   urlData,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
@@ -236,6 +237,7 @@ export default function AdminHome({ footerLinks }) {
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
+                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={(e) => {
                   setFilter(e);
@@ -471,7 +473,7 @@ export const Filter = ({ filter, setFilter }) => {
           }}
         />
         {isMore && (
-          <Button
+          <AdminTypo.H5
             onPress={(e) =>
               setFacilitatorFilter({
                 ...facilitatorFilter,
@@ -482,9 +484,10 @@ export const Filter = ({ filter, setFilter }) => {
               })
             }
             pr="2"
+            color="textMaroonColor.600"
           >
-            {t("MORE")}
-          </Button>
+            + {t("MORE")}
+          </AdminTypo.H5>
         )}
       </VStack>
     </VStack>

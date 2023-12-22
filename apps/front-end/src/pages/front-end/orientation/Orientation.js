@@ -117,7 +117,7 @@ export default function Orientation({ footerLinks }) {
             {required ? "*" : null}
           </AdminTypo.H6>
         </HStack>
-        <HStack alignItems="left" flex={["1", "3", "4"]}>
+        <HStack alignItems="left" flex={["1", "1", "4"]}>
           <AdminTypo.Secondarybutton
             leftIcon={
               <Text maxWidth="10px" alignItems="left">

@@ -4435,7 +4435,7 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
 .ui.toggle.checkbox.sb-toggle input:focus:checked ~ .box:before,
 .ui.toggle.checkbox.sb-toggle input:checked ~ .box:before,
 .ui.toggle.checkbox.sb-toggle input:checked ~ label:before {
-  background-color: #024f9d !important;
+  background-color: red !important;
   background-color: var(--primary-color) !important;
 }
 .ui.toggle.checkbox.sb-toggle label {

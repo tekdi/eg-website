@@ -750,37 +750,13 @@ export default function Attendence({ footerLinks }) {
             <Stack mt={"20px"} space={"3"} py="2">
               <HStack space={"4"} direction={["column", "column", "row"]}>
                 <HStack>
-                  <IconByName
-                    isDisabled
-                    name="UserLineIcon"
-                    color="gray"
-                    _icon={{ size: "35" }}
-                  />
-                  <AdminTypo.H6>
+                  <IconByName isDisabled name="UserLineIcon" color="gray" />
+                  <AdminTypo.H4 bold>
                     {t("CANDIDATES")} {users?.length}
-                  </AdminTypo.H6>
+                  </AdminTypo.H4>
                 </HStack>
                 <HStack justifyContent={"space-between"} space={10}>
-                  {/* <AdminTypo.Secondarybutton
-                    shadow="BlueOutlineShadow"
-                    onPress={(e) => {
-                      setCameraModal(true);
-                      setUserData(
-                        users?.[0] ? { ...users?.[0], index: 0 } : {}
-                      );
-                    }}
-                    endIcon={
-                      <IconByName
-                        isDisabled
-                        name="AddFillIcon"
-                        _icon={{ size: "15" }}
-                      />
-                    }
-                  >
-                    {t("MARK_ATTENDANCE_ALL")}
-                  </AdminTypo.Secondarybutton> */}
                   <AdminTypo.Secondarybutton
-                    shadow="BlueOutlineShadow"
                     onPress={(e) => {
                       setShowModal(true);
                       setFacilitatorProfile();
@@ -814,9 +790,9 @@ export default function Attendence({ footerLinks }) {
             >
               <Modal.Content>
                 <Modal.Header textAlign={"Center"}>
-                  <AdminTypo.H1 color="textGreyColor.500">
+                  <AdminTypo.H4 color="textMaroonColor.500">
                     {t("ADD_PARTICIPANTS")}
-                  </AdminTypo.H1>
+                  </AdminTypo.H4>
                 </Modal.Header>
                 <Modal.Body>
                   {!getFacilitator?.id ? (
@@ -862,7 +838,7 @@ export default function Attendence({ footerLinks }) {
                         <VStack space="4" flexWrap="wrap">
                           <ChipStatus status={getFacilitator?.status} />
                           <HStack
-                            bg="badgeColor.400"
+                            bg="textMaroonColor.600"
                             rounded={"md"}
                             alignItems="center"
                             p="2"
@@ -871,14 +847,14 @@ export default function Attendence({ footerLinks }) {
                               isDisabled
                               _icon={{ size: "20px" }}
                               name="CellphoneLineIcon"
-                              color="textGreyColor.300"
+                              color="white"
                             />
-                            <AdminTypo.H6 color="textGreyColor.600" bold>
+                            <AdminTypo.H6 color="white" bold>
                               {getFacilitator?.mobile}
                             </AdminTypo.H6>
                           </HStack>
                           <HStack
-                            bg="badgeColor.400"
+                            bg="textMaroonColor.600"
                             rounded={"md"}
                             p="2"
                             alignItems="center"
@@ -888,9 +864,9 @@ export default function Attendence({ footerLinks }) {
                               isDisabled
                               _icon={{ size: "20px" }}
                               name="MapPinLineIcon"
-                              color="textGreyColor.300"
+                              color="white"
                             />
-                            <AdminTypo.H6 color="textGreyColor.600" bold>
+                            <AdminTypo.H6 color="white" bold>
                               {[
                                 getFacilitator?.state,
                                 getFacilitator?.district,
@@ -917,7 +893,7 @@ export default function Attendence({ footerLinks }) {
                             <IconByName
                               isDisabled
                               name="AccountCircleLineIcon"
-                              color="textGreyColor.300"
+                              color="white"
                               _icon={{ size: "100px" }}
                             />
                           )}

@@ -27,34 +27,11 @@ import {
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
-
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-      cursor: "pointer",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
 
 const columns = (navigate) => [
   {
@@ -207,10 +184,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <HStack pb="2">
               {campFilterStatus?.map((item) => {
                 return (
-                  <AdminTypo.H5
+                  <AdminTypo.H6
                     key={"table"}
                     color={
-                      filter?.status == t(item?.status) ? "blueText.400" : ""
+                      filter?.status == t(item?.status)
+                        ? "textMaroonColor.600"
+                        : ""
                     }
                     bold={filter?.status == t(item?.status)}
                     cursor={"pointer"}
@@ -232,7 +211,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     {filter?.status == t(item?.status)
                       ? `(${paginationTotalRows})` + " "
                       : " "}
-                  </AdminTypo.H5>
+                  </AdminTypo.H6>
                 );
               })}
             </HStack>
@@ -243,7 +222,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter(e);
                   setQueryParameters(e);
                 }}
-                customStyles={CustomStyles}
+                customStyles={tableCustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}

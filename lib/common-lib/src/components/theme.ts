@@ -56,16 +56,16 @@ const DEFAULT_THEME = {
     Input: {
       baseStyle: {
         p: '4',
-        minH: '54px',
-        borderColor: 'secondaryBlue.500',
+        minH: '45px',
+        borderColor: 'Disablecolor',
         borderRadius: '10px'
       }
     },
     Select: {
       baseStyle: {
         p: '4',
-        minH: '54px',
-        borderColor: 'secondaryBlue.500',
+        minH: '45px',
+        borderColor: 'Disablecolor',
         borderRadius: '10px'
       }
     },

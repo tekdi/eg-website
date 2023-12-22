@@ -262,7 +262,7 @@ export default function View({ footerLinks }) {
           borderColor="#084B82"
           lineHeight={8}
           _text={{
-            color: "blueText.400",
+            color: "text.400",
             fontSize: "14px",
             fontWeight: "700",
           }}
@@ -270,7 +270,7 @@ export default function View({ footerLinks }) {
           <Button
             background="white"
             _text={{
-              color: "blueText.400",
+              color: "textGreyColor.900",
               fontSize: "14px",
               fontWeight: "700",
             }}

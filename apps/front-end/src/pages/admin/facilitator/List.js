@@ -24,6 +24,7 @@ import {
   urlData,
   CustomRadio,
   getOptions,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -421,6 +422,7 @@ export default function List({ footerLinks, userTokenInfo }) {
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
+                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}
