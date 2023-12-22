@@ -81,7 +81,7 @@ export default function PhotoUpload({
               label: `ADD_FRONT_VIEW_${page}`,
               document_type: "profile_photo",
               document_sub_type: `profile_photo_${page}`,
-              user_id: formData?.id,
+              userId: formData?.id,
               iconComponent: (
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),

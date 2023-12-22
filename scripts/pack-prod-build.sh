@@ -2,10 +2,10 @@
 rm -rf prod-build
 mkdir prod-build
 mkdir prod-build/modules
-find modules \( ! -path lib/common-ui -o ! -path apps/admin \) -type d -maxdepth 1 -mindepth 1 -exec bash -c '
+find modules \( ! -path lib/common-ui -o ! -path modules/players \) -type d -maxdepth 1 -mindepth 1 -exec bash -c '
 for f  do
     # echo $f
-    if [ $f != "lib/common-ui" ] &&  [ $f != "apps/admin" ] ; then
+    if [ $f != "lib/common-ui" ] &&  [ $f != "modules/players" ] ; then
         echo "Processing ${f//modules\//}"
         cp -rf "$f/build" "prod-build/modules/${f//modules\//}"
     fi
