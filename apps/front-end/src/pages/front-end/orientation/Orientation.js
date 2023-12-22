@@ -7,8 +7,11 @@ import {
   eventService,
   Loading,
   enumRegistryService,
+  cohortService,
   getOptions,
   EVENTS_COLORS,
+  BodyLarge,
+  jsonParse,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -37,6 +40,7 @@ import {
   Image,
   Pressable,
   Text,
+  Menu,
 } from "native-base";
 import moment from "moment";
 import OrientationScreen from "./OrientationScreen";
@@ -57,9 +61,31 @@ export default function Orientation({ footerLinks }) {
   const [userIds, setUserIds] = React.useState({});
   const nowDate = new Date();
   const [goToDate, setGoToDate] = React.useState(moment().toDate());
+  const [academicYear, setAcademicYear] = React.useState(
+    jsonParse(localStorage.getItem("academic_year"))
+  );
+
+  const [academicData, setAcademicData] = React.useState();
+
+  const handleAcademicYear = React.useCallback((data) => {
+    const stringData = JSON.stringify(data);
+    localStorage.setItem("academic_year", stringData);
+    setAcademicYear(data);
+    window.location.reload();
+  }, []);
+
+  const getAcademic = React.useCallback(async () => {
+    const data = await cohortService.getAcademicYear();
+    if (data?.data.length === 1) {
+      const stringData = JSON.stringify(data?.data?.[0]);
+      localStorage.setItem("academic_year", stringData);
+    }
+    setAcademicData(data?.data);
+  }, []);
 
   React.useEffect(() => {
     getEventLists();
+    getAcademic();
   }, []);
 
   React.useEffect(async () => {
@@ -316,7 +342,6 @@ export default function Orientation({ footerLinks }) {
     }
   };
 
-  console.log(formData);
   return (
     <Layout
       _appBar={{
@@ -588,6 +613,54 @@ export default function Orientation({ footerLinks }) {
                   {t("SEND_INVITES")}
                 </AdminTypo.PrimaryButton>
               </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <Modal isOpen={!academicYear}>
+            <Modal.Content alignItems={"center"}>
+              <Modal.Header p="5" borderBottomWidth="0" bg="white">
+                <AdminTypo.H1 textAlign="center" bold>
+                  {t("SELECT_ACADEMIC_YEAR")}
+                </AdminTypo.H1>
+              </Modal.Header>
+              <Menu
+                width={"100%"}
+                trigger={(triggerProps) => {
+                  return (
+                    <Pressable
+                      accessibilityLabel="More options menu"
+                      {...triggerProps}
+                    >
+                      <HStack alignItems="start">
+                        <BodyLarge>
+                          {academicYear?.academic_year_name ||
+                            t("SELECT_ACADEMIC_YEAR")}
+                        </BodyLarge>
+                        <IconByName
+                          pr="0"
+                          name="ArrowDownSFillIcon"
+                          isDisabled={true}
+                          _text={{ size: "sm" }}
+                        />
+                      </HStack>
+                    </Pressable>
+                  );
+                }}
+              >
+                {academicData?.map((item) => {
+                  return (
+                    <Menu.Item
+                      key={item?.id}
+                      onPress={() => {
+                        handleAcademicYear(item);
+                      }}
+                    >
+                      {item?.academic_year_name}
+                    </Menu.Item>
+                  );
+                })}
+              </Menu>
+
+              <Modal.Body pt="4" pb="10" bg="white"></Modal.Body>
             </Modal.Content>
           </Modal>
           <OrientationScreen {...{ isOpen, setIsOpen, userIds, setUserIds }} />
