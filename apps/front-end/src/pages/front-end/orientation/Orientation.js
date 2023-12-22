@@ -409,9 +409,9 @@ export default function Orientation({ footerLinks }) {
             </VStack>
           </BoxBlue> */}
             </HStack>
-            <AdminTypo.H3 bold pt="8" pb="3">
+            <AdminTypo.H4 color="textMaroonColor.600" bold pt="8" pb="3">
               {t("YOUR_CALENDAR")}
-            </AdminTypo.H3>
+            </AdminTypo.H4>
           </VStack>
           <HStack
             px="2"

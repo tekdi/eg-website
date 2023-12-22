@@ -49,76 +49,6 @@ const uiSchema = {
   },
 };
 
-const schemat = {
-  type: "object",
-  properties: {
-    district: {
-      type: "array",
-      title: "DISTRICT",
-      grid: 1,
-      _hstack: {
-        maxH: 135,
-        overflowY: "scroll",
-        borderBottomColor: "bgGreyColor.200",
-        borderBottomWidth: "2px",
-      },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    block: {
-      type: "array",
-      title: "BLOCKS",
-      grid: 1,
-      _hstack: {
-        maxH: 130,
-        overflowY: "scroll",
-        borderBottomColor: "bgGreyColor.200",
-        borderBottomWidth: "2px",
-      },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    qualificationIds: {
-      type: "array",
-      title: "QUALIFICATION",
-      grid: 1,
-      _hstack: {
-        maxH: 135,
-        overflowY: "scroll",
-        borderBottomColor: "bgGreyColor.200",
-        borderBottomWidth: "2px",
-      },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    work_experience: {
-      type: "array",
-      title: "WORK EXPERIENCES",
-      _hstack: { maxH: 130, overflowY: "scroll" },
-      items: {
-        type: "string",
-        enumNames: [
-          "All",
-          "0 yrs",
-          "1 yrs",
-          "2 yrs",
-          "3 yrs",
-          "4 yrs",
-          "5 yrs",
-        ],
-        enum: ["All", "0", "1", "2", "3", "4", "5"],
-      },
-      uniqueItems: true,
-    },
-  },
-};
-
 export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
 
@@ -135,6 +65,75 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
+  const schemat = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: t("DISTRICT"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      qualificationIds: {
+        type: "array",
+        title: t("QUALIFICATION"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      work_experience: {
+        type: "array",
+        title: t("WORK_EXPERIENCES"),
+        _hstack: { maxH: 130, overflowY: "scroll" },
+        items: {
+          type: "string",
+          enumNames: [
+            "All",
+            "0 yrs",
+            "1 yrs",
+            "2 yrs",
+            "3 yrs",
+            "4 yrs",
+            "5 yrs",
+          ],
+          enum: ["All", "0", "1", "2", "3", "4", "5"],
+        },
+        uniqueItems: true,
+      },
+    },
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
