@@ -16,23 +16,23 @@ settings:
   # Specific review instructions for certain file paths. File paths accept glob pattern
   path_based_instructions:
     - path: "**/*.css"
-      instructions: 
+      instructions: |
         "Review the CSS code against the google css style guide and point out any mismatches. Ensure that:
         - The code adheres to best practices associated with CSS.
         - The code adheres to best practices recommended by lighthouse or similar tools for performance.
-        - The code adheres to similar naming conventions for classes, ids.
+        - The code adheres to similar naming conventions for classes, ids."
     - path: "**/*.html"
-      instructions: 
+      instructions: |
         "Review the HTML code against the google html style guide and point out any mismatches. Ensure that:
-        - The code adheres to best practices recommended by lighthouse or similar tools for performance.
+        - The code adheres to best practices recommended by lighthouse or similar tools for performance."
     - path: "**/*.js,**/*.ts"
-      instructions: 
+      instructions: |
         "Review the JAVASCRIPT code against the google javascript style guide and point out any mismatches. Ensure that:
         - The code adheres to best practices associated with React.
         - The code adheres to best practices associated with React PWA.
         - The code adheres to best practices associated with SPA.
         - The code adheres to best practices recommended by lighthouse or similar tools for performance.
-        - The code adheres to similar naming conventions for components, views, methods.
+        - The code adheres to similar naming conventions for components, views, methods."
     # - path: "tests/**/*"
     #   instructions:
     #     "Review the following unit test code written using the Mocha test library. Ensure that:
