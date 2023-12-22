@@ -9,8 +9,18 @@ import {
   BodyMedium,
   AdminTypo,
   testRegistryService,
+  cohortService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
+import {
+  HStack,
+  VStack,
+  Stack,
+  Image,
+  Alert,
+  Modal,
+  Select,
+  CheckIcon,
+} from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -49,6 +59,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [events, setEvents] = React.useState("");
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
+  const [cohortData, setCohortData] = React.useState();
+  const [openModal, setOpenModal] = React.useState(true);
+  const [selectedCohortYearId, setSelectedCohortYearId] = React.useState();
+  const [error, setError] = React.useState("");
 
   React.useEffect(async () => {
     if (userTokenInfo) {
@@ -118,7 +132,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const handleRandomise = async () => {
     const doIdArray = modalVisible?.params?.do_id;
-    console.log({ doIdArray });
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
@@ -179,6 +192,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     return isAllow < 3;
   };
 
+  const dataCohort = React.useCallback(async () => {
+    const data = await cohortService.getAcademicYear();
+    setCohortData(data);
+  }, [openModal]);
+  React.useEffect(() => {
+    dataCohort();
+  }, [dataCohort, openModal]);
+
+  const onClickGoForward = () => {
+    if (selectedCohortYearId !== undefined) {
+      localStorage.setItem("cohort_data", selectedCohortYearId);
+      setOpenModal(false);
+    }
+    setError(t("SELECT_MESSAGE"));
+  };
+
   return (
     <Layout
       loading={loading}
@@ -191,6 +220,51 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
+        <Modal isOpen={openModal} size={"xl"}>
+          <Modal.Content>
+            <Modal.Header alignItems={"center"}>
+              <FrontEndTypo.H1>{t("SELECT_PROGRAM")}</FrontEndTypo.H1>
+            </Modal.Header>
+            <Modal.Body>
+              <VStack p="4" pt="0" space={4}>
+                <Select
+                  selectedValue={selectedCohortYearId}
+                  minWidth="200"
+                  accessibilityLabel="Choose Service"
+                  placeholder={t("SELECT")}
+                  _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                  mt={1}
+                  onValueChange={(itemValue) =>
+                    setSelectedCohortYearId(itemValue)
+                  }
+                >
+                  {cohortData?.data?.map((item) => {
+                    return (
+                      <Select.Item
+                        key={item.id}
+                        label={item?.academic_year_name}
+                        value={JSON?.stringify(item)}
+                      />
+                    );
+                  })}
+                </Select>
+
+                <FrontEndTypo.DefaultButton
+                  background={"textRed.400"}
+                  onPress={onClickGoForward}
+                >
+                  {t("GO_FORWARD")}
+                </FrontEndTypo.DefaultButton>
+                {error && (
+                  <FrontEndTypo.H2 color="textRed.400">{error}</FrontEndTypo.H2>
+                )}
+              </VStack>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
         <VStack space="5">
           {facilitator?.status === "applied" && (
             <InfoBox status={facilitator?.status} progress={progress} />
