@@ -34,7 +34,6 @@ const dropDown = (triggerProps, t) => {
 function Table({
   filter,
   setFilter,
-  facilitaorStatus,
   paginationTotalRows,
   data,
   loading,
@@ -200,44 +199,29 @@ function Table({
     () => columns(t, navigate),
     [t, navigate]
   );
-
   return (
     <VStack>
-      <ScrollView horizontal={true} mb="2">
-        <HStack pb="2">
-          {Array?.isArray(facilitaorStatus) &&
-            facilitaorStatus.map((item) => {
-              return (
-                <AdminTypo.H5
-                  key={"table"}
-                  color={
-                    filter?.status == t(item?.status) ? "blueText.400" : ""
-                  }
-                  bold={filter?.status == t(item?.status) ? true : false}
-                  cursor={"pointer"}
-                  mx={3}
-                  onPress={() => {
-                    setFilter({ ...filter, status: item?.status, page: 1 });
-                  }}
-                >
-                  {item.status === "all" ? (
-                    <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
-                  ) : (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"FACILITATOR_STATUS"}
-                      enumOptionValue={item?.status}
-                      enumApiData={enumOptions}
-                    />
-                  )}
-                  {filter?.status == t(item?.status)
-                    ? `(${paginationTotalRows})` + " "
-                    : " "}
-                </AdminTypo.H5>
-              );
-            })}
-        </HStack>
-      </ScrollView>
+      <VStack p={2}>
+        <AdminTypo.H5 underline bold color="blueText.400">
+          {filter?.status === undefined ? (
+            t("ALL")
+          ) : filter?.status?.[0] === "all" ? (
+            <AdminTypo.H4>{t("ALL")}</AdminTypo.H4>
+          ) : (
+            <GetEnumValue
+              t={t}
+              enumType="FACILITATOR_STATUS"
+              enumOptionValue={filter?.status}
+              enumApiData={enumOptions}
+            />
+          )}
+          {filter?.status === undefined ||
+          filter?.status ||
+          filter?.status === t(filter?.status?.[0])
+            ? `(${paginationTotalRows})` + " "
+            : " "}
+        </AdminTypo.H5>
+      </VStack>
       <DataTable
         customStyles={tableCustomStyles}
         columns={columnsMemoized}
