@@ -366,7 +366,7 @@ export default [
     component: FacilitatorRegistration,
   },
   {
-    path: "/offline/facilitator-self-onboarding/facilitatorOnboarding",
+    path: "/offline/profile/:id",
     component: FacilitatorOnboarding,
   },
 ];

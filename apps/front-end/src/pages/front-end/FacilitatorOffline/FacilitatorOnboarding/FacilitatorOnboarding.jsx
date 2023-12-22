@@ -1,16 +1,5 @@
 import { CustomOTPBox, FrontEndTypo, Layout, t } from "@shiksha/common-lib";
-import {
-  VStack,
-  Text,
-  Input,
-  Image,
-  HStack,
-  Stack,
-  Box,
-  Button,
-  Center,
-  Pressable,
-} from "native-base";
+import { VStack } from "native-base";
 import React, { useState, useCallback } from "react";
 import validator from "@rjsf/validator-ajv8";
 import {
@@ -31,6 +20,7 @@ import prerakDutiesImage4 from "../../../../assets/images/facilitator-duties/img
 import prerakDutiesImage5 from "../../../../assets/images/facilitator-duties/img5.png";
 import prerakDutiesImage6 from "../../../../assets/images/facilitator-duties/img6.png";
 import Steper from "component/Steper";
+import { useNavigate } from "react-router-dom";
 
 const stylesheet = {
   text1: {
@@ -126,12 +116,29 @@ const FacilitatorOnboarding = () => {
   const [formData, setFormData] = React.useState({});
   const [page, setPage] = React.useState(0);
 
+  const navigate = useNavigate();
+
   const handleInputChange = (value) => {
     setMobileNumber(value);
   };
 
   const handleNextScreen = (screenName) => {
     setActiveScreenName(screenName);
+
+    setPage(page + 1);
+    console.log("page", page);
+
+    setPage((prevPage) => {
+      const nextPage = prevPage + 1;
+      console.log("Current page:", nextPage);
+
+      console.log("Navigating to:", screenName);
+      navigate(`/offline/profile/${screenName}`);
+
+      console.log("Next page:", nextPage);
+
+      return nextPage;
+    });
   };
 
   //screen1
@@ -496,7 +503,6 @@ const FacilitatorOnboarding = () => {
       </VStack>
     </>
   );
-
   const educationDetails = () => (
     <>
       <VStack flex={3} space={6}>
@@ -648,7 +654,6 @@ const FacilitatorOnboarding = () => {
       </VStack>
     </>
   );
-
   const renderSwitchCase = () => {
     switch (activeScreenName) {
       case "dateOfBirth":
@@ -683,11 +688,11 @@ const FacilitatorOnboarding = () => {
         <Steper
           type={"circle"}
           steps={[
-            { value: "6", label: t("BASIC_DETAILS") },
-            { value: "3", label: t("WORK_DETAILS") },
-            { value: "1", label: t("OTHER_DETAILS") },
+            { value: "0", label: t("BASIC_DETAILS") },
+            { value: "3", label: t("स्वयंसेवक, नौकरी एवं योग्यता विवरण") },
+            { value: "6", label: t("OTHER_DETAILS") },
           ]}
-          //   progress={page === "upload" ? 10 : page}
+          progress={page === "upload" ? 10 : page}
         />
       </VStack>
 

@@ -509,7 +509,7 @@ const FacilitatorRegistration = () => {
       case "contactDetails":
         return contactDetails();
       default:
-        return idVerification();
+        return chooseLangauge();
     }
   };
 
