@@ -76,10 +76,11 @@ export default function BenificiaryBasicDetails() {
           <ProfilePhoto
             isProfileEdit={true}
             editLink={
-              benificiary?.program_beneficiaries?.status !==
-              "enrolled_ip_verified"
-                ? edit
-                : !edit
+              edit
+              // benificiary?.program_beneficiaries?.status !==
+              // "enrolled_ip_verified"
+              //   ? edit
+              //   : !edit
             }
             profile_photo_1={benificiary?.profile_photo_1}
             profile_photo_2={benificiary?.profile_photo_2}
