@@ -409,7 +409,7 @@ export default function Orientation({ footerLinks }) {
             </VStack>
           </BoxBlue> */}
             </HStack>
-            <AdminTypo.H4 color="textMaroonColor.600" bold pt="8" pb="3">
+            <AdminTypo.H4 color="textMaroonColor.500" bold pt="8" pb="3">
               {t("YOUR_CALENDAR")}
             </AdminTypo.H4>
           </VStack>
@@ -535,7 +535,7 @@ export default function Orientation({ footerLinks }) {
             <Modal.Content {...styles.modalxxl}>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0" bg="white">
-                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.500">
                   {t("SCHEDULE_EVENT")}
                 </AdminTypo.H3>
               </Modal.Header>

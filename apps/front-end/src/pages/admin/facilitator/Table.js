@@ -140,7 +140,7 @@ function Table({
             shadow="BlueOutlineShadow"
             borderWidth="1px"
             borderColor="#084B82"
-            lineHeight={8}
+            lineHeight={1}
             _text={{
               color: "blueText.400",
               fontSize: "14px",
@@ -256,7 +256,6 @@ function Table({
         paginationServer
         paginationTotalRows={paginationTotalRows}
         paginationDefaultPage={filter?.page}
-        dense
         highlightOnHover
         onChangeRowsPerPage={React.useCallback(
           (e) => {

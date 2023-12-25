@@ -235,7 +235,6 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           [setFilter, filter]
         )}
         onRowClicked={handleRowClick}
-        dense
         highlightOnHover
       />
     </VStack>
