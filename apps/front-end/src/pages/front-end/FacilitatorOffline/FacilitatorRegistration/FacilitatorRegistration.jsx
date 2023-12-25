@@ -245,47 +245,53 @@ const FacilitatorRegistration = () => {
   );
   const idVerification = () => (
     <>
-      <FrontEndTypo.H1 bold>1. {t("BASIC_DETAILS")}</FrontEndTypo.H1>
-      <Text bold fontWeight={600} color={"#790000"}>
-        {t("ID_VERIFICATION")}
-      </Text>{" "}
-      <Image
-        alignSelf={"center"}
-        resizeMode="contain"
-        source={{ uri: aadharImage }}
-        alt="Alternate Text"
-        size="2xl"
-      />{" "}
-      <Form
-        formData={formData}
-        onSubmit={(data) => setFormData(data.formData)}
-        // widgets={{ Test2 }}
-        {...{ templates, FieldTemplate }}
-        validator={validator}
-        schema={{
-          // title: "A registration form",
-          // description: "A simple form example.",
-          type: "object",
-          required: ["aadharName"],
-          properties: {
-            aadharName: {
-              type: "string",
-              title: "AADHAR_CARD",
-            },
-          },
-        }}
-      >
-        <Text>{t("ENTER_THE_12_DIGIT_AADHAAR_CARD")}</Text>
-
-        <FrontEndTypo.Primarybutton
-          style={{ background: "#FF0000", space: "20px", mt: "5%" }}
-          onClick={(e) => setPage(page + 1)}
-          onPress={() => handleNextScreen("enterBasicDetails")}
-          // isDisabled={!mobileNumber}
+      <VStack>
+        <FrontEndTypo.H1 bold>
+          {t("तीन सरल चरणों में साइन अप करें!")}
+        </FrontEndTypo.H1>
+        <FrontEndTypo.H3
+          bold
+          style={{ fontWeight: 600, color: "#790000", marginTop: "20px" }}
         >
-          {t("NEXT")}
-        </FrontEndTypo.Primarybutton>
-      </Form>
+          {t("आधार कार्ड विवरण")}
+        </FrontEndTypo.H3>{" "}
+        <Image
+          alignSelf={"center"}
+          resizeMode="contain"
+          source={{ uri: aadharImage }}
+          alt="Alternate Text"
+          size="2xl"
+        />{" "}
+        <Form
+          formData={formData}
+          onSubmit={(data) => setFormData(data.formData)}
+          {...{ templates, FieldTemplate }}
+          validator={validator}
+          schema={{
+            type: "object",
+            required: ["aadharName"],
+            properties: {
+              aadharName: {
+                type: "string",
+                title: "AADHAR_CARD",
+              },
+            },
+          }}
+        >
+          <FrontEndTypo.H3 marginTop="20px">
+            {t("ENTER_THE_12_DIGIT_AADHAAR_CARD")}
+          </FrontEndTypo.H3>
+
+          <FrontEndTypo.Primarybutton
+            style={{ background: "#FF0000", space: "20px", top: "35px" }}
+            onClick={(e) => setPage(page + 1)}
+            onPress={() => handleNextScreen("enterBasicDetails")}
+            // isDisabled={!mobileNumber}
+          >
+            {t("NEXT")}
+          </FrontEndTypo.Primarybutton>
+        </Form>
+      </VStack>
     </>
   );
   const enterBasicDetails = () => (
@@ -300,10 +306,13 @@ const FacilitatorRegistration = () => {
           ]}
           progress={page === "contactDetails" ? 6 : page}
         /> */}
-        <FrontEndTypo.H1 bold>Sign Up in three simple steps!</FrontEndTypo.H1>
-        <Text bold fontWeight={600} color={"#790000"}>
+        <FrontEndTypo.H1 bold>
+          {" "}
+          {t("तीन सरल चरणों में साइन अप करें!")}
+        </FrontEndTypo.H1>
+        <FrontEndTypo.H1 bold fontWeight={600} color={"#790000"}>
           Tell us your name
-        </Text>{" "}
+        </FrontEndTypo.H1>{" "}
         <Text color={"#790000"}>(As per your Aadhar Card)</Text>
         <Form
           formData={formData}
@@ -339,7 +348,7 @@ const FacilitatorRegistration = () => {
           // }}
         >
           <FrontEndTypo.Primarybutton
-            style={{ background: "#FF0000", space: "20px", mt: "5%" }}
+            style={{ background: "#FF0000", space: "20px", marginTop: "35px" }}
             onClick={(e) => setPage(page + 1)}
             onPress={() => handleNextScreen("contactDetails")}
             // isDisabled={!mobileNumber}
@@ -380,7 +389,7 @@ const FacilitatorRegistration = () => {
           <CustomOTPBox></CustomOTPBox>
           <FrontEndTypo.Primarybutton
             style={{ background: "#FF0000" }}
-            onPress={() => handleNextScreen("chooseLangauge")}
+            onPress={() => handleNextScreen(navigate("/offline/profile/:id"))}
           >
             {t("NEXT")}
           </FrontEndTypo.Primarybutton>

@@ -113,6 +113,7 @@ const FacilitatorOnboarding = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+  const [previousScreen, setPreviousScreen] = useState(0);
   const [formData, setFormData] = React.useState({});
   const [page, setPage] = React.useState(0);
 
@@ -141,6 +142,11 @@ const FacilitatorOnboarding = () => {
     });
   };
 
+  const handlePreviousScreen = (screenName) => {
+    setPreviousScreen(screenName);
+    navigate(`/offline/profile/${screenName}`);
+  };
+
   //screen1
   const uiSchema = {
     dob: {
@@ -152,7 +158,6 @@ const FacilitatorOnboarding = () => {
       },
     },
   };
-
   const dateOfBirth = () => (
     <>
       <VStack flex={3} space={6}>
@@ -161,18 +166,19 @@ const FacilitatorOnboarding = () => {
           onSubmit={(data) => setFormData(data.formData)}
           {...{ templates, FieldTemplate }}
           validator={validator}
-          uiSchema={uiSchema}
           schema={{
             type: "object",
             required: ["aadharName"],
             properties: {
-              mobile: {
-                label: "HOW_CAN_CONTACT_YOU",
-                type: "number",
-                title: "MOBILE_NUMBER",
+              dob: {
+                type: "string",
+                label: "DATE_OF_BIRTH",
+                description: "AS_PER_AADHAAR",
+                format: "date",
               },
             },
           }}
+          uiSchema={uiSchema}
         >
           <FrontEndTypo.Primarybutton
             style={{ background: "#FF0000", top: "40px" }}
@@ -681,6 +687,7 @@ const FacilitatorOnboarding = () => {
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
+        // onPressBackButton: (e) => handlePreviousScreen("profile"),
       }}
     >
       {/* {onlyIconsShow === "backBtn" ? "" : ""} */}
