@@ -244,6 +244,7 @@ export default function View({ footerLinks }) {
       minWidth: "160px",
       wrap: true,
     },
+    //reassign camp dropdown
     {
       minWidth: "140px",
       name: t("ACTION"),
