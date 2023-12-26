@@ -113,14 +113,8 @@ export default function CampSessionList({ footerLinks }) {
       const result = data.find(
         (item) => item?.ordering === dataSession?.ordering - 1
       );
-      if (
-        checkNext(
-          result?.session_tracks?.[0]?.status,
-          result?.session_tracks?.[0]?.updated_at
-        )
-      ) {
-        setSessionActive(dataSession?.ordering);
-      }
+
+      setSessionActive(dataSession?.ordering);
     } else if (dataSession?.status === "complete") {
       setSessionActive(dataSession?.ordering + 1);
     } else if (checkNext(dataSession.status, dataSession.updated_at)) {
