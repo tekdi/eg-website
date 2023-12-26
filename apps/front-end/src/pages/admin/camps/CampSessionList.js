@@ -120,8 +120,6 @@ export default function CampSessionList({ footerLinks }) {
         )
       ) {
         setSessionActive(dataSession?.ordering);
-      } else {
-        setSessionActive(dataSession?.ordering);
       }
     } else if (dataSession?.status === "complete") {
       setSessionActive(dataSession?.ordering + 1);
@@ -166,6 +164,7 @@ export default function CampSessionList({ footerLinks }) {
 
         {sessionList?.map((item) => (
           <Pressable
+            key={item}
             onPress={() => setModalVisible(item?.id)}
             isDisabled={
               sessionActive !== item?.ordering ||
