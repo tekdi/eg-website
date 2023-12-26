@@ -77,20 +77,20 @@ jobs:
 #           private: true
 #           filesToInclude: prod-build/*
 
-      ### Invalidate Cloudfront
-      - name: Cloudfront Invalidation
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
-          PATHS: '/*'
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # ### Invalidate Cloudfront
+      # - name: Cloudfront Invalidation
+      #   uses: chetan/invalidate-cloudfront-action@master
+      #   env:
+      #     DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+      #     PATHS: '/*'
+      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      ### S3 sync
-      - name: Deploy to S3 Bucket
-        run: |
-          aws s3 sync ./prod-build/ s3://${{ secrets.AWS_S3_BUCKET }}
+      # ### S3 sync
+      # - name: Deploy to S3 Bucket
+      #   run: |
+      #     aws s3 sync ./prod-build/ s3://${{ secrets.AWS_S3_BUCKET }}
 
       ### S3 sync
       # - name: S3 Sync
@@ -103,6 +103,15 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
       #     SOURCE_DIR: prod-build
+
+      - name: AWS CLI S3 Sync
+        run: |
+          aws s3 sync prod-build s3://$AWS_S3_BUCKET --acl public-read --delete --region $AWS_REGION || true
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
 
       ### Invalidate Cloudfront
       - name: Cloudfront Invalidation

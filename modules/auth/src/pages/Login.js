@@ -85,8 +85,8 @@ export default function Login() {
     <Layout
       _appBar={{
         onlyIconsShow: location?.state
-          ? ["backBtn", "helpBtn"]
-          : ["helpBtn", "langBtn"],
+          ? ["backBtn", "helpBtn", "pwaBtn"]
+          : ["helpBtn", "langBtn", "pwaBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
@@ -105,7 +105,7 @@ export default function Login() {
           size={200}
         />
         <VStack space={5} p="5">
-          <Alert status="info" colorScheme="info" textAlign="center">
+          <Alert status="warning" colorScheme="warning">
             <VStack space={2} flexShrink={1}>
               <HStack
                 flexShrink={1}

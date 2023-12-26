@@ -1,3 +1,4 @@
+import React from "react";
 import {
   campService,
   FrontEndTypo,
@@ -7,19 +8,12 @@ import {
   IconByName,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Alert, Image, Box } from "native-base";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampExecutionEnd({
-  todaysActivity,
-  facilitator,
-  learnerCount,
-}) {
+const CampExecutionEnd = ({ todaysActivity, facilitator, learnerCount }) => {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [error, setError] = React.useState();
-  const [miscActivities, setMiscActivities] = React.useState({});
   const [disable, setDisable] = React.useState(true);
 
   const [loading, setLoading] = React.useState(true);
@@ -28,12 +22,11 @@ export default function CampExecutionEnd({
     React.useState(false);
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
+  const fetchData = React.useCallback(async () => {
     if (todaysActivity?.id) {
       const resultAttendance = await campService.CampAttendance({
         id: todaysActivity?.id,
       });
-      setMiscActivities(todaysActivity?.misc_activities);
       let attendances = resultAttendance?.data || [];
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
@@ -53,16 +46,12 @@ export default function CampExecutionEnd({
         return facilitator?.id === item?.user?.id;
       });
 
-      const learnerAttendance = attendances?.filter((item) => {
-        return facilitator?.id !== item?.user?.id;
-      });
-
-      if (learnerAttendance?.length >= learnerCount) {
+      if (attendances?.length > learnerCount) {
         setLearnerAttendanceCount(true);
       }
 
       if (
-        learnerAttendance?.length >= learnerCount &&
+        attendances?.length > learnerCount &&
         faciltatorAttendanceData?.id &&
         (todaysActivity?.misc_activities || sessionListData)
       ) {
@@ -70,9 +59,13 @@ export default function CampExecutionEnd({
       }
     }
     setLoading(false);
-  }, [todaysActivity?.id, step, learnerCount, facilitator]);
+  }, [todaysActivity?.id, step, learnerCount, facilitator, id]);
 
-  const endCamp = async () => {
+  React.useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const endCamp = React.useCallback(async () => {
     setDisable(true);
     const obj = {
       id: todaysActivity?.id,
@@ -80,7 +73,9 @@ export default function CampExecutionEnd({
     };
     await campService.addMoodActivity(obj);
     navigate(`/camps`);
-  };
+  }, [todaysActivity?.id, navigate]);
+
+  const airplaneImageUri = React.useMemo(() => "/airoplane.gif", []);
 
   return (
     <Layout
@@ -104,7 +99,7 @@ export default function CampExecutionEnd({
         >
           <Image
             source={{
-              uri: "/airoplane.gif",
+              uri: airplaneImageUri,
             }}
             alt="airoplane.gif"
             position="absolute"
@@ -135,14 +130,6 @@ export default function CampExecutionEnd({
             <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
           </HStack>
         </Alert>
-        {error && (
-          <Alert status="danger">
-            <HStack alignItems={"center"} space={2}>
-              <Alert.Icon />
-              <FrontEndTypo.H3>{t(error)}</FrontEndTypo.H3>
-            </HStack>
-          </Alert>
-        )}
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
         >
@@ -162,7 +149,7 @@ export default function CampExecutionEnd({
             <FrontEndTypo.H1 color={"textMaroonColor.400"}>
               {t("TODAYS_TASKS")}
             </FrontEndTypo.H1>
-            {(miscActivities || sessionList) && (
+            {(todaysActivity?.misc_activities || sessionList) && (
               <IconByName name="CheckboxCircleFillIcon" color="successColor" />
             )}
           </HStack>
@@ -173,4 +160,6 @@ export default function CampExecutionEnd({
       </VStack>
     </Layout>
   );
-}
+};
+
+export default CampExecutionEnd;

@@ -56,7 +56,7 @@ export function ChipStatus({
         setTextColor("#fff");
         setColor("textRed.400");
         break;
-      case "deactivated":
+      case "is_deactivated":
         setNewStatus(t("DEACTIVATE"));
         setTextColor("white");
         setColor("textRed.100");
@@ -66,7 +66,7 @@ export function ChipStatus({
         setTextColor("white");
         setColor("textRed.200");
         break;
-      case "duplicated":
+      case "is_duplicated":
         setNewStatus(t("BENEFICIARY_STATUS_DUPLICATED"));
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
@@ -140,6 +140,11 @@ export function ChipStatus({
         setNewStatus(t("IDENTIFIED_READY_TO_ENROLL"));
         setTextColor("textGreyColor.800");
         setColor("identifiedColor");
+        break;
+      case "deactivated":
+        setNewStatus(t("BENEFICIARY_STATUS_DEACTIVATED"));
+        setTextColor("textGreyColor.800");
+        setColor("textMaroonColor.100");
         break;
       default:
         setNewStatus(t("IDENTIFIED"));

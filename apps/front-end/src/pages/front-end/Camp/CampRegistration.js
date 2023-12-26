@@ -215,6 +215,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                 isDisabled
                 name="ArrowRightSLineIcon"
                 _icon={{ size: "30px" }}
+                color="textBlack.500"
               />
             )}
           </HStack>
@@ -239,8 +240,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
             shadow="AlertShadow"
             borderRadius="10px"
             onPress={async () => {
-              disableEdit() &&
-                navigate(`/camps/${camp_id?.id}/kit_material_details`);
+              navigate(`/camps/${camp_id?.id}/kit_material_details`);
             }}
           >
             <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
@@ -265,6 +265,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                 isDisabled
                 name="ArrowRightSLineIcon"
                 _icon={{ size: "30px" }}
+                color="textBlack.500"
               />
             </HStack>
           </Pressable>
@@ -359,6 +360,7 @@ const NavigationBox = ({
             name="ArrowRightSLineIcon"
             //color="amber.400"
             _icon={{ size: "30px" }}
+            color="textBlack.500"
           />
         )}
       </HStack>

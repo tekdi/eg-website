@@ -575,7 +575,7 @@ export default function View({ footerLinks }) {
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
                 <AdminTypo.Secondarybutton
-                  status="info"
+                  status="warning"
                   isDisabled={isButtonLoading}
                   onPress={() => setStatus("change_required")}
                 >
