@@ -24,7 +24,6 @@ import {
   urlData,
   CustomRadio,
   getOptions,
-  jsonParse,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -124,9 +123,6 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
-  const academic_year_id = jsonParse(
-    localStorage.getItem("academic_year")
-  )?.academic_year_id;
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -351,7 +347,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users[0]?.organisation_id}/${academic_year_id}`}
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users[0]?.organisation_id}`}
                     >
                       <HStack space="3">
                         <IconByName
