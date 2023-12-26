@@ -92,6 +92,7 @@ export default function CampSessionList({ footerLinks }) {
       setError("PLEASE_SELECT");
     }
     setIsDisable(false);
+    window.location.reload();
   }, [getData, submitStatus]);
 
   const handleCancel = () => {
