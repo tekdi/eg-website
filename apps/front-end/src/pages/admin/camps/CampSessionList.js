@@ -29,7 +29,7 @@ export default function CampSessionList({ footerLinks }) {
   const [sessionList, setSessionList] = React.useState();
   const [sessionActive, setSessionActive] = React.useState();
   const [loading, setLoading] = React.useState(true);
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [sessionDetails, setSessionDetails] = React.useState();
   const [previousSessionDetails, setPreviousSessionDetails] = React.useState();
@@ -38,18 +38,21 @@ export default function CampSessionList({ footerLinks }) {
   const [error, setError] = React.useState();
 
   const getData = React.useCallback(async () => {
-    const result = await campService.getCampSessionDetails({
-      id: modalVisible,
-      camp_id: id,
-    });
-    if (result?.data?.ordering > 1) {
-      const data = sessionList?.find(
-        (e) => e?.ordering === result?.data?.ordering - 1
-      );
-      setPreviousSessionDetails(data);
+    if (modalVisible) {
+      const result = await campService.getCampSessionDetails({
+        id: modalVisible,
+        camp_id: id,
+      });
+      if (result?.data?.ordering > 1) {
+        const data = sessionList?.find(
+          (e) => e?.ordering === result?.data?.ordering - 1
+        );
+        setPreviousSessionDetails(data);
+      }
+      setSessionDetails(result?.data);
     }
-    setSessionDetails(result?.data);
   }, [modalVisible]);
+
   React.useEffect(() => {
     const fetchData = async () => {
       await getData();
@@ -87,7 +90,7 @@ export default function CampSessionList({ footerLinks }) {
       });
       await getData();
       setSubmitStatus();
-      setModalVisible(false);
+      setModalVisible();
     } else {
       setError("PLEASE_SELECT");
     }
@@ -124,7 +127,7 @@ export default function CampSessionList({ footerLinks }) {
           result?.session_tracks?.[0]?.updated_at
         )
       ) {
-        setSessionActive(dataSession?.ordering);
+        setSessionActive(dataSession?.ordering - 1);
       } else {
         setSessionActive(dataSession?.ordering);
       }
@@ -136,7 +139,8 @@ export default function CampSessionList({ footerLinks }) {
       setSessionActive(dataSession?.ordering + 1);
     }
     setLoading(false);
-  }, []);
+  }, [modalVisible]);
+
   if (loading) {
     return <Loading />;
   }
@@ -150,7 +154,9 @@ export default function CampSessionList({ footerLinks }) {
         previousSessionDetails?.session_tracks?.[0]?.updated_at &&
         moment(previousSessionDetails?.session_tracks?.[0]?.updated_at).format(
           "YYYY-MM-DD"
-        ) !== moment().format("YYYY-MM-DD"))
+        ) !== moment().format("YYYY-MM-DD")) ||
+      (submitStatus?.status === undefined &&
+        previousSessionDetails === undefined)
     );
   };
   return (
@@ -171,6 +177,7 @@ export default function CampSessionList({ footerLinks }) {
 
         {sessionList?.map((item) => (
           <Pressable
+            key={item}
             onPress={() => setModalVisible(item?.id)}
             isDisabled={
               sessionActive !== item?.ordering ||
@@ -228,12 +235,7 @@ export default function CampSessionList({ footerLinks }) {
         ))}
       </VStack>
 
-      <Modal
-        isOpen={modalVisible}
-        onClose={() => setModalVisible(false)}
-        avoidKeyboard
-        size="xl"
-      >
+      <Modal isOpen={modalVisible} avoidKeyboard size="xl">
         <Modal.Content>
           <Modal.Header>
             <FrontEndTypo.H3
