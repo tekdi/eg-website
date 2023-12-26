@@ -2,7 +2,7 @@ name: Deploy to DEV S3
 on:
   push:
     branches:
-      - gha-deploy2s3
+      - release-1.6.0
 
 defaults:
   run:
