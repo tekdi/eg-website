@@ -123,6 +123,15 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
+  const [academicYearId, setAcademicYearId] = React.useState();
+  const [programID, setProgramID] = React.useState();
+
+  React.useEffect(() => {
+    let academic_Id = localStorage.getItem("academic_year_id");
+    let program_Id = localStorage.getItem("program_id");
+    setAcademicYearId(academic_Id);
+    setProgramID(program_Id);
+  }, []);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -131,7 +140,8 @@ export default function List({ footerLinks, userTokenInfo }) {
       const data = await enumRegistryService.listOfEnum();
       setEnumOptions(data?.data ? data?.data : {});
 
-      const getQualification = await facilitatorRegistryService.getQualificationAll();
+      const getQualification =
+        await facilitatorRegistryService.getQualificationAll();
       let newSchema = getOptions(schemat, {
         key: "qualificationIds",
         arr: getQualification,
@@ -201,16 +211,24 @@ export default function List({ footerLinks, userTokenInfo }) {
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = React.useCallback(async (data) => {
-    const { district, qualificationIds, work_experience, block } = data?.formData || {};
-    setFilterObject({
-      ...filter,
-      ...(district && district?.length > 0 ? { district } : {}),
-      ...(qualificationIds && qualificationIds?.length > 0 ? { qualificationIds } : {}),
-      ...(work_experience && work_experience?.length > 0 ? { work_experience } : {}),
-      ...(block && block?.length > 0 ? { block } : {}),
-    });
-  }, [filter, setFilterObject]);
+  const onChange = React.useCallback(
+    async (data) => {
+      const { district, qualificationIds, work_experience, block } =
+        data?.formData || {};
+      setFilterObject({
+        ...filter,
+        ...(district && district?.length > 0 ? { district } : {}),
+        ...(qualificationIds && qualificationIds?.length > 0
+          ? { qualificationIds }
+          : {}),
+        ...(work_experience && work_experience?.length > 0
+          ? { work_experience }
+          : {}),
+        ...(block && block?.length > 0 ? { block } : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = React.useCallback(() => {
     setFilter({});
@@ -222,10 +240,13 @@ export default function List({ footerLinks, userTokenInfo }) {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback((e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-  }, [filter]);
-  
+  const handleSearch = React.useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+
   const debouncedHandleSearch = React.useCallback(
     debounce(handleSearch, 1000),
     []
@@ -335,7 +356,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users[0]?.organisation_id}`}
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYearId}&program_id=${programID}`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -392,7 +413,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={filter}
-                 
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
@@ -423,5 +443,3 @@ export default function List({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
-
-
