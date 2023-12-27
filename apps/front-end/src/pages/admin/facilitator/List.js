@@ -128,7 +128,7 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   React.useEffect(() => {
     //getting required id's
-    let academic_Id = localStorage.getItem("selectedAcademicYear");
+    let academic_Id = localStorage.getItem("academic_year_id");
     let program_Id = localStorage.getItem("program_id");
     setAcademicYearId(academic_Id);
     setProgramID(program_Id);
