@@ -29,7 +29,7 @@ const StartSessionButton = ({ onPress, isDisabled, t }) => (
 const CompleteButton = ({ onPress, t }) => (
   <FrontEndTypo.DefaultButton
     borderWidth="0"
-    background={"textMaroonColor.600"}
+    background={"textMaroonColor.500"}
     onPress={onPress}
   >
     {t("SYLLABUS_COMPLETED")}
