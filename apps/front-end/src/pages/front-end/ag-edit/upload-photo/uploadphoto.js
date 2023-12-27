@@ -383,6 +383,7 @@ export default function agFormEdit({ ip }) {
   if (cameraModal) {
     return (
       <Camera
+        facing={true}
         {...{
           cameraModal,
           setCameraModal,
