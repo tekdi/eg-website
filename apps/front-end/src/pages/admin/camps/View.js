@@ -560,7 +560,7 @@ export default function View({ footerLinks }) {
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
           >
-            <ScrollView w={["100%", "100%"]} h="80">
+            <ScrollView w={["100%", "100%"]}>
               <DataTable columns={columns(t, navigate)} data={userData} />
             </ScrollView>
           </CardComponent>
