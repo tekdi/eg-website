@@ -38,10 +38,10 @@ function Player({ setAlert }) {
       do_id
     );
     if (!error) {
-      const updatedAssessmentData = await updateAllowSkipProperty(
-        assesmentData
-      );
-      setAssessmentData(updatedAssessmentData);
+      // const updatedAssessmentData = await updateAllowSkipProperty(
+      //   assesmentData
+      // );
+      setAssessmentData(assesmentData);
       setType("Course");
     } else {
       console.log(error);
@@ -50,26 +50,25 @@ function Player({ setAlert }) {
     setLoading(false);
   }, []);
 
-  const updateAllowSkipProperty = (data) => {
-    const updatedData = JSON.parse(JSON.stringify(data));
-    // Creating a deep copy of JSON data that
-    //we are getting from SUNBIRD API
+  // const updateAllowSkipProperty = (data) => {
+  //   const updatedData = JSON.parse(JSON.stringify(data));
+  //   // Creating a deep copy of JSON data that
+  //   // Helper function that will recursively update "allowSkip" property from YES TO NO from all places.
+  //   const updateAllowSkipRecursive = (obj) => {
+  //     for (const key in obj) {
+  //       if (obj[key] && typeof obj[key] === "object") {
+  //         updateAllowSkipRecursive(obj[key]); // Recursive call for nested objects
+  //       } else if (key === "allowSkip" && obj[key] === "Yes") {
+  //         obj[key] = "No"; // Update "allowSkip" to "No"
+  //       }
+  //     }
+  //   };
 
-    // Helper function that will recursively update "allowSkip" property from YES TO NO from all places.
-    const updateAllowSkipRecursive = (obj) => {
-      for (const key in obj) {
-        if (obj[key] && typeof obj[key] === "object") {
-          updateAllowSkipRecursive(obj[key]); // Recursive call for nested objects
-        } else if (key === "allowSkip" && obj[key] === "Yes") {
-          obj[key] = "No"; // Update "allowSkip" to "No"
-        }
-      }
-    };
+  //   updateAllowSkipRecursive(updatedData);
 
-    updateAllowSkipRecursive(updatedData);
+  //   return updatedData;
+  // };
 
-    return updatedData;
-  };
   const navigate = useNavigate();
 
   const handleExitButton = () => {
