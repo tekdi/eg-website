@@ -127,7 +127,7 @@ export default function CampSessionList({ footerLinks }) {
           result?.session_tracks?.[0]?.updated_at
         )
       ) {
-        setSessionActive(dataSession?.ordering);
+        setSessionActive(dataSession?.ordering - 1);
       } else {
         setSessionActive(dataSession?.ordering);
       }
