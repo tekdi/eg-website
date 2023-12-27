@@ -5,7 +5,7 @@ import {
 } from '../components/helper'
 
 export async function get(url: string, headers: any = {}) {
-  let commmonHeader: any = addCommonHeader()
+  let commmonHeader: any = await addCommonHeader()
   return await axios.get(url, {
     ...headers,
     headers: {
@@ -22,7 +22,7 @@ export async function post(
   headers: any = {},
   onUploadProgress: any = {}
 ) {
-  let commmonHeader: any = addCommonHeader()
+  let commmonHeader: any = await addCommonHeader()
   return await axios.post(url, body, {
     ...headers,
     headers: {
@@ -35,7 +35,7 @@ export async function post(
 }
 
 export async function update(url: string, body: any, headers: any = {}) {
-  let commmonHeader: any = addCommonHeader()
+  let commmonHeader: any = await addCommonHeader()
   return await axios.put(url, body, {
     ...headers,
     headers: {
@@ -47,7 +47,7 @@ export async function update(url: string, body: any, headers: any = {}) {
 }
 
 export async function distory(url: string, body: any, headers: any = {}) {
-  let commmonHeader: any = addCommonHeader()
+  let commmonHeader: any = await addCommonHeader()
   return await axios.delete(url, {
     headers: {
       ...headers?.headers,
@@ -59,7 +59,7 @@ export async function distory(url: string, body: any, headers: any = {}) {
 }
 
 export async function patch(url: string, body: any, headers: any = {}) {
-  let commmonHeader: any = addCommonHeader()
+  let commmonHeader: any = await addCommonHeader()
   return await axios.patch(url, body, {
     ...headers,
     headers: {
