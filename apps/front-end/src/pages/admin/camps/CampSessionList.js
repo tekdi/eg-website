@@ -26,7 +26,7 @@ const checkNext = (status, updated_at) => {
 export default function CampSessionList({ footerLinks }) {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [sessionList, setSessionList] = React.useState();
+  const [sessionList, setSessionList] = React.useState([]);
   const [sessionActive, setSessionActive] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [modalVisible, setModalVisible] = React.useState();
@@ -127,7 +127,7 @@ export default function CampSessionList({ footerLinks }) {
           result?.session_tracks?.[0]?.updated_at
         )
       ) {
-        setSessionActive(dataSession?.ordering);
+        setSessionActive(dataSession?.ordering - 1);
       } else {
         setSessionActive(dataSession?.ordering);
       }
@@ -177,7 +177,7 @@ export default function CampSessionList({ footerLinks }) {
 
         {sessionList?.map((item) => (
           <Pressable
-            key={item}
+            key={item?.id}
             onPress={() => setModalVisible(item?.id)}
             isDisabled={
               sessionActive !== item?.ordering ||
