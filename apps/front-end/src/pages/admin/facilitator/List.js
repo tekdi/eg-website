@@ -1,7 +1,6 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { getSelectedAcademicYear } from "@shiksha/common-lib";
 
 import {
   Box,
@@ -14,6 +13,8 @@ import {
   Image,
 } from "native-base";
 import {
+  getSelectedProgramId,
+  getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
   useWindowSize,
@@ -130,8 +131,9 @@ export default function List({ footerLinks, userTokenInfo }) {
   React.useEffect(async () => {
     //getting required id's
     let academic_Id = await getSelectedAcademicYear();
+    let program_Id = await getSelectedProgramId();
     setAcademicYearId(academic_Id.academic_year_id);
-    setProgramID(academic_Id.program_Id);
+    setProgramID(program_Id.program_id);
   }, []);
 
   React.useEffect(() => {
