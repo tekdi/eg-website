@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - release-1.6.0
+      - release-1.7.0
 jobs:
   build:
     name: Generate Build and Deploy to DEV
