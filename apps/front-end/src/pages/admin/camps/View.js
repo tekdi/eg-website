@@ -25,6 +25,7 @@ import {
   Menu,
   Pressable,
   Stack,
+  ScrollView,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -174,13 +175,13 @@ export default function View({ footerLinks }) {
       name: "Id",
       selector: (row) => row?.id,
       wrap: true,
-      width: "80px",
+      width: "90px",
     },
     {
       name: t("ENROLLMENT_NO"),
       selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
       wrap: true,
-      minWidth: "100px",
+      minWidth: "120px",
     },
     {
       name: t("LEARNERS_NAME"),
@@ -213,12 +214,12 @@ export default function View({ footerLinks }) {
       name: t("CONSENT_FORM"),
       selector: (row) => ConsentForm({ t, row, consentData }),
       wrap: true,
-      minWidth: "75px",
+      minWidth: "100px",
     },
     {
       name: t("MAP"),
       selector: (row) => mapDirection({ row, data }),
-      minWidth: "20px",
+      minWidth: "60px",
       wrap: true,
     },
     {
@@ -240,11 +241,11 @@ export default function View({ footerLinks }) {
           </HStack>
         );
       },
-      minWidth: "80px",
+      minWidth: "160px",
       wrap: true,
     },
     {
-      minWidth: "200px",
+      minWidth: "250px",
       name: t("ACTION"),
       selector: (row) => (
         <Button.Group
@@ -559,7 +560,9 @@ export default function View({ footerLinks }) {
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
           >
-            <DataTable columns={columns(t, navigate)} data={userData} />
+            <ScrollView w={["100%", "100%"]} h="80">
+              <DataTable columns={columns(t, navigate)} data={userData} />
+            </ScrollView>
           </CardComponent>
         </HStack>
         {data?.group?.status !== "inactive" && (
