@@ -173,14 +173,14 @@ export default function View({ footerLinks }) {
     {
       name: "Id",
       selector: (row) => row?.id,
-      width: "90px",
       wrap: true,
+      width: "80px",
     },
     {
       name: t("ENROLLMENT_NO"),
       selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
       wrap: true,
-      minWidth: "120px",
+      minWidth: "100px",
     },
     {
       name: t("LEARNERS_NAME"),
@@ -213,15 +213,14 @@ export default function View({ footerLinks }) {
       name: t("CONSENT_FORM"),
       selector: (row) => ConsentForm({ t, row, consentData }),
       wrap: true,
-      minWidth: "100px",
+      minWidth: "75px",
     },
     {
       name: t("MAP"),
       selector: (row) => mapDirection({ row, data }),
-      minWidth: "60px",
+      minWidth: "20px",
       wrap: true,
     },
-
     {
       name: t("DISTANCE"),
       selector: (row) => {
@@ -241,11 +240,11 @@ export default function View({ footerLinks }) {
           </HStack>
         );
       },
-      minWidth: "160px",
+      minWidth: "80px",
       wrap: true,
     },
     {
-      minWidth: "140px",
+      minWidth: "200px",
       name: t("ACTION"),
       selector: (row) => (
         <Button.Group
