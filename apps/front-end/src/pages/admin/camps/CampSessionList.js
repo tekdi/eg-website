@@ -177,7 +177,7 @@ export default function CampSessionList({ footerLinks }) {
 
         {sessionList?.map((item) => (
           <Pressable
-            key={item}
+            key={item?.id}
             onPress={() => setModalVisible(item?.id)}
             isDisabled={
               sessionActive !== item?.ordering ||
