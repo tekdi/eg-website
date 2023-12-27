@@ -11,6 +11,8 @@ import {
   Input,
   Modal,
   Image,
+  Select,
+  CheckIcon,
 } from "native-base";
 import {
   getSelectedProgramId,
@@ -26,6 +28,7 @@ import {
   urlData,
   CustomRadio,
   getOptions,
+  cohortService,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -121,20 +124,23 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setFacilitaorStatus] = React.useState();
+  const [modal, setModal] = React.useState(false);
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [academicYearId, setAcademicYearId] = React.useState();
   const [programID, setProgramID] = React.useState();
+  const [programData, setProgramData] = React.useState();
 
   React.useEffect(async () => {
     //getting required id's
+    const result = await cohortService.getProgramYear();
+    setProgramData(result?.data);
     let academic_Id = await getSelectedAcademicYear();
-    let program_Id = await getSelectedProgramId();
-    setAcademicYearId(academic_Id.academic_year_id);
-    setProgramID(program_Id.program_id);
-  }, []);
+    setAcademicYearId(academic_Id?.academic_year_id);
+    setProgramID(result?.data?.[0]?.program_id);
+  }, [modal]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -238,7 +244,6 @@ export default function List({ footerLinks, userTokenInfo }) {
     setFilterObject({});
   }, [setFilterObject]);
 
-  const [modal, setModal] = React.useState(false);
   const exportPrerakCSV = async () => {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
@@ -351,6 +356,38 @@ export default function List({ footerLinks, userTokenInfo }) {
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
+                  <HStack
+                    space="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="gray.300"
+                    pb="5"
+                    alignItems={"center"}
+                  >
+                    <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
+
+                    <Select
+                      selectedValue={programID}
+                      minWidth="200"
+                      accessibilityLabel="Choose Service"
+                      placeholder={t("SELECT")}
+                      _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="5" />,
+                      }}
+                      mt={1}
+                      onValueChange={(itemValue) => setProgramID(itemValue)}
+                    >
+                      {programData?.map((item) => {
+                        return (
+                          <Select.Item
+                            key={item.id}
+                            label={item?.state_name}
+                            value={item?.program_id}
+                          />
+                        );
+                      })}
+                    </Select>
+                  </HStack>
                   <HStack
                     space="5"
                     borderBottomWidth={1}
