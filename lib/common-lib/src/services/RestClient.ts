@@ -85,11 +85,11 @@ const addCommonHeader = async () => {
   let program_id = null
   try {
     let academic_year = await getSelectedAcademicYear()
-    academic_year_id = academic_year.academic_year_id
+    academic_year_id = academic_year?.academic_year_id
   } catch (e) {}
   try {
     let program = await getSelectedProgramId()
-    program_id = program.program_id
+    program_id = program?.program_id
   } catch (e) {}
   commonHeader = {
     academic_year_id: academic_year_id,
