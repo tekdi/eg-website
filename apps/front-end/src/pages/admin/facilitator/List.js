@@ -1,6 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
+import { getSelectedAcademicYear } from "@shiksha/common-lib";
 
 import {
   Box,
@@ -126,9 +127,9 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [academicYearId, setAcademicYearId] = React.useState();
   const [programID, setProgramID] = React.useState();
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     //getting required id's
-    let academic_Id = localStorage.getItem("academic_year_id");
+    let academic_Id = await getSelectedAcademicYear();
     setAcademicYearId(academic_Id.academic_year_id);
     setProgramID(academic_Id.program_Id);
   }, []);
