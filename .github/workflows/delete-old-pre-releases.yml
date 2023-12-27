@@ -27,7 +27,7 @@ jobs:
       - name: Cleanup old pre releases
         uses: jay2610/delete-older-releases@1.4.0
         with:
-          repo: tekdi/eg-backend # defaults to current repo
+          repo: tekdi/eg-website # defaults to current repo
           keep_latest: 3
           delete_tags: true
           #delete_tag_pattern: beta # defaults to ""
