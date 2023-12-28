@@ -9,6 +9,9 @@ import {
   enumRegistryService,
   getOptions,
   EVENTS_COLORS,
+  cohortService,
+  setSelectedAcademicYear,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -57,9 +60,20 @@ export default function Orientation({ footerLinks }) {
   const [userIds, setUserIds] = React.useState({});
   const nowDate = new Date();
   const [goToDate, setGoToDate] = React.useState(moment().toDate());
+  const [OacademicYear, setOacademicYear] = React.useState();
+
+  const getAcademic = React.useCallback(async () => {
+    const data = await cohortService.getAcademicYear();
+    const result = await getSelectedAcademicYear();
+    if (!result) {
+      await setSelectedAcademicYear(data?.data?.[0]);
+    }
+    setOacademicYear(result || data?.data?.[0]);
+  }, []);
 
   React.useEffect(() => {
     getEventLists();
+    getAcademic();
   }, []);
 
   React.useEffect(async () => {
@@ -316,11 +330,11 @@ export default function Orientation({ footerLinks }) {
     }
   };
 
-  console.log(formData);
   return (
     <Layout
       _appBar={{
         isShowNotificationButton: true,
+        OacademicYear: OacademicYear,
       }}
       _subHeader={{
         bg: "white",
