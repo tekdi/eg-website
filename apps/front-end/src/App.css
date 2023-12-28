@@ -14,9 +14,10 @@
 }
 
 #scroll_id {
-  height: 100vh;
+  height: 52vh;
   overflow-y: scroll;
 }
+
 /* Height for devices with a height greater than 900 pixels */
 @media (min-height: 601px) {
   #scroll_id {
@@ -24,6 +25,7 @@
     overflow-y: scroll;
   }
 }
+
 @media (min-height: 800px) {
   #scroll_id {
     height: 70vh;

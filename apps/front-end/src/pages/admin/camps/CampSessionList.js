@@ -255,7 +255,7 @@ export default function CampSessionList({ footerLinks }) {
           ))}
         </VStack>
       </div>
-      {!submitBtn && (
+      {submitBtn && (
         <FrontEndTypo.Primarybutton
           width="50%"
           position="relative"
