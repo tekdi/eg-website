@@ -177,6 +177,7 @@ function Table({
         onChangePage={(e) => {
           setFilter({ ...filter, page: e });
         }}
+        dense
       />
     </VStack>
   );

@@ -9,6 +9,9 @@ import {
   enumRegistryService,
   getOptions,
   EVENTS_COLORS,
+  cohortService,
+  setSelectedAcademicYear,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -57,9 +60,20 @@ export default function Orientation({ footerLinks }) {
   const [userIds, setUserIds] = React.useState({});
   const nowDate = new Date();
   const [goToDate, setGoToDate] = React.useState(moment().toDate());
+  const [OacademicYear, setOacademicYear] = React.useState();
+
+  const getAcademic = React.useCallback(async () => {
+    const data = await cohortService.getAcademicYear();
+    const result = await getSelectedAcademicYear();
+    if (!result) {
+      await setSelectedAcademicYear(data?.data?.[0]);
+    }
+    setOacademicYear(result || data?.data?.[0]);
+  }, []);
 
   React.useEffect(() => {
     getEventLists();
+    getAcademic();
   }, []);
 
   React.useEffect(async () => {
@@ -117,7 +131,7 @@ export default function Orientation({ footerLinks }) {
             {required ? "*" : null}
           </AdminTypo.H6>
         </HStack>
-        <HStack alignItems="left" flex={["1", "3", "4"]}>
+        <HStack alignItems="left" flex={["1", "1", "4"]}>
           <AdminTypo.Secondarybutton
             leftIcon={
               <Text maxWidth="10px" alignItems="left">
@@ -316,11 +330,11 @@ export default function Orientation({ footerLinks }) {
     }
   };
 
-  console.log(formData);
   return (
     <Layout
       _appBar={{
         isShowNotificationButton: true,
+        OacademicYear: OacademicYear,
       }}
       _subHeader={{
         bg: "white",
@@ -335,11 +349,9 @@ export default function Orientation({ footerLinks }) {
         <Box>
           <VStack>
             <Box>
-              <HStack alignItems="Center" py="4">
-                <IconByName name="Home4LineIcon" fontSize="24px" />
-                <AdminTypo.H1 color="textGreyColor.800" bold>
-                  {t("HOME")}
-                </AdminTypo.H1>
+              <HStack alignItems="Center" py="4" space="2">
+                <IconByName name="Home4LineIcon" size="md" />
+                <AdminTypo.H4 bold>{t("HOME")}</AdminTypo.H4>
               </HStack>
             </Box>
             <HStack>
@@ -353,7 +365,7 @@ export default function Orientation({ footerLinks }) {
                   <VStack alignItems={"Center"}>
                     <Image
                       source={{
-                        uri: "/orientation.svg",
+                        uri: "/orientation.png",
                       }}
                       alt="Prerak Orientation"
                       size={"sm"}
@@ -411,9 +423,9 @@ export default function Orientation({ footerLinks }) {
             </VStack>
           </BoxBlue> */}
             </HStack>
-            <AdminTypo.H3 bold pt="8" pb="3">
+            <AdminTypo.H4 color="textMaroonColor.500" bold pt="8" pb="3">
               {t("YOUR_CALENDAR")}
-            </AdminTypo.H3>
+            </AdminTypo.H4>
           </VStack>
           <HStack
             px="2"
@@ -537,9 +549,9 @@ export default function Orientation({ footerLinks }) {
             <Modal.Content {...styles.modalxxl}>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0" bg="white">
-                <AdminTypo.H1 textAlign="center" bold>
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.500">
                   {t("SCHEDULE_EVENT")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
 
               <Modal.Body pt="4" pb="10" bg="white">
