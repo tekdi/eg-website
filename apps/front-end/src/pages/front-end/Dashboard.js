@@ -158,25 +158,32 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     ) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
-      console.log("user_cohort_list", user_cohort_list);
-      await setSelectedAcademicYear(user_cohort_list?.data[0]);
-      setAcademicYear(0);
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
       setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
       console.log("user_cohort_list?.data", user_cohort_list?.data);
       localStorage.setItem("loadCohort", "yes");
       setSelectCohortForm(true);
     }
   };
-  const handleAcademicYear = async (index) => {
-    setAcademicYear(-1);
-    setAcademicYear(index);
-    let stored_response = await setSelectedAcademicYear(academicData[index]);
-    console.log("stored_response", stored_response);
-    console.log("setAcademicYear", academicYear);
+  const handleAcademicYear = async (item) => {
+    //let stored_response = await setSelectedAcademicYear(academicData[index]);
+    setAcademicYear(item);
   };
-
+  useEffect(async () => {
+    if (academicYear) {
+      //get cohort id and store in localstorage
+      const user_cohort_id = academicYear;
+      const cohort_data = await facilitatorRegistryService.getCohort({
+        cohortId: user_cohort_id,
+      });
+      setSelectedCohortData(cohort_data);
+      await setSelectedAcademicYear(cohort_data);
+    }
+  }, [academicYear]);
   const selectAcademicYear = async () => {
-    await setSelectedAcademicYear(academicData[academicYear]);
     setSelectCohortForm(false);
   };
 
@@ -669,7 +676,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 <Select
                   selectedValue={academicYear}
-                  minWidth="200"
                   accessibilityLabel="Choose Service"
                   placeholder={t("SELECT")}
                   _selectedItem={{
@@ -682,9 +688,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   {academicData?.map((item, index) => {
                     return (
                       <Select.Item
-                        key={index}
+                        key={item.id}
                         label={item?.academic_year_name}
-                        value={index}
+                        value={item?.academic_year_id}
                       />
                     );
                   })}
