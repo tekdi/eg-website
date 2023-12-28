@@ -1354,5 +1354,10 @@
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
   "INSTALL": "Install",
-  "REGISTER_MESSAGE": "You are registering for {{state}} {{year}}"
+  "REGISTER_MESSAGE": "You are registering for {{state}} {{year}}",
+  "OK": "Ok",
+  "DONT_ALLOW":"You already have an account with {{old_state}} {{old_year}} and you are attempting to register for {{state}} {{year}}, so you cannot proceed to register.",
+  "DONT_ALLOW_MOBILE":"This mobile number is already in use for a learner, you cannot proceed",
+  "EXIST_LOGIN":"You already have an account for {{state}} {{year}}, proceed to log in instead.",
+  "REGISTER_EXIST":"You already have an account for {{old_state}} {{old_year}} and you are trying to register for {{state}} {{year}}, proceed to log in."
 }

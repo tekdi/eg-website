@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
-import { Alert, Box, Center, HStack, Image, Modal, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  Center,
+  HStack,
+  Image,
+  InfoIcon,
+  InfoOutlineIcon,
+  Modal,
+  VStack,
+} from "native-base";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
@@ -22,6 +32,7 @@ import {
   FrontEndTypo,
   getOptions,
   getOnboardingURLData,
+  setOnboardingMobile,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -56,6 +67,9 @@ export default function App({ facilitator, ip, onClick }) {
   //already registred modals
   const [isUserExistModal, setIsUserExistModal] = useState(false);
   const [isUserExistResponse, setIsUserExistResponse] = useState(null);
+  const [isLoginShow, setIsLoginShow] = useState(false);
+  const [isUserExistModalText, setIsUserExistModalText] = useState("");
+  const [isUserExistStatus, setIsUserExistStatus] = useState("");
 
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -506,7 +520,72 @@ export default function App({ facilitator, ip, onClick }) {
         };
         setErrors(newErrors);
         setIsUserExistModal(true);
-        setIsUserExistResponse(result?.data);
+        setIsUserExistResponse(response_isUserExist);
+        if (response_isUserExist?.program_beneficiaries.length > 0) {
+          setIsUserExistStatus("DONT_ALLOW_MOBILE");
+          setIsUserExistModalText(t("DONT_ALLOW_MOBILE"));
+          setIsLoginShow(false);
+        } else if (response_isUserExist?.program_faciltators.length > 0) {
+          for (
+            let i = 0;
+            i < response_isUserExist?.program_faciltators.length;
+            i++
+          ) {
+            let facilator_data = response_isUserExist?.program_faciltators[i];
+            if (facilator_data?.program_id == programData?.program_id) {
+              if (
+                facilator_data?.academic_year_id == cohortData?.academic_year_id
+              ) {
+                setIsUserExistStatus("EXIST_LOGIN");
+                setIsUserExistModalText(
+                  t("EXIST_LOGIN")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)
+                );
+                setIsLoginShow(true);
+                break;
+              } else if (
+                facilator_data?.academic_year_id != cohortData?.academic_year_id
+              ) {
+                const academic_year =
+                  await facilitatorRegistryService.getCohort({
+                    cohortId: facilator_data?.academic_year_id,
+                  });
+                const program_data =
+                  await facilitatorRegistryService.getProgram({
+                    programId: facilator_data?.program_id,
+                  });
+                setIsUserExistStatus("REGISTER_EXIST");
+                setIsUserExistModalText(
+                  t("REGISTER_EXIST")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)
+                    .replace("{{old_state}}", program_data[0]?.program_name)
+                    .replace("{{old_year}}", academic_year?.academic_year_name)
+                );
+                setOnboardingMobile(mobile);
+                setIsLoginShow(true);
+              }
+            } else {
+              const academic_year = await facilitatorRegistryService.getCohort({
+                cohortId: facilator_data?.academic_year_id,
+              });
+              const program_data = await facilitatorRegistryService.getProgram({
+                programId: facilator_data?.program_id,
+              });
+              setIsUserExistStatus("DONT_ALLOW");
+              setIsUserExistModalText(
+                t("DONT_ALLOW")
+                  .replace("{{state}}", programData?.program_name)
+                  .replace("{{year}}", cohortData?.academic_year_name)
+                  .replace("{{old_state}}", program_data[0]?.program_name)
+                  .replace("{{old_year}}", academic_year?.academic_year_name)
+              );
+              setIsLoginShow(false);
+              break;
+            }
+          }
+        }
         return true;
       } else {
         setIsUserExistModal(false);
@@ -613,6 +692,18 @@ export default function App({ facilitator, ip, onClick }) {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
+    }
+  };
+
+  const userExistClick = () => {
+    if (
+      isUserExistStatus == "EXIST_LOGIN" ||
+      isUserExistStatus == "REGISTER_EXIST"
+    ) {
+      navigate("/");
+      navigate(0);
+    } else {
+      setIsUserExistModal(false);
     }
   };
 
@@ -965,86 +1056,22 @@ export default function App({ facilitator, ip, onClick }) {
         _backdrop={{ opacity: "0.7" }}
       >
         <Modal.Content>
-          <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">Hi</H1>
-          </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
-                w="100%"
-              >
-                <HStack alignItems="center" space="1" flex="1">
-                  <H3 flex="0.3">{t("USERNAME")}</H3>
-                  <BodySmall
-                    py="1"
-                    px="2"
-                    flex="0.7"
-                    wordWrap="break-word"
-                    whiteSpace="break-spaces"
-                    overflow="hidden"
-                    bg="success.100"
-                    borderWidth="1"
-                    borderColor="success.500"
-                  >
-                    {credentials?.username}
-                  </BodySmall>
-                </HStack>
-                <HStack alignItems="center" space="1" flex="1">
-                  <H3 flex="0.3">{t("PASSWORD")}</H3>
-                  <BodySmall
-                    py="1"
-                    px="2"
-                    flex="0.7"
-                    wordWrap="break-word"
-                    whiteSpace="break-spaces"
-                    overflow="hidden"
-                    bg="success.100"
-                    borderWidth="1"
-                    borderColor="success.500"
-                  >
-                    {credentials?.password}
-                  </BodySmall>
-                </HStack>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username: ${credentials?.username}, password: ${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
+              <H1 textAlign="center">
+                <Alert.Icon />
+              </H1>
+              <FrontEndTypo.H2 textAlign="center">
+                {isUserExistModalText}
+              </FrontEndTypo.H2>
               <HStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
                   flex={1}
-                  isDisabled={!credentials?.copy}
                   onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    await login(cData);
-                    navigate("/");
-                    navigate(0);
+                    userExistClick();
                   }}
                 >
-                  {t("LOGIN")}
+                  {isLoginShow ? t("LOGIN") : t("OK")}
                 </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>
