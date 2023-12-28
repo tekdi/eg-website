@@ -130,7 +130,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [programID, setProgramID] = React.useState();
-  const [programData, setProgramData] = React.useState();
+  const [programData, setProgramData] = React.useState([]);
   const [academicData, setAcademicData] = React.useState();
   const [academicYear, setAcademicYear] = React.useState();
 
