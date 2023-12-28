@@ -9,9 +9,24 @@ import {
   BodyMedium,
   AdminTypo,
   testRegistryService,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
+  getOnboardingURLData,
+  H1,
+  setSelectedProgramId,
+  getOnboardingMobile,
+  setSelectedAcademicYear,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
-import React from "react";
+import {
+  HStack,
+  VStack,
+  Stack,
+  Image,
+  Alert,
+  Modal,
+  CloseIcon,
+} from "native-base";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
@@ -50,34 +65,110 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
-  React.useEffect(async () => {
-    if (userTokenInfo) {
-      const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
-      setFacilitator(fa_data);
-      const c_data =
-        await facilitatorRegistryService.getPrerakCertificateDetails({
-          id: fa_id,
-        });
-      const data =
-        c_data?.data?.filter(
-          (e) => e?.type === "prerak_camp_execution_training"
-        )?.[0] || {};
-      setCertificateData(data);
-      if (data?.lms_test_tracking?.length > 0) {
-        setLmsDetails(data?.lms_test_tracking?.[0]);
-      }
+  //fetch URL data and store fix for 2 times render useEffect call
+  const [countLoad, setCountLoad] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [academicYear, setAcademicYear] = useState();
+  const [academicData, setAcademicData] = useState();
 
-      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-      const format = "HH:mm:ss";
-      const time = moment(moment().format(format), format);
-      const beforeTime = moment(data?.start_time, format);
-      const afterTime = moment(data?.end_time, format);
-      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-        setIsEventActive(true);
-      }
+  useEffect(async () => {
+    if (countLoad == 0) {
+      setCountLoad(1);
     }
-    setLoading(false);
-  }, []);
+    if (countLoad == 1) {
+      //do page load first operation
+      //check exist user registered
+      let onboardingURLData = await getOnboardingURLData();
+      setCohortData(onboardingURLData?.cohortData);
+      setProgramData(onboardingURLData?.programData);
+      if (onboardingURLData?.cohortData) {
+        setIsUserRegisterExist(true);
+      } else {
+        setIsUserRegisterExist(false);
+      }
+      //get user info
+      if (userTokenInfo) {
+        const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
+        setFacilitator(fa_data);
+        const c_data =
+          await facilitatorRegistryService.getPrerakCertificateDetails({
+            id: fa_id,
+          });
+        const data =
+          c_data?.data?.filter(
+            (e) => e?.type === "prerak_camp_execution_training"
+          )?.[0] || {};
+        setCertificateData(data);
+        if (data?.lms_test_tracking?.length > 0) {
+          setLmsDetails(data?.lms_test_tracking?.[0]);
+        }
+
+        const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+        const format = "HH:mm:ss";
+        const time = moment(moment().format(format), format);
+        const beforeTime = moment(data?.start_time, format);
+        const afterTime = moment(data?.end_time, format);
+        if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+          setIsEventActive(true);
+        }
+      }
+      setLoading(false);
+      //end do page load first operation
+      setCountLoad(2);
+    } else if (countLoad == 2) {
+      setCountLoad(3);
+    }
+  }, [countLoad]);
+
+  const removeRegisterExist = async () => {
+    await removeOnboardingURLData();
+    await removeOnboardingMobile();
+    setIsUserRegisterExist(false);
+    await showSelectCohort();
+  };
+
+  const userExistRegisterClick = async () => {
+    let onboardingURLData = await getOnboardingURLData();
+    const register_exist_user =
+      await facilitatorRegistryService.RegisterUserExist({
+        program_id: parseInt(onboardingURLData?.programId),
+        parent_ip: onboardingURLData?.id,
+      });
+    if (register_exist_user?.success == true) {
+      await removeRegisterExist();
+    } else {
+      alert(register_exist_user?.message);
+    }
+  };
+
+  const showSelectCohort = async () => {
+    if (
+      localStorage.getItem("loadCohort") == null ||
+      localStorage.getItem("loadCohort") == "no"
+    ) {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      console.log("user_cohort_list", user_cohort_list);
+      await setSelectedAcademicYear(data?.data?.[0])
+      setAcademicYear(data?.data?.[0])
+      setAcademicData(data?.data)
+      localStorage.setItem("loadCohort", "yes");
+      setSelectCohortForm(true);
+    }
+  };
+  const handleAcademicYear = React.useCallback(async (data) => {
+    await setSelectedAcademicYear(data)
+    setAcademicYear(data)
+  }, [])
+
+  const selectAcademicYear = async () => {
+    setSelectCohortForm(false);
+  };
 
   React.useEffect(async () => {
     const getCertificate = await testRegistryService.getCertificate({
@@ -88,7 +179,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
   }, []);
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     const res = objProps(facilitator);
     setProgress(
       arrList(
@@ -114,6 +205,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         ]
       )
     );
+    //check mobile number with localstorage mobile no
+    let mobile_no = facilitator?.mobile;
+    let mobile_no_onboarding = await getOnboardingMobile();
+    if (mobile_no == mobile_no_onboarding) {
+      //get cohort id and store in localstorage
+      const user_cohort_id = cohortData?.academic_year_id;
+      const cohort_data = await facilitatorRegistryService.getCohort({
+        cohortId: user_cohort_id,
+      });
+      setSelectedCohortData(cohort_data);
+      await setSelectedAcademicYear(cohort_data);
+      setIsUserRegisterExist(true);
+    } else {
+      setIsUserRegisterExist(false);
+      await showSelectCohort();
+    }
+    //get program id and store in localstorage
+    const user_program_id = facilitator?.program_faciltators?.program_id;
+    const program_data = await facilitatorRegistryService.getProgram({
+      programId: user_program_id,
+    });
+    setSelectedProgramData(program_data[0]);
+    await setSelectedProgramId(program_data[0]);
   }, [facilitator]);
 
   const handleRandomise = async () => {
@@ -519,6 +633,68 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
         </VStack>
       </VStack>
+      <Modal
+        isOpen={selectCohortForm}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Header p="5" borderBottomWidth="0">
+            <H1 textAlign="center">confirm year</H1>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <FrontEndTypo.H2 textAlign="center">Info</FrontEndTypo.H2>
+              <HStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={async (e) => {
+                    selectAcademicYear();
+                  }}
+                >
+                  Next
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={isUserRegisterExist}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Header p="5" borderBottomWidth="0">
+            <H1 textAlign="center">{t("REGISTER_EXIST_CONFIRM")}</H1>
+            <CloseIcon
+              onClick={() => removeRegisterExist()}
+              style={{ cursor: "pointer" }}
+            />
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <FrontEndTypo.H2 textAlign="center">
+                {t("REGISTER_EXIST_CONFIRM_INFO")
+                  .replace("{{state}}", programData?.program_name)
+                  .replace("{{year}}", cohortData?.academic_year_name)}
+              </FrontEndTypo.H2>
+              <HStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={async (e) => {
+                    userExistRegisterClick();
+                  }}
+                >
+                  {t("REGISTER_EXIST_INFO")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
