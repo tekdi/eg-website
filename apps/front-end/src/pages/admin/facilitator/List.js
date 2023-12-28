@@ -436,7 +436,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                     >
                       <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                       <Clipboard
-                        text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear}&program_id=${programID}`}
+                        text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear}&program_id=${programID}`}
                       >
                         <HStack space="3">
                           <IconByName
