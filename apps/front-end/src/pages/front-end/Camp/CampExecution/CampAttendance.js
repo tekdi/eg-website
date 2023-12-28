@@ -154,6 +154,7 @@ export default function CampAttendance({ activityId }) {
         {
           <React.Suspense fallback={<Loading />}>
             <Camera
+              facing={true}
               headerComponent={
                 <VStack bg="black" flex="1" py="2" px="4">
                   <HStack

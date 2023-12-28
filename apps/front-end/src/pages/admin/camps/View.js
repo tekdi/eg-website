@@ -25,6 +25,7 @@ import {
   Menu,
   Pressable,
   Stack,
+  ScrollView,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -173,8 +174,8 @@ export default function View({ footerLinks }) {
     {
       name: "Id",
       selector: (row) => row?.id,
-      width: "90px",
       wrap: true,
+      width: "90px",
     },
     {
       name: t("ENROLLMENT_NO"),
@@ -221,7 +222,6 @@ export default function View({ footerLinks }) {
       minWidth: "60px",
       wrap: true,
     },
-
     {
       name: t("DISTANCE"),
       selector: (row) => {
@@ -245,7 +245,7 @@ export default function View({ footerLinks }) {
       wrap: true,
     },
     {
-      minWidth: "140px",
+      minWidth: "250px",
       name: t("ACTION"),
       selector: (row) => (
         <Button.Group
@@ -558,7 +558,9 @@ export default function View({ footerLinks }) {
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
           >
-            <DataTable columns={columns(t, navigate)} data={userData} />
+            <ScrollView w={["100%", "100%"]}>
+              <DataTable columns={columns(t, navigate)} data={userData} />
+            </ScrollView>
           </CardComponent>
         </HStack>
         {data?.group?.status !== "inactive" && (
