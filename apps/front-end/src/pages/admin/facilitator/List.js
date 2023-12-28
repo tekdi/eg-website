@@ -10,10 +10,10 @@ import {
   Button,
   Input,
   Modal,
-  Image,
+  Select,
+  CheckIcon,
 } from "native-base";
 import {
-  getSelectedProgramId,
   getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
@@ -26,7 +26,7 @@ import {
   urlData,
   CustomRadio,
   getOptions,
-  tableCustomStyles,
+  cohortService,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -64,20 +64,26 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setFacilitaorStatus] = React.useState();
+  const [modal, setModal] = React.useState(false);
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [academicYearId, setAcademicYearId] = React.useState();
   const [programID, setProgramID] = React.useState();
+  const [programData, setProgramData] = React.useState([]);
+  const [academicData, setAcademicData] = React.useState();
+  const [academicYear, setAcademicYear] = React.useState();
 
   React.useEffect(async () => {
     //getting required id's
+    const result = await cohortService.getProgramYear();
+    const data = await cohortService.getAcademicYear();
+    setAcademicData(data?.data);
+    setProgramData(result?.data);
     let academic_Id = await getSelectedAcademicYear();
-    let program_Id = await getSelectedProgramId();
-    setAcademicYearId(academic_Id?.academic_year_id);
-    setProgramID(program_Id?.program_id);
-  }, []);
+    setAcademicYear(academic_Id?.academic_year_id);
+  }, [modal]);
+
   const schemat = {
     type: "object",
     properties: {
@@ -250,7 +256,6 @@ export default function List({ footerLinks, userTokenInfo }) {
     setFilterObject({});
   }, [setFilterObject]);
 
-  const [modal, setModal] = React.useState(false);
   const exportPrerakCSV = async () => {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
@@ -360,24 +365,93 @@ export default function List({ footerLinks, userTokenInfo }) {
                     borderBottomWidth={1}
                     borderBottomColor="gray.300"
                     pb="5"
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
                   >
-                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
-                    <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYearId}&program_id=${programID}`}
+                    <AdminTypo.H4> {t("ACADEMIC_YEAR")}</AdminTypo.H4>
+
+                    <Select
+                      selectedValue={academicYear}
+                      minWidth="200"
+                      accessibilityLabel="Choose Service"
+                      placeholder={t("SELECT")}
+                      _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="5" />,
+                      }}
+                      mt={1}
+                      onValueChange={(itemValue) => setAcademicYear(itemValue)}
                     >
-                      <HStack space="3">
-                        <IconByName
-                          name="FileCopyLineIcon"
-                          isDisabled
-                          rounded="full"
-                          color="blue.300"
-                        />
-                        <AdminTypo.H3 color="blue.300">
-                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                        </AdminTypo.H3>
-                      </HStack>
-                    </Clipboard>
+                      {console.log("item", academicData)}
+                      {academicData?.map((item) => {
+                        return (
+                          <Select.Item
+                            key={item.id}
+                            label={item?.academic_year_name}
+                            value={item?.academic_year_id}
+                          />
+                        );
+                      })}
+                    </Select>
                   </HStack>
+                  <HStack
+                    space="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="gray.300"
+                    pb="5"
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                  >
+                    <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
+
+                    <Select
+                      selectedValue={programID}
+                      minWidth="200"
+                      accessibilityLabel="Choose Service"
+                      placeholder={t("SELECT")}
+                      _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="5" />,
+                      }}
+                      mt={1}
+                      onValueChange={(itemValue) => setProgramID(itemValue)}
+                    >
+                      {programData?.map((item) => {
+                        return (
+                          <Select.Item
+                            key={item.id}
+                            label={item?.state_name}
+                            value={item?.program_id}
+                          />
+                        );
+                      })}
+                    </Select>
+                  </HStack>
+                  {programID && (
+                    <HStack
+                      space="5"
+                      borderBottomWidth={1}
+                      borderBottomColor="gray.300"
+                      pb="5"
+                    >
+                      <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
+                      <Clipboard
+                        text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear}&program_id=${programID}`}
+                      >
+                        <HStack space="3">
+                          <IconByName
+                            name="FileCopyLineIcon"
+                            isDisabled
+                            rounded="full"
+                            color="blue.300"
+                          />
+                          <AdminTypo.H3 color="blue.300">
+                            {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                          </AdminTypo.H3>
+                        </HStack>
+                      </Clipboard>
+                    </HStack>
+                  )}
                 </VStack>
               </Modal.Body>
             </Modal.Content>
