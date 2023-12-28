@@ -56,16 +56,16 @@ const DEFAULT_THEME = {
     Input: {
       baseStyle: {
         p: '4',
-        minH: '54px',
-        borderColor: 'secondaryBlue.500',
+        minH: '45px',
+        borderColor: 'Disablecolor',
         borderRadius: '10px'
       }
     },
     Select: {
       baseStyle: {
         p: '4',
-        minH: '54px',
-        borderColor: 'secondaryBlue.500',
+        minH: '45px',
+        borderColor: 'Disablecolor',
         borderRadius: '10px'
       }
     },
@@ -598,8 +598,8 @@ const DEFAULT_THEME = {
       100: '#FFACAF',
       300: '#FF8080',
       400: '#790000',
-      500: '#FF0000',
-      600: '#A93505',
+      500: '#A93505',
+      600: '#FF0000',
       700: '#7c2704',
       800: '#4a1702',
       900: '#190801'
@@ -665,6 +665,7 @@ const DEFAULT_THEME = {
     warningColor: '#FFCF52',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
+    bgpink: '#FFE0E1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',

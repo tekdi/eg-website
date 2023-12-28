@@ -24,6 +24,7 @@ import {
   urlData,
   CustomRadio,
   getOptions,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -49,64 +50,6 @@ const uiSchema = {
   },
 };
 
-const schemat = {
-  type: "object",
-  properties: {
-    district: {
-      type: "array",
-      title: "DISTRICT",
-      grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    block: {
-      type: "array",
-      title: "BLOCKS",
-      grid: 1,
-      _hstack: {
-        maxH: 130,
-        overflowY: "scroll",
-      },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    qualificationIds: {
-      type: "array",
-      title: "QUALIFICATION",
-      grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    work_experience: {
-      type: "array",
-      title: "WORK_EXPERIENCES",
-      _hstack: { maxH: 130, overflowY: "scroll" },
-      items: {
-        type: "string",
-        enumNames: [
-          "All",
-          "0 yrs",
-          "1 yrs",
-          "2 yrs",
-          "3 yrs",
-          "4 yrs",
-          "5 yrs",
-        ],
-        enum: ["All", "0", "1", "2", "3", "4", "5"],
-      },
-      uniqueItems: true,
-    },
-  },
-};
-
 export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
 
@@ -123,6 +66,75 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
+  const schemat = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: t("DISTRICT"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      qualificationIds: {
+        type: "array",
+        title: t("QUALIFICATION"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      work_experience: {
+        type: "array",
+        title: t("WORK_EXPERIENCES"),
+        _hstack: { maxH: 130, overflowY: "scroll" },
+        items: {
+          type: "string",
+          enumNames: [
+            "All",
+            "0 yrs",
+            "1 yrs",
+            "2 yrs",
+            "3 yrs",
+            "4 yrs",
+            "5 yrs",
+          ],
+          enum: ["All", "0", "1", "2", "3", "4", "5"],
+        },
+        uniqueItems: true,
+      },
+    },
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -131,7 +143,8 @@ export default function List({ footerLinks, userTokenInfo }) {
       const data = await enumRegistryService.listOfEnum();
       setEnumOptions(data?.data ? data?.data : {});
 
-      const getQualification = await facilitatorRegistryService.getQualificationAll();
+      const getQualification =
+        await facilitatorRegistryService.getQualificationAll();
       let newSchema = getOptions(schemat, {
         key: "qualificationIds",
         arr: getQualification,
@@ -201,16 +214,24 @@ export default function List({ footerLinks, userTokenInfo }) {
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = React.useCallback(async (data) => {
-    const { district, qualificationIds, work_experience, block } = data?.formData || {};
-    setFilterObject({
-      ...filter,
-      ...(district && district?.length > 0 ? { district } : {}),
-      ...(qualificationIds && qualificationIds?.length > 0 ? { qualificationIds } : {}),
-      ...(work_experience && work_experience?.length > 0 ? { work_experience } : {}),
-      ...(block && block?.length > 0 ? { block } : {}),
-    });
-  }, [filter, setFilterObject]);
+  const onChange = React.useCallback(
+    async (data) => {
+      const { district, qualificationIds, work_experience, block } =
+        data?.formData || {};
+      setFilterObject({
+        ...filter,
+        ...(district && district?.length > 0 ? { district } : {}),
+        ...(qualificationIds && qualificationIds?.length > 0
+          ? { qualificationIds }
+          : {}),
+        ...(work_experience && work_experience?.length > 0
+          ? { work_experience }
+          : {}),
+        ...(block && block?.length > 0 ? { block } : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = React.useCallback(() => {
     setFilter({});
@@ -222,10 +243,13 @@ export default function List({ footerLinks, userTokenInfo }) {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback((e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-  }, [filter]);
-  
+  const handleSearch = React.useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+
   const debouncedHandleSearch = React.useCallback(
     debounce(handleSearch, 1000),
     []
@@ -251,18 +275,10 @@ export default function List({ footerLinks, userTokenInfo }) {
           space={"4"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space="2">
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1> {t("ALL_PRERAKS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold> {t("ALL_PRERAKS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
         <Input
           size={"xs"}
@@ -321,9 +337,9 @@ export default function List({ footerLinks, userTokenInfo }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center">
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
                   {t("SEND_AN_INVITE")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -392,7 +408,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={filter}
-                 
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
@@ -407,6 +422,7 @@ export default function List({ footerLinks, userTokenInfo }) {
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
+                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}
@@ -423,5 +439,3 @@ export default function List({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
-
-

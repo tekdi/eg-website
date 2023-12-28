@@ -167,7 +167,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const filteredStatusText = React.useMemo(() => {
     return (
       <Text
-        color={!filter?.status ? "blueText.400" : ""}
+        color={!filter?.status ? "textMaroonColor.600" : ""}
         bold={!filter?.status}
         cursor={"pointer"}
         mx={3}
@@ -186,7 +186,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     return beneficiaryStatus?.map((item) => (
       <Text
         key={item}
-        color={filter?.status === t(item?.value) ? "blueText.400" : ""}
+        color={filter?.status === t(item?.value) ? "textMaroonColor.600" : ""}
         bold={filter?.status === t(item?.value)}
         cursor={"pointer"}
         mx={3}
@@ -235,6 +235,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           [setFilter, filter]
         )}
         onRowClicked={handleRowClick}
+        highlightOnHover
       />
     </VStack>
   );
