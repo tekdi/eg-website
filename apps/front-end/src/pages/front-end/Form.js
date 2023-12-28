@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
@@ -21,6 +21,7 @@ import {
   sendAndVerifyOtp,
   FrontEndTypo,
   getOptions,
+  getOnboardingURLData,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +32,31 @@ import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
+  //fetch URL data and store fix for 2 times render useEffect call
+  const [countLoad, setCountLoad] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+
+  useEffect(async () => {
+    if (countLoad == 0) {
+      setCountLoad(1);
+    }
+    if (countLoad == 1) {
+      //do page load first operation
+      let onboardingURLData = await getOnboardingURLData();
+      setCohortData(onboardingURLData?.cohortData);
+      setProgramData(onboardingURLData?.programData);
+      //end do page load first operation
+      setCountLoad(2);
+    } else if (countLoad == 2) {
+      setCountLoad(3);
+    }
+  }, [countLoad]);
+
+  //already registred modals
+  const [isUserExistModal, setIsUserExistModal] = useState(false);
+  const [isUserExistResponse, setIsUserExistResponse] = useState(null);
+
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -464,15 +490,28 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await facilitatorRegistryService.isExist({ mobile });
-    if (result?.registeredAsFacilitator) {
-      const newErrors = {
-        mobile: {
-          __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-        },
-      };
-      setErrors(newErrors);
-      return true;
+    const result = await facilitatorRegistryService.isUserExist({ mobile });
+    if (result?.data) {
+      let response_isUserExist = result?.data;
+      if (
+        (response_isUserExist?.program_faciltators &&
+          response_isUserExist?.program_faciltators.length > 0) ||
+        (response_isUserExist?.program_beneficiaries &&
+          response_isUserExist?.program_beneficiaries.length > 0)
+      ) {
+        const newErrors = {
+          mobile: {
+            __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+          },
+        };
+        setErrors(newErrors);
+        setIsUserExistModal(true);
+        setIsUserExistResponse(result?.data);
+        return true;
+      } else {
+        setIsUserExistModal(false);
+        setIsUserExistResponse(null);
+      }
     }
     return false;
   };
@@ -853,6 +892,16 @@ export default function App({ facilitator, ip, onClick }) {
             progress={page - 1}
           />
         </Box>
+        <Alert status="info" shadow="AlertShadow" alignItems={"start"} mb="3">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <FrontEndTypo.H3>
+              {t("REGISTER_MESSAGE")
+                .replace("{{state}}", programData?.program_name)
+                .replace("{{year}}", cohortData?.academic_year_name)}
+            </FrontEndTypo.H3>
+          </HStack>
+        </Alert>
         {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -909,6 +958,99 @@ export default function App({ facilitator, ip, onClick }) {
           </Form>
         )}
       </Box>
+      <Modal
+        isOpen={isUserExistModal}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Header p="5" borderBottomWidth="0">
+            <H1 textAlign="center">Hi</H1>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <VStack
+                space="2"
+                bg="gray.100"
+                p="1"
+                rounded="lg"
+                borderWidth={1}
+                borderColor="gray.300"
+                w="100%"
+              >
+                <HStack alignItems="center" space="1" flex="1">
+                  <H3 flex="0.3">{t("USERNAME")}</H3>
+                  <BodySmall
+                    py="1"
+                    px="2"
+                    flex="0.7"
+                    wordWrap="break-word"
+                    whiteSpace="break-spaces"
+                    overflow="hidden"
+                    bg="success.100"
+                    borderWidth="1"
+                    borderColor="success.500"
+                  >
+                    {credentials?.username}
+                  </BodySmall>
+                </HStack>
+                <HStack alignItems="center" space="1" flex="1">
+                  <H3 flex="0.3">{t("PASSWORD")}</H3>
+                  <BodySmall
+                    py="1"
+                    px="2"
+                    flex="0.7"
+                    wordWrap="break-word"
+                    whiteSpace="break-spaces"
+                    overflow="hidden"
+                    bg="success.100"
+                    borderWidth="1"
+                    borderColor="success.500"
+                  >
+                    {credentials?.password}
+                  </BodySmall>
+                </HStack>
+              </VStack>
+              <VStack alignItems="center">
+                <Clipboard
+                  text={`username: ${credentials?.username}, password: ${credentials?.password}`}
+                  onPress={(e) => {
+                    setCredentials({ ...credentials, copy: true });
+                    downloadImage();
+                  }}
+                >
+                  <HStack space="3">
+                    <IconByName
+                      name="FileCopyLineIcon"
+                      isDisabled
+                      rounded="full"
+                      color="blue.300"
+                    />
+                    <H3 color="blue.300">
+                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
+                    </H3>
+                  </HStack>
+                </Clipboard>
+              </VStack>
+              <HStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  isDisabled={!credentials?.copy}
+                  onPress={async (e) => {
+                    const { copy, ...cData } = credentials;
+                    await login(cData);
+                    navigate("/");
+                    navigate(0);
+                  }}
+                >
+                  {t("LOGIN")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
       <Modal
         isOpen={credentials}
         safeAreaTop={true}

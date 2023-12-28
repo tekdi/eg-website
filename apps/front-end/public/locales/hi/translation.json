@@ -1352,5 +1352,6 @@
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "INSTALL": "इंस्टॉल"
+  "INSTALL": "इंस्टॉल",
+  "REGISTER_MESSAGE": "आप {{state}} {{year}} के लिए रेजिस्टर कर रहे हैं"
 }
