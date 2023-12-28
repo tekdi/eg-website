@@ -258,9 +258,9 @@ export default function CampSessionList({ footerLinks }) {
       {submitBtn && (
         <FrontEndTypo.Primarybutton
           width="50%"
-          position="absolute"
+          position="relative"
           left="25%"
-          bottom="22%"
+          bottom="15%"
           right="25%"
           onPress={() => {
             navigate(`/camps/${id}/campexecution/activities`);
