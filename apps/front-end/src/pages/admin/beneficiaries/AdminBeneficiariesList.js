@@ -55,7 +55,7 @@ export default function AdminHome({ footerLinks }) {
           shadow="BlueOutlineShadow"
           borderRadius="full"
           borderWidth="1px"
-          borderColor="#084B82"
+          borderColor="blueText.400"
           p="2"
           space={4}
         >
@@ -75,7 +75,7 @@ export default function AdminHome({ footerLinks }) {
           shadow="BlueOutlineShadow"
           borderRadius="full"
           borderWidth="1px"
-          borderColor="#084B82"
+          borderColor="blueText.400"
           p="2"
           space={4}
         >
