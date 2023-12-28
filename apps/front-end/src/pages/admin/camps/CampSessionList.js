@@ -255,12 +255,12 @@ export default function CampSessionList({ footerLinks }) {
           ))}
         </VStack>
       </div>
-      {submitBtn && (
+      {!submitBtn && (
         <FrontEndTypo.Primarybutton
           width="50%"
-          position="absolute"
+          position="relative"
           left="25%"
-          bottom="22%"
+          bottom="15%"
           right="25%"
           onPress={() => {
             navigate(`/camps/${id}/campexecution/activities`);
