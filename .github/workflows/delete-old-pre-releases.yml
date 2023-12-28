@@ -28,7 +28,7 @@ jobs:
         uses: jay2610/delete-older-releases@1.4.0
         with:
           repo: tekdi/eg-website # defaults to current repo
-          keep_latest: 5
+          keep_latest: 20
           delete_tags: true
           #delete_tag_pattern: beta # defaults to ""
           delete_type: 'prerelease'
