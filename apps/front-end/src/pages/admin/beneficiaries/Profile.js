@@ -536,6 +536,7 @@ export default function AgAdminProfile({ footerLinks }) {
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
                 : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
             </AdminTypo.H1>
+
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
@@ -547,7 +548,22 @@ export default function AgAdminProfile({ footerLinks }) {
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
-              <ChipStatus status={data?.program_beneficiaries?.status} />
+              <HStack
+                bg="badgeColor.400"
+                rounded={"md"}
+                p="2"
+                alignItems="center"
+                space="2"
+              >
+                <AdminTypo.H5 color="textGreyColor.600" bold>
+                  {`${data?.program_beneficiaries?.status}${
+                    data?.is_duplicate === "yes"
+                      ? ` (${t("BENEFICIARY_STATUS_DUPLICATED")})`
+                      : ""
+                  }`}
+                </AdminTypo.H5>
+              </HStack>
+
               <HStack
                 bg="badgeColor.400"
                 rounded={"md"}
@@ -593,7 +609,6 @@ export default function AgAdminProfile({ footerLinks }) {
                     : data?.dob ?? "-"}
                 </AdminTypo.H6>
               </HStack>
-
               <HStack
                 bg="badgeColor.400"
                 rounded={"md"}
