@@ -175,6 +175,7 @@ function Table({
           },
           [setFilter, filter]
         )}
+        dense
       />
     </VStack>
   );

@@ -33,6 +33,7 @@
   "ABSENT": "अनुपस्थित",
   "ACCEPT": "स्वीकार करना",
   "ACTION": "एक्शन",
+  "ACTIONS": "एक्शन",
   "ADD": "जोड़ें",
   "ADD_A_PRERAK": "प्रेरक जोड़ें",
   "ADD_A_REFERENCE": "एक संदर्भ जोड़ें",
@@ -54,6 +55,7 @@
   "ADD_IN_SOME_ADDITIONAL_DETAILS": "कुछ अतिरिक्त विवरण जोड़ें",
   "ADD_LEARNER": "शिक्षार्थी जोड़ें",
   "ADD_MORE": "अधिक जोड़ें",
+  "MORE": "अधिक",
   "ADD_MORE_AG": "अधिक शिक्षार्थी को जोड़ें",
   "ADD_PHOTOS": "स्पष्ट फोटो क्लीक करे",
   "ADD_PROFILE_PHOTO": "अपना प्रोफ़ाइल फोटो जोड़ें",
@@ -1352,5 +1354,6 @@
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "INSTALL": "इंस्टॉल"
+  "INSTALL": "इंस्टॉल",
+  "WORK_EXPERIENCES": "काम के अनुभव"
 }
