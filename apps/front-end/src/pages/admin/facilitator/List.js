@@ -1,6 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
+import { tableCustomStyles } from "@shiksha/common-lib";
 
 import {
   Box,
