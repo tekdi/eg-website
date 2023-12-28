@@ -31,7 +31,6 @@ import {
 import Chip from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
-import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
@@ -195,6 +194,19 @@ export default function AgAdminProfile({ footerLinks }) {
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
+  const [isStatus, isSetStatus] = React.useState();
+
+  React.useEffect(() => {
+    const getStatusLabel = () => {
+      let statusLabel = `${data?.program_beneficiaries?.status}`;
+      if (data?.is_duplicate === "yes") {
+        statusLabel += ` (${t("BENEFICIARY_STATUS_DUPLICATED")})`;
+      }
+      return statusLabel;
+    };
+    const statusLabel = getStatusLabel();
+    isSetStatus(statusLabel);
+  }, [data]);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -556,11 +568,7 @@ export default function AgAdminProfile({ footerLinks }) {
                 space="2"
               >
                 <AdminTypo.H5 color="textGreyColor.600" bold>
-                  {`${data?.program_beneficiaries?.status}${
-                    data?.is_duplicate === "yes"
-                      ? ` (${t("BENEFICIARY_STATUS_DUPLICATED")})`
-                      : ""
-                  }`}
+                  {isStatus}
                 </AdminTypo.H5>
               </HStack>
 
