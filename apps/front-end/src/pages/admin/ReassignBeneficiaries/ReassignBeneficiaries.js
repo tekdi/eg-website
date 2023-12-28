@@ -235,7 +235,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -390,7 +390,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     facilitatorFilter,
                     isMore,
                     facilitator,
-                    debouncedHandleSearch
+                    debouncedHandleSearch,
                   }}
                 />
                 <HStack justifyContent="space-between"></HStack>
@@ -481,7 +481,7 @@ export const Filter = ({
   facilitatorFilter,
   isMore,
   facilitator,
-  debouncedHandleSearch
+  debouncedHandleSearch,
 }) => {
   const { t } = useTranslation();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
@@ -606,7 +606,6 @@ export const Filter = ({
             placeholder="search"
             variant="outline"
             onChange={debouncedHandleSearch}
-
           />
           <RadioBtn
             directionColumn={"column"}
@@ -628,7 +627,7 @@ export const Filter = ({
             }}
           />
           {isMore && (
-            <Button
+            <AdminTypo.H5
               onPress={(e) =>
                 setFacilitatorFilter({
                   ...facilitatorFilter,
@@ -639,9 +638,10 @@ export const Filter = ({
                 })
               }
               pr="2"
+              color="textMaroonColor.600"
             >
-              {t("MORE")}
-            </Button>
+              + {t("MORE")}
+            </AdminTypo.H5>
           )}
         </VStack>
       </HStack>
