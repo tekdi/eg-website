@@ -25,6 +25,11 @@ import {
   Alert,
   Modal,
   CloseIcon,
+  Menu,
+  Pressable,
+  Select,
+  BodyLarge,
+  CheckIcon,
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -74,7 +79,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState();
-  const [academicData, setAcademicData] = useState();
+  const [academicData, setAcademicData] = useState([]);
 
   useEffect(async () => {
     if (countLoad == 0) {
@@ -154,19 +159,24 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       console.log("user_cohort_list", user_cohort_list);
-      await setSelectedAcademicYear(data?.data?.[0])
-      setAcademicYear(data?.data?.[0])
-      setAcademicData(data?.data)
+      await setSelectedAcademicYear(user_cohort_list?.data[0]);
+      setAcademicYear(0);
+      setAcademicData(user_cohort_list?.data);
+      console.log("user_cohort_list?.data", user_cohort_list?.data);
       localStorage.setItem("loadCohort", "yes");
       setSelectCohortForm(true);
     }
   };
-  const handleAcademicYear = React.useCallback(async (data) => {
-    await setSelectedAcademicYear(data)
-    setAcademicYear(data)
-  }, [])
+  const handleAcademicYear = async (index) => {
+    setAcademicYear(-1);
+    setAcademicYear(index);
+    let stored_response = await setSelectedAcademicYear(academicData[index]);
+    console.log("stored_response", stored_response);
+    console.log("setAcademicYear", academicYear);
+  };
 
   const selectAcademicYear = async () => {
+    await setSelectedAcademicYear(academicData[academicYear]);
     setSelectCohortForm(false);
   };
 
@@ -208,7 +218,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     //check mobile number with localstorage mobile no
     let mobile_no = facilitator?.mobile;
     let mobile_no_onboarding = await getOnboardingMobile();
-    if (mobile_no == mobile_no_onboarding) {
+    if (
+      mobile_no != null &&
+      mobile_no_onboarding != null &&
+      mobile_no == mobile_no_onboarding
+    ) {
       //get cohort id and store in localstorage
       const user_cohort_id = cohortData?.academic_year_id;
       const cohort_data = await facilitatorRegistryService.getCohort({
@@ -641,11 +655,41 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">confirm year</H1>
+            <H1 textAlign="center">{t("SELECT_COHORT_INFO")}</H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              <FrontEndTypo.H2 textAlign="center">Info</FrontEndTypo.H2>
+              <HStack
+                space="5"
+                borderBottomWidth={1}
+                borderBottomColor="gray.300"
+                pb="5"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <Select
+                  selectedValue={academicYear}
+                  minWidth="200"
+                  accessibilityLabel="Choose Service"
+                  placeholder={t("SELECT")}
+                  _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                  mt={1}
+                  onValueChange={(itemValue) => handleAcademicYear(itemValue)}
+                >
+                  {academicData?.map((item, index) => {
+                    return (
+                      <Select.Item
+                        key={index}
+                        label={item?.academic_year_name}
+                        value={index}
+                      />
+                    );
+                  })}
+                </Select>
+              </HStack>
               <HStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
                   flex={1}
@@ -653,7 +697,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     selectAcademicYear();
                   }}
                 >
-                  Next
+                  {t("SELECT_COHORT_NEXT")}
                 </FrontEndTypo.Primarybutton>
               </HStack>
             </VStack>

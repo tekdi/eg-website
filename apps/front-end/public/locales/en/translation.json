@@ -1366,5 +1366,7 @@
   "REGISTER_EXIST_LOGIN": "You are logging in to {{state}} {{year}}",
   "REGISTER_EXIST_INFO": "Register",
   "REGISTER_EXIST_CONFIRM": "Confirm",
-  "REGISTER_EXIST_CONFIRM_INFO": "Do you want to register for {{state}} {{year}}?"
+  "REGISTER_EXIST_CONFIRM_INFO": "Do you want to register for {{state}} {{year}}?",
+  "SELECT_COHORT_INFO":"Select Cohort",
+  "SELECT_COHORT_NEXT":"Next"
 }
