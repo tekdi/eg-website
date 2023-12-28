@@ -10,12 +10,10 @@ import {
   Button,
   Input,
   Modal,
-  Image,
   Select,
   CheckIcon,
 } from "native-base";
 import {
-  getSelectedProgramId,
   getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
@@ -54,64 +52,6 @@ const uiSchema = {
   },
 };
 
-const schemat = {
-  type: "object",
-  properties: {
-    district: {
-      type: "array",
-      title: "DISTRICT",
-      grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    block: {
-      type: "array",
-      title: "BLOCKS",
-      grid: 1,
-      _hstack: {
-        maxH: 130,
-        overflowY: "scroll",
-      },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    qualificationIds: {
-      type: "array",
-      title: "QUALIFICATION",
-      grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
-      items: {
-        type: "string",
-      },
-      uniqueItems: true,
-    },
-    work_experience: {
-      type: "array",
-      title: "WORK_EXPERIENCES",
-      _hstack: { maxH: 130, overflowY: "scroll" },
-      items: {
-        type: "string",
-        enumNames: [
-          "All",
-          "0 yrs",
-          "1 yrs",
-          "2 yrs",
-          "3 yrs",
-          "4 yrs",
-          "5 yrs",
-        ],
-        enum: ["All", "0", "1", "2", "3", "4", "5"],
-      },
-      uniqueItems: true,
-    },
-  },
-};
-
 export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
 
@@ -144,7 +84,75 @@ export default function List({ footerLinks, userTokenInfo }) {
     setAcademicYear(academic_Id?.academic_year_id);
   }, [modal]);
 
-  console.log("academic_year_id", academicYear);
+  const schemat = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: t("DISTRICT"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      qualificationIds: {
+        type: "array",
+        title: t("QUALIFICATION"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      work_experience: {
+        type: "array",
+        title: t("WORK_EXPERIENCES"),
+        _hstack: { maxH: 130, overflowY: "scroll" },
+        items: {
+          type: "string",
+          enumNames: [
+            "All",
+            "0 yrs",
+            "1 yrs",
+            "2 yrs",
+            "3 yrs",
+            "4 yrs",
+            "5 yrs",
+          ],
+          enum: ["All", "0", "1", "2", "3", "4", "5"],
+        },
+        uniqueItems: true,
+      },
+    },
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -284,18 +292,10 @@ export default function List({ footerLinks, userTokenInfo }) {
           space={"4"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space="2">
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1> {t("ALL_PRERAKS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold> {t("ALL_PRERAKS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
         <Input
           size={"xs"}
@@ -354,9 +354,9 @@ export default function List({ footerLinks, userTokenInfo }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center">
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
                   {t("SEND_AN_INVITE")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -508,6 +508,7 @@ export default function List({ footerLinks, userTokenInfo }) {
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
+                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}

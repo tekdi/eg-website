@@ -333,22 +333,22 @@ export default function FacilitatorView({ footerLinks }) {
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
+            <AdminTypo.H4 color="Activatedcolor.400">
               {t("ALL_PRERAK")}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1
-              color="textGreyColor.800"
+            <AdminTypo.H4
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
+              bold
             >
               {data?.first_name} {data?.last_name}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
@@ -362,7 +362,7 @@ export default function FacilitatorView({ footerLinks }) {
             <VStack space="4" flexWrap="wrap">
               <ChipStatus status={data?.status} />
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 alignItems="center"
                 p="2"
@@ -371,14 +371,14 @@ export default function FacilitatorView({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="CellphoneLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.mobile}
                 </AdminTypo.H6>
               </HStack>
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -388,9 +388,9 @@ export default function FacilitatorView({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="MapPinLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {[
                     data?.state,
                     data?.district,

@@ -755,6 +755,10 @@ export default function App({ userTokenInfo, footerLinks }) {
   const onClickSubmit = (backToProfile) => {
     if (formRef.current.validateForm()) {
       formRef?.current?.submit();
+    } else {
+      if (formRef.current.validateForm()) {
+        formRef?.current?.submit();
+      }
     }
     localStorage.setItem("backToProfile", backToProfile);
   };
