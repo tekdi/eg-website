@@ -36,6 +36,10 @@ import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
 
 const uiSchema = {
+  state: {
+    "ui:widget": "checkboxes",
+    "ui:options": {},
+  },
   district: {
     "ui:widget": MultiCheck,
     "ui:options": {},
@@ -74,6 +78,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [programData, setProgramData] = React.useState([]);
   const [academicData, setAcademicData] = React.useState();
   const [academicYear, setAcademicYear] = React.useState();
+  const [states, setStates] = React.useState([]);
 
   React.useEffect(async () => {
     //getting required id's
@@ -88,6 +93,16 @@ export default function List({ footerLinks, userTokenInfo }) {
   const schemat = {
     type: "object",
     properties: {
+      state: {
+        minItems: 1,
+        maxItems: 1,
+        type: "array",
+        label: "STATE",
+        items: {
+          type: ["string"],
+        },
+        uniqueItems: true,
+      },
       district: {
         type: "array",
         title: t("DISTRICT"),
@@ -171,15 +186,13 @@ export default function List({ footerLinks, userTokenInfo }) {
         value: "id",
       });
 
-      let name = "RAJASTHAN";
-      const getDistricts = await geolocationRegistryService.getDistricts({
-        name,
-      });
+      const getState = await cohortService.getProgramYear();
+
       newSchema = getOptions(newSchema, {
-        key: "district",
-        arr: getDistricts?.districts,
-        title: "district_name",
-        value: "district_name",
+        key: "state",
+        arr: getState?.data,
+        title: "state_name",
+        value: "state_name",
       });
 
       setSchema(newSchema);
@@ -188,6 +201,25 @@ export default function List({ footerLinks, userTokenInfo }) {
 
     fetchData();
   }, []);
+
+  React.useEffect(() => {
+    const fetchBlocks = async () => {
+      if (schema && filter?.state?.length > 0) {
+        let name = filter?.state?.[0];
+        const getDistricts = await geolocationRegistryService.getDistricts({
+          name,
+        });
+        let newSchema = getOptions(schema, {
+          key: "district",
+          arr: getDistricts?.districts,
+          title: "district_name",
+          value: "district_name",
+        });
+        setSchema(newSchema);
+      }
+    };
+    fetchBlocks();
+  }, [filter?.state]);
 
   React.useEffect(() => {
     const fetchBlocks = async () => {
@@ -209,9 +241,10 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   React.useEffect(() => {
     const fetchFilteredData = async () => {
+      let newfilter = { ...filter, state: filter?.state?.[0] };
       const result = await facilitatorRegistryService.filter({
-        ...filter,
-        limit: filter.limit || 10,
+        ...newfilter,
+        limit: filter?.limit || 10,
       });
 
       setData(result.data?.data);
@@ -235,18 +268,29 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   const onChange = React.useCallback(
     async (data) => {
-      const { district, qualificationIds, work_experience, block } =
-        data?.formData || {};
+      const {
+        state: newState,
+        district: newDistrict,
+        block: newBlock,
+        qualificationIds: newQualificationIds,
+        work_experience: newWork_experience,
+      } = data?.formData || {};
+      const { state, district, block, ...remainData } = filter || {};
       setFilterObject({
-        ...filter,
-        ...(district && district?.length > 0 ? { district } : {}),
-        ...(qualificationIds && qualificationIds?.length > 0
-          ? { qualificationIds }
+        ...remainData,
+        ...(newState && newState?.length === 1
+          ? {
+              state: newState,
+              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
           : {}),
-        ...(work_experience && work_experience?.length > 0
-          ? { work_experience }
+        ...(newQualificationIds && newQualificationIds?.length > 0
+          ? { qualificationIds: newQualificationIds }
           : {}),
-        ...(block && block?.length > 0 ? { block } : {}),
+        ...(newWork_experience && newWork_experience?.length > 0
+          ? { work_experience: newWork_experience }
+          : {}),
       });
     },
     [filter, setFilterObject]
@@ -258,7 +302,8 @@ export default function List({ footerLinks, userTokenInfo }) {
   }, [setFilterObject]);
 
   const exportPrerakCSV = async () => {
-    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
+    const newfilter = { ...filter, state: filter?.state?.[0] };
+    await facilitatorRegistryService.exportFacilitatorsCsv(newfilter);
   };
 
   const handleSearch = React.useCallback(
@@ -383,7 +428,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                       mt={1}
                       onValueChange={(itemValue) => setAcademicYear(itemValue)}
                     >
-                      {console.log("item", academicData)}
                       {academicData?.map((item) => {
                         return (
                           <Select.Item
