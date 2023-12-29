@@ -533,6 +533,7 @@ export default function Attendence({ footerLinks }) {
         {
           <React.Suspense fallback={<Loading />}>
             <Camera
+              facing={true}
               headerComponent={
                 <VStack bg="black" width="94%" pl="4">
                   <AdminTypo.H6 color="white" bold>
