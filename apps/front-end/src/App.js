@@ -19,69 +19,69 @@ import PoAdminRoutes from "./routes/PoAdminRoutes";
 initializeI18n(["translation"]);
 
 function App() {
-  const [accessRoutes, setAccessRoutes] = React.useState([]);
-  const token = localStorage.getItem("token");
-  const [userTokenInfo, setUserTokenInfo] = React.useState();
+	const [accessRoutes, setAccessRoutes] = React.useState([]);
+	const token = localStorage.getItem("token");
+	const [userTokenInfo, setUserTokenInfo] = React.useState();
 
-  React.useEffect(async () => {
-    if (token) {
-      const tokenData = getTokernUserInfo();
-      const { hasura } = tokenData?.resource_access || {};
-      const { status, ...user } = await facilitatorRegistryService.getInfo();
-      if (`${status}` === "401") {
-        logout();
-        window.location.reload();
-      }
-      setUserTokenInfo({ ...tokenData, authUser: user });
-      setLocalUser(user);
+	React.useEffect(async () => {
+		if (token) {
+			const tokenData = getTokernUserInfo();
+			const { hasura } = tokenData?.resource_access || {};
+			const { status, ...user } = await facilitatorRegistryService.getInfo();
+			if (`${status}` === "401") {
+				logout();
+				window.location.reload();
+			}
+			setUserTokenInfo({ ...tokenData, authUser: user });
+			setLocalUser(user);
 
-      if (hasura?.roles?.includes("facilitator")) {
-        setAccessRoutes(routes);
-      } else if (hasura?.roles?.includes("program_owner")) {
-        setAccessRoutes(PoAdminRoutes);
-      } else if (hasura?.roles?.includes("staff")) {
-        setAccessRoutes(adminRoutes);
-      } else {
-        logout();
-        window.location.reload();
-      }
-    }
-  }, []);
+			if (hasura?.roles?.includes("facilitator")) {
+				setAccessRoutes(routes);
+			} else if (hasura?.roles?.includes("program_owner")) {
+				setAccessRoutes(PoAdminRoutes);
+			} else if (hasura?.roles?.includes("staff")) {
+				setAccessRoutes(adminRoutes);
+			} else {
+				logout();
+				window.location.reload();
+			}
+		}
+	}, []);
 
-  return (
-    <AppShell
-      basename={process.env.PUBLIC_URL}
-      routes={accessRoutes}
-      guestRoutes={guestRoutes}
-      footerLinks={[
-        {
-          title: "HOME",
-          route: "/",
-          icon: "Home4LineIcon",
-        },
-        {
-          title: "LEARNERS",
-          route: "/beneficiary/list",
-          icon: "GraduationCap",
-        },
-        {
-          title: "COMMUNITY",
-          route: "/community-references",
-          icon: "TeamLineIcon",
-        },
-        {
-          title: "MY_CAMP",
-          icon: "CommunityLineIcon",
-          route: "/camps",
-        },
-        {
-          title: "DASHBOARD",
-          icon: "DashboardLineIcon",
-          route: "/table",
-        },
-      ]}
-      userTokenInfo={userTokenInfo}
-    />
-  );
+	return (
+		<AppShell
+			basename={process.env.PUBLIC_URL}
+			routes={accessRoutes}
+			guestRoutes={guestRoutes}
+			footerLinks={[
+				{
+					title: "HOME",
+					route: "/",
+					icon: "Home4LineIcon",
+				},
+				{
+					title: "LEARNERS",
+					route: "/beneficiary/list",
+					icon: "GraduationCap",
+				},
+				{
+					title: "COMMUNITY",
+					route: "/community-references",
+					icon: "TeamLineIcon",
+				},
+				{
+					title: "MY_CAMP",
+					icon: "CommunityLineIcon",
+					route: "/camps",
+				},
+				{
+					title: "DASHBOARD",
+					icon: "DashboardLineIcon",
+					route: "/table",
+				},
+			]}
+			userTokenInfo={userTokenInfo}
+		/>
+	);
 }
 export default App;
