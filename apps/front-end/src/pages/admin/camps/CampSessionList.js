@@ -283,6 +283,7 @@ export default function CampSessionList({ footerLinks }) {
             <Modal.CloseButton
               onPress={() => {
                 setModalVisible();
+                setSubmitStatus();
               }}
             />
           </Modal.Header>

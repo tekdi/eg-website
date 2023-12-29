@@ -34,19 +34,29 @@ export default function CampTodayActivities({
   const [enums, setEnums] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState(null);
   const [selectValue, setSelectValue] = React.useState([]);
+  const [activitiesValue, setActivitiesValue] = React.useState(false);
   const [isSaving] = React.useState(false);
   const [sessionList, setSessionList] = React.useState(false);
 
   React.useEffect(async () => {
+    getActivity();
+  }, []);
+
+  const getActivity = async () => {
     const obj = {
       id: id,
       start_date: moment(new Date()).format("YYYY-MM-DD"),
     };
     const result = await campService.getActivity(obj);
-    setSelectValue(
-      result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
-    );
-  }, []);
+    if (result?.data?.camp_days_activities_tracker?.[0]?.misc_activities) {
+      setSelectValue(
+        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
+      );
+      setActivitiesValue(true);
+    } else {
+      setActivitiesValue(false);
+    }
+  };
 
   const handleSubmitData = async () => {
     const dataToSave = {
@@ -56,6 +66,7 @@ export default function CampTodayActivities({
     };
     const activities_response = await campService.addMoodActivity(dataToSave);
     if (activities_response) {
+      getActivity();
       setEnums();
       setAlert({ type: "success", title: t("MISSILINEOUS_SUCCESS_MESSAGE") });
     }
@@ -121,7 +132,7 @@ export default function CampTodayActivities({
         <CardComponent
           _vstack={{
             flex: 1,
-            borderColor: selectValue?.[0] && "greenIconColor",
+            borderColor: activitiesValue && "greenIconColor",
           }}
           _body={{ pl: 8, pt: 4 }}
         >
@@ -143,7 +154,7 @@ export default function CampTodayActivities({
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("MISCELLANEOUS_ACTIVITIES")}
               </FrontEndTypo.H2>
-              {selectValue?.[0] && (
+              {activitiesValue && (
                 <IconByName
                   name="CheckboxCircleFillIcon"
                   _icon={{ size: "36" }}
