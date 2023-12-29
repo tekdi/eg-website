@@ -186,6 +186,14 @@ export default function App({ userTokenInfo, footerLinks }) {
     setSchema(accessControl(newSchema, fields));
   };
 
+  const jsonParse = (str, returnObject = {}) => {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return returnObject;
+    }
+  };
+
   // update schema
   React.useEffect(async () => {
     let newSchema = schema;
@@ -243,7 +251,20 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
 
     if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
+      let programSelected = null;
+      try {
+        programSelected = jsonParse(localStorage.getItem("program"));
+      } catch (error) {}
+      let qData = await geolocationRegistryService.getStates();
+      //add user specific state
+      if (programSelected != null) {
+        qData.states = [
+          {
+            state_name: programSelected.state_name,
+            state_id: programSelected.state_id,
+          },
+        ];
+      }
       if (schema?.["properties"]?.["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
