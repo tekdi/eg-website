@@ -27,94 +27,114 @@ function Home({ userTokenInfo, pageInfo }) {
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  useEffect(async () => {
-    if (countLoad == 0) {
-      setCountLoad(1);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        if (searchParams.get("org_id")) {
+          setId(searchParams.get("org_id"));
+        }
+        if (searchParams.get("cohort_id")) {
+          setCohortId(searchParams.get("cohort_id"));
+        }
+        if (searchParams.get("program_id")) {
+          setProgramId(searchParams.get("program_id"));
+        }
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
     }
-    if (countLoad == 1) {
-      //do page load first operation
-      if (searchParams.get("org_id")) {
-        setId(searchParams.get("org_id"));
-      }
-      if (searchParams.get("cohort_id")) {
-        setCohortId(searchParams.get("cohort_id"));
-      }
-      if (searchParams.get("program_id")) {
-        setProgramId(searchParams.get("program_id"));
-      }
-      //end do page load first operation
-      setCountLoad(2);
-    } else if (countLoad == 2) {
-      setCountLoad(3);
-    }
+    fetchData();
   }, [countLoad]);
 
-  useEffect(async () => {
-    if (id !== "") {
-      if (userTokenInfo) {
-        const fa_data = userTokenInfo.authUser;
-        localStorage.setItem("profile_url", fa_data?.documents?.[0]?.name);
-        setFacilitator(fa_data);
-        if (fa_data?.program_faciltators?.parent_ip) {
-          const ip_id = fa_data?.program_faciltators?.parent_ip;
-          const data = await facilitatorRegistryService.getOrganization({
-            id: ip_id,
-          });
-          setIp(data);
-        }
-        setPage("Form");
-      } else {
-        const data = await facilitatorRegistryService.getOrganization({ id });
-        localStorage.setItem("profile_url", data?.documents?.[0]?.name);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (id !== "") {
+        if (userTokenInfo) {
+          const fa_data = userTokenInfo.authUser;
+          localStorage.setItem("profile_url", fa_data?.documents?.[0]?.name);
+          setFacilitator(fa_data);
+          if (fa_data?.program_faciltators?.parent_ip) {
+            const ip_id = fa_data?.program_faciltators?.parent_ip;
+            const data = await facilitatorRegistryService.getOrganization({
+              id: ip_id,
+            });
+            setIp(data);
+          }
+          setPage("Form");
+        } else {
+          const data = await facilitatorRegistryService.getOrganization({ id });
+          localStorage.setItem("profile_url", data?.documents?.[0]?.name);
 
-        setIp(data);
-        if (!data?.name) {
+          setIp(data);
+          if (!data?.name) {
+            setPage("login");
+          }
+        }
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [id]);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (cohortId !== "") {
+        const data = await facilitatorRegistryService.getCohort({ cohortId });
+        setCohortData(data);
+        if (!data?.academic_year_name) {
           setPage("login");
         }
+        setLoading(false);
       }
-      setLoading(false);
     }
-  }, [id]);
-  useEffect(async () => {
-    if (cohortId !== "") {
-      const data = await facilitatorRegistryService.getCohort({ cohortId });
-      setCohortData(data);
-      if (!data?.academic_year_name) {
-        setPage("login");
-      }
-      setLoading(false);
-    }
+    fetchData();
   }, [cohortId]);
-  useEffect(async () => {
-    if (programId !== "") {
-      const data = await facilitatorRegistryService.getProgram({ programId });
-      setProgramData(data[0]);
-      if (!data[0]?.program_name) {
-        setPage("login");
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (programId !== "") {
+        const data = await facilitatorRegistryService.getProgram({ programId });
+        setProgramData(data[0]);
+        if (!data[0]?.program_name) {
+          setPage("login");
+        }
+        setLoading(false);
       }
-      setLoading(false);
     }
+    fetchData();
   }, [programId]);
   //store all API data in localstorage
-  useEffect(async () => {
-    if (
-      id !== "" &&
-      ip !== null &&
-      cohortId !== "" &&
-      cohortData !== null &&
-      programId !== "" &&
-      programData !== null
-    ) {
-      let onboardingURLData = {
-        id: id,
-        ip: ip,
-        cohortId: cohortId,
-        cohortData: cohortData,
-        programId: programId,
-        programData: programData,
-      };
-      await setOnboardingURLData(onboardingURLData);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (
+        id !== "" &&
+        ip !== null &&
+        cohortId !== "" &&
+        cohortData !== null &&
+        programId !== "" &&
+        programData !== null
+      ) {
+        let onboardingURLData = {
+          id: id,
+          ip: ip,
+          cohortId: cohortId,
+          cohortData: cohortData,
+          programId: programId,
+          programData: programData,
+        };
+        await setOnboardingURLData(onboardingURLData);
+      }
     }
+    fetchData();
   }, [id, ip, cohortId, cohortData, programId, programData]);
 
   if (loading) {

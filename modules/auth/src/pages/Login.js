@@ -40,27 +40,31 @@ export default function Login() {
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
 
-  useEffect(async () => {
-    if (countLoad == 0) {
-      setCountLoad(1);
-    }
-    if (countLoad == 1) {
-      //do page load first operation
-      let onboardingURLData = await getOnboardingURLData();
-      setCohortData(onboardingURLData?.cohortData);
-      setProgramData(onboardingURLData?.programData);
-      if (onboardingURLData?.cohortData) {
-        setIsUserRegisterExist(true);
-      } else {
-        setIsUserRegisterExist(false);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (countLoad == 0) {
+        setCountLoad(1);
       }
-      //end do page load first operation
-      setCountLoad(2);
-    } else if (countLoad == 2) {
-      setCountLoad(3);
+      if (countLoad == 1) {
+        //do page load first operation
+        let onboardingURLData = await getOnboardingURLData();
+        setCohortData(onboardingURLData?.cohortData);
+        setProgramData(onboardingURLData?.programData);
+        if (onboardingURLData?.cohortData) {
+          setIsUserRegisterExist(true);
+        } else {
+          setIsUserRegisterExist(false);
+        }
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
     }
+    fetchData();
   }, [countLoad]);
-  
+
   const removeRegisterExist = async () => {
     await removeOnboardingURLData();
     await removeOnboardingMobile();

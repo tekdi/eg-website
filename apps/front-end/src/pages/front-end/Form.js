@@ -48,20 +48,24 @@ export default function App({ facilitator, ip, onClick }) {
   const [cohortData, setCohortData] = useState(null);
   const [programData, setProgramData] = useState(null);
 
-  useEffect(async () => {
-    if (countLoad == 0) {
-      setCountLoad(1);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        let onboardingURLData = await getOnboardingURLData();
+        setCohortData(onboardingURLData?.cohortData);
+        setProgramData(onboardingURLData?.programData);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
     }
-    if (countLoad == 1) {
-      //do page load first operation
-      let onboardingURLData = await getOnboardingURLData();
-      setCohortData(onboardingURLData?.cohortData);
-      setProgramData(onboardingURLData?.programData);
-      //end do page load first operation
-      setCountLoad(2);
-    } else if (countLoad == 2) {
-      setCountLoad(3);
-    }
+    fetchData();
   }, [countLoad]);
 
   //already registred modals
@@ -701,7 +705,6 @@ export default function App({ facilitator, ip, onClick }) {
       isUserExistStatus == "REGISTER_EXIST"
     ) {
       navigate("/");
-      navigate(0);
     } else {
       setIsUserExistModal(false);
     }
