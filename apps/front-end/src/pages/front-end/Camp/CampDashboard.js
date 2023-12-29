@@ -234,8 +234,10 @@ export default function CampDashboard({ footerLinks }) {
           )}
         </VStack>
         <VStack>
-          <AdminTypo.H2>{t("HOW_TO_START_CAMP")}</AdminTypo.H2>
-          <HStack mt={2}>
+          <AdminTypo.H3 color="textMaroonColor.400" bold>
+            {t("HOW_TO_START_CAMP")}
+          </AdminTypo.H3>
+          <HStack mt={4}>
             <iframe
               width="100%"
               height="315"

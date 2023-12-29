@@ -68,7 +68,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     const activity = data?.data?.camp_days_activities_tracker;
     setTodaysActivity(activity?.[0] || {});
     setActivityId(activity?.[0]?.id);
-  }, []);
+  }, [navigate, setTodaysActivity]);
 
   React.useEffect(() => {
     getTodaysActivity();
@@ -100,14 +100,14 @@ export default function CampExecution({ footerLinks, setAlert }) {
     (item) => {
       setActiveChip(item);
     },
-    [activeChip]
+    [setActiveChip]
   );
 
   React.useEffect(() => {
     setData({ ...data, lat: `${latData}`, long: `${longData}` });
   }, [latData]);
 
-  const startCamp = async () => {
+  const startCamp = React.useCallback(async () => {
     setLoading(true);
     if (activeChip) {
       const payLoad = {
@@ -124,37 +124,40 @@ export default function CampExecution({ footerLinks, setAlert }) {
       setError("SELECT_MESSAGE");
     }
     setLoading(false);
-  };
+  }, [activeChip, id, setLoading, setTodaysActivity]);
 
   // start Camp
-  const closeCamera = () => {
+  const closeCamera = React.useCallback(() => {
     try {
       setStart(false);
     } catch (e) {}
-  };
+  }, [setStart]);
 
-  const campBegin = async () => {
+  const campBegin = React.useCallback(() => {
     setStart(true);
-  };
+  }, [setStart]);
 
   // uploadAttendencePicture from start camp
-  const uploadAttendencePicture = async (activitiesId) => {
-    if (cameraFile) {
-      const dataQ = {
-        ...data,
-        context_id: activitiesId,
-        user_id: facilitator?.id,
-        status: "present",
-        reason: "camp_started",
-        photo_1: `${cameraFile}`,
-      };
-      await campService.markCampAttendance(dataQ);
-      setCameraFile();
-    } else {
-      setError("Capture Picture First");
-    }
-    setCameraUrl();
-  };
+  const uploadAttendencePicture = React.useCallback(
+    async (activitiesId) => {
+      if (cameraFile) {
+        const dataQ = {
+          ...data,
+          context_id: activitiesId,
+          user_id: facilitator?.id,
+          status: "present",
+          reason: "camp_started",
+          photo_1: `${cameraFile}`,
+        };
+        await campService.markCampAttendance(dataQ);
+        setCameraFile();
+      } else {
+        setError("Capture Picture First");
+      }
+      setCameraUrl();
+    },
+    [cameraFile, data, facilitator?.id, setError, setCameraFile, setCameraUrl]
+  );
 
   const getAccess = React.useCallback(async () => {
     if (
@@ -167,11 +170,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
     } else if (todaysActivity?.end_date === null) {
       setPage("endcamp");
     }
-  }, [todaysActivity, step]);
+  }, [step, todaysActivity, setPage]);
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     getAccess();
   }, [getAccess]);
+
+  const airplaneImageUri = React.useMemo(() => "/airoplane.gif", []);
 
   if (start && data?.lat && data?.long && !loading) {
     return (
@@ -220,7 +225,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     );
   }
 
-  if (cameraFile && cameraUrl?.url) {
+  if (cameraFile) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Layout
@@ -361,7 +366,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
           >
             <Image
               source={{
-                uri: "/airoplane.gif",
+                uri: airplaneImageUri,
               }}
               alt="airoplane.gif"
               position="absolute"

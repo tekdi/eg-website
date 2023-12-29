@@ -27,35 +27,11 @@ import {
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
-
-
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-      cursor: "pointer",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
 
 const columns = (navigate) => [
   {
@@ -168,7 +144,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       _sidebar={footerLinks}
     >
       <HStack
-        space={[0, 0, "2"]}
+        space={[0, 0, "4"]}
         p="2"
         my="1"
         mb="3"
@@ -178,21 +154,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       >
         <HStack
           justifyContent={"space-between"}
-          space={"4"}
+          space={"6"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space={2}>
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1>{t("ALL_CAMPS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
       </HStack>
       <HStack>
@@ -216,10 +184,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <HStack pb="2">
               {campFilterStatus?.map((item) => {
                 return (
-                  <AdminTypo.H5
+                  <AdminTypo.H6
                     key={"table"}
                     color={
-                      filter?.status == t(item?.status) ? "blueText.400" : ""
+                      filter?.status == t(item?.status)
+                        ? "textMaroonColor.600"
+                        : ""
                     }
                     bold={filter?.status == t(item?.status)}
                     cursor={"pointer"}
@@ -241,7 +211,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     {filter?.status == t(item?.status)
                       ? `(${paginationTotalRows})` + " "
                       : " "}
-                  </AdminTypo.H5>
+                  </AdminTypo.H6>
                 );
               })}
             </HStack>
@@ -252,7 +222,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter(e);
                   setQueryParameters(e);
                 }}
-                customStyles={CustomStyles}
+                customStyles={tableCustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
@@ -269,6 +239,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter({ ...filter, page: e?.toString() });
                 }}
                 onRowClicked={handleRowClick}
+                dense
+                highlightOnHover
               />
             </Box>
           </ScrollView>
@@ -298,7 +270,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -444,7 +416,6 @@ export const Filter = ({ filter, setFilter }) => {
         placeholder={t("SEARCH")}
         variant="outline"
         onChange={debouncedHandleSearch}
-
       />
       <MultiCheck
         value={filter?.facilitator ? filter?.facilitator : []}

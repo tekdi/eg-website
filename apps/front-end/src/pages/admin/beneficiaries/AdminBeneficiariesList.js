@@ -23,14 +23,13 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
-
   urlData,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
-
 
 export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
@@ -56,7 +55,7 @@ export default function AdminHome({ footerLinks }) {
           shadow="BlueOutlineShadow"
           borderRadius="full"
           borderWidth="1px"
-          borderColor="#084B82"
+          borderColor="blueText.400"
           p="2"
           space={4}
         >
@@ -66,6 +65,26 @@ export default function AdminHome({ footerLinks }) {
       </Pressable>
     );
   }, []);
+
+  const actiondropDown = (triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack
+          rounded={"full"}
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderRadius="full"
+          borderWidth="1px"
+          borderColor="blueText.400"
+          p="2"
+          space={4}
+        >
+          <AdminTypo.H5>{t("ACTIONS")}</AdminTypo.H5>
+          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  };
 
   React.useEffect(async () => {
     if (urlFilterApply) {
@@ -107,7 +126,7 @@ export default function AdminHome({ footerLinks }) {
   );
 
   const handleSearch = (e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -122,22 +141,18 @@ export default function AdminHome({ footerLinks }) {
       _sidebar={footerLinks}
     >
       <HStack
-        p="4"
-        space={["4", "0", "0", "4"]}
-        flexWrap={"wrap"}
+        space={[0, 0, "2"]}
+        p="2"
+        my="1"
+        mb="3"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gridGap="2"
         ref={refSubHeader}
       >
-        <HStack justifyContent="space-between" alignItems="center" space={4}>
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1>{t("All_AG_LEARNERS")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
+        <HStack justifyContent="space-between" alignItems="center" space={2}>
+          <IconByName name="GraduationCap" />
+          <AdminTypo.H4 bold>{t("All_AG_LEARNERS")}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}
@@ -155,68 +170,55 @@ export default function AdminHome({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-
           onChange={debouncedHandleSearch}
         />
-        <HStack alignSelf={"center"} space="2">
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps, t)}
-          >
-            <Menu.Item onPress={(item) => setMenu("export_learner")}>
-              {t("LEARNERS_LIST")}
-            </Menu.Item>
-            <Menu.Item onPress={(item) => setMenu("export_subject")}>
-              {t("LEARNERS_SUBJECT_CSV")}
-            </Menu.Item>
-          </Menu>
-
-          <AdminTypo.Successbutton
-            onPress={() => {
-              navigate("/admin/learners/enrollmentVerificationList");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("ENROLLMENT_VERIFICATION")}
-          </AdminTypo.Successbutton>
-          <AdminTypo.Dangerbutton
-            onPress={() => {
-              navigate("/admin/learners/duplicates");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("RESOLVE_DUPLICATION")}
-          </AdminTypo.Dangerbutton>
-          <AdminTypo.PrimaryButton
-            onPress={() => {
-              navigate("/admin/learners/reassignList");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="10px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("REASSIGN_LEARNERS")}
-          </AdminTypo.PrimaryButton>
+        <HStack>
+          <HStack mr="4">
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => dropDown(triggerProps, t)}
+            >
+              <Menu.Item onPress={(item) => setMenu("export_learner")}>
+                {t("LEARNERS_LIST")}
+              </Menu.Item>
+              <Menu.Item onPress={(item) => setMenu("export_subject")}>
+                {t("LEARNERS_SUBJECT_CSV")}
+              </Menu.Item>
+            </Menu>
+          </HStack>
+          <HStack>
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => actiondropDown(triggerProps, t)}
+            >
+              <Menu.Item
+                onPress={() => {
+                  navigate("/admin/learners/enrollmentVerificationList");
+                }}
+              >
+                {t("ENROLLMENT_VERIFICATION")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate("/admin/learners/duplicates");
+                }}
+              >
+                {t("RESOLVE_DUPLICATION")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate("/admin/learners/reassignList");
+                }}
+              >
+                {t("REASSIGN_LEARNERS")}
+              </Menu.Item>
+            </Menu>
+          </HStack>
         </HStack>
       </HStack>
-      <HStack>
+      <HStack flex={[5, 5, 4]}>
         <Box
           flex={[2, 2, 1]}
           style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
@@ -247,6 +249,7 @@ export default function AdminHome({ footerLinks }) {
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
+                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={(e) => {
                   setFilter(e);
@@ -419,7 +422,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandlePrerakSearch = React.useCallback(
@@ -482,7 +485,7 @@ export const Filter = ({ filter, setFilter }) => {
           }}
         />
         {isMore && (
-          <Button
+          <AdminTypo.H5
             onPress={(e) =>
               setFacilitatorFilter({
                 ...facilitatorFilter,
@@ -493,9 +496,10 @@ export const Filter = ({ filter, setFilter }) => {
               })
             }
             pr="2"
+            color="textMaroonColor.600"
           >
-            {t("MORE")}
-          </Button>
+            + {t("MORE")}
+          </AdminTypo.H5>
         )}
       </VStack>
     </VStack>

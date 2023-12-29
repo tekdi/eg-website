@@ -262,7 +262,7 @@ export default function View({ footerLinks }) {
           borderColor="#084B82"
           lineHeight={8}
           _text={{
-            color: "blueText.400",
+            color: "text.400",
             fontSize: "14px",
             fontWeight: "700",
           }}
@@ -270,7 +270,7 @@ export default function View({ footerLinks }) {
           <Button
             background="white"
             _text={{
-              color: "blueText.400",
+              color: "textGreyColor.900",
               fontSize: "14px",
               fontWeight: "700",
             }}
@@ -342,23 +342,21 @@ export default function View({ footerLinks }) {
         )}
         <HStack alignItems={"center"} space="1" pt="3">
           <IconByName name="UserLineIcon" size="md" />
-          <AdminTypo.H1 color="Activatedcolor.400">
-            {t("ALL_CAMPS")}
-          </AdminTypo.H1>
+          <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
             onPress={(e) => navigate(-1)}
           />
-          <AdminTypo.H1
-            color="textGreyColor.800"
+          <AdminTypo.H4
+            bold
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
             enumOptions
           >
             {data?.id}
-          </AdminTypo.H1>
+          </AdminTypo.H4>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -577,7 +575,7 @@ export default function View({ footerLinks }) {
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
                 <AdminTypo.Secondarybutton
-                  status="info"
+                  status="warning"
                   isDisabled={isButtonLoading}
                   onPress={() => setStatus("change_required")}
                 >

@@ -56,16 +56,16 @@ const DEFAULT_THEME = {
     Input: {
       baseStyle: {
         p: '4',
-        minH: '54px',
-        borderColor: 'secondaryBlue.500',
+        minH: '45px',
+        borderColor: 'Disablecolor',
         borderRadius: '10px'
       }
     },
     Select: {
       baseStyle: {
         p: '4',
-        minH: '54px',
-        borderColor: 'secondaryBlue.500',
+        minH: '45px',
+        borderColor: 'Disablecolor',
         borderRadius: '10px'
       }
     },
@@ -196,7 +196,7 @@ const DEFAULT_THEME = {
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
-          borderColor: `#790000`,
+          borderColor: `#FF0000`,
           _hover: {
             bg: `#FFFFFF`
           },
@@ -205,7 +205,7 @@ const DEFAULT_THEME = {
           },
           _text: {
             fontWeight: '700',
-            color: '#790000'
+            color: '#000000'
           },
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
@@ -270,17 +270,18 @@ const DEFAULT_THEME = {
       elevation: 1
     },
     RedFillShadow: {
-      shadowColor: '#C92A42',
+      shadowColor: '#000000',
       shadowOffset: {
         width: 1,
         height: 3
       },
       shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowRadius: 3,
+      elevation: 0
     },
+
     RedOutlineShadow: {
-      shadowColor: '#8B7171',
+      shadowColor: '#000',
       shadowOffset: {
         width: 1,
         height: 3
@@ -289,6 +290,7 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+
     RedBoxShadow: {
       shadowColor: '#790000',
       shadowOffset: {
@@ -299,6 +301,19 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+    RedBlackShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 1,
+        height: 3
+      },
+      shadowOpacity: 2,
+      shadowRadius: 3,
+      elevation: 0,
+      borderWidth: 1,
+      borderColor: '#FF0000'
+    },
+
     BlueBoxShadow: {
       shadowColor: '#CAE9FF',
       shadowOffset: {
@@ -338,7 +353,7 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 1.0,
       elevation: 1
-    },
+    }
   },
   bg: {
     linearGradient: {
@@ -349,7 +364,7 @@ const DEFAULT_THEME = {
   },
   colors: {
     footer: {
-      boxBorder: '#C92A42'
+      boxBorder: '#FF0000'
     },
     formBg: {
       500: '#F4F4F7'
@@ -508,7 +523,7 @@ const DEFAULT_THEME = {
       200: '#bfbfbf',
       300: '#a6a6a6',
       400: '#8c8c8c',
-      500: '#737373',
+      500: '#3F8BF1',
       600: '#595959',
       700: '#737373',
       800: '#595959',
@@ -579,11 +594,15 @@ const DEFAULT_THEME = {
       900: '#1E1E1E'
     },
     textMaroonColor: {
-      50: 'FDCAB5',
+      50: '#FDCAB5',
       100: '#FFACAF',
-      300: '',
+      300: '#FF8080',
       400: '#790000',
-      500: '#A93505'
+      500: '#A93505',
+      600: '#FF0000',
+      700: '#7c2704',
+      800: '#4a1702',
+      900: '#190801'
     },
     blueText: {
       200: 'D6E8FF',
@@ -596,6 +615,9 @@ const DEFAULT_THEME = {
     bgPinkColor: {
       300: '#F9E9DB'
     },
+    bgYellowColor: {
+      400: '#FFF5E4'
+    },
     editIcon: {
       300: '#3F8BF1'
     },
@@ -603,7 +625,10 @@ const DEFAULT_THEME = {
       200: '#14242D'
     },
     Darkmaroonprimarybutton: {
-      400: '#2D142C'
+      400: '#FF0000'
+    },
+    textBlack: {
+      500: '#000000'
     },
     Darkmaroonsecondarybutton: {
       400: '#BDBDBD'
@@ -640,6 +665,7 @@ const DEFAULT_THEME = {
     warningColor: '#FFCF52',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
+    bgpink: '#FFE0E1',
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',
@@ -661,7 +687,8 @@ const DEFAULT_THEME = {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
-      400: '#ff0000'
+      400: '#ff0000',
+      500: '#ff000047'
     },
     dividerColor: '#EEEEEE',
     textGreen: {
@@ -679,7 +706,8 @@ const DEFAULT_THEME = {
     text: {
       100: '#a8e3fd'
     },
-    greenIconColor:'#008C0E'
+    timeLineBg: '#FFE0E1',
+    greenIconColor: '#008C0E'
   }
 }
 

@@ -156,11 +156,12 @@ export default function FacilitatorView({ footerLinks }) {
 
   const navigate = useNavigate();
 
-const profileDetails = React.useCallback(async () => {
+  const profileDetails = React.useCallback(async () => {
     const result = await facilitatorRegistryService.getOne({ id });
     setData(result);
     setAadhaarValue(result?.aadhar_no);
-    const qualificationList = await facilitatorRegistryService.getQualificationAll();
+    const qualificationList =
+      await facilitatorRegistryService.getQualificationAll();
     const qual = JSON.parse(result?.program_faciltators?.qualification_ids);
 
     if (qual?.length > 0) {
@@ -332,22 +333,22 @@ const profileDetails = React.useCallback(async () => {
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
+            <AdminTypo.H4 color="Activatedcolor.400">
               {t("ALL_PRERAK")}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1
-              color="textGreyColor.800"
+            <AdminTypo.H4
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
+              bold
             >
               {data?.first_name} {data?.last_name}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
@@ -361,7 +362,7 @@ const profileDetails = React.useCallback(async () => {
             <VStack space="4" flexWrap="wrap">
               <ChipStatus status={data?.status} />
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 alignItems="center"
                 p="2"
@@ -370,14 +371,14 @@ const profileDetails = React.useCallback(async () => {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="CellphoneLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.mobile}
                 </AdminTypo.H6>
               </HStack>
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -387,9 +388,9 @@ const profileDetails = React.useCallback(async () => {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="MapPinLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {[
                     data?.state,
                     data?.district,
@@ -424,7 +425,6 @@ const profileDetails = React.useCallback(async () => {
           </HStack>
 
           <HStack alignItems={Center} space="9">
-           
             <VStack space={4}>
               <AdminTypo.Secondarybutton
                 onPress={() => {
@@ -1075,27 +1075,29 @@ const profileDetails = React.useCallback(async () => {
   );
 }
 
-const SelectAllCheckBox = React.memo(({ fields, title, setFieldCheck, fieldCheck }) => {
+const SelectAllCheckBox = React.memo(
+  ({ fields, title, setFieldCheck, fieldCheck }) => {
+    const handleChange = React.useCallback(
+      (e) => {
+        if (!e) {
+          const checkedFields = fieldCheck?.filter(
+            (field) => !fields?.includes(field)
+          );
+          setFieldCheck(checkedFields);
+        } else {
+          const checkedFields = fieldCheck?.filter(
+            (field) => !fields?.includes(field)
+          );
+          setFieldCheck([...checkedFields, ...fields]);
+        }
+      },
+      [fields, fieldCheck, setFieldCheck]
+    );
 
-  const handleChange = React.useCallback((e) => {
-    if (!e) {
-      const checkedFields = fieldCheck?.filter(
-        (field) => !fields?.includes(field)
-      );
-      setFieldCheck(checkedFields);
-    } else {
-      const checkedFields = fieldCheck?.filter(
-        (field) => !fields?.includes(field)
-      );
-      setFieldCheck([...checkedFields, ...fields]);
-    }
-  }, [fields, fieldCheck, setFieldCheck]);
-
-  return (
-    <Checkbox
-      onChange={handleChange}
-    >
-      {title}
-    </Checkbox>
-  );
-});
+    return (
+      <Checkbox onChange={handleChange} colorScheme="danger">
+        {title}
+      </Checkbox>
+    );
+  }
+);

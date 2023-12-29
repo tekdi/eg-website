@@ -223,8 +223,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </HStack>
             {isEventActive
               ? certificateData?.type == "prerak_camp_execution_training" && (
-                  <HStack py="4" flex="1" px="6">
-                    <AdminTypo.Dangerbutton
+                  <HStack py="2" flex="1" px="4">
+                    <FrontEndTypo.Primarybutton
                       onPress={() => {
                         setModalVisible(certificateData);
                         const doIdArray = certificateData?.params?.do_id;
@@ -236,18 +236,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.Dangerbutton>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 )
               : lmsDEtails?.id && (
-                  <HStack py="4" flex="1" px="6">
-                    <AdminTypo.Dangerbutton
+                  <HStack py="2" flex="1" px="4">
+                    <FrontEndTypo.Primarybutton
+                      fontSize
                       onPress={() => {
                         setModalVisible(certificateData);
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.Dangerbutton>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 )}
             <Modal
@@ -358,18 +359,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 mx="5"
                 p="10"
                 width="40%"
-                shadow="RedBoxShadow"
+                shadow="RedBlackShadow"
                 onPress={(e) => navigate("/beneficiary")}
               >
                 <Image
                   source={{
-                    uri: "/addAg.svg",
+                    uri: "/images/learner/add_learner.png",
                   }}
                   alt="Add AG"
                   size={"sm"}
                   resizeMode="contain"
                 />
-                <FrontEndTypo.H4 color="textMaroonColor.400" bold>
+                <FrontEndTypo.H4 mt="2" color="textBlack.500" bold>
                   {t("ADD_AN_AG")}
                 </FrontEndTypo.H4>
               </RedOutlineButton>
@@ -440,7 +441,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {isDocumentUpload() && (
-            <Stack bg="bgPinkColor.300" space="6" p={4}>
+            <Stack bg="bgYellowColor.400" space="6" p={4}>
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("UPLOAD_YOUR_DOCUMENTS")}
               </FrontEndTypo.H2>
@@ -506,6 +507,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       isDisabled
                       name="Upload2FillIcon"
                       _icon={{ size: "25px" }}
+                      color="gray.800"
                     />
                   }
                   onPress={(e) => navigate("/profile")}

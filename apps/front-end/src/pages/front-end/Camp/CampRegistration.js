@@ -215,6 +215,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                 isDisabled
                 name="ArrowRightSLineIcon"
                 _icon={{ size: "30px" }}
+                color="textBlack.500"
               />
             )}
           </HStack>
@@ -264,6 +265,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                 isDisabled
                 name="ArrowRightSLineIcon"
                 _icon={{ size: "30px" }}
+                color="textBlack.500"
               />
             </HStack>
           </Pressable>
@@ -358,6 +360,7 @@ const NavigationBox = ({
             name="ArrowRightSLineIcon"
             //color="amber.400"
             _icon={{ size: "30px" }}
+            color="textBlack.500"
           />
         )}
       </HStack>

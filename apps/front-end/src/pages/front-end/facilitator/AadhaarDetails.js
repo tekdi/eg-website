@@ -74,7 +74,7 @@ export default function AadhaarDetails() {
                     "aadhaar_verification_mode",
                   ])}
                   size="xs"
-                  colorScheme="info"
+                  colorScheme="textMaroonColor"
                 />
               </Box>
               <VStack space="2" pt="5">
