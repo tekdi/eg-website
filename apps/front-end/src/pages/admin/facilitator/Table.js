@@ -245,11 +245,11 @@ function Table({
         persistTableHead
         progressPending={loading}
         pagination
+        paginationDefaultPage={filter?.page || 1}
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-        paginationPerPage={filter?.limit ? filter?.limit : 15}
+        paginationPerPage={filter?.limit ? filter?.limit : 10}
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        paginationDefaultPage={filter?.page}
         onChangeRowsPerPage={React.useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
