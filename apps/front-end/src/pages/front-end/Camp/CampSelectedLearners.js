@@ -5,7 +5,6 @@ import {
   Checkbox,
   HStack,
   Pressable,
-  Text,
   VStack,
   Modal,
 } from "native-base";
@@ -36,14 +35,9 @@ export default function CampSelectedLearners() {
   const [registeredId, setRegisteredId] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [registeredUsers, setRegisteredUsers] = React.useState([]);
-  // const selectAllChecked =
-  //   selectedIds?.length ===
-  //   nonRegisteredUser?.filter(
-  //     (item) => !registeredUsers.some((user) => user.id === item.id)
-  //   ).length;
+  const [canSelectUsers, setCanSelectUsers] = React.useState([]);
   const [nonRegister, setNonRegister] = React.useState([]);
-  const [selectAllChecked, setSelectAllChecked] = React.useState([]);
+  const [selectAllChecked, setSelectAllChecked] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/camps/${camp_id?.id}`);
@@ -60,12 +54,13 @@ export default function CampSelectedLearners() {
     });
   };
 
-  const handleSelectAllChange = () => {
-    if (selectAllChecked) {
+  const handleSelectAllChange = (e) => {
+    setSelectAllChecked(e);
+    if (!e) {
       setSelectedIds([]);
     } else {
       const newSelectedIds = nonRegisteredUser
-        ?.filter((item) => !registeredUsers.some((user) => user.id === item.id))
+        ?.filter((item) => !canSelectUsers.some((user) => user.id === item.id))
         .map((item) => item.id);
       setSelectedIds(newSelectedIds);
     }
@@ -94,14 +89,22 @@ export default function CampSelectedLearners() {
   React.useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
     const campdetails = await campService.getCampDetails(camp_id);
-    const campRegisterUsers = campdetails?.data?.group_users || [];
-    setRegisteredUsers(campRegisterUsers);
+    let users = [];
+    if (
+      ["registered", "camp_ip_verified"].includes(
+        campdetails?.data?.group?.status
+      )
+    ) {
+      users = campdetails?.data?.group_users || [];
+      setCanSelectUsers(users);
+    }
     const campNotRegisterUsers = result?.data?.user || [];
     const nonRegister = result?.data?.user || [];
     setNonRegister(nonRegister);
-    const mergedData = campRegisterUsers?.concat(campNotRegisterUsers);
+    const mergedData =
+      campdetails?.data?.group_users?.concat(campNotRegisterUsers);
     setNonRegisteredUser(mergedData);
-    const ids = campRegisterUsers?.map((item) => item.id);
+    const ids = campdetails?.data?.group_users?.map((item) => item.id);
     setSelectedIds(ids);
     setLoading(false);
     const selectAllChecked =
@@ -218,7 +221,7 @@ export default function CampSelectedLearners() {
                 </HStack>
 
                 <Box maxW="121px">
-                  {!registeredUsers.find((e) => e?.id === item?.id)?.id && (
+                  {!canSelectUsers.find((e) => e?.id === item?.id)?.id && (
                     <Checkbox
                       isChecked={selectedIds.includes(item.id)}
                       onChange={() => handleCheckboxChange(item.id)}

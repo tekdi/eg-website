@@ -1357,6 +1357,7 @@
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
   "INSTALL": "Install",
+  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully",
   "REGISTER_MESSAGE": "You are registering for {{state}} {{year}}",
   "OK": "Ok",
   "DONT_ALLOW": "You already have an account with {{old_state}} {{old_year}} and you are attempting to register for {{state}} {{year}}, so you cannot proceed to register.",
