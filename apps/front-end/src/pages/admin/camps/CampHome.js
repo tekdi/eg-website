@@ -257,9 +257,13 @@ export const Filter = ({ filter, setFilter }) => {
   const [getstatesAll, setStatesAll] = React.useState();
 
   const setFilterObject = (data) => {
-    if (data?.district) {
-      const { district, block } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+    if (data?.state) {
+      const { state, district } = data;
+      setFacilitatorFilter({
+        ...facilitatorFilter,
+        district,
+        state: state?.[0],
+      });
     }
     setFilter(data);
     setQueryParameters(data);

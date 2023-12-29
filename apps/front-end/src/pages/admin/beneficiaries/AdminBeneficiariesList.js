@@ -286,9 +286,13 @@ export const Filter = ({ filter, setFilter }) => {
 
   const setFilterObject = React.useCallback(
     (data) => {
-      if (data?.district) {
-        const { district } = data;
-        setFacilitatorFilter({ ...facilitatorFilter, district });
+      if (data?.state) {
+        const { state, district } = data;
+        setFacilitatorFilter({
+          ...facilitatorFilter,
+          district,
+          state: state?.[0],
+        });
       }
       setFilter(data);
       setQueryParameters(data);
@@ -404,9 +408,13 @@ export const Filter = ({ filter, setFilter }) => {
   React.useEffect(() => {
     const facilitatorDetails = async () => {
       let newFilter = {};
-      ["district", "block", "status"].forEach((e) => {
+      ["state", "district", "block", "status"].forEach((e) => {
         if (filter[e]) {
-          newFilter = { ...newFilter, [e]: filter[e] };
+          newFilter = {
+            ...newFilter,
+            [e]: filter[e],
+            state: filter?.state?.[0],
+          };
         }
       });
       const { error, ...result } =
