@@ -37,7 +37,7 @@ import { debounce } from "lodash";
 
 const uiSchema = {
   state: {
-    "ui:widget": "checkboxes",
+    "ui:widget": MultiCheck,
     "ui:options": {},
   },
   district: {
@@ -94,12 +94,17 @@ export default function List({ footerLinks, userTokenInfo }) {
     type: "object",
     properties: {
       state: {
-        minItems: 1,
-        maxItems: 1,
         type: "array",
-        label: "STATE",
+        title: t("STATE"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
         items: {
-          type: ["string"],
+          type: "string",
         },
         uniqueItems: true,
       },
