@@ -152,9 +152,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const register_exist_user =
       await facilitatorRegistryService.RegisterUserExist({
         program_id: parseInt(onboardingURLData?.programId),
+        academic_year_id: parseInt(onboardingURLData?.cohortId),
         parent_ip: onboardingURLData?.id,
       });
     if (register_exist_user?.success == true) {
+      localStorage.removeItem("loadCohort");
       await removeRegisterExist();
     } else {
       alert(register_exist_user?.message);
@@ -166,6 +168,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       localStorage.getItem("loadCohort") == null ||
       localStorage.getItem("loadCohort") == "no"
     ) {
+      console.log("in showSelectCohort");
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
@@ -178,7 +181,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
   };
   const handleAcademicYear = async (item) => {
-    //let stored_response = await setSelectedAcademicYear(academicData[index]);
     setAcademicYear(item);
   };
   useEffect(() => {
@@ -197,6 +199,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [academicYear]);
   const selectAcademicYear = async () => {
+    setAcademicYear(academicYear);
     setSelectCohortForm(false);
   };
 
@@ -687,36 +690,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              <HStack
-                space="5"
-                borderBottomWidth={1}
-                borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
+              <Select
+                selectedValue={academicYear}
+                accessibilityLabel="Choose Service"
+                placeholder={t("SELECT")}
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) => handleAcademicYear(itemValue)}
               >
-                <Select
-                  selectedValue={academicYear}
-                  accessibilityLabel="Choose Service"
-                  placeholder={t("SELECT")}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) => handleAcademicYear(itemValue)}
-                >
-                  {academicData?.map((item, index) => {
-                    return (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.academic_year_name}
-                        value={item?.academic_year_id}
-                      />
-                    );
-                  })}
-                </Select>
-              </HStack>
+                {academicData?.map((item, index) => {
+                  return (
+                    <Select.Item
+                      key={item.id}
+                      label={item?.academic_year_name}
+                      value={item?.academic_year_id}
+                    />
+                  );
+                })}
+              </Select>
               <HStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton
                   flex={1}
