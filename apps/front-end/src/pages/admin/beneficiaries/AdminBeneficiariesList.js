@@ -306,7 +306,7 @@ export const Filter = ({ filter, setFilter }) => {
       properties: {
         state: {
           type: "array",
-          title: "STATE",
+          title: t("STATE"),
           grid: 1,
           _hstack: {
             maxH: 130,
@@ -321,7 +321,7 @@ export const Filter = ({ filter, setFilter }) => {
         },
         district: {
           type: "array",
-          title: "DISTRICT",
+          title: t("DISTRICT"),
           grid: 1,
           _hstack: {
             maxH: 130,
@@ -336,7 +336,7 @@ export const Filter = ({ filter, setFilter }) => {
         },
         block: {
           type: "array",
-          title: "BLOCKS",
+          title: t("BLOCKS"),
           grid: 1,
           _hstack: {
             maxH: 130,

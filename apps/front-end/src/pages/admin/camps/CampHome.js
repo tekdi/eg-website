@@ -287,7 +287,7 @@ export const Filter = ({ filter, setFilter }) => {
     properties: {
       state: {
         type: "array",
-        title: "STATE",
+        title: t("STATE"),
         grid: 1,
         _hstack: {
           maxH: 130,
