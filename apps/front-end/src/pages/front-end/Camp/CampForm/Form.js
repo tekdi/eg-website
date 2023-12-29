@@ -146,12 +146,15 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(() => {
+    let isMounted = true;
     const fetchEnumData = async () => {
       const qData = await enumRegistryService.listOfEnum();
-      setEnumData(qData);
+      if (isMounted) setEnumData(qData);
     };
-
     fetchEnumData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   React.useEffect(async () => {
