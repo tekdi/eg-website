@@ -28,6 +28,7 @@ import {
   GetEnumValue,
   facilitatorRegistryService,
   tableCustomStyles,
+  cohortService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
@@ -120,14 +121,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 
   React.useEffect(async () => {
     if (urlFilterApply) {
-      let newFilter = filter;
+      let newfilter = { ...filter, state: filter?.state?.[0] };
       if (filter?.status === "all") {
         const { status, ...dataFilter } = filter || {};
-        console.log({ dataFilter });
-        newFilter = dataFilter;
+        newfilter = { ...dataFilter, state: filter?.state?.[0] };
       }
-
-      const qData = await campService.getCampList(newFilter);
+      const qData = await campService.getCampList(newfilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
@@ -255,6 +254,7 @@ export const Filter = ({ filter, setFilter }) => {
   const [getBlocksAll, setGetBlocksAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
   const [facilitator, setFacilitator] = React.useState([]);
+  const [getstatesAll, setStatesAll] = React.useState();
 
   const setFilterObject = (data) => {
     if (data?.district) {
@@ -281,6 +281,21 @@ export const Filter = ({ filter, setFilter }) => {
   const schema = {
     type: "object",
     properties: {
+      state: {
+        type: "array",
+        title: "STATE",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getstatesAll?.map((item, i) => item?.state_name),
+          enum: getstatesAll?.map((item, i) => item?.state_name),
+        },
+        uniqueItems: true,
+      },
       district: {
         type: "array",
         title: t("DISTRICT"),
@@ -315,6 +330,10 @@ export const Filter = ({ filter, setFilter }) => {
   };
 
   const uiSchema = {
+    state: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
     district: {
       "ui:widget": MultiCheck,
       "ui:options": {},
@@ -324,13 +343,37 @@ export const Filter = ({ filter, setFilter }) => {
       "ui:options": {},
     },
   };
-  React.useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setGetDistrictsAll(getDistricts?.districts);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const getState = await cohortService.getProgramYear();
+      setStatesAll(getState?.data);
+    };
+    fetchData();
   }, []);
+
+  // React.useEffect(async () => {
+  //   let name = "RAJASTHAN";
+  //   const getDistricts = await geolocationRegistryService.getDistricts({
+  //     name,
+  //   });
+  //   setGetDistrictsAll(getDistricts?.districts);
+  // }, []);
+
+  React.useEffect(async () => {
+    let getDistricts = [];
+    if (filter?.state && filter?.state?.length === 1) {
+      let name = filter?.state?.[0];
+      getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
+      if (Array.isArray(getDistricts?.districts)) {
+        setGetDistrictsAll(getDistricts?.districts);
+      }
+    } else {
+      setGetDistrictsAll([]);
+    }
+  }, [filter?.state]);
 
   React.useEffect(async () => {
     let blockData = [];
@@ -342,19 +385,27 @@ export const Filter = ({ filter, setFilter }) => {
     setGetBlocksAll(blockData);
   }, [filter?.district]);
 
-  const onChange = async (data) => {
-    const { district: newDistrict, block: newBlock } = data?.formData || {};
-    const { district, block, ...remainData } = filter;
-    setFilterObject({
-      ...remainData,
-      ...(newDistrict?.length > 0
-        ? {
-            district: newDistrict,
-            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
-          }
-        : {}),
-    });
-  };
+  const onChange = React.useCallback(
+    async (data) => {
+      const {
+        state: newState,
+        district: newDistrict,
+        block: newBlock,
+      } = data?.formData || {};
+      const { state, district, block, ...remainData } = filter || {};
+      setFilterObject({
+        ...remainData,
+        ...(newState && newState?.length === 1
+          ? {
+              state: newState,
+              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
+          : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = () => {
     setFilter({});
