@@ -177,7 +177,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
       localStorage.setItem("loadCohort", "yes");
-      setSelectCohortForm(true);
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+      } else {
+        setSelectCohortForm(true);
+      }
     }
   };
   const handleAcademicYear = async (item) => {
@@ -201,6 +205,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const selectAcademicYear = async () => {
     setAcademicYear(academicYear);
     setSelectCohortForm(false);
+    window.location.reload();
   };
 
   React.useEffect(() => {
