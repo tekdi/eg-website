@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   HStack,
   FormControl,
@@ -8,6 +8,7 @@ import {
   IconButton,
   CloseIcon,
   Image,
+  Box,
 } from "native-base";
 import {
   useWindowSize,
@@ -18,6 +19,9 @@ import {
   BodyMedium,
   FrontEndTypo,
   IconByName,
+  getOnboardingURLData,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
 } from "@shiksha/common-lib";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -30,6 +34,43 @@ const styles = {
 };
 
 export default function Login() {
+  //fetch URL data and store fix for 2 times render useEffect call
+  const [countLoad, setCountLoad] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        let onboardingURLData = await getOnboardingURLData();
+        setCohortData(onboardingURLData?.cohortData);
+        setProgramData(onboardingURLData?.programData);
+        if (onboardingURLData?.cohortData) {
+          setIsUserRegisterExist(true);
+        } else {
+          setIsUserRegisterExist(false);
+        }
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  const removeRegisterExist = async () => {
+    await removeOnboardingURLData();
+    await removeOnboardingMobile();
+    setIsUserRegisterExist(false);
+  };
+
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
   const [width, height] = useWindowSize();
@@ -81,6 +122,7 @@ export default function Login() {
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
   };
+
   return (
     <Layout
       _appBar={{
@@ -95,6 +137,29 @@ export default function Login() {
         <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
         </FrontEndTypo.H1>
+        {isUserRegisterExist && (
+          <Box py={6} px={4} mb={5}>
+            <Alert
+              status="info"
+              shadow="AlertShadow"
+              alignItems={"start"}
+              mb="3"
+            >
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <FrontEndTypo.H3>
+                  {t("REGISTER_EXIST_LOGIN")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)}
+                </FrontEndTypo.H3>
+                <CloseIcon
+                  onClick={() => removeRegisterExist()}
+                  style={{ cursor: "pointer" }}
+                />
+              </HStack>
+            </Alert>
+          </Box>
+        )}
         <Image
           alignSelf="center"
           source={{

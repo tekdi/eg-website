@@ -1357,5 +1357,17 @@
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
   "INSTALL": "Install",
-  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully"
+  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully",
+  "REGISTER_MESSAGE": "You are registering for {{state}} {{year}}",
+  "OK": "Ok",
+  "DONT_ALLOW": "You already have an account with {{old_state}} {{old_year}} and you are attempting to register for {{state}} {{year}}, so you cannot proceed to register.",
+  "DONT_ALLOW_MOBILE": "This mobile number is already in use for a learner, you cannot proceed",
+  "EXIST_LOGIN": "You already have an account for {{state}} {{year}}, proceed to log in instead.",
+  "REGISTER_EXIST": "You already have an account for {{old_state}} {{old_year}} and you are trying to register for {{state}} {{year}}, proceed to log in.",
+  "REGISTER_EXIST_LOGIN": "You are logging in to {{state}} {{year}}",
+  "REGISTER_EXIST_INFO": "Register",
+  "REGISTER_EXIST_CONFIRM": "Confirm",
+  "REGISTER_EXIST_CONFIRM_INFO": "Do you want to register for {{state}} {{year}}?",
+  "SELECT_COHORT_INFO":"Select Cohort",
+  "SELECT_COHORT_NEXT":"Next"
 }
