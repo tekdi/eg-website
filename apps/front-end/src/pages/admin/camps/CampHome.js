@@ -32,7 +32,6 @@ import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
 
-
 export const CustomStyles = {
   rows: {
     style: {
@@ -258,6 +257,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 facilitator={userTokenInfo?.authUser}
                 pagination
                 paginationTotalRows={paginationTotalRows}
+                paginationDefaultPage={filter?.page || 1}
                 paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
                 defaultSortAsc
                 paginationServer
@@ -298,7 +298,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -444,7 +444,6 @@ export const Filter = ({ filter, setFilter }) => {
         placeholder={t("SEARCH")}
         variant="outline"
         onChange={debouncedHandleSearch}
-
       />
       <MultiCheck
         value={filter?.facilitator ? filter?.facilitator : []}
