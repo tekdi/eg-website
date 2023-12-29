@@ -13,11 +13,6 @@
   }
 }
 
-#scroll_id {
-  height: 65vh !important;
-  overflow-y: scroll;
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
