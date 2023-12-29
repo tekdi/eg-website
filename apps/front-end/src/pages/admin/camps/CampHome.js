@@ -117,7 +117,7 @@ const columns = (navigate) => [
   },
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
-  const [filter, setFilter] = React.useState({});
+  const [filter, setFilter] = React.useState({ limit: 10 });
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
@@ -262,12 +262,18 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 defaultSortAsc
                 paginationServer
                 data={data}
-                onChangeRowsPerPage={(e) => {
-                  setFilter({ ...filter, limit: e?.toString() });
-                }}
-                onChangePage={(e) => {
-                  setFilter({ ...filter, page: e?.toString() });
-                }}
+                onChangeRowsPerPage={React.useCallback(
+                  (e) => {
+                    setFilter({ ...filter, limit: e, page: 1 });
+                  },
+                  [setFilter, filter]
+                )}
+                onChangePage={React.useCallback(
+                  (e) => {
+                    setFilter({ ...filter, page: e });
+                  },
+                  [setFilter, filter]
+                )}
                 onRowClicked={handleRowClick}
               />
             </Box>
