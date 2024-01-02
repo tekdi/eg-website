@@ -114,7 +114,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
   const [schema, setSchema] = React.useState();
-  const [filter, setFilter] = React.useState([]);
+  const [filter, setFilter] = React.useState({});
   const previousDistrictLength = React.useRef(filter?.district?.length);
 
   const [loading, setLoading] = React.useState(true);
@@ -244,7 +244,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   );
 
   const clearFilter = React.useCallback(() => {
-    setFilter([]);
+    setFilter({});
     setFilterObject([]);
   }, [setFilterObject]);
 
