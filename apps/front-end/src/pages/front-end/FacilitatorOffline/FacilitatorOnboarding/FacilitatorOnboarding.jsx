@@ -1,7 +1,8 @@
 import { CustomOTPBox, FrontEndTypo, Layout, t } from "@shiksha/common-lib";
-import { VStack } from "native-base";
+import { Box, HStack, Image, Stack, VStack } from "native-base";
 import React, { useState, useCallback } from "react";
 import validator from "@rjsf/validator-ajv8";
+import { get, set } from "idb-keyval";
 import {
   widgets,
   templates,
@@ -11,113 +12,40 @@ import {
 } from "../../../../component/BaseInput";
 
 import Form from "@rjsf/core";
-import aadharImage from "../../../../assets/images/facilitator-duties/Aadhaar2.png";
-import introductionImage from "../../../../assets/images/facilitator-duties/img7.png";
-import prerakDutiesImage1 from "../../../../assets/images/facilitator-duties/img1.png";
-import prerakDutiesImage2 from "../../../../assets/images/facilitator-duties/img2.png";
-import prerakDutiesImage3 from "../../../../assets/images/facilitator-duties/img3.png";
-import prerakDutiesImage4 from "../../../../assets/images/facilitator-duties/img4.png";
-import prerakDutiesImage5 from "../../../../assets/images/facilitator-duties/img5.png";
-import prerakDutiesImage6 from "../../../../assets/images/facilitator-duties/img6.png";
+import noConnection from "../../../../assets/images/facilitator-duties/offline/no_connection.png";
+import plugin from "../../../../assets/images/facilitator-duties/offline/plugin.png";
+
 import Steper from "component/Steper";
 import { useNavigate } from "react-router-dom";
-
-const stylesheet = {
-  text1: {
-    fontFamily: "Inter",
-    fontWeight: "400",
-    fontSize: "14px",
-    lineHeight: "26px",
-    color: "#3F8BF1",
-    textDecoration: "underline",
-  },
-  image: {},
-  buttonStyle: {
-    height: "91px",
-    padding: "16px",
-  },
-  headerText: {
-    color: "var(--Gray-90, #212121);",
-    fontFamily: "Inter",
-    fontWeight: "700",
-    fontSize: "22px",
-  },
-  languageButton: {
-    width: 150,
-    borderRadius: 14,
-    backgroundColor: "var(--Gray-10, #FAFAFA)",
-    borderWidth: 2,
-    borderColor: "var(--Secondary-Blue, #084B82)",
-    height: 91,
-  },
-  languageButtonText: {
-    color: "var(--Secondary-Blue, #084B82)",
-    textAlign: "center",
-    fontFamily: "Inter",
-    fontSize: 12,
-    fontStyle: "normal",
-    fontWeight: "600",
-    lineHeight: "normal",
-  },
-
-  defaultLanguageButton: {
-    width: 150,
-    borderRadius: 4,
-    backgroundColor: "var(--Gray-10, #FAFAFA)",
-    border: " 1px solid var(--Gray-30, #E0E0E0)",
-    borderColor: "gray",
-    height: 91,
-  },
-
-  defaulutLanguageButtonText: {
-    color: "var(--Gray-80, #424242)",
-    textAlign: "center",
-    fontFamily: "Inter",
-    fontSize: 12,
-    fontStyle: "normal",
-    fontWeight: "500",
-    lineHeight: "normal",
-  },
-};
 
 const FacilitatorOnboarding = () => {
   const [activeScreenName, setActiveScreenName] = useState();
   const [mobileNumber, setMobileNumber] = useState("");
+  //offline/online status
 
-  const [header, setHeader] = useState([
-    { text: "Identify Out-of-School Girls" },
-    { text: "Counsel Parents" },
-    { text: "Register Girls for Exams" },
-    { text: "Conduct Camps" },
-    { text: "Help Girls Attend Exams" },
-    { text: "Guide them towards Future Goals" },
-  ]);
-  const [caption, setCaption] = useState([
-    { showcaption: "To pursue 10th school from open school." },
-    { showcaption: "To pursue 10th school from open school." },
-    { showcaption: "To pursue 10th school from open school." },
-    { showcaption: "To pursue 10th school from open school." },
-    { showcaption: "To pursue 10th school from open school." },
-    { showcaption: "To pursue 10th school from open school." },
-  ]);
-
-  const [images, setImages] = useState([
-    { uri: prerakDutiesImage1 },
-    { uri: prerakDutiesImage2 },
-    { uri: prerakDutiesImage3 },
-    { uri: prerakDutiesImage4 },
-    { uri: prerakDutiesImage5 },
-    { uri: prerakDutiesImage6 },
-  ]);
-
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
-  const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
   const [previousScreen, setPreviousScreen] = useState(0);
   const [formData, setFormData] = React.useState({});
   const [page, setPage] = React.useState(0);
 
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const online = () => setIsOnline(true);
+    const offline = () => setIsOnline(false);
+
+    window.addEventListener("online", online, false);
+    window.addEventListener("offline", offline, false);
+
+    return () => {
+      window.removeEventListener("online", online);
+      window.removeEventListener("offline", offline);
+    };
+  }, []);
+
+  console.log("check status", isOnline);
 
   const handleInputChange = (value) => {
     setMobileNumber(value);
@@ -158,35 +86,76 @@ const FacilitatorOnboarding = () => {
       },
     },
   };
+
+  const offlineScreen = () => (
+    <>
+      <VStack alignItems={"center"} flex={3} space={6}>
+        <HStack>
+          <Box>
+            <Image
+              source={{
+                uri: plugin,
+              }}
+              alt=""
+              size={"xl"}
+              resizeMode="contain"
+            ></Image>
+          </Box>
+          <Box>
+            <Image
+              source={{
+                uri: noConnection,
+              }}
+              alt=""
+              size={"2xl"}
+              resizeMode="contain"
+            ></Image>
+          </Box>
+        </HStack>
+        <FrontEndTypo.H1>
+          {t("इस पृष्ठ तक पहुँचने के लिए इंटरनेट से पुनः कनेक्ट करें!")}
+        </FrontEndTypo.H1>
+        <FrontEndTypo.Primarybutton
+          style={{ background: "#FF0000", top: "40px", width: "100%" }}
+          onPress={() => handleNextScreen("dateOfBirth")}
+        >
+          {t("NEXT")}
+        </FrontEndTypo.Primarybutton>
+      </VStack>
+    </>
+  );
+
   const dateOfBirth = () => (
     <>
       <VStack flex={3} space={6}>
-        <Form
-          formData={formData}
-          onSubmit={(data) => setFormData(data.formData)}
-          {...{ templates, FieldTemplate }}
-          validator={validator}
-          schema={{
-            type: "object",
-            required: ["aadharName"],
-            properties: {
-              dob: {
-                type: "string",
-                label: "DATE_OF_BIRTH",
-                description: "AS_PER_AADHAAR",
-                format: "date",
+        <Stack space={3}>
+          <Form
+            formData={formData}
+            onSubmit={(data) => setFormData(data.formData)}
+            {...{ templates, FieldTemplate }}
+            validator={validator}
+            schema={{
+              type: "object",
+              required: ["aadharName"],
+              properties: {
+                dob: {
+                  type: "string",
+                  label: "DATE_OF_BIRTH",
+                  description: "AS_PER_AADHAAR",
+                  format: "date",
+                },
               },
-            },
-          }}
-          uiSchema={uiSchema}
-        >
-          <FrontEndTypo.Primarybutton
-            style={{ background: "#FF0000", top: "40px" }}
-            onPress={() => handleNextScreen("onboardingContactDetails")}
+            }}
+            uiSchema={uiSchema}
           >
-            {t("NEXT")}
-          </FrontEndTypo.Primarybutton>
-        </Form>
+            <FrontEndTypo.Primarybutton
+              style={{ background: "#FF0000", top: "40px" }}
+              onPress={() => handleNextScreen("onboardingContactDetails")}
+            >
+              {t("NEXT")}
+            </FrontEndTypo.Primarybutton>
+          </Form>
+        </Stack>
       </VStack>
     </>
   );
@@ -678,8 +647,10 @@ const FacilitatorOnboarding = () => {
         return otheDetails();
       case "facilitatorProfilePicture":
         return facilitatorProfilePicture();
+      case "offlineScreen":
+        return offlineScreen();
       default:
-        return dateOfBirth();
+        return isOnline ? dateOfBirth() : offlineScreen();
     }
   };
 
@@ -687,21 +658,25 @@ const FacilitatorOnboarding = () => {
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
-        // onPressBackButton: (e) => handlePreviousScreen("profile"),
+        onPressBackButton: (e) => handlePreviousScreen("profile"),
       }}
     >
       {/* {onlyIconsShow === "backBtn" ? "" : ""} */}
-      <VStack flex={2} padding={3} space={3}>
-        <Steper
-          type={"circle"}
-          steps={[
-            { value: "0", label: t("BASIC_DETAILS") },
-            { value: "3", label: t("स्वयंसेवक, नौकरी एवं योग्यता विवरण") },
-            { value: "6", label: t("OTHER_DETAILS") },
-          ]}
-          progress={page === "upload" ? 10 : page}
-        />
-      </VStack>
+      {isOnline ? (
+        <VStack flex={2} padding={3} space={3}>
+          <Steper
+            type={"circle"}
+            steps={[
+              { value: "0", label: t("BASIC_DETAILS") },
+              { value: "3", label: t("स्वयंसेवक, नौकरी एवं योग्यता विवरण") },
+              { value: "6", label: t("OTHER_DETAILS") },
+            ]}
+            progress={page === "upload" ? 10 : page}
+          />
+        </VStack>
+      ) : (
+        ""
+      )}
 
       <VStack flex={2} padding={3} space={3}>
         {renderSwitchCase()}

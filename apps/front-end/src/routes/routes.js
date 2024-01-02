@@ -360,7 +360,6 @@ export default [
   { path: "*", component: Dashboard },
 
   //offline_facilitotor_Onboarding
-
   {
     path: "/offline/facilitator-self-onboarding/:id",
     component: FacilitatorRegistration,
