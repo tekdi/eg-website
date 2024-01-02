@@ -1,5 +1,4 @@
 import {
-  CardComponent,
   FrontEndTypo,
   IconByName,
   Layout,
@@ -8,11 +7,11 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Modal, Pressable, VStack } from "native-base";
+import { HStack, Modal, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import SessionActions from "./CampSessionModal";
+import SessionActions, { SessionList } from "./CampSessionModal";
 
 const checkNext = (status, updated_at) => {
   return (
@@ -38,6 +37,7 @@ export default function CampSessionList({ footerLinks }) {
   const [error, setError] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const navigate = useNavigate();
+  const [buttonHide, setButtonHide] = React.useState();
 
   const getData = React.useCallback(async () => {
     if (modalVisible) {
@@ -73,54 +73,71 @@ export default function CampSessionList({ footerLinks }) {
   React.useEffect(() => {
     const fetchData = async () => {
       await getData();
-      const enumData = await enumRegistryService.listOfEnum();
-      setEnumOptions(enumData?.data ? enumData?.data : {});
     };
     fetchData();
-  }, [getData]);
+  }, [modalVisible]);
 
-  const handleStartSession = React.useCallback(
-    async (modalVisible) => {
-      setIsDisable(true);
-      await campService.creatCampSession({
-        learning_lesson_plan_id: modalVisible,
-        camp_id: id,
-      });
-      await getData();
-      setIsDisable(false);
-    },
-    [getData, submitStatus]
-  );
+  // const handleStartSession = React.useCallback(
+  //   async (modalVisible) => {
+  //     setIsDisable(true);
+  //     await campService.creatCampSession({
+  //       learning_lesson_plan_id: modalVisible,
+  //       camp_id: id,
+  //     });
+  //     await getData();
+  //     setIsDisable(false);
+  //   },
+  //   [getData, submitStatus]
+  // );
 
   const handlePartiallyDone = React.useCallback(async () => {
     setSubmitBtn(true);
     setError();
     setIsDisable(true);
     if (submitStatus?.reason) {
-      await campService.updateCampSession({
-        id: sessionDetails?.session_tracks?.[0]?.id,
-        edit_session_type:
-          submitStatus?.status === "complete"
-            ? "edit_complete_session"
-            : "edit_incomplete_session",
-
-        session_feedback: submitStatus?.reason,
-      });
-      await getData();
+      if (sessionDetails?.session_tracks?.[0]?.id) {
+        await campService.updateCampSession({
+          id: sessionDetails?.session_tracks?.[0]?.id,
+          edit_session_type:
+            submitStatus?.status === "complete"
+              ? "edit_complete_session"
+              : "edit_incomplete_session",
+          session_feedback: submitStatus?.reason,
+        });
+      } else {
+        let newData = { status: submitStatus?.status };
+        if (submitStatus?.status === "incomplete") {
+          newData = {
+            ...newData,
+            lesson_plan_incomplete_feedback: submitStatus?.reason,
+          };
+        } else if (submitStatus?.status === "complete") {
+          newData = {
+            ...newData,
+            lesson_plan_complete_feedback: submitStatus?.reason,
+          };
+        }
+        await campService.creatCampSession({
+          ...newData,
+          learning_lesson_plan_id: modalVisible,
+          camp_id: id,
+        });
+      }
+      await getCampSessionsList();
       setSubmitStatus();
       setModalVisible();
     } else {
       setError("PLEASE_SELECT");
     }
     setIsDisable(false);
-  }, [getData, submitStatus]);
+  }, [submitStatus]);
 
   const handleCancel = () => {
     setError();
     setSubmitStatus();
   };
 
-  React.useEffect(async () => {
+  const getCampSessionsList = async () => {
     const result = await campService.getCampSessionsList({ id: id });
     const data = result?.data?.learning_lesson_plans_master || [];
     setSessionList(data);
@@ -156,105 +173,67 @@ export default function CampSessionList({ footerLinks }) {
     } else {
       setSessionActive(dataSession?.ordering + 1);
     }
+  };
+
+  React.useEffect(async () => {
+    await getCampSessionsList();
+    const enumData = await enumRegistryService.listOfEnum();
+    setEnumOptions(enumData?.data ? enumData?.data : {});
     setLoading(false);
-  }, [modalVisible]);
+  }, []);
+
+  React.useEffect(() => {
+    if (sessionDetails) {
+      let btn = [];
+      const boolean =
+        submitStatus?.status === "complete" ||
+        (!submitStatus?.status &&
+          previousSessionDetails?.session_tracks?.[0] &&
+          previousSessionDetails?.session_tracks?.[0]?.status === "complete" &&
+          previousSessionDetails?.session_tracks?.[0]?.updated_at &&
+          moment(
+            previousSessionDetails?.session_tracks?.[0]?.updated_at
+          ).format("YYYY-MM-DD") !== moment().format("YYYY-MM-DD")) ||
+        (submitStatus?.status === undefined &&
+          previousSessionDetails === undefined);
+      if (boolean) {
+        btn = [...btn, "complete"];
+      }
+      if (
+        (!sessionDetails?.session_tracks?.[0]?.status ||
+          sessionDetails?.session_tracks?.[0]?.status === "incomplete") &&
+        submitStatus?.status !== "complete"
+      ) {
+        btn = [...btn, "incomplete"];
+      }
+      setButtonHide(btn);
+    }
+  }, [sessionDetails, submitStatus]);
 
   if (loading) {
     return <Loading />;
   }
 
-  const handleCompleteButton = () => {
-    return (
-      submitStatus?.status === "complete" ||
-      (!submitStatus?.status &&
-        previousSessionDetails?.session_tracks?.[0] &&
-        previousSessionDetails?.session_tracks?.[0]?.status === "complete" &&
-        previousSessionDetails?.session_tracks?.[0]?.updated_at &&
-        moment(previousSessionDetails?.session_tracks?.[0]?.updated_at).format(
-          "YYYY-MM-DD"
-        ) !== moment().format("YYYY-MM-DD")) ||
-      (submitStatus?.status === undefined &&
-        previousSessionDetails === undefined)
-    );
-  };
   return (
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
+        _box: { bg: "white", shadow: "appBarShadow" },
       }}
+      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _footer={{ menues: footerLinks }}
     >
-      <div id="scroll_id">
-        <VStack flex={1} space={"5"} p="5" background={"bgGreyColor.200"}>
-          <HStack space="2">
-            <IconByName name="BookOpenLineIcon" />
-            <FrontEndTypo.H2 color="textMaroonColor.400">
-              {t("SESSION")}
-            </FrontEndTypo.H2>
-          </HStack>
+      <VStack flex={1} space={"5"} p="5">
+        <HStack space="2">
+          <IconByName name="BookOpenLineIcon" />
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t("SESSION")}
+          </FrontEndTypo.H2>
+        </HStack>
 
-          {sessionList?.map((item) => (
-            <div key={item?.id} id={item?.id}>
-              <Pressable
-                onPress={() => setModalVisible(item?.id)}
-                isDisabled={
-                  sessionActive !== item?.ordering ||
-                  item?.session_tracks?.[0]?.status === "complete"
-                }
-              >
-                <CardComponent
-                  key={item?.id}
-                  _header={{ px: "0", pt: "0" }}
-                  _body={{
-                    px: "4",
-                    py: "2",
-                    // pt: "0",
-                    bg:
-                      sessionActive !== item?.ordering ||
-                      item?.session_tracks?.[0]?.status === "complete"
-                        ? "gray.100"
-                        : "white",
-                  }}
-                  _vstack={{ p: 0, space: 0, flex: 1 }}
-                >
-                  <HStack justifyContent={"space-between"}>
-                    <HStack
-                      space="4"
-                      alignItems={"center"}
-                      // justifyContent={"space-between"}
-                    >
-                      {item?.session_tracks?.[0]?.status === "complete" && (
-                        <IconByName
-                          name="CheckboxCircleFillIcon"
-                          color="greenIconColor"
-                          _icon={{ size: "24px" }}
-                        />
-                      )}
-                      {item?.session_tracks?.[0]?.status === "incomplete" && (
-                        <IconByName
-                          color="warningColor"
-                          name="TimeFillIcon"
-                          _icon={{ size: 30 }}
-                        />
-                      )}
-
-                      <FrontEndTypo.H2 alignItem="center">
-                        {t("SESSION") + " " + item?.ordering}
-                      </FrontEndTypo.H2>
-                    </HStack>
-                    <IconByName
-                      alignContent={"right"}
-                      name="ArrowRightSLineIcon"
-                      _icon={{ size: "25px" }}
-                    />
-                  </HStack>
-                </CardComponent>
-              </Pressable>
-            </div>
-          ))}
-        </VStack>
-      </div>
+        <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
+      </VStack>
       {submitBtn && (
         <FrontEndTypo.Primarybutton
           width="50%"
@@ -283,22 +262,24 @@ export default function CampSessionList({ footerLinks }) {
             <Modal.CloseButton
               onPress={() => {
                 setModalVisible();
+                setSubmitStatus();
               }}
             />
           </Modal.Header>
           <Modal.Body p="6">
             <SessionActions
-              sessionDetails={sessionDetails}
-              isDisable={isDisable}
-              handleStartSession={handleStartSession}
-              handleCompleteButton={handleCompleteButton}
-              setSubmitStatus={setSubmitStatus}
-              handlePartiallyDone={handlePartiallyDone}
-              handleCancel={handleCancel}
-              submitStatus={submitStatus}
-              enumOptions={enumOptions}
-              error={error}
-              t={t}
+              {...{
+                buttonHide,
+                sessionDetails,
+                isDisable,
+                enumOptions,
+                submitStatus,
+                setSubmitStatus,
+                handlePartiallyDone,
+                handleCancel,
+                error,
+                t,
+              }}
             />
           </Modal.Body>
         </Modal.Content>

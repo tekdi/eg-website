@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Docschecklist = ({ footerLinks }) => {
+const Docschecklist = ({ footerLinks, setAlert }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [selectData, setselectData] = useState([]);
@@ -20,7 +20,7 @@ const Docschecklist = ({ footerLinks }) => {
   const [benificiary, setBenificiary] = React.useState({});
   const [msgshow, setmsgshow] = React.useState(false);
   const [loading, setloading] = React.useState(true);
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
@@ -69,7 +69,7 @@ const Docschecklist = ({ footerLinks }) => {
   }, [status]);
 
   const readyToEnrollApiCall = async () => {
-    setIsButtonLoading(true);
+    setIsDisable(true);
     if (
       !benificiary?.program_beneficiaries?.enrollment_status ||
       benificiary?.program_beneficiaries?.enrollment_status === "identified"
@@ -81,6 +81,10 @@ const Docschecklist = ({ footerLinks }) => {
       };
 
       const result = await benificiaryRegistoryService.statusUpdate(bodyData);
+      if (result) {
+        setAlert({ type: "success", title: t("DOCUMENT_COMPLETED") });
+        navigate(`/beneficiary/profile/${id}`);
+      }
     }
     setButtonPress(true);
   };
@@ -495,7 +499,7 @@ const Docschecklist = ({ footerLinks }) => {
           {checkList ? (
             buttonPress ? (
               <FrontEndTypo.ColourPrimaryButton
-                isDisabled={isButtonLoading}
+                isDisabled={isDisable}
                 mb={1}
                 type="submit"
               >
@@ -513,7 +517,7 @@ const Docschecklist = ({ footerLinks }) => {
                 </Alert>
 
                 <FrontEndTypo.Primarybutton
-                  isDisabled={isButtonLoading}
+                  isDisabled={isDisable}
                   mb={1}
                   type="submit"
                   onPress={() => {
@@ -529,7 +533,7 @@ const Docschecklist = ({ footerLinks }) => {
           )}
 
           <FrontEndTypo.Primarybutton
-            isLoading={isButtonLoading}
+            isDisabled={isDisable}
             mt="4"
             mb={8}
             type="submit"
