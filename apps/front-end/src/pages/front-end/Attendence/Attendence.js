@@ -97,29 +97,34 @@ const renderStatusColumn = (row, t) => (
 );
 
 const onUpdateOrCreateAttendace = async (row) => {
-  if (row?.event_id) {
-    if (row?.attendance?.id) {
-      const data = {
-        id: row?.attendance?.id,
-        user_id: row?.attendance.user_id,
-        lat: `${row?.locationData?.latitude || ""}`, //attendance.lat,
-        long: `${row?.locationData?.longitude || ""}`, //attendance.long,
-        date_time: row?.presentDate,
-        status: row?.attendance_status,
-      };
-      return await eventService.updateAttendance(data);
-    } else {
-      const data = {
-        user_id: row.id,
-        context_id: row?.event_id,
-        context: "events",
-        lat: `${row?.locationData?.latitude || ""}`, //attendance.lat,
-        long: `${row?.locationData?.longitude || ""}`, //attendance.long,
-        date_time: row?.presentDate,
-        status: row?.attendance_status,
-      };
-      return await attendanceService.createAttendance(data);
+  try {
+    if (row?.event_id) {
+      if (row?.attendance?.id) {
+        const data = {
+          id: row?.attendance?.id,
+          user_id: row?.attendance.user_id,
+          lat: `${row?.locationData?.latitude || ""}`, //attendance.lat,
+          long: `${row?.locationData?.longitude || ""}`, //attendance.long,
+          date_time: row?.presentDate,
+          status: row?.attendance_status,
+        };
+        return await eventService.updateAttendance(data);
+      } else {
+        const data = {
+          user_id: row.id,
+          context_id: row?.event_id,
+          context: "events",
+          lat: `${row?.locationData?.latitude || ""}`, //attendance.lat,
+          long: `${row?.locationData?.longitude || ""}`, //attendance.long,
+          date_time: row?.presentDate,
+          status: row?.attendance_status,
+        };
+        return await attendanceService.createAttendance(data);
+      }
     }
+  } catch (error) {
+    // handle error
+    console.error(error?.message || "error");
   }
 };
 
@@ -197,16 +202,19 @@ const RenderAttendanceColumn = React.memo(({ row }) => {
     setLocationData({ latitude: latitude, longitude: longitude });
   };
 
-  React.useEffect(async () => {
-    const newAttendance = row?.attendances?.find((e) => {
-      const format = "YYYY-MM-DD";
-      return (
-        moment(e.date_time).format(format) ===
-        moment(row.presentDate).format(format)
-      );
-    });
-    setAttendance(newAttendance);
-    await getLocation();
+  React.useEffect(() => {
+    const fetchAttendance = async () => {
+      const newAttendance = row?.attendances?.find((e) => {
+        const format = "YYYY-MM-DD";
+        return (
+          moment(e.date_time).format(format) ===
+          moment(row.presentDate).format(format)
+        );
+      });
+      setAttendance(newAttendance);
+      await getLocation();
+    };
+    fetchAttendance();
   }, [row]);
 
   const onSwitchToggle = async (row) => {
