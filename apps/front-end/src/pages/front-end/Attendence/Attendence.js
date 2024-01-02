@@ -191,8 +191,6 @@ const RenderAttendanceColumn = React.memo(({ row }) => {
       navigator.geolocation.getCurrentPosition(successCallback, (e) => {
         console.log(e);
       });
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
   const successCallback = (position) => {
@@ -363,8 +361,6 @@ export default function Attendence({ footerLinks }) {
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
   const successCallback = (position) => {
