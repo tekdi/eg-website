@@ -209,6 +209,7 @@
   "CAMP_LEAVE": "Camp leave",
   "CAMP_LOCATION": "Camp Location",
   "CAMP_LOCATION_ADDRESS": "Camp Location",
+  "CAMP_NAME": "Camp Name",
   "CAMP_OTHER_PLAN": "Oh! So we won't be able to meet you today",
   "CAMP_PERMISSION": "Permission from Camp Property Owner",
   "CAMP_PROFILE": "Camp Profile",
@@ -389,6 +390,7 @@
   "DO_YOU_OWN_A_MOBILE_PHONE": "Do you have a personal smartphone ?",
   "DOCUMENT": "Document",
   "DOCUMENT_CHECKLIST": "Documents Checklist",
+  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully",
   "DOCUMENT_INSTRUCTION_MESSAGE": "If required documents for enrollment are completed press 'Enrollment Documents Completed' button else to save the current status of documents press 'Save' button",
   "DOCUMENT_VERIFICATION": "Documents Verification",
   "DOCUMENTATION_DETAILS": "Documentation Details",
@@ -1353,6 +1355,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
 }

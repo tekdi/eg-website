@@ -43,10 +43,10 @@
   "Add_AGS_PROFILE": "शिक्षार्थी का प्रोफाइल जोड़ें",
   "ADD_AN_AG": "शिक्षार्थी जोड़ें",
   "ADD_AN_AG_LEARNER": "एक शिक्षार्थी जोड़ें",
-  "ADD_CAMP_PHOTOS": "शिविर फोटो जोड़ें",
+  "ADD_CAMP_PHOTOS": " फोटो जोड़ें",
   "ADD_COMMUNITY_MEMBER": "समुदाय सदस्यों का विवरण जोड़ें",
   "ADD_DETAILS": "विवरण दें",
-  "ADD_EXPERIENCE": "अनुभव जोड़ें",
+  "ADD_EXPERIENCE": "अनुभव जोड़ेंशिविर",
   "ADD_FRONT_VIEW_1": "सामने से पहला फोटो लेकर जोडे ",
   "ADD_FRONT_VIEW_2": "सामने से दुसरा फोटो लेकर जोडे",
   "ADD_FRONT_VIEW_3": "सामने से तीसरा फोटो लेकर जोडे",
@@ -209,6 +209,7 @@
   "CAMP_LEAVE": "शिविर अवकाश",
   "CAMP_LOCATION": "शिविर का स्थान",
   "CAMP_LOCATION_ADDRESS": "शिविर स्थल का पता",
+  "CAMP_NAME": "शिविर का नाम",
   "CAMP_OTHER_PLAN": "ओह! तो हम आपसे आज नहीं  मिल पाएंगे",
   "CAMP_PERMISSION": "शिविर संपत्ति के मालिक से अनुमति",
   "CAMP_PROFILE": "शिविर प्रोफाइल",
@@ -389,6 +390,7 @@
   "DO_YOU_OWN_A_MOBILE_PHONE": "क्या आपके पास स्वयं का मोबाइल फोन है?",
   "DOCUMENT": "दस्तावेज़",
   "DOCUMENT_CHECKLIST": "दस्तावेजों की जांच सूची",
+  "DOCUMENT_COMPLETED": "नामांकन दस्तावेज सफलतापूर्वक पूरे हुए",
   "DOCUMENT_INSTRUCTION_MESSAGE": "नामांकन होने के लिए दस्तावेज पूर्ण होने के स्थिति में, ' नामांकन दस्तावेज़ पूर्ण ' बटन दबाइए। अन्यथा दस्तावेज की वर्तमान स्थिति को सेव करने के लिये ' सेव ' करे बटन दबाइए।",
   "DOCUMENT_VERIFICATION": "दस्तावेज़ वेरिफिकेशन",
   "DOCUMENTATION_DETAILS": "दस्तावेज़ीकरण विवरण",
@@ -1351,6 +1353,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "DOCUMENT_COMPLETED": "नामांकन दस्तावेज सफलतापूर्वक पूरे हुए"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
 }
