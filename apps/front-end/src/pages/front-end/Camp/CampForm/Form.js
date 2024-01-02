@@ -145,18 +145,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  React.useEffect(() => {
-    let isMounted = true;
-    const fetchEnumData = async () => {
-      const qData = await enumRegistryService.listOfEnum();
-      if (isMounted) setEnumData(qData);
-    };
-    fetchEnumData();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   React.useEffect(async () => {
     const facilitiesData = await enumData?.data?.CAMP_PROPERTY_FACILITIES;
     if (step === "edit_property_facilities") {
@@ -185,12 +173,21 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, [step, campDetails]);
 
   React.useLayoutEffect(() => {
+    let isMounted = true;
     const fetchGeolocationData = async () => {
       const qData = await geolocationRegistryService.getStates();
       setGeolocationData(qData);
     };
 
+    const fetchEnumData = async () => {
+      const qData = await enumRegistryService.listOfEnum();
+      if (isMounted) setEnumData(qData);
+    };
     fetchGeolocationData();
+    fetchEnumData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // update schema
