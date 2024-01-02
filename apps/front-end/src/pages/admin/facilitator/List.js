@@ -113,9 +113,9 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-
   const [schema, setSchema] = React.useState();
   const [filter, setFilter] = React.useState({});
+  const previousDistrictLength = React.useRef(filter?.district?.length);
 
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setFacilitaorStatus] = React.useState();
@@ -131,7 +131,8 @@ export default function List({ footerLinks, userTokenInfo }) {
       const data = await enumRegistryService.listOfEnum();
       setEnumOptions(data?.data ? data?.data : {});
 
-      const getQualification = await facilitatorRegistryService.getQualificationAll();
+      const getQualification =
+        await facilitatorRegistryService.getQualificationAll();
       let newSchema = getOptions(schemat, {
         key: "qualificationIds",
         arr: getQualification,
@@ -172,27 +173,41 @@ export default function List({ footerLinks, userTokenInfo }) {
         setSchema(newSchema);
       }
     };
-    fetchBlocks();
-  }, [filter?.district]);
+
+    // Check if the length of districts has changed
+    if (filter?.district?.length !== previousDistrictLength.current) {
+      fetchBlocks();
+      previousDistrictLength.current = filter?.district?.length;
+    }
+  }, [filter?.district, schema, geolocationRegistryService]);
+
+  const fetchFilteredData = async () => {
+    const result = await facilitatorRegistryService.filter({
+      ...filter,
+      limit: filter.limit || 10,
+    });
+
+    setData(result.data?.data);
+    setPaginationTotalRows(result?.data?.totalCount || 0);
+  };
 
   React.useEffect(() => {
-    const fetchFilteredData = async () => {
-      const result = await facilitatorRegistryService.filter({
-        ...filter,
-        limit: filter.limit || 10,
-      });
-
-      setData(result.data?.data);
-      setPaginationTotalRows(result?.data?.totalCount || 0);
-    };
-
     fetchFilteredData();
   }, [filter]);
 
-  const setFilterObject = React.useCallback((data) => {
-    setFilter(data);
-    setQueryParameters(data);
-  }, []);
+  const setFilterObject = React.useCallback(
+    (data) => {
+      setFilter((prevFilter) => {
+        if (prevFilter.length > 0) {
+          return prevFilter;
+        } else {
+          return data;
+        }
+      });
+      setQueryParameters(data);
+    },
+    [setFilter, setQueryParameters]
+  );
 
   React.useEffect(() => {
     const arr = ["district", "block", "qualificationIds", "work_experience"];
@@ -201,20 +216,36 @@ export default function List({ footerLinks, userTokenInfo }) {
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = React.useCallback(async (data) => {
-    const { district, qualificationIds, work_experience, block } = data?.formData || {};
-    setFilterObject({
-      ...filter,
-      ...(district && district?.length > 0 ? { district } : {}),
-      ...(qualificationIds && qualificationIds?.length > 0 ? { qualificationIds } : {}),
-      ...(work_experience && work_experience?.length > 0 ? { work_experience } : {}),
-      ...(block && block?.length > 0 ? { block } : {}),
-    });
-  }, [filter, setFilterObject]);
+  const onChange = React.useCallback(
+    async (data) => {
+      const { district, qualificationIds, work_experience, block } =
+        data?.formData || {};
+
+      if (
+        (district.length ||
+          qualificationIds.length ||
+          work_experience.length ||
+          block.length) > 0
+      ) {
+        setFilterObject({
+          ...filter,
+          ...(district && district?.length > 0 ? { district } : {}),
+          ...(qualificationIds && qualificationIds?.length > 0
+            ? { qualificationIds }
+            : {}),
+          ...(work_experience && work_experience?.length > 0
+            ? { work_experience }
+            : {}),
+          ...(block && block?.length > 0 ? { block } : {}),
+        });
+      }
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = React.useCallback(() => {
     setFilter({});
-    setFilterObject({});
+    setFilterObject([]);
   }, [setFilterObject]);
 
   const [modal, setModal] = React.useState(false);
@@ -222,10 +253,13 @@ export default function List({ footerLinks, userTokenInfo }) {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback((e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-  }, [filter]);
-  
+  const handleSearch = React.useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+
   const debouncedHandleSearch = React.useCallback(
     debounce(handleSearch, 1000),
     []
@@ -392,7 +426,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                   onChange={onChange}
                   validator={validator}
                   formData={filter}
-                 
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
@@ -423,5 +456,3 @@ export default function List({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
-
-
