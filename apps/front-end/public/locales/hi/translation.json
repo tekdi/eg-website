@@ -736,8 +736,8 @@
   "LEARNING_ACTIVITIES_SUBJECT_CONTENT_FACILITATION": "विषय सामग्री सुविधा",
   "LEARNING_LEVEL_OF_LEARNER": "शिक्षार्थी का सीखने का स्तर",
   "LEARNING_MOTIVATION": "सीखने की प्रेरणा",
-  "LESSON": "पाठ्यक्रम",
-  "LESSON_LIST": "पाठ्यक्रम सूची",
+  "LESSON": "सत्र",
+  "LESSON_LIST": "सत्र सूची",
   "LETS_START_TODAYS_CAMP": "चलिये आज का कैंप शुरू करें!.",
   "LETTER_RECOMMENDATION_BOSS": "मेरे बॉस से सिफारिश का पत्र",
   "LIVELIHOOD_AWARENESS": "आजीविका जागरूकता",
@@ -1177,8 +1177,8 @@
   "SUPPORT_IN_PROBLEM_SOLVING": "समस्या समाधान करने में ",
   "SUPPORT_IN_READING_WRITING": "पढ़ने-लिखने में मदद",
   "SUPPORT_TO_STUDY_ONLINE": "ऑनलाइन कैसे पढ़ा जाए",
-  "SYLLABUS_COMPLETED": "पाठ्यक्रम पूरा हो गया",
-  "SYLLABUS_INCOMPLETED": "पाठ्यक्रम आधा पूरा हुआ",
+  "SYLLABUS_COMPLETED": "सत्र पूरा हो गया",
+  "SYLLABUS_INCOMPLETED": "सत्र अंशिक पूरा हुआ",
   "TAKE_A_PHOTO": "फोटो खींचें",
   "TAKE_ANOTHER_PHOTO": "एक और फोटो लें",
   "TAKE_PHOTO": "फोटो लें",
@@ -1351,5 +1351,6 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "DOCUMENT_COMPLETED": "नामांकन दस्तावेज सफलतापूर्वक पूरे हुए"
 }

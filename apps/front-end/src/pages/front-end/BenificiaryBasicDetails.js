@@ -75,12 +75,7 @@ export default function BenificiaryBasicDetails() {
         <VStack px="16px" space="24px">
           <ProfilePhoto
             isProfileEdit={true}
-            editLink={
-              benificiary?.program_beneficiaries?.status !==
-              "enrolled_ip_verified"
-                ? edit
-                : !edit
-            }
+            editLink={edit}
             profile_photo_1={benificiary?.profile_photo_1}
             profile_photo_2={benificiary?.profile_photo_2}
             profile_photo_3={benificiary?.profile_photo_3}

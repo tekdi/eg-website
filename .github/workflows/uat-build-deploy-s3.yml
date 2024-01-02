@@ -13,9 +13,12 @@ defaults:
 
 jobs:
   build:
-    name: Build Deploy to UAT S3 Bucket
+    name: Build Deploy To UAT S3
     environment: QA
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: List contents
         run: |
@@ -28,17 +31,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.0.0
-
-      - name: Install AWS CLI
-        run: |
-          sudo DEBIAN_FRONTEND=noninteractive apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y awscli
-
-      - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region ${{ secrets.AWS_S3_BUCKET_REGION }}
           
       - name: Install deps, and build
         run: |
@@ -60,61 +52,25 @@ jobs:
         run: |
           sh ./scripts/pack-prod-build.sh
 
-      - name: List contents
+      - name: List Contents in prod-build
         run: |
-          ls -lha
+          ls -R $GITHUB_WORKSPACE/prod-build
 
-#       - name: Deploy
-#         uses: reggionick/s3-deploy@v3
-#         with:
-#           folder: build
-#           bucket: ${{ secrets.S3_BUCKET }}
-#           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
-#           dist-id: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
-#           invalidation: /*
-#           delete-removed: true
-#           no-cache: true
-#           private: true
-#           filesToInclude: prod-build/*
+      ## Deploy to S3, Invalidate Cloudfront Cache
+      - name: Deploy to S3, Invalidate Cloudfront Cache
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: prod-build
+          bucket: ${{ secrets.AWS_S3_BUCKET }}
+          bucket-region: ${{ secrets.AWS_S3_BUCKET_REGION }}
+          dist-id: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+          invalidation: /*
+          delete-removed: true
+          # no-cache: true
+          private: true
+          files-to-include: '{.*/**,**}'
 
-      ### Invalidate Cloudfront
-      - name: Cloudfront Invalidation
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
-          PATHS: '/*'
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      ### S3 sync
-      - name: Deploy to S3 Bucket
-        run: |
-          aws s3 sync ./prod-build/ s3://${{ secrets.AWS_S3_BUCKET }}
-
-      ### S3 sync
-      # - name: S3 Sync
-      #   uses: jakejarvis/s3-sync-action@v0.5.1
-      #   with:
-      #     args: --acl public-read --follow-symlinks --delete
-      #   env:
-      #     AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-      #     SOURCE_DIR: prod-build
-
-      ### Invalidate Cloudfront
-      - name: Cloudfront Invalidation
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
-          PATHS: '/*'
-          AWS_REGION: ${{ secrets.AWS_S3_BUCKET_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      ### Notify on Slack
+      ## Notify on Slack
       - name: Notify on Slack channel
         uses: iRoachie/slack-github-actions@v2.3.2
         env:
