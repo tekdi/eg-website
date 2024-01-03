@@ -7,7 +7,6 @@ import {
   Layout,
   campService,
   enumRegistryService,
-  facilitatorRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import {
@@ -23,14 +22,14 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function CampDashboard({ footerLinks }) {
+export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(true);
   const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
   const [campList, setCampList] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState();
-  const [communityLength, setCommunityLength] = React.useState();
+  const [communityLength, setCommunityLength] = React.useState(0);
   const [ipStatus, setIpStatus] = React.useState();
   const [modal, setModal] = React.useState(false);
   const [campId, setCampId] = React.useState("");
@@ -40,13 +39,15 @@ export default function CampDashboard({ footerLinks }) {
     const result = await campService.campNonRegisteredUser();
     const campList = await campService.campList();
     const enums = await enumRegistryService.listOfEnum();
-    const ip_user_info = await facilitatorRegistryService.getInfo();
-    const getData = await benificiaryRegistoryService.getCommunityReferences({
-      context: "community.user",
-    });
-
-    setCommunityLength(getData?.data?.community_response?.length || 0);
-    setIpStatus(ip_user_info?.program_faciltators?.status);
+    if (campList?.data?.camps?.length === 0) {
+      const getData = await benificiaryRegistoryService.getCommunityReferences({
+        context: "community.user",
+      });
+      setCommunityLength(getData?.data?.community_response?.length || 0);
+    } else {
+      setCommunityLength(2);
+    }
+    setIpStatus(userTokenInfo?.authUser?.program_faciltators?.status);
     setEnumOptions(enums?.data || {});
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
@@ -80,9 +81,6 @@ export default function CampDashboard({ footerLinks }) {
                       <AdminTypo.H4 color="textMaroonColor.400">
                         {`${nonRegisteredUser?.length} `}
                         {t("UNMAPPED_LEARNERS")}
-                      </AdminTypo.H4>
-                      <AdminTypo.H4 color="textMaroonColor.400">
-                        {t("LEARNERS")}
                       </AdminTypo.H4>
                     </VStack>
                     <Center>
@@ -244,6 +242,7 @@ export default function CampDashboard({ footerLinks }) {
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen
+              loading="lazy"
             ></iframe>
           </HStack>
         </VStack>

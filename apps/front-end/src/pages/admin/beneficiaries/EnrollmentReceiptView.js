@@ -77,7 +77,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
   const submit = React.useCallback(
     async (status) => {
-      setIsButtonLoading(true);
       if (checkValidation()) {
         const data = await benificiaryRegistoryService.verifyEnrollment({
           user_id: id,
@@ -408,8 +407,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             </HStack>
             <HStack space="4">
               <AdminTypo.Successbutton
+                isLoading={isButtonLoading}
                 isDisabled={
-                  isButtonLoading ||
                   reason?.enrollment_details === "no" ||
                   reason?.learner_enrollment_details === "no"
                 }
@@ -417,20 +416,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               >
                 {t("FACILITATOR_STATUS_VERIFY")}
               </AdminTypo.Successbutton>
-              {/* <AdminTypo.Dangerbutton
-                mx={5}
-                isDisabled={
-                  reason?.enrollment_details === "yes" &&
-                  reason?.learner_enrollment_details === "yes"
-                }
-                onPress={(e) => {
-                  if (checkValidation()) {
-                    setOpenModal("pending");
-                  }
-                }}
-              >
-                {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-              </AdminTypo.Dangerbutton> */}
               <AdminTypo.Secondarybutton
                 isLoading={isButtonLoading}
                 isDisabled={
