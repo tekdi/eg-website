@@ -195,7 +195,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
-  const [isStatus, isSetStatus] = React.useState();
+  const [isStatus, setIsStatus] = React.useState();
 
   React.useEffect(() => {
     const getStatusLabel = () => {
@@ -206,7 +206,7 @@ export default function AgAdminProfile({ footerLinks }) {
       return statusLabel;
     };
     const statusLabel = getStatusLabel();
-    isSetStatus(statusLabel);
+    setIsStatus(statusLabel);
   }, [data]);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
