@@ -44,6 +44,8 @@ function Table({
 
   const navigate = useNavigate();
 
+  const pagination = [10, 15, 25, 50, 100];
+
   const columns = React.useCallback(
     (t, navigate) => [
       {
@@ -209,13 +211,13 @@ function Table({
             facilitaorStatus.map((item) => {
               return (
                 <AdminTypo.H6
-                  key={"table"}
+                  key={item?.id}
                   color={
                     filter?.status == t(item?.status)
                       ? "textMaroonColor.600"
                       : ""
                   }
-                  bold={filter?.status == t(item?.status) ? true : false}
+                  bold={filter?.status == t(item?.status)}
                   cursor={"pointer"}
                   mx={3}
                   onPress={() => {
@@ -251,11 +253,10 @@ function Table({
         persistTableHead
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-        paginationPerPage={filter?.limit ? filter?.limit : 15}
+        paginationRowsPerPageOptions={pagination}
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        paginationDefaultPage={filter?.page}
+        paginationDefaultPage={filter?.page || 1}
         highlightOnHover
         onChangeRowsPerPage={React.useCallback(
           (e) => {
