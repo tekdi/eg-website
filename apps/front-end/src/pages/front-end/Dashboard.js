@@ -134,6 +134,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     try {
       const randomizedDoId = await handleRandomise();
       navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
+      navigate(0);
     } catch (error) {
       console.error("Error handling randomization:", error);
     }
