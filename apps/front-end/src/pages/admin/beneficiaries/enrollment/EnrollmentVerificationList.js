@@ -103,7 +103,7 @@ const columns = (t, navigate, filter) => [
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.program_beneficiaries?.id,
+    selector: (row) => row?.program_beneficiaries?.facilitator_user?.id,
     // width: "100px",
   },
   {
@@ -211,7 +211,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   };
 
   const handleSearch = (e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -261,7 +261,6 @@ function EnrollmentVerificationList({ footerLinks }) {
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
           onChange={debouncedHandleSearch}
-
         />
       </HStack>
       <HStack>
