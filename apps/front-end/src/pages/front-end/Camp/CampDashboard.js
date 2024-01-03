@@ -82,9 +82,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                         {`${nonRegisteredUser?.length} `}
                         {t("UNMAPPED_LEARNERS")}
                       </AdminTypo.H4>
-                      <AdminTypo.H4 color="textMaroonColor.400">
-                        {t("LEARNERS")}
-                      </AdminTypo.H4>
                     </VStack>
                     <Center>
                       {nonRegisteredUser.length > 0 && (

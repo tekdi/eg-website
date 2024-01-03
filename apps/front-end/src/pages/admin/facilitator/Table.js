@@ -211,11 +211,11 @@ function Table({
             facilitaorStatus.map((item) => {
               return (
                 <AdminTypo.H5
-                  key={"table"}
+                  key={item?.id}
                   color={
                     filter?.status == t(item?.status) ? "blueText.400" : ""
                   }
-                  bold={filter?.status == t(item?.status) ? true : false}
+                  bold={filter?.status == t(item?.status)}
                   cursor={"pointer"}
                   mx={3}
                   onPress={() => {
