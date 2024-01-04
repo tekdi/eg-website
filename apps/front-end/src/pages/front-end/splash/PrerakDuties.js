@@ -81,7 +81,6 @@ function PrerakDuties(props) {
     let data = page - 1;
     if (data === 0) {
       setPage(data.toString());
-      // navigate(`/facilitator-self-onboarding/${id}`);
     } else {
       setPage(data.toString());
     }
