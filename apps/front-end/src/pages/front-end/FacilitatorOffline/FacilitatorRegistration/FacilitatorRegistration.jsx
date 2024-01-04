@@ -362,15 +362,18 @@ const FacilitatorRegistration = () => {
               firstName: {
                 type: "string",
                 title: "FIRST_NAME",
+                regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
               },
               lastName: {
                 type: "string",
                 title: "LAST_NAME",
+                regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
               },
               mobile: {
                 label: "HOW_CAN_CONTACT_YOU",
                 type: "number",
                 title: "MOBILE_NUMBER",
+                format: "MobileNumber",
               },
             },
           }}
