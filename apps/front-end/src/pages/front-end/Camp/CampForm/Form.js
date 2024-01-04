@@ -144,14 +144,19 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+    } catch (error) {
+      // Handle errors appropriately
+      console.error("Error fetching data:", error);
+    }
+  };
+
   React.useEffect(() => {
     let isMounted = true;
-    const fetchEnumData = async () => {
-      const data = await enumRegistryService.listOfEnum();
-      if (isMounted) setEnumOptions(data?.data ? data?.data : {});
-    };
-
-    fetchEnumData();
+    fetchData();
 
     return () => {
       isMounted = false;
