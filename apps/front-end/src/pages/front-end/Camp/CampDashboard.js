@@ -9,6 +9,7 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
+import AadhaarNumberValidation from "component/AadhaarNumberValidation";
 import {
   HStack,
   VStack,
@@ -52,6 +53,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
+    console.log("aaaa", AadhaarNumberValidation({ aadhaar: "388272245549" }));
   }, []);
 
   return (

@@ -648,6 +648,7 @@
   "INTERVIEW": "Interview",
   "INTERVIEW_CONDUCTED": "Interview Conducted",
   "INTERVIEW_DETAILS": "Interview Details",
+  "INVALID_AADHAAR": "This is invalid Aadhaar number, Please enter a valid Aadhaar number",
   "INVALID_INVITATION_URL": "Invalid url, Please Ask your IP to resend the invitation link",
   "INVALID_USERNAME_PASSWORD_MESSAGE": "Invalid username and password",
   "INVITATION_LINK": "Invitation Link",
