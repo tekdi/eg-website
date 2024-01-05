@@ -31,7 +31,6 @@ export default function TableView({ footerLinks }) {
       _appBar={{
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _footer={{ menues: footerLinks }}
     >
