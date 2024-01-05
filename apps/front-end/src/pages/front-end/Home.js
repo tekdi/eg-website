@@ -34,16 +34,37 @@ function Home({ userTokenInfo, pageInfo }) {
         setCountLoad(1);
       }
       if (countLoad == 1) {
+        setLoading(true);
         //do page load first operation
-        if (searchParams.get("org_id")) {
-          setId(searchParams.get("org_id"));
+        // ...async operations
+        if (
+          searchParams.get("org_id") &&
+          searchParams.get("cohort_id") &&
+          searchParams.get("program_id")
+        ) {
+          //check link is valid or not
+          const data = await facilitatorRegistryService.checkValidLink({
+            program_id: parseInt(searchParams.get("program_id")),
+            organisation_id: parseInt(searchParams.get("org_id")),
+            academic_year_id: parseInt(searchParams.get("cohort_id")),
+          });
+          if (!data?.isExist) {
+            setPage("login");
+          }
+          //assign orgid, cohortid, program id
+          if (searchParams.get("org_id")) {
+            setId(searchParams.get("org_id"));
+          }
+          if (searchParams.get("cohort_id")) {
+            setCohortId(searchParams.get("cohort_id"));
+          }
+          if (searchParams.get("program_id")) {
+            setProgramId(searchParams.get("program_id"));
+          }
+        } else {
+          setPage("login");
         }
-        if (searchParams.get("cohort_id")) {
-          setCohortId(searchParams.get("cohort_id"));
-        }
-        if (searchParams.get("program_id")) {
-          setProgramId(searchParams.get("program_id"));
-        }
+        setLoading(false);
         //end do page load first operation
         setCountLoad(2);
       } else if (countLoad == 2) {
@@ -57,6 +78,7 @@ function Home({ userTokenInfo, pageInfo }) {
     async function fetchData() {
       // ...async operations
       if (id !== "") {
+        setLoading(true);
         if (userTokenInfo) {
           const fa_data = userTokenInfo.authUser;
           localStorage.setItem("profile_url", fa_data?.documents?.[0]?.name);
@@ -87,6 +109,7 @@ function Home({ userTokenInfo, pageInfo }) {
     async function fetchData() {
       // ...async operations
       if (cohortId !== "") {
+        setLoading(true);
         const data = await facilitatorRegistryService.getCohort({ cohortId });
         setCohortData(data);
         if (!data?.academic_year_name) {
@@ -101,6 +124,7 @@ function Home({ userTokenInfo, pageInfo }) {
     async function fetchData() {
       // ...async operations
       if (programId !== "") {
+        setLoading(true);
         const data = await facilitatorRegistryService.getProgram({ programId });
         setProgramData(data[0]);
         if (!data[0]?.program_name) {

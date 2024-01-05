@@ -33,6 +33,8 @@ import {
   getOptions,
   getOnboardingURLData,
   setOnboardingMobile,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -306,11 +308,15 @@ export default function App({ facilitator, ip, onClick }) {
 
   const formSubmitCreate = async (formData) => {
     setLoading(true);
-    const result = await facilitatorRegistryService.register({
-      ...formData,
-      mobile: `${formData.mobile}`,
-      parent_ip: ip?.id,
-    });
+    const result = await facilitatorRegistryService.register(
+      {
+        ...formData,
+        mobile: `${formData.mobile}`,
+        parent_ip: ip?.id,
+      },
+      programData?.program_id,
+      cohortData?.academic_year_id
+    );
     setLoading(false);
     return result;
   };
@@ -771,6 +777,8 @@ export default function App({ facilitator, ip, onClick }) {
               setErrors(newErrors);
             } else {
               if (data?.username && data?.password) {
+                await removeOnboardingURLData();
+                await removeOnboardingMobile();
                 setCredentials(data);
               }
             }
