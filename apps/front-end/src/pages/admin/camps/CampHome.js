@@ -95,7 +95,7 @@ const columns = (navigate) => [
   },
 ];
 export default function CampHome({ footerLinks, userTokenInfo }) {
-  const [filter, setFilter] = React.useState({});
+  const [filter, setFilter] = React.useState({ limit: 10 });
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
@@ -227,16 +227,23 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 facilitator={userTokenInfo?.authUser}
                 pagination
                 paginationTotalRows={paginationTotalRows}
+                paginationDefaultPage={filter?.page || 1}
                 paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
                 defaultSortAsc
                 paginationServer
                 data={data}
-                onChangeRowsPerPage={(e) => {
-                  setFilter({ ...filter, limit: e?.toString() });
-                }}
-                onChangePage={(e) => {
-                  setFilter({ ...filter, page: e?.toString() });
-                }}
+                onChangeRowsPerPage={React.useCallback(
+                  (e) => {
+                    setFilter({ ...filter, limit: e, page: 1 });
+                  },
+                  [setFilter, filter]
+                )}
+                onChangePage={React.useCallback(
+                  (e) => {
+                    setFilter({ ...filter, page: e });
+                  },
+                  [setFilter, filter]
+                )}
                 onRowClicked={handleRowClick}
                 dense
                 highlightOnHover
