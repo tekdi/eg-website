@@ -617,7 +617,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}
-                // facilitaorStatus={facilitaorStatus}
                 paginationTotalRows={paginationTotalRows}
                 data={data}
                 loading={loading}
