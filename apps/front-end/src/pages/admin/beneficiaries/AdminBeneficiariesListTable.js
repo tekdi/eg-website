@@ -222,6 +222,8 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         pagination
         paginationServer
         paginationTotalRows={paginationTotalRows}
+        paginationDefaultPage={filter?.page || 1}
+        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         onChangeRowsPerPage={React.useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
