@@ -28,7 +28,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 
-
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
   const constantSchema = properties[page];
@@ -409,8 +408,6 @@ export default function App() {
     return false;
   };
 
-
-
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
@@ -574,7 +571,6 @@ export default function App() {
           lang,
           setLang,
           _box: { bg: "white", shadow: "appBarShadow" },
-          _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
         }}
         _page={{ _scollView: { bg: "formBg.500" } }}
       >
@@ -598,7 +594,6 @@ export default function App() {
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
