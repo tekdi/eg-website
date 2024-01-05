@@ -207,8 +207,9 @@
   "CAMP_INITIATED": "Camp Initiated",
   "CAMP_KIT_MATERIAL_DETAILS": "Kit Material Details",
   "CAMP_LEAVE": "Camp leave",
-  "CAMP_LOCATION_ADDRESS": "Camp Location",
   "CAMP_LOCATION": "Camp Location",
+  "CAMP_LOCATION_ADDRESS": "Camp Location",
+  "CAMP_NAME": "Camp Name",
   "CAMP_OTHER_PLAN": "Oh! So we won't be able to meet you today",
   "CAMP_PERMISSION": "Permission from Camp Property Owner",
   "CAMP_PROFILE": "Camp Profile",
@@ -334,6 +335,8 @@
   "CONFIDENCE_LEVEL": "Confidence Level",
   "CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "CONFIRM": "Confirm",
+  "CONFIRMATION": "Confirmation",
+  "CONFIRMATION_MESSAGE": "You are about to End Camp?",
   "CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL": "Are you confirming the deatils of prerak and OKYC details are correct, When you click on confirm button the details of Prerak(First, Middle, Last Name,Date of Birth, Gender) are replaced by OKYC details ",
   "CONGRATULATIONS_YOU_ARE_SELECTED_FOR_THE_INTERVIEW": "Congratulations you are selected for the interview!",
   "CONGRATULATIONS_YOURE_SHORTLISTED_FOR_THE_ORIENTATION": "Congratulations you're shortlisted for the orientation!",
@@ -1383,5 +1386,6 @@
   "selected_for_training": "Selected For Training",
   "selected_for_onboarding": "Selected For Onboarding",
   "selected_prerak": "Selected Prerak",
-  "rusticate": "Rusticate"
+  "rusticate": "Rusticate",
+  "SELECT_YOUR_COHORT": "Select Your Cohort"
 }

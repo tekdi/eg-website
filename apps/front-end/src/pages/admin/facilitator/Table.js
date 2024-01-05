@@ -44,6 +44,8 @@ function Table({
 
   const navigate = useNavigate();
 
+  const pagination = [10, 15, 25, 50, 100];
+
   const columns = React.useCallback(
     (t, navigate) => [
       {
@@ -230,11 +232,10 @@ function Table({
         persistTableHead
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-        paginationPerPage={filter?.limit ? filter?.limit : 15}
+        paginationRowsPerPageOptions={pagination}
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        paginationDefaultPage={filter?.page}
+        paginationDefaultPage={filter?.page || 1}
         highlightOnHover
         onChangeRowsPerPage={React.useCallback(
           (e) => {

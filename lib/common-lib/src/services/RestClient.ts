@@ -46,7 +46,7 @@ export async function update(url: string, body: any, headers: any = {}) {
   })
 }
 
-export async function distory(url: string, body: any, headers: any = {}) {
+export async function destroy(url: string, body: any, headers: any = {}) {
   let commonHeader: any = await addCommonHeader()
   return await axios.delete(url, {
     headers: {

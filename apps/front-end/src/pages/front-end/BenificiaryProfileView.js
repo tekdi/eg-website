@@ -188,7 +188,7 @@ export default function BenificiaryProfileView(props) {
       _appBar={{
         name: t("BENEFICIARY_PROFILE"),
         onPressBackButton: (e) => {
-          navigate(-1);
+          navigate("/beneficiary/list");
         },
       }}
       loading={loading}
