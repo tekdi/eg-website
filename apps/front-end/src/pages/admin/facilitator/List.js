@@ -529,7 +529,6 @@ export default function List({ footerLinks, userTokenInfo }) {
                 borderRightWidth: "2px",
               }}
             >
-              <HStack ref={ref}></HStack>
               <ScrollView
                 maxH={
                   Height -
