@@ -1,5 +1,4 @@
 import { FrontEndTypo, Layout, t } from "@shiksha/common-lib";
-import { get, set } from "idb-keyval";
 import {
   VStack,
   Text,
@@ -39,6 +38,7 @@ const stylesheet = {
     lineHeight: "26px",
     color: "#3F8BF1",
     textDecoration: "underline",
+    marginTop: "5px",
   },
   image: {},
   buttonStyle: {
@@ -124,52 +124,8 @@ const FacilitatorRegistration = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
   const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+  const [formData, setFormData] = React.useState({});
   const [page, setPage] = React.useState(0);
-
-  const [basicDetails, setBasicDetails] = React.useState({
-    firstName: "",
-    lastName: "",
-    mobile: "",
-  });
-
-  const [uidVerification, setUIDVerification] = useState({
-    aadharName: "",
-  });
-
-  const [otpVerification, setOtpVerification] = useState({
-    mobile: "",
-    otp: "",
-  });
-
-  const handleAadharScreen = async () => {
-    try {
-      await set("aadhar_verification", uidVerification);
-    } catch (error) {
-      console.error("Error storing data in IndexedDB:", error);
-    }
-    setPage((prevPage) => prevPage + 1);
-    handleNextScreen("enterBasicDetails");
-  };
-
-  const handleBasicDetailsScreen = async () => {
-    try {
-      await set("basicDetails", basicDetails);
-    } catch (error) {
-      console.error("Error storing data in IndexedDB:", error);
-    }
-    setPage((prevPage) => prevPage + 1);
-    handleNextScreen("contactDetails");
-  };
-
-  const handleOtpVerificationScreen = async () => {
-    try {
-      await set("otp_verification", otpVerification);
-    } catch (error) {
-      console.error("Error storing data in IndexedDB:", error);
-    }
-    setPage((prevPage) => prevPage + 1);
-    handleNextScreen("chooseLangauge");
-  };
 
   const handleInputChange = (value) => {
     setMobileNumber(value);
@@ -181,7 +137,26 @@ const FacilitatorRegistration = () => {
     navigate(`/offline/facilitator-self-onboarding/${screenName}`);
   };
 
-  //screen1
+  const screensOrder = [
+    "chooseLangauge",
+    "introductionOfProject",
+    "prerakDuties",
+    "idVerification",
+    "enterBasicDetails",
+    "contactDetails",
+  ];
+  const handlePreviousScreen = () => {
+    const currentIndex = screensOrder.indexOf(activeScreenName);
+    const previousIndex = currentIndex - 1;
+
+    if (previousIndex >= 0) {
+      const previousScreen = screensOrder[previousIndex];
+      setActiveScreenName(previousScreen);
+      navigate(`/offline/facilitator-self-onboarding/${previousScreen}`);
+    } else {
+      console.log("previous screen");
+    }
+  };
 
   const chooseLangauge = () => {
     return (
@@ -225,7 +200,7 @@ const FacilitatorRegistration = () => {
   const introductionOfProject = () => (
     <>
       <VStack flex={3} space={5}>
-        <Stack>
+        <Stack marginTop={2}>
           <FrontEndTypo.H2 bold color="textMaroonColor.400" textAlign="center">
             {t("PROJECT_PRAGATI")}
           </FrontEndTypo.H2>
@@ -288,14 +263,12 @@ const FacilitatorRegistration = () => {
   const idVerification = () => (
     <>
       <VStack>
-        <FrontEndTypo.H1 bold>
-          {t("तीन सरल चरणों में साइन अप करें!")}
-        </FrontEndTypo.H1>
+        <FrontEndTypo.H1 bold>{t("SIGN_UP_IN_THREE_STEPS")}</FrontEndTypo.H1>
         <FrontEndTypo.H3
           bold
           style={{ fontWeight: 600, color: "#790000", marginTop: "20px" }}
         >
-          {t("आधार कार्ड विवरण")}
+          {t("AADHAAR_CARD_DETAILS")}
         </FrontEndTypo.H3>{" "}
         <Image
           alignSelf={"center"}
@@ -305,9 +278,8 @@ const FacilitatorRegistration = () => {
           size="2xl"
         />{" "}
         <Form
-          formData={uidVerification}
-          onChange={(e) => setUIDVerification(e.formData)}
-          onSubmit={handleAadharScreen}
+          formData={formData}
+          onSubmit={(data) => setFormData(data.formData)}
           {...{ templates, FieldTemplate }}
           validator={validator}
           schema={{
@@ -321,13 +293,14 @@ const FacilitatorRegistration = () => {
             },
           }}
         >
-          <FrontEndTypo.H3 marginTop="20px">
-            {t("ENTER_THE_12_DIGIT_AADHAAR_CARD")}
-          </FrontEndTypo.H3>
+          <Stack marginTop={2}>
+            <FrontEndTypo.H3>{t("AADHAR_SHOULD_12_DIGIT")}</FrontEndTypo.H3>
+          </Stack>
 
           <FrontEndTypo.Primarybutton
             style={{ background: "#FF0000", space: "20px", top: "35px" }}
-            onPress={handleAadharScreen}
+            onClick={(e) => setPage(page + 1)}
+            onPress={() => handleNextScreen("enterBasicDetails")}
             // isDisabled={!mobileNumber}
           >
             {t("NEXT")}
@@ -339,10 +312,7 @@ const FacilitatorRegistration = () => {
   const enterBasicDetails = () => (
     <>
       <VStack flex={3} space={5}>
-        <FrontEndTypo.H1 bold>
-          {" "}
-          {t("तीन सरल चरणों में साइन अप करें!")}
-        </FrontEndTypo.H1>
+        <FrontEndTypo.H1 bold> {t("SIGN_UP_IN_THREE_STEPS")}</FrontEndTypo.H1>
         <FrontEndTypo.H1 bold fontWeight={600} color={"#790000"}>
           {t("TELL_US_YOUR_NAME")}
         </FrontEndTypo.H1>{" "}
@@ -350,37 +320,44 @@ const FacilitatorRegistration = () => {
           {t("AS_PER_AADHAAR")}
         </FrontEndTypo.H3>
         <Form
-          formData={basicDetails}
-          onChange={(e) => setBasicDetails(e.formData)}
-          onSubmit={handleBasicDetailsScreen}
+          formData={formData}
+          onSubmit={(data) => setFormData(data.formData)}
+          // widgets={{ Test2 }}
           {...{ templates, FieldTemplate }}
           validator={validator}
           schema={{
+            // title: "A registration form",
+            // description: "A simple form example.",
             type: "object",
             required: ["firstName", "lastName"],
+
             properties: {
               firstName: {
                 type: "string",
                 title: "FIRST_NAME",
-                regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
               },
               lastName: {
                 type: "string",
                 title: "LAST_NAME",
-                regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
               },
               mobile: {
                 label: "HOW_CAN_CONTACT_YOU",
                 type: "number",
                 title: "MOBILE_NUMBER",
-                format: "MobileNumber",
               },
             },
           }}
+
+          // onSubmit={({ formData }) => {
+          //   console.log("Form data submitted:", formData);
+          //   handleNextScreen("contactDetails");
+          // }}
         >
           <FrontEndTypo.Primarybutton
             style={{ background: "#FF0000", space: "20px", marginTop: "35px" }}
-            onPress={handleBasicDetailsScreen}
+            onClick={(e) => setPage(page + 1)}
+            onPress={() => handleNextScreen("contactDetails")}
+            // isDisabled={!mobileNumber}
           >
             {t("NEXT")}
           </FrontEndTypo.Primarybutton>
@@ -396,9 +373,8 @@ const FacilitatorRegistration = () => {
         </FrontEndTypo.H1>
         <Text color={"#790000"}>{t("PLEASE_ENTER_OTP")}</Text>
         <Form
-          formData={otpVerification}
-          onChange={(e) => setOtpVerification(e.formData)}
-          onSubmit={handleOtpVerificationScreen}
+          formData={formData}
+          onSubmit={(data) => setFormData(data.formData)}
           {...{ templates, FieldTemplate }}
           validator={validator}
           schema={{
@@ -429,7 +405,7 @@ const FacilitatorRegistration = () => {
 
           <FrontEndTypo.Primarybutton
             style={{ background: "#FF0000", marginTop: "40%" }}
-            onPress={handleOtpVerificationScreen}
+            onPress={() => handleNextScreen(navigate("/offline/profile/:id"))}
           >
             {t("NEXT")}
           </FrontEndTypo.Primarybutton>
@@ -530,10 +506,9 @@ const FacilitatorRegistration = () => {
           )}
 
           <FrontEndTypo.H3
-            color="blueText.400"
+            color="var(--Gray-3, #828282);"
             my="5"
             underline
-            bold
             onPress={() => handleNextScreen("idVerification")}
           >
             {t("SKIP_TO_APPLY")}
@@ -542,6 +517,7 @@ const FacilitatorRegistration = () => {
       </>
     );
   };
+
   const renderSwitchCase = () => {
     console.log("active screen name", activeScreenName);
     switch (activeScreenName) {
@@ -566,6 +542,7 @@ const FacilitatorRegistration = () => {
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
+        onPressBackButton: (e) => handlePreviousScreen(console.log("hi")),
       }}
     >
       <VStack flex={2} padding={3} space={3}>

@@ -3,6 +3,7 @@ import { Box, HStack, Image, Stack, VStack } from "native-base";
 import React, { useState, useCallback } from "react";
 import validator from "@rjsf/validator-ajv8";
 import { get, set } from "idb-keyval";
+import moment from "moment";
 import {
   widgets,
   templates,
@@ -12,8 +13,6 @@ import {
 } from "../../../../component/BaseInput";
 
 import Form from "@rjsf/core";
-import noConnection from "../../../../assets/images/facilitator-duties/offline/no_connection.png";
-import plugin from "../../../../assets/images/facilitator-duties/offline/plugin.png";
 
 import Steper from "component/Steper";
 import { useNavigate } from "react-router-dom";
@@ -21,31 +20,25 @@ import { useNavigate } from "react-router-dom";
 const FacilitatorOnboarding = () => {
   const [activeScreenName, setActiveScreenName] = useState();
   const [mobileNumber, setMobileNumber] = useState("");
-  //offline/online status
-
-  const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
-  );
   const [previousScreen, setPreviousScreen] = useState(0);
-  const [formData, setFormData] = React.useState({});
   const [page, setPage] = React.useState(0);
+  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
+
+  const [date_of_birth, set_date_of_birth] = useState({
+    dob: "",
+  });
+
+  const [formData, setFormData] = useState({});
+
+  const [formDataContact, setFormDataContact] = useState({});
+
+  const [user_data, setUserData] = useState({
+    // Initialize user_data with any default values if needed
+    date_of_birth: {},
+    formDataContact: {},
+  });
 
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    const online = () => setIsOnline(true);
-    const offline = () => setIsOnline(false);
-
-    window.addEventListener("online", online, false);
-    window.addEventListener("offline", offline, false);
-
-    return () => {
-      window.removeEventListener("online", online);
-      window.removeEventListener("offline", offline);
-    };
-  }, []);
-
-  console.log("check status", isOnline);
 
   const handleInputChange = (value) => {
     setMobileNumber(value);
@@ -59,84 +52,106 @@ const FacilitatorOnboarding = () => {
 
     setPage((prevPage) => {
       const nextPage = prevPage + 1;
-      console.log("Current page:", nextPage);
+      // console.log("Current page:", nextPage);
 
-      console.log("Navigating to:", screenName);
+      // console.log("Navigating to:", screenName);
       navigate(`/offline/profile/${screenName}`);
 
-      console.log("Next page:", nextPage);
+      // console.log("Next page:", nextPage);
 
       return nextPage;
     });
   };
 
-  const handlePreviousScreen = (screenName) => {
-    setPreviousScreen(screenName);
-    navigate(`/offline/profile/${screenName}`);
+  const screensOrder = [
+    "dateOfBirth",
+    "onboardingContactDetails",
+    "onboardingBasicDetails",
+    "voluenteerExperience",
+    "jobExperience",
+    "educationDetails",
+    "otheDetails",
+    "facilitatorProfilePicture",
+  ];
+  const handlePreviousScreen = () => {
+    const currentIndex = screensOrder.indexOf(activeScreenName);
+    const previousIndex = currentIndex - 1;
+
+    if (previousIndex >= 0) {
+      const previousScreen = screensOrder[previousIndex];
+      setActiveScreenName(previousScreen);
+      navigate(`/offline/profile/${previousScreen}`);
+    } else {
+      console.log("previous screen");
+    }
+  };
+
+  const handleDateOfBirth = async () => {
+    try {
+      set_date_of_birth((prevData) => ({
+        ...prevData,
+        date_of_birth: date_of_birth,
+      }));
+      await set("user_data", {
+        ...user_data,
+        date_of_birth: date_of_birth,
+      });
+      setPage((prevPage) => prevPage + 1);
+      handleNextScreen("onboardingContactDetails");
+    } catch (error) {
+      console.error("Error storing data in IndexedDB:", error);
+    }
+  };
+
+  const handleContactDetails = async () => {
+    try {
+      setFormDataContact((prevData) => ({
+        ...prevData,
+        formDataContact: formDataContact,
+      }));
+      await set("user_data", {
+        ...user_data,
+        formDataContact: formDataContact,
+      });
+      setPage((prevPage) => prevPage + 1);
+      handleNextScreen("onboardingBasicDetails");
+    } catch (error) {
+      console.error("Error storing data in IndexedDB:", error);
+    }
   };
 
   //screen1
+
+  React.useEffect(() => {
+    let minYear = moment().subtract("years", 30);
+    let maxYear = moment().subtract("years", 12);
+    setYearsRange([minYear.year(), maxYear.year()]);
+  }, []);
+
   const uiSchema = {
     dob: {
       "ui:widget": "alt-date",
       "ui:options": {
-        yearsRange: "",
+        yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
       },
     },
   };
 
-  const offlineScreen = () => (
-    <>
-      <VStack alignItems={"center"} flex={3} space={6}>
-        <HStack>
-          <Box>
-            <Image
-              source={{
-                uri: plugin,
-              }}
-              alt=""
-              size={"xl"}
-              resizeMode="contain"
-            ></Image>
-          </Box>
-          <Box>
-            <Image
-              source={{
-                uri: noConnection,
-              }}
-              alt=""
-              size={"2xl"}
-              resizeMode="contain"
-            ></Image>
-          </Box>
-        </HStack>
-        <FrontEndTypo.H1>
-          {t("इस पृष्ठ तक पहुँचने के लिए इंटरनेट से पुनः कनेक्ट करें!")}
-        </FrontEndTypo.H1>
-        <FrontEndTypo.Primarybutton
-          style={{ background: "#FF0000", top: "40px", width: "100%" }}
-          onPress={() => handleNextScreen("dateOfBirth")}
-        >
-          {t("NEXT")}
-        </FrontEndTypo.Primarybutton>
-      </VStack>
-    </>
-  );
-
   const dateOfBirth = () => (
     <>
       <VStack flex={3} space={6}>
         <Stack space={3}>
           <Form
-            formData={formData}
-            onSubmit={(data) => setFormData(data.formData)}
+            formData={date_of_birth}
+            onChange={(e) => set_date_of_birth(e.formData)}
+            onSubmit={handleDateOfBirth}
             {...{ templates, FieldTemplate }}
             validator={validator}
             schema={{
               type: "object",
-              required: ["aadharName"],
+              required: ["dob"],
               properties: {
                 dob: {
                   type: "string",
@@ -150,7 +165,7 @@ const FacilitatorOnboarding = () => {
           >
             <FrontEndTypo.Primarybutton
               style={{ background: "#FF0000", top: "40px" }}
-              onPress={() => handleNextScreen("onboardingContactDetails")}
+              onPress={handleDateOfBirth}
             >
               {t("NEXT")}
             </FrontEndTypo.Primarybutton>
@@ -163,8 +178,9 @@ const FacilitatorOnboarding = () => {
     <>
       <VStack flex={3} space={6}>
         <Form
-          formData={formData}
-          onSubmit={(data) => setFormData(data.formData)}
+          formData={formDataContact}
+          onChange={(e) => setFormDataContact(e.formData)}
+          onSubmit={handleContactDetails}
           widgets={{ RadioBtn, CustomR }}
           {...{ templates, FieldTemplate, widgets }}
           validator={validator}
@@ -206,16 +222,16 @@ const FacilitatorOnboarding = () => {
             },
           }}
         >
-          <VStack space={3}>
+          <VStack space={7}>
             <FrontEndTypo.Primarybutton
               style={{ background: "#FF0000", top: "50px" }}
-              onPress={() => handleNextScreen("onboardingBasicDetails")}
+              onPress={handleContactDetails}
             >
               {t("SAVE_AND_NEXT")}
             </FrontEndTypo.Primarybutton>
             <FrontEndTypo.Secondarybutton
-              style={{ top: "50px" }}
-              onPress={() => handleNextScreen("profile")}
+              style={{ top: "40px", bottom: "20px" }}
+              // onPress={handleContactDetails}
             >
               {t("SAVE_AND_PROFILE")}
             </FrontEndTypo.Secondarybutton>
@@ -287,7 +303,7 @@ const FacilitatorOnboarding = () => {
             },
           }}
         >
-          <VStack space={3}>
+          <VStack space={4}>
             <FrontEndTypo.Primarybutton
               style={{ background: "#FF0000", top: "50px" }}
               onPress={() => handleNextScreen("voluenteerExperience")}
@@ -329,7 +345,7 @@ const FacilitatorOnboarding = () => {
                   vo_experience: {
                     type: "array",
                     items: {
-                      title: "VOLUNTEER_EXPERIENCE",
+                      // title: "VOLUNTEER_EXPERIENCE",
                       required: [
                         "role_title",
                         "organization",
@@ -337,18 +353,23 @@ const FacilitatorOnboarding = () => {
                       ],
                       properties: {
                         role_title: {
-                          title: "JOB_TITLE",
+                          title: "VOLUNTEER_TITLE",
                           type: "string",
                         },
                         organization: {
-                          title: "COMPANY_NAME",
+                          title: "COMPANY_AND_ORGANIZATION_NAME",
                           type: "string",
                         },
+                        add_description: {
+                          title: "THE_ENROLLMENT_DETAILS",
+                          type: "string",
+                        },
+
                         experience_in_years: {
                           label: "EXPERIENCE_IN_YEARS",
                           type: "string",
                           format: "CustomR",
-                          grid: 3,
+                          grid: 5,
                           enumNames: ["<=1", "2", "3", "4", "5+"],
                           enum: ["1", "2", "3", "4", "5"],
                         },
@@ -363,8 +384,7 @@ const FacilitatorOnboarding = () => {
                         description: {
                           title: "DESCRIPTION",
                           type: "string",
-                          format: "Textarea",
-                          rows: 2,
+                          // format: "Textarea",
                         },
                       },
                     },
@@ -515,7 +535,12 @@ const FacilitatorOnboarding = () => {
                 type: ["string", "number"],
                 format: "CustomR",
                 grid: 2,
-                enumNames: ["NTT", "D.El.Ed", "DROPOUT_REASONS_OTHER", "DONTS"],
+                enumNames: [
+                  "NTT",
+                  "D.El.Ed",
+                  "DROPOUT_REASONS_OTHER",
+                  "NO_ONE",
+                ],
                 enum: ["ntt", "ded", "other", "no"],
               },
             },
@@ -647,10 +672,8 @@ const FacilitatorOnboarding = () => {
         return otheDetails();
       case "facilitatorProfilePicture":
         return facilitatorProfilePicture();
-      case "offlineScreen":
-        return offlineScreen();
       default:
-        return isOnline ? dateOfBirth() : offlineScreen();
+        return dateOfBirth();
     }
   };
 
@@ -658,25 +681,20 @@ const FacilitatorOnboarding = () => {
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
-        onPressBackButton: (e) => handlePreviousScreen("profile"),
+        onPressBackButton: (e) => handlePreviousScreen(),
       }}
     >
-      {/* {onlyIconsShow === "backBtn" ? "" : ""} */}
-      {isOnline ? (
-        <VStack flex={2} padding={3} space={3}>
-          <Steper
-            type={"circle"}
-            steps={[
-              { value: "0", label: t("BASIC_DETAILS") },
-              { value: "3", label: t("स्वयंसेवक, नौकरी एवं योग्यता विवरण") },
-              { value: "6", label: t("OTHER_DETAILS") },
-            ]}
-            progress={page === "upload" ? 10 : page}
-          />
-        </VStack>
-      ) : (
-        ""
-      )}
+      <VStack flex={2} padding={3} space={3}>
+        <Steper
+          type={"circle"}
+          steps={[
+            { value: "0", label: t("BASIC_DETAILS") },
+            { value: "3", label: t("VOLUNTEER_JOB_QUALIFICATION") },
+            { value: "6", label: t("OTHER_DETAILS") },
+          ]}
+          progress={page === "upload" ? 10 : page}
+        />
+      </VStack>
 
       <VStack flex={2} padding={3} space={3}>
         {renderSwitchCase()}
