@@ -203,47 +203,26 @@ function Table({
 
   return (
     <VStack>
-      <ScrollView horizontal={true} mb="2">
-        <HStack pb="2">
-          {Array?.isArray(facilitaorStatus) &&
-            facilitaorStatus.map((item) => {
-              return (
-                <AdminTypo.H6
-                  key={"table"}
-                  color={
-                    filter?.status == t(item?.status)
-                      ? "textMaroonColor.600"
-                      : ""
-                  }
-                  bold={filter?.status == t(item?.status) ? true : false}
-                  cursor={"pointer"}
-                  mx={3}
-                  onPress={() => {
-                    setFilter({ ...filter, status: item?.status, page: 1 });
-                  }}
-                >
-                  {item.status === "all" ? (
-                    <AdminTypo.H6
-                      bold={filter?.status == t(item?.status) ? true : false}
-                    >
-                      {t("ALL")}
-                    </AdminTypo.H6>
-                  ) : (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"FACILITATOR_STATUS"}
-                      enumOptionValue={item?.status}
-                      enumApiData={enumOptions}
-                    />
-                  )}
-                  {filter?.status == t(item?.status)
-                    ? `(${paginationTotalRows})` + " "
-                    : " "}
-                </AdminTypo.H6>
-              );
-            })}
-        </HStack>
-      </ScrollView>
+      <VStack p={2} pt="0">
+        <AdminTypo.H5 underline bold color="blueText.400">
+          {filter?.status === undefined ? (
+            t("ALL") + `(${paginationTotalRows})`
+          ) : filter?.status?.[0] === "all" ? (
+            <AdminTypo.H4 bold>
+              {t("ALL") + `(${paginationTotalRows})`}
+            </AdminTypo.H4>
+          ) : (
+            filter?.status
+              ?.filter((item) => item)
+              .map((item) => t(item).toLowerCase())
+              .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+              .join(" , ")
+            //+
+            // `(${paginationTotalRows})` +
+            // " "
+          )}
+        </AdminTypo.H5>
+      </VStack>
       <DataTable
         customStyles={tableCustomStyles}
         columns={columnsMemoized}

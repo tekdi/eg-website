@@ -13,6 +13,7 @@ import {
   Modal,
   Select,
   CheckIcon,
+  Stack,
 } from "native-base";
 import {
   getSelectedAcademicYear,
@@ -25,7 +26,6 @@ import {
   enumRegistryService,
   setQueryParameters,
   urlData,
-  CustomRadio,
   getOptions,
   cohortService,
 } from "@shiksha/common-lib";
@@ -48,10 +48,12 @@ const uiSchema = {
     "ui:widget": MultiCheck,
     "ui:options": {},
   },
-  work_experience: {
-    "ui:widget": CustomRadio,
-  },
+
   block: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+  status: {
     "ui:widget": MultiCheck,
     "ui:options": {},
   },
@@ -78,8 +80,11 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [programData, setProgramData] = React.useState([]);
   const [academicData, setAcademicData] = React.useState();
   const [academicYear, setAcademicYear] = React.useState();
-  const [states, setStates] = React.useState([]);
+  const [isDrawerOpen, setDrawerOpen] = React.useState(false);
 
+  const handleOpenButtonClick = () => {
+    setDrawerOpen((prevState) => !prevState);
+  };
   React.useEffect(async () => {
     //getting required id's
     const result = await cohortService.getProgramYear();
@@ -89,6 +94,15 @@ export default function List({ footerLinks, userTokenInfo }) {
     let academic_Id = await getSelectedAcademicYear();
     setAcademicYear(academic_Id?.academic_year_id);
   }, [modal]);
+
+  // const statusWiseCount = React.useCallback(async () => {
+  //   let newSchema;
+
+  // }, []);
+
+  // React.useEffect(() => {
+  //   statusWiseCount();
+  // }, []);
 
   const schemat = {
     type: "object",
@@ -153,22 +167,16 @@ export default function List({ footerLinks, userTokenInfo }) {
         },
         uniqueItems: true,
       },
-      work_experience: {
+      status: {
         type: "array",
-        title: t("WORK_EXPERIENCES"),
-        _hstack: { maxH: 130, overflowY: "scroll" },
+        title: "STATUS",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
         items: {
           type: "string",
-          enumNames: [
-            "All",
-            "0 yrs",
-            "1 yrs",
-            "2 yrs",
-            "3 yrs",
-            "4 yrs",
-            "5 yrs",
-          ],
-          enum: ["All", "0", "1", "2", "3", "4", "5"],
         },
         uniqueItems: true,
       },
@@ -190,20 +198,23 @@ export default function List({ footerLinks, userTokenInfo }) {
         title: "name",
         value: "id",
       });
+      newSchema = getOptions(schemat, {
+        key: "status",
+        arr: result,
+        title: "status",
+        value: "status",
+      });
 
       const getState = await cohortService.getProgramYear();
-
       newSchema = getOptions(newSchema, {
         key: "state",
         arr: getState?.data,
         title: "state_name",
         value: "state_name",
       });
-
       setSchema(newSchema);
       setLoading(false);
     };
-
     fetchData();
   }, []);
 
@@ -265,7 +276,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(() => {
-    const arr = ["district", "block", "qualificationIds", "work_experience"];
+    const arr = ["district", "block", "qualificationIds", "status"];
     const data = urlData(arr);
 
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
@@ -278,7 +289,7 @@ export default function List({ footerLinks, userTokenInfo }) {
         district: newDistrict,
         block: newBlock,
         qualificationIds: newQualificationIds,
-        work_experience: newWork_experience,
+        status: newStatus,
       } = data?.formData || {};
       const { state, district, block, ...remainData } = filter || {};
       setFilterObject({
@@ -293,9 +304,7 @@ export default function List({ footerLinks, userTokenInfo }) {
         ...(newQualificationIds && newQualificationIds?.length > 0
           ? { qualificationIds: newQualificationIds }
           : {}),
-        ...(newWork_experience && newWork_experience?.length > 0
-          ? { work_experience: newWork_experience }
-          : {}),
+        ...(newStatus && newStatus?.length > 0 ? { status: newStatus } : {}),
       });
     },
     [filter, setFilterObject]
@@ -508,61 +517,117 @@ export default function List({ footerLinks, userTokenInfo }) {
           </Modal>
         </HStack>
       </HStack>
-      <HStack>
-        <Box
-          flex={[2, 2, 1]}
-          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
-        >
-          <HStack ref={ref}></HStack>
-          <ScrollView
-            maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
-            }
+      <HStack ml="-1">
+        <Stack style={{ position: "relative", overflowX: "hidden" }}>
+          <Stack
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "0",
+              transition: "left 0.3s ease",
+              width: "250px",
+              height: "100%",
+              background: "white",
+              zIndex: 1,
+            }}
           >
-            <VStack space={3} py="5">
-              <HStack
-                alignItems="center"
-                justifyContent="space-between"
-                borderBottomWidth="2"
-                borderColor="#eee"
-                flexWrap="wrap"
+            <Box
+              flex={[2, 2, 1]}
+              style={{
+                borderRightColor: "dividerColor",
+                borderRightWidth: "2px",
+              }}
+            >
+              <HStack ref={ref}></HStack>
+              <ScrollView
+                maxH={
+                  Height -
+                  (refAppBar?.clientHeight + ref?.current?.clientHeight)
+                }
               >
-                <HStack>
-                  <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-                </HStack>
-                <Button variant="link" pt="3" onPress={clearFilter}>
-                  <AdminTypo.H6 color="blueText.400" underline bold>
-                    {t("CLEAR_FILTER")}
-                  </AdminTypo.H6>
-                </Button>
-              </HStack>
-              <Box p={[0, 0, 3]} pr="3">
-                <Form
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  onChange={onChange}
-                  validator={validator}
-                  formData={filter}
-                >
-                  <Button display={"none"} type="submit"></Button>
-                </Form>
-              </Box>
-            </VStack>
-          </ScrollView>
-        </Box>
+                <VStack space={3} py="5">
+                  <HStack
+                    alignItems="center"
+                    justifyContent="space-between"
+                    borderBottomWidth="2"
+                    borderColor="#eee"
+                    flexWrap="wrap"
+                  >
+                    <HStack>
+                      {/* <IconByName isDisabled name="FilterLineIcon" /> */}
+                      <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+                    </HStack>
+                    <Button variant="link" pt="3" onPress={clearFilter}>
+                      <AdminTypo.H6 color="blueText.400" underline bold>
+                        {t("CLEAR_FILTER")}
+                      </AdminTypo.H6>
+                    </Button>
+                  </HStack>
+                  <Box p={[0, 0, 3]} pr="3">
+                    <Form
+                      schema={schema}
+                      uiSchema={uiSchema}
+                      onChange={onChange}
+                      validator={validator}
+                      formData={filter}
+                    >
+                      <Button display={"none"} type="submit"></Button>
+                    </Form>
+                  </Box>
+                </VStack>
+              </ScrollView>
+            </Box>
+          </Stack>
+
+          <Stack
+            style={{
+              marginLeft: isDrawerOpen ? "250px" : "0",
+              transition: "margin-left 0.3s ease",
+            }}
+          />
+        </Stack>
+        <VStack
+          ml={"-1"}
+          rounded={"xs"}
+          height={"50px"}
+          bg={
+            filter?.district ||
+            filter?.state ||
+            filter?.block ||
+            filter?.qualificationIds ||
+            filter?.status
+              ? "textRed.400"
+              : "#E0E0E0"
+          }
+          justifyContent="center"
+          onClick={handleOpenButtonClick}
+        >
+          <IconByName
+            name={isDrawerOpen ? "ArrowLeftSLineIcon" : "FilterLineIcon"}
+            color={
+              filter?.state ||
+              filter?.district ||
+              filter?.block ||
+              filter?.qualificationIds ||
+              filter?.status
+                ? "white"
+                : "black"
+            }
+            _icon={{ size: "30px" }}
+          />
+        </VStack>
+
         <Box flex={[5, 5, 4]}>
           <ScrollView
             maxH={Height - refAppBar?.clientHeight}
             minH={Height - refAppBar?.clientHeight}
           >
-            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+            <Box roundedBottom={"2xl"} pl="0" py={6} px={4} mb={5}>
               <Table
-                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}
-                facilitaorStatus={facilitaorStatus}
+                // facilitaorStatus={facilitaorStatus}
                 paginationTotalRows={paginationTotalRows}
                 data={data}
                 loading={loading}
