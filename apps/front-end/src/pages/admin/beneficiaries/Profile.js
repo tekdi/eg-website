@@ -195,19 +195,6 @@ export default function AgAdminProfile({ footerLinks }) {
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
-  const [isStatus, setIsStatus] = React.useState();
-
-  React.useEffect(() => {
-    const getStatusLabel = () => {
-      let statusLabel = `${data?.program_beneficiaries?.status}`;
-      if (data?.is_duplicate === "yes") {
-        statusLabel += ` (${t("BENEFICIARY_STATUS_DUPLICATED")})`;
-      }
-      return statusLabel;
-    };
-    const statusLabel = getStatusLabel();
-    setIsStatus(statusLabel);
-  }, [data]);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -560,17 +547,11 @@ export default function AgAdminProfile({ footerLinks }) {
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
-              <HStack
-                bg="badgeColor.400"
-                rounded={"md"}
-                p="2"
-                alignItems="center"
-                space="2"
-              >
-                <AdminTypo.H5 color="textGreyColor.600" bold>
-                  {isStatus}
-                </AdminTypo.H5>
-              </HStack>
+              <ChipStatus
+                is_duplicate={data?.is_duplicate}
+                is_deactivated={data?.is_deactivated}
+                status={data?.program_beneficiaries?.status}
+              />
               <HStack
                 bg="badgeColor.400"
                 rounded={"md"}
