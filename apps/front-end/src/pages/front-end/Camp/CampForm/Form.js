@@ -44,6 +44,8 @@ export default function App({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [isEdit] = React.useState(true);
   const [campDetails, setCampDetails] = React.useState();
+  const [enumData, setEnumData] = React.useState(null);
+  const [geolocationData, setGeolocationData] = React.useState(null);
 
   const getLocation = async () => {
     setLoading(true);
@@ -144,8 +146,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(async () => {
-    const qData = await enumRegistryService.listOfEnum();
-    const facilitiesData = qData?.data?.CAMP_PROPERTY_FACILITIES;
+    const facilitiesData = await enumData?.data?.CAMP_PROPERTY_FACILITIES;
     if (step === "edit_property_facilities") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -171,25 +172,40 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   }, [step, campDetails]);
 
+  React.useLayoutEffect(() => {
+    let isMounted = true;
+    const fetchGeolocationData = async () => {
+      const qData = await geolocationRegistryService.getStates();
+      setGeolocationData(qData);
+    };
+
+    const fetchEnumData = async () => {
+      const qData = await enumRegistryService.listOfEnum();
+      if (isMounted) setEnumData(qData);
+    };
+    fetchGeolocationData();
+    fetchEnumData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // update schema
   React.useEffect(async () => {
     let newSchema = schema;
     if (schema?.["properties"]?.["property_type"]) {
-      const qData = await enumRegistryService.listOfEnum();
       newSchema = getOptions(newSchema, {
         key: "property_type",
-        arr: qData?.data?.CAMP_PROPERTY_TYPE,
+        arr: enumData?.data?.CAMP_PROPERTY_TYPE,
         title: "title",
         value: "value",
       });
     }
     if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
-
       if (schema?.["properties"]?.["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
-          arr: qData?.states,
+          arr: geolocationData?.states,
           title: "state_name",
           value: "state_name",
         });
@@ -201,7 +217,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         block: formData?.block,
       });
     }
-  }, [page, formData]);
+  }, [enumData, page, formData]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {

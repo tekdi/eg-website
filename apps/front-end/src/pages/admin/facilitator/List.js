@@ -57,10 +57,8 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
   const ref = React.useRef(null);
-
   const [schema, setSchema] = React.useState();
   const [filter, setFilter] = React.useState({});
-
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setFacilitaorStatus] = React.useState();
   const [modal, setModal] = React.useState(false);
@@ -177,8 +175,6 @@ export default function List({ footerLinks, userTokenInfo }) {
 
     fetchData();
   }, []);
-
-  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     const fetchBlocks = async () => {

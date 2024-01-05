@@ -7,7 +7,7 @@ import {
   CardComponent,
   IconByName,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Alert, Image, Box } from "native-base";
+import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const CampExecutionEnd = ({ todaysActivity, facilitator, learnerCount }) => {
   const { t } = useTranslation();
   const { id, step } = useParams();
   const [disable, setDisable] = React.useState(true);
-
+  const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [sessionList, setSessionList] = React.useState(false);
   const [learnerAttendanceCount, setLearnerAttendanceCount] =
@@ -154,10 +154,31 @@ const CampExecutionEnd = ({ todaysActivity, facilitator, learnerCount }) => {
             )}
           </HStack>
         </FrontEndTypo.Secondarybutton>
-        <FrontEndTypo.Primarybutton isDisabled={disable} onPress={endCamp}>
+        <FrontEndTypo.Primarybutton
+          isDisabled={disable}
+          onPress={() => setOpenModal(true)}
+        >
           {t("END_CAMP")}
         </FrontEndTypo.Primarybutton>
       </VStack>
+      <Modal isOpen={openModal} size="xs">
+        <Modal.Content>
+          <Modal.Header alignItems={"center"}>{t("CONFIRMATION")}</Modal.Header>
+          <Modal.Body alignItems={"center"} p="5">
+            <FrontEndTypo.H3>{t("CONFIRMATION_MESSAGE")}</FrontEndTypo.H3>
+          </Modal.Body>
+          <Modal.Footer alignSelf={"center"}>
+            <HStack space={4}>
+              <FrontEndTypo.Secondarybutton onPress={() => setOpenModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton onPress={endCamp}>
+                {t("CONFIRM")}
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 };
