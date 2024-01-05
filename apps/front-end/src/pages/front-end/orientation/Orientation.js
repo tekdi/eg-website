@@ -13,6 +13,7 @@ import {
   setSelectedAcademicYear,
   setSelectedProgramId,
   jsonParse,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -26,7 +27,6 @@ import Form from "@rjsf/core";
 import orientationPopupSchema from "./orientationPopupSchema";
 import validator from "@rjsf/validator-ajv8";
 import PropTypes from "prop-types";
-
 import {
   HFieldTemplate,
   templates,
@@ -72,6 +72,13 @@ export default function Orientation({ footerLinks }) {
   const [programData, setProgramData] = React.useState([]);
 
   React.useEffect(() => {
+    const fetchData = async () => {
+      let academic_Id = await getSelectedAcademicYear();
+      if (academic_Id) {
+        setModal(false);
+      }
+    };
+    fetchData();
     getEventLists();
   }, []);
 
@@ -724,8 +731,4 @@ export default function Orientation({ footerLinks }) {
 
 Orientation.propTypes = {
   footerLinks: PropTypes.any,
-};
-
-SelectButton.propTypes = {
-  required: PropTypes.any,
 };
