@@ -95,15 +95,6 @@ export default function List({ footerLinks, userTokenInfo }) {
     setAcademicYear(academic_Id?.academic_year_id);
   }, [modal]);
 
-  // const statusWiseCount = React.useCallback(async () => {
-  //   let newSchema;
-
-  // }, []);
-
-  // React.useEffect(() => {
-  //   statusWiseCount();
-  // }, []);
-
   const schemat = {
     type: "object",
     properties: {
