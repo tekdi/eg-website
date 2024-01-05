@@ -1,5 +1,5 @@
 import { IconByName } from "@shiksha/common-lib";
-import { Box, HStack, Stack, Text, VStack } from "native-base";
+import { Box, HStack, Stack, Text, VStack, useTheme } from "native-base";
 import React from "react";
 
 const Circal = ({ text, color, size, ...props }) => (
@@ -30,8 +30,9 @@ export default function Steper({
   const [per, setPer] = React.useState(0);
   const [stepPer, setStepPer] = React.useState(0);
   const [stage, setStage] = React.useState({});
-  const ncColor = cColor ? cColor : "#084B82";
-  const nrColor = rColor ? rColor : "#CAE9FF";
+  const { colors } = useTheme();
+  const ncColor = cColor ? cColor : colors?.["textMaroonColor"]?.["400"];
+  const nrColor = rColor ? rColor : colors?.["textMaroonColor"]?.["500"];
 
   React.useEffect(() => {
     if (steps?.length > 0) {

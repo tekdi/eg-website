@@ -1,0 +1,77 @@
+name: Deploy to DEV S3
+on:
+  push:
+    branches:
+      - release-1.7.0
+
+defaults:
+  run:
+    working-directory: .
+    
+jobs:
+  build:
+    name: Build Deploy To DEV S3
+    environment: DEV
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: List contents
+        run: |
+          ls -lha
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.0.0
+          
+      - name: Install deps, and build
+        run: |
+          yarn install
+          yarn workspace @shiksha/common-lib build
+          yarn install
+          yarn build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+          REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
+          REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
+
+      - name: List contents
+        run: |
+          ls -lha
+
+      - name: Create Lerna Bundles
+        run: |
+          sh ./scripts/pack-prod-build.sh
+
+      - name: List Contents in prod-build
+        run: |
+          ls -R $GITHUB_WORKSPACE/prod-build
+
+      ## Deploy to S3, Invalidate Cloudfront Cache
+      - name: Deploy to S3, Invalidate Cloudfront Cache
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: prod-build
+          bucket: ${{ secrets.AWS_S3_BUCKET }}
+          bucket-region: ${{ secrets.AWS_S3_BUCKET_REGION }}
+          dist-id: ${{ secrets.AWS_DISTRIBUTION_PRODUCTION }}
+          invalidation: /*
+          delete-removed: true
+          # no-cache: true
+          private: true
+          files-to-include: '{.*/**,**}'
+
+      ## Notify on Slack
+      - name: Notify on Slack channel
+        uses: iRoachie/slack-github-actions@v2.3.2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+        if: ${{ always() }}

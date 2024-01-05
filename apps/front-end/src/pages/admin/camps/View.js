@@ -25,6 +25,7 @@ import {
   Menu,
   Pressable,
   Stack,
+  ScrollView,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -173,8 +174,8 @@ export default function View({ footerLinks }) {
     {
       name: "Id",
       selector: (row) => row?.id,
-      width: "90px",
       wrap: true,
+      width: "90px",
     },
     {
       name: t("ENROLLMENT_NO"),
@@ -221,7 +222,6 @@ export default function View({ footerLinks }) {
       minWidth: "60px",
       wrap: true,
     },
-
     {
       name: t("DISTANCE"),
       selector: (row) => {
@@ -245,7 +245,7 @@ export default function View({ footerLinks }) {
       wrap: true,
     },
     {
-      minWidth: "140px",
+      minWidth: "250px",
       name: t("ACTION"),
       selector: (row) => (
         <Button.Group
@@ -262,7 +262,7 @@ export default function View({ footerLinks }) {
           borderColor="#084B82"
           lineHeight={8}
           _text={{
-            color: "blueText.400",
+            color: "text.400",
             fontSize: "14px",
             fontWeight: "700",
           }}
@@ -270,7 +270,7 @@ export default function View({ footerLinks }) {
           <Button
             background="white"
             _text={{
-              color: "blueText.400",
+              color: "textGreyColor.900",
               fontSize: "14px",
               fontWeight: "700",
             }}
@@ -342,23 +342,21 @@ export default function View({ footerLinks }) {
         )}
         <HStack alignItems={"center"} space="1" pt="3">
           <IconByName name="UserLineIcon" size="md" />
-          <AdminTypo.H1 color="Activatedcolor.400">
-            {t("ALL_CAMPS")}
-          </AdminTypo.H1>
+          <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
             onPress={(e) => navigate(-1)}
           />
-          <AdminTypo.H1
-            color="textGreyColor.800"
+          <AdminTypo.H4
+            bold
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
             enumOptions
           >
             {data?.id}
-          </AdminTypo.H1>
+          </AdminTypo.H4>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -560,7 +558,9 @@ export default function View({ footerLinks }) {
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
           >
-            <DataTable columns={columns(t, navigate)} data={userData} />
+            <ScrollView w={["100%", "100%"]}>
+              <DataTable columns={columns(t, navigate)} data={userData} />
+            </ScrollView>
           </CardComponent>
         </HStack>
         {data?.group?.status !== "inactive" && (
@@ -575,7 +575,7 @@ export default function View({ footerLinks }) {
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
                 <AdminTypo.Secondarybutton
-                  status="info"
+                  status="warning"
                   isDisabled={isButtonLoading}
                   onPress={() => setStatus("change_required")}
                 >

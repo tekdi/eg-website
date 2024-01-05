@@ -13,6 +13,26 @@
   }
 }
 
+#scroll_id {
+  height: 52vh;
+  overflow-y: scroll;
+}
+
+/* Height for devices with a height greater than 900 pixels */
+@media (min-height: 601px) {
+  #scroll_id {
+    height: 62vh;
+    overflow-y: scroll;
+  }
+}
+
+@media (min-height: 800px) {
+  #scroll_id {
+    height: 70vh;
+    overflow-y: scroll;
+  }
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

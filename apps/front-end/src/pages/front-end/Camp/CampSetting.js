@@ -81,11 +81,11 @@ export default function CampSetting({ footerLinks }) {
               {t("PLEASE_INDICATE_SUITABLE_TIME_CAMPING")}
             </FrontEndTypo.H3>
           </VStack>
-          <Alert status="warning" alignItems={"start"}>
-                <HStack alignItems="center" space="2">
-                    <Alert.Icon />
-                    <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
-                </HStack>
+          <Alert status="warning" alignItems={"start"} mt="2">
+            <HStack alignItems="center" space="2">
+              <Alert.Icon />
+              <FrontEndTypo.H3>{t("CAMP_SETTINGS_ALERT")}</FrontEndTypo.H3>
+            </HStack>
           </Alert>
           <HStack
             marginTop={10}
@@ -133,13 +133,22 @@ export default function CampSetting({ footerLinks }) {
             {weeks.map((day, index) => (
               <Pressable
                 key={day}
+                borderWidth="2"
                 onPress={() => handleDayClick(day)}
                 _pressed={{
-                  bg: "green.500",
+                  bg: "textMaroonColor.500",
                   borderWidth: 2,
-                  borderColor: "green.500",
+                  borderColor: "textMaroonColor.500",
                 }}
-                bg={selectedDays?.includes(day) ? "green.500" : "blue.500"}
+                bg={
+                  selectedDays?.includes(day) ? "textMaroonColor.500" : "white"
+                }
+                borderColor={
+                  selectedDays?.includes(day)
+                    ? "textMaroonColor.500"
+                    : "textGreyColor.50"
+                }
+                color={selectedDays?.includes(day) ? "white" : "black"}
                 style={{
                   width: 100,
                   height: 50,
@@ -147,7 +156,6 @@ export default function CampSetting({ footerLinks }) {
                   justifyContent: "center",
                   alignItems: "center",
                   marginTop: "10px",
-                  color: "white",
                 }}
               >
                 {t(day)}

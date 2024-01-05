@@ -132,7 +132,7 @@ export default function BenificiaryEducation() {
                   "reason_of_leaving_education",
                 ])}
                 size="xs"
-                colorScheme="info"
+                colorScheme="textMaroonColor"
               />
             </Box>
             <VStack space="2" paddingTop="5">
@@ -328,7 +328,7 @@ export default function BenificiaryEducation() {
                   "reason_of_leaving_education",
                 ])}
                 size="xs"
-                colorScheme="info"
+                colorScheme="textMaroonColor"
               />
             </Box>
             <VStack space="2" paddingTop="5">

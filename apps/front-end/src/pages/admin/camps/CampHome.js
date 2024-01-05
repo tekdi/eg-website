@@ -27,35 +27,12 @@ import {
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
+  tableCustomStyles,
+  cohortService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
-
-
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-      cursor: "pointer",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
 
 const columns = (navigate) => [
   {
@@ -144,14 +121,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 
   React.useEffect(async () => {
     if (urlFilterApply) {
-      let newFilter = filter;
+      let newfilter = { ...filter, state: filter?.state?.[0] };
       if (filter?.status === "all") {
         const { status, ...dataFilter } = filter || {};
-        console.log({ dataFilter });
-        newFilter = dataFilter;
+        newfilter = { ...dataFilter, state: filter?.state?.[0] };
       }
-
-      const qData = await campService.getCampList(newFilter);
+      const qData = await campService.getCampList(newfilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
@@ -168,7 +143,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       _sidebar={footerLinks}
     >
       <HStack
-        space={[0, 0, "2"]}
+        space={[0, 0, "4"]}
         p="2"
         my="1"
         mb="3"
@@ -178,21 +153,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       >
         <HStack
           justifyContent={"space-between"}
-          space={"4"}
+          space={"6"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space={2}>
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1>{t("ALL_CAMPS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
       </HStack>
       <HStack>
@@ -216,10 +183,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <HStack pb="2">
               {campFilterStatus?.map((item) => {
                 return (
-                  <AdminTypo.H5
+                  <AdminTypo.H6
                     key={"table"}
                     color={
-                      filter?.status == t(item?.status) ? "blueText.400" : ""
+                      filter?.status == t(item?.status)
+                        ? "textMaroonColor.600"
+                        : ""
                     }
                     bold={filter?.status == t(item?.status)}
                     cursor={"pointer"}
@@ -241,7 +210,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     {filter?.status == t(item?.status)
                       ? `(${paginationTotalRows})` + " "
                       : " "}
-                  </AdminTypo.H5>
+                  </AdminTypo.H6>
                 );
               })}
             </HStack>
@@ -252,7 +221,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter(e);
                   setQueryParameters(e);
                 }}
-                customStyles={CustomStyles}
+                customStyles={tableCustomStyles}
                 columns={[...columns(navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
@@ -269,6 +238,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter({ ...filter, page: e?.toString() });
                 }}
                 onRowClicked={handleRowClick}
+                dense
+                highlightOnHover
               />
             </Box>
           </ScrollView>
@@ -283,11 +254,16 @@ export const Filter = ({ filter, setFilter }) => {
   const [getBlocksAll, setGetBlocksAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
   const [facilitator, setFacilitator] = React.useState([]);
+  const [getstatesAll, setStatesAll] = React.useState();
 
   const setFilterObject = (data) => {
-    if (data?.district) {
-      const { district, block } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+    if (data?.state) {
+      const { state, district } = data;
+      setFacilitatorFilter({
+        ...facilitatorFilter,
+        district,
+        state: state?.[0],
+      });
     }
     setFilter(data);
     setQueryParameters(data);
@@ -298,7 +274,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -309,6 +285,21 @@ export const Filter = ({ filter, setFilter }) => {
   const schema = {
     type: "object",
     properties: {
+      state: {
+        type: "array",
+        title: t("STATE"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+        },
+        items: {
+          type: "string",
+          enumNames: getstatesAll?.map((item, i) => item?.state_name),
+          enum: getstatesAll?.map((item, i) => item?.state_name),
+        },
+        uniqueItems: true,
+      },
       district: {
         type: "array",
         title: t("DISTRICT"),
@@ -343,6 +334,10 @@ export const Filter = ({ filter, setFilter }) => {
   };
 
   const uiSchema = {
+    state: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
     district: {
       "ui:widget": MultiCheck,
       "ui:options": {},
@@ -352,13 +347,37 @@ export const Filter = ({ filter, setFilter }) => {
       "ui:options": {},
     },
   };
-  React.useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setGetDistrictsAll(getDistricts?.districts);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const getState = await cohortService.getProgramYear();
+      setStatesAll(getState?.data);
+    };
+    fetchData();
   }, []);
+
+  // React.useEffect(async () => {
+  //   let name = "RAJASTHAN";
+  //   const getDistricts = await geolocationRegistryService.getDistricts({
+  //     name,
+  //   });
+  //   setGetDistrictsAll(getDistricts?.districts);
+  // }, []);
+
+  React.useEffect(async () => {
+    let getDistricts = [];
+    if (filter?.state && filter?.state?.length === 1) {
+      let name = filter?.state?.[0];
+      getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
+      if (Array.isArray(getDistricts?.districts)) {
+        setGetDistrictsAll(getDistricts?.districts);
+      }
+    } else {
+      setGetDistrictsAll([]);
+    }
+  }, [filter?.state]);
 
   React.useEffect(async () => {
     let blockData = [];
@@ -370,19 +389,27 @@ export const Filter = ({ filter, setFilter }) => {
     setGetBlocksAll(blockData);
   }, [filter?.district]);
 
-  const onChange = async (data) => {
-    const { district: newDistrict, block: newBlock } = data?.formData || {};
-    const { district, block, ...remainData } = filter;
-    setFilterObject({
-      ...remainData,
-      ...(newDistrict?.length > 0
-        ? {
-            district: newDistrict,
-            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
-          }
-        : {}),
-    });
-  };
+  const onChange = React.useCallback(
+    async (data) => {
+      const {
+        state: newState,
+        district: newDistrict,
+        block: newBlock,
+      } = data?.formData || {};
+      const { state, district, block, ...remainData } = filter || {};
+      setFilterObject({
+        ...remainData,
+        ...(newState && newState?.length === 1
+          ? {
+              state: newState,
+              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
+          : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = () => {
     setFilter({});
@@ -444,7 +471,6 @@ export const Filter = ({ filter, setFilter }) => {
         placeholder={t("SEARCH")}
         variant="outline"
         onChange={debouncedHandleSearch}
-
       />
       <MultiCheck
         value={filter?.facilitator ? filter?.facilitator : []}

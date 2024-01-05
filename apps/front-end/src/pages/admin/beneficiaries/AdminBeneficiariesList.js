@@ -23,14 +23,14 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   setQueryParameters,
-
   urlData,
+  tableCustomStyles,
+  cohortService,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
-
 
 export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export default function AdminHome({ footerLinks }) {
           shadow="BlueOutlineShadow"
           borderRadius="full"
           borderWidth="1px"
-          borderColor="#084B82"
+          borderColor="blueText.400"
           p="2"
           space={4}
         >
@@ -67,11 +67,32 @@ export default function AdminHome({ footerLinks }) {
     );
   }, []);
 
+  const actiondropDown = (triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack
+          rounded={"full"}
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderRadius="full"
+          borderWidth="1px"
+          borderColor="blueText.400"
+          p="2"
+          space={4}
+        >
+          <AdminTypo.H5>{t("ACTIONS")}</AdminTypo.H5>
+          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  };
+
   React.useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
+      const newfilter = { ...filter, state: filter?.state?.[0] };
       const result = await benificiaryRegistoryService.beneficiariesFilter(
-        filter
+        newfilter
       );
       setData(result.data?.data);
       setPaginationTotalRows(
@@ -88,11 +109,15 @@ export default function AdminHome({ footerLinks }) {
   }, []);
 
   const exportBeneficiaryCSV = React.useCallback(async () => {
-    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
+    const newfilter = { ...filter, state: filter?.state?.[0] };
+
+    await benificiaryRegistoryService.exportBeneficiariesCsv(newfilter);
   }, [filter]);
 
   const exportSubjectCSV = React.useCallback(async () => {
-    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
+    const newfilter = { ...filter, state: filter?.state?.[0] };
+
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(newfilter);
   }, [filter]);
 
   const setMenu = React.useCallback(
@@ -107,7 +132,7 @@ export default function AdminHome({ footerLinks }) {
   );
 
   const handleSearch = (e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 })
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
   const debouncedHandleSearch = React.useCallback(
@@ -122,22 +147,18 @@ export default function AdminHome({ footerLinks }) {
       _sidebar={footerLinks}
     >
       <HStack
-        p="4"
-        space={["4", "0", "0", "4"]}
-        flexWrap={"wrap"}
+        space={[0, 0, "2"]}
+        p="2"
+        my="1"
+        mb="3"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gridGap="2"
         ref={refSubHeader}
       >
-        <HStack justifyContent="space-between" alignItems="center" space={4}>
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1>{t("All_AG_LEARNERS")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
+        <HStack justifyContent="space-between" alignItems="center" space={2}>
+          <IconByName name="GraduationCap" />
+          <AdminTypo.H4 bold>{t("All_AG_LEARNERS")}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}
@@ -155,68 +176,55 @@ export default function AdminHome({ footerLinks }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-
           onChange={debouncedHandleSearch}
         />
-        <HStack alignSelf={"center"} space="2">
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps, t)}
-          >
-            <Menu.Item onPress={(item) => setMenu("export_learner")}>
-              {t("LEARNERS_LIST")}
-            </Menu.Item>
-            <Menu.Item onPress={(item) => setMenu("export_subject")}>
-              {t("LEARNERS_SUBJECT_CSV")}
-            </Menu.Item>
-          </Menu>
-
-          <AdminTypo.Successbutton
-            onPress={() => {
-              navigate("/admin/learners/enrollmentVerificationList");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("ENROLLMENT_VERIFICATION")}
-          </AdminTypo.Successbutton>
-          <AdminTypo.Dangerbutton
-            onPress={() => {
-              navigate("/admin/learners/duplicates");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("RESOLVE_DUPLICATION")}
-          </AdminTypo.Dangerbutton>
-          <AdminTypo.PrimaryButton
-            onPress={() => {
-              navigate("/admin/learners/reassignList");
-            }}
-            rightIcon={
-              <IconByName
-                color="textGreyColor.100"
-                size="10px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("REASSIGN_LEARNERS")}
-          </AdminTypo.PrimaryButton>
+        <HStack>
+          <HStack mr="4">
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => dropDown(triggerProps, t)}
+            >
+              <Menu.Item onPress={(item) => setMenu("export_learner")}>
+                {t("LEARNERS_LIST")}
+              </Menu.Item>
+              <Menu.Item onPress={(item) => setMenu("export_subject")}>
+                {t("LEARNERS_SUBJECT_CSV")}
+              </Menu.Item>
+            </Menu>
+          </HStack>
+          <HStack>
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => actiondropDown(triggerProps, t)}
+            >
+              <Menu.Item
+                onPress={() => {
+                  navigate("/admin/learners/enrollmentVerificationList");
+                }}
+              >
+                {t("ENROLLMENT_VERIFICATION")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate("/admin/learners/duplicates");
+                }}
+              >
+                {t("RESOLVE_DUPLICATION")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate("/admin/learners/reassignList");
+                }}
+              >
+                {t("REASSIGN_LEARNERS")}
+              </Menu.Item>
+            </Menu>
+          </HStack>
         </HStack>
       </HStack>
-      <HStack>
+      <HStack flex={[5, 5, 4]}>
         <Box
           flex={[2, 2, 1]}
           style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
@@ -247,6 +255,7 @@ export default function AdminHome({ footerLinks }) {
           >
             <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
               <Table
+                customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={(e) => {
                   setFilter(e);
@@ -269,6 +278,7 @@ export const Filter = ({ filter, setFilter }) => {
   const [facilitator, setFacilitator] = React.useState([]);
   const [getDistrictsAll, setgetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [getstatesAll, setStatesAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
 
   // facilitator pagination
@@ -276,9 +286,13 @@ export const Filter = ({ filter, setFilter }) => {
 
   const setFilterObject = React.useCallback(
     (data) => {
-      if (data?.district) {
-        const { district } = data;
-        setFacilitatorFilter({ ...facilitatorFilter, district });
+      if (data?.state) {
+        const { state, district } = data;
+        setFacilitatorFilter({
+          ...facilitatorFilter,
+          district,
+          state: state?.[0],
+        });
       }
       setFilter(data);
       setQueryParameters(data);
@@ -290,9 +304,24 @@ export const Filter = ({ filter, setFilter }) => {
     return {
       type: "object",
       properties: {
+        state: {
+          type: "array",
+          title: t("STATE"),
+          grid: 1,
+          _hstack: {
+            maxH: 130,
+            overflowY: "scroll",
+          },
+          items: {
+            type: "string",
+            enumNames: getstatesAll?.map((item, i) => item?.state_name),
+            enum: getstatesAll?.map((item, i) => item?.state_name),
+          },
+          uniqueItems: true,
+        },
         district: {
           type: "array",
-          title: "DISTRICT",
+          title: t("DISTRICT"),
           grid: 1,
           _hstack: {
             maxH: 130,
@@ -307,7 +336,7 @@ export const Filter = ({ filter, setFilter }) => {
         },
         block: {
           type: "array",
-          title: "BLOCKS",
+          title: t("BLOCKS"),
           grid: 1,
           _hstack: {
             maxH: 130,
@@ -322,10 +351,14 @@ export const Filter = ({ filter, setFilter }) => {
         },
       },
     };
-  }, [getDistrictsAll, getBlocksAll]);
+  }, [getDistrictsAll, getBlocksAll, getstatesAll]);
 
   const uiSchema = React.useMemo(() => {
     return {
+      state: {
+        "ui:widget": MultiCheck,
+        "ui:options": {},
+      },
       district: {
         "ui:widget": MultiCheck,
         "ui:options": {},
@@ -337,13 +370,28 @@ export const Filter = ({ filter, setFilter }) => {
     };
   }, []);
 
-  React.useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setgetDistrictsAll(getDistricts?.districts);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const getState = await cohortService.getProgramYear();
+      setStatesAll(getState?.data);
+    };
+    fetchData();
   }, []);
+
+  React.useEffect(async () => {
+    let getDistricts = [];
+    if (filter?.state && filter?.state?.length === 1) {
+      let name = filter?.state?.[0];
+      getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
+      if (Array.isArray(getDistricts?.districts)) {
+        setgetDistrictsAll(getDistricts?.districts);
+      }
+    } else {
+      setgetDistrictsAll([]);
+    }
+  }, [filter?.state]);
 
   React.useEffect(async () => {
     let blockData = [];
@@ -360,9 +408,13 @@ export const Filter = ({ filter, setFilter }) => {
   React.useEffect(() => {
     const facilitatorDetails = async () => {
       let newFilter = {};
-      ["district", "block", "status"].forEach((e) => {
+      ["state", "district", "block", "status"].forEach((e) => {
         if (filter[e]) {
-          newFilter = { ...newFilter, [e]: filter[e] };
+          newFilter = {
+            ...newFilter,
+            [e]: filter[e],
+            state: filter?.state?.[0],
+          };
         }
       });
       const { error, ...result } =
@@ -394,13 +446,18 @@ export const Filter = ({ filter, setFilter }) => {
 
   const onChange = React.useCallback(
     async (data) => {
-      const { district: newDistrict, block: newBlock } = data?.formData || {};
-      const { district, block, ...remainData } = filter || {};
+      const {
+        state: newState,
+        district: newDistrict,
+        block: newBlock,
+      } = data?.formData || {};
+      const { state, district, block, ...remainData } = filter || {};
       setFilterObject({
         ...remainData,
-        ...(newDistrict?.length > 0
+        ...(newState && newState?.length === 1
           ? {
-              district: newDistrict,
+              state: newState,
+              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
               ...(newBlock?.length > 0 ? { block: newBlock } : {}),
             }
           : {}),
@@ -419,7 +476,7 @@ export const Filter = ({ filter, setFilter }) => {
       ...facilitatorFilter,
       search: e.nativeEvent.text,
       page: 1,
-    })
+    });
   };
 
   const debouncedHandlePrerakSearch = React.useCallback(
@@ -482,7 +539,7 @@ export const Filter = ({ filter, setFilter }) => {
           }}
         />
         {isMore && (
-          <Button
+          <AdminTypo.H5
             onPress={(e) =>
               setFacilitatorFilter({
                 ...facilitatorFilter,
@@ -493,9 +550,10 @@ export const Filter = ({ filter, setFilter }) => {
               })
             }
             pr="2"
+            color="textMaroonColor.600"
           >
-            {t("MORE")}
-          </Button>
+            + {t("MORE")}
+          </AdminTypo.H5>
         )}
       </VStack>
     </VStack>

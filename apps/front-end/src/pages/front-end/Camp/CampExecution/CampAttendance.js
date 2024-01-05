@@ -20,7 +20,7 @@ const PRESENT = "present";
 const ABSENT = "absent";
 
 // App
-export default function ConsentForm() {
+export default function CampAttendance({ activityId }) {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
@@ -31,7 +31,6 @@ export default function ConsentForm() {
   const [cameraFile, setCameraFile] = React.useState();
   const [data, setData] = React.useState({});
   const [isEditable, setIsEditable] = React.useState();
-  const [activityId, setActivityId] = React.useState();
   const [randomAttendance, setRandomAttendance] = React.useState(false);
   const [latData, longData] = useLocationData() || [];
   const navigate = useNavigate();
@@ -53,11 +52,8 @@ export default function ConsentForm() {
 
   const getData = async () => {
     const result = await campService.getCampDetails({ id });
-    const getCampExeData = await campService.getcampstatus({ id });
-    const activity_Id = getCampExeData?.data?.id;
-    setActivityId(activity_Id);
     const resultAttendance = await campService.CampAttendance({
-      id: activity_Id,
+      id: activityId,
     });
     let attendances = [];
     if (resultAttendance?.data?.length > 0) {
@@ -158,6 +154,7 @@ export default function ConsentForm() {
         {
           <React.Suspense fallback={<Loading />}>
             <Camera
+              facing={true}
               headerComponent={
                 <VStack bg="black" flex="1" py="2" px="4">
                   <HStack

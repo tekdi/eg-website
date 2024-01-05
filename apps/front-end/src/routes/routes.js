@@ -136,21 +136,11 @@ const FileView = React.lazy(() => import("pages/FileView"));
 const CampExecution = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampExecution")
 );
-const CampExecutionStart = React.lazy(() =>
-  import("pages/front-end/Camp/CampExecution/CampExecutionStart")
-);
-
-const CampAttendance = React.lazy(() =>
-  import("pages/front-end/Camp/Attendace/CampAttendance")
-);
 
 const Attendance = React.lazy(() =>
   import("pages/front-end/Camp/Attendace/Attendance")
 );
 
-const CampTodayActivities = React.lazy(() =>
-  import("pages/front-end/Camp/CampTodayActivities")
-);
 const CampKitMaterialDetails = React.lazy(() =>
   import("pages/front-end/Camp/CampKitMaterialDetails")
 );
@@ -186,7 +176,7 @@ const FacilitatorOnboarding = React.lazy(() =>
 export default [
   { path: "/form", component: Home },
   {
-    path: "/facilitator-self-onboarding/:id",
+    path: "/facilitator-self-onboarding",
     component: Home,
   },
   { path: "/dashboard", component: Dashboard },
@@ -333,20 +323,13 @@ export default [
     component: CommunityView,
   },
   {
-    path: "/camps/:id/attendance",
-    component: CampAttendance,
-  },
-  {
     path: "/camps/:id/settings",
     component: CampSettings,
   },
   { path: "/camps/:id/Campexecution", component: CampExecution },
-  {
-    path: "/camps/:id/campexecutionstart/:activityId",
-    component: CampExecutionStart,
-  },
+  { path: "/camps/:id/Campexecution/:step", component: CampExecution },
+
   { path: "/camps/:id/campotherplans", component: CampOtherPlans },
-  { path: "/camps/:id/activities", component: CampTodayActivities },
   {
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,

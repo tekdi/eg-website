@@ -5,7 +5,6 @@ import {
   tableCustomStyles,
   AdminLayout as Layout,
   attendanceService,
-  calendar,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, Image, VStack } from "native-base";
