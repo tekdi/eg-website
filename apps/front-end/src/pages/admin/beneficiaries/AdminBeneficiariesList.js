@@ -10,7 +10,6 @@ import {
   Button,
   Input,
   Text,
-  Image,
   Menu,
   Pressable,
 } from "native-base";
@@ -25,12 +24,13 @@ import {
   setQueryParameters,
   urlData,
   tableCustomStyles,
-  cohortService,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesListTable";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
@@ -90,9 +90,8 @@ export default function AdminHome({ footerLinks }) {
   React.useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
-      const newfilter = { ...filter, state: filter?.state?.[0] };
       const result = await benificiaryRegistoryService.beneficiariesFilter(
-        newfilter
+        filter
       );
       setData(result.data?.data);
       setPaginationTotalRows(
@@ -109,15 +108,11 @@ export default function AdminHome({ footerLinks }) {
   }, []);
 
   const exportBeneficiaryCSV = React.useCallback(async () => {
-    const newfilter = { ...filter, state: filter?.state?.[0] };
-
-    await benificiaryRegistoryService.exportBeneficiariesCsv(newfilter);
+    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
   }, [filter]);
 
   const exportSubjectCSV = React.useCallback(async () => {
-    const newfilter = { ...filter, state: filter?.state?.[0] };
-
-    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(newfilter);
+    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
   }, [filter]);
 
   const setMenu = React.useCallback(
@@ -276,9 +271,8 @@ export default function AdminHome({ footerLinks }) {
 export const Filter = ({ filter, setFilter }) => {
   const { t } = useTranslation();
   const [facilitator, setFacilitator] = React.useState([]);
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
+  const [getDistrictsAll, setGetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
-  const [getstatesAll, setStatesAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
 
   // facilitator pagination
@@ -286,13 +280,9 @@ export const Filter = ({ filter, setFilter }) => {
 
   const setFilterObject = React.useCallback(
     (data) => {
-      if (data?.state) {
-        const { state, district } = data;
-        setFacilitatorFilter({
-          ...facilitatorFilter,
-          district,
-          state: state?.[0],
-        });
+      if (data?.district) {
+        const { district } = data;
+        setFacilitatorFilter({ ...facilitatorFilter, district });
       }
       setFilter(data);
       setQueryParameters(data);
@@ -304,21 +294,6 @@ export const Filter = ({ filter, setFilter }) => {
     return {
       type: "object",
       properties: {
-        state: {
-          type: "array",
-          title: t("STATE"),
-          grid: 1,
-          _hstack: {
-            maxH: 130,
-            overflowY: "scroll",
-          },
-          items: {
-            type: "string",
-            enumNames: getstatesAll?.map((item, i) => item?.state_name),
-            enum: getstatesAll?.map((item, i) => item?.state_name),
-          },
-          uniqueItems: true,
-        },
         district: {
           type: "array",
           title: t("DISTRICT"),
@@ -351,14 +326,10 @@ export const Filter = ({ filter, setFilter }) => {
         },
       },
     };
-  }, [getDistrictsAll, getBlocksAll, getstatesAll]);
+  }, [getDistrictsAll, getBlocksAll]);
 
   const uiSchema = React.useMemo(() => {
     return {
-      state: {
-        "ui:widget": MultiCheck,
-        "ui:options": {},
-      },
       district: {
         "ui:widget": MultiCheck,
         "ui:options": {},
@@ -372,26 +343,18 @@ export const Filter = ({ filter, setFilter }) => {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const getState = await cohortService.getProgramYear();
-      setStatesAll(getState?.data);
+      const programResult = await getSelectedProgramId();
+      let name = programResult?.state_name;
+      const getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
+
+      if (Array.isArray(getDistricts?.districts)) {
+        setGetDistrictsAll(getDistricts?.districts);
+      }
     };
     fetchData();
   }, []);
-
-  React.useEffect(async () => {
-    let getDistricts = [];
-    if (filter?.state && filter?.state?.length === 1) {
-      let name = filter?.state?.[0];
-      getDistricts = await geolocationRegistryService.getDistricts({
-        name,
-      });
-      if (Array.isArray(getDistricts?.districts)) {
-        setgetDistrictsAll(getDistricts?.districts);
-      }
-    } else {
-      setgetDistrictsAll([]);
-    }
-  }, [filter?.state]);
 
   React.useEffect(async () => {
     let blockData = [];
@@ -408,12 +371,11 @@ export const Filter = ({ filter, setFilter }) => {
   React.useEffect(() => {
     const facilitatorDetails = async () => {
       let newFilter = {};
-      ["state", "district", "block", "status"].forEach((e) => {
+      ["district", "block", "status"].forEach((e) => {
         if (filter[e]) {
           newFilter = {
             ...newFilter,
             [e]: filter[e],
-            state: filter?.state?.[0],
           };
         }
       });
@@ -446,18 +408,13 @@ export const Filter = ({ filter, setFilter }) => {
 
   const onChange = React.useCallback(
     async (data) => {
-      const {
-        state: newState,
-        district: newDistrict,
-        block: newBlock,
-      } = data?.formData || {};
-      const { state, district, block, ...remainData } = filter || {};
+      const { district: newDistrict, block: newBlock } = data?.formData || {};
+      const { district, block, ...remainData } = filter || {};
       setFilterObject({
         ...remainData,
-        ...(newState && newState?.length === 1
+        ...(newDistrict && newDistrict?.length > 0
           ? {
-              state: newState,
-              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
+              district: newDistrict,
               ...(newBlock?.length > 0 ? { block: newBlock } : {}),
             }
           : {}),
@@ -558,4 +515,12 @@ export const Filter = ({ filter, setFilter }) => {
       </VStack>
     </VStack>
   );
+};
+
+Filter.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+};
+AdminHome.propTypes = {
+  footerLinks: PropTypes.any,
 };

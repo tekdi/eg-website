@@ -1,8 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { tableCustomStyles } from "@shiksha/common-lib";
-
+import PropTypes from "prop-types";
 import {
   Box,
   HStack,
@@ -11,10 +10,9 @@ import {
   Button,
   Input,
   Modal,
-  Select,
-  CheckIcon,
 } from "native-base";
 import {
+  tableCustomStyles,
   getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
@@ -27,7 +25,7 @@ import {
   urlData,
   CustomRadio,
   getOptions,
-  cohortService,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -36,10 +34,6 @@ import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
 
 const uiSchema = {
-  state: {
-    "ui:widget": MultiCheck,
-    "ui:options": {},
-  },
   district: {
     "ui:widget": MultiCheck,
     "ui:options": {},
@@ -70,44 +64,15 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [loading, setLoading] = React.useState(true);
   const [facilitaorStatus, setFacilitaorStatus] = React.useState();
   const [modal, setModal] = React.useState(false);
-
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [programID, setProgramID] = React.useState();
-  const [programData, setProgramData] = React.useState([]);
-  const [academicData, setAcademicData] = React.useState();
+  const [program, setProgram] = React.useState();
   const [academicYear, setAcademicYear] = React.useState();
-  const [states, setStates] = React.useState([]);
-
-  React.useEffect(async () => {
-    //getting required id's
-    const result = await cohortService.getProgramYear();
-    const data = await cohortService.getAcademicYear();
-    setAcademicData(data?.data);
-    setProgramData(result?.data);
-    let academic_Id = await getSelectedAcademicYear();
-    setAcademicYear(academic_Id?.academic_year_id);
-  }, [modal]);
 
   const schemat = {
     type: "object",
     properties: {
-      state: {
-        type: "array",
-        title: t("STATE"),
-        grid: 1,
-        _hstack: {
-          maxH: 135,
-          overflowY: "scroll",
-          borderBottomColor: "bgGreyColor.200",
-          borderBottomWidth: "2px",
-        },
-        items: {
-          type: "string",
-        },
-        uniqueItems: true,
-      },
       district: {
         type: "array",
         title: t("DISTRICT"),
@@ -177,6 +142,14 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      const programResult = await getSelectedProgramId();
+      let academic_Id = await getSelectedAcademicYear();
+      setAcademicYear(academic_Id);
+      setProgram(programResult);
+      let name = programResult?.state_name;
+      const getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
       const result = await enumRegistryService.statuswiseCount();
       setFacilitaorStatus(result);
       const data = await enumRegistryService.listOfEnum();
@@ -191,13 +164,11 @@ export default function List({ footerLinks, userTokenInfo }) {
         value: "id",
       });
 
-      const getState = await cohortService.getProgramYear();
-
       newSchema = getOptions(newSchema, {
-        key: "state",
-        arr: getState?.data,
-        title: "state_name",
-        value: "state_name",
+        key: "district",
+        arr: getDistricts?.districts,
+        title: "district_name",
+        value: "district_name",
       });
 
       setSchema(newSchema);
@@ -207,24 +178,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchData();
   }, []);
 
-  React.useEffect(() => {
-    const fetchBlocks = async () => {
-      if (schema && filter?.state?.length > 0) {
-        let name = filter?.state?.[0];
-        const getDistricts = await geolocationRegistryService.getDistricts({
-          name,
-        });
-        let newSchema = getOptions(schema, {
-          key: "district",
-          arr: getDistricts?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-        setSchema(newSchema);
-      }
-    };
-    fetchBlocks();
-  }, [filter?.state]);
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     const fetchBlocks = async () => {
@@ -246,9 +200,8 @@ export default function List({ footerLinks, userTokenInfo }) {
 
   React.useEffect(() => {
     const fetchFilteredData = async () => {
-      let newfilter = { ...filter, state: filter?.state?.[0] };
       const result = await facilitatorRegistryService.filter({
-        ...newfilter,
+        ...filter,
         limit: filter?.limit || 10,
       });
 
@@ -274,19 +227,17 @@ export default function List({ footerLinks, userTokenInfo }) {
   const onChange = React.useCallback(
     async (data) => {
       const {
-        state: newState,
         district: newDistrict,
         block: newBlock,
         qualificationIds: newQualificationIds,
         work_experience: newWork_experience,
       } = data?.formData || {};
-      const { state, district, block, ...remainData } = filter || {};
+      const { district, block, ...remainData } = filter || {};
       setFilterObject({
         ...remainData,
-        ...(newState && newState?.length === 1
+        ...(newDistrict && newDistrict?.length > 0
           ? {
-              state: newState,
-              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
+              district: newDistrict,
               ...(newBlock?.length > 0 ? { block: newBlock } : {}),
             }
           : {}),
@@ -307,8 +258,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   }, [setFilterObject]);
 
   const exportPrerakCSV = async () => {
-    const newfilter = { ...filter, state: filter?.state?.[0] };
-    await facilitatorRegistryService.exportFacilitatorsCsv(newfilter);
+    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
   const handleSearch = React.useCallback(
@@ -416,92 +366,24 @@ export default function List({ footerLinks, userTokenInfo }) {
                     borderBottomWidth={1}
                     borderBottomColor="gray.300"
                     pb="5"
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
                   >
-                    <AdminTypo.H4> {t("ACADEMIC_YEAR")}</AdminTypo.H4>
-
-                    <Select
-                      selectedValue={academicYear}
-                      minWidth="200"
-                      accessibilityLabel="Choose Service"
-                      placeholder={t("SELECT")}
-                      _selectedItem={{
-                        bg: "teal.600",
-                        endIcon: <CheckIcon size="5" />,
-                      }}
-                      mt={1}
-                      onValueChange={(itemValue) => setAcademicYear(itemValue)}
+                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
+                    <Clipboard
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear?.academic_year_id}&program_id=${program?.program_id}`}
                     >
-                      {academicData?.map((item) => {
-                        return (
-                          <Select.Item
-                            key={item.id}
-                            label={item?.academic_year_name}
-                            value={item?.academic_year_id}
-                          />
-                        );
-                      })}
-                    </Select>
+                      <HStack space="3">
+                        <IconByName
+                          name="FileCopyLineIcon"
+                          isDisabled
+                          rounded="full"
+                          color="blue.300"
+                        />
+                        <AdminTypo.H3 color="blue.300">
+                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
+                        </AdminTypo.H3>
+                      </HStack>
+                    </Clipboard>
                   </HStack>
-                  <HStack
-                    space="5"
-                    borderBottomWidth={1}
-                    borderBottomColor="gray.300"
-                    pb="5"
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
-
-                    <Select
-                      selectedValue={programID}
-                      minWidth="200"
-                      accessibilityLabel="Choose Service"
-                      placeholder={t("SELECT")}
-                      _selectedItem={{
-                        bg: "teal.600",
-                        endIcon: <CheckIcon size="5" />,
-                      }}
-                      mt={1}
-                      onValueChange={(itemValue) => setProgramID(itemValue)}
-                    >
-                      {programData?.map((item) => {
-                        return (
-                          <Select.Item
-                            key={item.id}
-                            label={item?.state_name}
-                            value={item?.program_id}
-                          />
-                        );
-                      })}
-                    </Select>
-                  </HStack>
-                  {programID && (
-                    <HStack
-                      space="5"
-                      borderBottomWidth={1}
-                      borderBottomColor="gray.300"
-                      pb="5"
-                    >
-                      <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
-                      <Clipboard
-                        text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear}&program_id=${programID}`}
-                      >
-                        <HStack space="3">
-                          <IconByName
-                            name="FileCopyLineIcon"
-                            isDisabled
-                            rounded="full"
-                            color="blue.300"
-                          />
-                          <AdminTypo.H3 color="blue.300">
-                            {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                          </AdminTypo.H3>
-                        </HStack>
-                      </Clipboard>
-                    </HStack>
-                  )}
                 </VStack>
               </Modal.Body>
             </Modal.Content>
@@ -575,3 +457,5 @@ export default function List({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+List.propTypes = { footerLinks: PropTypes.any, userTokenInfo: PropTypes.any };

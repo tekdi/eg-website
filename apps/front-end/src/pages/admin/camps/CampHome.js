@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
-
 import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Image,
   Button,
   HStack,
   ScrollView,
@@ -28,11 +26,12 @@ import {
   GetEnumValue,
   facilitatorRegistryService,
   tableCustomStyles,
-  cohortService,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 const columns = (navigate) => [
   {
@@ -102,7 +101,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
-  const [campFilterStatus, setCampFilterStatus] = useState([]);
+  const [campFilterStatus, setCampFilterStatus] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
@@ -120,13 +119,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(async () => {
+    let newFilter = filter;
     if (urlFilterApply) {
-      let newfilter = { ...filter, state: filter?.state?.[0] };
       if (filter?.status === "all") {
         const { status, ...dataFilter } = filter || {};
-        newfilter = { ...dataFilter, state: filter?.state?.[0] };
+        newFilter = dataFilter;
       }
-      const qData = await campService.getCampList(newfilter);
+      const qData = await campService.getCampList(newFilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
@@ -254,16 +253,11 @@ export const Filter = ({ filter, setFilter }) => {
   const [getBlocksAll, setGetBlocksAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
   const [facilitator, setFacilitator] = React.useState([]);
-  const [getstatesAll, setStatesAll] = React.useState();
 
   const setFilterObject = (data) => {
-    if (data?.state) {
-      const { state, district } = data;
-      setFacilitatorFilter({
-        ...facilitatorFilter,
-        district,
-        state: state?.[0],
-      });
+    if (data?.district) {
+      const { district, block } = data;
+      setFacilitatorFilter({ ...facilitatorFilter, district, block });
     }
     setFilter(data);
     setQueryParameters(data);
@@ -285,21 +279,6 @@ export const Filter = ({ filter, setFilter }) => {
   const schema = {
     type: "object",
     properties: {
-      state: {
-        type: "array",
-        title: t("STATE"),
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-        },
-        items: {
-          type: "string",
-          enumNames: getstatesAll?.map((item, i) => item?.state_name),
-          enum: getstatesAll?.map((item, i) => item?.state_name),
-        },
-        uniqueItems: true,
-      },
       district: {
         type: "array",
         title: t("DISTRICT"),
@@ -334,10 +313,6 @@ export const Filter = ({ filter, setFilter }) => {
   };
 
   const uiSchema = {
-    state: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
     district: {
       "ui:widget": MultiCheck,
       "ui:options": {},
@@ -350,34 +325,18 @@ export const Filter = ({ filter, setFilter }) => {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const getState = await cohortService.getProgramYear();
-      setStatesAll(getState?.data);
-    };
-    fetchData();
-  }, []);
-
-  // React.useEffect(async () => {
-  //   let name = "RAJASTHAN";
-  //   const getDistricts = await geolocationRegistryService.getDistricts({
-  //     name,
-  //   });
-  //   setGetDistrictsAll(getDistricts?.districts);
-  // }, []);
-
-  React.useEffect(async () => {
-    let getDistricts = [];
-    if (filter?.state && filter?.state?.length === 1) {
-      let name = filter?.state?.[0];
-      getDistricts = await geolocationRegistryService.getDistricts({
+      const programResult = await getSelectedProgramId();
+      let name = programResult?.state_name;
+      const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
+
       if (Array.isArray(getDistricts?.districts)) {
         setGetDistrictsAll(getDistricts?.districts);
       }
-    } else {
-      setGetDistrictsAll([]);
-    }
-  }, [filter?.state]);
+    };
+    fetchData();
+  }, []);
 
   React.useEffect(async () => {
     let blockData = [];
@@ -391,18 +350,13 @@ export const Filter = ({ filter, setFilter }) => {
 
   const onChange = React.useCallback(
     async (data) => {
-      const {
-        state: newState,
-        district: newDistrict,
-        block: newBlock,
-      } = data?.formData || {};
-      const { state, district, block, ...remainData } = filter || {};
+      const { district: newDistrict, block: newBlock } = data?.formData || {};
+      const { district, block, ...remainData } = filter || {};
       setFilterObject({
         ...remainData,
-        ...(newState && newState?.length === 1
+        ...(newDistrict && newDistrict?.length > 0
           ? {
-              state: newState,
-              ...(newDistrict?.length > 0 ? { district: newDistrict } : {}),
+              district: newDistrict,
               ...(newBlock?.length > 0 ? { block: newBlock } : {}),
             }
           : {}),
@@ -490,4 +444,13 @@ export const Filter = ({ filter, setFilter }) => {
       />
     </VStack>
   );
+};
+
+Filter.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+};
+CampHome.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
 };
