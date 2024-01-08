@@ -16,6 +16,7 @@ jobs:
         run: |
           echo "${{ env.REACT_APP_BANNER_MESSAGE }}"
           echo "$REACT_APP_BANNER_MESSAGE"
+          echo "variable from shell environment : $REACT_APP_BANNER_MESSAGE"
           echo "The run id is: $GITHUB_RUN_ID"
       - name: Setup Node Env
         uses: actions/setup-node@v3
