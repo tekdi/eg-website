@@ -1,45 +1,44 @@
 import {
-  AdminTypo,
   FrontEndTypo,
   Layout,
-  benificiaryRegistoryService,
   campService,
   enumRegistryService,
-  t,
 } from "@shiksha/common-lib";
 import { Alert, Box, HStack, VStack } from "native-base";
-import React, { useState } from "react";
+import React from "react";
 import DataTable from "react-data-table-component";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 
 const customStyles = {
   header: {
     style: {
+      background: "#F4F4F7",
       minHeight: "72px",
       cursor: "pointer",
-      borderColor: "black",
-      justifyContent: "center",
+      justifyContent: "left",
     },
   },
   headRow: {
     style: {
-      size: "16px",
+      size: "1px",
       justifyContent: "center",
-      border: "0.1px solid black",
+      fontWeight: "bold",
     },
   },
   headCells: {
     style: {
-      background: "#E0E0E0",
-      size: "16px",
+      background: "#F4F4F7",
+      size: "4px",
       justifyContent: "center",
-      border: "0.1px solid black",
+      padding: "0px",
     },
   },
   cells: {
     style: {
+      background: "#F4F4F7",
       justifyContent: "center",
-      border: "0.1px solid black", // Add border style for all cells
+      border: "0.1px solid #999",
     },
   },
 };
@@ -60,7 +59,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
   {
     name: t("COMPLETE"),
     selector: "complete",
-    sortable: true,
+    minWidth: "50px",
     cell: (row) => (
       <input
         type="radio"
@@ -74,7 +73,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
   {
     name: t("PARTIALLY"),
     selector: "partially",
-    sortable: true,
+    minWidth: "50px",
     cell: (row) => (
       <input
         type="radio"
@@ -88,7 +87,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
   {
     name: t("INCOMPLETE"),
     selector: "incomplete",
-    sortable: true,
+    minWidth: "50px",
     cell: (row) => (
       <input
         type="radio"
@@ -107,6 +106,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
   const [tableData, setTableData] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { t } = useTranslation();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -158,13 +158,11 @@ export default function CampKitMaterialDetails({ footerLinks }) {
         ),
         lang,
         setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
+        _box: { bg: "formBg.500", shadow: "appBarShadow" },
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
-      //   loading={loading}
     >
-      <VStack p={"4"} space={"4"}>
+      <VStack space={"2"}>
         <DataTable
           title={t("CAMP_KIT_MATERIAL_DETAILS")}
           customStyles={customStyles}

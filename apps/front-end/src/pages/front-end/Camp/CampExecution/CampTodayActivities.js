@@ -182,16 +182,16 @@ export default function CampTodayActivities({
             </HStack>
           </Pressable>
         </CardComponent>
-        {selectValue?.[0] ||
-          (sessionList === true && (
-            <VStack pt={"10%"}>
-              <FrontEndTypo.Primarybutton
-                onPress={() => navigate(`/camps/${id}/campexecution/endcamp`)}
-              >
-                {t("GO_BACK")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          ))}
+
+        {(activitiesValue || sessionList) === true && (
+          <VStack pt={"10%"}>
+            <FrontEndTypo.Primarybutton
+              onPress={() => navigate(`/camps/${id}/campexecution/endcamp`)}
+            >
+              {t("GO_BACK")}
+            </FrontEndTypo.Primarybutton>
+          </VStack>
+        )}
       </VStack>
       <Actionsheet isOpen={enums?.data} onClose={(e) => setEnums()}>
         <Stack width={"100%"} maxH={"100%"}>
