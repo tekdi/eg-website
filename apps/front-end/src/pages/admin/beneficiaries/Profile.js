@@ -547,7 +547,11 @@ export default function AgAdminProfile({ footerLinks }) {
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
-              <ChipStatus status={data?.program_beneficiaries?.status} />
+              <ChipStatus
+                is_duplicate={data?.is_duplicate}
+                is_deactivated={data?.is_deactivated}
+                status={data?.program_beneficiaries?.status}
+              />
               <HStack
                 bg="textMaroonColor.600"
                 rounded={"md"}

@@ -198,7 +198,7 @@ const List = ({ data }) => {
                   <FrontEndTypo.H4 color="blueText.450">
                     {item?.program_beneficiaries?.status === "duplicated"
                       ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
-                      : t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
+                      : t("TO_BE_REGISTERED_IN_CAMP")}
                   </FrontEndTypo.H4>
                 </HStack>
               )}

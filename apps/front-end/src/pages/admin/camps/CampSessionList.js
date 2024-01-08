@@ -7,7 +7,7 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Modal, VStack } from "native-base";
+import { HStack, Modal, ScrollView, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,9 +35,8 @@ export default function CampSessionList({ footerLinks }) {
   const [isDisable, setIsDisable] = React.useState(false);
   const [submitStatus, setSubmitStatus] = React.useState();
   const [error, setError] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
   const navigate = useNavigate();
-  const [buttonHide, setButtonHide] = React.useState();
+  const [bodyHeight, setBodyHeight] = React.useState();
 
   const getData = React.useCallback(async () => {
     if (modalVisible) {
@@ -91,7 +90,6 @@ export default function CampSessionList({ footerLinks }) {
   // );
 
   const handlePartiallyDone = React.useCallback(async () => {
-    setSubmitBtn(true);
     setError();
     setIsDisable(true);
     if (submitStatus?.reason) {
@@ -137,42 +135,69 @@ export default function CampSessionList({ footerLinks }) {
     setSubmitStatus();
   };
 
+  const getSessionCount = (data) => {
+    let count = 0;
+    const result = data
+      .filter((e) => e.session_tracks?.[0]?.id)
+      .map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
+    let sessionData = result?.[result?.length - 1] || { ordering: 1 };
+    const c1 = result.filter((e) => {
+      const format = "YYYY-MM-DD";
+      return (
+        e.status === "complete" &&
+        moment(e.created_at).format(format) !== moment().format(format) &&
+        moment(e.updated_at).format(format) === moment().format(format)
+      );
+    });
+
+    const c2 = result.filter((e) => {
+      const format = "YYYY-MM-DD";
+      return (
+        e.status === "incomplete" &&
+        moment(e.created_at).format(format) === moment().format(format) &&
+        moment(e.updated_at).format(format) === moment().format(format)
+      );
+    });
+
+    const c3 = result.filter((e) => {
+      const format = "YYYY-MM-DD";
+      return (
+        e.status === "complete" &&
+        moment(e.created_at).format(format) === moment().format(format) &&
+        moment(e.updated_at).format(format) === moment().format(format)
+      );
+    });
+
+    if (c1?.length > 0) {
+      count += 0.5;
+      sessionData = c1[0];
+    }
+
+    if (c2?.length > 0) {
+      count += 0.5;
+      sessionData = c2[0];
+    }
+
+    if (c3?.length > 0) {
+      count += 1;
+      sessionData = c3[0];
+    }
+
+    if (sessionData?.status === "complete" && count < 1.5) {
+      sessionData = data.find((e) => sessionData?.ordering + 1 === e?.ordering);
+    }
+    if (count >= 1.5) {
+      sessionData = {};
+    }
+
+    return { ...sessionData, countSession: count };
+  };
+
   const getCampSessionsList = async () => {
     const result = await campService.getCampSessionsList({ id: id });
     const data = result?.data?.learning_lesson_plans_master || [];
     setSessionList(data);
-    let dataSession;
-    data.forEach((e, i) => {
-      if (!i || e.session_tracks?.[0]?.status) {
-        dataSession = {
-          ...(e.session_tracks?.[0] || {}),
-          ordering: e.ordering,
-        };
-      }
-    });
-    if (!dataSession.status) {
-      setSessionActive(dataSession?.ordering);
-    } else if (dataSession.status === "incomplete") {
-      const result = data.find(
-        (item) => item?.ordering === dataSession?.ordering - 1
-      );
-      if (
-        checkNext(
-          result?.session_tracks?.[0]?.status,
-          result?.session_tracks?.[0]?.updated_at
-        )
-      ) {
-        setSessionActive(dataSession?.ordering);
-      } else {
-        setSessionActive(dataSession?.ordering);
-      }
-    } else if (dataSession?.status === "complete") {
-      setSessionActive(dataSession?.ordering + 1);
-    } else if (checkNext(dataSession.status, dataSession.updated_at)) {
-      setSessionActive(dataSession?.ordering);
-    } else {
-      setSessionActive(dataSession?.ordering + 1);
-    }
+    setSessionActive(getSessionCount(data));
   };
 
   React.useEffect(async () => {
@@ -181,34 +206,6 @@ export default function CampSessionList({ footerLinks }) {
     setEnumOptions(enumData?.data ? enumData?.data : {});
     setLoading(false);
   }, []);
-
-  React.useEffect(() => {
-    if (sessionDetails) {
-      let btn = [];
-      const boolean =
-        submitStatus?.status === "complete" ||
-        (!submitStatus?.status &&
-          previousSessionDetails?.session_tracks?.[0] &&
-          previousSessionDetails?.session_tracks?.[0]?.status === "complete" &&
-          previousSessionDetails?.session_tracks?.[0]?.updated_at &&
-          moment(
-            previousSessionDetails?.session_tracks?.[0]?.updated_at
-          ).format("YYYY-MM-DD") !== moment().format("YYYY-MM-DD")) ||
-        (submitStatus?.status === undefined &&
-          previousSessionDetails === undefined);
-      if (boolean) {
-        btn = [...btn, "complete"];
-      }
-      if (
-        (!sessionDetails?.session_tracks?.[0]?.status ||
-          sessionDetails?.session_tracks?.[0]?.status === "incomplete") &&
-        submitStatus?.status !== "complete"
-      ) {
-        btn = [...btn, "incomplete"];
-      }
-      setButtonHide(btn);
-    }
-  }, [sessionDetails, submitStatus]);
 
   if (loading) {
     return <Loading />;
@@ -223,6 +220,7 @@ export default function CampSessionList({ footerLinks }) {
       }}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _footer={{ menues: footerLinks }}
+      getBodyHeight={(e) => setBodyHeight(e)}
     >
       <VStack flex={1} space={"5"} p="5">
         <HStack space="2">
@@ -231,22 +229,20 @@ export default function CampSessionList({ footerLinks }) {
             {t("SESSION")}
           </FrontEndTypo.H2>
         </HStack>
-
-        <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
+        <ScrollView maxH={bodyHeight - 150} p="4">
+          <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
+        </ScrollView>
       </VStack>
-      {submitBtn && (
-        <FrontEndTypo.Primarybutton
-          width="50%"
-          position="relative"
-          left="25%"
-          bottom="15%"
-          right="25%"
-          onPress={() => {
-            navigate(`/camps/${id}/campexecution/activities`);
-          }}
-        >
-          {t("SUBMIT")}
-        </FrontEndTypo.Primarybutton>
+      {!sessionActive?.ordering && (
+        <VStack px="4">
+          <FrontEndTypo.Primarybutton
+            onPress={() => {
+              navigate(`/camps/${id}/campexecution/activities`);
+            }}
+          >
+            {t("SUBMIT")}
+          </FrontEndTypo.Primarybutton>
+        </VStack>
       )}
 
       <Modal isOpen={modalVisible} avoidKeyboard size="xl">
@@ -269,8 +265,7 @@ export default function CampSessionList({ footerLinks }) {
           <Modal.Body p="6">
             <SessionActions
               {...{
-                buttonHide,
-                sessionDetails,
+                sessionActive,
                 isDisable,
                 enumOptions,
                 submitStatus,
@@ -278,7 +273,6 @@ export default function CampSessionList({ footerLinks }) {
                 handlePartiallyDone,
                 handleCancel,
                 error,
-                t,
               }}
             />
           </Modal.Body>
