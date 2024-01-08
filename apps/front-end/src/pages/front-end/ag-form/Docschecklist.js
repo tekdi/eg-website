@@ -79,7 +79,6 @@ const Docschecklist = ({ footerLinks, setAlert }) => {
         status: "ready_to_enroll",
         reason_for_status_update: "documents_completed",
       };
-
       const result = await benificiaryRegistoryService.statusUpdate(bodyData);
       if (result) {
         setAlert({ type: "success", title: t("DOCUMENT_COMPLETED") });
