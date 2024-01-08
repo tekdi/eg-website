@@ -35,6 +35,13 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const [campId, setCampId] = React.useState("");
   const [campSelected, setCampSelected] = React.useState("");
   const [campSetting, setCampSetting] = React.useState("");
+  const campSettingData = () => {
+    return (
+      campSetting.preferred_start_time &&
+      campSetting.preferred_end_time &&
+      campSetting.week_off == null
+    );
+  };
 
   React.useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -275,21 +282,16 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                   >
                     {t("CAMP_SETTINGS")}
                   </FrontEndTypo.Secondarybutton>
-                  {(campSetting.preferred_start_time &&
-                    campSetting.preferred_end_time &&
-                    campSetting.week_off) == null && (
+                  {campSettingData() ? (
                     <Alert mt={4} status="warning">
                       <HStack space={2}>
                         <Alert.Icon />
                         <FrontEndTypo.H3>
-                          {t("CAMP_EXECUSION_MESSAGE")}
+                          {t("CAMP_EXECUTION_MESSAGE")}
                         </FrontEndTypo.H3>
                       </HStack>
                     </Alert>
-                  )}
-                  {(campSetting.preferred_start_time &&
-                    campSetting.preferred_end_time &&
-                    campSetting.week_off) !== null && (
+                  ) : (
                     <FrontEndTypo.Primarybutton
                       onPress={() => {
                         navigate(`/camps/${campId}/campexecution`);
