@@ -34,6 +34,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const [modal, setModal] = React.useState(false);
   const [campId, setCampId] = React.useState("");
   const [campSelected, setCampSelected] = React.useState("");
+  const [campSetting, setCampSetting] = React.useState("");
 
   React.useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -52,8 +53,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
+    setCampSetting(campList.data?.camps[0]);
   }, []);
-
   return (
     <Layout
       _appBar={{ name: t("MY_CAMP") }}
@@ -274,14 +275,29 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                   >
                     {t("CAMP_SETTINGS")}
                   </FrontEndTypo.Secondarybutton>
-
-                  <FrontEndTypo.Primarybutton
-                    onPress={() => {
-                      navigate(`/camps/${campId}/campexecution`);
-                    }}
-                  >
-                    {t("CAMP_EXECUTION")}
-                  </FrontEndTypo.Primarybutton>
+                  {(campSetting.preferred_start_time &&
+                    campSetting.preferred_end_time &&
+                    campSetting.week_off) == null && (
+                    <Alert mt={4} status="warning">
+                      <HStack space={2}>
+                        <Alert.Icon />
+                        <FrontEndTypo.H3>
+                          {t("CAMP_EXECUSION_MESSAGE")}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                    </Alert>
+                  )}
+                  {(campSetting.preferred_start_time &&
+                    campSetting.preferred_end_time &&
+                    campSetting.week_off) !== null && (
+                    <FrontEndTypo.Primarybutton
+                      onPress={() => {
+                        navigate(`/camps/${campId}/campexecution`);
+                      }}
+                    >
+                      {t("CAMP_EXECUTION")}
+                    </FrontEndTypo.Primarybutton>
+                  )}
                 </React.Fragment>
               )}
             </VStack>

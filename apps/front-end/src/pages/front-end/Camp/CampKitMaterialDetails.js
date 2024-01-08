@@ -176,6 +176,8 @@ export default function CampKitMaterialDetails({ footerLinks }) {
           <FrontEndTypo.Primarybutton
             p="4"
             mt="4"
+            mb="4"
+            m="4"
             onPress={handleSave}
             isDisabled={isDisable}
             isLoading={isLoading}

@@ -178,7 +178,6 @@
   "BENEFICIARY_STATUS_PRAGATI_SYC": "Pragati Syc",
   "BENEFICIARY_STATUS_READY_TO_ENROLL": "Ready To Enroll (documents completed)",
   "BENEFICIARY_STATUS_REGISTERED_IN_CAMP": "Registered In Camp",
-  "TO_BE_REGISTERED_IN_CAMP": "To be register in camp",
   "BENEFICIARY_STATUS_REJECTED": "Rejected",
   "BENEFICIARY_STATUS_VERIFIED_IP": "Verified-IP",
   "BIRTH_CERTIFICATE": "Birth Certificate",
@@ -202,6 +201,7 @@
   "CAMP_ACCESS_ERROR": "To register camp you should be 'Selected for Onboarding' or 'Selected Prerak'.",
   "CAMP_APPROVAL_MSG": "waiting for approval on camp from IP, still you can edit the details entered",
   "CAMP_DETAILS": "Camp Details",
+  "CAMP_EXECUSION_MESSAGE": "Unless and untill and camp setting information is not entered camp execution cannot be done.",
   "CAMP_EXECUTION": "Camp Execution",
   "CAMP_FRONT_VIEW": "Camp front view",
   "CAMP_ID": "Camp ID",
@@ -1213,6 +1213,7 @@
   "TITLE": "Title",
   "TO": "to",
   "TO_BE_EFFICIENT_PRI": "To be efficient PRI",
+  "TO_BE_REGISTERED_IN_CAMP": "To be register in camp",
   "TO_BECOME_ANGANWADI_WORKER": "To become Anganwadi worker",
   "TO_BECOME_MANREGA_MATT_OR_MANREGA_SUPERVISOR": "To become MANREGA MATT or MANREGA supervisor",
   "TO_CONTINUE_STUDY": "To continue study",
@@ -1356,6 +1357,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
 }
