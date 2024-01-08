@@ -198,7 +198,7 @@ const List = ({ data }) => {
                   <FrontEndTypo.H4 color="blueText.450">
                     {item?.program_beneficiaries?.status === "duplicated"
                       ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
-                      : t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP")}
+                      : t("TO_BE_REGISTERED_IN_CAMP")}
                   </FrontEndTypo.H4>
                 </HStack>
               )}
@@ -285,13 +285,12 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
-        onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
+        onlyIconsShow: ["backBtn", "userInfo", "loginBtn", "langBtn"],
         isEnableSearchBtn: "true",
         setSearch: (value) => {
           setFilter({ ...filter, search: value, page: 1 });
         },
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}

@@ -177,7 +177,6 @@ export default function CampExecution({ footerLinks, setAlert }) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Camera
-          facing={true}
           messageComponent={
             <VStack>
               <FrontEndTypo.H3 color="white" textAlign="center">

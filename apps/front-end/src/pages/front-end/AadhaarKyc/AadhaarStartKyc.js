@@ -11,7 +11,6 @@ const AadhaarStartKyc = () => {
       _appBar={{
         onlyIconsShow: ["backBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
     >
       <Box className="adharVerifyStart" w="full" minH="100vh">

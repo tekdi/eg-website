@@ -99,14 +99,48 @@ const SessionFeedback = ({
 const SessionActions = ({
   isDisable,
   // handleStartSession,
-  buttonHide,
+  sessionActive,
   handlePartiallyDone,
   setSubmitStatus,
   submitStatus,
   enumOptions,
   error,
-  t,
 }) => {
+  const { t } = useTranslation();
+  const [buttonHide, setButtonHide] = React.useState();
+
+  React.useEffect(() => {
+    if (sessionActive) {
+      let btn = [];
+      if (
+        !["complete", "incomplete"].includes(sessionActive?.status) &&
+        sessionActive?.ordering === 1
+      ) {
+        if (submitStatus?.status) {
+          btn = [submitStatus?.status];
+        } else {
+          btn = ["incomplete", "complete"];
+        }
+      }
+
+      if (
+        sessionActive?.countSession < 1.5 &&
+        submitStatus?.status !== "complete"
+      ) {
+        btn = [...btn, "incomplete"];
+      }
+      if (
+        ((sessionActive?.status === "incomplete" &&
+          sessionActive?.countSession < 1.5) ||
+          (!sessionActive?.status && sessionActive?.countSession < 1)) &&
+        submitStatus?.status !== "incomplete"
+      ) {
+        btn = [...btn, "complete"];
+      }
+      setButtonHide(btn);
+    }
+  }, [sessionActive, submitStatus]);
+
   return (
     <VStack>
       {/* {!["incomplete", "complete"].includes(
@@ -197,10 +231,7 @@ export const SessionList = React.memo(
         {sessionList?.map((item) => (
           <Pressable
             onPress={async () => await setModalVisible(item?.id)}
-            isDisabled={
-              sessionActive !== item?.ordering ||
-              item?.session_tracks?.[0]?.status === "complete"
-            }
+            isDisabled={sessionActive?.ordering !== item?.ordering}
             key={item?.id}
           >
             <CardComponent
@@ -212,8 +243,7 @@ export const SessionList = React.memo(
                 // pt: "0",
                 roundedTop: "10px",
                 bg:
-                  sessionActive !== item?.ordering ||
-                  item?.session_tracks?.[0]?.status === "complete"
+                  sessionActive?.ordering !== item?.ordering
                     ? "gray.100"
                     : "white",
               }}

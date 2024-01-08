@@ -230,7 +230,6 @@ export default function AdharKyc({ footerLinks }) {
             }`,
             profile_url: user?.profile_photo_1?.id,
             _box: { bg: "white", shadow: "appBarShadow" },
-            _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
             onPressBackButton: handalBack,
           }}
           _footer={{ menues: footerLinks }}
