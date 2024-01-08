@@ -163,10 +163,10 @@ const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
   { path: "/form", component: Home },
-  {
-    path: "/facilitator-self-onboarding",
-    component: Home,
-  },
+  // {
+  //   path: "/facilitator-self-onboarding",
+  //   component: Home,
+  // },
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
