@@ -324,7 +324,7 @@ export default [
     component: CampKitMaterialDetails,
   },
   { path: "/camps/:id/sessionslist", component: CampSessionList },
-  { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
+  // { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,

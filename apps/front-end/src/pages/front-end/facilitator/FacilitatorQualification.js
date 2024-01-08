@@ -20,6 +20,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
   const [qualification, setQualification] = React.useState();
   const navigate = useNavigate();
   const [enumOptions, setEnumOptions] = React.useState({});
+  const [qua, setQua] = React.useState();
 
   React.useEffect(async () => {
     const { id } = userTokenInfo?.authUser;
@@ -28,10 +29,26 @@ export default function FacilitatorQualification({ userTokenInfo }) {
     setQualification(result?.qualifications ? result?.qualifications : {});
   }, []);
 
+  React.useEffect(() => {
+    let isMounted = true;
+    const fetchEnumData = async () => {
+      const data = await enumRegistryService.listOfEnum();
+      if (isMounted) setEnumOptions(data?.data ? data?.data : {});
+    };
+
+    const fetchQualificationData = async () => {
+      const qua = await facilitatorRegistryService.getQualificationAll();
+      if (isMounted) setQua(qua);
+    };
+
+    fetchEnumData();
+    fetchQualificationData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   React.useEffect(async () => {
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
-    const qua = await facilitatorRegistryService.getQualificationAll();
     const ids = JSON.parse(
       facilitator?.program_faciltators?.qualification_ids
         ? facilitator?.program_faciltators?.qualification_ids
@@ -41,7 +58,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
       const arr = qua.filter((item) => ids.includes(item.id));
       setQualifications(arr);
     }
-  }, [facilitator]);
+  }, [qua, facilitator]);
 
   const onPressBackButton = () => {
     navigate("/profile");

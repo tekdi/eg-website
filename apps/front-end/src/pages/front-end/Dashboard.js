@@ -55,7 +55,7 @@ const styles = {
 
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
-  const [facilitator, setFacilitator] = React.useState({});
+  const [facilitator, setFacilitator] = React.useState({ notLoaded: true });
   const [certificateData, setCertificateData] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
@@ -72,13 +72,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
+  const [loadAll, setLoadAll] = useState(false);
   const [cohortData, setCohortData] = useState(null);
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
   const [selectedCohortData, setSelectedCohortData] = useState(null);
   const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
-  const [academicYear, setAcademicYear] = useState();
+  const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
 
   useEffect(() => {
@@ -89,15 +90,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }
       if (countLoad == 1) {
         //do page load first operation
-        //check exist user registered
-        let onboardingURLData = await getOnboardingURLData();
-        setCohortData(onboardingURLData?.cohortData);
-        setProgramData(onboardingURLData?.programData);
-        if (onboardingURLData?.cohortData) {
-          setIsUserRegisterExist(true);
-        } else {
-          setIsUserRegisterExist(false);
-        }
         //get user info
         if (userTokenInfo) {
           const fa_data = await facilitatorRegistryService.getOne({
@@ -136,61 +128,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [countLoad]);
 
-  const removeRegisterExist = async () => {
-    try {
-      await removeOnboardingURLData();
-      await removeOnboardingMobile();
-      setIsUserRegisterExist(false);
-      await showSelectCohort();
-    } catch (error) {
-      console.error("Failed to remove registration existence:", error);
-    }
-  };
-
-  const userExistRegisterClick = async () => {
-    let onboardingURLData = await getOnboardingURLData();
-    const register_exist_user =
-      await facilitatorRegistryService.RegisterUserExist({
-        program_id: parseInt(onboardingURLData?.programId),
-        academic_year_id: parseInt(onboardingURLData?.cohortId),
-        parent_ip: onboardingURLData?.id,
-      });
-    if (register_exist_user?.success == true) {
-      localStorage.removeItem("loadCohort");
-      await removeRegisterExist();
-    } else {
-      alert(register_exist_user?.message);
-    }
-  };
-
-  const showSelectCohort = async () => {
-    if (
-      localStorage.getItem("loadCohort") == null ||
-      localStorage.getItem("loadCohort") == "no"
-    ) {
-      console.log("in showSelectCohort");
-      const user_cohort_list =
-        await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
-      );
-      setAcademicData(user_cohort_list?.data);
-      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
-      localStorage.setItem("loadCohort", "yes");
-      if (user_cohort_list?.data.length == 1) {
-        setSelectCohortForm(false);
-      } else {
-        setSelectCohortForm(true);
-      }
-    }
-  };
-  const handleAcademicYear = async (item) => {
-    setAcademicYear(item);
-  };
   useEffect(() => {
     async function fetchData() {
       // ...async operations
-      if (academicYear) {
+      if (academicYear != null) {
         //get cohort id and store in localstorage
         const user_cohort_id = academicYear;
         const cohort_data = await facilitatorRegistryService.getCohort({
@@ -202,11 +143,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     fetchData();
   }, [academicYear]);
-  const selectAcademicYear = async () => {
-    setAcademicYear(academicYear);
-    setSelectCohortForm(false);
-    window.location.reload();
-  };
 
   React.useEffect(() => {
     async function fetchData() {
@@ -223,59 +159,70 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   React.useEffect(() => {
     async function fetchData() {
-      // ...async operations
-      const res = objProps(facilitator);
-      setProgress(
-        arrList(
-          {
-            ...res,
-            qua_name: facilitator?.qualifications?.qualification_master?.name,
-          },
-          [
-            "device_ownership",
-            "mobile",
-            "device_type",
-            "gender",
-            "marital_status",
-            "social_category",
-            "name",
-            "contact_number",
-            "availability",
-            "aadhar_no",
-            "aadhaar_verification_mode",
-            "aadhar_verified",
-            "qualification_ids",
-            "qua_name",
-          ]
-        )
-      );
-      //check mobile number with localstorage mobile no
-      let mobile_no = facilitator?.mobile;
-      let mobile_no_onboarding = await getOnboardingMobile();
-      if (
-        mobile_no != null &&
-        mobile_no_onboarding != null &&
-        mobile_no == mobile_no_onboarding
-      ) {
-        //get cohort id and store in localstorage
-        const user_cohort_id = cohortData?.academic_year_id;
-        const cohort_data = await facilitatorRegistryService.getCohort({
-          cohortId: user_cohort_id,
-        });
-        setSelectedCohortData(cohort_data);
-        await setSelectedAcademicYear(cohort_data);
-        setIsUserRegisterExist(true);
-      } else {
-        setIsUserRegisterExist(false);
-        await showSelectCohort();
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const res = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...res,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            [
+              "device_ownership",
+              "mobile",
+              "device_type",
+              "gender",
+              "marital_status",
+              "social_category",
+              "name",
+              "contact_number",
+              "availability",
+              "aadhar_no",
+              "aadhaar_verification_mode",
+              "aadhar_verified",
+              "qualification_ids",
+              "qua_name",
+            ]
+          )
+        );
+        //check exist user registered
+        try {
+          let onboardingURLData = await getOnboardingURLData();
+          setCohortData(onboardingURLData?.cohortData);
+          setProgramData(onboardingURLData?.programData);
+          //get program id and store in localstorage
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          setSelectedProgramData(program_data[0]);
+          await setSelectedProgramId(program_data[0]);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no != null &&
+            mobile_no_onboarding != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            localStorage.setItem("loadCohort", "yes");
+            setIsUserRegisterExist(true);
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {}
       }
-      //get program id and store in localstorage
-      const user_program_id = facilitator?.program_faciltators?.program_id;
-      const program_data = await facilitatorRegistryService.getProgram({
-        programId: user_program_id,
-      });
-      setSelectedProgramData(program_data[0]);
-      await setSelectedProgramId(program_data[0]);
     }
     fetchData();
   }, [facilitator]);
@@ -341,6 +288,73 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }
     }
     return isAllow < 3;
+  };
+
+  //multi cohort
+
+  const selectAcademicYear = async () => {
+    setSelectCohortForm(false);
+    window.location.reload();
+  };
+
+  const removeRegisterExist = async () => {
+    try {
+      try {
+        localStorage.removeItem("loadCohort");
+      } catch (e) {}
+      await removeOnboardingURLData();
+      await removeOnboardingMobile();
+      setIsUserRegisterExist(false);
+      await showSelectCohort();
+    } catch (error) {
+      console.error("Failed to remove registration existence:", error);
+    }
+  };
+
+  const userExistRegisterClick = async () => {
+    let onboardingURLData = await getOnboardingURLData();
+    const register_exist_user =
+      await facilitatorRegistryService.RegisterUserExist({
+        program_id: parseInt(onboardingURLData?.programId),
+        academic_year_id: parseInt(onboardingURLData?.cohortId),
+        parent_ip: onboardingURLData?.id,
+      });
+    if (register_exist_user?.success == true) {
+      try {
+        await removeOnboardingURLData();
+        await removeOnboardingMobile();
+        setIsUserRegisterExist(false);
+        window.location.reload();
+      } catch (e) {}
+    } else {
+      alert(register_exist_user?.message);
+    }
+  };
+
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+        window.location.reload();
+      } else {
+        setSelectCohortForm(true);
+      }
+    }
+  };
+  const handleAcademicYear = async (item) => {
+    setAcademicYear(item);
   };
 
   return (
@@ -740,7 +754,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           <Modal.Header p="5" borderBottomWidth="0">
             <H1 textAlign="center">{t("REGISTER_EXIST_CONFIRM")}</H1>
             <CloseIcon
-              onClick={() => removeRegisterExist()}
+              onClick={async () => await removeRegisterExist()}
               style={{ cursor: "pointer" }}
             />
           </Modal.Header>
