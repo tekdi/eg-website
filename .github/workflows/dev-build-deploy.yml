@@ -14,8 +14,9 @@ jobs:
 
       - name: Test
         run: |
-          echo ${{ env.REACT_APP_BANNER_MESSAGE }}
-          
+          echo "${{ env.REACT_APP_BANNER_MESSAGE }}"
+          echo "$REACT_APP_BANNER_MESSAGE"
+          echo "The run id is: $GITHUB_RUN_ID"
       - name: Setup Node Env
         uses: actions/setup-node@v3
         with:
