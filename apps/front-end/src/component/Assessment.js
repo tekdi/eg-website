@@ -25,6 +25,21 @@ function Player({ setAlert }) {
   const [response, setResponse] = React.useState(false);
   const id = localStorage.getItem("id");
 
+  React.useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      const confirmationMessage =
+        "Are you sure you want to reload, all the progress will be lost?";
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   React.useEffect(async () => {
     const getCertificate = await testRegistryService.getCertificate({ id });
     if (getCertificate?.data?.length > 0) {
