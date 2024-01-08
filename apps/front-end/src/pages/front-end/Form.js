@@ -978,7 +978,7 @@ export default function App({ facilitator, ip, onClick }) {
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
+        onlyIconsShow: ["backBtn"],
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >

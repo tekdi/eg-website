@@ -86,7 +86,12 @@ export default function CampTodayActivities({
     data.forEach((element) => {
       const currentDate = new Date();
       const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
-      if (currentDate.toDateString() === createdAtDate.toDateString()) {
+      const updatedDate = new Date(element?.session_tracks?.[0]?.updated_at);
+      if (
+        currentDate.toDateString() === createdAtDate.toDateString() ||
+        (currentDate.toDateString() === updatedDate.toDateString() &&
+          element?.session_tracks?.[0]?.status === "complete")
+      ) {
         setSessionList(true);
       }
     });
@@ -177,7 +182,8 @@ export default function CampTodayActivities({
             </HStack>
           </Pressable>
         </CardComponent>
-        {selectValue?.[0] && sessionList === true && (
+
+        {(activitiesValue || sessionList) === true && (
           <VStack pt={"10%"}>
             <FrontEndTypo.Primarybutton
               onPress={() => navigate(`/camps/${id}/campexecution/endcamp`)}

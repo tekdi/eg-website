@@ -62,15 +62,22 @@ function CustomFieldTemplate({ id, schema, label, required, children }) {
 const Name = (row) => {
   return (
     <VStack alignItems={"center"} space="2">
-      <Text color={"textGreyColor.100"} fontSize={"13px"}>
-        {row?.program_beneficiaries?.enrollment_first_name}
-        {row?.program_beneficiaries?.enrollment_last_name
-          ? " " + row?.program_beneficiaries?.enrollment_last_name
-          : ""}
-      </Text>
-      <Text color={"textGreyColor.100"} fontSize={"13px"}>
+      {row?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+        <AdminTypo.H7 bold color={"textGreyColor.100"} fontSize={"13px"}>
+          {row?.program_beneficiaries?.enrollment_first_name}
+          {row?.program_beneficiaries?.enrollment_last_name
+            ? " " + row?.program_beneficiaries?.enrollment_last_name
+            : ""}
+        </AdminTypo.H7>
+      ) : (
+        <AdminTypo.H7 bold color={"textGreyColor.100"} fontSize={"13px"}>
+          {row?.first_name}
+          {row?.last_name ? " " + row?.last_name : ""}
+        </AdminTypo.H7>
+      )}
+      <AdminTypo.H7 bold color={"textGreyColor.100"} fontSize={"13px"}>
         ({row?.mobile})
-      </Text>
+      </AdminTypo.H7>
     </VStack>
   );
 };
