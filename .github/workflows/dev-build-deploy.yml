@@ -18,6 +18,9 @@ jobs:
           echo "$REACT_APP_BANNER_MESSAGE"
           echo "variable from shell environment : $REACT_APP_BANNER_MESSAGE"
           echo "The run id is: $GITHUB_RUN_ID"
+        env:
+          REACT_APP_BANNER_MESSAGE: ${{env.REACT_APP_BANNER_MESSAGE}}
+          
       - name: Setup Node Env
         uses: actions/setup-node@v3
         with:
@@ -34,7 +37,8 @@ jobs:
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
-
+          REACT_APP_BANNER_MESSAGE: ${{env.REACT_APP_BANNER_MESSAGE}}
+          
       - name: Create Lerna Bundles for Submodules
         run: |
           sh ./scripts/pack-prod-build.sh
