@@ -27,8 +27,7 @@ function Player({ setAlert }) {
 
   React.useEffect(() => {
     const handleBeforeUnload = (e) => {
-      const confirmationMessage =
-        "Are you sure you want to reload, all the progress will be lost?";
+      const confirmationMessage = t("REFRESH_ASSESSMENT_MESSAGE");
       e.returnValue = confirmationMessage;
       return confirmationMessage;
     };
