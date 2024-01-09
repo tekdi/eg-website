@@ -179,7 +179,7 @@ export default {
           format: "CustomR",
           grid: 2,
           enum: ["part_time", "full_time"],
-          enumNames: ["Part time", "Full time"],
+          enumNames: ["PART_TIME", "FACILITATOR_FULL_TIME"],
         },
       },
     },
