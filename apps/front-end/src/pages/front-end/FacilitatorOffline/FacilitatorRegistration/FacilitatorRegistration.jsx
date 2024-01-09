@@ -11,7 +11,6 @@ import {
   Center,
   Pressable,
 } from "native-base";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import validator from "@rjsf/validator-ajv8";
 import {
@@ -204,9 +203,7 @@ const FacilitatorRegistration = () => {
             ></Image>
           </Box>
         </HStack>
-        <FrontEndTypo.H1>
-          {t("इस पृष्ठ तक पहुँचने के लिए इंटरनेट से पुनः कनेक्ट करें!")}
-        </FrontEndTypo.H1>
+        <FrontEndTypo.H1>{t("OFFLINE_STATUS")}</FrontEndTypo.H1>
         <FrontEndTypo.Primarybutton
           style={{ background: "#FF0000", top: "40px", width: "100%" }}
           onPress={() => handleNextScreen("dateOfBirth")}
@@ -577,20 +574,19 @@ const FacilitatorRegistration = () => {
   };
 
   const renderSwitchCase = () => {
-    // console.log("active screen name", activeScreenName);
     switch (activeScreenName) {
       case "chooseLangauge":
-        return chooseLangauge();
+        return isOnline ? chooseLangauge() : offlineStatusScreen();
       case "introductionOfProject":
-        return introductionOfProject();
+        return isOnline ? introductionOfProject() : offlineStatusScreen();
       case "prerakDuties":
-        return prerakDuties();
+        return isOnline ? prerakDuties() : offlineStatusScreen();
       case "idVerification":
-        return idVerification();
+        return isOnline ? idVerification() : offlineStatusScreen();
       case "enterBasicDetails":
-        return enterBasicDetails();
+        return isOnline ? enterBasicDetails() : offlineStatusScreen();
       case "contactDetails":
-        return contactDetails();
+        return isOnline ? contactDetails() : offlineStatusScreen();
       default:
         return isOnline ? chooseLangauge() : offlineStatusScreen();
     }

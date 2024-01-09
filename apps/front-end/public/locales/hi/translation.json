@@ -20,11 +20,7 @@
   "AADHAAR_OKYC_NOT_COMPLETED_BY_PRERAK": "आधार OKYC प्रेरक द्वारा पूरा नहीं किया गया है, कृपया प्रेरक को OKYC पूरा करने के लिए कहें।",
   "AADHAAR_REQUIRED_MESSAGE": "नामांकन विवरण टैब तक पहुंचने के लिए कृपया पहले आधार नंबर दर्ज करें",
   "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER": " १२ अंकों का मान्य आधार नंबर दर्ज करें",
-<<<<<<< HEAD
-  "AADHAAR_VERIFICATION": "आधार वेरिफिकेशन ",
   "AADHAR_SHOULD_12_DIGIT": "अपने आधार कार्ड पर अंकित 12 अंकों का नंबर दर्ज करें",
-=======
->>>>>>> upstream/offline-pwa
   "AADHAAR_VERIFICATION_SUCCESSFUL": "आधार वेरिफिकेशन  सफल",
   "AADHAAR_VERIFICATION": "आधार वेरिफिकेशन ",
   "AADHAAR": "आधार",
@@ -323,12 +319,8 @@
   "COMMUNITY_MIN_ERROR": "किसी शिविर को पंजीकृत करने के लिए आपको समुदाय से कम से कम 2 गणमान्य व्यक्ती के संपर्क विवरण जोड़ने होंगे.",
   "COMMUNITY": "समुदाय",
   "COMPANY_NAME": "कंपनी का नाम",
-<<<<<<< HEAD
   "COMPANY_AND_ORGANIZATION_NAME": "संस्था/कंपनी का शीर्षक",
-  "COMPLETE": "पूर्ण",
-=======
   "COMPANY": "कंपनी",
->>>>>>> upstream/offline-pwa
   "COMPLETE_AADHAAR_CARD_VERIFICATION": "आधार कार्ड का वेरिफिकेशन पूरा करें",
   "COMPLETE_AADHAAR_VERIFICATION": "आधार वेरिफिकेशन पूर्ण करें",
   "COMPLETE_AADHAR_KYC": "आधार E-KYC को पूरा करें",
@@ -489,12 +481,8 @@
   "ERROR_MESSAGE_MOBILE_NUMBER_CANNT_USE": "आप स्वयं के मोबाइल नंबर का उपयोग नहीं कर सकते",
   "EVALUATION_1": "रैपिड अससेसमेंट - I",
   "EVALUATION_2": "रैपिड अससेसमेंट - II",
-  "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "इस घटना के लिए कोई मूल्यांकन उपलब्ध नहीं है",
   "EVENT_CREATE_BACK_DATES_NOT_ALLOWED_END_DATE": "अंतिम तिथि के लिए बैकडेट की अनुमति नहीं है",
-<<<<<<< HEAD
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "इस घटना के लिए कोई मूल्यांकन उपलब्ध नहीं है",
-=======
->>>>>>> upstream/offline-pwa
   "EVENT_CREATE_BACK_DATES_NOT_ALLOWED_START_DATE": "प्रारंभ दिनांक के लिए बैकडेट की अनुमति नहीं है",
   "EVENT_CREATE_CORRECT_DATA_MESSAGE": "सही डेटा दर्ज करें",
   "EVENT_CREATE_END_DATE_GREATERE_THAN_START_DATE": "समाप्ति तिथि प्रारंभ तिथि से अधिक होनी चाहिए",
@@ -857,11 +845,7 @@
   "NEXT": "अगला",
   "NGO_REFERRAL": "NGO रेफरल",
   "NIOS": "NIOS",
-<<<<<<< HEAD
-  "NO": "नहीं",
   "NO_ONE": " कोई नहीं",
-=======
->>>>>>> upstream/offline-pwa
   "NO_I_USE_A_FAMILY_MEMBERS": "नहीं, परिवार के किसी सदस्य का मोबाइल उपयोग करते हैं",
   "NO_PLAN": "नहीं, आज कुछ और प्लान है",
   "NO": "नहीं",
@@ -875,6 +859,7 @@
   "OFFLINE_AADHAAR_VERIFICATION": "ऑफलाइन आधार वेरिफिकेशन",
   "OFFLINE_KYC_MESSAGE": "अगर आधार उनके मोबाइल नंबर से जुड़ा है तो आप ऑफलाइन OKYC वेरिफिकेशन कर सकते हैं",
   "OFFLINE": "ऑफलाइन",
+  "OFFLINE_STATUS": "इस पृष्ठ तक पहुँचने के लिए इंटरनेट से पुनः कनेक्ट करें!",
   "OK": "ठीक है",
   "OKYC_VERIFICATION": "OKYC IP वेरिफाइड",
   "OLD_PRERAK": "पुराना प्रेरक",
@@ -1132,8 +1117,8 @@
   "SELECT_ALL": "सबका चयन करें",
   "SELECT_CANDIDATE": "उम्मीदवार चुनें",
   "SELECT_CANDIDATES": "कृपया इवेंट के लिए उम्मीदवारों का चयन करें",
-  "SELECT_COHORT_INFO":"Cohort चुनें",
-  "SELECT_COHORT_NEXT":"आगे बढ़ें",
+  "SELECT_COHORT_INFO": "Cohort चुनें",
+  "SELECT_COHORT_NEXT": "आगे बढ़ें",
   "SELECT_FOR_ONBOARDING": "ऑनबोर्डिंग के लिए चुने",
   "SELECT_FOR_TRAINING": "प्रशिक्षण के लिए चुने",
   "SELECT_LEARNER": "कृपया शिविर बनाने के लिए शिक्षार्थियों का चयन करें",
@@ -1177,11 +1162,7 @@
   "SHORTLISTED": "चुने",
   "SIGN_IN": "साइन इन करें",
   "SIGN_UP": "साइन अप करें",
-<<<<<<< HEAD
   "SIGN_UP_IN_THREE_STEPS": "तीन सरल चरणों में साइन अप करें!",
-  "SKIP": "छोडे एवं आगे बढे",
-=======
->>>>>>> upstream/offline-pwa
   "SKIP_SUBMIT": "जमा करें पर जाएँ",
   "SKIP_TO_APPLY": "लागू करें पर जाएँ",
   "SKIP_TO_DASHBOARD": "डैशबोर्ड पर जाएं",
@@ -1339,12 +1320,8 @@
   "VERIFY_AADHAR_UPLOAD_KYC": "आधार अपलोड OKYC वेरिफिकेशन करें",
   "VERIFY_MESSAGE": "क्या आप शिविर का सत्यापन करना चाहते हैं? यदि हाँ, तो पुष्टि दबाएँ।",
   "VERIFY_OTP": "वेरिफाई OTP",
-<<<<<<< HEAD
   "VERIFY_CONTACT_NUMBER": "अपना संपर्क नंबर सत्यापित करें",
-  "VIEW": "देखें",
-=======
   "VERIFY": "वेरिफाई",
->>>>>>> upstream/offline-pwa
   "VIEW_ALL": "सभी को देखें",
   "VIEW_ATTENDANCE": "उपस्थिति देखें",
   "VIEW_CERTIFICATE": "प्रमाणपत्र देखें",

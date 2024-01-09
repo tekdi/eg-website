@@ -859,6 +859,7 @@
   "OFFLINE_AADHAAR_VERIFICATION": "Offline Aadhaar Verification",
   "OFFLINE_KYC_MESSAGE": "If the Aadhaar is connected to their mobile number you can do offline KYC verification.",
   "OFFLINE": "Offline",
+  "OFFLINE_STATUS": "Reconnect to the Internet to access this page !",
   "OK": "Ok",
   "OKYC_VERIFICATION": "OKYC IP Verified",
   "OLD_PRERAK": "Old Prerak",
