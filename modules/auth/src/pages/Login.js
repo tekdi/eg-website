@@ -42,7 +42,7 @@ export default function Login() {
   const [language, setLanguage] = React.useState();
   useEffect(() => {
     setLanguage(localStorage.getItem("lang"));
-  });
+  }, []);
 
   const validate = () => {
     let arr = {};
