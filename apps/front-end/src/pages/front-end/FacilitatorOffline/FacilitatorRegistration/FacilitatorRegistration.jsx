@@ -29,6 +29,8 @@ import prerakDutiesImage3 from "../../../../assets/images/facilitator-duties/img
 import prerakDutiesImage4 from "../../../../assets/images/facilitator-duties/img4.png";
 import prerakDutiesImage5 from "../../../../assets/images/facilitator-duties/img5.png";
 import prerakDutiesImage6 from "../../../../assets/images/facilitator-duties/img6.png";
+import noConnection from "../../../../assets/images/facilitator-duties/offline/no_connection.png";
+import plugin from "../../../../assets/images/facilitator-duties/offline/plugin.png";
 
 const stylesheet = {
   text1: {
@@ -92,10 +94,10 @@ const stylesheet = {
 const FacilitatorRegistration = () => {
   const navigate = useNavigate();
 
-  const [activeScreenName, setActiveScreenName] = useState();
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [activeScreenName, setActiveScreenName] = React.useState();
+  const [mobileNumber, setMobileNumber] = React.useState("");
 
-  const [header, setHeader] = useState([
+  const [header, setHeader] = React.useState([
     { text: "Identify Out-of-School Girls" },
     { text: "Counsel Parents" },
     { text: "Register Girls for Exams" },
@@ -103,7 +105,7 @@ const FacilitatorRegistration = () => {
     { text: "Help Girls Attend Exams" },
     { text: "Guide them towards Future Goals" },
   ]);
-  const [caption, setCaption] = useState([
+  const [caption, setCaption] = React.useState([
     { showcaption: "To pursue 10th school from open school." },
     { showcaption: "To pursue 10th school from open school." },
     { showcaption: "To pursue 10th school from open school." },
@@ -112,7 +114,7 @@ const FacilitatorRegistration = () => {
     { showcaption: "To pursue 10th school from open school." },
   ]);
 
-  const [images, setImages] = useState([
+  const [images, setImages] = React.useState([
     { uri: prerakDutiesImage1 },
     { uri: prerakDutiesImage2 },
     { uri: prerakDutiesImage3 },
@@ -121,11 +123,30 @@ const FacilitatorRegistration = () => {
     { uri: prerakDutiesImage6 },
   ]);
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
-  const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  const [currentHeaderIndex, setCurrentHeaderIndex] = React.useState(0);
+  const [currentCaptionIndex, setCurrentCaptionIndex] = React.useState(0);
   const [formData, setFormData] = React.useState({});
   const [page, setPage] = React.useState(0);
+
+  const [isOnline, setIsOnline] = React.useState(
+    window ? window.navigator.onLine : false
+  );
+
+  React.useEffect(() => {
+    const online = () => setIsOnline(true);
+    const offline = () => setIsOnline(false);
+
+    window.addEventListener("online", online, false);
+    window.addEventListener("offline", offline, false);
+
+    return () => {
+      window.removeEventListener("online", online);
+      window.removeEventListener("offline", offline);
+    };
+  }, []);
+
+  console.log("status", isOnline);
 
   const handleInputChange = (value) => {
     setMobileNumber(value);
@@ -158,6 +179,43 @@ const FacilitatorRegistration = () => {
     }
   };
 
+  const offlineStatusScreen = () => (
+    <>
+      <VStack alignItems={"center"} flex={3} space={6}>
+        <HStack>
+          <Box>
+            <Image
+              source={{
+                uri: plugin,
+              }}
+              alt=""
+              size={"xl"}
+              resizeMode="contain"
+            ></Image>
+          </Box>
+          <Box>
+            <Image
+              source={{
+                uri: noConnection,
+              }}
+              alt=""
+              size={"2xl"}
+              resizeMode="contain"
+            ></Image>
+          </Box>
+        </HStack>
+        <FrontEndTypo.H1>
+          {t("इस पृष्ठ तक पहुँचने के लिए इंटरनेट से पुनः कनेक्ट करें!")}
+        </FrontEndTypo.H1>
+        <FrontEndTypo.Primarybutton
+          style={{ background: "#FF0000", top: "40px", width: "100%" }}
+          onPress={() => handleNextScreen("dateOfBirth")}
+        >
+          {t("NEXT")}
+        </FrontEndTypo.Primarybutton>
+      </VStack>
+    </>
+  );
   const chooseLangauge = () => {
     return (
       <Stack alignItems={"center"}>
@@ -519,7 +577,7 @@ const FacilitatorRegistration = () => {
   };
 
   const renderSwitchCase = () => {
-    console.log("active screen name", activeScreenName);
+    // console.log("active screen name", activeScreenName);
     switch (activeScreenName) {
       case "chooseLangauge":
         return chooseLangauge();
@@ -534,7 +592,7 @@ const FacilitatorRegistration = () => {
       case "contactDetails":
         return contactDetails();
       default:
-        return chooseLangauge();
+        return isOnline ? chooseLangauge() : offlineStatusScreen();
     }
   };
 
