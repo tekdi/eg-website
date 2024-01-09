@@ -178,7 +178,6 @@
   "BENEFICIARY_STATUS_PRAGATI_SYC": "प्रगति SYC",
   "BENEFICIARY_STATUS_READY_TO_ENROLL": "नामांकन के लिए तैयार (दस्तावेज़ पूर्ण)",
   "BENEFICIARY_STATUS_REGISTERED_IN_CAMP": "कैंप में रजिस्टर",
-  "TO_BE_REGISTERED_IN_CAMP": "शिविर में पंजीकृत होना",
   "BENEFICIARY_STATUS_REJECTED": "रिजेक्ट",
   "BENEFICIARY_STATUS_VERIFIED_IP": "सत्यापित-IP",
   "BIRTH_CERTIFICATE": "जन्म प्रमाणपत्र",
@@ -202,6 +201,7 @@
   "CAMP_ACCESS_ERROR": "शिविर पंजीकृत करने के लिए आपको 'ऑनबोर्डिंग के लिए चयनित' या 'चयनित प्रेरक' होना चाहिए।",
   "CAMP_APPROVAL_MSG": "IP से शिविर अप्प्रूवल की प्रतीक्षा में है, फिर भी आप दर्ज किए गये विवरण को एडिट कर सकते हैं",
   "CAMP_DETAILS": "शिविर का विवरण",
+  "CAMP_EXECUSION_MESSAGE": "शिविर को संचालित करने के लिए, कृपया पहले शिविर सेटिंग जानकारी दर्ज करें।",
   "CAMP_EXECUTION": "शिविर संचालन",
   "CAMP_FRONT_VIEW": "शिविर का सामने का दृश्य",
   "CAMP_ID": "शिविर Id",
@@ -1211,6 +1211,7 @@
   "TITLE": "शीर्षक",
   "TO": "से",
   "TO_BE_EFFICIENT_PRI": "दक्षपूर्ण PRI बनने के लिए",
+  "TO_BE_REGISTERED_IN_CAMP": "शिविर में पंजीकृत होना",
   "TO_BECOME_ANGANWADI_WORKER": "आंगनबाड़ी कार्यकर्ता बनने के लिए",
   "TO_BECOME_MANREGA_MATT_OR_MANREGA_SUPERVISOR": "मनरेगा मेट या मनरेगा सुपरवाइजर बनने के लिए",
   "TO_CONTINUE_STUDY": "पढ़ाई जारी रखने के लिए",
@@ -1354,6 +1355,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "DOCUMENT_COMPLETED": "नामांकन दस्तावेज सफलतापूर्वक पूरे हुए"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
 }
