@@ -53,7 +53,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
-    console.log("aaaa", AadhaarNumberValidation({ aadhaar: "388272245549" }));
   }, []);
 
   return (

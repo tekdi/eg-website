@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const d = [
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -71,7 +72,7 @@ function AadhaarNumberValidation({ aadhaar }) {
 
   const toCheckChecksum = aadhaarArray.pop();
 
-  if (generate(aadhaarArray) == toCheckChecksum) {
+  if (generate(aadhaarArray) === parseInt(toCheckChecksum, 10)) {
     return false;
   } else {
     return "INVALID_AADHAAR";
@@ -79,7 +80,7 @@ function AadhaarNumberValidation({ aadhaar }) {
 }
 
 AadhaarNumberValidation.propTypes = {
-  aadhaar: String,
+  aadhaar: PropTypes.string,
 };
 
 export default AadhaarNumberValidation;

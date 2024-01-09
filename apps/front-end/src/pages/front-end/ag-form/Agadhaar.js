@@ -153,7 +153,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (data?.aadhar_no) {
       const validation = AadhaarNumberValidation({ aadhaar: data?.aadhar_no });
       if (validation) {
-        console.log(AadhaarNumberValidation({ aadhaar: data?.aadhar_no }));
         errors?.aadhar_no?.addError(`${t(validation)}`);
       }
     }
