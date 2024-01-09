@@ -642,7 +642,7 @@ export default function Orientation({ footerLinks }) {
       <Modal isOpen={modal} safeAreaTop={true} size="xl">
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
+            <AdminTypo.H3 textAlign="center" color="black">
               {t("SELECT_YOUR_COHORT")}
             </AdminTypo.H3>
           </Modal.Header>
