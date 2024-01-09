@@ -1,6 +1,6 @@
 import { CustomOTPBox, FrontEndTypo, Layout, t } from "@shiksha/common-lib";
 import { Box, HStack, Image, Stack, VStack } from "native-base";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import validator from "@rjsf/validator-ajv8";
 import { get, set } from "idb-keyval";
 import moment from "moment";
@@ -24,19 +24,46 @@ const FacilitatorOnboarding = () => {
   const [page, setPage] = React.useState(0);
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
 
-  const [date_of_birth, set_date_of_birth] = useState({
-    dob: "",
-  });
+  const [date_of_birth, set_date_of_birth] = useState({});
 
   const [formData, setFormData] = useState({});
 
   const [formDataContact, setFormDataContact] = useState({});
 
-  const [user_data, setUserData] = useState({
-    // Initialize user_data with any default values if needed
-    date_of_birth: {},
-    formDataContact: {},
-  });
+  const [formDataBasicDetails, setFormDataBasicDetails] = useState({});
+
+  const [formDataVolunteerExperience, setFormDataVolunteerExperience] =
+    useState({});
+
+  const [user_data, setUserData] = useState(null);
+
+  // useEffect(async () => {
+  //   if (user_data !== null) {
+  //     set_date_of_birth(user_data?.users?.dob);
+  //   }
+  //   set_date_of_birth((prevData) => ({
+  //     ...prevData,
+  //     date_of_birth: date_of_birth,
+  //   }));
+  // }, [user_data]);
+
+  const [countLoad, setCountLoad] = useState(0);
+
+  const fetchData = useCallback(async () => {
+    if (countLoad === 0) {
+      setCountLoad(1);
+    } else if (countLoad === 1) {
+      let userData = await get("user_data");
+      setUserData(userData);
+      setCountLoad(2);
+    } else if (countLoad === 2) {
+      setCountLoad(3);
+    }
+  }, [countLoad]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const navigate = useNavigate();
 
@@ -65,8 +92,8 @@ const FacilitatorOnboarding = () => {
 
   const screensOrder = [
     "dateOfBirth",
-    "onboardingContactDetails",
-    "onboardingBasicDetails",
+    "contactDetails",
+    "basicDetails",
     "voluenteerExperience",
     "jobExperience",
     "educationDetails",
@@ -88,33 +115,106 @@ const FacilitatorOnboarding = () => {
 
   const handleDateOfBirth = async () => {
     try {
-      set_date_of_birth((prevData) => ({
-        ...prevData,
-        date_of_birth: date_of_birth,
-      }));
-      await set("user_data", {
+      const updatedUserData = {
         ...user_data,
-        date_of_birth: date_of_birth,
-      });
+        users: {
+          ...user_data?.users,
+          dob: date_of_birth.dob,
+        },
+      };
+
+      // Update the specific fields in IndexedDB
+      await set("user_data", updatedUserData);
+
+      setUserData(updatedUserData); // Update the local state for immediate reflection
       setPage((prevPage) => prevPage + 1);
-      handleNextScreen("onboardingContactDetails");
+      handleNextScreen("contactDetails");
+    } catch (error) {
+      console.error("Error storing data in IndexedDB:", error);
+    }
+  };
+  const handleContactDetails = async () => {
+    try {
+      // Update the specific fields in IndexedDB
+      const updatedUserData = {
+        ...user_data,
+        users: {
+          ...user_data?.users,
+          mobile: formDataContact.mobile,
+          alternative_mobile_number: formDataContact.alternative_mobile_number,
+          email_id: formDataContact.email_id,
+          // Add other fields as needed
+        },
+        core_faciltator: {
+          ...user_data?.core_faciltator,
+          device_ownership: formDataContact.device_ownership,
+          device_type: formDataContact.device_type,
+        },
+      };
+
+      // Update the specific fields in IndexedDB
+      await set("user_data", updatedUserData);
+
+      setUserData(updatedUserData); // Update the local state for immediate reflection
+      setPage((prevPage) => prevPage + 1);
+      handleNextScreen("basicDetails");
+    } catch (error) {
+      console.error("Error storing data in IndexedDB:", error);
+    }
+  };
+  const handleBasicDetails = async () => {
+    try {
+      const updatedUserData = {
+        ...user_data,
+        users: {
+          ...user_data?.users,
+          gender: formDataBasicDetails.gender,
+          // Add other fields as needed
+        },
+        extended_users: {
+          ...user_data?.extended_users,
+          marital_status: formDataBasicDetails.marital_status,
+          social_category: formDataBasicDetails.social_category,
+        },
+      };
+
+      // Update the specific fields in IndexedDB
+      await set("user_data", updatedUserData);
+
+      setUserData(updatedUserData); // Update the local state for immediate reflection
+      setPage((prevPage) => prevPage + 1);
+      handleNextScreen("voluenteerExperience");
     } catch (error) {
       console.error("Error storing data in IndexedDB:", error);
     }
   };
 
-  const handleContactDetails = async () => {
+  const handleVoluenteerExperience = async () => {
     try {
-      setFormDataContact((prevData) => ({
-        ...prevData,
-        formDataContact: formDataContact,
-      }));
-      await set("user_data", {
+      const updatedUserData = {
         ...user_data,
-        formDataContact: formDataContact,
-      });
+        experience: [
+          {
+            ...user_data?.experience,
+            type: formDataVolunteerExperience.type,
+            role_title: formDataVolunteerExperience.role_title,
+            organization: formDataVolunteerExperience.organization,
+            experience_in_years:
+              formDataVolunteerExperience.experience_in_years,
+            related_to_teaching:
+              formDataVolunteerExperience.related_to_teaching,
+            description: formDataVolunteerExperience.description,
+          },
+        ],
+      };
+
+      // Update the specific fields in IndexedDB
+      await set("user_data", updatedUserData);
+
+      setUserData(updatedUserData); // Update the local state for immediate reflection
       setPage((prevPage) => prevPage + 1);
-      handleNextScreen("onboardingBasicDetails");
+      console.log("hi");
+      handleNextScreen("jobExperience");
     } catch (error) {
       console.error("Error storing data in IndexedDB:", error);
     }
@@ -174,7 +274,7 @@ const FacilitatorOnboarding = () => {
       </VStack>
     </>
   );
-  const onboardingContactDetails = () => (
+  const contactDetails = () => (
     <>
       <VStack flex={3} space={6}>
         <Form
@@ -240,12 +340,14 @@ const FacilitatorOnboarding = () => {
       </VStack>
     </>
   );
-  const onboardingBasicDetails = () => (
+
+  const basicDetails = () => (
     <>
       <VStack flex={3} space={6}>
         <Form
-          formData={formData}
-          onSubmit={(data) => setFormData(data.formData)}
+          formData={formDataBasicDetails}
+          onChange={(e) => setFormDataBasicDetails(e.formData)}
+          onSubmit={handleBasicDetails}
           widgets={{ RadioBtn, CustomR }}
           {...{ templates, FieldTemplate, widgets }}
           validator={validator}
@@ -306,7 +408,7 @@ const FacilitatorOnboarding = () => {
           <VStack space={4}>
             <FrontEndTypo.Primarybutton
               style={{ background: "#FF0000", top: "50px" }}
-              onPress={() => handleNextScreen("voluenteerExperience")}
+              onPress={handleBasicDetails}
             >
               {t("SAVE_AND_NEXT")}
             </FrontEndTypo.Primarybutton>
@@ -328,8 +430,9 @@ const FacilitatorOnboarding = () => {
           {t("DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE")}
         </FrontEndTypo.H2>
         <Form
-          formData={formData}
-          onSubmit={(data) => setFormData(data.formData)}
+          formData={formDataVolunteerExperience}
+          onChange={(e) => setFormDataVolunteerExperience(e.formData)}
+          onSubmit={handleVoluenteerExperience}
           widgets={{ RadioBtn, CustomR }}
           {...{ templates, FieldTemplate, widgets }}
           validator={validator}
@@ -397,7 +500,7 @@ const FacilitatorOnboarding = () => {
           <VStack space={3}>
             <FrontEndTypo.Primarybutton
               style={{ background: "#FF0000", top: "50px" }}
-              onPress={() => handleNextScreen("jobExperience")}
+              onPress={handleVoluenteerExperience}
             >
               {t("SAVE_AND_NEXT")}
             </FrontEndTypo.Primarybutton>
@@ -658,10 +761,10 @@ const FacilitatorOnboarding = () => {
     switch (activeScreenName) {
       case "dateOfBirth":
         return dateOfBirth();
-      case "onboardingContactDetails":
-        return onboardingContactDetails();
-      case "onboardingBasicDetails":
-        return onboardingBasicDetails();
+      case "contactDetails":
+        return contactDetails();
+      case "basicDetails":
+        return basicDetails();
       case "voluenteerExperience":
         return voluenteerExperience();
       case "jobExperience":
