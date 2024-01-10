@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HStack,
   FormControl,
@@ -39,6 +39,10 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [language, setLanguage] = React.useState();
+  useEffect(() => {
+    setLanguage(localStorage.getItem("lang"));
+  }, []);
 
   const validate = () => {
     let arr = {};
@@ -98,7 +102,10 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/images/logos/educate-girls200X200.png",
+            uri:
+              language == "en"
+                ? "/images/logos/Educate_Girls_pragati_logo_english.png"
+                : "/images/logos/Educate_Girls_pragati_logo_hindi.png",
           }}
           alt="Educate Girls"
           resizeMode="contain"
