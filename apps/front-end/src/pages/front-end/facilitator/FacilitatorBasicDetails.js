@@ -38,7 +38,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
     };
     const result = await facilitatorRegistryService.getEditRequests(obj);
     let field;
-    const parseField = result?.data[0]?.fields;
+    const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
       field = JSON.parse(parseField);
     }
