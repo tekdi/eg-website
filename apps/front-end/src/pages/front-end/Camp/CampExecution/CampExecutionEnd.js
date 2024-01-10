@@ -6,16 +6,13 @@ import {
   CardComponent,
   IconByName,
 } from "@shiksha/common-lib";
+import moment from "moment";
 import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampExecutionEnd({
-  todaysActivity,
-  facilitator,
-  learnerCount,
-}) {
+export default function CampExecutionEnd({ facilitator, learnerCount }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
   const [error, setError] = React.useState();
@@ -26,7 +23,19 @@ export default function CampExecutionEnd({
   const [sessionList, setSessionList] = React.useState(false);
   const [learnerAttendanceCount, setLearnerAttendanceCount] =
     React.useState(false);
+  const [todaysActivity, setTodaysActivity] = React.useState();
+
   const navigate = useNavigate();
+
+  useEffect(async () => {
+    const obj = {
+      id: id,
+      start_date: moment(new Date()).format("YYYY-MM-DD"),
+    };
+    const data = await campService.getActivity(obj);
+    const activity = data?.data?.camp_days_activities_tracker;
+    setTodaysActivity(activity?.[0] || {});
+  }, []);
 
   React.useEffect(async () => {
     if (todaysActivity?.id) {
