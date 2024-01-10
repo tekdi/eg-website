@@ -215,19 +215,22 @@ export default function StatusButton({ data, setData }) {
       gap="4"
       my="2"
     >
-      {statusList?.map(({ name, ...item }) => (
-        <AdminTypo.StatusButton
-          key={name}
-          {...item}
-          status={item?.btnStatus}
-          isDisabled={!disabledBtn.includes(item?.status)}
-          onPress={(e) => {
-            isCampExistFunction({ name, ...item });
-          }}
-        >
-          {t(name)}
-        </AdminTypo.StatusButton>
-      ))}
+      {statusList
+        ?.filter(({ status }) => disabledBtn.includes(status))
+        .map(({ name, ...item }) => (
+          <AdminTypo.StatusButton
+            key={name}
+            {...item}
+            status={item?.btnStatus}
+            isDisabled={!disabledBtn.includes(item?.status)}
+            onPress={(e) => {
+              isCampExistFunction({ name, ...item });
+            }}
+          >
+            {t(name)}
+          </AdminTypo.StatusButton>
+        ))}
+
       {showModal?.status !== "selected_prerak" && (
         <Modal
           size={"xl"}
