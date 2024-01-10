@@ -408,7 +408,6 @@ export default function App({ userTokenInfo, footerLinks }) {
               >
                 {t("PRERAK_PROCEED_BTN")}
               </FrontEndTypo.Primarybutton>
-
               <FrontEndTypo.Secondarybutton
                 isLoading={loading}
                 p="4"
