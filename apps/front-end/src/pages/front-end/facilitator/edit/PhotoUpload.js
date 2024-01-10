@@ -98,7 +98,10 @@ export default function PhotoUpload({
             isLoading={loading}
             p="4"
             mt="4"
-            onPress={() => navigate(`/profile/edit/upload/${page + 1}`)}
+            onPress={() => {
+              navigate(`/profile/edit/upload/${page + 1}`);
+              navigate(0);
+            }}
           >
             {t("SAVE_AND_NEXT")}
           </FrontEndTypo.Primarybutton>
