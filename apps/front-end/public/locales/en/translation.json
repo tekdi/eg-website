@@ -1035,6 +1035,7 @@
   "REFERENCE_DETAILS": "Reference Details",
   "REFERENCE_FULL_NAME": "Reference Full Name",
   "REFERENCE_NUMBER_SHOULD_NOT_BE_SAME": "Reference contact number should not be same as your number",
+  "REFRESH_ASSESSMENT_MESSAGE": "Are you sure you want to reload, all the progress will be lost?",
   "REGION": "Region",
   "REGISTER": "Register",
   "REGISTER_PRERAK": "Register Prerak",
