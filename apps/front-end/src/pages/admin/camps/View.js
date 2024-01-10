@@ -71,6 +71,178 @@ const mapDirection = ({ row, data }) => {
   );
 };
 
+const dropDown = (triggerProps, t) => {
+  return (
+    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+      <HStack>
+        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
+    </Pressable>
+  );
+};
+
+const totalDistance = ({ row, data }) =>
+  mapDistance(
+    row?.lat,
+    row?.long,
+    data?.properties?.lat,
+    data?.properties?.long
+  );
+
+const columns = (t, navigate, data, consentData) => [
+  {
+    name: "Id",
+    selector: (row) => row?.id,
+    wrap: true,
+    width: "90px",
+  },
+  {
+    name: t("ENROLLMENT_NO"),
+    selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
+    wrap: true,
+    minWidth: "120px",
+  },
+  {
+    name: t("LEARNERS_NAME"),
+    minWidth: "250px",
+    selector: (row) => (
+      <UserCard
+        _hstack={{ borderWidth: 0, p: 1 }}
+        key={row}
+        title={
+          <AdminTypo.H6 bold>
+            {[
+              row?.program_beneficiaries?.[0]?.enrollment_first_name,
+              row?.program_beneficiaries?.[0]?.enrollment_middle_name,
+              row?.program_beneficiaries?.[0]?.enrollment_last_name,
+            ]
+              .filter((e) => e)
+              .join(" ")}
+          </AdminTypo.H6>
+        }
+        image={
+          row?.profile_photo_1?.id ? { urlObject: row?.profile_photo_1 } : null
+        }
+      />
+    ),
+    wrap: true,
+  },
+  {
+    name: t("CONSENT_FORM"),
+    selector: (row) => ConsentForm({ t, row, consentData }),
+    wrap: true,
+    minWidth: "100px",
+  },
+  {
+    name: t("MAP"),
+    selector: (row) => mapDirection({ row, data }),
+    minWidth: "60px",
+    wrap: true,
+  },
+  {
+    name: t("DISTANCE"),
+    selector: (row) => {
+      const distance = totalDistance({ row, data });
+      return (
+        <HStack>
+          {
+            <Chip
+              px="2"
+              py="1"
+              bg="transparent"
+              _text={{ color: distance >= 3.5 ? "textRed.100" : "" }}
+            >
+              {`${distance} Km`}
+            </Chip>
+          }
+        </HStack>
+      );
+    },
+    minWidth: "160px",
+    wrap: true,
+  },
+  {
+    minWidth: "250px",
+    name: t("ACTION"),
+    selector: (row) => <ActionButton {...{ row, data, t }} />,
+  },
+];
+
+const ActionButton = ({ row, data, t }) => {
+  const navigate = useNavigate();
+  return data?.group?.status === "camp_initiated" ? (
+    <AdminTypo.Secondarybutton
+      // background="white"
+      // _text={{
+      //   color: "blueText.400",
+      //   fontSize: "14px",
+      //   fontWeight: "700",
+      // }}
+      onPress={() => {
+        navigate(`/admin/beneficiary/${row?.id}`);
+      }}
+    >
+      {t("VIEW_PROFILE")}
+    </AdminTypo.Secondarybutton>
+  ) : (
+    <Button.Group
+      isAttached
+      divider={<h3>|</h3>}
+      my="3"
+      size="sm"
+      h="10"
+      marginTop="8px"
+      borderRadius="full"
+      background="white"
+      shadow="BlueOutlineShadow"
+      borderWidth="1px"
+      borderColor="#084B82"
+      lineHeight={8}
+      _text={{
+        color: "blueText.400",
+        fontSize: "14px",
+        fontWeight: "700",
+      }}
+    >
+      <Button
+        background="white"
+        _text={{
+          color: "blueText.400",
+          fontSize: "14px",
+          fontWeight: "700",
+        }}
+        onPress={() => {
+          navigate(`/admin/beneficiary/${row?.id}`);
+        }}
+      >
+        {t("VIEW_PROFILE")}
+      </Button>
+      <Button variant="outline">
+        <Menu
+          w="190"
+          placement="bottom right"
+          trigger={(triggerProps) => dropDown(triggerProps, t)}
+        >
+          <Menu.Item
+            onPress={() => {
+              navigate(`/admin/beneficiary/${row?.id}`);
+            }}
+          >
+            {t("VIEW_PROFILE")}
+          </Menu.Item>
+          <Menu.Item
+            onPress={() => {
+              navigate(`/admin/camps/${id}/reassign/${row?.id}`);
+            }}
+          >
+            {t("REASSIGN")}
+          </Menu.Item>
+        </Menu>
+      </Button>
+    </Button.Group>
+  );
+};
+
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -137,14 +309,11 @@ export default function View({ footerLinks }) {
     }
   };
 
-  const dropDown = (triggerProps, t) => {
-    return (
-      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-        <HStack>
-          <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
-        </HStack>
-      </Pressable>
-    );
+  const navTOedit = (item) => {
+    const send = () => {
+      navigate(`/admin/camps/${id}/${item}`);
+    };
+    return send;
   };
 
   React.useEffect(async () => {
@@ -156,156 +325,6 @@ export default function View({ footerLinks }) {
     setLoading(false);
   }, []);
 
-  const totalDistance = ({ row, data }) =>
-    mapDistance(
-      row?.lat,
-      row?.long,
-      data?.properties?.lat,
-      data?.properties?.long
-    );
-
-  const navTOedit = (item) => {
-    const send = () => {
-      navigate(`/admin/camps/${id}/${item}`);
-    };
-    return send;
-  };
-  const columns = (t, navigate) => [
-    {
-      name: "Id",
-      selector: (row) => row?.id,
-      wrap: true,
-      width: "90px",
-    },
-    {
-      name: t("ENROLLMENT_NO"),
-      selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
-      wrap: true,
-      minWidth: "120px",
-    },
-    {
-      name: t("LEARNERS_NAME"),
-      minWidth: "250px",
-      selector: (row) => (
-        <UserCard
-          _hstack={{ borderWidth: 0, p: 1 }}
-          key={row}
-          title={
-            <AdminTypo.H6 bold>
-              {[
-                row?.program_beneficiaries?.[0]?.enrollment_first_name,
-                row?.program_beneficiaries?.[0]?.enrollment_middle_name,
-                row?.program_beneficiaries?.[0]?.enrollment_last_name,
-              ]
-                .filter((e) => e)
-                .join(" ")}
-            </AdminTypo.H6>
-          }
-          image={
-            row?.profile_photo_1?.id
-              ? { urlObject: row?.profile_photo_1 }
-              : null
-          }
-        />
-      ),
-      wrap: true,
-    },
-    {
-      name: t("CONSENT_FORM"),
-      selector: (row) => ConsentForm({ t, row, consentData }),
-      wrap: true,
-      minWidth: "100px",
-    },
-    {
-      name: t("MAP"),
-      selector: (row) => mapDirection({ row, data }),
-      minWidth: "60px",
-      wrap: true,
-    },
-    {
-      name: t("DISTANCE"),
-      selector: (row) => {
-        const distance = totalDistance({ row, data });
-        return (
-          <HStack>
-            {
-              <Chip
-                px="2"
-                py="1"
-                bg="transparent"
-                _text={{ color: distance >= 3.5 ? "textRed.100" : "" }}
-              >
-                {`${distance} Km`}
-              </Chip>
-            }
-          </HStack>
-        );
-      },
-      minWidth: "160px",
-      wrap: true,
-    },
-    {
-      minWidth: "250px",
-      name: t("ACTION"),
-      selector: (row) => (
-        <Button.Group
-          isAttached
-          divider={<h3>|</h3>}
-          my="3"
-          size="sm"
-          h="10"
-          marginTop="8px"
-          borderRadius="full"
-          background="white"
-          shadow="BlueOutlineShadow"
-          borderWidth="1px"
-          borderColor="#084B82"
-          lineHeight={8}
-          _text={{
-            color: "blueText.400",
-            fontSize: "14px",
-            fontWeight: "700",
-          }}
-        >
-          <Button
-            background="white"
-            _text={{
-              color: "blueText.400",
-              fontSize: "14px",
-              fontWeight: "700",
-            }}
-            onPress={() => {
-              navigate(`/admin/beneficiary/${row?.id}`);
-            }}
-          >
-            {t("VIEW_PROFILE")}
-          </Button>
-          <Button variant="outline">
-            <Menu
-              w="190"
-              placement="bottom right"
-              trigger={(triggerProps) => dropDown(triggerProps, t)}
-            >
-              <Menu.Item
-                onPress={() => {
-                  navigate(`/admin/beneficiary/${row?.id}`);
-                }}
-              >
-                {t("VIEW_PROFILE")}
-              </Menu.Item>
-              <Menu.Item
-                onPress={() => {
-                  navigate(`/admin/camps/${id}/reassign/${row?.id}`);
-                }}
-              >
-                {t("REASSIGN")}
-              </Menu.Item>
-            </Menu>
-          </Button>
-        </Button.Group>
-      ),
-    },
-  ];
   // Table component
 
   return (
@@ -561,7 +580,10 @@ export default function View({ footerLinks }) {
             onEdit={edit && navTOedit("edit_family_consent")}
           >
             <ScrollView w={["100%", "100%"]}>
-              <DataTable columns={columns(t, navigate)} data={userData} />
+              <DataTable
+                columns={columns(t, navigate, data, consentData)}
+                data={userData}
+              />
             </ScrollView>
           </CardComponent>
         </HStack>
