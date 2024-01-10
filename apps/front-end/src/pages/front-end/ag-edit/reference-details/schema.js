@@ -1,6 +1,7 @@
 export default {
   description: "1.Basic details",
   type: "step",
+
   properties: {
     1: {
       title: "REFERENCE_DETAILS",

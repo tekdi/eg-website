@@ -150,7 +150,7 @@ export default {
       title: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
-      required: ["name", "contact_number"],
+      required: ["name", "designation", "contact_number"],
       properties: {
         name: {
           type: "string",
