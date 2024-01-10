@@ -68,7 +68,11 @@ const FileUpload = ({ value, onChange, schema }) => {
           useWebWorker: true,
         });
 
-        uploadProfile(compressedImage);
+        const uploadFile = new File([compressedImage], file.name, {
+          type: file.type,
+        });
+
+        uploadProfile(uploadFile);
       } else {
         setErrors({ fileSize: t("FILE_SIZE") });
       }
