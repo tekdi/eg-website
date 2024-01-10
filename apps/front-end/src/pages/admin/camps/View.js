@@ -567,7 +567,9 @@ export default function View({ footerLinks }) {
         </HStack>
         {data?.group?.status !== "inactive" && (
           <Stack>
-            {data?.group?.status !== "camp_ip_verified" && (
+            {!["camp_ip_verified", "camp_initiated"].includes(
+              data?.group?.status
+            ) && (
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.StatusButton
                   status="success"
