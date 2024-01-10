@@ -1377,5 +1377,16 @@
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "DOCUMENT_COMPLETED": "Enrollment Documents Completed Successfully"
+  "all": "All",
+  "quit": "Quit",
+  "rejected": "Rejected",
+  "on_hold": "On Hold",
+  "applied": "Applied",
+  "application_screened": "Application Screened",
+  "shortlisted_for_orientation": "Shortlisted For Orientation",
+  "pragati_mobilizer": "Pragati Mobilizer",
+  "selected_for_training": "Selected For Training",
+  "selected_for_onboarding": "Selected For Onboarding",
+  "selected_prerak": "Selected Prerak",
+  "rusticate": "Rusticate"
 }
