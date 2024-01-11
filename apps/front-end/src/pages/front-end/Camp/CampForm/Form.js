@@ -164,7 +164,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, []);
 
   React.useEffect(async () => {
-    const facilitiesData = enumOptions?.data?.CAMP_PROPERTY_FACILITIES;
+    const facilitiesData = enumOptions?.CAMP_PROPERTY_FACILITIES;
     if (step === "edit_property_facilities") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);

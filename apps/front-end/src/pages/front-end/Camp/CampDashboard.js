@@ -62,9 +62,13 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     setLoading(false);
     setCampSetting(campList.data?.camps[0]);
   }, []);
+
   return (
     <Layout
-      _appBar={{ name: t("MY_CAMP") }}
+      _appBar={{
+        name: t("MY_CAMP"),
+        onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
     >
