@@ -104,8 +104,8 @@ export default function Login() {
           source={{
             uri:
               language == "en"
-                ? "/images/logos/Educate_Girls_pragati_logo_english.png"
-                : "/images/logos/Educate_Girls_pragati_logo_hindi.png",
+                ? "/images/logos/Educate_Girls_Pragati Logo_English_300_300.png"
+                : "/images/logos/Educate_Girls_Pragati_Logo_Hindi_300_300.png",
           }}
           alt="Educate Girls"
           resizeMode="contain"
