@@ -1,8 +1,8 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "ngo.educategirls.pragatiapp.twa",
-        "sha256_cert_fingerprints": ["D4:17:48:3D:A5:BC:DE:7E:6B:44:DF:D9:39:07:C7:E7:80:87:3F:7B:64:FA:1B:93:19:0C:72:85:A2:8A:CA:3D"]
-      }
-    }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "io.uniteframework.eg_dev.twa",
+    "sha256_cert_fingerprints": ["EF:4B:20:F7:EC:70:78:A1:69:9B:0D:F5:44:9B:DD:7D:36:E7:24:BC:55:9A:D1:11:85:99:BF:B2:0B:36:A8:58"]
+  }
+}]
