@@ -1,8 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "io.uniteframework.eg_dev.twa",
-    "sha256_cert_fingerprints": ["EF:4B:20:F7:EC:70:78:A1:69:9B:0D:F5:44:9B:DD:7D:36:E7:24:BC:55:9A:D1:11:85:99:BF:B2:0B:36:A8:58"]
-  }
-}]
