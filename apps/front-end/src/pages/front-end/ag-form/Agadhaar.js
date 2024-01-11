@@ -13,7 +13,7 @@ import {
   AgRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-
+import PropTypes from "prop-types";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   TitleFieldTemplate,
@@ -27,14 +27,14 @@ import {
   Aadhaar,
 } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
+import AadhaarNumberValidation from "component/AadhaarNumberValidation.js";
 
 // App
 
 export default function Agform({ userTokenInfo, footerLinks }) {
   const textAreaRef = useRef();
-  const [textVisible, settextVisible] = React.useState(false);
+  const [textVisible, setTextVisible] = React.useState(false);
   const { t } = useTranslation();
-  const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -59,7 +59,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       let data = await benificiaryRegistoryService.getOne(userId);
 
       setFormData({
-        aadhar_no: data?.result?.aadhar_no,
         aadhar_no: data?.result?.aadhar_no,
         edit_page_type: "add_ag_duplication",
         is_duplicate: "no",
@@ -152,15 +151,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       );
     }
     if (data?.aadhar_no) {
-      if (
-        data?.aadhar_no &&
-        !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_no?.addError(
-          `${t(
-            "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER"
-          )}`
-        );
+      const validation = AadhaarNumberValidation({ aadhaar: data?.aadhar_no });
+      if (validation) {
+        errors?.aadhar_no?.addError(`${t(validation)}`);
       }
     }
 
@@ -270,11 +263,11 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       navigate(`/aadhaar-kyc/${userId}`, {
         state: { aadhar_no: formData?.aadhar_no },
       });
-      settextVisible(false);
+      setTextVisible(false);
       setaddmodal(!addmodal);
     } else {
       setIsDisable(false);
-      settextVisible(true);
+      setTextVisible(true);
     }
   };
 
@@ -437,7 +430,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 w="100%"
                 onChange={(e) => {
                   getReason(e);
-                  settextVisible(false);
+                  setTextVisible(false);
                 }}
               />
               {textVisible && (
@@ -462,3 +455,8 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+Agform.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};

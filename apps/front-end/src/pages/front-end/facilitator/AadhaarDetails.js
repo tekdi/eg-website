@@ -175,7 +175,7 @@ export default function AadhaarDetails() {
                       )} */}
                     </VStack>
                   )}
-                {facilitator?.aadhaar_verification_mode === "upload" && (
+                {/* {facilitator?.aadhaar_verification_mode === "upload" && (
                   <VStack space="5">
                     <FrontEndTypo.H2 bold color="textMaroonColor.400">
                       {t("HAVE_YOU_UPDATED_AADHAAR_CARD")}
@@ -214,7 +214,7 @@ export default function AadhaarDetails() {
                       />
                     ) : null}
                   </VStack>
-                )}
+                )} */}
               </VStack>
             )}
           </VStack>

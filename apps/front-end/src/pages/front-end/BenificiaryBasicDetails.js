@@ -35,7 +35,7 @@ export default function BenificiaryBasicDetails() {
       edit_req_for_context_id: id,
     };
     const resultData = await benificiaryRegistoryService.getEditRequest(obj);
-    if (resultData?.data.length > 0) {
+    if (resultData?.data?.length > 0) {
       const fieldData = JSON.parse(resultData?.data[0]?.fields);
       setRequestData(fieldData);
     }
