@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import PropTypes from "prop-types";
@@ -57,20 +57,20 @@ export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
 
   const [width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const [schema, setSchema] = React.useState();
-  const [filter, setFilter] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
-  const [facilitaorStatus, setFacilitaorStatus] = React.useState();
-  const [modal, setModal] = React.useState(false);
-  const [data, setData] = React.useState([]);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [program, setProgram] = React.useState();
-  const [academicYear, setAcademicYear] = React.useState();
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const [schema, setSchema] = useState();
+  const [filter, setFilter] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [facilitaorStatus, setFacilitaorStatus] = useState();
+  const [modal, setModal] = useState(false);
+  const [data, setData] = useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [enumOptions, setEnumOptions] = useState({});
+  const [program, setProgram] = useState();
+  const [academicYear, setAcademicYear] = useState();
 
-  const [isDrawerOpen, setDrawerOpen] = React.useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const handleOpenButtonClick = () => {
     setDrawerOpen((prevState) => !prevState);
@@ -140,7 +140,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     },
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
       let academic_Id = await getSelectedAcademicYear();
@@ -165,9 +165,9 @@ export default function List({ footerLinks, userTokenInfo }) {
       });
       newSchema = getOptions(schemat, {
         key: "status",
-        arr: result,
-        title: "status",
-        value: "status",
+        arr: data?.data?.FACILITATOR_STATUS,
+        title: "title",
+        value: "value",
       });
 
       newSchema = getOptions(newSchema, {
@@ -182,7 +182,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchData();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchBlocks = async () => {
       if (schema && filter?.district?.length > 0) {
         const blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -200,7 +200,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchBlocks();
   }, [filter?.district]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchFilteredData = async () => {
       const result = await facilitatorRegistryService.filter({
         ...filter,
@@ -214,19 +214,19 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchFilteredData();
   }, [filter]);
 
-  const setFilterObject = React.useCallback((data) => {
+  const setFilterObject = useCallback((data) => {
     setFilter(data);
     setQueryParameters(data);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const arr = ["district", "block", "qualificationIds", "status"];
     const data = urlData(arr);
 
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     async (data) => {
       const {
         district: newDistrict,
@@ -252,7 +252,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     [filter, setFilterObject]
   );
 
-  const clearFilter = React.useCallback(() => {
+  const clearFilter = useCallback(() => {
     setFilter({});
     setFilterObject({});
   }, [setFilterObject]);
@@ -261,17 +261,14 @@ export default function List({ footerLinks, userTokenInfo }) {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback(
+  const handleSearch = useCallback(
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
     [filter]
   );
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout

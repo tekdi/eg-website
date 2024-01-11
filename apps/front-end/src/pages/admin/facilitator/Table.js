@@ -2,20 +2,12 @@ import {
   IconByName,
   ImageView,
   AdminTypo,
-  GetEnumValue,
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import {
-  HStack,
-  VStack,
-  ScrollView,
-  Pressable,
-  Button,
-  Menu,
-} from "native-base";
+import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +26,6 @@ const dropDown = (triggerProps, t) => {
 function Table({
   filter,
   setFilter,
-  facilitaorStatus,
   paginationTotalRows,
   data,
   loading,
@@ -46,7 +37,7 @@ function Table({
 
   const pagination = [10, 15, 25, 50, 100];
 
-  const columns = React.useCallback(
+  const columns = useCallback(
     (t, navigate) => [
       {
         name: t("PRERAK_ID"),
@@ -191,17 +182,14 @@ function Table({
     []
   );
 
-  const handleRowClick = React.useCallback(
+  const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
     },
     [navigate]
   );
 
-  const columnsMemoized = React.useMemo(
-    () => columns(t, navigate),
-    [t, navigate]
-  );
+  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
@@ -237,13 +225,13 @@ function Table({
         paginationTotalRows={paginationTotalRows}
         paginationDefaultPage={filter?.page || 1}
         highlightOnHover
-        onChangeRowsPerPage={React.useCallback(
+        onChangeRowsPerPage={useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
           [setFilter, filter]
         )}
-        onChangePage={React.useCallback(
+        onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
@@ -255,4 +243,4 @@ function Table({
   );
 }
 
-export default React.memo(Table);
+export default memo(Table);
