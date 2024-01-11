@@ -260,7 +260,8 @@ ul.list-inline {
   border: 1px solid #ddd;
 }
 .text-danger {
-  color: #a94442;
+  color: #dc2626;
+  font-size: 15px;
 }
 .has-error input {
   border-color: #a94442;
