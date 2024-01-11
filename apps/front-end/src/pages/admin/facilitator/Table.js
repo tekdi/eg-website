@@ -2,20 +2,12 @@ import {
   IconByName,
   ImageView,
   AdminTypo,
-  GetEnumValue,
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import {
-  HStack,
-  VStack,
-  ScrollView,
-  Pressable,
-  Button,
-  Menu,
-} from "native-base";
+import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +26,6 @@ const dropDown = (triggerProps, t) => {
 function Table({
   filter,
   setFilter,
-  facilitaorStatus,
   paginationTotalRows,
   data,
   loading,
@@ -46,7 +37,7 @@ function Table({
 
   const pagination = [10, 15, 25, 50, 100];
 
-  const columns = React.useCallback(
+  const columns = useCallback(
     (t, navigate) => [
       {
         name: t("PRERAK_ID"),
@@ -191,61 +182,37 @@ function Table({
     []
   );
 
-  const handleRowClick = React.useCallback(
+  const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
     },
     [navigate]
   );
 
-  const columnsMemoized = React.useMemo(
-    () => columns(t, navigate),
-    [t, navigate]
-  );
+  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
-      <ScrollView horizontal={true} mb="2">
-        <HStack pb="2">
-          {Array?.isArray(facilitaorStatus) &&
-            facilitaorStatus.map((item) => {
-              return (
-                <AdminTypo.H6
-                  key={item?.id}
-                  color={
-                    filter?.status == t(item?.status)
-                      ? "textMaroonColor.600"
-                      : ""
-                  }
-                  bold={filter?.status == t(item?.status)}
-                  cursor={"pointer"}
-                  mx={3}
-                  onPress={() => {
-                    setFilter({ ...filter, status: item?.status, page: 1 });
-                  }}
-                >
-                  {item.status === "all" ? (
-                    <AdminTypo.H6
-                      bold={filter?.status == t(item?.status) ? true : false}
-                    >
-                      {t("ALL")}
-                    </AdminTypo.H6>
-                  ) : (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"FACILITATOR_STATUS"}
-                      enumOptionValue={item?.status}
-                      enumApiData={enumOptions}
-                    />
-                  )}
-                  {filter?.status == t(item?.status)
-                    ? `(${paginationTotalRows})` + " "
-                    : " "}
-                </AdminTypo.H6>
-              );
-            })}
-        </HStack>
-      </ScrollView>
+      <VStack p={2} pt="0">
+        <AdminTypo.H5 underline bold color="blueText.400">
+          {filter?.status === undefined ? (
+            t("ALL") + `(${paginationTotalRows})`
+          ) : filter?.status?.[0] === "all" ? (
+            <AdminTypo.H4 bold>
+              {t("ALL") + `(${paginationTotalRows})`}
+            </AdminTypo.H4>
+          ) : (
+            filter?.status
+              ?.filter((item) => item)
+              .map((item) => t(item).toLowerCase())
+              .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+              .join(" , ")
+            //+
+            // `(${paginationTotalRows})` +
+            // " "
+          )}
+        </AdminTypo.H5>
+      </VStack>
       <DataTable
         customStyles={tableCustomStyles}
         columns={columnsMemoized}
@@ -258,13 +225,13 @@ function Table({
         paginationTotalRows={paginationTotalRows}
         paginationDefaultPage={filter?.page || 1}
         highlightOnHover
-        onChangeRowsPerPage={React.useCallback(
+        onChangeRowsPerPage={useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
           [setFilter, filter]
         )}
-        onChangePage={React.useCallback(
+        onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
@@ -276,4 +243,4 @@ function Table({
   );
 }
 
-export default React.memo(Table);
+export default memo(Table);
