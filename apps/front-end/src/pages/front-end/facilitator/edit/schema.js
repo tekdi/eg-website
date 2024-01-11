@@ -72,14 +72,14 @@ export default {
       step_name: "ADDRESS_DETAILS",
       title: "ADDRESS",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["district", "block", "village"],
       properties: {
-        state: {
-          title: "STATE",
-          type: "string",
-          format: "select",
-          readOnly: "",
-        },
+        // state: {
+        //   title: "STATE",
+        //   type: "string",
+        //   format: "select",
+        //   readOnly: "",
+        // },
         district: {
           title: "DISTRICT",
           type: "string",
@@ -92,15 +92,15 @@ export default {
           format: "select",
           readOnly: "",
         },
+        grampanchayat: {
+          title: "GRAMPANCHAYAT",
+          type: "string",
+          readOnly: "",
+        },
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
-          readOnly: "",
-        },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: "string",
           readOnly: "",
         },
       },
