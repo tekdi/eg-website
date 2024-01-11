@@ -9,6 +9,7 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
+import AadhaarNumberValidation from "component/AadhaarNumberValidation";
 import {
   HStack,
   VStack,
