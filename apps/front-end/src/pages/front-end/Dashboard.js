@@ -199,7 +199,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             {facilitator?.program_faciltators?.status ===
               "selected_for_onboarding" &&
               progress !== 100 && (
-                <Alert status="warning" alignItems={"start"}>
+                <Alert status="success" alignItems={"start"}>
                   <HStack alignItems="center" space="2" color>
                     <Alert.Icon />
                     <BodyMedium>
