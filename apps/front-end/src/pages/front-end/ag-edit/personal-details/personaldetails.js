@@ -53,14 +53,14 @@ export default function PersonalDetails({ ip }) {
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
-    setFormData(qData.result);
+    setFormData(qData?.result);
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
     const result = await facilitatorRegistryService.getEditRequests(obj);
     let field;
-    const parseField = result?.data[0]?.fields;
+    const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
       field = JSON.parse(parseField);
     }

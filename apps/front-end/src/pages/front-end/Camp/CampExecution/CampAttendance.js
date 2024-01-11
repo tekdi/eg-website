@@ -91,7 +91,7 @@ export default function CampAttendance({ activityId }) {
         if (status === PRESENT && randomAttendance) {
           const photo_1 =
             cameraFile?.data?.insert_documents?.returning?.[0]?.name;
-          payLoad = { ...payLoad, photo_1: `${photo_1}` };
+          payLoad = { ...payLoad, photo_1: photo_1 ? `${photo_1}` : null };
         }
         await campService.updateCampAttendance(payLoad);
         await getData();
@@ -100,14 +100,14 @@ export default function CampAttendance({ activityId }) {
       if (status === PRESENT) {
         const photo_1 = randomAttendance
           ? cameraFile?.data?.insert_documents?.returning?.[0]?.name
-          : "-";
-        if (photo_1) {
+          : null;
+        if (activityId) {
           const payLoad = {
             ...data,
             context_id: activityId,
             user_id: user?.id,
             status: PRESENT,
-            photo_1: `${photo_1}`,
+            photo_1: photo_1 ? `${photo_1}` : null,
           };
           await campService.markCampAttendance(payLoad);
           await getData();

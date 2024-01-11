@@ -150,7 +150,7 @@ export default {
       title: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
-      required: ["name", "contact_number"],
+      required: ["name", "designation", "contact_number"],
       properties: {
         name: {
           type: "string",
@@ -179,7 +179,7 @@ export default {
           format: "CustomR",
           grid: 2,
           enum: ["part_time", "full_time"],
-          enumNames: ["Part time", "Full time"],
+          enumNames: ["PART_TIME", "FACILITATOR_FULL_TIME"],
         },
       },
     },

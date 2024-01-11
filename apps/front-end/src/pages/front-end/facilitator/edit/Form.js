@@ -26,6 +26,7 @@ import {
 import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 import accessControl from "./AccessControl.js";
+import AadhaarNumberValidation from "component/AadhaarNumberValidation.js";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -58,7 +59,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     };
     const result = await facilitatorRegistryService.getEditRequests(obj);
     let field;
-    const parseField = result?.data[0]?.fields;
+    const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
       field = JSON.parse(parseField);
     }
@@ -456,13 +457,11 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
     if (step === "aadhaar_details") {
       if (data?.aadhar_no) {
-        if (
-          data?.aadhar_no &&
-          !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-        ) {
-          errors?.aadhar_no?.addError(
-            `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-          );
+        const validation = AadhaarNumberValidation({
+          aadhaar: data?.aadhar_no,
+        });
+        if (validation) {
+          errors?.aadhar_no?.addError(`${t(validation)}`);
         }
       }
     }
