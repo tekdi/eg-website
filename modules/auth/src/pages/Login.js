@@ -102,10 +102,7 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri:
-              language == "en"
-                ? "/images/logos/Educate_Girls_Pragati Logo_English_300_300.png"
-                : "/images/logos/Educate_Girls_Pragati_Logo_Hindi_300_300.png",
+            uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
           }}
           alt="Educate Girls"
           resizeMode="contain"
