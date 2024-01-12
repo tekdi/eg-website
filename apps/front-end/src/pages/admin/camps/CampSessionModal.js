@@ -229,17 +229,17 @@ export const SessionList = React.memo(
     const [collapsed, setCollapsed] = useState(true);
 
     // Separate completed and incomplete sessions
-    const completedSessions = sessionList.filter(
+    const completedSessions = sessionList?.filter(
       (item) => item?.session_tracks?.[0]?.status === "complete"
     );
 
-    const incompleteSessions = sessionList.filter(
+    const incompleteSessions = sessionList?.filter(
       (item) => item?.session_tracks?.[0]?.status !== "complete"
     );
 
     return (
       <VStack flex={1} space={"5"}>
-        {completedSessions.length > 0 && (
+        {completedSessions?.length > 0 && (
           <Pressable onPress={() => setCollapsed(!collapsed)}>
             <CardComponent
               _header={{ px: "0", pt: "0" }}
@@ -272,9 +272,9 @@ export const SessionList = React.memo(
             </CardComponent>
           </Pressable>
         )}
-        {completedSessions.length > 0 &&
+        {completedSessions?.length > 0 &&
           !collapsed &&
-          completedSessions.map((item) => (
+          completedSessions?.map((item) => (
             <Pressable
               onPress={async () => await setModalVisible(item?.id)}
               isDisabled={sessionActive?.ordering !== item?.ordering}
