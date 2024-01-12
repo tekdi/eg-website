@@ -246,7 +246,9 @@ export default function List({ footerLinks, userTokenInfo }) {
         ...(newQualificationIds && newQualificationIds?.length > 0
           ? { qualificationIds: newQualificationIds }
           : {}),
-        ...(newStatus && newStatus?.length > 0 ? { status: newStatus } : {}),
+        ...(newStatus && newStatus?.length > 0
+          ? { status: newStatus }
+          : { status: [] }),
       });
     },
     [filter, setFilterObject]

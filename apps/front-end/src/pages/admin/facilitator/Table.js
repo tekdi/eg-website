@@ -3,11 +3,12 @@ import {
   ImageView,
   AdminTypo,
   tableCustomStyles,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -23,16 +24,9 @@ const dropDown = (triggerProps, t) => {
 };
 
 // Table component
-function Table({
-  filter,
-  setFilter,
-  paginationTotalRows,
-  data,
-  loading,
-  enumOptions,
-}) {
+function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const { t } = useTranslation();
-
+  const [selectedData, setSelectedData] = useState();
   const navigate = useNavigate();
 
   const pagination = [10, 15, 25, 50, 100];
@@ -182,6 +176,10 @@ function Table({
     []
   );
 
+  useEffect(async () => {
+    const result = await enumRegistryService.statuswiseCount();
+    setSelectedData(result);
+  }, []);
   const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
@@ -195,7 +193,7 @@ function Table({
     <VStack>
       <VStack p={2} pt="0">
         <AdminTypo.H5 underline bold color="blueText.400">
-          {filter?.status === undefined ? (
+          {filter?.status === undefined || filter?.status?.length === 0 ? (
             t("ALL") + `(${paginationTotalRows})`
           ) : filter?.status?.[0] === "all" ? (
             <AdminTypo.H4 bold>
@@ -204,12 +202,17 @@ function Table({
           ) : (
             filter?.status
               ?.filter((item) => item)
-              .map((item) => t(item).toLowerCase())
+              .map(
+                (item) =>
+                  t(item).toLowerCase() +
+                  `(${
+                    selectedData
+                      ? selectedData?.find((e) => item === e.status)?.count
+                      : 0
+                  })`
+              )
               .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
               .join(" , ")
-            //+
-            // `(${paginationTotalRows})` +
-            // " "
           )}
         </AdminTypo.H5>
       </VStack>
