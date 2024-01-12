@@ -153,7 +153,6 @@ const SessionActions = ({
         />
       ) : ( */}
       <VStack space={4}>
-        {console.log({ buttonHide })}
         {buttonHide?.includes("complete") && (
           <CompleteButton
             onPress={() => setSubmitStatus({ status: "complete" })}
