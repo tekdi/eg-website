@@ -311,7 +311,7 @@ export const SessionList = React.memo(
               </CardComponent>
             </Pressable>
           ))}
-        {incompleteSessions.map((item) => (
+        {incompleteSessions?.map((item) => (
           <Pressable
             onPress={async () => await setModalVisible(item?.id)}
             isDisabled={sessionActive?.ordering !== item?.ordering}
