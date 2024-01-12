@@ -67,18 +67,6 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(async () => {
-    let newSchema = schema;
-    const programSelected = jsonParse(localStorage.getItem("program"));
-    if (["BIHAR"].includes(programSelected?.state_name)) {
-      newSchema = await setGramp({
-        format: "select",
-        schemaData: newSchema,
-      });
-      setSchemaData(newSchema);
-    }
-  }, []);
-
-  React.useEffect(async () => {
     const { id } = userTokenInfo?.authUser || {};
     if (id) {
       const result = await facilitatorRegistryService.getOne({ id });

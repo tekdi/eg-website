@@ -547,10 +547,10 @@ const AadhaarOptions = ({
       )} */}
       <FrontEndTypo.Primarybutton
         onPress={() => {
-          navigate(-1);
+          navigate("/");
         }}
       >
-        {t("GO_BACK")}
+        {t("GO_BACK_TO_HOME")}
       </FrontEndTypo.Primarybutton>
     </VStack>
   );

@@ -364,8 +364,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         profile_url: facilitator?.profile_photo_1?.name,
         name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
-        facilitator,
       }}
+      facilitator={facilitator}
       _footer={{ menues: footerLinks }}
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
