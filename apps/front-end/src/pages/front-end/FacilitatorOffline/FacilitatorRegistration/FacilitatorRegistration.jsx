@@ -11,6 +11,7 @@ import {
   Center,
   Pressable,
 } from "native-base";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import validator from "@rjsf/validator-ajv8";
 import {
@@ -30,73 +31,18 @@ import prerakDutiesImage5 from "../../../../assets/images/facilitator-duties/img
 import prerakDutiesImage6 from "../../../../assets/images/facilitator-duties/img6.png";
 import noConnection from "../../../../assets/images/facilitator-duties/offline/no_connection.png";
 import plugin from "../../../../assets/images/facilitator-duties/offline/plugin.png";
+import stylesheet from "./styles";
+import * as formSchemas from "./schema";
 
-const stylesheet = {
-  text1: {
-    fontFamily: "Inter",
-    fontWeight: "400",
-    fontSize: "14px",
-    lineHeight: "26px",
-    color: "#3F8BF1",
-    textDecoration: "underline",
-    marginTop: "5px",
-  },
-  image: {},
-  buttonStyle: {
-    height: "91px",
-    padding: "16px",
-  },
-  headerText: {
-    color: "var(--Gray-90, #212121);",
-    fontFamily: "Inter",
-    fontWeight: "700",
-    fontSize: "22px",
-  },
-  languageButton: {
-    width: 150,
-    borderRadius: 14,
-    backgroundColor: "var(--Gray-10, #FAFAFA)",
-    borderWidth: 2,
-    borderColor: "var(--Secondary-Blue, #084B82)",
-    height: 91,
-  },
-  languageButtonText: {
-    color: "var(--Secondary-Blue, #084B82)",
-    textAlign: "center",
-    fontFamily: "Inter",
-    fontSize: 12,
-    fontStyle: "normal",
-    fontWeight: "600",
-    lineHeight: "normal",
-  },
-
-  defaultLanguageButton: {
-    width: 150,
-    borderRadius: 4,
-    backgroundColor: "var(--Gray-10, #FAFAFA)",
-    border: " 1px solid var(--Gray-30, #E0E0E0)",
-    borderColor: "gray",
-    height: 91,
-  },
-
-  defaulutLanguageButtonText: {
-    color: "var(--Gray-80, #424242)",
-    textAlign: "center",
-    fontFamily: "Inter",
-    fontSize: 12,
-    fontStyle: "normal",
-    fontWeight: "500",
-    lineHeight: "normal",
-  },
-};
+const { enterBasicDetailsSchema, contactDetailsSchema } = formSchemas;
 
 const FacilitatorRegistration = () => {
   const navigate = useNavigate();
 
-  const [activeScreenName, setActiveScreenName] = React.useState();
-  const [mobileNumber, setMobileNumber] = React.useState("");
+  const [activeScreenName, setActiveScreenName] = useState();
+  const [mobileNumber, setMobileNumber] = useState("");
 
-  const [header, setHeader] = React.useState([
+  const [header, setHeader] = useState([
     { text: "Identify Out-of-School Girls" },
     { text: "Counsel Parents" },
     { text: "Register Girls for Exams" },
@@ -104,7 +50,7 @@ const FacilitatorRegistration = () => {
     { text: "Help Girls Attend Exams" },
     { text: "Guide them towards Future Goals" },
   ]);
-  const [caption, setCaption] = React.useState([
+  const [caption, setCaption] = useState([
     { showcaption: "To pursue 10th school from open school." },
     { showcaption: "To pursue 10th school from open school." },
     { showcaption: "To pursue 10th school from open school." },
@@ -113,7 +59,7 @@ const FacilitatorRegistration = () => {
     { showcaption: "To pursue 10th school from open school." },
   ]);
 
-  const [images, setImages] = React.useState([
+  const [images, setImages] = useState([
     { uri: prerakDutiesImage1 },
     { uri: prerakDutiesImage2 },
     { uri: prerakDutiesImage3 },
@@ -122,17 +68,17 @@ const FacilitatorRegistration = () => {
     { uri: prerakDutiesImage6 },
   ]);
 
-  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-  const [currentHeaderIndex, setCurrentHeaderIndex] = React.useState(0);
-  const [currentCaptionIndex, setCurrentCaptionIndex] = React.useState(0);
-  const [formData, setFormData] = React.useState({});
-  const [page, setPage] = React.useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
+  const [currentCaptionIndex, setCurrentCaptionIndex] = useState(0);
+  const [formData, setFormData] = useState({});
+  const [page, setPage] = useState(0);
 
-  const [isOnline, setIsOnline] = React.useState(
+  const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const online = () => setIsOnline(true);
     const offline = () => setIsOnline(false);
 
@@ -145,7 +91,7 @@ const FacilitatorRegistration = () => {
     };
   }, []);
 
-  console.log("status", isOnline);
+  // console.log("status", isOnline);
 
   const handleInputChange = (value) => {
     setMobileNumber(value);
@@ -161,7 +107,6 @@ const FacilitatorRegistration = () => {
     "chooseLangauge",
     "introductionOfProject",
     "prerakDuties",
-    "idVerification",
     "enterBasicDetails",
     "contactDetails",
   ];
@@ -177,7 +122,6 @@ const FacilitatorRegistration = () => {
       console.log("previous screen");
     }
   };
-
   const offlineStatusScreen = () => (
     <>
       <VStack alignItems={"center"} flex={3} space={6}>
@@ -208,7 +152,7 @@ const FacilitatorRegistration = () => {
           style={{ background: "#FF0000", top: "40px", width: "100%" }}
           onPress={() => handleNextScreen("dateOfBirth")}
         >
-          {t("NEXT")}
+          {t("TRY_AGAIN")}
         </FrontEndTypo.Primarybutton>
       </VStack>
     </>
@@ -297,7 +241,7 @@ const FacilitatorRegistration = () => {
                 </Pressable>
               </Center>
               <FrontEndTypo.Primarybutton
-                onPress={() => handleNextScreen("idVerification")}
+                onPress={() => handleNextScreen("enterBasicDetails")}
               >
                 {t("APPLY_NOW")}
               </FrontEndTypo.Primarybutton>
@@ -315,55 +259,46 @@ const FacilitatorRegistration = () => {
       </VStack>
     </>
   );
-  const idVerification = () => (
-    <>
-      <VStack>
-        <FrontEndTypo.H1 bold>{t("SIGN_UP_IN_THREE_STEPS")}</FrontEndTypo.H1>
-        <FrontEndTypo.H3
-          bold
-          style={{ fontWeight: 600, color: "#790000", marginTop: "20px" }}
-        >
-          {t("AADHAAR_CARD_DETAILS")}
-        </FrontEndTypo.H3>{" "}
-        <Image
-          alignSelf={"center"}
-          resizeMode="contain"
-          source={{ uri: aadharImage }}
-          alt="Alternate Text"
-          size="2xl"
-        />{" "}
-        <Form
-          formData={formData}
-          onSubmit={(data) => setFormData(data.formData)}
-          {...{ templates, FieldTemplate }}
-          validator={validator}
-          schema={{
-            type: "object",
-            required: ["aadharName"],
-            properties: {
-              aadharName: {
-                type: "string",
-                title: "AADHAR_CARD",
-              },
-            },
-          }}
-        >
-          <Stack marginTop={2}>
-            <FrontEndTypo.H3>{t("AADHAR_SHOULD_12_DIGIT")}</FrontEndTypo.H3>
-          </Stack>
+  // const idVerification = () => (
+  //   <>
+  //     <VStack>
+  //       <FrontEndTypo.H1 bold>{t("SIGN_UP_IN_THREE_STEPS")}</FrontEndTypo.H1>
+  //       <FrontEndTypo.H3
+  //         bold
+  //         style={{ fontWeight: 600, color: "#790000", marginTop: "20px" }}
+  //       >
+  //         {t("AADHAAR_CARD_DETAILS")}
+  //       </FrontEndTypo.H3>{" "}
+  //       <Image
+  //         alignSelf={"center"}
+  //         resizeMode="contain"
+  //         source={{ uri: aadharImage }}
+  //         alt="Alternate Text"
+  //         size="2xl"
+  //       />{" "}
+  //       <Form
+  //         formData={formData}
+  //         onSubmit={(data) => setFormData(data.formData)}
+  //         {...{ templates, FieldTemplate }}
+  //         validator={validator}
+  //         schema={idVerificationSchema}
+  //       >
+  //         <Stack marginTop={2}>
+  //           <FrontEndTypo.H3>{t("AADHAR_SHOULD_12_DIGIT")}</FrontEndTypo.H3>
+  //         </Stack>
 
-          <FrontEndTypo.Primarybutton
-            style={{ background: "#FF0000", space: "20px", top: "35px" }}
-            onClick={(e) => setPage(page + 1)}
-            onPress={() => handleNextScreen("enterBasicDetails")}
-            // isDisabled={!mobileNumber}
-          >
-            {t("NEXT")}
-          </FrontEndTypo.Primarybutton>
-        </Form>
-      </VStack>
-    </>
-  );
+  //         <FrontEndTypo.Primarybutton
+  //           style={{ background: "#FF0000", space: "20px", top: "35px" }}
+  //           onClick={(e) => setPage(page + 1)}
+  //           onPress={() => handleNextScreen("enterBasicDetails")}
+  //           // isDisabled={!mobileNumber}
+  //         >
+  //           {t("NEXT")}
+  //         </FrontEndTypo.Primarybutton>
+  //       </Form>
+  //     </VStack>
+  //   </>
+  // );
   const enterBasicDetails = () => (
     <>
       <VStack flex={3} space={5}>
@@ -377,36 +312,9 @@ const FacilitatorRegistration = () => {
         <Form
           formData={formData}
           onSubmit={(data) => setFormData(data.formData)}
-          // widgets={{ Test2 }}
           {...{ templates, FieldTemplate }}
           validator={validator}
-          schema={{
-            // title: "A registration form",
-            // description: "A simple form example.",
-            type: "object",
-            required: ["firstName", "lastName"],
-
-            properties: {
-              firstName: {
-                type: "string",
-                title: "FIRST_NAME",
-              },
-              lastName: {
-                type: "string",
-                title: "LAST_NAME",
-              },
-              mobile: {
-                label: "HOW_CAN_CONTACT_YOU",
-                type: "number",
-                title: "MOBILE_NUMBER",
-              },
-            },
-          }}
-
-          // onSubmit={({ formData }) => {
-          //   console.log("Form data submitted:", formData);
-          //   handleNextScreen("contactDetails");
-          // }}
+          schema={enterBasicDetailsSchema}
         >
           <FrontEndTypo.Primarybutton
             style={{ background: "#FF0000", space: "20px", marginTop: "35px" }}
@@ -432,16 +340,7 @@ const FacilitatorRegistration = () => {
           onSubmit={(data) => setFormData(data.formData)}
           {...{ templates, FieldTemplate }}
           validator={validator}
-          schema={{
-            type: "object",
-            required: ["aadharName"],
-            properties: {
-              mobile: {
-                type: "number",
-                title: "MOBILE_NUMBER",
-              },
-            },
-          }}
+          schema={contactDetailsSchema}
         >
           <Stack top={1}>
             <FrontEndTypo.H3
@@ -455,7 +354,11 @@ const FacilitatorRegistration = () => {
             </FrontEndTypo.H3>
           </Stack>
           <Stack top={20}>
-            <CustomOTPBox></CustomOTPBox>
+            <CustomOTPBox
+              onChange={() => {
+                console.log("get otp");
+              }}
+            ></CustomOTPBox>
           </Stack>
 
           <FrontEndTypo.Primarybutton
@@ -546,7 +449,7 @@ const FacilitatorRegistration = () => {
             <FrontEndTypo.Primarybutton
               justifyContent={"center"}
               width="85%"
-              onPress={() => handleNextScreen("idVerification")}
+              onPress={() => handleNextScreen("enterBasicDetails")}
             >
               {t("APPLY_NOW")}
             </FrontEndTypo.Primarybutton>
@@ -564,7 +467,7 @@ const FacilitatorRegistration = () => {
             color="var(--Gray-3, #828282);"
             my="5"
             underline
-            onPress={() => handleNextScreen("idVerification")}
+            onPress={() => handleNextScreen("enterBasicDetails")}
           >
             {t("SKIP_TO_APPLY")}
           </FrontEndTypo.H3>
@@ -572,6 +475,8 @@ const FacilitatorRegistration = () => {
       </>
     );
   };
+
+  //redux implementation
 
   const renderSwitchCase = () => {
     switch (activeScreenName) {
@@ -581,8 +486,6 @@ const FacilitatorRegistration = () => {
         return isOnline ? introductionOfProject() : offlineStatusScreen();
       case "prerakDuties":
         return isOnline ? prerakDuties() : offlineStatusScreen();
-      case "idVerification":
-        return isOnline ? idVerification() : offlineStatusScreen();
       case "enterBasicDetails":
         return isOnline ? enterBasicDetails() : offlineStatusScreen();
       case "contactDetails":
