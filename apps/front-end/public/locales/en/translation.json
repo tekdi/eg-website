@@ -1,13 +1,9 @@
 {
   "10_MINUTES_BEFORE": "10 minutes before",
   "12TH_GRADE": "12th Grade",
-<<<<<<< HEAD
   "AADHAAR_CARD": "Aadhaar Card",
   "AADHAAR_CARD_DETAILS": "Aadhaar Card Details",
-=======
   "AADHAAR": "Aadhaar",
-  "AADHAAR_CARD": "Aadhaar Card",
->>>>>>> origin/pr_offline_onboarding
   "AADHAAR_CARD_UPLOADED": "Aadhaar Card Uploaded",
   "AADHAAR_DETAILS": "Aadhaar Details",
   "AADHAAR_EKYC": "Aadhaar_eKYC",
@@ -296,7 +292,6 @@
   "COMMENT": "Comment",
   "COMMENT_SECTION": "Comment Section",
   "COMMON_NO_MORE_RECORDS": "Sorry! There are no more records to display.",
-  "COMMUNITY": "Community",
   "COMMUNITY_ALERT_MESSAGE": "To create viable camp you need add at least 2 Community members",
   "COMMUNITY_DETAILS": "Community Details",
   "COMMUNITY_ENGAGEMENT": "Community Engagement",
@@ -324,16 +319,11 @@
   "COMMUNITY_MEMBER_DESIGNATIONS_WARD_MEMBER": "Ward Member",
   "COMMUNITY_MEMBER_DESIGNATIONS_ZILA_PARISAD_MEMBER": "Zila Parisad Member",
   "COMMUNITY_MIN_ERROR": "To register a camp you need to add atleast two dignitaries contact details from the community.",
-<<<<<<< HEAD
   "COMMUNITY": "Community",
   "COMPANY_NAME": "Company Name",
   "COMPANY_AND_ORGANIZATION_NAME": "The title of the organization / company",
   "COMPLETE": "Complete",
-=======
->>>>>>> origin/pr_offline_onboarding
   "COMPANY": "Company",
-  "COMPANY_NAME": "Company Name",
-  "COMPLETE": "Complete",
   "COMPLETE_AADHAAR_CARD_VERIFICATION": "Complete Aadhaar Card Verification",
   "COMPLETE_AADHAAR_VERIFICATION": "Complete Aadhaar Verification",
   "COMPLETE_AADHAR_KYC": "Complete Aadhaar eKYC",
@@ -863,11 +853,8 @@
   "NEXT": "Next",
   "NGO_REFERRAL": "NGO Referral",
   "NIOS": "NIOS",
-<<<<<<< HEAD
   "NO_ONE": "No one",
-=======
   "NO": "No",
->>>>>>> origin/pr_offline_onboarding
   "NO_I_USE_A_FAMILY_MEMBERS": "No, use a family member's mobile phone",
   "NO_PLAN": "No, I have other plans for today.",
   "NOT_APPLICABLE": "Not Applicable",
@@ -877,14 +864,10 @@
   "NOT_FOUND": "Not Found",
   "NOT_REGISTER": "Not Register",
   "NOT_STARTED": "Not Started",
-  "OFFLINE": "Offline",
   "OFFLINE_AADHAAR_VERIFICATION": "Offline Aadhaar Verification",
   "OFFLINE_KYC_MESSAGE": "If the Aadhaar is connected to their mobile number you can do offline KYC verification.",
-<<<<<<< HEAD
   "OFFLINE": "Offline",
   "OFFLINE_STATUS": "Reconnect to the Internet to access this page !",
-=======
->>>>>>> origin/pr_offline_onboarding
   "OK": "Ok",
   "OKYC_VERIFICATION": "OKYC IP Verified",
   "OLD": "Old",
@@ -1189,11 +1172,8 @@
   "SHORTLISTED_FOR_ORIENTATION": "Shortlisted for orientation",
   "SIGN_IN": "Sign In",
   "SIGN_UP": "Sign up",
-<<<<<<< HEAD
   "SIGN_UP_IN_THREE_STEPS": "Sign up in three easy steps !",
-=======
   "SKIP": "Skip",
->>>>>>> origin/pr_offline_onboarding
   "SKIP_SUBMIT": "Skip and submit",
   "SKIP_TO_APPLY": "Skip to apply",
   "SKIP_TO_DASHBOARD": "Skip to dashboard",
@@ -1292,11 +1272,8 @@
   "TRY_AADHAR_QR_KYC": "Try Aadhaar QR KYC",
   "TRY_AADHAR_UPLOAD_KYC": "Try Aadhaar upload KYC",
   "TRY_OTHER": "Try Other",
-<<<<<<< HEAD
   "TRY_AGAIN": "Try Again",
-=======
   "TYPE": "Type",
->>>>>>> origin/pr_offline_onboarding
   "TYPE_OF_CAMPSITE ": "Type of Campsite ",
   "TYPE_OF_DEVICE": "Type of Device",
   "TYPE_OF_DOCUMENT": "Type of document",
@@ -1365,13 +1342,9 @@
   "VIEW_PROFILE": "View Profile",
   "VIEW_STATUS": "View Status",
   "VILLAGE_WARD": "Village/Ward",
-<<<<<<< HEAD
   "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "VOLUNTEER_JOB_QUALIFICATION": "Volunteer Job and Qualification Details",
-=======
->>>>>>> origin/pr_offline_onboarding
   "VOLUNTEER_EXPERIENCE": "Volunteer Experience",
-  "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "VOLUNTEER_TITLE": "Volunteer title",
   "WE_HAVE_SENT_YOU_A_TEXT_MESSAGE_WITH_USERNAME_AND_PASSWORD_ON_YOUR_MOBILE_NUMBER": "We have sent you a text message with username and password on your mobile number",
   "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR": "We will send you an OTP to the mobile number linked with your Aadhaar",

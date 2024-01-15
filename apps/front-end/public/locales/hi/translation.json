@@ -21,13 +21,9 @@
   "AADHAAR_OKYC_NOT_COMPLETED_BY_PRERAK": "आधार OKYC प्रेरक द्वारा पूरा नहीं किया गया है, कृपया प्रेरक को OKYC पूरा करने के लिए कहें।",
   "AADHAAR_REQUIRED_MESSAGE": "नामांकन विवरण टैब तक पहुंचने के लिए कृपया पहले आधार नंबर दर्ज करें",
   "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER": " १२ अंकों का मान्य आधार नंबर दर्ज करें",
-<<<<<<< HEAD
   "AADHAR_SHOULD_12_DIGIT": "अपने आधार कार्ड पर अंकित 12 अंकों का नंबर दर्ज करें",
   "AADHAAR_VERIFICATION_SUCCESSFUL": "आधार वेरिफिकेशन  सफल",
-=======
->>>>>>> origin/pr_offline_onboarding
   "AADHAAR_VERIFICATION": "आधार वेरिफिकेशन ",
-  "AADHAAR_VERIFICATION_SUCCESSFUL": "आधार वेरिफिकेशन  सफल",
   "AADHAR_ALREADY_REGISTERED_WITH_PRERAK": "यह आधार संख्या पहले से ही प्रेरक के साथ पंजीकृत है, इसलिए आप इस आधार संख्या को जोड़ नहीं सकते हैं। कृपया अपने आधार संख्या की पुष्टि करें।",
   "AADHAR_CARD": "आधार कार्ड",
   "AADHAR_KYC_IN_PROGRESS": "आधार OKYC प्रगति पर है",
@@ -324,12 +320,7 @@
   "COMMUNITY_MEMBER_DESIGNATIONS_WARD_MEMBER": "वार्ड सदस्य",
   "COMMUNITY_MEMBER_DESIGNATIONS_ZILA_PARISAD_MEMBER": "जिला परिषद सदस्य",
   "COMMUNITY_MIN_ERROR": "किसी शिविर को पंजीकृत करने के लिए आपको समुदाय से कम से कम 2 गणमान्य व्यक्ती के संपर्क विवरण जोड़ने होंगे.",
-<<<<<<< HEAD
-  "COMMUNITY": "समुदाय",
-  "COMPANY_NAME": "कंपनी का नाम",
   "COMPANY_AND_ORGANIZATION_NAME": "संस्था/कंपनी का शीर्षक",
-=======
->>>>>>> origin/pr_offline_onboarding
   "COMPANY": "कंपनी",
   "COMPANY_NAME": "कंपनी का नाम",
   "COMPLETE": "पूर्ण",
@@ -861,11 +852,8 @@
   "NEXT": "अगला",
   "NGO_REFERRAL": "NGO रेफरल",
   "NIOS": "NIOS",
-<<<<<<< HEAD
   "NO_ONE": " कोई नहीं",
-=======
   "NO": "नहीं",
->>>>>>> origin/pr_offline_onboarding
   "NO_I_USE_A_FAMILY_MEMBERS": "नहीं, परिवार के किसी सदस्य का मोबाइल उपयोग करते हैं",
   "NO_PLAN": "नहीं, आज कुछ और प्लान है",
   "NOT_APPLICABLE": "लागू नहीं",
@@ -878,11 +866,7 @@
   "OFFLINE": "ऑफलाइन",
   "OFFLINE_AADHAAR_VERIFICATION": "ऑफलाइन आधार वेरिफिकेशन",
   "OFFLINE_KYC_MESSAGE": "अगर आधार उनके मोबाइल नंबर से जुड़ा है तो आप ऑफलाइन OKYC वेरिफिकेशन कर सकते हैं",
-<<<<<<< HEAD
-  "OFFLINE": "ऑफलाइन",
   "OFFLINE_STATUS": "इस पृष्ठ तक पहुँचने के लिए इंटरनेट से पुनः कनेक्ट करें!",
-=======
->>>>>>> origin/pr_offline_onboarding
   "OK": "ठीक है",
   "OKYC_VERIFICATION": "OKYC IP वेरिफाइड",
   "OLD": "पुराना",
@@ -1187,11 +1171,8 @@
   "SHORTLISTED_FOR_ORIENTATION": "ओरिएंटेशन के लिए शॉर्टलिस्ट",
   "SIGN_IN": "साइन इन करें",
   "SIGN_UP": "साइन अप करें",
-<<<<<<< HEAD
   "SIGN_UP_IN_THREE_STEPS": "तीन सरल चरणों में साइन अप करें!",
-=======
   "SKIP": "छोडे एवं आगे बढे",
->>>>>>> origin/pr_offline_onboarding
   "SKIP_SUBMIT": "जमा करें पर जाएँ",
   "SKIP_TO_APPLY": "लागू करें पर जाएँ",
   "SKIP_TO_DASHBOARD": "डैशबोर्ड पर जाएं",
@@ -1290,11 +1271,8 @@
   "TRY_AADHAR_QR_KYC": "आधार QR OKYC प्रयास करें",
   "TRY_AADHAR_UPLOAD_KYC": "आधार फोटो OKYC प्रयास करें",
   "TRY_OTHER": "कोई दूसरा कोशिश",
-<<<<<<< HEAD
   "TRY_AGAIN": "फिर से कोशिश करें",
-=======
   "TYPE": "प्रकार",
->>>>>>> origin/pr_offline_onboarding
   "TYPE_OF_CAMPSITE ": "शिविर स्थल का प्रकार ",
   "TYPE_OF_DEVICE": "डिवाइस का प्रकार",
   "TYPE_OF_DOCUMENT": "दस्तावेज़ का प्रकार",
@@ -1348,18 +1326,14 @@
   "VERIFIED": "वेरिफाइड",
   "VERIFIED_DOCUMENTS": "वेरिफाइड दस्तावेज",
   "VERIFIED_LEARNERS_IN_THIS_CAMP": "इस शिविर में नामांकित-IP वेरिफाइड",
-  "VERIFY": "वेरिफाई",
   "VERIFY_AADHAR_NUMER_KYC": "आधार संख्या OKYC का उपयोग करके वेरिफिकेशन करें",
   "VERIFY_AADHAR_QR_KYC": "आधार क्यू. आर. OKYC को वेरिफिकेशन करें",
   "VERIFY_AADHAR_UPLOAD_KYC": "आधार अपलोड OKYC वेरिफिकेशन करें",
   "VERIFY_MESSAGE": "क्या आप शिविर का सत्यापन करना चाहते हैं? यदि हाँ, तो पुष्टि दबाएँ।",
   "VERIFY_OTP": "वेरिफाई OTP",
-<<<<<<< HEAD
   "VERIFY_CONTACT_NUMBER": "अपना संपर्क नंबर सत्यापित करें",
   "VERIFY": "वेरिफाई",
-=======
   "VIEW": "देखें",
->>>>>>> origin/pr_offline_onboarding
   "VIEW_ALL": "सभी को देखें",
   "VIEW_ATTENDANCE": "उपस्थिति देखें",
   "VIEW_CERTIFICATE": "प्रमाणपत्र देखें",
