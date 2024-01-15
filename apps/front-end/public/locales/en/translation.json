@@ -1,8 +1,13 @@
 {
   "10_MINUTES_BEFORE": "10 minutes before",
   "12TH_GRADE": "12th Grade",
+<<<<<<< HEAD
+  "AADHAAR_CARD": "Aadhaar Card",
+  "AADHAAR_CARD_DETAILS": "Aadhaar Card Details",
+=======
   "AADHAAR": "Aadhaar",
   "AADHAAR_CARD": "Aadhaar Card",
+>>>>>>> origin/pr_offline_onboarding
   "AADHAAR_CARD_UPLOADED": "Aadhaar Card Uploaded",
   "AADHAAR_DETAILS": "Aadhaar Details",
   "AADHAAR_EKYC": "Aadhaar_eKYC",
@@ -24,6 +29,7 @@
   "AADHAAR_VERIFICATION_SUCCESSFUL": "Aadhaar Verification Successful",
   "AADHAR_ALREADY_REGISTERED_WITH_PRERAK": "This Aadhaar Number is already registered with Prerak, Hence you can not add this Aadhaar Number. Please verify your Aadhaar number.",
   "AADHAR_CARD": "Aadhaar Card",
+  "AADHAR_SHOULD_12_DIGIT": "Enter the 12 - digit number marked on your Aadhaar card .",
   "AADHAR_KYC_IN_PROGRESS": "Aadhaar KYC in Progress",
   "AADHAR_KYC_PENDING": "KYC Pending",
   "AADHAR_KYC_VERIFICATION_FAILED": "Aadhaar KYC Verification Failed",
@@ -318,6 +324,13 @@
   "COMMUNITY_MEMBER_DESIGNATIONS_WARD_MEMBER": "Ward Member",
   "COMMUNITY_MEMBER_DESIGNATIONS_ZILA_PARISAD_MEMBER": "Zila Parisad Member",
   "COMMUNITY_MIN_ERROR": "To register a camp you need to add atleast two dignitaries contact details from the community.",
+<<<<<<< HEAD
+  "COMMUNITY": "Community",
+  "COMPANY_NAME": "Company Name",
+  "COMPANY_AND_ORGANIZATION_NAME": "The title of the organization / company",
+  "COMPLETE": "Complete",
+=======
+>>>>>>> origin/pr_offline_onboarding
   "COMPANY": "Company",
   "COMPANY_NAME": "Company Name",
   "COMPLETE": "Complete",
@@ -477,6 +490,7 @@
   "ENTER_SECURITY_CODE": "Enter Security Code",
   "ENTER_THE_12_DIGIT_AADHAAR_CARD": "Enter the 12 digit number on your Aadhaar Card",
   "ENTER_THE_ENROLLMENT_DETAILS": "Enter the enrollment details",
+  "THE_ENROLLMENT_DETAILS": "Enter the details",
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "ENTER_YOUR_AADHAAR_NUMBER": "Enter Your Aadhaar Number",
   "ENTERED_AADHAR_NOT_EDITABLE": "Entered Aadhaar card number is not editable. Please verify before entering",
@@ -849,7 +863,11 @@
   "NEXT": "Next",
   "NGO_REFERRAL": "NGO Referral",
   "NIOS": "NIOS",
+<<<<<<< HEAD
+  "NO_ONE": "No one",
+=======
   "NO": "No",
+>>>>>>> origin/pr_offline_onboarding
   "NO_I_USE_A_FAMILY_MEMBERS": "No, use a family member's mobile phone",
   "NO_PLAN": "No, I have other plans for today.",
   "NOT_APPLICABLE": "Not Applicable",
@@ -862,6 +880,11 @@
   "OFFLINE": "Offline",
   "OFFLINE_AADHAAR_VERIFICATION": "Offline Aadhaar Verification",
   "OFFLINE_KYC_MESSAGE": "If the Aadhaar is connected to their mobile number you can do offline KYC verification.",
+<<<<<<< HEAD
+  "OFFLINE": "Offline",
+  "OFFLINE_STATUS": "Reconnect to the Internet to access this page !",
+=======
+>>>>>>> origin/pr_offline_onboarding
   "OK": "Ok",
   "OKYC_VERIFICATION": "OKYC IP Verified",
   "OLD": "Old",
@@ -950,6 +973,8 @@
   "PLEASE_SELECT_ALL_ITEMS_MESSAGE": "Please select all details then you can save the details",
   "PLEASE_SELECT_OPTION_1_TO_3": "Please select min 1 and max 3 options",
   "PLEASE_WHATSAPP_NUMBER": "(Please Enter Your Whatsapp Number)",
+  "PLEASE_ENTER_OTP": "Please enter the OTP sent to your phone",
+  "PLEASE_MOBILE_NUMBER": "( Please enter your phone number ) .",
   "POOR": "Poor",
   "POST_GRADUATE": "Post Graduate",
   "POSTER": "Poster",
@@ -1164,7 +1189,11 @@
   "SHORTLISTED_FOR_ORIENTATION": "Shortlisted for orientation",
   "SIGN_IN": "Sign In",
   "SIGN_UP": "Sign up",
+<<<<<<< HEAD
+  "SIGN_UP_IN_THREE_STEPS": "Sign up in three easy steps !",
+=======
   "SKIP": "Skip",
+>>>>>>> origin/pr_offline_onboarding
   "SKIP_SUBMIT": "Skip and submit",
   "SKIP_TO_APPLY": "Skip to apply",
   "SKIP_TO_DASHBOARD": "Skip to dashboard",
@@ -1263,7 +1292,11 @@
   "TRY_AADHAR_QR_KYC": "Try Aadhaar QR KYC",
   "TRY_AADHAR_UPLOAD_KYC": "Try Aadhaar upload KYC",
   "TRY_OTHER": "Try Other",
+<<<<<<< HEAD
+  "TRY_AGAIN": "Try Again",
+=======
   "TYPE": "Type",
+>>>>>>> origin/pr_offline_onboarding
   "TYPE_OF_CAMPSITE ": "Type of Campsite ",
   "TYPE_OF_DEVICE": "Type of Device",
   "TYPE_OF_DOCUMENT": "Type of document",
@@ -1320,6 +1353,7 @@
   "VERIFY": "Verify",
   "VERIFY_AADHAR_NUMER_KYC": "Verify using Aadhaar Number KYC",
   "VERIFY_AADHAR_QR_KYC": "Verify Aadhaar QR KYC",
+  "VERIFY_CONTACT_NUMBER": "Verify your contact number  ",
   "VERIFY_AADHAR_UPLOAD_KYC": "Verify Aadhaar upload KYC",
   "VERIFY_MESSAGE": "Do you want to verify the camp. if yes press confirm.",
   "VERIFY_OTP": "Verify OTP",
@@ -1331,6 +1365,11 @@
   "VIEW_PROFILE": "View Profile",
   "VIEW_STATUS": "View Status",
   "VILLAGE_WARD": "Village/Ward",
+<<<<<<< HEAD
+  "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
+  "VOLUNTEER_JOB_QUALIFICATION": "Volunteer Job and Qualification Details",
+=======
+>>>>>>> origin/pr_offline_onboarding
   "VOLUNTEER_EXPERIENCE": "Volunteer Experience",
   "VOLUNTEER_EXPERIENCE_PROOF": "Volunteer Experience Proof",
   "VOLUNTEER_TITLE": "Volunteer title",
