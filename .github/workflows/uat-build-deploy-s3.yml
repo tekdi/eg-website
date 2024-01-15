@@ -1,11 +1,15 @@
 name: Deploy to UAT S3 Bucket
-on: 
-  push: 
-    tags:
-       - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
-       - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
-       - 'v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+'           
-       - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
+# on: 
+#   push: 
+#     tags:
+#        - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
+#        - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
+#        - 'v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+'           
+#        - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
+on:
+  push:
+    branches:
+      - release-1.7.0
 
 defaults:
   run:
@@ -43,6 +47,7 @@ jobs:
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
+          REACT_APP_BANNER_MESSAGE: ${{ secrets.REACT_APP_BANNER_MESSAGE }}
 
       - name: List contents
         run: |

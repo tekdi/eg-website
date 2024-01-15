@@ -34,19 +34,34 @@ export default function CampTodayActivities({
   const [enums, setEnums] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState(null);
   const [selectValue, setSelectValue] = React.useState([]);
+  const [miscActivities, setMiscActivities] = React.useState([]);
+  const [activitiesValue, setActivitiesValue] = React.useState(false);
   const [isSaving] = React.useState(false);
   const [sessionList, setSessionList] = React.useState(false);
 
   React.useEffect(async () => {
+    getActivity();
+  }, []);
+
+  const getActivity = async () => {
     const obj = {
       id: id,
       start_date: moment(new Date()).format("YYYY-MM-DD"),
     };
     const result = await campService.getActivity(obj);
-    setSelectValue(
-      result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
-    );
-  }, []);
+
+    if (result?.data?.camp_days_activities_tracker?.[0]?.misc_activities) {
+      setSelectValue(
+        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
+      );
+      setActivitiesValue(true);
+      setMiscActivities(
+        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
+      );
+    } else {
+      setActivitiesValue(false);
+    }
+  };
 
   const handleSubmitData = async () => {
     const dataToSave = {
@@ -56,6 +71,7 @@ export default function CampTodayActivities({
     };
     const activities_response = await campService.addMoodActivity(dataToSave);
     if (activities_response) {
+      getActivity();
       setEnums();
       setAlert({ type: "success", title: t("MISSILINEOUS_SUCCESS_MESSAGE") });
     }
@@ -70,7 +86,12 @@ export default function CampTodayActivities({
     data.forEach((element) => {
       const currentDate = new Date();
       const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
-      if (currentDate.toDateString() === createdAtDate.toDateString()) {
+      const updatedDate = new Date(element?.session_tracks?.[0]?.updated_at);
+      if (
+        currentDate.toDateString() === createdAtDate.toDateString() ||
+        (currentDate.toDateString() === updatedDate.toDateString() &&
+          element?.session_tracks?.[0]?.status === "complete")
+      ) {
         setSessionList(true);
       }
     });
@@ -81,6 +102,14 @@ export default function CampTodayActivities({
     setEnums({ type: item, data });
   };
 
+  const handleClose = () => {
+    if (!activitiesValue) {
+      setSelectValue([]);
+    } else {
+      setSelectValue(miscActivities);
+    }
+    setEnums();
+  };
   return (
     <Layout
       _appBar={t("ADD_TODAYS_ACTIVITIES")}
@@ -121,7 +150,7 @@ export default function CampTodayActivities({
         <CardComponent
           _vstack={{
             flex: 1,
-            borderColor: selectValue?.[0] && "greenIconColor",
+            borderColor: activitiesValue && "greenIconColor",
           }}
           _body={{ pl: 8, pt: 4 }}
         >
@@ -143,7 +172,7 @@ export default function CampTodayActivities({
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("MISCELLANEOUS_ACTIVITIES")}
               </FrontEndTypo.H2>
-              {selectValue?.[0] && (
+              {activitiesValue && (
                 <IconByName
                   name="CheckboxCircleFillIcon"
                   _icon={{ size: "36" }}
@@ -153,7 +182,8 @@ export default function CampTodayActivities({
             </HStack>
           </Pressable>
         </CardComponent>
-        {selectValue?.[0] && sessionList === true && (
+
+        {(activitiesValue || sessionList) === true && (
           <VStack pt={"10%"}>
             <FrontEndTypo.Primarybutton
               onPress={() => navigate(`/camps/${id}/campexecution/endcamp`)}
@@ -174,7 +204,7 @@ export default function CampTodayActivities({
               <FrontEndTypo.H1 bold color="textGreyColor.450"></FrontEndTypo.H1>
               <IconByName
                 name="CloseCircleLineIcon"
-                onPress={(e) => setEnums()}
+                onPress={(e) => handleClose()}
               />
             </HStack>
           </Actionsheet.Content>
@@ -210,7 +240,9 @@ export default function CampTodayActivities({
                 flex={1}
                 onPress={handleSubmitData}
                 isLoading={isSaving}
-                isDisabled={selectValue.length >= 4 || selectValue.length <= 0}
+                isDisabled={
+                  selectValue?.length >= 4 || selectValue?.length <= 0
+                }
               >
                 {isSaving ? "Saving..." : t("SAVE")}
               </FrontEndTypo.Primarybutton>

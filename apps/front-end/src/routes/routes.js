@@ -153,7 +153,7 @@ const CampOtherPlans = React.lazy(() =>
   import("pages/front-end/Camp/CampExecution/CampOtherPlans")
 );
 
-const CampSessionsList = React.lazy(() =>
+const CampSessionList = React.lazy(() =>
   import("pages/admin/camps/CampSessionList")
 );
 const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
@@ -175,10 +175,10 @@ const FacilitatorOnboarding = React.lazy(() =>
 
 export default [
   { path: "/form", component: Home },
-  {
-    path: "/facilitator-self-onboarding",
-    component: Home,
-  },
+  // {
+  //   path: "/facilitator-self-onboarding",
+  //   component: Home,
+  // },
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
@@ -334,8 +334,8 @@ export default [
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
   },
-  { path: "/camps/:id/sessionslist", component: CampSessionsList },
-  { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
+  { path: "/camps/:id/sessionslist", component: CampSessionList },
+  // { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,

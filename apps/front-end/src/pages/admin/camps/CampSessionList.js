@@ -1,5 +1,4 @@
 import {
-  CardComponent,
   FrontEndTypo,
   IconByName,
   Layout,
@@ -8,11 +7,11 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Modal, Pressable, VStack } from "native-base";
+import { HStack, Modal, ScrollView, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import SessionActions from "./CampSessionModal";
+import SessionActions, { SessionList } from "./CampSessionModal";
 
 const checkNext = (status, updated_at) => {
   return (
@@ -36,8 +35,8 @@ export default function CampSessionList({ footerLinks }) {
   const [isDisable, setIsDisable] = React.useState(false);
   const [submitStatus, setSubmitStatus] = React.useState();
   const [error, setError] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
   const navigate = useNavigate();
+  const [bodyHeight, setBodyHeight] = React.useState();
 
   const getData = React.useCallback(async () => {
     if (modalVisible) {
@@ -73,201 +72,177 @@ export default function CampSessionList({ footerLinks }) {
   React.useEffect(() => {
     const fetchData = async () => {
       await getData();
-      const enumData = await enumRegistryService.listOfEnum();
-      setEnumOptions(enumData?.data ? enumData?.data : {});
     };
     fetchData();
-  }, [getData]);
+  }, [modalVisible]);
 
-  const handleStartSession = React.useCallback(
-    async (modalVisible) => {
-      setIsDisable(true);
-      await campService.creatCampSession({
-        learning_lesson_plan_id: modalVisible,
-        camp_id: id,
-      });
-      await getData();
-      setIsDisable(false);
-    },
-    [getData, submitStatus]
-  );
+  // const handleStartSession = React.useCallback(
+  //   async (modalVisible) => {
+  //     setIsDisable(true);
+  //     await campService.creatCampSession({
+  //       learning_lesson_plan_id: modalVisible,
+  //       camp_id: id,
+  //     });
+  //     await getData();
+  //     setIsDisable(false);
+  //   },
+  //   [getData, submitStatus]
+  // );
 
   const handlePartiallyDone = React.useCallback(async () => {
-    setSubmitBtn(true);
     setError();
     setIsDisable(true);
     if (submitStatus?.reason) {
-      await campService.updateCampSession({
-        id: sessionDetails?.session_tracks?.[0]?.id,
-        edit_session_type:
-          submitStatus?.status === "complete"
-            ? "edit_complete_session"
-            : "edit_incomplete_session",
-
-        session_feedback: submitStatus?.reason,
-      });
-      await getData();
+      if (sessionDetails?.session_tracks?.[0]?.id) {
+        await campService.updateCampSession({
+          id: sessionDetails?.session_tracks?.[0]?.id,
+          edit_session_type:
+            submitStatus?.status === "complete"
+              ? "edit_complete_session"
+              : "edit_incomplete_session",
+          session_feedback: submitStatus?.reason,
+        });
+      } else {
+        let newData = { status: submitStatus?.status };
+        if (submitStatus?.status === "incomplete") {
+          newData = {
+            ...newData,
+            lesson_plan_incomplete_feedback: submitStatus?.reason,
+          };
+        } else if (submitStatus?.status === "complete") {
+          newData = {
+            ...newData,
+            lesson_plan_complete_feedback: submitStatus?.reason,
+          };
+        }
+        await campService.creatCampSession({
+          ...newData,
+          learning_lesson_plan_id: modalVisible,
+          camp_id: id,
+        });
+      }
+      await getCampSessionsList();
       setSubmitStatus();
       setModalVisible();
     } else {
       setError("PLEASE_SELECT");
     }
     setIsDisable(false);
-  }, [getData, submitStatus]);
+  }, [submitStatus]);
 
   const handleCancel = () => {
     setError();
     setSubmitStatus();
   };
 
-  React.useEffect(async () => {
+  const getSessionCount = (data) => {
+    let count = 0;
+    const result = data
+      .filter((e) => e.session_tracks?.[0]?.id)
+      .map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
+    let sessionData = result?.[result?.length - 1] || { ordering: 1 };
+    const c1 = result.filter((e) => {
+      const format = "YYYY-MM-DD";
+      return (
+        e.status === "complete" &&
+        moment(e.created_at).format(format) !== moment().format(format) &&
+        moment(e.updated_at).format(format) === moment().format(format)
+      );
+    });
+
+    const c2 = result.filter((e) => {
+      const format = "YYYY-MM-DD";
+      return (
+        e.status === "incomplete" &&
+        moment(e.created_at).format(format) === moment().format(format) &&
+        moment(e.updated_at).format(format) === moment().format(format)
+      );
+    });
+
+    const c3 = result.filter((e) => {
+      const format = "YYYY-MM-DD";
+      return (
+        e.status === "complete" &&
+        moment(e.created_at).format(format) === moment().format(format) &&
+        moment(e.updated_at).format(format) === moment().format(format)
+      );
+    });
+
+    if (c1?.length > 0) {
+      count += 0.5;
+      sessionData = c1[0];
+    }
+
+    if (c2?.length > 0) {
+      count += 0.5;
+      sessionData = c2[0];
+    }
+
+    if (c3?.length > 0) {
+      count += 1;
+      sessionData = c3[0];
+    }
+
+    if (sessionData?.status === "complete" && count < 1.5) {
+      sessionData = data.find((e) => sessionData?.ordering + 1 === e?.ordering);
+    }
+    if (count >= 1.5) {
+      sessionData = {};
+    }
+
+    return { ...sessionData, countSession: count };
+  };
+
+  const getCampSessionsList = async () => {
     const result = await campService.getCampSessionsList({ id: id });
     const data = result?.data?.learning_lesson_plans_master || [];
     setSessionList(data);
-    let dataSession;
-    data.forEach((e, i) => {
-      if (!i || e.session_tracks?.[0]?.status) {
-        dataSession = {
-          ...(e.session_tracks?.[0] || {}),
-          ordering: e.ordering,
-        };
-      }
-    });
-    if (!dataSession.status) {
-      setSessionActive(dataSession?.ordering);
-    } else if (dataSession.status === "incomplete") {
-      const result = data.find(
-        (item) => item?.ordering === dataSession?.ordering - 1
-      );
-      if (
-        checkNext(
-          result?.session_tracks?.[0]?.status,
-          result?.session_tracks?.[0]?.updated_at
-        )
-      ) {
-        setSessionActive(dataSession?.ordering - 1);
-      } else {
-        setSessionActive(dataSession?.ordering);
-      }
-    } else if (dataSession?.status === "complete") {
-      setSessionActive(dataSession?.ordering + 1);
-    } else if (checkNext(dataSession.status, dataSession.updated_at)) {
-      setSessionActive(dataSession?.ordering);
-    } else {
-      setSessionActive(dataSession?.ordering + 1);
-    }
+    setSessionActive(getSessionCount(data));
+  };
+
+  React.useEffect(async () => {
+    await getCampSessionsList();
+    const enumData = await enumRegistryService.listOfEnum();
+    setEnumOptions(enumData?.data ? enumData?.data : {});
     setLoading(false);
-  }, [modalVisible]);
+  }, []);
 
   if (loading) {
     return <Loading />;
   }
 
-  const handleCompleteButton = () => {
-    return (
-      submitStatus?.status === "complete" ||
-      (!submitStatus?.status &&
-        previousSessionDetails?.session_tracks?.[0] &&
-        previousSessionDetails?.session_tracks?.[0]?.status === "complete" &&
-        previousSessionDetails?.session_tracks?.[0]?.updated_at &&
-        moment(previousSessionDetails?.session_tracks?.[0]?.updated_at).format(
-          "YYYY-MM-DD"
-        ) !== moment().format("YYYY-MM-DD")) ||
-      (submitStatus?.status === undefined &&
-        previousSessionDetails === undefined)
-    );
-  };
   return (
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
+        _box: { bg: "white", shadow: "appBarShadow" },
       }}
+      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _footer={{ menues: footerLinks }}
+      getBodyHeight={(e) => setBodyHeight(e)}
     >
-      <div id="scroll_id">
-        <VStack flex={1} space={"5"} p="5" background={"bgGreyColor.200"}>
-          <HStack space="2">
-            <IconByName name="BookOpenLineIcon" />
-            <FrontEndTypo.H2 color="textMaroonColor.400">
-              {t("SESSION")}
-            </FrontEndTypo.H2>
-          </HStack>
-
-          {sessionList?.map((item) => (
-            <div key={item?.id} id={item?.id}>
-              <Pressable
-                onPress={() => setModalVisible(item?.id)}
-                isDisabled={
-                  sessionActive !== item?.ordering ||
-                  item?.session_tracks?.[0]?.status === "complete"
-                }
-              >
-                <CardComponent
-                  key={item?.id}
-                  _header={{ px: "0", pt: "0" }}
-                  _body={{
-                    px: "4",
-                    py: "2",
-                    // pt: "0",
-                    bg:
-                      sessionActive !== item?.ordering ||
-                      item?.session_tracks?.[0]?.status === "complete"
-                        ? "gray.100"
-                        : "white",
-                  }}
-                  _vstack={{ p: 0, space: 0, flex: 1 }}
-                >
-                  <HStack justifyContent={"space-between"}>
-                    <HStack
-                      space="4"
-                      alignItems={"center"}
-                      // justifyContent={"space-between"}
-                    >
-                      {item?.session_tracks?.[0]?.status === "complete" && (
-                        <IconByName
-                          name="CheckboxCircleFillIcon"
-                          color="greenIconColor"
-                          _icon={{ size: "24px" }}
-                        />
-                      )}
-                      {item?.session_tracks?.[0]?.status === "incomplete" && (
-                        <IconByName
-                          color="warningColor"
-                          name="TimeFillIcon"
-                          _icon={{ size: 30 }}
-                        />
-                      )}
-
-                      <FrontEndTypo.H2 alignItem="center">
-                        {t("SESSION") + " " + item?.ordering}
-                      </FrontEndTypo.H2>
-                    </HStack>
-                    <IconByName
-                      alignContent={"right"}
-                      name="ArrowRightSLineIcon"
-                      _icon={{ size: "25px" }}
-                    />
-                  </HStack>
-                </CardComponent>
-              </Pressable>
-            </div>
-          ))}
+      <VStack flex={1} space={"5"} p="5">
+        <HStack space="2">
+          <IconByName name="BookOpenLineIcon" />
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t("SESSION")}
+          </FrontEndTypo.H2>
+        </HStack>
+        <ScrollView maxH={bodyHeight - 150} p="4">
+          <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
+        </ScrollView>
+      </VStack>
+      {!sessionActive?.ordering && (
+        <VStack px="4">
+          <FrontEndTypo.Primarybutton
+            onPress={() => {
+              navigate(`/camps/${id}/campexecution/activities`);
+            }}
+          >
+            {t("SUBMIT")}
+          </FrontEndTypo.Primarybutton>
         </VStack>
-      </div>
-      {submitBtn && (
-        <FrontEndTypo.Primarybutton
-          width="50%"
-          position="relative"
-          left="25%"
-          bottom="15%"
-          right="25%"
-          onPress={() => {
-            navigate(`/camps/${id}/campexecution/activities`);
-          }}
-        >
-          {t("SUBMIT")}
-        </FrontEndTypo.Primarybutton>
       )}
 
       <Modal isOpen={modalVisible} avoidKeyboard size="xl">
@@ -283,22 +258,22 @@ export default function CampSessionList({ footerLinks }) {
             <Modal.CloseButton
               onPress={() => {
                 setModalVisible();
+                setSubmitStatus();
               }}
             />
           </Modal.Header>
           <Modal.Body p="6">
             <SessionActions
-              sessionDetails={sessionDetails}
-              isDisable={isDisable}
-              handleStartSession={handleStartSession}
-              handleCompleteButton={handleCompleteButton}
-              setSubmitStatus={setSubmitStatus}
-              handlePartiallyDone={handlePartiallyDone}
-              handleCancel={handleCancel}
-              submitStatus={submitStatus}
-              enumOptions={enumOptions}
-              error={error}
-              t={t}
+              {...{
+                sessionActive,
+                isDisable,
+                enumOptions,
+                submitStatus,
+                setSubmitStatus,
+                handlePartiallyDone,
+                handleCancel,
+                error,
+              }}
             />
           </Modal.Body>
         </Modal.Content>

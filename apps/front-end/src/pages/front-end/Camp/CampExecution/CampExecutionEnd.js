@@ -1,4 +1,3 @@
-import React from "react";
 import {
   campService,
   FrontEndTypo,
@@ -7,22 +6,36 @@ import {
   CardComponent,
   IconByName,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Alert, Image, Box } from "native-base";
+import moment from "moment";
+import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
+import React, { useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-const CampExecutionEnd = ({ todaysActivity, facilitator, learnerCount }) => {
+function CampExecutionEnd({ facilitator, learnerCount }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
   const [disable, setDisable] = React.useState(true);
-
+  const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [sessionList, setSessionList] = React.useState(false);
   const [learnerAttendanceCount, setLearnerAttendanceCount] =
     React.useState(false);
+  const [todaysActivity, setTodaysActivity] = React.useState();
+
   const navigate = useNavigate();
 
-  const fetchData = React.useCallback(async () => {
+  useEffect(async () => {
+    const obj = {
+      id: id,
+      start_date: moment(new Date()).format("YYYY-MM-DD"),
+    };
+    const data = await campService.getActivity(obj);
+    const activity = data?.data?.camp_days_activities_tracker;
+    setTodaysActivity(activity?.[0] || {});
+  }, []);
+
+  const fetchData = useCallback(async () => {
     if (todaysActivity?.id) {
       const resultAttendance = await campService.CampAttendance({
         id: todaysActivity?.id,
@@ -154,12 +167,33 @@ const CampExecutionEnd = ({ todaysActivity, facilitator, learnerCount }) => {
             )}
           </HStack>
         </FrontEndTypo.Secondarybutton>
-        <FrontEndTypo.Primarybutton isDisabled={disable} onPress={endCamp}>
+        <FrontEndTypo.Primarybutton
+          isDisabled={disable}
+          onPress={() => setOpenModal(true)}
+        >
           {t("END_CAMP")}
         </FrontEndTypo.Primarybutton>
       </VStack>
+      <Modal isOpen={openModal} size="xs">
+        <Modal.Content>
+          <Modal.Header alignItems={"center"}>{t("CONFIRMATION")}</Modal.Header>
+          <Modal.Body alignItems={"center"} p="5">
+            <FrontEndTypo.H3>{t("CONFIRMATION_MESSAGE")}</FrontEndTypo.H3>
+          </Modal.Body>
+          <Modal.Footer alignSelf={"center"}>
+            <HStack space={4}>
+              <FrontEndTypo.Secondarybutton onPress={() => setOpenModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton onPress={endCamp}>
+                {t("CONFIRM")}
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
-};
+}
 
 export default CampExecutionEnd;

@@ -80,6 +80,10 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [language, setLanguage] = React.useState();
+  useEffect(() => {
+    setLanguage(localStorage.getItem("lang") || "en");
+  }, []);
 
   const validate = () => {
     let arr = {};
@@ -160,10 +164,11 @@ export default function Login() {
             </Alert>
           </Box>
         )}
+
         <Image
           alignSelf="center"
           source={{
-            uri: "/images/logos/educate-girls200X200.png",
+            uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
           }}
           alt="Educate Girls"
           resizeMode="contain"

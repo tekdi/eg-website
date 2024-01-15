@@ -347,7 +347,6 @@ export default function App({ userTokenInfo, footerLinks }) {
         setLang,
         onPressBackButton: (e) => nextPreviewStep("p"),
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
@@ -407,7 +406,7 @@ export default function App({ userTokenInfo, footerLinks }) {
                 mt="4"
                 onPress={() => onClickSubmit(false)}
               >
-                {t("SAVE_AND_NEXT")}
+                {t("PRERAK_PROCEED_BTN")}
               </FrontEndTypo.Primarybutton>
 
               <FrontEndTypo.Secondarybutton
@@ -416,7 +415,7 @@ export default function App({ userTokenInfo, footerLinks }) {
                 mt="4"
                 onPress={() => onClickSubmit(true)}
               >
-                {t("SAVE_AND_PROFILE")}
+                {t("GO_TO_PROFILE")}
               </FrontEndTypo.Secondarybutton>
             </VStack>
           ) : (

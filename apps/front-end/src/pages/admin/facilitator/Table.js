@@ -2,20 +2,13 @@ import {
   IconByName,
   ImageView,
   AdminTypo,
-  GetEnumValue,
   tableCustomStyles,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import {
-  HStack,
-  VStack,
-  ScrollView,
-  Pressable,
-  Button,
-  Menu,
-} from "native-base";
+import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
-import React from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -31,20 +24,14 @@ const dropDown = (triggerProps, t) => {
 };
 
 // Table component
-function Table({
-  filter,
-  setFilter,
-  facilitaorStatus,
-  paginationTotalRows,
-  data,
-  loading,
-  enumOptions,
-}) {
+function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   const { t } = useTranslation();
-
+  const [selectedData, setSelectedData] = useState();
   const navigate = useNavigate();
 
-  const columns = React.useCallback(
+  const pagination = [10, 15, 25, 50, 100];
+
+  const columns = useCallback(
     (t, navigate) => [
       {
         name: t("PRERAK_ID"),
@@ -189,61 +176,46 @@ function Table({
     []
   );
 
-  const handleRowClick = React.useCallback(
+  useEffect(async () => {
+    const result = await enumRegistryService.statuswiseCount();
+    setSelectedData(result);
+  }, []);
+  const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
     },
     [navigate]
   );
 
-  const columnsMemoized = React.useMemo(
-    () => columns(t, navigate),
-    [t, navigate]
-  );
+  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
-      <ScrollView horizontal={true} mb="2">
-        <HStack pb="2">
-          {Array?.isArray(facilitaorStatus) &&
-            facilitaorStatus.map((item) => {
-              return (
-                <AdminTypo.H6
-                  key={"table"}
-                  color={
-                    filter?.status == t(item?.status)
-                      ? "textMaroonColor.600"
-                      : ""
-                  }
-                  bold={filter?.status == t(item?.status) ? true : false}
-                  cursor={"pointer"}
-                  mx={3}
-                  onPress={() => {
-                    setFilter({ ...filter, status: item?.status, page: 1 });
-                  }}
-                >
-                  {item.status === "all" ? (
-                    <AdminTypo.H6
-                      bold={filter?.status == t(item?.status) ? true : false}
-                    >
-                      {t("ALL")}
-                    </AdminTypo.H6>
-                  ) : (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"FACILITATOR_STATUS"}
-                      enumOptionValue={item?.status}
-                      enumApiData={enumOptions}
-                    />
-                  )}
-                  {filter?.status == t(item?.status)
-                    ? `(${paginationTotalRows})` + " "
-                    : " "}
-                </AdminTypo.H6>
-              );
-            })}
-        </HStack>
-      </ScrollView>
+      <VStack p={2} pt="0">
+        <AdminTypo.H5 underline bold color="blueText.400">
+          {filter?.status === undefined || filter?.status?.length === 0 ? (
+            t("ALL") + `(${paginationTotalRows})`
+          ) : filter?.status?.[0] === "all" ? (
+            <AdminTypo.H4 bold>
+              {t("ALL") + `(${paginationTotalRows})`}
+            </AdminTypo.H4>
+          ) : (
+            filter?.status
+              ?.filter((item) => item)
+              .map(
+                (item) =>
+                  t(item).toLowerCase() +
+                  `(${
+                    selectedData
+                      ? selectedData?.find((e) => item === e.status)?.count
+                      : 0
+                  })`
+              )
+              .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+              .join(" , ")
+          )}
+        </AdminTypo.H5>
+      </VStack>
       <DataTable
         customStyles={tableCustomStyles}
         columns={columnsMemoized}
@@ -251,19 +223,18 @@ function Table({
         persistTableHead
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-        paginationPerPage={filter?.limit ? filter?.limit : 15}
+        paginationRowsPerPageOptions={pagination}
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        paginationDefaultPage={filter?.page}
+        paginationDefaultPage={filter?.page || 1}
         highlightOnHover
-        onChangeRowsPerPage={React.useCallback(
+        onChangeRowsPerPage={useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
           [setFilter, filter]
         )}
-        onChangePage={React.useCallback(
+        onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
@@ -275,4 +246,4 @@ function Table({
   );
 }
 
-export default React.memo(Table);
+export default memo(Table);

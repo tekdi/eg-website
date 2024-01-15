@@ -63,23 +63,22 @@ const renderNameColumn = (row, t) => {
   const hasProfileUrl = !!row?.profile_url;
 
   return (
-    <HStack alignItems={"flex-start"} space="2">
+    <HStack alignItems={"center"} space="2">
       {hasProfileUrl ? (
         <Avatar
           alignItems={"start"}
           source={{ uri: row?.profile_url }}
-          width="35px"
-          height="35px"
+          width="30px"
+          height="30px"
         />
       ) : (
         <IconByName
-          isDisabled
           name="AccountCircleLineIcon"
           color="gray.300"
-          _icon={{ size: "35" }}
+          _icon={{ size: "30" }}
         />
       )}
-      <Text>{name}</Text>
+      <AdminTypo.H7 fontWeight="400">{name}</AdminTypo.H7>
     </HStack>
   );
 };
@@ -97,41 +96,37 @@ const renderStatusColumn = (row, t) => (
   <Text>{row?.attendances?.[0]?.rsvp || "-"}</Text>
 );
 
-const renderAadharKycColumn = (row, t) => (
-  <Chip
-    bg={
-      row?.aadhar_verified !== null && row?.aadhar_verified !== "pending"
-        ? "potentialColor"
-        : "dangerColor"
+const onUpdateOrCreateAttendace = async (row) => {
+  try {
+    if (row?.event_id) {
+      if (row?.attendance?.id) {
+        const data = {
+          id: row?.attendance?.id,
+          user_id: row?.attendance.user_id,
+          lat: `${row?.locationData?.latitude || ""}`, //attendance.lat,
+          long: `${row?.locationData?.longitude || ""}`, //attendance.long,
+          date_time: row?.presentDate,
+          status: row?.attendance_status,
+        };
+        return await eventService.updateAttendance(data);
+      } else {
+        const data = {
+          user_id: row.id,
+          context_id: row?.event_id,
+          context: "events",
+          lat: `${row?.locationData?.latitude || ""}`, //attendance.lat,
+          long: `${row?.locationData?.longitude || ""}`, //attendance.long,
+          date_time: row?.presentDate,
+          status: row?.attendance_status,
+        };
+        return await attendanceService.createAttendance(data);
+      }
     }
-    label={
-      row?.aadhar_verified === "in_progress"
-        ? t("AADHAR_KYC_IN_PROGRESS")
-        : row?.aadhar_verified === "pending"
-        ? t("AADHAR_KYC_PENDING")
-        : row?.aadhar_verified !== null
-        ? t("YES")
-        : t("NO")
-    }
-    rounded="sm"
-  />
-);
-
-const renderAttendeeListColumn = (row, t) => (
-  <Chip
-    label={
-      row?.fa_is_processed === null
-        ? "-"
-        : row?.fa_is_processed === true
-        ? t("YES") +
-          " " +
-          Math.floor(row?.fa_similarity_percentage * 100) / 100 +
-          "%"
-        : t("NO")
-    }
-    rounded="sm"
-  />
-);
+  } catch (error) {
+    // handle error
+    console.error(error?.message || "error");
+  }
+};
 
 const scheduleCandidates = (t, days, certificateDownload) => {
   return [
@@ -186,8 +181,7 @@ const scheduleCandidates = (t, days, certificateDownload) => {
 };
 
 const RenderAttendanceColumn = React.memo(({ row }) => {
-  const attendance = row?.attendances?.[row?.index];
-  const [status, setStatus] = React.useState("absent");
+  const [attendance, setAttendance] = React.useState();
   const [locationData, setLocationData] = React.useState("");
   const [isDisabledAttBtn, setIsDisabledAttBtn] = React.useState();
   const { id } = useParams();
@@ -197,61 +191,57 @@ const RenderAttendanceColumn = React.memo(({ row }) => {
       navigator.geolocation.getCurrentPosition(successCallback, (e) => {
         console.log(e);
       });
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
-  function successCallback(position) {
+  const successCallback = (position) => {
     // Location was provided
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     setLocationData({ latitude: latitude, longitude: longitude });
-  }
+  };
 
-  React.useEffect(async () => {
-    setStatus(attendance?.status);
-    await getLocation();
-  }, [attendance?.status]);
+  React.useEffect(() => {
+    const fetchAttendance = async () => {
+      const newAttendance = row?.attendances?.find((e) => {
+        const format = "YYYY-MM-DD";
+        return (
+          moment(e.date_time).format(format) ===
+          moment(row.presentDate).format(format)
+        );
+      });
+      setAttendance(newAttendance);
+      await getLocation();
+    };
+    fetchAttendance();
+  }, [row]);
 
   const onSwitchToggle = async (row) => {
     setIsDisabledAttBtn(`${row.id}-${row.presentDate}`);
-    const attendance = row?.attendances?.[row?.index];
-    if (attendance) {
-      const data = {
-        id: attendance?.id,
-        user_id: attendance.user_id,
-        lat: `${locationData?.latitude || ""}`, //attendance.lat,
-        long: `${locationData?.longitude || ""}`, //attendance.long,
-        date_time: row?.presentDate,
-        status: row?.attendance_status,
-      };
-      await eventService.updateAttendance(data);
-    } else {
-      const data = {
-        user_id: row.id,
-        context_id: id,
-        context: "events",
-        lat: `${locationData?.latitude || ""}`, //attendance.lat,
-        long: `${locationData?.longitude || ""}`, //attendance.long,
-        date_time: row?.presentDate,
-        status: row?.attendance_status,
-      };
-      await attendanceService.createAttendance(data);
-    }
-    setStatus(row?.attendance_status);
+    const result = await onUpdateOrCreateAttendace({
+      ...row,
+      event_id: id,
+      locationData,
+      attendance,
+    });
+    setAttendance(
+      result?.data?.attendance
+        ? { ...result?.data?.attendance, status: row?.attendance_status }
+        : attendance
+    );
     setIsDisabledAttBtn();
   };
 
   return (
     <HStack space="2">
-      <Text key={row?.id}>
-        {status === "present"
+      <AdminTypo.H7 fontWeight="400">
+        {attendance?.status === "present"
           ? "Present"
-          : status === "absent"
+          : attendance?.status === "absent"
           ? "Absent"
           : "Mark"}
-      </Text>
+      </AdminTypo.H7>
       <Switch
+        key={attendance}
         isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
         offTrackColor="dangerColor"
         onTrackColor="successColor"
@@ -276,14 +266,10 @@ export default function Attendence({ footerLinks }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [users, setUsers] = React.useState([]);
-  const [limit, setLimit] = React.useState(10);
-  const [page, setPage] = React.useState(1);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filterObj, setFilterObj] = React.useState();
   const [refAppBar, setRefAppBar] = React.useState();
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [locationData, setLocationData] = React.useState("");
-  const [attendance, setAttendance] = React.useState("");
   const [cameraModal, setCameraModal] = React.useState(false);
   const [cameraUrl, setCameraUrl] = React.useState();
   const [event, setEvent] = React.useState("");
@@ -294,16 +280,17 @@ export default function Attendence({ footerLinks }) {
   const [actualDates, setActualDates] = React.useState([]);
   const [showModal, setShowModal] = React.useState(false);
   const [userData, setUserData] = React.useState({});
-  const [getFacilitator, setFacilitatorProfile] = React.useState();
+  const [facilitator, setFacilitator] = React.useState();
   const [inputValue, setInputValue] = React.useState();
-  const [cameraFile, setcameraFile] = React.useState();
-  const [downloadCertificate, setDownCertificate] = React.useState();
+  const [cameraFile, setCameraFile] = React.useState();
+  const [certificateHtml, setCertificateHtml] = React.useState();
   const reportTemplateRef = React.useRef(null);
   const [filter, setFilter] = React.useState({});
+  const [isLoadingBtn, setIsLoadingBtn] = React.useState(false);
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
-    setDownCertificate(result?.data?.[0]?.certificate_html);
+    setCertificateHtml(result?.data?.[0]?.certificate_html);
   };
 
   const handleGeneratePdf = async () => {
@@ -321,7 +308,12 @@ export default function Attendence({ footerLinks }) {
     const result = await facilitatorRegistryService.getOne({
       id: inputValue,
     });
-    setFacilitatorProfile(result);
+    if (result?.id) {
+      setError();
+      setFacilitator(result);
+    } else {
+      setError("User Data not found");
+    }
   };
 
   React.useEffect(() => {
@@ -369,16 +361,14 @@ export default function Attendence({ footerLinks }) {
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
-  function successCallback(position) {
+  const successCallback = (position) => {
     // Location was provided
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     setLocationData({ latitude: latitude, longitude: longitude });
-  }
+  };
 
   function errorCallback(error) {
     if (error.code === error.PERMISSION_DENIED) {
@@ -400,6 +390,7 @@ export default function Attendence({ footerLinks }) {
     const result = await eventService.getAttendanceList({
       limit: 6,
       page: 1,
+      order_by: { id: "desc" },
       ...filter,
       id,
     });
@@ -457,11 +448,7 @@ export default function Attendence({ footerLinks }) {
       setActualDates(dates);
     }
     setLoading(false);
-  }, [filterObj]);
-
-  React.useEffect(() => {
-    setFilterObj({ page, limit });
-  }, [page, limit]);
+  }, []);
 
   const uploadAttendencePicture = async (e) => {
     // setError("");
@@ -473,7 +460,7 @@ export default function Attendence({ footerLinks }) {
         long: locationData?.longitude,
         photo_1: cameraFile ? cameraFile?.key : "",
       });
-      if (apiResponse?.status === 200) {
+      if (apiResponse?.data) {
         const eventResult = await eventService.getEventListById({ id: id });
         setUsers(eventResult?.event?.attendances);
         setEvent(eventResult?.event);
@@ -490,7 +477,7 @@ export default function Attendence({ footerLinks }) {
         long: locationData?.longitude,
         photo_1: cameraFile ? cameraFile?.key : "",
       });
-      if (apiResponse?.status === 200) {
+      if (apiResponse?.data) {
         const eventResult = await eventService.getEventListById({ id: id });
         setUsers(eventResult?.event?.attendances);
         setEvent(eventResult?.event);
@@ -503,6 +490,12 @@ export default function Attendence({ footerLinks }) {
     const inputValues = event.target.value;
     setInputValue(inputValues);
   };
+
+  const debouncedHandleInputChange = React.useCallback(
+    debounce(handleInputChange, 1000),
+    []
+  );
+
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
@@ -512,13 +505,39 @@ export default function Attendence({ footerLinks }) {
     []
   );
 
+  const handleAddParticipant = async (type) => {
+    setIsLoadingBtn(true);
+    if (type === "confirm") {
+      await onUpdateOrCreateAttendace({
+        id: facilitator?.id,
+        event_id: id,
+        locationData,
+      });
+      await getUsers();
+      handleShowModal(false);
+    } else {
+      await getUserData();
+    }
+    setIsLoadingBtn(false);
+  };
+
+  const handleShowModal = (boolean) => {
+    if (boolean) {
+      setShowModal(true);
+      setFacilitator();
+    } else {
+      setShowModal(false);
+    }
+    setError();
+  };
+
   if (userData?.id) {
     return (
       <Box>
         {
           <React.Suspense fallback={<Loading />}>
             <Camera
-              facing={true}
+         
               headerComponent={
                 <VStack bg="black" width="94%" pl="4">
                   <AdminTypo.H6 color="white" bold>
@@ -544,7 +563,7 @@ export default function Attendence({ footerLinks }) {
                       color="white"
                       direction={["row", "row", "row"]}
                     >
-                      {t("CANDIDATES")} - {users?.length ? users?.length : 0}
+                      {t("CANDIDATES")} - {paginationTotalRows || 0}
                     </AdminTypo.H6>
                   </HStack>
                   <Stack>
@@ -566,7 +585,7 @@ export default function Attendence({ footerLinks }) {
                     onPress={() => {
                       updateUserData();
                       cameraFile ? setUserData() : error;
-                      setcameraFile("");
+                      setCameraFile("");
                       setCameraUrl();
                     }}
                   >
@@ -601,7 +620,7 @@ export default function Attendence({ footerLinks }) {
                       formData
                     );
                     if (uploadDoc) {
-                      setcameraFile(uploadDoc);
+                      setCameraFile(uploadDoc);
                     }
                     setCameraUrl({ url, file });
                   } else {
@@ -615,6 +634,7 @@ export default function Attendence({ footerLinks }) {
       </Box>
     );
   }
+
   return (
     <Layout
       width
@@ -648,22 +668,6 @@ export default function Attendence({ footerLinks }) {
                 <IconByName isDisabled name="ArrowRightSLineIcon" />
                 <AdminTypo.H4 bold>{t("PRERAK_ORIENTATION")}</AdminTypo.H4>
               </HStack>
-              {/* <HStack>
-              <AdminTypo.Secondarybutton
-                shadow="BlueOutlineShadow"
-                // onPress={() => setModal(true)}
-                rightIcon={
-                  <IconByName
-                    color="#084B82"
-                    _icon={{}}
-                    size="15px"
-                    name="AddLineIcon"
-                  />
-                }
-              >
-                {t("SCHEDULE_EVENT")}{" "}
-              </AdminTypo.Secondarybutton>
-            </HStack> */}
             </HStack>
             <Box bgColor="bgpink" borderRadius={"10px"} py="3" mt="8">
               <VStack m={"15px"}>
@@ -671,66 +675,43 @@ export default function Attendence({ footerLinks }) {
                   <AdminTypo.H5 bold>
                     {event?.name ? event?.name : event?.type}
                   </AdminTypo.H5>
-                  {/* <AdminTypo.Secondarybutton
-                  shadow="BlueOutlineShadow"
-                >
-                  {t("EDIT_DETAILS")}
-                </AdminTypo.Secondarybutton> 
-                  <Box>
-                    <AdminTypo.Secondarybutton
-                      onPress={() => setShowDeleteModal(true)}
-                      shadow="BlueOutlineShadow"
-                    >
-                      {t("DELETE_EVENT")}
-                    </AdminTypo.Secondarybutton>
-                  </Box>
-                  */}
                 </HStack>
 
-                <HStack
-                  space={"3"}
-                  alignItems={"center"}
-                  direction={["column", "column", "row"]}
-                >
+                <HStack space={"3"} alignItems={"center"} flexWrap={"wrap"}>
                   <IconByName
-                    isDisabled
                     name="CalendarLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
-                  <HStack space={2}>
-                    <AdminTypo.H6>
-                      {event?.start_date
-                        ? moment(event?.start_date).format("LL")
-                        : ""}{" "}
-                      {event?.start_time
-                        ? moment(event?.start_time, "HH:mm:ssZ").format(
-                            "hh:mm:ss A"
-                          )
-                        : "-"}
-                    </AdminTypo.H6>
-                    <AdminTypo.H6>to</AdminTypo.H6>
-                    <AdminTypo.H6>
-                      {event?.end_date
-                        ? moment(event?.end_date).format("LL")
-                        : ""}{" "}
-                      {event?.end_time
-                        ? moment(event?.end_time, "HH:mm:ssZ").format(
-                            "hh:mm:ss A"
-                          )
-                        : "-"}
-                      {/* 16th April, 11:00 to 12:00 */}
-                    </AdminTypo.H6>
-                  </HStack>
+                  <AdminTypo.H7 bold color="textGreyColor.800" space="1">
+                    {event?.start_date
+                      ? moment(event?.start_date).format("MMM DD, Y")
+                      : ""}
+                  </AdminTypo.H7>
+                  <AdminTypo.H7 bold color="textGreyColor.800">
+                    {event?.start_time
+                      ? moment(event?.start_time, "HH:mm:ssA").format("hh:mm A")
+                      : "-"}
+                  </AdminTypo.H7>
+                  to
+                  <AdminTypo.H7 bold color="textGreyColor.800">
+                    {event?.end_date
+                      ? moment(event?.end_date).format("MMM DD, Y")
+                      : ""}
+                  </AdminTypo.H7>
+                  <AdminTypo.H7 bold color="textGreyColor.800">
+                    {event?.end_time
+                      ? moment(event?.end_time, "HH:mm:ssZ").format("hh:mm A")
+                      : "-"}
+                    {/* 16th April, 11:00 to 12:00 */}
+                  </AdminTypo.H7>
                   <IconByName
-                    isDisabled
                     name="MapPinLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
                   />
                   <AdminTypo.H6>{event?.location}</AdminTypo.H6>
                   <IconByName
-                    isDisabled
                     name="UserLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "15" }}
@@ -763,11 +744,7 @@ export default function Attendence({ footerLinks }) {
                       setFacilitatorProfile();
                     }}
                     endIcon={
-                      <IconByName
-                        isDisabled
-                        name="AddFillIcon"
-                        _icon={{ size: "15" }}
-                      />
+                      <IconByName name="AddFillIcon" _icon={{ size: "15" }} />
                     }
                   >
                     {t("ADD_PARTICIPANTS")}
@@ -787,7 +764,7 @@ export default function Attendence({ footerLinks }) {
               avoidKeyboard
               size="xl"
               isOpen={showModal}
-              onClose={() => setShowModal(false)}
+              onClose={() => handleShowModal(false)}
             >
               <Modal.Content>
                 <Modal.Header textAlign={"Center"}>
@@ -796,17 +773,21 @@ export default function Attendence({ footerLinks }) {
                   </AdminTypo.H4>
                 </Modal.Header>
                 <Modal.Body>
-                  {!getFacilitator?.id ? (
+                  {error && (
+                    <AdminTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </AdminTypo.H4>
+                  )}
+                  {!facilitator?.id ? (
                     <HStack
                       alignItems={"center"}
                       justifyContent={"space-evenly"}
                     >
                       {t("USER_ID")}:
                       <Input
-                        value={inputValue}
                         maxLength={12}
                         name="numberInput"
-                        onChange={handleInputChange}
+                        onChange={debouncedHandleInputChange}
                       />
                     </HStack>
                   ) : (
@@ -819,25 +800,20 @@ export default function Attendence({ footerLinks }) {
                           overflow="hidden"
                           textOverflow="ellipsis"
                         >
-                          {getFacilitator?.first_name}{" "}
-                          {getFacilitator?.last_name}
+                          {facilitator?.first_name} {facilitator?.last_name}
                         </AdminTypo.H4>
-                        <IconByName
-                          size="sm"
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => navigate(-1)}
-                        />
-                        <Clipboard text={getFacilitator?.id}>
+                        <IconByName size="sm" name="ArrowRightSLineIcon" />
+                        <Clipboard text={facilitator?.id}>
                           <Chip
                             textAlign="center"
                             lineHeight="15px"
-                            label={getFacilitator?.id}
+                            label={facilitator?.id}
                           />
                         </Clipboard>
                       </HStack>
                       <HStack justifyContent={"space-between"} flexWrap="wrap">
                         <VStack space="4" flexWrap="wrap">
-                          <ChipStatus status={getFacilitator?.status} />
+                          <ChipStatus status={facilitator?.status} />
                           <HStack
                             bg="textMaroonColor.600"
                             rounded={"md"}
@@ -845,13 +821,12 @@ export default function Attendence({ footerLinks }) {
                             p="2"
                           >
                             <IconByName
-                              isDisabled
                               _icon={{ size: "20px" }}
                               name="CellphoneLineIcon"
                               color="white"
                             />
                             <AdminTypo.H6 color="white" bold>
-                              {getFacilitator?.mobile}
+                              {facilitator?.mobile}
                             </AdminTypo.H6>
                           </HStack>
                           <HStack
@@ -862,29 +837,28 @@ export default function Attendence({ footerLinks }) {
                             space="2"
                           >
                             <IconByName
-                              isDisabled
                               _icon={{ size: "20px" }}
                               name="MapPinLineIcon"
                               color="white"
                             />
                             <AdminTypo.H6 color="white" bold>
                               {[
-                                getFacilitator?.state,
-                                getFacilitator?.district,
-                                getFacilitator?.block,
-                                getFacilitator?.village,
-                                getFacilitator?.grampanchayat,
+                                facilitator?.state,
+                                facilitator?.district,
+                                facilitator?.block,
+                                facilitator?.village,
+                                facilitator?.grampanchayat,
                               ]
                                 .filter((e) => e)
-                                .join(",")}
+                                .join(", ")}
                             </AdminTypo.H6>
                           </HStack>
                         </VStack>
-                        <HStack flex="0.5" justifyContent="center">
-                          {getFacilitator?.profile_photo_1?.name ? (
+                        <HStack justifyContent="center">
+                          {facilitator?.profile_photo_1?.name ? (
                             <ImageView
                               source={{
-                                uri: getFacilitator?.profile_photo_1?.name,
+                                uri: facilitator?.profile_photo_1?.name,
                               }}
                               alt="profile photo"
                               width={"100px"}
@@ -892,7 +866,6 @@ export default function Attendence({ footerLinks }) {
                             />
                           ) : (
                             <IconByName
-                              isDisabled
                               name="AccountCircleLineIcon"
                               color="white"
                               _icon={{ size: "100px" }}
@@ -905,29 +878,27 @@ export default function Attendence({ footerLinks }) {
                 </Modal.Body>
                 <Modal.Footer>
                   <HStack justifyContent={"space-between"} width={"100%"}>
-                    {getFacilitator?.id && (
+                    {facilitator?.id && (
                       <AdminTypo.PrimaryButton
+                        isLoading={isLoadingBtn}
                         shadow="BlueFillShadow"
-                        onPress={() =>
-                          onSwitchToggle({
-                            id: getFacilitator?.id,
-                          })
+                        onPress={async (e) =>
+                          await handleAddParticipant("confirm")
                         }
                       >
                         {t("CONFIRM")}
                       </AdminTypo.PrimaryButton>
                     )}
                     <AdminTypo.Secondarybutton
-                      onPress={() => setShowModal(false)}
+                      isLoading={isLoadingBtn}
+                      onPress={() => handleShowModal(false)}
                     >
                       {t("CANCEL")}
                     </AdminTypo.Secondarybutton>
-                    {!getFacilitator?.id && (
+                    {!facilitator?.id && (
                       <AdminTypo.PrimaryButton
-                        isDisabled={""}
-                        onPress={(e) => {
-                          getUserData();
-                        }}
+                        isLoading={isLoadingBtn}
+                        onPress={handleAddParticipant}
                       >
                         {t("Submit")}
                       </AdminTypo.PrimaryButton>
@@ -996,7 +967,6 @@ export default function Attendence({ footerLinks }) {
             >
               <Modal.Content>
                 <Modal.CloseButton />
-
                 <Modal.Body p="1" pb="0" bg="white">
                   <AdminTypo.H2
                     textAlign="center"
@@ -1006,12 +976,6 @@ export default function Attendence({ footerLinks }) {
                     {t("EDIT_DETAILS")}
                   </AdminTypo.H2>
                   <VStack space="5">
-                    <HStack
-                      space="5"
-                      borderBottomWidth={1}
-                      borderBottomColor="gray.300"
-                      pb="5"
-                    ></HStack>
                     <HStack space="5" pl="2" alignItems="center">
                       {formData?.profile_url ? (
                         <Avatar
@@ -1024,7 +988,6 @@ export default function Attendence({ footerLinks }) {
                         />
                       ) : (
                         <IconByName
-                          isDisabled
                           name="AccountCircleLineIcon"
                           color="textGreyColor.800"
                           _icon={{ size: "40" }}
@@ -1048,7 +1011,6 @@ export default function Attendence({ footerLinks }) {
                           borderBottomColor="appliedColor"
                         >
                           <IconByName
-                            isDisabled
                             name="VidiconLineIcon"
                             color="textGreyColor.800"
                             _icon={{ size: "20" }}
@@ -1073,7 +1035,6 @@ export default function Attendence({ footerLinks }) {
                           borderBottomColor="appliedColor"
                         >
                           <IconByName
-                            isDisabled
                             name="MapPinLineIcon"
                             color="textGreyColor.800"
                             _icon={{ size: "20" }}
@@ -1095,9 +1056,6 @@ export default function Attendence({ footerLinks }) {
                                   ? "absent"
                                   : "present"
                               }
-                              onChange={(nextValue) => {
-                                setAttendance(nextValue);
-                              }}
                             >
                               <Radio
                                 value="present"
@@ -1134,7 +1092,6 @@ export default function Attendence({ footerLinks }) {
                           borderBottomColor="appliedColor"
                         >
                           <IconByName
-                            isDisabled
                             name="CheckboxCircleLineIcon"
                             color="textGreyColor.800"
                             _icon={{ size: "20" }}
@@ -1260,7 +1217,7 @@ export default function Attendence({ footerLinks }) {
           </VStack>
         </Box>
       </ScrollView>
-      <Modal isOpen={downloadCertificate} size="xl">
+      <Modal isOpen={certificateHtml} size="xl">
         <Modal.Content>
           <Modal.Header>
             <HStack justifyContent={"space-between"} pr="10">
@@ -1270,7 +1227,7 @@ export default function Attendence({ footerLinks }) {
               </AdminTypo.Secondarybutton>
               <IconByName
                 name="CloseCircleLineIcon"
-                onPress={(e) => setDownCertificate()}
+                onPress={(e) => setCertificateHtml()}
               />
             </HStack>
           </Modal.Header>
@@ -1284,7 +1241,7 @@ export default function Attendence({ footerLinks }) {
             }}
           >
             <div ref={reportTemplateRef}>
-              <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
+              <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
             </div>
           </Modal.Body>
         </Modal.Content>

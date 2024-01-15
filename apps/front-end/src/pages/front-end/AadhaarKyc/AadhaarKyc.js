@@ -230,7 +230,6 @@ export default function AdharKyc({ footerLinks }) {
             }`,
             profile_url: user?.profile_photo_1?.id,
             _box: { bg: "white", shadow: "appBarShadow" },
-            _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
             onPressBackButton: handalBack,
           }}
           _footer={{ menues: footerLinks }}
@@ -530,7 +529,7 @@ const AadhaarOptions = ({
       >
         {t("TRY_AADHAR_QR_KYC")}
       </FrontEndTypo.Secondarybutton> */}
-      {user?.aadhar_verified === "in_progress" ? (
+      {/* {user?.aadhar_verified === "in_progress" ? (
         <React.Fragment></React.Fragment>
       ) : (
         <FrontEndTypo.Secondarybutton
@@ -545,13 +544,13 @@ const AadhaarOptions = ({
         >
           {t("TRY_AADHAR_UPLOAD_KYC")}
         </FrontEndTypo.Secondarybutton>
-      )}
+      )} */}
       <FrontEndTypo.Primarybutton
         onPress={() => {
-          navigate(-1);
+          navigate("/");
         }}
       >
-        {t("GO_BACK")}
+        {t("GO_BACK_TO_HOME")}
       </FrontEndTypo.Primarybutton>
     </VStack>
   );

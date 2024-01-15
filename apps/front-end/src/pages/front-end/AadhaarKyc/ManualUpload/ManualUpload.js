@@ -140,7 +140,6 @@ export default function ManualUpload({
       _appBar={{
         onlyIconsShow: ["backBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}

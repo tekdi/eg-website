@@ -72,14 +72,14 @@ export default {
       step_name: "ADDRESS_DETAILS",
       title: "ADDRESS",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["district", "block", "village"],
       properties: {
-        state: {
-          title: "STATE",
-          type: "string",
-          format: "select",
-          readOnly: "",
-        },
+        // state: {
+        //   title: "STATE",
+        //   type: "string",
+        //   format: "select",
+        //   readOnly: "",
+        // },
         district: {
           title: "DISTRICT",
           type: "string",
@@ -92,15 +92,15 @@ export default {
           format: "select",
           readOnly: "",
         },
+        grampanchayat: {
+          title: "GRAMPANCHAYAT",
+          type: "string",
+          readOnly: "",
+        },
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
-          readOnly: "",
-        },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: "string",
           readOnly: "",
         },
       },
@@ -150,7 +150,7 @@ export default {
       title: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
-      required: ["name", "contact_number"],
+      required: ["name", "designation", "contact_number"],
       properties: {
         name: {
           type: "string",
@@ -179,7 +179,7 @@ export default {
           format: "CustomR",
           grid: 2,
           enum: ["part_time", "full_time"],
-          enumNames: ["Part time", "Full time"],
+          enumNames: ["PART_TIME", "FACILITATOR_FULL_TIME"],
         },
       },
     },

@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - release-1.7.0
+      - release-1.5.10
 jobs:
   build:
     name: Generate Build and Deploy to DEV
@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+          
       - name: Setup Node Env
         uses: actions/setup-node@v3
         with:
@@ -28,7 +28,8 @@ jobs:
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
           REACT_APP_SENTRY_DSN_URL: ${{ secrets.REACT_APP_SENTRY_DSN_URL }}
           REACT_APP_SENTRY_ENV: ${{ secrets.REACT_APP_SENTRY_ENV }}
-
+          REACT_APP_BANNER_MESSAGE: ${{ secrets.REACT_APP_BANNER_MESSAGE }}
+          
       - name: Create Lerna Bundles for Submodules
         run: |
           sh ./scripts/pack-prod-build.sh

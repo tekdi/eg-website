@@ -13,6 +13,7 @@ done
 ' sh {} +
 cp -r  apps/front-end/build/* prod-build/
 cp -r  modules/players/* prod-build/
+cp -r  apps/front-end/public/.well-known prod-build/.well-known
 find  prod-build -name  'modules.json' | xargs sed -i 's|http://localhost:[0-9]*||g'
 cd prod-build && tar -cf ../eg-website.tar . && cd ../
 

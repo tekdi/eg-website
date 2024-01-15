@@ -44,6 +44,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [isEdit] = React.useState(true);
   const [campDetails, setCampDetails] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
 
   const getLocation = async () => {
     setLoading(true);
@@ -143,9 +144,27 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+    } catch (error) {
+      // Handle errors appropriately
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    let isMounted = true;
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   React.useEffect(async () => {
-    const qData = await enumRegistryService.listOfEnum();
-    const facilitiesData = qData?.data?.CAMP_PROPERTY_FACILITIES;
+    const facilitiesData = enumOptions?.CAMP_PROPERTY_FACILITIES;
     if (step === "edit_property_facilities") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -175,10 +194,9 @@ export default function App({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     let newSchema = schema;
     if (schema?.["properties"]?.["property_type"]) {
-      const qData = await enumRegistryService.listOfEnum();
       newSchema = getOptions(newSchema, {
         key: "property_type",
-        arr: qData?.data?.CAMP_PROPERTY_TYPE,
+        arr: enumOptions?.CAMP_PROPERTY_TYPE,
         title: "title",
         value: "value",
       });
@@ -201,7 +219,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         block: formData?.block,
       });
     }
-  }, [page, formData]);
+  }, [enumOptions, page, formData]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
@@ -460,12 +478,11 @@ export default function App({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "langBtn", "langBtn"],
+        onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        _backBtn: { borderWidth: 1, p: 0, borderColor: "btnGray.100" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
