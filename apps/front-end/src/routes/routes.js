@@ -1,4 +1,22 @@
-import React from "react";
+import React, { lazy } from "react";
+//v2 code
+//online_facilitator_onboarding
+const FacilitatorRegister = lazy(() =>
+  import("v2/views/Facilitator/FacilitatorRegister/FacilitatorRegister")
+);
+const FacilitatorRegistration = React.lazy(() =>
+  import(
+    "pages/front-end/FacilitatorOffline/FacilitatorRegistration/FacilitatorRegistration"
+  )
+);
+//offline_facilitator_onboarding
+const FacilitatorOnboarding = React.lazy(() =>
+  import(
+    "pages/front-end/FacilitatorOffline/FacilitatorOnboarding/FacilitatorOnboarding"
+  )
+);
+//end v2 code
+
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
@@ -160,25 +178,13 @@ const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
 const Assessment = React.lazy(() => import("component/Assessment"));
 
-//offline_falilitator_onboarding
-const FacilitatorRegistration = React.lazy(() =>
-  import(
-    "pages/front-end/FacilitatorOffline/FacilitatorRegistration/FacilitatorRegistration"
-  )
-);
-
-const FacilitatorOnboarding = React.lazy(() =>
-  import(
-    "pages/front-end/FacilitatorOffline/FacilitatorOnboarding/FacilitatorOnboarding"
-  )
-);
-
 export default [
   { path: "/form", component: Home },
-  // {
-  //   path: "/facilitator-self-onboarding",
-  //   component: Home,
-  // },
+  //old facilitator registration
+  {
+    path: "/facilitator-self-onboarding",
+    component: Home,
+  },
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
@@ -342,13 +348,20 @@ export default [
   },
   { path: "*", component: Dashboard },
 
-  //offline_facilitotor_Onboarding
+  //v2 code
+  //new facilitator registration
+  {
+    path: "/v2/facilitator-self-onboarding",
+    component: FacilitatorRegister,
+  },
   {
     path: "/offline/facilitator-self-onboarding/:id",
     component: FacilitatorRegistration,
   },
+  //offline_facilitotor_Onboarding
   {
     path: "/offline/profile/:id",
     component: FacilitatorOnboarding,
   },
+  //end v2 code
 ];
