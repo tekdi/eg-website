@@ -480,7 +480,7 @@ export default function View({ footerLinks }) {
               longitude={data?.properties?.long}
             />
           ) : (
-            <Stack p={4} alignSelf={"center"} flex={"1"} width={"10%"}>
+            <Stack p={4} alignSelf={"center"} flex={"1"} width={"auto"}>
               <AdminTypo.H5 bold color="textRed.400">
                 {t("CAMP_LOCATION_MESSAGE")}
               </AdminTypo.H5>
