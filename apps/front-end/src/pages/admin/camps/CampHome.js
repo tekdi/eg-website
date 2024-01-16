@@ -24,8 +24,8 @@ import {
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
-  setFilterLocalStorege,
-  getFilterLocalStorege,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
@@ -132,7 +132,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(() => {
-    const urlFilter = getFilterLocalStorege(filterName);
+    const urlFilter = getFilterLocalStorage(filterName);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
@@ -252,7 +252,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 filter={filter}
                 setFilter={(e) => {
                   setFilter(e);
-                  setFilterLocalStorege(filterName, e);
+                  setFilterLocalStorage(filterName, e);
                 }}
                 customStyles={CustomStyles}
                 columns={[...columns(t, navigate)]}
@@ -300,7 +300,7 @@ export const Filter = ({ filter, setFilter }) => {
       setFacilitatorFilter({ ...facilitatorFilter, district, block });
     }
     setFilter(data);
-    setFilterLocalStorege(filterName, data);
+    setFilterLocalStorage(filterName, data);
   };
 
   const handleSearch = (e) => {
