@@ -210,6 +210,38 @@ const DEFAULT_THEME = {
           rounded: '4',
           shadow: '2px 3px 0px #8B7171'
         }),
+        noOutlineBtn: () => ({
+          bg: `#FFFFFF`,
+          _hover: {
+            bg: `#FFFFFF`
+          },
+          _pressed: {
+            bg: `#f9f5f5`
+          },
+          _text: {
+            fontWeight: '700',
+            color: '#000000'
+          },
+          rounded: '4',
+          shadow: '2px 3px 0px #8B7171'
+        }),
+        greyOutlineBtn: () => ({
+          bg: `#FFFFFF`,
+          borderWidth: '1',
+          borderColor: `#AAAAAA`,
+          _hover: {
+            bg: `#FFFFFF`
+          },
+          _pressed: {
+            bg: `#f9f5f5`
+          },
+          _text: {
+            fontWeight: '700',
+            color: '#000000'
+          },
+          rounded: '4',
+          shadow: '2px 3px 0px #8B7171'
+        }),
         statusBtnAdmin: ({ colorScheme }: any) => ({
           bg: `${colorScheme}.50`,
           borderWidth: '1',

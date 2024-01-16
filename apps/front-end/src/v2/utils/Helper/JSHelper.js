@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect } from "react";
+import { changeLanguage } from "i18next";
 
-export default function getWindowSize(maxWidth = "1080") {
+export function getWindowSize(maxWidth = "1080") {
   const [size, setSize] = useState([]);
 
   useLayoutEffect(() => {
@@ -18,3 +19,13 @@ export default function getWindowSize(maxWidth = "1080") {
   }, []);
   return size;
 }
+
+export function setLanguage(code) {
+  localStorage.setItem("lang", code);
+  changeLanguage(code);
+}
+export function getLanguage() {
+  return localStorage.getItem("lang");
+}
+
+export default getWindowSize;

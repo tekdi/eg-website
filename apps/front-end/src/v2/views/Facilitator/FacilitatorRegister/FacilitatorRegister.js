@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   FrontEndTypo,
   facilitatorRegistryService,
   setOnboardingURLData,
 } from "@shiksha/common-lib";
-import Loader from "v2/components/Loader/Loader";
-import CenterMessage from "v2/components/CenterMessage/CenterMessage";
-import NoInternetScreen from "v2/components/NoInternetScreen/NoInternetScreen";
+import Loader from "v2/components/Static/Loader/Loader";
+import CenterMessage from "v2/components/Static/CenterMessage/CenterMessage";
+import NoInternetScreen from "v2/components/Static/NoInternetScreen/NoInternetScreen";
+import ChooseLanguage from "v2/components/Functional/ChooseLanguage/ChooseLanguage";
+import PageLayout from "v2/components/Static/PageLayout/PageLayout";
+import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
+import IntroductionPage from "v2/components/Functional/IntroductionPage/IntroductionPage";
+import PrerakDutiesSlider from "v2/components/Functional/PrerakDutiesSlider/PrerakDutiesSlider";
+import PrerakRegisterDetail from "v2/components/Functional/PrerakRegisterDetail/PrerakRegisterDetail";
 function FacilitatorRegister() {
+  const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isLoading, setIsloading] = useState(true);
+  const [isLoading, setIsloading] = useState(false);
   const [isError, setIsError] = useState(false);
   //screen variables
-  const [activeScreenName, setActiveScreenName] = useState("");
+  const [activeScreenName, setActiveScreenName] = useState("logoScreen");
+  const [searchParams, setSearchParams] = useSearchParams();
   //data variables
   const [id, setId] = useState("");
   const [ip, setIp] = useState(null);
@@ -22,56 +30,6 @@ function FacilitatorRegister() {
   const [cohortData, setCohortData] = useState(null);
   const [programId, setProgramId] = useState("");
   const [programData, setProgramData] = useState(null);
-  //fetch URL data and store fix for 2 times render useEffect call
-  const [countLoad, setCountLoad] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      if (countLoad == 0) {
-        setCountLoad(1);
-      }
-      if (countLoad == 1) {
-        setIsloading(true);
-        //do page load first operation
-        // ...async operations
-        if (
-          searchParams.get("org_id") &&
-          searchParams.get("cohort_id") &&
-          searchParams.get("program_id")
-        ) {
-          //check link is valid or not
-          const data = await facilitatorRegistryService.checkValidLink({
-            program_id: parseInt(searchParams.get("program_id")),
-            organisation_id: parseInt(searchParams.get("org_id")),
-            academic_year_id: parseInt(searchParams.get("cohort_id")),
-          });
-          if (!data?.isExist) {
-            setIsError(true);
-          }
-          //assign orgid, cohortid, program id
-          if (searchParams.get("org_id")) {
-            setId(searchParams.get("org_id"));
-          }
-          if (searchParams.get("cohort_id")) {
-            setCohortId(searchParams.get("cohort_id"));
-          }
-          if (searchParams.get("program_id")) {
-            setProgramId(searchParams.get("program_id"));
-          }
-        } else {
-          setIsError(true);
-        }
-        setIsloading(false);
-        //end do page load first operation
-        setCountLoad(2);
-      } else if (countLoad == 2) {
-        setCountLoad(3);
-      }
-    }
-    fetchData();
-  }, [countLoad]);
 
   useEffect(() => {
     async function fetchData() {
@@ -148,13 +106,62 @@ function FacilitatorRegister() {
     fetchData();
   }, [id, ip, cohortId, cohortData, programId, programData]);
 
+  //screen variables
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (activeScreenName == "logoScreen") {
+        //wait for 1 second
+        const delay = 750; // 1 second in milliseconds
+        setTimeout(async () => {
+          await getURLParameter();
+          setActiveScreenName("chooseLangauge");
+        }, delay);
+      }
+      if (activeScreenName == "chooseLangauge") {
+      }
+    }
+    fetchData();
+  }, [activeScreenName]);
+
+  const getURLParameter = async () => {
+    setIsloading(true);
+    //do page load first operation
+    // ...async operations
+    if (
+      searchParams.get("org_id") &&
+      searchParams.get("cohort_id") &&
+      searchParams.get("program_id")
+    ) {
+      //check link is valid or not
+      const data = await facilitatorRegistryService.checkValidLink({
+        program_id: parseInt(searchParams.get("program_id")),
+        organisation_id: parseInt(searchParams.get("org_id")),
+        academic_year_id: parseInt(searchParams.get("cohort_id")),
+      });
+      if (!data?.isExist) {
+        setIsError(true);
+      }
+      //assign orgid, cohortid, program id
+      if (searchParams.get("org_id")) {
+        setId(searchParams.get("org_id"));
+      }
+      if (searchParams.get("cohort_id")) {
+        setCohortId(searchParams.get("cohort_id"));
+      }
+      if (searchParams.get("program_id")) {
+        setProgramId(searchParams.get("program_id"));
+      }
+    } else {
+      setIsError(true);
+    }
+    setIsloading(false);
+  };
+
   //online offline detect
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
-  /*useEffect(() => {
-    setIsOnline(window ? window.navigator.onLine : false);
-  }, [window.navigator.onLine]);*/
 
   useEffect(() => {
     const online = () => setIsOnline(true);
@@ -169,33 +176,135 @@ function FacilitatorRegister() {
     };
   }, []);
 
-  /*const renderSwitchCase = () => {
-    switch (activeScreenName) {
-      case "chooseLangauge":
-        return isOnline ? chooseLangauge() : offlineStatusScreen();
-      case "introductionOfProject":
-        return isOnline ? introductionOfProject() : offlineStatusScreen();
-      case "prerakDuties":
-        return isOnline ? prerakDuties() : offlineStatusScreen();
-      case "enterBasicDetails":
-        return isOnline ? enterBasicDetails() : offlineStatusScreen();
-      case "contactDetails":
-        return isOnline ? contactDetails() : offlineStatusScreen();
-      default:
-        return isOnline ? chooseLangauge() : offlineStatusScreen();
+  const languageChanged = () => {
+    setActiveScreenName("introductionOfProject");
+  };
+
+  const languageSelect = () => {
+    setActiveScreenName("chooseLangauge");
+  };
+
+  const funBackButton = () => {
+    if (activeScreenName == "introductionOfProject") {
+      setActiveScreenName("chooseLangauge");
     }
-  };*/
+    if (
+      activeScreenName == "prerakDuties" ||
+      activeScreenName == "registerForm"
+    ) {
+      setActiveScreenName("introductionOfProject");
+    }
+  };
+
+  const showPrerakDuties = () => {
+    setActiveScreenName("prerakDuties");
+  };
+
+  const showApplyNow = () => {
+    setActiveScreenName("registerForm");
+  };
+
+  const showLogin = () => {
+    navigate("/");
+  };
+
+  const SelectLanguage = () => {
+    return (
+      <PageLayout
+        t={t}
+        isPageMiddle={true}
+        customComponent={
+          <ChooseLanguage t={t} languageChanged={languageChanged} />
+        }
+      />
+    );
+  };
+  const IntroductionPageScreen = () => {
+    return (
+      <PageLayout
+        t={t}
+        showAppBar={true}
+        funBackButton={funBackButton}
+        showLangChange={true}
+        funLangChange={languageSelect}
+        customComponent={
+          <IntroductionPage
+            t={t}
+            showPrerakDuties={showPrerakDuties}
+            showApplyNow={showApplyNow}
+            showLogin={showLogin}
+          />
+        }
+      />
+    );
+  };
+  const PrerakDutiesScreen = () => {
+    return (
+      <PageLayout
+        t={t}
+        showAppBar={true}
+        funBackButton={funBackButton}
+        showLangChange={true}
+        funLangChange={languageSelect}
+        customComponent={<PrerakDutiesSlider t={t} />}
+      />
+    );
+  };
+  const enterBasicDetails = () => {
+    return (
+      <PageLayout
+        t={t}
+        showAppBar={true}
+        funBackButton={funBackButton}
+        showHelpButton={true}
+        customComponent={<PrerakRegisterDetail t={t} />}
+      />
+    );
+  };
+
+  const renderRegisterStep = () => {
+    switch (activeScreenName) {
+      case "logoScreen":
+        return (
+          <PageLayout
+            t={t}
+            isPageMiddle={true}
+            customComponent={<LogoScreen />}
+          />
+        );
+      case "chooseLangauge":
+        return SelectLanguage();
+      case "introductionOfProject":
+        return IntroductionPageScreen();
+      case "prerakDuties":
+        return PrerakDutiesScreen();
+      case "registerForm":
+        return enterBasicDetails();
+      default:
+        return SelectLanguage();
+    }
+  };
 
   return (
     <>
       {!isOnline ? (
-        <NoInternetScreen t={t} />
+        <PageLayout
+          t={t}
+          isPageMiddle={true}
+          customComponent={<NoInternetScreen t={t} />}
+        />
       ) : isLoading ? (
-        <Loader />
+        <PageLayout t={t} isPageMiddle={true} customComponent={<Loader />} />
       ) : isError ? (
-        <CenterMessage message={t("INVALID_INVITATION_URL")} />
+        <PageLayout
+          t={t}
+          isPageMiddle={true}
+          customComponent={
+            <CenterMessage message={t("INVALID_INVITATION_URL")} />
+          }
+        />
       ) : (
-        <h1>Hello</h1>
+        renderRegisterStep()
       )}
     </>
   );
