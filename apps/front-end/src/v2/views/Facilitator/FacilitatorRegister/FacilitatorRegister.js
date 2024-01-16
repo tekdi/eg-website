@@ -23,6 +23,9 @@ function FacilitatorRegister() {
   //screen variables
   const [activeScreenName, setActiveScreenName] = useState("logoScreen");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [currentImage, setCurrentImage] = useState(0);
+  const [currentForm, setCurrentForm] = useState(0);
+
   //data variables
   const [id, setId] = useState("");
   const [ip, setIp] = useState(null);
@@ -186,13 +189,23 @@ function FacilitatorRegister() {
 
   const funBackButton = () => {
     if (activeScreenName == "introductionOfProject") {
+      setCurrentImage(0);
       setActiveScreenName("chooseLangauge");
     }
-    if (
-      activeScreenName == "prerakDuties" ||
-      activeScreenName == "registerForm"
-    ) {
-      setActiveScreenName("introductionOfProject");
+    if (activeScreenName == "prerakDuties") {
+      if (currentImage == 0) {
+        setActiveScreenName("introductionOfProject");
+      } else {
+        setCurrentImage((currentImage) => currentImage - 1);
+      }
+    }
+    if (activeScreenName == "registerForm") {
+      setCurrentImage(0);
+      if (currentForm == 0) {
+        setActiveScreenName("introductionOfProject");
+      } else {
+        setCurrentForm((currentForm) => currentForm - 1);
+      }
     }
   };
 
@@ -246,7 +259,14 @@ function FacilitatorRegister() {
         funBackButton={funBackButton}
         showLangChange={true}
         funLangChange={languageSelect}
-        customComponent={<PrerakDutiesSlider t={t} />}
+        customComponent={
+          <PrerakDutiesSlider
+            t={t}
+            currentImage={currentImage}
+            setCurrentImage={setCurrentImage}
+            showApplyNow={showApplyNow}
+          />
+        }
       />
     );
   };
@@ -257,7 +277,13 @@ function FacilitatorRegister() {
         showAppBar={true}
         funBackButton={funBackButton}
         showHelpButton={true}
-        customComponent={<PrerakRegisterDetail t={t} />}
+        customComponent={
+          <PrerakRegisterDetail
+            t={t}
+            currentForm={currentForm}
+            setCurrentForm={setCurrentForm}
+          />
+        }
       />
     );
   };
