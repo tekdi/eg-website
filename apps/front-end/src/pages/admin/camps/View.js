@@ -464,19 +464,28 @@ export default function View({ footerLinks }) {
                 </HStack>
               )
           )}
-          <MapComponent
-            _iframe={{
-              width: "200px",
-              height: "200px",
-              style: {
-                borderRadius: "10px",
-                border: "none",
-                paddingTop: "8px",
-              },
-            }}
-            latitude={data?.properties?.lat}
-            longitude={data?.properties?.long}
-          />
+          {data?.properties?.lat ? (
+            <MapComponent
+              key={data?.properties?.lat}
+              _iframe={{
+                width: "200px",
+                height: "200px",
+                style: {
+                  borderRadius: "10px",
+                  border: "none",
+                  paddingTop: "8px",
+                },
+              }}
+              latitude={data?.properties?.lat}
+              longitude={data?.properties?.long}
+            />
+          ) : (
+            <Stack p={4} alignSelf={"center"} flex={"1"} width={"10%"}>
+              <AdminTypo.H5 bold color="textRed.400">
+                {t("CAMP_LOCATION_MESSAGE")}
+              </AdminTypo.H5>
+            </Stack>
+          )}
         </HStack>
         <HStack space={4}>
           <CardComponent
