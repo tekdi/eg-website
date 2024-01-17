@@ -13,7 +13,7 @@ import {
   Alert,
   Heading,
 } from "native-base";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, createRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FrontEndTypo,
@@ -25,6 +25,10 @@ import {
   facilitatorRegistryService,
   setOnboardingMobile,
   authRegistryService,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
+  login,
+  jsonParse,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
@@ -46,11 +50,13 @@ export default function PrerakRegisterDetail({
   setCurrentForm,
   registerFormData,
   setRegisterFormData,
+  ip,
 }) {
   const navigate = useNavigate();
   //screen variable
   const [isLoading, setIsloading] = useState(false);
   //register user variables
+  const ref = createRef(null);
   const { image, takeScreenshot } = useScreenshot();
   const getImage = () => takeScreenshot({ ref });
   const [credentials, setCredentials] = useState();
@@ -59,6 +65,10 @@ export default function PrerakRegisterDetail({
       getImage();
     }
   }, [credentials]);
+  const downloadImage = () => {
+    var FileSaver = require("file-saver");
+    FileSaver.saveAs(`${image}`, "image.png");
+  };
 
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
@@ -172,110 +182,61 @@ export default function PrerakRegisterDetail({
       setIsloading(true);
       setFormData(newFormData);
       setRegisterFormData(newFormData);
-      console.log(JSON.stringify(newFormData));
       //check if user exist on mobile number
       let isExist = await checkMobileExist(newFormData?.mobile);
       if (!isExist) {
         //sent otp to mobile number
-        // let otpdata = await sendAndVerifyOtp(verifyOTP, {
-        //   mobile: newFormData?.mobile,
-        // });
+        await sendAndVerifyOtp(schema, {
+          mobile: newFormData?.mobile,
+        });
         setCurrentForm(1);
-        // setSchema(otpdata?.newSchema);
-        setSchema(verifyOTP);
       }
       setIsloading(false);
     } else if (currentForm == 1) {
-      alert("submit");
+      setIsloading(true);
+      let isExist = await checkMobileExist(newFormData?.verify_mobile);
+      if (!isExist) {
+        //verify otp
+        let verify_otp = await sendAndVerifyOtp(schema, {
+          mobile: newFormData?.verify_mobile,
+          otp: newFormData?.otp,
+          hash: localStorage.getItem("hash"),
+        });
+        if (verify_otp?.status === true) {
+          //register user
+          const createData = await formSubmitCreate();
+          if (createData?.success == false) {
+            const newErrors = {
+              verify_mobile: {
+                __errors:
+                  data?.error?.constructor?.name === "String"
+                    ? [data?.error]
+                    : data?.error?.constructor?.name === "Array"
+                    ? data?.error
+                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+              },
+            };
+            setErrors(newErrors);
+          } else {
+            console.log("formSubmitCreate create", createData?.data);
+            let createDataNew = createData?.data;
+            if (createDataNew?.username && createDataNew?.password) {
+              await removeOnboardingURLData();
+              await removeOnboardingMobile();
+              setCredentials(createDataNew);
+            }
+          }
+        } else {
+          const newErrors = {
+            otp: {
+              __errors: [t("USER_ENTER_VALID_OTP")],
+            },
+          };
+          setErrors(newErrors);
+        }
+      }
+      setIsloading(false);
     }
-
-    // if (schema?.properties?.first_name) {
-    //   newFormData = {
-    //     ...newFormData,
-    //     ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
-    //   };
-    // }
-
-    // if (schema?.properties?.last_name && newFormData?.last_name) {
-    //   newFormData = {
-    //     ...newFormData,
-    //     ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
-    //   };
-    // }
-
-    // const newData = {
-    //   ...formData,
-    //   ...newFormData,
-    //   ["form_step_number"]: parseInt(page) + 1,
-    // };
-    // setFormData(newData);
-
-    // if (_.isEmpty(errors) || errors?.otp) {
-    //   const { id } = facilitator;
-    //   let success = false;
-    //   if (id) {
-    //     // const data = await formSubmitUpdate(newData);
-    //     // if (!_.isEmpty(data)) {
-    //     success = true;
-    //     // }
-    //   } else if (page === "2") {
-    //     const resultCheck = await checkMobileExist(newFormData?.mobile);
-    //     if (!resultCheck) {
-    //       if (!schema?.properties?.otp) {
-    //         const { otp: data, ...allData } = newFormData || {};
-    //         setFormData(allData);
-    //         newFormData = allData;
-    //         let { mobile, otp, ...otherError } = errors || {};
-    //         setErrors(otherError);
-    //       }
-    //       const { status, newSchema } = await sendAndVerifyOtp(schema, {
-    //         ...newFormData,
-    //         hash: localStorage.getItem("hash"),
-    //       });
-    //       if (status === true) {
-    //         const data = await formSubmitCreate(newFormData);
-    //         if (data?.error) {
-    //           const newErrors = {
-    //             mobile: {
-    //               __errors:
-    //                 data?.error?.constructor?.name === "String"
-    //                   ? [data?.error]
-    //                   : data?.error?.constructor?.name === "Array"
-    //                   ? data?.error
-    //                   : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-    //             },
-    //           };
-    //           setErrors(newErrors);
-    //         } else {
-    //           if (data?.username && data?.password) {
-    //             await removeOnboardingURLData();
-    //             await removeOnboardingMobile();
-    //             setCredentials(data);
-    //           }
-    //         }
-    //       } else if (status === false) {
-    //         const newErrors = {
-    //           otp: {
-    //             __errors: [t("USER_ENTER_VALID_OTP")],
-    //           },
-    //         };
-    //         setErrors(newErrors);
-    //       } else {
-    //         setSchema(newSchema);
-    //       }
-    //     }
-    //   } else if (page <= 1) {
-    //     success = true;
-    //   }
-    //   if (success) {
-    //     setStep();
-    //   }
-    // } else {
-    //   const key = Object.keys(errors);
-    //   if (key[0]) {
-    //     goErrorPage(key[0]);
-    //   }
-    // }
   };
   const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
@@ -297,7 +258,9 @@ export default function PrerakRegisterDetail({
     const data = e.formData;
     const newData = { ...formData, ...data };
     setFormData(newData);
-    setRegisterFormData(newData);
+    if (currentForm == 0) {
+      setRegisterFormData(newData);
+    }
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
@@ -448,6 +411,27 @@ export default function PrerakRegisterDetail({
     // console.log(otpData)
     return otpData;
   };
+  const formSubmitCreate = async () => {
+    let first_name = registerFormData?.first_name
+      ? registerFormData.first_name.replaceAll(" ", "")
+      : "";
+    let last_name = registerFormData?.last_name
+      ? registerFormData.last_name.replaceAll(" ", "")
+      : "";
+    let lang = localStorage.getItem("lang");
+    const result = await facilitatorRegistryService.registerV2(
+      {
+        first_name: first_name,
+        last_name: last_name,
+        mobile: registerFormData?.mobile.toString(),
+        lang: lang,
+      },
+      ip?.id.toString(),
+      programData?.program_id,
+      cohortData?.academic_year_id
+    );
+    return result;
+  };
   return (
     <>
       {" "}
@@ -521,22 +505,6 @@ export default function PrerakRegisterDetail({
                 </FrontEndTypo.Primarybutton>
               )}
             </Form>
-            {/* <Form
-        formData={formData}
-        onSubmit={(dataहमें अपना नाम बताएं) => setFormData(data.formData)}
-        {...{ templates, FieldTemplate }}
-        validator={validator}
-        schema={enterBasicDetailsSchema}
-      >
-        <FrontEndTypo.Primarybutton
-          style={{ background: "#FF0000", space: "20px", marginTop: "35px" }}
-          onClick={(e) => setPage(page + 1)}
-          onPress={() => handleNextScreen("contactDetails")}
-          // isDisabled={!mobileNumber}
-        >
-          {t("NEXT")}
-        </FrontEndTypo.Primarybutton>
-      </Form> */}
           </Box>
           <Modal
             isOpen={isUserExistModal}

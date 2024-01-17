@@ -286,6 +286,7 @@ function FacilitatorRegister() {
             setCurrentForm={setCurrentForm}
             registerFormData={registerFormData}
             setRegisterFormData={setRegisterFormData}
+            ip={ip}
           />
         }
       />
