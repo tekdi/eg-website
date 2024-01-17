@@ -35,8 +35,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { fetchUsers, selectdataTable } from "store/Slices/dataTableSlice";
-import { useDispatch, useSelector } from "react-redux";
 
 const styles = {
   inforBox: {
@@ -83,16 +81,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
-  const dispatch = useDispatch();
-  const data = useSelector(selectdataTable);
-
-  console.log("hii", data);
-
-  useEffect(() => {
-    if (!data?.data) {
-      dispatch(fetchUsers());
-    }
-  }, []);
 
   useEffect(() => {
     async function fetchData() {
