@@ -12,12 +12,14 @@ import {
   Text,
   TextArea,
   VStack,
+  Heading,
 } from "native-base";
 import {
   BodySmall,
   H2,
   FloatingInput,
   MobileNumber,
+  MobileNumberReadOnly,
   IconByName,
   FrontEndTypo,
   CustomOTPBox,
@@ -30,6 +32,47 @@ import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
+
+export function labelNameWidget() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Heading size="sm" mb={1} color="textMaroonColor.400">
+        {t("TELL_US_YOUR_NAME")}
+      </Heading>
+      <Text color="textMaroonColor.400" mb={1}>
+        {" "}
+        {t("AS_PER_AADHAAR")}
+      </Text>
+    </>
+  );
+}
+export function labelMobileWidget() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Heading size="sm" mb={1} color="textMaroonColor.400">
+        {t("HOW_CAN_CONTACT_YOU")}
+      </Heading>
+      <Text color="textMaroonColor.400" mb={1}>
+        {t("PLEASE_MOBILE_NUMBER")}
+      </Text>
+    </>
+  );
+}
+export function labelVerifyNameWidget() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Heading size="sm" mb={1} color="textMaroonColor.400">
+        {t("VERIFY_CONTACT_NUMBER")}
+      </Heading>
+      <Text color="textMaroonColor.400" mb={1}>
+        {t("PLEASE_ENTER_OTP")}
+      </Text>
+    </>
+  );
+}
 
 // rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
@@ -744,6 +787,11 @@ const widgets = {
   Location,
   StarRating,
   CheckUncheck,
+  //v2 widget
+  labelNameWidget,
+  labelMobileWidget,
+  labelVerifyNameWidget,
+  MobileNumberReadOnly,
 };
 
 const templates = {
@@ -831,6 +879,7 @@ export {
   FileUpload,
   validator,
   MobileNumber,
+  MobileNumberReadOnly,
   onError,
   transformErrors,
   StarRating,

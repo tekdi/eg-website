@@ -25,6 +25,7 @@ function FacilitatorRegister() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentImage, setCurrentImage] = useState(0);
   const [currentForm, setCurrentForm] = useState(0);
+  const [registerFormData, setRegisterFormData] = useState({});
 
   //data variables
   const [id, setId] = useState("");
@@ -202,6 +203,7 @@ function FacilitatorRegister() {
     if (activeScreenName == "registerForm") {
       setCurrentImage(0);
       if (currentForm == 0) {
+        setRegisterFormData({});
         setActiveScreenName("introductionOfProject");
       } else {
         setCurrentForm((currentForm) => currentForm - 1);
@@ -282,6 +284,8 @@ function FacilitatorRegister() {
             t={t}
             currentForm={currentForm}
             setCurrentForm={setCurrentForm}
+            registerFormData={registerFormData}
+            setRegisterFormData={setRegisterFormData}
           />
         }
       />

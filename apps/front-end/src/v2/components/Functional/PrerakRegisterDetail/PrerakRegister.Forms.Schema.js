@@ -1,40 +1,43 @@
 export const basicRegister = {
-    title: "TELL_US_YOUR_NAME",
-    description: "AS_PER_AADHAAR",
-    type: "object",
-    required: ["first_name", "last_name"],
-    properties: {
-      first_name: {
-        type: "string",
-        title: "FIRST_NAME",
-        regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-      },
-      middle_name: {
-        type: "string",
-        title: "MIDDLE_NAME",
-        regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-      },
-      last_name: {
-        type: "string",
-        title: "LAST_NAME",
-        regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-      },
-
-      first_name1: {
-        type: "string",
-        title: "FIRST_NAME",
-        regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-      },
-      middle_name1: {
-        type: "string",
-        title: "MIDDLE_NAME",
-        regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-      },
-      last_name1: {
-        type: "string",
-        title: "LAST_NAME",
-        regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-      },
+  type: "object",
+  required: ["first_name", "mobile"],
+  properties: {
+    labelName: {
+      type: "string",
     },
-  };;
-export const verifyOTP = {};
+    first_name: {
+      type: "string",
+      title: "FIRST_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+    },
+    last_name: {
+      type: "string",
+      title: "LAST_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+    },
+    labelMobile: {
+      type: "string",
+    },
+    mobile: {
+      type: "number",
+      title: "MOBILE_NUMBER",
+      format: "MobileNumber",
+      regex: /^[0-9]{0,10}$/,
+    },
+  },
+};
+export const verifyOTP = {
+  type: "object",
+  required: ["verify_mobile"],
+  properties: {
+    labelVerifyName: {
+      type: "string",
+    },
+    verify_mobile: {
+      type: "number",
+      title: "MOBILE_NUMBER",
+      format: "MobileNumberReadOnly",
+      regex: /^[0-9]{0,10}$/,
+    },
+  },
+};
