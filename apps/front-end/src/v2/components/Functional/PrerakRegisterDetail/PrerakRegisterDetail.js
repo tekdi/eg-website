@@ -112,6 +112,7 @@ export default function PrerakRegisterDetail({
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
   useEffect(() => {
+    setErrors({});
     if (currentForm == 0) {
       setSchema(basicRegister);
       setFormData(registerFormData);
@@ -137,13 +138,13 @@ export default function PrerakRegisterDetail({
   }, [currentForm]);
   const uiSchema = {
     labelName: {
-      "ui:widget": "labelNameWidget",
+      "ui:widget": "LabelNameWidget",
     },
     labelMobile: {
-      "ui:widget": "labelMobileWidget",
+      "ui:widget": "LabelMobileWidget",
     },
     labelVerifyName: {
-      "ui:widget": "labelVerifyNameWidget",
+      "ui:widget": "LabelVerifyNameWidget",
     },
     verify_mobile: {
       "ui:readOnly": true,
@@ -268,6 +269,10 @@ export default function PrerakRegisterDetail({
       /*if (data?.mobile?.toString()?.length === 10) {
         await checkMobileExist(data?.mobile);
       }*/
+    }
+    if (id === "root_verify_mobile") {
+      let { verify_mobile, otp, ...otherError } = errors || {};
+      setErrors(otherError);
     }
   };
   const checkMobileExist = async (mobile) => {

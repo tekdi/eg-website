@@ -33,7 +33,7 @@ import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
-export function labelNameWidget() {
+export function LabelNameWidget() {
   const { t } = useTranslation();
   return (
     <>
@@ -47,7 +47,7 @@ export function labelNameWidget() {
     </>
   );
 }
-export function labelMobileWidget() {
+export function LabelMobileWidget() {
   const { t } = useTranslation();
   return (
     <>
@@ -60,7 +60,7 @@ export function labelMobileWidget() {
     </>
   );
 }
-export function labelVerifyNameWidget() {
+export function LabelVerifyNameWidget() {
   const { t } = useTranslation();
   return (
     <>
@@ -788,9 +788,9 @@ const widgets = {
   StarRating,
   CheckUncheck,
   //v2 widget
-  labelNameWidget,
-  labelMobileWidget,
-  labelVerifyNameWidget,
+  LabelNameWidget,
+  LabelMobileWidget,
+  LabelVerifyNameWidget,
   MobileNumberReadOnly,
 };
 
