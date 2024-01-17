@@ -198,7 +198,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   const setFilterObject = React.useCallback(
     (data) => {
       setFilter((prevFilter) => {
-        if (prevFilter.length > 0) {
+        if (prevFilter?.length > 0) {
           return prevFilter;
         } else {
           return data;
@@ -222,9 +222,9 @@ export default function List({ footerLinks, userTokenInfo }) {
         data?.formData || {};
 
       if (
-        (district.length ||
-          qualificationIds.length ||
-          work_experience.length ||
+        (district?.length ||
+          qualificationIds?.length ||
+          work_experience?.length ||
           block.length) > 0
       ) {
         setFilterObject({
@@ -369,7 +369,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users[0]?.organisation_id}`}
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users?.[0]?.organisation_id}`}
                     >
                       <HStack space="3">
                         <IconByName
