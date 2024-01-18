@@ -5,7 +5,7 @@ on:
       - release-1.5.10
 jobs:
   build:
-    name: Generate Build and Deploy to DEV
+    name: Generate Build and Deploy to DEV 
     environment: DEV
     runs-on: ubuntu-latest
     steps:
