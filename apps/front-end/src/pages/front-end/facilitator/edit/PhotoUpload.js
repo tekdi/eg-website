@@ -100,7 +100,6 @@ export default function PhotoUpload({
             mt="4"
             onPress={() => {
               navigate(`/profile/edit/upload/${page + 1}`);
-              navigate(0);
             }}
           >
             {t("SAVE_AND_NEXT")}
