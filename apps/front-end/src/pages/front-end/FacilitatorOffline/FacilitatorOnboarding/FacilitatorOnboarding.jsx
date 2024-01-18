@@ -23,7 +23,6 @@ import * as formSchemas from "./onboarding.schema";
 import {
   fetchIpUserData,
   selectedIpData,
-  getData,
 } from "../../../../store/Slices/ipUserInfoSlice";
 
 const {
