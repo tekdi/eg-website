@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import { Alert, Box, Button, HStack, VStack } from "native-base";
 import {
   Layout,
@@ -15,6 +15,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const PRESENT = "present";
 const ABSENT = "absent";
@@ -22,36 +23,39 @@ const ABSENT = "absent";
 // App
 export default function CampAttendance({ activityId }) {
   const { id } = useParams();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [groupUsers, setGroupUsers] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [userData, setUserData] = React.useState({});
-  const [error, setError] = React.useState("");
-  const [cameraFile, setCameraFile] = React.useState();
-  const [data, setData] = React.useState({});
-  const [isEditable, setIsEditable] = React.useState();
-  const [randomAttendance, setRandomAttendance] = React.useState(false);
+  const [groupUsers, setGroupUsers] = useState();
+  const [cameraUrl, setCameraUrl] = useState();
+  const [userData, setUserData] = useState({});
+  const [error, setError] = useState("");
+  const [cameraFile, setCameraFile] = useState();
+  const [data, setData] = useState({});
+  const [isEditable, setIsEditable] = useState();
+  const [randomAttendance, setRandomAttendance] = useState(false);
   const [latData, longData] = useLocationData() || [];
   const navigate = useNavigate();
+  const [hasMore, setHasMore] = useState(true);
+  const [bodyHeight, setBodyHeight] = useState(0);
+  const [loadingHeight, setLoadingHeight] = useState(0);
+  const ref = useRef(null);
 
-  React.useEffect(async () => {
-    await getData();
-  }, [id, !userData]);
-
-  React.useEffect(async () => {
+  useEffect(async () => {
     const data = await campService.getrandomAttendance({ id });
     if (data?.learner_camp_attendance_data === 1) {
       setRandomAttendance(true);
     }
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setData({ ...data, lat: `${latData}`, long: `${longData}` });
   }, [latData]);
 
   const getData = async () => {
     const result = await campService.getCampDetails({ id });
+    let totalPages = 5;
+    let currentPage = 1;
+    setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
     const resultAttendance = await campService.CampAttendance({
       id: activityId,
     });
@@ -68,6 +72,9 @@ export default function CampAttendance({ activityId }) {
     setLoading(false);
   };
 
+  useEffect(async () => {
+    await getData();
+  }, [id, !userData]);
   // update schema
 
   // const onClickSubmit = () => {
@@ -75,7 +82,13 @@ export default function CampAttendance({ activityId }) {
   // };
 
   // Camera MOdule
-
+  useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
     setError("");
     setIsEditable({ ...isEditable, [user?.id]: null });
@@ -152,7 +165,7 @@ export default function CampAttendance({ activityId }) {
     return (
       <Box>
         {
-          <React.Suspense fallback={<Loading />}>
+          <Suspense fallback={<Loading />}>
             <Camera
               facing={true}
               headerComponent={
@@ -235,14 +248,15 @@ export default function CampAttendance({ activityId }) {
                 },
               }}
             />
-          </React.Suspense>
+          </Suspense>
         }
       </Box>
     );
   }
-
+  console.log("length", groupUsers?.length);
   return (
     <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
       loading={loading}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
@@ -271,98 +285,119 @@ export default function CampAttendance({ activityId }) {
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
         </FrontEndTypo.Primarybutton> */}
-        <VStack space="4">
-          {groupUsers?.map((item) => {
-            console.log(item);
-            return (
-              <HStack key={item} flex="1" minH={12}>
-                <UserCard
-                  _hstack={{
-                    ...(!isEditable?.[item.id] && item?.attendance?.status
-                      ? { py: 0 }
-                      : // : item?.attendance?.status &&
-                        //   item?.attendance?.status !== PRESENT
-                        // ? { p: 0, pl: 4 }
-                        { p: 0 }),
-                    space: 1,
-                    flex: 1,
-                    bg:
-                      isEditable?.[item.id] || !item?.attendance?.status
-                        ? "white"
-                        : item?.attendance?.status === PRESENT
-                        ? "green.100"
-                        : item?.attendance?.status === ABSENT
-                        ? "red.100"
-                        : "",
-                  }}
-                  _vstack={{ py: 2 }}
-                  _image={{ size: 45, color: "gray" }}
-                  leftElement={
-                    (isEditable?.[item.id] || !item?.attendance?.status) && (
-                      <IconByName
-                        onPress={(e) => {
-                          uploadAttendence(item, ABSENT, true);
-                        }}
-                        height="100%"
-                        roundedRight="0"
-                        bg="red.100"
-                        name="CloseCircleLineIcon"
-                        _icon={{ size: "25px", color: "gray" }}
-                      />
-                    )
-                  }
-                  rightElement={
-                    isEditable?.[item.id] || !item?.attendance?.status ? (
-                      <IconByName
-                        onPress={(e) => {
-                          addAttendance(item);
-                        }}
-                        height="100%"
-                        roundedLeft="0"
-                        bg="green.100"
-                        name="CheckboxCircleLineIcon"
-                        _icon={{ size: "25px", color: "gray" }}
-                      />
-                    ) : (
-                      <IconByName
-                        name="EditBoxLineIcon"
-                        _icon={{ color: "garkGray", size: "15" }}
-                        bg="gray.100"
-                        shadow="4"
-                        rounded="full"
-                        onPress={(e) =>
-                          setIsEditable({
-                            ...isEditable,
-                            [item.id]: !isEditable?.[item.id],
-                          })
-                        }
-                      />
-                    )
-                  }
-                  title={[
-                    item?.program_beneficiaries[0]?.enrollment_first_name,
-                    item?.program_beneficiaries[0]?.enrollment_middle_name,
-                    item?.program_beneficiaries[0]?.enrollment_last_name,
-                  ]
-                    .filter((e) => e)
-                    .join(" ")}
-                  // subTitle={
-                  //   <HStack>
-                  //     <RenderAttendee row={item?.attendance || {}} t={t} />
-                  //   </HStack>
-                  // }
-
-                  // image={
-                  //   item?.profile_photo_1?.fileUrl
-                  //     ? { urlObject: item?.profile_photo_1 }
-                  //     : null
-                  // }
-                  isIdtag={item?.id}
-                />
-              </HStack>
-            );
-          })}
-        </VStack>
+        <InfiniteScroll
+          dataLength={groupUsers?.length || 0}
+          next={() => {
+            if (!loading) {
+              setLoading(true);
+              fetchData().then((newData) => {
+                setGroupUsers((prevData) => [...prevData, ...newData]);
+                setLoading(false);
+              });
+            }
+          }}
+          hasMore={hasMore}
+          height={loadingHeight}
+          loader={<Loading height="100" />}
+          endMessage={
+            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
+              {groupUsers?.length > 0
+                ? t("COMMON_NO_MORE_RECORDS")
+                : t("DATA_NOT_FOUND")}
+            </FrontEndTypo.H3>
+          }
+          pullDownToRefreshThreshold={50}
+        >
+          <VStack space="4">
+            {groupUsers?.map((item) => {
+              return (
+                <HStack key={item} flex="1" minHeight={12}>
+                  <UserCard
+                    _hstack={{
+                      ...(!isEditable?.[item.id] && item?.attendance?.status
+                        ? { py: 0 }
+                        : // : item?.attendance?.status &&
+                          //   item?.attendance?.status !== PRESENT
+                          // ? { p: 0, pl: 4 }
+                          { p: 0 }),
+                      space: 1,
+                      flex: 1,
+                      bg:
+                        isEditable?.[item.id] || !item?.attendance?.status
+                          ? "white"
+                          : item?.attendance?.status === PRESENT
+                          ? "green.100"
+                          : item?.attendance?.status === ABSENT
+                          ? "red.100"
+                          : "",
+                    }}
+                    _vstack={{ py: 2 }}
+                    _image={{ size: 45, color: "gray" }}
+                    leftElement={
+                      (isEditable?.[item.id] || !item?.attendance?.status) && (
+                        <IconByName
+                          onPress={(e) => {
+                            uploadAttendence(item, ABSENT, true);
+                          }}
+                          height="100%"
+                          roundedRight="0"
+                          bg="red.100"
+                          name="CloseCircleLineIcon"
+                          _icon={{ size: "25px", color: "gray" }}
+                        />
+                      )
+                    }
+                    rightElement={
+                      isEditable?.[item.id] || !item?.attendance?.status ? (
+                        <IconByName
+                          onPress={(e) => {
+                            addAttendance(item);
+                          }}
+                          height="100%"
+                          roundedLeft="0"
+                          bg="green.100"
+                          name="CheckboxCircleLineIcon"
+                          _icon={{ size: "25px", color: "gray" }}
+                        />
+                      ) : (
+                        <IconByName
+                          name="EditBoxLineIcon"
+                          _icon={{ color: "garkGray", size: "15" }}
+                          bg="gray.100"
+                          shadow="4"
+                          rounded="full"
+                          onPress={(e) =>
+                            setIsEditable({
+                              ...isEditable,
+                              [item.id]: !isEditable?.[item.id],
+                            })
+                          }
+                        />
+                      )
+                    }
+                    title={[
+                      item?.program_beneficiaries[0]?.enrollment_first_name,
+                      item?.program_beneficiaries[0]?.enrollment_middle_name,
+                      item?.program_beneficiaries[0]?.enrollment_last_name,
+                    ]
+                      .filter((e) => e)
+                      .join(" ")}
+                    // subTitle={
+                    //   <HStack>
+                    //     <RenderAttendee row={item?.attendance || {}} t={t} />
+                    //   </HStack>
+                    // }
+                    image={
+                      item?.profile_photo_1?.fileUrl
+                        ? { urlObject: item?.profile_photo_1 }
+                        : null
+                    }
+                  />
+                </HStack>
+              );
+            })}
+          </VStack>
+        </InfiniteScroll>
       </VStack>
     </Layout>
   );
