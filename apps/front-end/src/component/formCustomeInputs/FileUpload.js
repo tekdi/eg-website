@@ -58,8 +58,9 @@ const FileUpload = ({ value, onChange, schema }) => {
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
-
-    if (file && file.size <= 1048576 * 10) {
+    if (file["type"] === "application/pdf") {
+      uploadProfile(file);
+    } else if (file && file.size <= 1048576 * 10) {
       if (file instanceof File) {
         const maxWidthOrHeight = Math.max(width || 1280, height || 740);
         const compressedImage = await imageCompression(file, {
