@@ -273,8 +273,9 @@ export default function CampAttendance({ activityId }) {
         </FrontEndTypo.Primarybutton> */}
         <VStack space="4">
           {groupUsers?.map((item) => {
+            console.log(item);
             return (
-              <HStack key={item} flex="1">
+              <HStack key={item} flex="1" minH={12}>
                 <UserCard
                   _hstack={{
                     ...(!isEditable?.[item.id] && item?.attendance?.status
@@ -327,6 +328,7 @@ export default function CampAttendance({ activityId }) {
                         name="EditBoxLineIcon"
                         _icon={{ color: "garkGray", size: "15" }}
                         bg="gray.100"
+                        shadow="4"
                         rounded="full"
                         onPress={(e) =>
                           setIsEditable({
@@ -349,11 +351,13 @@ export default function CampAttendance({ activityId }) {
                   //     <RenderAttendee row={item?.attendance || {}} t={t} />
                   //   </HStack>
                   // }
-                  image={
-                    item?.profile_photo_1?.fileUrl
-                      ? { urlObject: item?.profile_photo_1 }
-                      : null
-                  }
+
+                  // image={
+                  //   item?.profile_photo_1?.fileUrl
+                  //     ? { urlObject: item?.profile_photo_1 }
+                  //     : null
+                  // }
+                  isIdtag={item?.id}
                 />
               </HStack>
             );
