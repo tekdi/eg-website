@@ -4,17 +4,20 @@ import React, { lazy } from "react";
 const FacilitatorRegister = lazy(() =>
   import("v2/views/Facilitator/FacilitatorRegister/FacilitatorRegister")
 );
+const FacilitatorOnboarding = lazy(() =>
+  import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
+);
 const FacilitatorRegistration = React.lazy(() =>
   import(
     "pages/front-end/FacilitatorOffline/FacilitatorRegistration/FacilitatorRegistration"
   )
 );
 //offline_facilitator_onboarding
-const FacilitatorOnboarding = React.lazy(() =>
+/*const FacilitatorOnboarding = React.lazy(() =>
   import(
     "pages/front-end/FacilitatorOffline/FacilitatorOnboarding/FacilitatorOnboarding"
   )
-);
+);*/
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
@@ -360,8 +363,9 @@ export default [
   },
   //offline_facilitotor_Onboarding
   {
-    path: "/offline/profile/:id",
+    path: "/v2/profile/edit/:step",
     component: FacilitatorOnboarding,
   },
+  { path: "/v2/profile/edit/:step/:photoNo", component: FacilitatorOnboarding },
   //end v2 code
 ];

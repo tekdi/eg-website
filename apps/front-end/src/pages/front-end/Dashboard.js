@@ -566,7 +566,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <Stack>
                 <VStack p="5" pt={1}>
                   <FrontEndTypo.Primarybutton
-                    onPress={(e) => navigate("/profile/edit/basic_details")}
+                    //old route for complete profile
+                    //onPress={(e) => navigate("/profile/edit/basic_details")}
+                    //old route for complete profile
+                    onPress={(e) => navigate("/v2/profile/edit/basic_details")}
                     bold
                     flex="1"
                   >

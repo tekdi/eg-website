@@ -206,7 +206,7 @@ export default function PrerakRegisterDetail({
         if (verify_otp?.status === true) {
           //register user
           const createData = await formSubmitCreate();
-          if (createData?.success == false) {
+          if (createData?.success === false) {
             const newErrors = {
               verify_mobile: {
                 __errors:
@@ -219,7 +219,6 @@ export default function PrerakRegisterDetail({
             };
             setErrors(newErrors);
           } else {
-            console.log("formSubmitCreate create", createData?.data);
             let createDataNew = createData?.data;
             if (createDataNew?.username && createDataNew?.password) {
               await removeOnboardingURLData();
