@@ -52,9 +52,11 @@ export default function CampExecution({ footerLinks, setAlert }) {
   const [progress, setProgress] = React.useState(0);
 
   const campDetails = React.useCallback(async () => {
-    const result = await campService.getCampDetails({ id });
-    setFacilitator(result?.data?.faciltator?.[0] || {});
-    setLearnerCount(result?.data?.group_users?.length);
+    if (!["attendance"].includes(step)) {
+      const result = await campService.getCampDetails({ id });
+      setFacilitator(result?.data?.faciltator?.[0] || {});
+      setLearnerCount(result?.data?.group_users?.length);
+    }
     const obj = {
       id: id,
       start_date: moment(new Date()).format("YYYY-MM-DD"),
