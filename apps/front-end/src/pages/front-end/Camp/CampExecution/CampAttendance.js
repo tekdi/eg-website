@@ -35,7 +35,7 @@ export default function CampAttendance({ activityId }) {
   const [randomAttendance, setRandomAttendance] = useState(false);
   const [latData, longData] = useLocationData() || [];
   const navigate = useNavigate();
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
@@ -55,7 +55,7 @@ export default function CampAttendance({ activityId }) {
     const result = await campService.getCampDetails({ id });
     let totalPages = 5;
     let currentPage = 1;
-    setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+    // setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
     const resultAttendance = await campService.CampAttendance({
       id: activityId,
     });
@@ -84,11 +84,12 @@ export default function CampAttendance({ activityId }) {
   // Camera MOdule
   useEffect(() => {
     if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight - 50);
     } else {
       setLoadingHeight(bodyHeight);
     }
   }, [bodyHeight, ref]);
+
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
     setError("");
     setIsEditable({ ...isEditable, [user?.id]: null });
@@ -253,7 +254,6 @@ export default function CampAttendance({ activityId }) {
       </Box>
     );
   }
-  console.log("length", groupUsers?.length);
   return (
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
@@ -273,15 +273,15 @@ export default function CampAttendance({ activityId }) {
           }
         }}
       /> */}
-      <VStack py={6} px={4} space="6">
-        <HStack justifyContent={"space-between"}>
-          <HStack>
-            <FrontEndTypo.H3 color={"textMaroonColor.400"}>
-              {t("LEARNERS")}
-            </FrontEndTypo.H3>
-            <FrontEndTypo.H3>({groupUsers?.length || 0})</FrontEndTypo.H3>
-          </HStack>
+      <HStack justifyContent={"space-between"} ref={ref} px={4} pt="4">
+        <HStack>
+          <FrontEndTypo.H3 color={"textMaroonColor.400"}>
+            {t("LEARNERS")}
+          </FrontEndTypo.H3>
+          <FrontEndTypo.H3>({groupUsers?.length || 0})</FrontEndTypo.H3>
         </HStack>
+      </HStack>
+      <VStack py={6} px={4} space="6">
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
         </FrontEndTypo.Primarybutton> */}
@@ -289,11 +289,11 @@ export default function CampAttendance({ activityId }) {
           dataLength={groupUsers?.length || 0}
           next={() => {
             if (!loading) {
-              setLoading(true);
-              fetchData().then((newData) => {
-                setGroupUsers((prevData) => [...prevData, ...newData]);
-                setLoading(false);
-              });
+              // setLoading(true);
+              // fetchData().then((newData) => {
+              //   setGroupUsers((prevData) => [...prevData, ...newData]);
+              //   setLoading(false);
+              // });
             }
           }}
           hasMore={hasMore}
@@ -387,11 +387,12 @@ export default function CampAttendance({ activityId }) {
                     //     <RenderAttendee row={item?.attendance || {}} t={t} />
                     //   </HStack>
                     // }
-                    image={
-                      item?.profile_photo_1?.fileUrl
-                        ? { urlObject: item?.profile_photo_1 }
-                        : null
-                    }
+                    // image={
+                    //   item?.profile_photo_1?.fileUrl
+                    //     ? { urlObject: item?.profile_photo_1 }
+                    //     : null
+                    // }
+                    isIdtag={item?.id}
                   />
                 </HStack>
               );
