@@ -1,11 +1,14 @@
 // mainSlice.js
 import { combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./Slices/userSlice";
-import dataTableReducer from "./Slices/dataTableSlice";
+import enumListSlice from "./Slices/commonSlices/enumListSlice";
+//import languageSlice from "./Slices/commonSlices/languageSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
-  dataTable: dataTableReducer,
+  enumData: enumListSlice,
+  //language: languageSlice,
+
   // Add more child slices as needed
 });
 

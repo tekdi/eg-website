@@ -25,16 +25,19 @@ import {
   Alert,
   Modal,
   CloseIcon,
-  Menu,
-  Pressable,
   Select,
-  BodyLarge,
   CheckIcon,
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import {
+  fetchEnumListData,
+  selectenumData,
+} from "store/Slices/commonSlices/enumListSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useLanguage } from "component/common_components/i18n-new";
 
 const styles = {
   inforBox: {
@@ -54,7 +57,6 @@ const styles = {
 };
 
 export default function Dashboard({ userTokenInfo, footerLinks }) {
-  const { t } = useTranslation();
   const [facilitator, setFacilitator] = React.useState({ notLoaded: true });
   const [certificateData, setCertificateData] = React.useState({});
   const [loading, setLoading] = React.useState(true);
@@ -63,7 +65,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = React.useState(false);
-  const [lmsDEtails, setLmsDetails] = React.useState();
+  const [lmsDetails, setLmsDetails] = React.useState();
   const { id } = userTokenInfo?.authUser || [];
   const [random, setRandom] = React.useState();
   const [events, setEvents] = React.useState("");
@@ -81,6 +83,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+  const dispatch = useDispatch();
+  const data = useSelector(selectenumData);
+  const { selectedLanguage, changeLanguage } = useLanguage();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!data?.data) {
+      dispatch(fetchEnumListData());
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -369,6 +381,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
+          {/* <select
+            value={selectedLanguage}
+            onChange={(e) => changeLanguage(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+          </select> */}
           {facilitator?.status === "applied" && (
             <InfoBox status={facilitator?.status} progress={progress} />
           )}
@@ -416,7 +435,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.Primarybutton>
                   </HStack>
                 )
-              : lmsDEtails?.id && (
+              : lmsDetails?.id && (
                   <HStack py="2" flex="1" px="4">
                     <FrontEndTypo.Primarybutton
                       fontSize
@@ -444,27 +463,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack>
-                    {lmsDEtails === undefined && (
+                    {lmsDetails === undefined && (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(events)}
                       </AdminTypo.H3>
                     )}
-                    {lmsDEtails?.certificate_status === null ? (
+                    {lmsDetails?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === false &&
-                      lmsDEtails?.score >= floatValue ? (
+                    ) : lmsDetails?.certificate_status === false &&
+                      lmsDetails?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
-                        {lmsDEtails.score + "%"}
+                        {lmsDetails.score + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === true ? (
+                    ) : lmsDetails?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {lmsDEtails.score + "%"}
+                        {lmsDetails.score + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === false ? (
+                    ) : lmsDetails?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
@@ -475,8 +494,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
                   <HStack space={"6"}>
-                    {lmsDEtails === undefined ||
-                      (lmsDEtails?.certificate_status === true && (
+                    {lmsDetails === undefined ||
+                      (lmsDetails?.certificate_status === true && (
                         <FrontEndTypo.DefaultButton
                           textColor={"black"}
                           onPress={() => {
@@ -486,7 +505,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           {t("GO_BACK")}
                         </FrontEndTypo.DefaultButton>
                       ))}
-                    {lmsDEtails?.certificate_status === false && (
+                    {lmsDetails?.certificate_status === false && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -496,7 +515,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDEtails === undefined &&
+                    {lmsDetails === undefined &&
                       !(
                         certificateData?.params?.do_id == null ||
                         (Array.isArray(certificateData?.params?.do_id) &&
@@ -509,7 +528,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           {t("START_TEST")}
                         </FrontEndTypo.DefaultButton>
                       )}
-                    {lmsDEtails?.certificate_status === true && (
+                    {lmsDetails?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
