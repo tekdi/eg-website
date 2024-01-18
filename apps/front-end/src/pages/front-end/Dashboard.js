@@ -37,7 +37,7 @@ import {
   selectenumData,
 } from "store/Slices/commonSlices/enumListSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useLanguage } from "component/common_components/i18n-new";
+// import { useLanguage } from "component/common_components/i18n-new";
 
 const styles = {
   inforBox: {
