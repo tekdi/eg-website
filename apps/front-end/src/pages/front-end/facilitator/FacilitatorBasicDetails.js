@@ -38,7 +38,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
     };
     const result = await facilitatorRegistryService.getEditRequests(obj);
     let field;
-    const parseField = result?.data[0]?.fields;
+    const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
       field = JSON.parse(parseField);
     }
@@ -127,7 +127,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 <IconByName name="Cake2LineIcon" color="iconColor.300" />
                 <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
                   {facilitator?.dob &&
-                  moment(facilitator.dob, "YYYY-MM-DD", true).isValid()
+                  moment(facilitator?.dob, "YYYY-MM-DD", true).isValid()
                     ? moment(facilitator?.dob).format("DD/MM/YYYY")
                     : "-"}
                 </FrontEndTypo.H3>

@@ -524,7 +524,7 @@ const AadhaarOptions = ({
       >
         {t("TRY_AADHAR_QR_KYC")}
       </FrontEndTypo.Secondarybutton> */}
-      {user?.aadhar_verified === "in_progress" ? (
+      {/* {user?.aadhar_verified === "in_progress" ? (
         <React.Fragment></React.Fragment>
       ) : (
         <FrontEndTypo.Secondarybutton
@@ -539,7 +539,7 @@ const AadhaarOptions = ({
         >
           {t("TRY_AADHAR_UPLOAD_KYC")}
         </FrontEndTypo.Secondarybutton>
-      )}
+      )} */}
       <FrontEndTypo.Primarybutton
         onPress={() => {
           navigate(-1);

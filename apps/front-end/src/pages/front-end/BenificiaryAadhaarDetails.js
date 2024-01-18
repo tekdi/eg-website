@@ -188,7 +188,7 @@ export default function BenificiaryAadhaarDetails() {
                     </FrontEndTypo.Primarybutton> */}
                   </VStack>
                 )}
-              {benificiary?.aadhaar_verification_mode === "upload" && (
+              {/* {benificiary?.aadhaar_verification_mode === "upload" && (
                 <VStack space="5">
                   <FrontEndTypo.H2 bold color="textMaroonColor.400">
                     {t("HAVE_YOU_UPDATED_AADHAAR_CARD")}
@@ -225,7 +225,7 @@ export default function BenificiaryAadhaarDetails() {
                     />
                   ) : null}
                 </VStack>
-              )}
+              )} */}
             </VStack>
           )}
         </VStack>
