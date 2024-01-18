@@ -89,7 +89,7 @@ const totalDistance = ({ row, data }) =>
     data?.properties?.long
   );
 
-const columns = (t, navigate, data, consentData) => [
+const columns = (t, navigate, data, consentData, id) => [
   {
     name: "Id",
     selector: (row) => row?.id,
@@ -164,11 +164,11 @@ const columns = (t, navigate, data, consentData) => [
   {
     minWidth: "250px",
     name: t("ACTION"),
-    selector: (row) => <ActionButton {...{ row, data, t }} />,
+    selector: (row) => <ActionButton {...{ row, data, t, id }} />,
   },
 ];
 
-const ActionButton = ({ row, data, t }) => {
+const ActionButton = ({ row, data, t, id }) => {
   const navigate = useNavigate();
   return data?.group?.status === "camp_initiated" ? (
     <AdminTypo.Secondarybutton
@@ -581,7 +581,7 @@ export default function View({ footerLinks }) {
           >
             <ScrollView w={["100%", "100%"]}>
               <DataTable
-                columns={columns(t, navigate, data, consentData)}
+                columns={columns(t, navigate, data, consentData, id)}
                 data={userData}
               />
             </ScrollView>
