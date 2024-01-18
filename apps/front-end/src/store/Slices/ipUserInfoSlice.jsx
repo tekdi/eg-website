@@ -3,11 +3,10 @@ import { facilitatorRegistryService } from "@shiksha/common-lib";
 import { get, set } from "idb-keyval";
 
 export const fetchIpUserData = createAsyncThunk(
-  "ipData/fetchIpUserData", // Match the slice name
+  "ipData/fetchIpUserData",
   async () => {
     const result = facilitatorRegistryService.getInfo();
     const data = await result;
-    // console.log("fetcehd data", data);
     return data;
   }
 );

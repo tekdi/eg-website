@@ -65,12 +65,9 @@ const FacilitatorOnboarding = () => {
     dispatch(fetchIpUserData());
   }, []);
 
-  console.log("ip-data", ipData);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Fetching data from IndexedDB...");
         let userData = await get("user_data");
 
         setUserData(userData);
@@ -238,17 +235,14 @@ const FacilitatorOnboarding = () => {
     const experienceArray = Array.isArray(user_data.experience)
       ? user_data.experience
       : [];
-    console.log(experienceArray, "Experience");
     const updatedUserData = {
       ...user_data,
       experience: [...experienceArray, ...newExperiences],
     };
-    console.log(updatedUserData.experience, "After Update");
 
     await set("user_data", updatedUserData);
     setUserData(updatedUserData);
     setPage((prevPage) => prevPage + 1);
-    console.log("hi");
     handleNextScreen("jobExperience");
   };
 
