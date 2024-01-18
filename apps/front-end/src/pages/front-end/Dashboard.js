@@ -85,7 +85,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [academicData, setAcademicData] = useState([]);
   const dispatch = useDispatch();
   const data = useSelector(selectenumData);
-  const { selectedLanguage, changeLanguage } = useLanguage();
+  // const { selectedLanguage, changeLanguage } = useLanguage();
   const { t } = useTranslation();
 
   useEffect(() => {
