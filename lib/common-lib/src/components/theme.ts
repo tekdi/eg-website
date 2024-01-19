@@ -583,6 +583,7 @@ const DEFAULT_THEME = {
       150: '#61646B',
       350: '#EAEAEB',
       300: '#888888',
+
       400: '#F5F5F5',
       450: '#464646',
       500: '#424242',
@@ -597,6 +598,7 @@ const DEFAULT_THEME = {
       50: '#FDCAB5',
       100: '#FFACAF',
       300: '#FF8080',
+      350: '#FFE0E1',
       400: '#790000',
       500: '#A93505',
       600: '#FF0000',
@@ -665,7 +667,7 @@ const DEFAULT_THEME = {
     warningColor: '#FFCF52',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
-    bgpink: '#FFE0E1',
+
     secondaryBlue: {
       50: '#e7f3fe',
       100: '#b7dcfb',

@@ -260,7 +260,7 @@ ul.list-inline {
   border: 1px solid #ddd;
 }
 .text-danger {
-  color: #a94442;
+  color: #dc2626;
 }
 .has-error input {
   border-color: #a94442;
@@ -356,4 +356,10 @@ ul {
   max-height: 210mm;
   max-width: 919px;
   margin: auto;
+}
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 10px;
 }

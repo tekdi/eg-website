@@ -377,6 +377,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
                   key={index || ""}
                   label={t(option.label)}
                   value={option.value}
+                  p="5"
                 />
               ))}
             </SelectStyle>
