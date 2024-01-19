@@ -7,11 +7,11 @@ const FacilitatorRegister = lazy(() =>
 const FacilitatorOnboarding = lazy(() =>
   import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
 );
-const FacilitatorRegistration = React.lazy(() =>
+/*const FacilitatorRegistration = React.lazy(() =>
   import(
     "pages/front-end/FacilitatorOffline/FacilitatorRegistration/FacilitatorRegistration"
   )
-);
+);*/
 //offline_facilitator_onboarding
 /*const FacilitatorOnboarding = React.lazy(() =>
   import(
@@ -184,10 +184,10 @@ const Assessment = React.lazy(() => import("component/Assessment"));
 export default [
   { path: "/form", component: Home },
   //old facilitator registration
-  {
+  /*{
     path: "/facilitator-self-onboarding",
     component: Home,
-  },
+  },*/
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
@@ -291,13 +291,13 @@ export default [
   },
   { path: "/profile", component: Profile },
   { path: "/certificate", component: Certificate },
-  { path: "/profile/edit/array-form/:type", component: ArrayForm },
-  { path: "/profile/edit/:step", component: EditForm },
+  /*{ path: "/profile/edit/array-form/:type", component: ArrayForm },*/
+  /*{ path: "/profile/edit/:step", component: EditForm },*/
   {
     path: "/profile/:id/aadhaardetails",
     component: AadhaarDetails,
   },
-  { path: "/profile/edit/:step/:photoNo", component: EditForm },
+  /*{ path: "/profile/edit/:step/:photoNo", component: EditForm },*/
   {
     path: "/facilitatorbasicdetail",
     component: FacilitatorBasicDetails,
@@ -354,18 +354,18 @@ export default [
   //v2 code
   //new facilitator registration
   {
-    path: "/v2/facilitator-self-onboarding",
+    path: "/facilitator-self-onboarding",
     component: FacilitatorRegister,
   },
-  {
+  /*{
     path: "/offline/facilitator-self-onboarding/:id",
     component: FacilitatorRegistration,
-  },
+  },*/
   //offline_facilitotor_Onboarding
   {
-    path: "/v2/profile/edit/:step",
+    path: "/profile/edit/:step",
     component: FacilitatorOnboarding,
   },
-  { path: "/v2/profile/edit/:step/:photoNo", component: FacilitatorOnboarding },
+  { path: "/profile/edit/:step/:photoNo", component: FacilitatorOnboarding },
   //end v2 code
 ];

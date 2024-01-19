@@ -48,7 +48,7 @@ export default function PhotoUpload({
   React.useEffect(() => {
     if (page >= 4) {
       if (!aadhar_no || aadhar_no === "") {
-        navigatePage(`/v2/profile/edit/aadhaar_details`, "aadhaar_details");
+        navigatePage(`/profile/edit/aadhaar_details`, "aadhaar_details");
       } else {
         navigatePage(`/profile`, "");
       }
@@ -83,8 +83,9 @@ export default function PhotoUpload({
           p="4"
           mt="4"
           onPress={() => {
-            navigatePage(`/v2/profile/edit/upload/${page + 1}`, "upload");
+            //navigatePage(`/profile/edit/upload/${page + 1}`, "upload");
             //navigatePage(0, "");
+            window.location.href = `/profile/edit/upload/${page + 1}`;
           }}
         >
           {t("SAVE_AND_NEXT")}

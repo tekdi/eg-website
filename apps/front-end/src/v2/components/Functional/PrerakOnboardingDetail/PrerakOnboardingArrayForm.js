@@ -58,14 +58,14 @@ export default function PrerakOnboardingArrayForm({
       navigatePage("/profile", "");
     } else if (type === "reference_details") {
       navigatePage(
-        `/v2/profile/edit/work_availability_details`,
+        `/profile/edit/work_availability_details`,
         "work_availability_details"
       );
     } else if (type === "vo_experience") {
-      navigatePage(`/v2/profile/edit/experience`, "experience");
+      navigatePage(`/profile/edit/experience`, "experience");
     } else {
       navigatePage(
-        `/v2/profile/edit/qualification_details`,
+        `/profile/edit/qualification_details`,
         "qualification_details"
       );
     }

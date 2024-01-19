@@ -182,7 +182,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
                       onPress={(e) => {
-                        navigate(`/profile/edit/array-form/vo_experience`);
+                        navigate(`/profile/edit/vo_experience`);
                       }}
                     />
                   )}
@@ -207,7 +207,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
                       onPress={(e) => {
-                        navigate(`/profile/edit/array-form/experience`);
+                        navigate(`/profile/edit/experience`);
                       }}
                     />
                   )}

@@ -569,7 +569,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     //old route for complete profile
                     //onPress={(e) => navigate("/profile/edit/basic_details")}
                     //old route for complete profile
-                    onPress={(e) => navigate("/v2/profile/edit/basic_details")}
+                    onPress={(e) => navigate("/profile/edit/basic_details")}
                     bold
                     flex="1"
                   >

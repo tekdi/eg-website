@@ -161,11 +161,11 @@ export default function PrerakOnboardingForm({
           navigatePage("/facilitatorbasicdetail", "");
         }
       } else if (nextIndex === "qualification_details") {
-        navigatePage(`/v2/profile/edit/vo_experience`, "vo_experience");
+        navigatePage(`/profile/edit/vo_experience`, "vo_experience");
       } else if (nextIndex === "aadhaar_details") {
-        navigatePage(`/v2/profile/edit/upload`, "upload");
+        navigatePage(`/profile/edit/upload`, "upload");
       } else if (nextIndex !== undefined) {
-        navigatePage(`/v2/profile/edit/${nextIndex}`, nextIndex);
+        navigatePage(`/profile/edit/${nextIndex}`, nextIndex);
       } else {
         navigatePage(`/aadhaar-kyc/${facilitator?.id}`, "", {
           state: "/profile",
