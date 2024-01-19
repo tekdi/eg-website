@@ -90,7 +90,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
       }));
       setMoodList(moodListWithImages);
     }
-  }, []);
+  }, [cameraFile, cameraUrl]);
 
   React.useEffect(async () => {
     enumData();
