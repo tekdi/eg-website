@@ -7,17 +7,6 @@ const FacilitatorRegister = lazy(() =>
 const FacilitatorOnboarding = lazy(() =>
   import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
 );
-/*const FacilitatorRegistration = React.lazy(() =>
-  import(
-    "pages/front-end/FacilitatorOffline/FacilitatorRegistration/FacilitatorRegistration"
-  )
-);*/
-//offline_facilitator_onboarding
-/*const FacilitatorOnboarding = React.lazy(() =>
-  import(
-    "pages/front-end/FacilitatorOffline/FacilitatorOnboarding/FacilitatorOnboarding"
-  )
-);*/
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
@@ -357,10 +346,6 @@ export default [
     path: "/facilitator-self-onboarding",
     component: FacilitatorRegister,
   },
-  /*{
-    path: "/offline/facilitator-self-onboarding/:id",
-    component: FacilitatorRegistration,
-  },*/
   //offline_facilitotor_Onboarding
   {
     path: "/profile/edit/:step",
