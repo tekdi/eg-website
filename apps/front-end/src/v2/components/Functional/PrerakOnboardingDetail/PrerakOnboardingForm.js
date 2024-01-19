@@ -129,6 +129,9 @@ export default function PrerakOnboardingForm({
   }, [qualifications]);
 
   const uiSchema = {
+    labelAddress: {
+      "ui:widget": "LabelAddressWidget",
+    },
     dob: {
       "ui:widget": "alt-date",
       "ui:options": {
@@ -311,7 +314,7 @@ export default function PrerakOnboardingForm({
     }
     setLoading(false);
     setSchemaData(newSchema);
-  }, [page, formData]);
+  }, [page, formData?.district, formData?.block, formData?.gramPanchayat]);
 
   useEffect(() => {
     if (schema1.type === "step") {
@@ -777,6 +780,17 @@ export default function PrerakOnboardingForm({
         });
         setSchemaData(newSchema);
         setLoading(false);
+      }
+    }
+
+    if (id === "root_pincode") {
+      if (data?.pincode?.toString()?.length !== 6 && data?.pincode) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
       }
     }
   };
