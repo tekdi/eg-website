@@ -326,8 +326,8 @@ export default function FacilitatorView({ footerLinks }) {
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
     }
+    setIsButtonLoading(false);
   };
-
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -715,6 +715,7 @@ export default function FacilitatorView({ footerLinks }) {
                       color="textMaroonColor.400"
                       name="PencilLineIcon"
                       onPress={(e) => {
+                        setAadhaarValue(data?.aadhar_no);
                         setAdhaarModalVisible(!adhaarModalVisible);
                       }}
                     />
