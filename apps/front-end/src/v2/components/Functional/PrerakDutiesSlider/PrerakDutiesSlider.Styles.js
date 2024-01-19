@@ -1,4 +1,4 @@
-const stylesheet = {
+export const stylesheet = {
   text1: {
     fontFamily: "Inter",
     fontWeight: "400",
@@ -17,7 +17,7 @@ const stylesheet = {
     color: "var(--Gray-90, #212121);",
     fontFamily: "Inter",
     fontWeight: "700",
-    fontSize: "22px",
+    fontSize: "18px",
   },
   languageButton: {
     width: 150,
