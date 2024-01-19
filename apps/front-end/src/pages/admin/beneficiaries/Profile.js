@@ -30,7 +30,14 @@ import {
 } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
-import React from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  Suspense,
+  useMemo,
+  Fragment,
+} from "react";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
@@ -159,42 +166,39 @@ const addressFieldsArray = [
 ];
 
 export default function AgAdminProfile({ footerLinks }) {
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [EditButton, setEditButton] = React.useState(false);
-  const [selectData, setselectData] = React.useState([]);
-  const [status, setStatus] = React.useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [EditButton, setEditButton] = useState(false);
+  const [selectData, setselectData] = useState([]);
+  const [status, setStatus] = useState({});
   const { id } = useParams();
-  const [data, setData] = React.useState();
+  const [data, setData] = useState();
   const navigate = useNavigate();
-  const [adhaarModalVisible, setAdhaarModalVisible] = React.useState(false);
-  const [aadhaarValue, setAadhaarValue] = React.useState();
-  const [duplicateUserList, setDuplicateUserList] = React.useState();
-  const [aadhaarerror, setAadhaarError] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [benificiary, setBeneficiary] = React.useState();
-  const [contextId, setcontextId] = React.useState();
-  const [auditLogs, setauditLogs] = React.useState([]);
-  const [auditMonth, setauditMonth] = React.useState([]);
-  const [auditYear, setauditYear] = React.useState([]);
-  const [enrollmentSubjects, setEnrollmentSubjects] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [editAccessModalVisible, setEditAccessModalVisible] =
-    React.useState(false);
-  const [reasonValue, setReasonValue] = React.useState("");
-  const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
-  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
-  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
-  const [isOpenReject, setIsOpenReject] = React.useState(false);
-  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
-    React.useState();
-  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
-    React.useState();
+  const [adhaarModalVisible, setAdhaarModalVisible] = useState(false);
+  const [aadhaarValue, setAadhaarValue] = useState();
+  const [duplicateUserList, setDuplicateUserList] = useState();
+  const [aadhaarerror, setAadhaarError] = useState();
+  const [enumOptions, setEnumOptions] = useState({});
+  const [benificiary, setBeneficiary] = useState();
+  const [contextId, setcontextId] = useState();
+  const [auditLogs, setauditLogs] = useState([]);
+  const [auditMonth, setauditMonth] = useState([]);
+  const [auditYear, setauditYear] = useState([]);
+  const [enrollmentSubjects, setEnrollmentSubjects] = useState();
+  const [loading, setLoading] = useState(true);
+  const [editAccessModalVisible, setEditAccessModalVisible] = useState(false);
+  const [reasonValue, setReasonValue] = useState("");
+  const [reactivateReasonValue, setReactivateReasonValue] = useState("");
+  const [isOpenDropOut, setIsOpenDropOut] = useState(false);
+  const [isOpenReactive, setIsOpenReactive] = useState(false);
+  const [isOpenReject, setIsOpenReject] = useState(false);
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] = useState();
+  const [benificiaryRejectReasons, setBenificiaryRejectReasons] = useState();
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
-    React.useState();
-  const [getRequestData, setGetRequestData] = React.useState();
+    useState();
+  const [getRequestData, setGetRequestData] = useState();
   const { t } = useTranslation();
-  const [checkedFields, setCheckedFields] = React.useState([]);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [checkedFields, setCheckedFields] = useState([]);
+  const [isDisable, setIsDisable] = useState(false);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -218,7 +222,7 @@ export default function AgAdminProfile({ footerLinks }) {
     );
   };
 
-  const getAuditData = React.useCallback(async () => {
+  const getAuditData = useCallback(async () => {
     const result = await benificiaryRegistoryService.getAuditLogs(contextId);
     if (result && result.length > 0) {
       const uniqueDates = result.reduce(
@@ -258,7 +262,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [contextId]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let data = {
       edit_page_type: "document_status",
       documents_status: status,
@@ -268,13 +272,13 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [status]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (contextId) {
       getAuditData();
     }
   }, [contextId]);
 
-  const fetchData = React.useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       setLoading(true);
@@ -333,7 +337,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [id]);
 
-  const handleAadhaarUpdate = React.useCallback((event) => {
+  const handleAadhaarUpdate = useCallback((event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");
     const maxLength = 12;
@@ -341,7 +345,7 @@ export default function AgAdminProfile({ footerLinks }) {
     setAadhaarValue(truncatedValue);
   }, []);
 
-  const updateAadhaar = React.useCallback(async () => {
+  const updateAadhaar = useCallback(async () => {
     setIsDisable(true);
     const aadhaar_no = {
       id: id,
@@ -364,7 +368,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [aadhaarValue, data, id]);
 
-  const dropoutApiCall = React.useCallback(async () => {
+  const dropoutApiCall = useCallback(async () => {
     setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
@@ -386,7 +390,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [benificiary, reasonValue]);
 
-  const reactivateApiCall = React.useCallback(async () => {
+  const reactivateApiCall = useCallback(async () => {
     setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
@@ -403,7 +407,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [benificiary, reactivateReasonValue]);
 
-  const RejectApiCall = React.useCallback(async () => {
+  const RejectApiCall = useCallback(async () => {
     setIsDisable(true);
     let bodyData = {
       user_id: benificiary?.result?.id?.toString(),
@@ -422,7 +426,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [benificiary, reasonValue]);
 
-  const renderDropoutButton = React.useMemo(() => {
+  const renderDropoutButton = useMemo(() => {
     const status = benificiary?.result?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
@@ -447,7 +451,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [benificiary]);
 
-  const renderReactivateButton = React.useMemo(() => {
+  const renderReactivateButton = useMemo(() => {
     const status = benificiary?.result?.program_beneficiaries?.status;
     switch (status) {
       case "rejected":
@@ -462,7 +466,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [benificiary]);
 
-  const renderRejectButton = React.useMemo(() => {
+  const renderRejectButton = useMemo(() => {
     const status = benificiary?.result?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
@@ -487,7 +491,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [benificiary]);
 
-  const giveAccess = React.useCallback(async () => {
+  const giveAccess = useCallback(async () => {
     if (getRequestData) {
       await facilitatorRegistryService.updateRequestData({
         status: "approved",
@@ -506,7 +510,7 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [checkedFields, getRequestData, id]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
   }, [fetchData]);
   return (
@@ -530,7 +534,11 @@ export default function AgAdminProfile({ footerLinks }) {
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              {data?.program_beneficiaries?.status === "enrolled_ip_verified"
+              {[
+                "enrolled",
+                "enrolled_ip_verified",
+                "registered_in_camp",
+              ].includes(data?.program_beneficiaries?.status)
                 ? `${
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
@@ -1792,7 +1800,7 @@ export default function AgAdminProfile({ footerLinks }) {
             <VStack space="5">
               <VStack space="2" p="1" rounded="lg" w="100%">
                 <VStack alignItems="center" space="1" flex="1">
-                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <Suspense fallback={<HStack>Loading...</HStack>}>
                     <CustomRadio
                       options={{
                         enumOptions: benificiaryDropoutReasons?.map((e) => ({
@@ -1807,7 +1815,7 @@ export default function AgAdminProfile({ footerLinks }) {
                         setReasonValue(e);
                       }}
                     />
-                  </React.Suspense>
+                  </Suspense>
                 </VStack>
               </VStack>
               <VStack>
@@ -1852,7 +1860,7 @@ export default function AgAdminProfile({ footerLinks }) {
             <VStack space="5">
               <VStack space="2" p="1" rounded="lg">
                 <VStack alignItems="center" bg={"gray.100"} space="1" flex="1">
-                  <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                  <Suspense fallback={<HStack>Loading...</HStack>}>
                     <CustomRadio
                       options={{
                         enumOptions: benificiaryReactivateReasons?.map((e) => ({
@@ -1867,7 +1875,7 @@ export default function AgAdminProfile({ footerLinks }) {
                         setReactivateReasonValue(e);
                       }}
                     />
-                  </React.Suspense>
+                  </Suspense>
                 </VStack>
               </VStack>
 
@@ -1907,7 +1915,7 @@ export default function AgAdminProfile({ footerLinks }) {
           <VStack space="5">
             <VStack space="2" bg="gray.100" p="1" rounded="lg" w="100%">
               <VStack alignItems="center" space="1" flex="1">
-                <React.Suspense fallback={<HStack>{t("LOADING")}</HStack>}>
+                <Suspense fallback={<HStack>{t("LOADING")}</HStack>}>
                   <CustomRadio
                     options={{
                       enumOptions: benificiaryRejectReasons?.map((e) => ({
@@ -1922,7 +1930,7 @@ export default function AgAdminProfile({ footerLinks }) {
                       setReasonValue(e);
                     }}
                   />
-                </React.Suspense>
+                </Suspense>
               </VStack>
             </VStack>
 
@@ -1950,9 +1958,9 @@ const BeneficiaryJourney = ({
   auditMonth,
   auditYear,
 }) => {
-  const renderLogs = React.useMemo(() => {
+  const renderLogs = useMemo(() => {
     return auditYear?.map((item) => (
-      <React.Fragment key={item}>
+      <Fragment key={item}>
         <HStack alignItems={"center"}>
           <Text width={"50px"}>{JSON.parse(item)}</Text>
           <HStack
@@ -1966,7 +1974,7 @@ const BeneficiaryJourney = ({
         </HStack>
         {auditMonth?.map((month) => {
           return (
-            <React.Fragment key={item}>
+            <Fragment key={item}>
               <HStack alignItems={"center"}>
                 <Text width={"50px"}>{month}</Text>
                 <HStack
@@ -1979,7 +1987,7 @@ const BeneficiaryJourney = ({
               </HStack>
               {auditLogs.map((logs, i) => {
                 return (
-                  <React.Fragment key={item}>
+                  <Fragment key={item}>
                     <HStack alignItems={"center"}>
                       <Text width={"50px"}>{logs?.date}</Text>
                       <FrontEndTypo.Timeline status={logs?.status?.status}>
@@ -2002,13 +2010,13 @@ const BeneficiaryJourney = ({
                         </FrontEndTypo.H4>
                       </FrontEndTypo.Timeline>
                     </HStack>
-                  </React.Fragment>
+                  </Fragment>
                 );
               })}
-            </React.Fragment>
+            </Fragment>
           );
         })}
-      </React.Fragment>
+      </Fragment>
     ));
   }, [auditYear, auditMonth, auditLogs, data, t, enumOptions]);
 
@@ -2026,7 +2034,7 @@ const SelectAllCheckBox = ({
   setCheckedFields,
   checkedFields,
 }) => {
-  const handleCheckboxChange = React.useCallback(
+  const handleCheckboxChange = useCallback(
     (e) => {
       if (!e) {
         const checkbox = checkedFields?.filter(

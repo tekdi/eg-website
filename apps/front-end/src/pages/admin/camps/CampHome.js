@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
-
 import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Image,
   Button,
   HStack,
   ScrollView,
@@ -19,21 +17,45 @@ import {
   IconByName,
   AdminLayout as Layout,
   campService,
-  t,
   useWindowSize,
   geolocationRegistryService,
-  setQueryParameters,
-  urlData,
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
-  tableCustomStyles,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
+import { useTranslation } from "react-i18next";
 
-const columns = (navigate) => [
+const filterName = "camp_filter";
+export const CustomStyles = {
+  rows: {
+    style: {
+      minHeight: "72px",
+      cursor: "pointer",
+    },
+  },
+  headCells: {
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+};
+
+const columns = (t, navigate) => [
   {
     name: t("CAMP_ID"),
     selector: (row) => row?.id,
@@ -93,7 +115,9 @@ const columns = (navigate) => [
     attr: "count",
   },
 ];
+
 export default function CampHome({ footerLinks, userTokenInfo }) {
+  const { t } = useTranslation();
   const [filter, setFilter] = React.useState({ limit: 10 });
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = React.useState();
@@ -106,7 +130,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
   React.useEffect(() => {
-    const urlFilter = urlData(["district", "block"]);
+    const urlFilter = getFilterLocalStorage(filterName);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
@@ -220,10 +244,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 filter={filter}
                 setFilter={(e) => {
                   setFilter(e);
-                  setQueryParameters(e);
+                  setFilterLocalStorage(filterName, e);
                 }}
-                customStyles={tableCustomStyles}
-                columns={[...columns(navigate)]}
+                customStyles={CustomStyles}
+                columns={[...columns(t, navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
@@ -258,6 +282,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 }
 
 export const Filter = ({ filter, setFilter }) => {
+  const { t } = useTranslation();
   const [getDistrictsAll, setGetDistrictsAll] = React.useState();
   const [getBlocksAll, setGetBlocksAll] = React.useState();
   const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
@@ -269,7 +294,7 @@ export const Filter = ({ filter, setFilter }) => {
       setFacilitatorFilter({ ...facilitatorFilter, district, block });
     }
     setFilter(data);
-    setQueryParameters(data);
+    setFilterLocalStorage(filterName, data);
   };
 
   const handleSearch = (e) => {
@@ -399,9 +424,15 @@ export const Filter = ({ filter, setFilter }) => {
           <IconByName isDisabled name="FilterLineIcon" />
           <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
         </HStack>
-        <Button variant="link" pt="3" onPress={clearFilter}>
-          <AdminTypo.H6 color="blueText.400" underline bold>
-            {t("CLEAR_FILTER")}
+        <Button variant="link" p="0" onPress={clearFilter}>
+          <AdminTypo.H6 color="blueText.400" underline bold key={filter}>
+            {t("CLEAR_FILTER")}(
+            {
+              Object.keys(filter || {}).filter(
+                (e) => !["limit", "page"].includes(e)
+              ).length
+            }
+            )
           </AdminTypo.H6>
         </Button>
       </HStack>
