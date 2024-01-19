@@ -73,21 +73,23 @@ export default function CampExecution({ footerLinks, setAlert }) {
   }, [campDetails]);
 
   const enumData = React.useCallback(async () => {
-    const listOfEnum = await enumRegistryService.listOfEnum();
-    const moodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
-    const images = [
-      "/smiley_1.png",
-      "/smiley_2.png",
-      "/smiley_3.png",
-      "/smiley_4.png",
-      "/smiley_5.png",
-      "/smiley_6.png",
-    ];
-    const moodListWithImages = moodList?.map((mood, index) => ({
-      ...mood,
-      img: images[index % images?.length],
-    }));
-    setMoodList(moodListWithImages);
+    if (cameraFile && cameraUrl?.url) {
+      const listOfEnum = await enumRegistryService.listOfEnum();
+      const newMoodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
+      const images = [
+        "/smiley_1.png",
+        "/smiley_2.png",
+        "/smiley_3.png",
+        "/smiley_4.png",
+        "/smiley_5.png",
+        "/smiley_6.png",
+      ];
+      const moodListWithImages = newMoodList?.map((mood, index) => ({
+        ...mood,
+        img: images[index % images?.length],
+      }));
+      setMoodList(moodListWithImages);
+    }
   }, []);
 
   React.useEffect(async () => {
