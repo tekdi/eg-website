@@ -86,7 +86,7 @@ export default function CampAttendance({ activityId }) {
   // Camera MOdule
   useEffect(() => {
     if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-      setLoadingHeight(bodyHeight - ref?.current?.clientHeight - 260);
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight - 60);
     } else {
       setLoadingHeight(bodyHeight);
     }
@@ -370,7 +370,15 @@ export default function CampAttendance({ activityId }) {
           }
           pullDownToRefreshThreshold={50}
         >
-          <List {...{ groupUsers, isEditable, addAttendance, setIsEditable }} />
+          <List
+            {...{
+              groupUsers,
+              isEditable,
+              addAttendance,
+              setIsEditable,
+              uploadAttendence,
+            }}
+          />
         </InfiniteScroll>
       </VStack>
     </Layout>
@@ -378,7 +386,13 @@ export default function CampAttendance({ activityId }) {
 }
 
 const List = memo(
-  ({ groupUsers, isEditable, addAttendance, setIsEditable }) => {
+  ({
+    groupUsers,
+    isEditable,
+    addAttendance,
+    setIsEditable,
+    uploadAttendence,
+  }) => {
     return (
       <VStack space="4" p="4" alignContent="center">
         {groupUsers?.map((item) => {
