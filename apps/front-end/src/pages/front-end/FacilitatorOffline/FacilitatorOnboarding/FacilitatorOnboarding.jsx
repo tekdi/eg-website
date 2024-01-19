@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import validator from "@rjsf/validator-ajv8";
 import { get, set } from "idb-keyval";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
 import {
   widgets,
   templates,
@@ -19,7 +20,10 @@ import { useNavigate } from "react-router-dom";
 
 import * as formSchemas from "./onboarding.schema";
 
-import { debounce } from "lodash";
+import {
+  fetchIpUserData,
+  selectedIpData,
+} from "../../../../store/Slices/ipUserInfoSlice";
 
 const {
   dateOfBirthSchema,
@@ -53,23 +57,25 @@ const FacilitatorOnboarding = () => {
 
   const [countLoad, setCountLoad] = useState(0);
 
+  const dispatch = useDispatch();
+  const ipData = useSelector(selectedIpData);
+
+  useEffect(() => {
+    dispatch(fetchIpUserData());
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Fetching data from IndexedDB...");
         let userData = await get("user_data");
-        console.log("Fetched data:", userData);
 
-        // Update form data states here
         setUserData(userData);
 
-        // Example of updating date of birth state
         if (userData?.users?.dob) {
           set_date_of_birth({
             dob: userData.users.dob,
             mobile: userData.users.mobile,
             alternative_mobile_number: userData.users.alternative_mobile_number,
-            // Add other properties as needed
           });
         }
 
@@ -86,14 +92,11 @@ const FacilitatorOnboarding = () => {
           });
         }
         if (userData?.users?.gender) {
-          // Example of updating basic details state
           setFormDataBasicDetails({
             gender: userData.users.gender,
-            marital_status: userData.extended_users?.marital_status || "", // Add other properties as needed
+            marital_status: userData.extended_users?.marital_status || "",
           });
         }
-
-        // Update other form data states in a similar way
 
         setCountLoad(2);
       } catch (error) {
@@ -231,17 +234,14 @@ const FacilitatorOnboarding = () => {
     const experienceArray = Array.isArray(user_data.experience)
       ? user_data.experience
       : [];
-    console.log(experienceArray, "Experience");
     const updatedUserData = {
       ...user_data,
       experience: [...experienceArray, ...newExperiences],
     };
-    console.log(updatedUserData.experience, "After Update");
 
     await set("user_data", updatedUserData);
     setUserData(updatedUserData);
     setPage((prevPage) => prevPage + 1);
-    console.log("hi");
     handleNextScreen("jobExperience");
   };
 
