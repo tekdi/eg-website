@@ -187,6 +187,7 @@ export default {
       step_name: "QUALIFICATION_DETAILS",
       title: "YOUR_HIGHEST_QUALIFICATION",
       type: "object",
+      required: ["qualification_ids"],
       properties: {
         qualification_master_id: {
           //label: "YOUR_HIGHEST_QUALIFICATION",
@@ -194,7 +195,7 @@ export default {
           format: "CustomR",
           grid: 2,
         },
-        // type_of_document: {
+        // type_of_document: {WW
         //   type: "string",
         //   title: "TYPE_OF_DOCUMENT",
         // },
