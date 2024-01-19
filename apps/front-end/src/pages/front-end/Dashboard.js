@@ -532,7 +532,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           ].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
-                background="#FCEEE2"
+                background="bgYellowColor.400"
                 mx="5"
                 p="10"
                 width="40%"
