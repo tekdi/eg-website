@@ -11,6 +11,8 @@ import {
   sendAndVerifyOtp,
   CustomOTPBox,
   FrontEndTypo,
+  getSelectedProgramId,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -93,7 +95,18 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const createAg = async () => {
-    let url = await AgRegistryService.createAg(formData);
+    let program = await getSelectedProgramId();
+    let acadamic = await getSelectedAcademicYear();
+    const formDataNew = {
+      ...formData,
+      role_fields: {
+        ...formData?.role_fields,
+        program_id: parseInt(program?.program_id),
+        academic_year_id: acadamic?.academic_year_id,
+      },
+    };
+    console.log(formDataNew);
+    let url = await AgRegistryService.createAg(formDataNew);
 
     if (url?.data) {
       navigate(`/beneficiary/${url?.data?.user?.id}/2`);

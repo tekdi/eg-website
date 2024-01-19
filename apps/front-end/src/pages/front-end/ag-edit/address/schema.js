@@ -17,11 +17,11 @@ export default {
           title: "STREET_ADDRESS",
           type: ["string", "null"],
         },
-        state: {
-          title: "STATE",
-          type: "string",
-          format: "select",
-        },
+        // state: {
+        //   title: "STATE",
+        //   type: "string",
+        //   format: "select",
+        // },
         district: {
           title: "DISTRICT",
           type: "string",
@@ -32,14 +32,14 @@ export default {
           type: "string",
           format: "select",
         },
+        grampanchayat: {
+          title: "GRAMPANCHAYAT",
+          type: "string",
+        },
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
-        },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: "string",
         },
 
         edit_page_type: {
