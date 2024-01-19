@@ -124,7 +124,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
       setError("SELECT_MESSAGE");
     }
     setLoading(false);
-  }, [activeChip, id, setLoading, setTodaysActivity]);
+  }, [activeChip, id]);
 
   // start Camp
   const closeCamera = React.useCallback(() => {
@@ -133,7 +133,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     } catch (e) {}
   }, [setStart]);
 
-  const campBegin = React.useCallback(() => {
+  const campBegin = React.useCallback(async () => {
     setStart(true);
   }, [setStart]);
 
@@ -170,14 +170,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
     } else if (todaysActivity?.end_date === null) {
       setPage("endcamp");
     }
-  }, [step, todaysActivity, setPage]);
+  }, [todaysActivity, step]);
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     getAccess();
   }, [getAccess]);
 
   const airplaneImageUri = React.useMemo(() => "/airoplane.gif", []);
-
   if (start && data?.lat && data?.long && !loading) {
     return (
       <React.Suspense fallback={<Loading />}>
@@ -246,7 +245,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     );
   }
 
-  if (cameraFile) {
+  if (cameraFile && cameraUrl?.url) {
     return (
       <React.Suspense fallback={<Loading />}>
         <Layout
