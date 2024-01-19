@@ -11,12 +11,14 @@ import {
   CardComponent,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable } from "native-base";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
 import Chip from "component/Chip";
+import { useDispatch } from "react-redux";
+import { fetchLearnerData } from "store/Slices/LearnerSlice";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = React.useState({});
@@ -241,6 +243,12 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [loadingHeight, setLoadingHeight] = React.useState(0);
   const ref = React.useRef(null);
   const fa_id = localStorage.getItem("id");
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchLearnerData());
+  }, []);
 
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();

@@ -37,6 +37,10 @@ import {
   selectenumData,
 } from "store/Slices/commonSlices/enumListSlice";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchLearnerData,
+  selectedLearnerData,
+} from "store/Slices/LearnerSlice";
 // import { useLanguage } from "component/common_components/i18n-new";
 
 const styles = {
@@ -88,10 +92,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   // const { selectedLanguage, changeLanguage } = useLanguage();
   const { t } = useTranslation();
 
+  const userInfoLearner = useSelector(selectedLearnerData);
+
   useEffect(() => {
     if (!data?.data) {
       dispatch(fetchEnumListData());
     }
+    dispatch(fetchLearnerData());
   }, []);
 
   useEffect(() => {
