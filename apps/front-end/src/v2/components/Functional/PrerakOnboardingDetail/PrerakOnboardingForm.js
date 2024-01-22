@@ -81,20 +81,7 @@ export default function PrerakOnboardingForm({
         setEnumObj(ListOfEnum?.data);
       }
       if (step === "qualification_details") {
-        if (!result?.core_faciltator?.has_diploma) {
-          const propertiesMain = schema1.properties?.qualification_details;
-          const constantSchema = propertiesMain;
-          const { diploma_details, ...properties } =
-            constantSchema?.properties || {};
-          const required = constantSchema?.required.filter((item) =>
-            ["has_diploma"].includes(item)
-          );
-          setSchemaData({ ...constantSchema, properties, required });
-        } else if (result?.core_faciltator?.has_diploma) {
-          const propertiesMain = schema1.properties?.qualification_details;
-          const constantSchema = propertiesMain;
-          setSchemaData(constantSchema);
-        }
+        updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
 
         const dataF = result?.qualifications;
         const arr = result?.program_faciltators?.qualification_ids;
@@ -215,6 +202,23 @@ export default function PrerakOnboardingForm({
       return JSON.parse(str);
     } catch (e) {
       return returnObject;
+    }
+  };
+
+  const updateSchemaBasedOnDiploma = (hasDiploma) => {
+    if (!hasDiploma) {
+      const propertiesMain = schema1.properties?.qualification_details;
+      const constantSchema = propertiesMain;
+      const { diploma_details, ...properties } =
+        constantSchema?.properties || {};
+      const required = constantSchema?.required.filter((item) =>
+        ["has_diploma"].includes(item)
+      );
+      setSchemaData({ ...constantSchema, properties, required });
+    } else if (hasDiploma) {
+      const propertiesMain = schema1.properties?.qualification_details;
+      const constantSchema = propertiesMain;
+      setSchemaData(constantSchema);
     }
   };
 
@@ -808,22 +812,7 @@ export default function PrerakOnboardingForm({
     }
 
     if (id === "root_has_diploma") {
-      if (!data?.has_diploma) {
-        const propertiesMain = schema1.properties?.qualification_details;
-        const constantSchema = propertiesMain;
-        const { diploma_details, ...properties } =
-          constantSchema?.properties || {};
-        const required = constantSchema?.required.filter((item) =>
-          ["has_diploma"].includes(item)
-        );
-        setSchemaData({ ...constantSchema, properties, required });
-      }
-
-      if (data?.has_diploma) {
-        const propertiesMain = schema1.properties?.qualification_details;
-        const constantSchema = propertiesMain;
-        setSchemaData(constantSchema);
-      }
+      updateSchemaBasedOnDiploma(data?.has_diploma);
     }
   };
 
