@@ -20,7 +20,7 @@ const PRESENT = "present";
 const ABSENT = "absent";
 
 // App
-export default function CampAttendance({ activityId }) {
+export default function CampAttendancePage({ activityId }) {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -41,10 +41,13 @@ export default function CampAttendance({ activityId }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(async () => {
-    const data = await campService.getrandomAttendance({ id });
-    if (data?.learner_camp_attendance_data === 1) {
-      setRandomAttendance(true);
+    async function fetchData() {
+      const data = await campService.getrandomAttendance({ id });
+      if (data?.learner_camp_attendance_data === 1) {
+        setRandomAttendance(true);
+      }
     }
+    fetchData();
   }, []);
 
   useEffect(async () => {
