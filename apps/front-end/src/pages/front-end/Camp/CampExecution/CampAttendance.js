@@ -351,7 +351,7 @@ export default function CampAttendance({ activityId }) {
         </FrontEndTypo.Primarybutton> */}
         <InfiniteScroll
           key={loadingHeight}
-          dataLength={10}
+          dataLength={groupUsers?.length || 0}
           next={(e) => {
             setFilter({
               ...filter,
