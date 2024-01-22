@@ -119,7 +119,7 @@ export default function PrerakOnboardingForm({
         };
         setFormData({
           ...newData,
-          has_diploma: result?.core_faciltator?.has_diploma ? "yes" : "no",
+          has_diploma: result?.core_faciltator?.has_diploma,
           diploma_details:
             result?.core_faciltator?.diploma_details || undefined,
         });
@@ -160,8 +160,12 @@ export default function PrerakOnboardingForm({
         hideClearButton: true,
       },
     },
+
     qualification_ids: {
       "ui:widget": "checkboxes",
+    },
+    has_diploma: {
+      "ui:widget": "RadioBtn",
     },
   };
 
@@ -804,7 +808,7 @@ export default function PrerakOnboardingForm({
     }
 
     if (id === "root_has_diploma") {
-      if (data?.has_diploma === "no") {
+      if (!data?.has_diploma) {
         const propertiesMain = schema1.properties?.qualification_details;
         const constantSchema = propertiesMain;
         const { diploma_details, ...properties } =
@@ -815,7 +819,7 @@ export default function PrerakOnboardingForm({
         setSchemaData({ ...constantSchema, properties, required });
       }
 
-      if (data?.has_diploma === "yes") {
+      if (data?.has_diploma) {
         const propertiesMain = schema1.properties?.qualification_details;
         const constantSchema = propertiesMain;
         setSchemaData(constantSchema);
@@ -838,11 +842,8 @@ export default function PrerakOnboardingForm({
         {},
         ""
       );
-      const updateData = {
-        ...newdata,
-        has_diploma: newdata?.has_diploma !== "no",
-      };
-      await formSubmitUpdate(updateData);
+
+      await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {

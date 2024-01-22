@@ -215,10 +215,8 @@ export default {
         },
         has_diploma: {
           label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
-          type: "string",
+          type: "boolean",
           format: "RadioBtn",
-          enumNames: ["YES", "NO"],
-          enum: ["yes", "no"],
         },
         diploma_details: {
           label: "NAME_OF_THE_DIPLOMA",
