@@ -87,6 +87,7 @@ export default function StatusButton({ data, setData }) {
     const obj = { ...fullName, id, dob, gender };
 
     await facilitatorRegistryService.updateAadhaarOkycDetails(obj);
+    window?.location?.reload();
   };
 
   React.useEffect(async () => {
