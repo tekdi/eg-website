@@ -81,10 +81,7 @@ export default function PrerakOnboardingForm({
         setEnumObj(ListOfEnum?.data);
       }
       if (step === "qualification_details") {
-        if (
-          result?.core_faciltator?.has_diploma === "no" ||
-          !result?.core_faciltator?.has_diploma
-        ) {
+        if (!result?.core_faciltator?.has_diploma) {
           const propertiesMain = schema1.properties?.qualification_details;
           const constantSchema = propertiesMain;
           const { diploma_details, ...properties } =
@@ -93,7 +90,7 @@ export default function PrerakOnboardingForm({
             ["has_diploma"].includes(item)
           );
           setSchemaData({ ...constantSchema, properties, required });
-        } else if (result?.core_faciltator?.has_diploma === "yes") {
+        } else if (result?.core_faciltator?.has_diploma) {
           const propertiesMain = schema1.properties?.qualification_details;
           const constantSchema = propertiesMain;
           setSchemaData(constantSchema);
