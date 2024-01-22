@@ -186,6 +186,7 @@ export default {
     qualification_details: {
       step_name: "QUALIFICATION_DETAILS",
       title: "YOUR_HIGHEST_QUALIFICATION",
+      required: ["has_diploma", "diploma_details"],
       type: "object",
       properties: {
         qualification_master_id: {
@@ -211,6 +212,17 @@ export default {
             type: ["string", "number"],
           },
           uniqueItems: true,
+        },
+        has_diploma: {
+          label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
+          type: "string",
+          format: "RadioBtn",
+          enumNames: ["YES", "NO"],
+          enum: ["yes", "no"],
+        },
+        diploma_details: {
+          label: "NAME_OF_THE_DIPLOMA",
+          type: "string",
         },
       },
     },

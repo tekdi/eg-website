@@ -70,6 +70,8 @@ export default function PrerakOnboardingForm({
   };
 
   useEffect(async () => {
+    setLoading(true);
+
     const id = userid;
     if (id) {
       const result = await facilitatorRegistryService.getOne({ id });
@@ -79,6 +81,24 @@ export default function PrerakOnboardingForm({
         setEnumObj(ListOfEnum?.data);
       }
       if (step === "qualification_details") {
+        if (
+          result?.core_faciltator?.has_diploma === "no" ||
+          !result?.core_faciltator?.has_diploma
+        ) {
+          const propertiesMain = schema1.properties?.qualification_details;
+          const constantSchema = propertiesMain;
+          const { diploma_details, ...properties } =
+            constantSchema?.properties || {};
+          const required = constantSchema?.required.filter((item) =>
+            ["has_diploma"].includes(item)
+          );
+          setSchemaData({ ...constantSchema, properties, required });
+        } else if (result?.core_faciltator?.has_diploma === "yes") {
+          const propertiesMain = schema1.properties?.qualification_details;
+          const constantSchema = propertiesMain;
+          setSchemaData(constantSchema);
+        }
+
         const dataF = result?.qualifications;
         const arr = result?.program_faciltators?.qualification_ids;
         let arrData = arr
@@ -100,7 +120,12 @@ export default function PrerakOnboardingForm({
           }`,
           type_of_document: dataF?.document_reference?.doument_type,
         };
-        setFormData(newData);
+        setFormData({
+          ...newData,
+          has_diploma: result?.core_faciltator?.has_diploma ? "yes" : "no",
+          diploma_details:
+            result?.core_faciltator?.diploma_details || undefined,
+        });
       } else if (step === "reference_details") {
         if (result?.references?.designation === "") {
           const newData = {
@@ -126,6 +151,7 @@ export default function PrerakOnboardingForm({
       }
     }
     getEditAccess();
+    setLoading(false);
   }, [qualifications]);
 
   const uiSchema = {
@@ -779,6 +805,25 @@ export default function PrerakOnboardingForm({
         setLoading(false);
       }
     }
+
+    if (id === "root_has_diploma") {
+      if (data?.has_diploma === "no") {
+        const propertiesMain = schema1.properties?.qualification_details;
+        const constantSchema = propertiesMain;
+        const { diploma_details, ...properties } =
+          constantSchema?.properties || {};
+        const required = constantSchema?.required.filter((item) =>
+          ["has_diploma"].includes(item)
+        );
+        setSchemaData({ ...constantSchema, properties, required });
+      }
+
+      if (data?.has_diploma === "yes") {
+        const propertiesMain = schema1.properties?.qualification_details;
+        const constantSchema = propertiesMain;
+        setSchemaData(constantSchema);
+      }
+    }
   };
 
   const onSubmit = async (data) => {
@@ -796,7 +841,11 @@ export default function PrerakOnboardingForm({
         {},
         ""
       );
-      const data = await formSubmitUpdate(newdata);
+      const updateData = {
+        ...newdata,
+        has_diploma: newdata?.has_diploma !== "no",
+      };
+      await formSubmitUpdate(updateData);
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
