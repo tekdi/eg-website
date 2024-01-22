@@ -292,7 +292,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                       <HStack space={2}>
                         <Alert.Icon />
                         <FrontEndTypo.H3>
-                          {t("CAMP_EXECUTION_MESSAGE")}
+                          {t("CAMP_EXECUSION_MESSAGE")}
                         </FrontEndTypo.H3>
                       </HStack>
                     </Alert>
