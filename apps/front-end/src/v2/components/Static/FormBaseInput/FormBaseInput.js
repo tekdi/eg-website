@@ -60,6 +60,21 @@ export function LabelMobileWidget() {
     </>
   );
 }
+
+export function LabelAddressWidget() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Heading size="sm" mb={1} color="textMaroonColor.400">
+        {t("ADDRESS")}
+      </Heading>
+      <Text color="textMaroonColor.400" mb={1}>
+        {t("ADDRESS_DESCRIPTION")}
+      </Text>
+    </>
+  );
+}
+
 export function LabelVerifyNameWidget() {
   const { t } = useTranslation();
   return (
@@ -790,6 +805,7 @@ const widgets = {
   //v2 widget
   LabelNameWidget,
   LabelMobileWidget,
+  LabelAddressWidget,
   LabelVerifyNameWidget,
   MobileNumberReadOnly,
 };
