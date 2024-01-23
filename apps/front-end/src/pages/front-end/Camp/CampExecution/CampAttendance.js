@@ -33,12 +33,13 @@ export default function CampAttendancePage({ activityId }) {
   const [isEditable, setIsEditable] = useState();
   const [randomAttendance, setRandomAttendance] = useState(false);
   const [latData, longData] = useLocationData() || [];
-  const [filter, setFilter] = useState({ limit: 8 });
+  const [filter, setFilter] = useState({ limit: 50 });
   const [hasMore, setHasMore] = useState(false);
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [learnerTotalCount, setLearnerTotalCount] = useState(0);
 
   useEffect(async () => {
     async function fetchData() {
@@ -55,20 +56,20 @@ export default function CampAttendancePage({ activityId }) {
   }, [latData]);
 
   useEffect(async () => {
-    const { currentPage, totalPages, error, ...result } =
-      await campService.getCampLeaners({ ...filter, id });
+    const {
+      currentPage,
+      totalCount,
+      totalPages,
+      error,
+      data: newData,
+    } = await campService.getCampLeaners({
+      ...filter,
+      id,
+      context_id: activityId,
+      order_by: { id: "desc" },
+    });
     if (!error) {
-      const resultAttendance = await campService.CampAttendance({
-        id: activityId,
-      });
-      let attendances = [];
-      if (resultAttendance?.data?.length > 0) {
-        attendances = resultAttendance?.data;
-      }
-      const newData = result?.data?.map((item, index) => {
-        let attendance = attendances.find((e) => e?.user?.id === item.id);
-        return { ...item, index, attendance };
-      });
+      setLearnerTotalCount(totalCount);
       setTimeout(async () => {
         if (filter?.page > 1) {
           setGroupUsers([...groupUsers, ...(newData || [])]);
@@ -76,14 +77,14 @@ export default function CampAttendancePage({ activityId }) {
           setGroupUsers(newData || []);
         }
         setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
-      }, 1500);
+      }, 1000);
     } else {
       setGroupUsers([]);
     }
 
     setTimeout(async () => {
       setLoading(false);
-    }, 1500);
+    }, 1000);
   }, [filter, id]);
 
   // Camera MOdule
@@ -96,33 +97,33 @@ export default function CampAttendancePage({ activityId }) {
   }, [bodyHeight, ref]);
 
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
-    setLoading(true);
-    setError("");
-    setIsEditable({ ...isEditable, [user?.id]: null });
-    if (user?.attendance?.status) {
-      if (status === PRESENT || status === ABSENT) {
-        let payLoad = {
-          ...data,
-          id: user?.attendance?.id,
-          context_id: activityId,
-          user_id: user?.id,
-          status,
-        };
-        if (status === PRESENT && randomAttendance) {
-          const photo_1 =
-            cameraFile?.data?.insert_documents?.returning?.[0]?.name;
-          payLoad = { ...payLoad, photo_1: photo_1 ? `${photo_1}` : null };
+    try {
+      setLoading(true);
+      setError("");
+      setIsEditable({ ...isEditable, [user?.id]: null });
+      if (user?.attendances?.[0]?.status) {
+        if (status === PRESENT || status === ABSENT) {
+          let payLoad = {
+            ...data,
+            id: user?.attendances?.[0]?.id,
+            context_id: activityId,
+            user_id: user?.id,
+            status,
+          };
+          if (status === PRESENT && randomAttendance) {
+            const photo_1 =
+              cameraFile?.data?.insert_documents?.returning?.[0]?.name;
+            payLoad = { ...payLoad, photo_1: photo_1 ? `${photo_1}` : null };
+          }
+          const result = await campService.updateCampAttendance(payLoad);
+          const coruntIndex = groupUsers.findIndex(
+            (item) => item?.id === user?.id
+          );
+          let newData = groupUsers;
+          newData[coruntIndex]["attendances"] = [result?.attendance];
+          setGroupUsers(newData);
         }
-        const result = await campService.updateCampAttendance(payLoad);
-        const coruntIndex = groupUsers.findIndex(
-          (item) => item?.id === user?.id
-        );
-        let newData = groupUsers;
-        newData[coruntIndex]["attendance"] = result?.attendance;
-        setGroupUsers(newData);
-      }
-    } else {
-      if (status === PRESENT) {
+      } else if (status === PRESENT) {
         const photo_1 = randomAttendance
           ? cameraFile?.data?.insert_documents?.returning?.[0]?.name
           : null;
@@ -139,7 +140,7 @@ export default function CampAttendancePage({ activityId }) {
             (item) => item?.id === user?.id
           );
           let newData = groupUsers;
-          newData[coruntIndex]["attendance"] = result?.attendance;
+          newData[coruntIndex]["attendances"] = [result?.attendance];
           setGroupUsers(newData);
         } else {
           setError("Capture Picture First");
@@ -156,23 +157,31 @@ export default function CampAttendancePage({ activityId }) {
           (item) => item?.id === user?.id
         );
         let newData = groupUsers;
-        newData[coruntIndex]["attendance"] = result?.attendance;
+        newData[coruntIndex]["attendances"] = [result?.attendance];
         setGroupUsers(newData);
       }
-    }
 
-    if (finish) {
-      setCameraUrl();
-      setCameraFile();
-      setUserData();
-    } else {
-      const coruntIndex = groupUsers.findIndex((item) => item?.id === user?.id);
-      if (groupUsers[coruntIndex + 1]) {
+      if (finish) {
         setCameraUrl();
-        setUserData({ ...groupUsers[coruntIndex + 1], index: coruntIndex + 1 });
+        setCameraFile();
+        setUserData();
+      } else {
+        const coruntIndex = groupUsers.findIndex(
+          (item) => item?.id === user?.id
+        );
+        if (groupUsers[coruntIndex + 1]) {
+          setCameraUrl();
+          setUserData({
+            ...groupUsers[coruntIndex + 1],
+            index: coruntIndex + 1,
+          });
+        }
       }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      // Handle error appropriately
     }
-    setLoading(false);
   };
 
   const addAttendance = (item) => {
@@ -345,7 +354,7 @@ export default function CampAttendancePage({ activityId }) {
           <FrontEndTypo.H3 color={"textMaroonColor.400"}>
             {t("LEARNERS")}
           </FrontEndTypo.H3>
-          <FrontEndTypo.H3>({groupUsers?.length || 0})</FrontEndTypo.H3>
+          <FrontEndTypo.H3>({learnerTotalCount})</FrontEndTypo.H3>
         </HStack>
       </HStack>
       <VStack py={6} px={4} space="6">
@@ -403,27 +412,28 @@ const List = memo(
             <HStack key={item} flex="1" minHeight={12}>
               <UserCard
                 _hstack={{
-                  ...(!isEditable?.[item.id] && item?.attendance?.status
+                  ...(!isEditable?.[item.id] && item?.attendances?.[0]?.status
                     ? { py: 0 }
-                    : // : item?.attendance?.status &&
-                      //   item?.attendance?.status !== PRESENT
+                    : // : item?.attendances?.[0]?.status &&
+                      //   item?.attendances?.[0]?.status !== PRESENT
                       // ? { p: 0, pl: 4 }
                       { p: 0 }),
                   space: 1,
                   flex: 1,
                   bg:
-                    isEditable?.[item.id] || !item?.attendance?.status
+                    isEditable?.[item.id] || !item?.attendances?.[0]?.status
                       ? "white"
-                      : item?.attendance?.status === PRESENT
+                      : item?.attendances?.[0]?.status === PRESENT
                       ? "green.100"
-                      : item?.attendance?.status === ABSENT
+                      : item?.attendances?.[0]?.status === ABSENT
                       ? "red.100"
                       : "",
                 }}
                 _vstack={{ py: 2 }}
                 _image={{ size: 45, color: "gray" }}
                 leftElement={
-                  (isEditable?.[item.id] || !item?.attendance?.status) && (
+                  (isEditable?.[item.id] ||
+                    !item?.attendances?.[0]?.status) && (
                     <IconByName
                       onPress={(e) => {
                         uploadAttendence(item, ABSENT, true);
@@ -437,7 +447,7 @@ const List = memo(
                   )
                 }
                 rightElement={
-                  isEditable?.[item.id] || !item?.attendance?.status ? (
+                  isEditable?.[item.id] || !item?.attendances?.[0]?.status ? (
                     <IconByName
                       onPress={(e) => {
                         addAttendance(item);
@@ -473,7 +483,7 @@ const List = memo(
                   .join(" ")}
                 // subTitle={
                 //   <HStack>
-                //     <RenderAttendee row={item?.attendance || {}} t={t} />
+                //     <RenderAttendee row={item?.attendances?.[0] || {}} t={t} />
                 //   </HStack>
                 // }
                 // image={
