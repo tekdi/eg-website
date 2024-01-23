@@ -21,6 +21,8 @@ import {
   Image,
   Stack,
   Pressable,
+  Spinner,
+  Progress,
 } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -47,19 +49,14 @@ export default function CampExecution({ footerLinks, setAlert }) {
   const [moodList, setMoodList] = React.useState();
   const [activeChip, setActiveChip] = React.useState(null);
   const [page, setPage] = React.useState("");
+  const [progress, setProgress] = React.useState(0);
 
   const campDetails = React.useCallback(async () => {
-    const result = await campService.getCampDetails({ id });
-    setFacilitator(result?.data?.faciltator?.[0] || {});
-    setLearnerCount(result?.data?.group_users?.length);
-    setLoading(false);
-  }, []);
-
-  React.useEffect(() => {
-    campDetails();
-  }, [campDetails]);
-
-  const getTodaysActivity = React.useCallback(async () => {
+    if (!["attendance"].includes(step)) {
+      const result = await campService.getCampDetails({ id });
+      setFacilitator(result?.data?.faciltator?.[0] || {});
+      setLearnerCount(result?.data?.group_users?.length);
+    }
     const obj = {
       id: id,
       start_date: moment(new Date()).format("YYYY-MM-DD"),
@@ -68,29 +65,32 @@ export default function CampExecution({ footerLinks, setAlert }) {
     const activity = data?.data?.camp_days_activities_tracker;
     setTodaysActivity(activity?.[0] || {});
     setActivityId(activity?.[0]?.id);
+    setLoading(false);
   }, [navigate, setTodaysActivity]);
 
   React.useEffect(() => {
-    getTodaysActivity();
-  }, [getTodaysActivity]);
+    campDetails();
+  }, [campDetails]);
 
   const enumData = React.useCallback(async () => {
-    const listOfEnum = await enumRegistryService.listOfEnum();
-    const moodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
-    const images = [
-      "/smiley_1.svg",
-      "/smiley_2.svg",
-      "/smiley_3.svg",
-      "/smiley_4.svg",
-      "/smiley_5.svg",
-      "/smiley_6.svg",
-    ];
-    const moodListWithImages = moodList?.map((mood, index) => ({
-      ...mood,
-      img: images[index % images?.length],
-    }));
-    setMoodList(moodListWithImages);
-  }, []);
+    if (cameraFile && cameraUrl?.url) {
+      const listOfEnum = await enumRegistryService.listOfEnum();
+      const newMoodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
+      const images = [
+        "/smiley_1.png",
+        "/smiley_2.png",
+        "/smiley_3.png",
+        "/smiley_4.png",
+        "/smiley_5.png",
+        "/smiley_6.png",
+      ];
+      const moodListWithImages = newMoodList?.map((mood, index) => ({
+        ...mood,
+        img: images[index % images?.length],
+      }));
+      setMoodList(moodListWithImages);
+    }
+  }, [cameraFile, cameraUrl]);
 
   React.useEffect(async () => {
     enumData();
@@ -189,6 +189,21 @@ export default function CampExecution({ footerLinks, setAlert }) {
               </FrontEndTypo.H3>
             </VStack>
           }
+          loading={
+            progress && (
+              <VStack space={4} justifyContent="center" p="4">
+                <Spinner
+                  color={"primary.500"}
+                  accessibilityLabel="Loading posts"
+                  size="lg"
+                />
+                <Progress value={progress} colorScheme="red" />
+                <FrontEndTypo.H3 textAlign="center" color="white">
+                  {progress}%
+                </FrontEndTypo.H3>
+              </VStack>
+            )
+          }
           {...{
             onFinish: (e) => closeCamera(),
             cameraModal: start,
@@ -198,6 +213,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
             },
             cameraUrl,
             setCameraUrl: async (url, file) => {
+              setProgress(0);
               if (file) {
                 setError("");
                 let formData = new FormData();
@@ -205,7 +221,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
                 formData.append("document_type", "camp_attendance");
                 formData.append("file", file);
                 const uploadDoc = await uploadRegistryService.uploadFile(
-                  formData
+                  formData,
+                  {},
+                  (progressEvent) => {
+                    const { loaded, total } = progressEvent;
+                    let percent = Math.floor((loaded * 100) / total);
+                    setProgress(percent);
+                  }
                 );
                 if (uploadDoc?.data?.insert_documents?.returning?.[0]?.name) {
                   setCameraFile(
@@ -294,6 +316,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
                 setCameraFile();
                 setCameraUrl();
                 setStart(true);
+                setProgress(0);
               }}
             >
               {t("TAKE_ANOTHER_PHOTO")}

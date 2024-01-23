@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState, memo } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -127,37 +127,37 @@ export default function FacilitatorView({ footerLinks }) {
   const toast = useToast();
 
   const { id } = useParams();
-  const [data, setData] = React.useState();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [adhaarModalVisible, setAdhaarModalVisible] = React.useState(false);
-  const [aadhaarValue, setAadhaarValue] = React.useState();
-  const [duplicateUserList, setDuplicateUserList] = React.useState();
-  const [aadhaarerror, setAadhaarError] = React.useState();
-  const [credentials, setCredentials] = React.useState();
-  const [errors, setErrors] = React.useState({});
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [confirmPassword, setConfirmPassword] = React.useState(false);
-  const [qualifications, setQualifications] = React.useState([]);
-  const [editModal, setEditModal] = React.useState(false);
-  const [editData, setEditData] = React.useState();
-  const [fieldCheck, setFieldCheck] = React.useState();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [data, setData] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [adhaarModalVisible, setAdhaarModalVisible] = useState(false);
+  const [aadhaarValue, setAadhaarValue] = useState();
+  const [duplicateUserList, setDuplicateUserList] = useState();
+  const [aadhaarerror, setAadhaarError] = useState();
+  const [credentials, setCredentials] = useState();
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState(false);
+  const [qualifications, setQualifications] = useState([]);
+  const [editModal, setEditModal] = useState(false);
+  const [editData, setEditData] = useState();
+  const [fieldCheck, setFieldCheck] = useState();
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
-  const togglePasswordVisibility = React.useCallback(() => {
+  const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   }, []);
 
-  const toggleConfirmPasswordVisibility = React.useCallback(() => {
+  const toggleConfirmPasswordVisibility = useCallback(() => {
     setConfirmPassword((prevConfirmPassword) => !prevConfirmPassword);
   }, []);
 
-  const openModal = React.useCallback(() => {
+  const openModal = useCallback(() => {
     setEditModal(true);
   }, []);
 
   const navigate = useNavigate();
 
-  const profileDetails = React.useCallback(async () => {
+  const profileDetails = useCallback(async () => {
     const result = await facilitatorRegistryService.getOne({ id });
     setData(result);
     setAadhaarValue(result?.aadhar_no);
@@ -175,11 +175,11 @@ export default function FacilitatorView({ footerLinks }) {
     }
   }, [id]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     profileDetails();
   }, [profileDetails]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
@@ -219,7 +219,7 @@ export default function FacilitatorView({ footerLinks }) {
 
   const showData = (item) => item || "-";
 
-  const validate = React.useCallback(() => {
+  const validate = useCallback(() => {
     let arr = {};
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
@@ -273,6 +273,7 @@ export default function FacilitatorView({ footerLinks }) {
             description: resetPassword?.message,
           });
           setModalVisible(false);
+          setIsButtonLoading(false);
           return { status: true };
         } else if (resetPassword.success === false) {
           setIsButtonLoading(false);
@@ -299,7 +300,7 @@ export default function FacilitatorView({ footerLinks }) {
   }
 
   const handleAadhaarUpdate = (event) => {
-    const inputValue = event.target.value;
+    const inputValue = event?.target?.value;
     const numericValue = inputValue.replace(/\D/g, "");
     const maxLength = 12;
     const truncatedValue = numericValue.slice(0, maxLength);
@@ -315,7 +316,7 @@ export default function FacilitatorView({ footerLinks }) {
     const result = await facilitatorRegistryService.updateAadhaarNumber(
       aadhaar_no
     );
-    if (aadhaarValue.length < 12) {
+    if (aadhaarValue?.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
       setIsButtonLoading(false);
     } else if (!result?.success) {
@@ -326,8 +327,8 @@ export default function FacilitatorView({ footerLinks }) {
       setData({ ...data, aadhar_no: aadhaarValue });
       setAdhaarModalVisible(false);
     }
+    setIsButtonLoading(false);
   };
-
   return (
     <Layout _sidebar={footerLinks}>
       <HStack>
@@ -935,9 +936,9 @@ export default function FacilitatorView({ footerLinks }) {
   );
 }
 
-const SelectAllCheckBox = React.memo(
+const SelectAllCheckBox = memo(
   ({ fields, title, setFieldCheck, fieldCheck }) => {
-    const handleChange = React.useCallback(
+    const handleChange = useCallback(
       (e) => {
         if (!e) {
           const checkedFields = fieldCheck?.filter(
