@@ -97,42 +97,60 @@ export default function CampAttendancePage({ activityId }) {
   }, [bodyHeight, ref]);
 
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
-    setLoading(true);
-    setError("");
-    setIsEditable({ ...isEditable, [user?.id]: null });
-    if (user?.attendances?.[0]?.status) {
-      if (status === PRESENT || status === ABSENT) {
-        let payLoad = {
-          ...data,
-          id: user?.attendances?.[0]?.id,
-          context_id: activityId,
-          user_id: user?.id,
-          status,
-        };
-        if (status === PRESENT && randomAttendance) {
-          const photo_1 =
-            cameraFile?.data?.insert_documents?.returning?.[0]?.name;
-          payLoad = { ...payLoad, photo_1: photo_1 ? `${photo_1}` : null };
+    try {
+      setLoading(true);
+      setError("");
+      setIsEditable({ ...isEditable, [user?.id]: null });
+      if (user?.attendances?.[0]?.status) {
+        if (status === PRESENT || status === ABSENT) {
+          let payLoad = {
+            ...data,
+            id: user?.attendances?.[0]?.id,
+            context_id: activityId,
+            user_id: user?.id,
+            status,
+          };
+          if (status === PRESENT && randomAttendance) {
+            const photo_1 =
+              cameraFile?.data?.insert_documents?.returning?.[0]?.name;
+            payLoad = { ...payLoad, photo_1: photo_1 ? `${photo_1}` : null };
+          }
+          const result = await campService.updateCampAttendance(payLoad);
+          const coruntIndex = groupUsers.findIndex(
+            (item) => item?.id === user?.id
+          );
+          let newData = groupUsers;
+          newData[coruntIndex]["attendances"] = [result?.attendance];
+          setGroupUsers(newData);
         }
-        const result = await campService.updateCampAttendance(payLoad);
-        const coruntIndex = groupUsers.findIndex(
-          (item) => item?.id === user?.id
-        );
-        let newData = groupUsers;
-        newData[coruntIndex]["attendances"] = [result?.attendance];
-        setGroupUsers(newData);
-      }
-    } else if (status === PRESENT) {
-      const photo_1 = randomAttendance
-        ? cameraFile?.data?.insert_documents?.returning?.[0]?.name
-        : null;
-      if (activityId) {
+      } else if (status === PRESENT) {
+        const photo_1 = randomAttendance
+          ? cameraFile?.data?.insert_documents?.returning?.[0]?.name
+          : null;
+        if (activityId) {
+          const payLoad = {
+            ...data,
+            context_id: activityId,
+            user_id: user?.id,
+            status: PRESENT,
+            photo_1: photo_1 ? `${photo_1}` : null,
+          };
+          const result = await campService.markCampAttendance(payLoad);
+          const coruntIndex = groupUsers.findIndex(
+            (item) => item?.id === user?.id
+          );
+          let newData = groupUsers;
+          newData[coruntIndex]["attendances"] = [result?.attendance];
+          setGroupUsers(newData);
+        } else {
+          setError("Capture Picture First");
+        }
+      } else if (status === ABSENT) {
         const payLoad = {
           ...data,
           context_id: activityId,
           user_id: user?.id,
-          status: PRESENT,
-          photo_1: photo_1 ? `${photo_1}` : null,
+          status: ABSENT,
         };
         const result = await campService.markCampAttendance(payLoad);
         const coruntIndex = groupUsers.findIndex(
@@ -141,35 +159,29 @@ export default function CampAttendancePage({ activityId }) {
         let newData = groupUsers;
         newData[coruntIndex]["attendances"] = [result?.attendance];
         setGroupUsers(newData);
-      } else {
-        setError("Capture Picture First");
       }
-    } else if (status === ABSENT) {
-      const payLoad = {
-        ...data,
-        context_id: activityId,
-        user_id: user?.id,
-        status: ABSENT,
-      };
-      const result = await campService.markCampAttendance(payLoad);
-      const coruntIndex = groupUsers.findIndex((item) => item?.id === user?.id);
-      let newData = groupUsers;
-      newData[coruntIndex]["attendances"] = [result?.attendance];
-      setGroupUsers(newData);
-    }
 
-    if (finish) {
-      setCameraUrl();
-      setCameraFile();
-      setUserData();
-    } else {
-      const coruntIndex = groupUsers.findIndex((item) => item?.id === user?.id);
-      if (groupUsers[coruntIndex + 1]) {
+      if (finish) {
         setCameraUrl();
-        setUserData({ ...groupUsers[coruntIndex + 1], index: coruntIndex + 1 });
+        setCameraFile();
+        setUserData();
+      } else {
+        const coruntIndex = groupUsers.findIndex(
+          (item) => item?.id === user?.id
+        );
+        if (groupUsers[coruntIndex + 1]) {
+          setCameraUrl();
+          setUserData({
+            ...groupUsers[coruntIndex + 1],
+            index: coruntIndex + 1,
+          });
+        }
       }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      // Handle error appropriately
     }
-    setLoading(false);
   };
 
   const addAttendance = (item) => {
