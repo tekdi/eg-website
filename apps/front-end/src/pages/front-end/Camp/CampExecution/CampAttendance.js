@@ -12,7 +12,7 @@ import {
   UserCard,
   useLocationData,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -38,8 +38,10 @@ export default function CampAttendancePage({ activityId }) {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
+  const refBtn = useRef(null);
   const [progress, setProgress] = useState(0);
   const [learnerTotalCount, setLearnerTotalCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(async () => {
     async function fetchData() {
@@ -90,11 +92,16 @@ export default function CampAttendancePage({ activityId }) {
   // Camera MOdule
   useEffect(() => {
     if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-      setLoadingHeight(bodyHeight - ref?.current?.clientHeight - 60);
+      setLoadingHeight(
+        bodyHeight -
+          ref?.current?.clientHeight -
+          (refBtn?.current?.clientHeight || 0) -
+          30
+      );
     } else {
       setLoadingHeight(bodyHeight);
     }
-  }, [bodyHeight, ref]);
+  }, [bodyHeight, ref, refBtn]);
 
   const uploadAttendence = async (user, status = PRESENT, finish = false) => {
     try {
@@ -357,7 +364,7 @@ export default function CampAttendancePage({ activityId }) {
           <FrontEndTypo.H3>({learnerTotalCount})</FrontEndTypo.H3>
         </HStack>
       </HStack>
-      <VStack py={6} px={4} space="6">
+      <VStack px={4} space="4">
         {/* <FrontEndTypo.Primarybutton onPress={(e) => setUserData(groupUsers[0])}>
           {t("MARK_ATTENDANCE")}
         </FrontEndTypo.Primarybutton> */}
@@ -392,6 +399,12 @@ export default function CampAttendancePage({ activityId }) {
             }}
           />
         </InfiniteScroll>
+        {/* <FrontEndTypo.Primarybutton
+          ref={refBtn}
+          onPress={(e) => navigate(`/camps/${id}/campexecution`)}
+        >
+          {t("SUBMIT")}
+        </FrontEndTypo.Primarybutton> */}
       </VStack>
     </Layout>
   );
