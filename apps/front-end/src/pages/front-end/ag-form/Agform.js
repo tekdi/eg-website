@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/Schema.js";
@@ -36,22 +36,23 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [credentials, setCredentials] = useState();
+  const [submitBtn, setSubmitBtn] = useState();
+  const [addBtn, setAddBtn] = useState(t("YES"));
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [yearsRange, setYearsRange] = useState([1980, 2030]);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [verifyOtpData, setverifyOtpData] = useState();
-  const [otpbtn, setotpbtn] = React.useState(false);
+  const [otpbtn, setotpbtn] = useState(false);
 
   const onPressBackButton = async (e) => {
+    setotpbtn(false);
     const data = await nextPreviewStep("p");
     if (data) {
       navigate(-1);
@@ -143,41 +144,40 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       };
       setErrors(newErrors);
     }
-
-    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-      ...formData,
-      hash: localStorage.getItem("hash"),
-    });
-
-    setverifyOtpData(otpData);
-    if (status === true) {
-      const data = await formSubmitCreate(formData);
-
-      if (data?.error) {
+    if (formData?.mobile?.length === 10) {
+      const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+        ...formData,
+        hash: localStorage.getItem("hash"),
+      });
+      setverifyOtpData(otpData);
+      if (status === true) {
+        const data = await formSubmitCreate(formData);
+        if (data?.error) {
+          const newErrors = {
+            mobile: {
+              __errors:
+                data?.error?.constructor?.name === "String"
+                  ? [data?.error]
+                  : data?.error?.constructor?.name === "Array"
+                  ? data?.error
+                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+            },
+          };
+          setErrors(newErrors);
+        } else {
+          createAg();
+        }
+      } else if (status === false) {
         const newErrors = {
-          mobile: {
-            __errors:
-              data?.error?.constructor?.name === "String"
-                ? [data?.error]
-                : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+          otp: {
+            __errors: [t("USER_ENTER_VALID_OTP")],
           },
         };
         setErrors(newErrors);
       } else {
-        createAg();
+        setSchema(newSchema);
+        setotpbtn(true);
       }
-    } else if (status === false) {
-      const newErrors = {
-        otp: {
-          __errors: [t("USER_ENTER_VALID_OTP")],
-        },
-      };
-      setErrors(newErrors);
-    } else {
-      setSchema(newSchema);
-      setotpbtn(true);
     }
   };
   const setStep = async (pageNumber = "") => {
@@ -194,7 +194,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -307,7 +307,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length > 10) {
+      if (data?.mobile?.toString()?.length < 10) {
         const newErrors = {
           mobile: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
@@ -433,7 +433,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
             </HStack>
           </Alert>
         ) : (
-          <React.Fragment />
+          <Fragment />
         )}
 
         {page && page !== "" ? (
@@ -486,7 +486,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
             )}
           </Form>
         ) : (
-          <React.Fragment />
+          <Fragment />
         )}
       </Box>
     </Layout>

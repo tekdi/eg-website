@@ -68,9 +68,9 @@ export default {
         },
       },
     },
+
     address_details: {
       step_name: "ADDRESS_DETAILS",
-      title: "ADDRESS",
       type: "object",
       required: ["district", "block", "village"],
       properties: {
@@ -80,6 +80,9 @@ export default {
         //   format: "select",
         //   readOnly: "",
         // },
+        labelAddress: {
+          type: "string",
+        },
         district: {
           title: "DISTRICT",
           type: "string",
@@ -101,6 +104,11 @@ export default {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
+          readOnly: "",
+        },
+        pincode: {
+          title: "PINCODE",
+          type: "string",
           readOnly: "",
         },
       },
