@@ -41,7 +41,7 @@ export default function CampAttendancePage({ activityId }) {
   const refBtn = useRef(null);
   const [progress, setProgress] = useState(0);
   const [learnerTotalCount, setLearnerTotalCount] = useState(0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(async () => {
     async function fetchData() {
