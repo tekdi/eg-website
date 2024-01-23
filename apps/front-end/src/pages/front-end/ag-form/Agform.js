@@ -105,7 +105,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         academic_year_id: acadamic?.academic_year_id,
       },
     };
-    console.log(formDataNew);
     let url = await AgRegistryService.createAg(formDataNew);
 
     if (url?.data) {

@@ -127,7 +127,12 @@ export default function AddressEdit({ ip }) {
       });
       setSchemaData(newSchema);
     }
-  }, [formData]);
+  }, [
+    formData?.state,
+    formData?.district,
+    formData?.block,
+    formData?.grampanchayat,
+  ]);
 
   React.useEffect(() => {
     if (schema1.type === "step") {
