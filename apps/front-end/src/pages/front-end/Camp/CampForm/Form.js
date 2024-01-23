@@ -201,7 +201,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         value: "value",
       });
     }
-    if (schema?.properties?.state) {
+    if (schema?.properties?.district) {
       const qData = await geolocationRegistryService.getStates();
 
       if (schema?.["properties"]?.["state"]) {
@@ -217,6 +217,7 @@ export default function App({ userTokenInfo, footerLinks }) {
         state: formData?.state,
         district: formData?.district,
         block: formData?.block,
+        gramp: formData?.grampanchayat,
       });
     }
   }, [enumOptions, page, formData]);
@@ -293,7 +294,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     return errors;
   };
 
-  const setDistric = async ({ state, district, block, schemaData }) => {
+  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
     if (schema?.properties?.district && state) {
       const qData = await geolocationRegistryService.getDistricts({
@@ -308,7 +309,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
       if (schema?.["properties"]?.["block"]) {
-        newSchema = await setBlock({ district, block, schemaData: newSchema });
+        newSchema = await setBlock({
+          gramp,
+          state,
+          district,
+          block,
+          schemaData: newSchema,
+        });
         setSchema(newSchema);
       }
     } else {
@@ -324,12 +331,14 @@ export default function App({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
 
-  const setBlock = async ({ district, block, schemaData }) => {
+  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
     if (schema?.properties?.block && district) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
+        state: state,
       });
+
       if (schema?.["properties"]?.["block"]) {
         newSchema = getOptions(newSchema, {
           key: "block",
@@ -338,8 +347,26 @@ export default function App({ userTokenInfo, footerLinks }) {
           value: "block_name",
         });
       }
-      if (schema?.["properties"]?.["village"]) {
-        newSchema = await setVilage({ block, schemaData: newSchema });
+      if (
+        schema?.["properties"]?.["grampanchayat"] &&
+        ["BIHAR"].includes(state)
+      ) {
+        newSchema = await setGramp({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      } else {
+        newSchema = await setVilage({
+          state,
+          district,
+          block,
+          gramp: "null",
+          schemaData: newSchema,
+        });
         setSchema(newSchema);
       }
     } else {
@@ -352,11 +379,51 @@ export default function App({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
 
-  const setVilage = async ({ block, schemaData }) => {
+  const setGramp = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schema?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getGrampanchyat({
+        block: block,
+        state: state,
+        district: district,
+      });
+      if (schema?.["properties"]?.["grampanchayat"]) {
+        newSchema = getOptions(newSchema, {
+          key: "grampanchayat",
+          arr: qData?.gramPanchayat,
+          title: "grampanchayat_name",
+          value: "grampanchayat_name",
+          format: "select",
+        });
+      }
+      setSchema(newSchema);
+
+      if (schema?.["properties"]?.["village"] && gramp) {
+        newSchema = await setVilage({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
     let newSchema = schemaData;
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
       });
       if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, {
