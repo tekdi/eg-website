@@ -23,12 +23,16 @@ import {
   GetEnumValue,
   facilitatorRegistryService,
   tableCustomStyles,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+const filterName = "camp_filter";
 
 const columns = (t, navigate) => [
   {
@@ -385,8 +389,8 @@ export const Filter = ({ filter, setFilter }) => {
 
     if (!error) {
       let newData;
-      if (data) {
-        newData = data?.map((e) => ({
+      if (result) {
+        newData = result?.data?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
