@@ -441,7 +441,7 @@ export default function View({ footerLinks }) {
           </VStack>
           {[
             properties?.photo_other,
-            properties.photo_building,
+            properties?.photo_building,
             properties?.photo_classroom,
           ].map(
             (item) =>
@@ -537,12 +537,12 @@ export default function View({ footerLinks }) {
             ]}
             item={{
               ...data,
-              kit_received: data.kit_received === "yes" ? t("YES") : t("NO"),
+              kit_received: data?.kit_received === "yes" ? t("YES") : t("NO"),
               kit_was_sufficient:
-                data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
+                data?.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
               kit_ratings: (
                 <StarRating
-                  value={data.kit_ratings}
+                  value={data?.kit_ratings}
                   schema={{
                     totalStars: 5,
                     readOnly: true,
