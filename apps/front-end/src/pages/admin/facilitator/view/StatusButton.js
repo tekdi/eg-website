@@ -40,7 +40,7 @@ const styles = {
   },
 };
 
-export default function StatusButton({ data, setData }) {
+export default function StatusButton({ data, setData, updateDataCallBack }) {
   const [showModal, setShowModal] = React.useState();
   const [reason, setReason] = React.useState();
   const [disabledBtn, setDisabledBtn] = React.useState([]);
@@ -85,10 +85,9 @@ export default function StatusButton({ data, setData }) {
       fullName = { first_name, last_name: middle_name };
     }
     const obj = { ...fullName, id, dob, gender };
-
     await facilitatorRegistryService.updateAadhaarOkycDetails(obj);
+    updateDataCallBack && updateDataCallBack();
   };
-
   React.useEffect(async () => {
     const resultData = await enumRegistryService.listOfEnum();
     const statusListNew = resultData?.data.FACILITATOR_STATUS.map((item) => {
