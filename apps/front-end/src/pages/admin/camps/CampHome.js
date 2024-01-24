@@ -407,7 +407,7 @@ export const Filter = ({ filter, setFilter }) => {
     if (!error) {
       let newData;
       if (result) {
-        newData = result?.users?.map((e) => ({
+        newData = result?.data?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));
