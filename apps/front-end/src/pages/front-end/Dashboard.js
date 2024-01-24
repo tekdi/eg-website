@@ -85,7 +85,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     async function fetchData() {
-      // ...async operations
+      // ...async operation
 
       if (countLoad == 0) {
         setCountLoad(1);
