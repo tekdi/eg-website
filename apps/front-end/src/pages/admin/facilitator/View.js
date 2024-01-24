@@ -768,7 +768,9 @@ export default function FacilitatorView({ footerLinks }) {
               </VStack>
             )}
           </VStack>
-          <StatusButton {...{ data, setData }} />
+          <StatusButton
+            {...{ data, setData, updateDataCallBack: profileDetails }}
+          />
         </VStack>
         <Modal isOpen={adhaarModalVisible} avoidKeyboard size="xl">
           <Modal.Content>
