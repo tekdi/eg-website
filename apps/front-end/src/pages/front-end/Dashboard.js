@@ -16,6 +16,7 @@ import {
   setSelectedProgramId,
   getOnboardingMobile,
   setSelectedAcademicYear,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -85,6 +86,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   useEffect(() => {
     async function fetchData() {
       // ...async operations
+
       if (countLoad == 0) {
         setCountLoad(1);
       }
@@ -92,31 +94,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         //do page load first operation
         //get user info
         if (userTokenInfo) {
-          const fa_data = await facilitatorRegistryService.getOne({
-            id: fa_id,
-          });
+          const fa_data = await facilitatorRegistryService.getInfo();
           setFacilitator(fa_data);
-          const c_data =
-            await facilitatorRegistryService.getPrerakCertificateDetails({
-              id: fa_id,
-            });
-          const data =
-            c_data?.data?.filter(
-              (e) => e?.type === "prerak_camp_execution_training"
-            )?.[0] || {};
-          setCertificateData(data);
-          if (data?.lms_test_tracking?.length > 0) {
-            setLmsDetails(data?.lms_test_tracking?.[0]);
-          }
-
-          const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-          const format = "HH:mm:ss";
-          const time = moment(moment().format(format), format);
-          const beforeTime = moment(data?.start_time, format);
-          const afterTime = moment(data?.end_time, format);
-          if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-            setIsEventActive(true);
-          }
         }
         setLoading(false);
         //end do page load first operation
@@ -127,6 +106,36 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     fetchData();
   }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        const c_data =
+          await facilitatorRegistryService.getPrerakCertificateDetails({
+            id: fa_id,
+          });
+        const data =
+          c_data?.data?.filter(
+            (e) => e?.type === "prerak_camp_execution_training"
+          )?.[0] || {};
+        setCertificateData(data);
+        if (data?.lms_test_tracking?.length > 0) {
+          setLmsDetails(data?.lms_test_tracking?.[0]);
+        }
+
+        const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+        const format = "HH:mm:ss";
+        const time = moment(moment().format(format), format);
+        const beforeTime = moment(data?.start_time, format);
+        const afterTime = moment(data?.end_time, format);
+        if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+          setIsEventActive(true);
+        }
+      }
+    };
+    fetchdata();
+  }, [selectedCohortData]);
 
   useEffect(() => {
     async function fetchData() {
@@ -229,7 +238,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const handleRandomise = async () => {
     const doIdArray = modalVisible?.params?.do_id;
-    console.log({ doIdArray });
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
