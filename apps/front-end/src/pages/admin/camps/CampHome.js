@@ -381,11 +381,12 @@ export const Filter = ({ filter, setFilter }) => {
     const { error, ...result } = await facilitatorRegistryService.searchByCamp(
       facilitatorFilter
     );
+    const data = Object.values(result);
 
     if (!error) {
       let newData;
-      if (result) {
-        newData = result?.users?.map((e) => ({
+      if (data) {
+        newData = data?.map((e) => ({
           value: e?.id,
           label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
         }));

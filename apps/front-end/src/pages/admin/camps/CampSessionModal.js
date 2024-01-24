@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   CardComponent,
   FrontEndTypo,
@@ -226,9 +226,92 @@ export default React.memo(SessionActions);
 export const SessionList = React.memo(
   ({ sessionList, sessionActive, setModalVisible }) => {
     const { t } = useTranslation();
+    const [collapsed, setCollapsed] = useState(true);
+
+    // Separate completed and incomplete sessions
+    const completedSessions = sessionList?.filter(
+      (item) => item?.session_tracks?.[0]?.status === "complete"
+    );
+
+    const incompleteSessions = sessionList?.filter(
+      (item) => item?.session_tracks?.[0]?.status !== "complete"
+    );
+
     return (
       <VStack flex={1} space={"5"}>
-        {sessionList?.map((item) => (
+        {completedSessions?.length > 0 && (
+          <Pressable onPress={() => setCollapsed(!collapsed)}>
+            <CardComponent
+              _header={{ px: "0", pt: "0" }}
+              _body={{
+                px: "4",
+                py: "3",
+                pb: "3",
+                roundedTop: "10px",
+                bg: "gray.100",
+              }}
+              _vstack={{ p: 0, space: 0, flex: 1 }}
+            >
+              <HStack justifyContent={"space-between"}>
+                <HStack space="4" alignItems={"center"}>
+                  <IconByName
+                    name="CheckboxCircleFillIcon"
+                    color="greenIconColor"
+                    _icon={{ size: "24px" }}
+                  />
+                  <FrontEndTypo.H2 alignItem="center">
+                    {t("COMPLETED_SESSIONS")}
+                  </FrontEndTypo.H2>
+                </HStack>
+                <IconByName
+                  alignContent={"right"}
+                  name={collapsed ? "ArrowDownSLineIcon" : "ArrowUpSLineIcon"}
+                  _icon={{ size: "25px" }}
+                />
+              </HStack>
+            </CardComponent>
+          </Pressable>
+        )}
+        {completedSessions?.length > 0 &&
+          !collapsed &&
+          completedSessions?.map((item) => (
+            <Pressable
+              onPress={async () => await setModalVisible(item?.id)}
+              isDisabled={sessionActive?.ordering !== item?.ordering}
+              key={item?.id}
+            >
+              <CardComponent
+                _header={{ px: "0", pt: "0" }}
+                _body={{
+                  px: "4",
+                  py: "3",
+                  pb: "3",
+                  roundedTop: "10px",
+                  bg: "white",
+                }}
+                _vstack={{ p: 0, space: 0, flex: 1 }}
+              >
+                <HStack justifyContent={"space-between"}>
+                  <HStack space="4" alignItems={"center"}>
+                    <IconByName
+                      name="CheckboxCircleFillIcon"
+                      color="greenIconColor"
+                      _icon={{ size: "24px" }}
+                    />
+                    <FrontEndTypo.H2 alignItem="center">
+                      {t("SESSION") + " " + item?.ordering}
+                    </FrontEndTypo.H2>
+                  </HStack>
+                  <IconByName
+                    alignContent={"right"}
+                    name="ArrowRightSLineIcon"
+                    _icon={{ size: "25px" }}
+                  />
+                </HStack>
+              </CardComponent>
+            </Pressable>
+          ))}
+        {incompleteSessions?.map((item) => (
           <Pressable
             onPress={async () => await setModalVisible(item?.id)}
             isDisabled={sessionActive?.ordering !== item?.ordering}
@@ -240,7 +323,6 @@ export const SessionList = React.memo(
                 px: "4",
                 py: "3",
                 pb: "3",
-                // pt: "0",
                 roundedTop: "10px",
                 bg:
                   sessionActive?.ordering !== item?.ordering
@@ -250,11 +332,7 @@ export const SessionList = React.memo(
               _vstack={{ p: 0, space: 0, flex: 1 }}
             >
               <HStack justifyContent={"space-between"}>
-                <HStack
-                  space="4"
-                  alignItems={"center"}
-                  // justifyContent={"space-between"}
-                >
+                <HStack space="4" alignItems={"center"}>
                   {item?.session_tracks?.[0]?.status === "complete" && (
                     <IconByName
                       name="CheckboxCircleFillIcon"

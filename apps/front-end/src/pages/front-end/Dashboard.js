@@ -294,7 +294,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const selectAcademicYear = async () => {
     setSelectCohortForm(false);
-    window.location.reload();
   };
 
   const removeRegisterExist = async () => {
@@ -347,12 +346,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       localStorage.setItem("loadCohort", "yes");
       if (user_cohort_list?.data.length == 1) {
         setSelectCohortForm(false);
-        window.location.reload();
       } else {
         setSelectCohortForm(true);
       }
     }
   };
+
   const handleAcademicYear = async (item) => {
     setAcademicYear(item);
   };
@@ -533,7 +532,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           ].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
-                background="#FCEEE2"
+                background="bgYellowColor.400"
                 mx="5"
                 p="10"
                 width="40%"
