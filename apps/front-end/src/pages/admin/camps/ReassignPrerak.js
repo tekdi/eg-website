@@ -9,10 +9,10 @@ import {
   useWindowSize,
   facilitatorRegistryService,
   BodyMedium,
-  setQueryParameters,
   geolocationRegistryService,
   getOptions,
-  urlData,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -101,6 +101,8 @@ const uiSchema = {
     "ui:options": {},
   },
 };
+const filterName = "camp_reassign_filter";
+
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const { id, user_id } = useParams();
   const [data, setData] = useState();
@@ -163,8 +165,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     const result = await facilitatorRegistryService.getOne({ id });
     setData(result);
     setLoading(false);
-    const arr = ["district", "block"];
-    const data = urlData(arr);
+    const data = getFilterLocalStorage(filterName);
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, [id]);
 
@@ -247,7 +248,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   };
   const setFilterObject = useCallback((prerakData) => {
     setFilter(prerakData);
-    setQueryParameters(prerakData);
+    setFilterLocalStorage(filterName, prerakData);
   }, []);
   const onChange = useCallback(
     async (prerakData) => {
@@ -508,7 +509,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               filter={filter}
               setFilter={(e) => {
                 setFilter(e);
-                setQueryParameters(e);
+                setFilterLocalStorage(filterName, e);
               }}
               customStyles={tableCustomStyles}
               columns={[...columns(navigate, t, setModal)]}

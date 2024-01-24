@@ -224,7 +224,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilterLocalStorage(filterName, e);
                 }}
                 customStyles={tableCustomStyles}
-                columns={[...columns(navigate)]}
+                columns={[...columns(t, navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
