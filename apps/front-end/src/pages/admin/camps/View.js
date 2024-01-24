@@ -89,7 +89,7 @@ const totalDistance = ({ row, data }) =>
     data?.properties?.long
   );
 
-const columns = (t, navigate, data, consentData) => [
+const columns = (t, navigate, data, consentData, id) => [
   {
     name: "Id",
     selector: (row) => row?.id,
@@ -164,11 +164,11 @@ const columns = (t, navigate, data, consentData) => [
   {
     minWidth: "250px",
     name: t("ACTION"),
-    selector: (row) => <ActionButton {...{ row, data, t }} />,
+    selector: (row) => <ActionButton {...{ row, data, t, id }} />,
   },
 ];
 
-const ActionButton = ({ row, data, t }) => {
+const ActionButton = ({ row, data, t, id }) => {
   const navigate = useNavigate();
   return data?.group?.status === "camp_initiated" ? (
     <AdminTypo.Secondarybutton
@@ -439,7 +439,7 @@ export default function View({ footerLinks }) {
           </VStack>
           {[
             properties?.photo_other,
-            properties.photo_building,
+            properties?.photo_building,
             properties?.photo_classroom,
           ].map(
             (item) =>
@@ -462,19 +462,28 @@ export default function View({ footerLinks }) {
                 </HStack>
               )
           )}
-          <MapComponent
-            _iframe={{
-              width: "200px",
-              height: "200px",
-              style: {
-                borderRadius: "10px",
-                border: "none",
-                paddingTop: "8px",
-              },
-            }}
-            latitude={data?.properties?.lat}
-            longitude={data?.properties?.long}
-          />
+          {data?.properties?.lat ? (
+            <MapComponent
+              key={data?.properties?.lat}
+              _iframe={{
+                width: "200px",
+                height: "200px",
+                style: {
+                  borderRadius: "10px",
+                  border: "none",
+                  paddingTop: "8px",
+                },
+              }}
+              latitude={data?.properties?.lat}
+              longitude={data?.properties?.long}
+            />
+          ) : (
+            <Stack p={4} alignSelf={"center"} flex={"1"} width={"auto"}>
+              <AdminTypo.H5 bold color="textRed.400">
+                {t("CAMP_LOCATION_MESSAGE")}
+              </AdminTypo.H5>
+            </Stack>
+          )}
         </HStack>
         <HStack space={4}>
           <CardComponent
@@ -526,12 +535,12 @@ export default function View({ footerLinks }) {
             ]}
             item={{
               ...data,
-              kit_received: data.kit_received === "yes" ? t("YES") : t("NO"),
+              kit_received: data?.kit_received === "yes" ? t("YES") : t("NO"),
               kit_was_sufficient:
-                data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
+                data?.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
               kit_ratings: (
                 <StarRating
-                  value={data.kit_ratings}
+                  value={data?.kit_ratings}
                   schema={{
                     totalStars: 5,
                     readOnly: true,
@@ -579,7 +588,7 @@ export default function View({ footerLinks }) {
           >
             <ScrollView w={["100%", "100%"]}>
               <DataTable
-                columns={columns(t, navigate, data, consentData)}
+                columns={columns(t, navigate, data, consentData, id)}
                 data={userData}
               />
             </ScrollView>
