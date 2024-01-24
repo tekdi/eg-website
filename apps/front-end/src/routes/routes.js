@@ -1,4 +1,14 @@
-import React from "react";
+import React, { lazy } from "react";
+//v2 code
+//online_facilitator_onboarding
+const FacilitatorRegister = lazy(() =>
+  import("v2/views/Facilitator/FacilitatorRegister/FacilitatorRegister")
+);
+const FacilitatorOnboarding = lazy(() =>
+  import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
+);
+//end v2 code
+
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
@@ -88,7 +98,6 @@ const BenificiaryAadhaarDetails = React.lazy(() =>
 const EditForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/Form")
 );
-
 const ArrayForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/ArrayForm")
 );
@@ -163,10 +172,11 @@ const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
   { path: "/form", component: Home },
-  // {
-  //   path: "/facilitator-self-onboarding",
-  //   component: Home,
-  // },
+  //old facilitator registration
+  /*{
+    path: "/facilitator-self-onboarding",
+    component: Home,
+  },*/
   { path: "/dashboard", component: Dashboard },
   { path: "/beneficiary/edit/:id/basic-info", component: basicDetails },
   {
@@ -224,7 +234,6 @@ export default [
     component: BenificiaryListView,
   },
   { path: "/table", component: CountScreenView },
-
   {
     path: "/aadhaar-kyc/:id",
     component: AdharKyc,
@@ -271,13 +280,13 @@ export default [
   },
   { path: "/profile", component: Profile },
   { path: "/certificate", component: Certificate },
-  { path: "/profile/edit/array-form/:type", component: ArrayForm },
-  { path: "/profile/edit/:step", component: EditForm },
+  /*{ path: "/profile/edit/array-form/:type", component: ArrayForm },*/
+  /*{ path: "/profile/edit/:step", component: EditForm },*/
   {
     path: "/profile/:id/aadhaardetails",
     component: AadhaarDetails,
   },
-  { path: "/profile/edit/:step/:photoNo", component: EditForm },
+  /*{ path: "/profile/edit/:step/:photoNo", component: EditForm },*/
   {
     path: "/facilitatorbasicdetail",
     component: FacilitatorBasicDetails,
@@ -330,4 +339,18 @@ export default [
     component: Assessment,
   },
   { path: "*", component: Dashboard },
+
+  //v2 code
+  //new facilitator registration
+  {
+    path: "/facilitator-self-onboarding",
+    component: FacilitatorRegister,
+  },
+  //offline_facilitotor_Onboarding
+  {
+    path: "/profile/edit/:step",
+    component: FacilitatorOnboarding,
+  },
+  { path: "/profile/edit/:step/:photoNo", component: FacilitatorOnboarding },
+  //end v2 code
 ];

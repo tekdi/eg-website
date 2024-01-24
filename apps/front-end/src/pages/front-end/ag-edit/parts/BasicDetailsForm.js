@@ -67,6 +67,7 @@ export default function BasicDetailsForm({ id }) {
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
+        format: "DMY",
       },
     },
   };
