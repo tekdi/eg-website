@@ -205,7 +205,7 @@
   "CAMP_ACCESS_ERROR": "To register camp you should be 'Selected for Onboarding' or 'Selected Prerak'.",
   "CAMP_APPROVAL_MSG": "waiting for approval on camp from IP, still you can edit the details entered",
   "CAMP_DETAILS": "Camp Details",
-  "CAMP_EXECUSION_MESSAGE": "Unless and untill and camp setting information is not entered camp execution cannot be done.",
+  "CAMP_EXECUTION_MESSAGE": "Unless and untill and camp setting information is not entered camp execution cannot be done.",
   "CAMP_EXECUTION": "Camp Execution",
   "CAMP_FRONT_VIEW": "Camp front view",
   "CAMP_ID": "Camp ID",
