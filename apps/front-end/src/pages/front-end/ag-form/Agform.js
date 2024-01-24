@@ -69,6 +69,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
+        format: "DMY",
       },
     },
   };

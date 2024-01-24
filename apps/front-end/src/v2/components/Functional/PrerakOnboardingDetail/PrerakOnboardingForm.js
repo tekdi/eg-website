@@ -148,6 +148,7 @@ export default function PrerakOnboardingForm({
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
+        format: "DMY",
       },
     },
 
