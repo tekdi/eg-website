@@ -385,7 +385,6 @@ export const Filter = ({ filter, setFilter }) => {
     const { error, ...result } = await facilitatorRegistryService.searchByCamp(
       facilitatorFilter
     );
-    const data = Object.values(result);
 
     if (!error) {
       let newData;
