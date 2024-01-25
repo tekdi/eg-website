@@ -160,7 +160,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
       <VStack space={"2"}>
         <DataTable
           title={t("CAMP_KIT_MATERIAL_DETAILS")}
-          customStyles={customStyles}
+          customStyles={customStyle}
           columns={columns(handleCheckboxChange, kitFeadback, t)}
           data={tableData}
           persistTableHead
