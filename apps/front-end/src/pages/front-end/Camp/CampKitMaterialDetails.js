@@ -66,6 +66,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
+    width: "60px",
   },
   {
     name: t("PARTIALLY"),
@@ -79,6 +80,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
+    width: "60px",
   },
   {
     name: t("INCOMPLETE"),
@@ -92,6 +94,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
+    width: "60px",
   },
 ];
 
