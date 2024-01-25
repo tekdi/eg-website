@@ -153,7 +153,7 @@ export default function PrerakOnboardingForm({
     },
 
     qualification_ids: {
-      "ui:widget": "checkboxes",
+      "ui:widget": "MultiCheck",
     },
     has_diploma: {
       "ui:widget": "RadioBtn",
@@ -230,123 +230,136 @@ export default function PrerakOnboardingForm({
   useEffect(async () => {
     let newSchema = schema;
 
-    if (schema?.properties?.qualification_master_id) {
-      setLoading(true);
-      if (schema?.["properties"]?.["qualification_master_id"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_master_id",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification_master_id) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex =
-                  newSchema?.properties?.qualification_master_id?.enum[index];
-              }
-            }
-          );
-          if (
-            valueIndex !== "" &&
-            formData?.qualification_master_id == valueIndex
-          ) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
+    try {
+      if (schema?.properties?.district) {
+        let programSelected = null;
+        try {
+          programSelected = jsonParse(localStorage.getItem("program"));
+        } catch (error) {}
+        //add user specific state
+        if (programSelected != null) {
+          newSchema = await setDistric({
+            schemaData: newSchema,
+            state: programSelected?.state_name,
+            district: formData?.district,
+            block: formData?.block,
+            gramp: formData?.grampanchayat,
+          });
         }
       }
-      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
+      if (schema?.properties?.device_ownership) {
+        if (formData?.device_ownership == "no") {
+          setAlert(t("YOU_NOT_ELIGIBLE"));
+        } else {
+          setAlert();
+        }
+      }
+      if (schema?.properties?.designation) {
+        newSchema = getOptions(newSchema, {
+          key: "designation",
+          arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
+          title: "title",
+          value: "value",
+        });
+      }
+      if (schema?.["properties"]?.["marital_status"]) {
+        newSchema = getOptions(newSchema, {
+          key: "social_category",
+          arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
+          title: "title",
+          value: "value",
+        });
+
+        newSchema = getOptions(newSchema, {
+          key: "marital_status",
+          arr: enumObj?.MARITAL_STATUS,
+          title: "title",
+          value: "value",
+        });
+      }
+
+      if (schema?.["properties"]?.["device_type"]) {
+        newSchema = getOptions(newSchema, {
+          key: "device_type",
+          arr: enumObj?.MOBILE_TYPE,
+          title: "title",
+          value: "value",
+        });
+      }
+
+      if (schema?.["properties"]?.["document_id"]) {
         const id = userid;
         newSchema = getOptions(newSchema, {
-          key: "qualification_reference_document_id",
-          extra: {
-            userId: id,
-            document_type: formData?.type_of_document,
-          },
+          key: "document_id",
+          extra: { userId: id },
         });
       }
+      setLoading(false);
+      setSchemaData(newSchema);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [page, formData?.district, formData?.block, formData?.gramPanchayat]);
 
-      if (schema?.["properties"]?.["qualification_ids"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_ids",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
+  useEffect(() => {
+    let newSchema = schema;
+    const fetchData = async () => {
+      if (schema?.properties?.qualification_master_id) {
+        setLoading(true);
+        if (schema?.["properties"]?.["qualification_master_id"]) {
+          newSchema = getOptions(newSchema, {
+            key: "qualification_master_id",
+            arr: qualifications,
+            title: "name",
+            value: "id",
+            filters: { type: "qualification" },
+          });
+          if (newSchema?.properties?.qualification_master_id) {
+            let valueIndex = "";
+            newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
+              (e, index) => {
+                if (e.match("12")) {
+                  valueIndex =
+                    newSchema?.properties?.qualification_master_id?.enum[index];
+                }
+              }
+            );
+            if (
+              valueIndex !== "" &&
+              formData?.qualification_master_id == valueIndex
+            ) {
+              setAlert(t("YOU_NOT_ELIGIBLE"));
+            } else {
+              setAlert();
+            }
+          }
+        }
+        if (schema?.["properties"]?.["qualification_reference_document_id"]) {
+          const id = userid;
+          newSchema = getOptions(newSchema, {
+            key: "qualification_reference_document_id",
+            extra: {
+              userId: id,
+              document_type: formData?.type_of_document,
+            },
+          });
+        }
+
+        if (schema?.["properties"]?.["qualification_ids"]) {
+          newSchema = getOptions(newSchema, {
+            key: "qualification_ids",
+            arr: qualifications,
+            title: "name",
+            value: "id",
+            filters: { type: "teaching" },
+          });
+        }
       }
-    }
-    if (schema?.properties?.district) {
-      let programSelected = null;
-      try {
-        programSelected = jsonParse(localStorage.getItem("program"));
-      } catch (error) {}
-      //add user specific state
-      if (programSelected != null) {
-        newSchema = await setDistric({
-          schemaData: newSchema,
-          state: programSelected?.state_name,
-          district: formData?.district,
-          block: formData?.block,
-          gramp: formData?.grampanchayat,
-        });
-      }
-    }
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
-    }
-    if (schema?.properties?.designation) {
-      newSchema = getOptions(newSchema, {
-        key: "designation",
-        arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
-        title: "title",
-        value: "value",
-      });
-    }
-    if (schema?.["properties"]?.["marital_status"]) {
-      newSchema = getOptions(newSchema, {
-        key: "social_category",
-        arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-
-      newSchema = getOptions(newSchema, {
-        key: "marital_status",
-        arr: enumObj?.MARITAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-    }
-
-    if (schema?.["properties"]?.["device_type"]) {
-      newSchema = getOptions(newSchema, {
-        key: "device_type",
-        arr: enumObj?.MOBILE_TYPE,
-        title: "title",
-        value: "value",
-      });
-    }
-
-    if (schema?.["properties"]?.["document_id"]) {
-      const id = userid;
-      newSchema = getOptions(newSchema, {
-        key: "document_id",
-        extra: { userId: id },
-      });
-    }
+    };
+    fetchData();
     setLoading(false);
     setSchemaData(newSchema);
-  }, [page, formData?.district, formData?.block, formData?.gramPanchayat]);
+  }, [formData?.qualification_ids]);
 
   useEffect(() => {
     if (schema1.type === "step") {
