@@ -48,13 +48,11 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
     name: t("KIT_LIST"),
     cell: (row) => t(row?.title),
     wrap: true,
-    width: "75px",
   },
   {
     name: t("QUANTITY"),
     cell: (row) => t(row?.subTitle),
     wrap: true,
-    width: "75px",
   },
   {
     name: t("COMPLETE"),
@@ -68,7 +66,6 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
-    width: "60px",
   },
   {
     name: t("PARTIALLY"),
@@ -82,7 +79,6 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
-    width: "60px",
   },
   {
     name: t("INCOMPLETE"),
@@ -96,7 +92,6 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
-    width: "60px",
   },
 ];
 
