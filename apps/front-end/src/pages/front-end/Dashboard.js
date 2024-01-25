@@ -111,26 +111,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const fetchdata = async () => {
       const programId = await getSelectedProgramId();
       if (programId) {
-        const c_data =
-          await facilitatorRegistryService.getPrerakCertificateDetails({
-            id: fa_id,
-          });
-        const data =
-          c_data?.data?.filter(
-            (e) => e?.type === "prerak_camp_execution_training"
-          )?.[0] || {};
-        setCertificateData(data);
-        if (data?.lms_test_tracking?.length > 0) {
-          setLmsDetails(data?.lms_test_tracking?.[0]);
-        }
+        try {
+          const c_data =
+            await facilitatorRegistryService.getPrerakCertificateDetails({
+              id: fa_id,
+            });
+          const data =
+            c_data?.data?.filter(
+              (e) => e?.type === "prerak_camp_execution_training"
+            )?.[0] || {};
+          setCertificateData(data);
+          if (data?.lms_test_tracking?.length > 0) {
+            setLmsDetails(data?.lms_test_tracking?.[0]);
+          }
 
-        const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-        const format = "HH:mm:ss";
-        const time = moment(moment().format(format), format);
-        const beforeTime = moment(data?.start_time, format);
-        const afterTime = moment(data?.end_time, format);
-        if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-          setIsEventActive(true);
+          const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+          const format = "HH:mm:ss";
+          const time = moment(moment().format(format), format);
+          const beforeTime = moment(data?.start_time, format);
+          const afterTime = moment(data?.end_time, format);
+          if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+            setIsEventActive(true);
+          }
+        } catch (error) {
+          console.log(error);
         }
       }
     };
