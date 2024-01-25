@@ -111,7 +111,6 @@ export default function PrerakOnboardingForm({
             result?.core_faciltator?.diploma_details || undefined,
         });
       } else if (step === "reference_details") {
-        console.log("hi");
         if (result?.references?.designation === "") {
           const newData = {
             ...result?.references,
