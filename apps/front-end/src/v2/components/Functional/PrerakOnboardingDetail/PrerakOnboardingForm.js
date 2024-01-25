@@ -160,6 +160,8 @@ export default function PrerakOnboardingForm({
     },
   };
 
+  console.log("hi");
+
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
     const index = pages.indexOf(page);
