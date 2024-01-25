@@ -153,7 +153,7 @@ export default function PrerakOnboardingForm({
     },
 
     qualification_ids: {
-      "ui:widget": "checkboxes",
+      "ui:widget": "MultiCheck",
     },
     has_diploma: {
       "ui:widget": "RadioBtn",
