@@ -230,57 +230,6 @@ export default function PrerakOnboardingForm({
   useEffect(async () => {
     let newSchema = schema;
 
-    if (schema?.properties?.qualification_master_id) {
-      setLoading(true);
-      if (schema?.["properties"]?.["qualification_master_id"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_master_id",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification_master_id) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex =
-                  newSchema?.properties?.qualification_master_id?.enum[index];
-              }
-            }
-          );
-          if (
-            valueIndex !== "" &&
-            formData?.qualification_master_id == valueIndex
-          ) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
-        }
-      }
-      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
-        const id = userid;
-        newSchema = getOptions(newSchema, {
-          key: "qualification_reference_document_id",
-          extra: {
-            userId: id,
-            document_type: formData?.type_of_document,
-          },
-        });
-      }
-
-      if (schema?.["properties"]?.["qualification_ids"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_ids",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
-    }
     if (schema?.properties?.district) {
       let programSelected = null;
       try {
@@ -347,6 +296,63 @@ export default function PrerakOnboardingForm({
     setLoading(false);
     setSchemaData(newSchema);
   }, [page, formData?.district, formData?.block, formData?.gramPanchayat]);
+
+  useEffect(() => {
+    let newSchema = schema;
+    if (schema?.properties?.qualification_master_id) {
+      setLoading(true);
+      if (schema?.["properties"]?.["qualification_master_id"]) {
+        newSchema = getOptions(newSchema, {
+          key: "qualification_master_id",
+          arr: qualifications,
+          title: "name",
+          value: "id",
+          filters: { type: "qualification" },
+        });
+        if (newSchema?.properties?.qualification_master_id) {
+          let valueIndex = "";
+          newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
+            (e, index) => {
+              if (e.match("12")) {
+                valueIndex =
+                  newSchema?.properties?.qualification_master_id?.enum[index];
+              }
+            }
+          );
+          if (
+            valueIndex !== "" &&
+            formData?.qualification_master_id == valueIndex
+          ) {
+            setAlert(t("YOU_NOT_ELIGIBLE"));
+          } else {
+            setAlert();
+          }
+        }
+      }
+      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
+        const id = userid;
+        newSchema = getOptions(newSchema, {
+          key: "qualification_reference_document_id",
+          extra: {
+            userId: id,
+            document_type: formData?.type_of_document,
+          },
+        });
+      }
+
+      if (schema?.["properties"]?.["qualification_ids"]) {
+        newSchema = getOptions(newSchema, {
+          key: "qualification_ids",
+          arr: qualifications,
+          title: "name",
+          value: "id",
+          filters: { type: "teaching" },
+        });
+      }
+    }
+    setLoading(false);
+    setSchemaData(newSchema);
+  }, [formData?.qualification_ids]);
 
   useEffect(() => {
     if (schema1.type === "step") {
