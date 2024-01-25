@@ -16,6 +16,7 @@ import {
   setSelectedProgramId,
   getOnboardingMobile,
   setSelectedAcademicYear,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -84,7 +85,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     async function fetchData() {
-      // ...async operations
+      // ...async operation
+
       if (countLoad == 0) {
         setCountLoad(1);
       }
@@ -92,10 +94,24 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         //do page load first operation
         //get user info
         if (userTokenInfo) {
-          const fa_data = await facilitatorRegistryService.getOne({
-            id: fa_id,
-          });
+          const fa_data = await facilitatorRegistryService.getInfo();
           setFacilitator(fa_data);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        try {
           const c_data =
             await facilitatorRegistryService.getPrerakCertificateDetails({
               id: fa_id,
@@ -117,16 +133,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           if (time?.isBetween(beforeTime, afterTime) && dataDay) {
             setIsEventActive(true);
           }
+        } catch (error) {
+          console.log(error);
         }
-        setLoading(false);
-        //end do page load first operation
-        setCountLoad(2);
-      } else if (countLoad == 2) {
-        setCountLoad(3);
       }
-    }
-    fetchData();
-  }, [countLoad]);
+    };
+    fetchdata();
+  }, [selectedCohortData]);
 
   useEffect(() => {
     async function fetchData() {
@@ -229,7 +242,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const handleRandomise = async () => {
     const doIdArray = modalVisible?.params?.do_id;
-    console.log({ doIdArray });
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
