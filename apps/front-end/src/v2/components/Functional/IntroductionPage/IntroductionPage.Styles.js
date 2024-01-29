@@ -38,7 +38,7 @@ export const stylesheet = {
     borderRadius: " 100px",
   },
   bgimage: {
-    height: "100vh",
+    height: "auto",
     left: "0px",
     backgroundImage: `url(/bgImage.png)`,
   },
