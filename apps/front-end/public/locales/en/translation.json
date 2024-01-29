@@ -206,7 +206,7 @@
   "CAMP_APPROVAL_MSG": "waiting for approval on camp from IP, still you can edit the details entered",
   "CAMP_DETAILS": "Camp Details",
   "CAMP_EXECUTION": "Camp Execution",
-  "CAMP_EXECUTION_MESSAGE": "Unless and untill and camp setting information is not entered camp execution cannot be done.",
+  "CAMP_EXECUTION_MESSAGE": "Camp execution cannot proceed unless camp setting information is entered.",
   "CAMP_FRONT_VIEW": "Camp front view",
   "CAMP_ID": "Camp ID",
   "CAMP_INITIATED": "Camp Initiated",
