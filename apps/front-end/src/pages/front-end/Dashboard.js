@@ -609,7 +609,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.Primarybutton>
                 </Stack>
               )}
-              {["upload"].includes(facilitator?.aadhaar_verification_mode) && (
+              {["upload", ""].includes(
+                facilitator?.aadhaar_verification_mode
+              ) && (
                 <Stack space="3">
                   <Alert status="warning" alignItems={"start"}>
                     <HStack alignItems="center" space="2" color>

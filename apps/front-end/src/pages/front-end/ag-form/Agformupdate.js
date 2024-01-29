@@ -483,7 +483,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           gramp,
           schemaData: newSchema,
         });
-        setSchemaData(newSchema);
+        setSchema(newSchema);
       } else {
         newSchema = await setVilage({
           state,
@@ -506,7 +506,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const setGramp = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
-    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getGrampanchyat({
         block: block,
@@ -522,7 +521,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           format: "select",
         });
       }
-      setSchemaData(newSchema);
+      setSchema(newSchema);
 
       if (schema?.["properties"]?.["village"] && gramp) {
         newSchema = await setVilage({
@@ -535,7 +534,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       }
     } else {
       newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-      setSchemaData(newSchema);
+      setSchema(newSchema);
     }
     setLoading(false);
     return newSchema;
