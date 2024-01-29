@@ -299,7 +299,13 @@ export default function PrerakOnboardingForm({
     } catch (error) {
       console.log(error);
     }
-  }, [page, formData?.district, formData?.block, formData?.gramPanchayat]);
+  }, [
+    page,
+    formData?.district,
+    formData?.block,
+    formData?.grampanchayat,
+    formData?.village,
+  ]);
 
   useEffect(() => {
     let newSchema = schema;
