@@ -98,10 +98,13 @@ function Table({
       {
         name: t("OKYC_VERIFICATION"),
         wrap: true,
-        selector: (row) =>
-          ["okyc_ip_verified"].includes(row?.aadhar_verified)
+        selector: (row) => {
+          return row?.aadhar_verified === "okyc_ip_verified"
+            ? t("OKYC_IP_VERIFIED")
+            : row?.aadhar_verified === "yes"
             ? t("YES")
-            : t("NO"),
+            : t("NO");
+        },
       },
       {
         name: t("MOBILE_NUMBER"),
