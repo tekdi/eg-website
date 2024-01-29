@@ -26,6 +26,7 @@ import {
   Pressable,
   Stack,
   ScrollView,
+  Checkbox,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -89,7 +90,7 @@ const totalDistance = ({ row, data }) =>
     data?.properties?.long
   );
 
-const columns = (t, navigate, data, consentData, id) => [
+const columns = (t, data, consentData, id) => [
   {
     name: "Id",
     selector: (row) => row?.id,
@@ -230,18 +231,21 @@ const ActionButton = ({ row, data, t, id }) => {
           >
             {t("VIEW_PROFILE")}
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             onPress={() => {
               navigate(`/admin/camps/${id}/reassign/${row?.id}`);
             }}
           >
             {t("REASSIGN")}
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Button>
     </Button.Group>
   );
 };
+// const CustomCheckbox = ({ onChange, row, isChecked }) => (
+//   <Checkbox isChecked={isChecked} onChange={() => onChange(row?.id)} />
+// );
 
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
@@ -258,8 +262,9 @@ export default function View({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
-
   const { id } = useParams();
+  const [showCheckboxes, setShowCheckboxes] = React.useState(false);
+  const [selectedRows, setSelectedRows] = React.useState([]);
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
@@ -292,7 +297,6 @@ export default function View({ footerLinks }) {
     }
     setLoading(false);
   }, []);
-
   const updateCampStatus = async () => {
     setIsButtonLoading(true);
     const { error, ...result } = await campService.updateCampStatus({
@@ -325,8 +329,29 @@ export default function View({ footerLinks }) {
     setLoading(false);
   }, []);
 
-  // Table component
+  const handleButtonClick = () => {
+    setShowCheckboxes(!showCheckboxes);
+    if (!showCheckboxes) {
+      setShowCheckboxes(true);
+      return;
+    }
 
+    if (selectedRows?.length > 0) {
+      alert("reassigned successfull");
+      // navigate(`/admin/camps/${id}/reassignPrerak/${data?.facilitator?.id}`, {
+      //   state: { selectedRows },
+      // });
+    }
+  };
+
+  const handleSelectRow = (state) => {
+    const arr = state?.selectedRows;
+    const selectedIds = arr?.map((e) => e?.id);
+    setSelectedRows(selectedIds);
+  };
+
+  console.log({ selectedRows });
+  // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack flex={1} space={"5"} p="3" mb="5">
@@ -577,19 +602,19 @@ export default function View({ footerLinks }) {
 
         <HStack space={4}>
           <CardComponent
-            _vstack={{
-              bg: "light.100",
-              flex: 2,
-              space: 4,
-            }}
+            _vstack={{ bg: "light.100", flex: 2, space: 4 }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
+            onButtonClick={handleButtonClick}
+            buttonText={<AdminTypo.H5>{t("REASSIGN")}</AdminTypo.H5>}
           >
             <ScrollView w={["100%", "100%"]}>
               <DataTable
                 columns={columns(t, navigate, data, consentData, id)}
                 data={userData}
+                selectableRows={showCheckboxes}
+                onSelectedRowsChange={handleSelectRow}
               />
             </ScrollView>
           </CardComponent>
