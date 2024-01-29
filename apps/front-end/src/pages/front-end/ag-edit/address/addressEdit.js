@@ -284,7 +284,6 @@ export default function AddressEdit({ ip }) {
 
   const setGramp = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
-    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getGrampanchyat({
         block: block,
@@ -315,7 +314,6 @@ export default function AddressEdit({ ip }) {
       newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
       setSchemaData(newSchema);
     }
-    setLoading(false);
     return newSchema;
   };
 
