@@ -280,10 +280,12 @@ export default function PrerakRegisterDetail({
     if (result?.data) {
       let response_isUserExist = result?.data;
       if (
-        (response_isUserExist?.program_faciltators &&
-          response_isUserExist?.program_faciltators.length > 0) ||
+        response_isUserExist?.program_faciltators &&
+        response_isUserExist?.program_faciltators.length > 0
+        //check learners duplicate entry for mobile number of prerak
+        /*||
         (response_isUserExist?.program_beneficiaries &&
-          response_isUserExist?.program_beneficiaries.length > 0)
+          response_isUserExist?.program_beneficiaries.length > 0)*/
       ) {
         const newErrors = {
           mobile: {
@@ -294,11 +296,7 @@ export default function PrerakRegisterDetail({
         setIsUserExistModal(true);
         isExist = true;
         setIsUserExistResponse(response_isUserExist);
-        if (response_isUserExist?.program_beneficiaries.length > 0) {
-          setIsUserExistStatus("DONT_ALLOW_MOBILE");
-          setIsUserExistModalText(t("DONT_ALLOW_MOBILE"));
-          setIsLoginShow(false);
-        } else if (response_isUserExist?.program_faciltators.length > 0) {
+        if (response_isUserExist?.program_faciltators.length > 0) {
           for (
             let i = 0;
             i < response_isUserExist?.program_faciltators.length;
@@ -359,6 +357,12 @@ export default function PrerakRegisterDetail({
             }
           }
         }
+        //check learners duplicate entry for mobile number of prerak
+        /*else if (response_isUserExist?.program_beneficiaries.length > 0) {
+          setIsUserExistStatus("DONT_ALLOW_MOBILE");
+          setIsUserExistModalText(t("DONT_ALLOW_MOBILE"));
+          setIsLoginShow(false);
+        }*/
         return isExist;
       } else {
         setIsUserExistModal(false);
