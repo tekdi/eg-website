@@ -26,10 +26,9 @@ export default function AdminReports({ footerLinks }) {
         <iframe
           title="reports"
           src={data}
-          frameborder="0"
+          border="0"
           width="100%"
           height="900"
-          allowtransparency
         />
       </VStack>
     </Layout>
