@@ -1,6 +1,5 @@
 import {
   IconByName,
-  ImageView,
   AdminTypo,
   GetEnumValue,
   tableCustomStyles,
@@ -15,7 +14,7 @@ import {
   Menu,
 } from "native-base";
 
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +45,7 @@ function Table({
 
   const pagination = [10, 15, 25, 50, 100];
 
-  const columns = React.useCallback(
+  const columns = useCallback(
     (t, navigate) => [
       {
         name: t("PRERAK_ID"),
@@ -64,8 +63,8 @@ function Table({
               style={{ flexDirection: "row", justifyContent: "space-between" }}
               onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
             >
-              <HStack alignItems={"center"} space={2}>
-                {row?.profile_photo_1?.name ? (
+              {/* <HStack alignItems={"center"}> */}
+              {/* {row?.profile_photo_1?.name ? (
                   <ImageView
                     urlObject={row?.profile_photo_1}
                     alt="Alternate Text"
@@ -79,33 +78,27 @@ function Table({
                     color="gray.300"
                     _icon={{ size: "35" }}
                   />
-                )}
-                <AdminTypo.H6 bold>
-                  {`${row?.first_name} ${row?.last_name || ""}`}
-                </AdminTypo.H6>
-              </HStack>
+                )} */}
+              <AdminTypo.H6 bold>
+                {`${row?.first_name} ${row?.last_name || ""}`}
+              </AdminTypo.H6>
+              {/* </HStack> */}
             </Pressable>
           </HStack>
         ),
         attr: "name",
+        width: "150px",
         wrap: "true",
-        width: "250px",
       },
       {
         name: t("DISTRICT"),
         selector: (row) => (row?.district ? row?.district : "-"),
       },
       {
-        name: t("OKYC_VERIFICATION"),
-        wrap: true,
-        selector: (row) => {
-          return row?.aadhar_verified === "okyc_ip_verified"
-            ? t("OKYC_IP_VERIFIED")
-            : row?.aadhar_verified === "yes"
-            ? t("YES")
-            : t("NO");
-        },
+        name: t("BLOCK"),
+        selector: (row) => (row?.block ? row?.block : "-"),
       },
+
       {
         name: t("MOBILE_NUMBER"),
         selector: (row) => row?.mobile,
@@ -124,10 +117,15 @@ function Table({
         width: "150px",
       },
       {
-        name: t("GENDER"),
-        selector: (row) => row?.gender,
-        attr: "gender",
-        width: "100px",
+        name: t("OKYC_VERIFICATION"),
+        wrap: true,
+        selector: (row) => {
+          return row?.aadhar_verified === "okyc_ip_verified"
+            ? t("OKYC_IP_VERIFIED")
+            : row?.aadhar_verified === "yes"
+            ? t("YES")
+            : t("NO");
+        },
       },
       {
         minWidth: "140px",
@@ -194,17 +192,14 @@ function Table({
     []
   );
 
-  const handleRowClick = React.useCallback(
+  const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
     },
     [navigate]
   );
 
-  const columnsMemoized = React.useMemo(
-    () => columns(t, navigate),
-    [t, navigate]
-  );
+  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
@@ -254,13 +249,13 @@ function Table({
         paginationServer
         paginationTotalRows={paginationTotalRows}
         paginationDefaultPage={filter?.page || 1}
-        onChangeRowsPerPage={React.useCallback(
+        onChangeRowsPerPage={useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
           [setFilter, filter]
         )}
-        onChangePage={React.useCallback(
+        onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
@@ -272,4 +267,4 @@ function Table({
   );
 }
 
-export default React.memo(Table);
+export default memo(Table);
