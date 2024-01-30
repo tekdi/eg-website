@@ -678,7 +678,7 @@ export default function FacilitatorView({ footerLinks }) {
                       </FrontEndTypo.H3>
                     ),
                     teching_qualification: qualifications
-                      ?.map((e) => e?.name)
+                      ?.map((e) => t(e?.name))
                       .join(", "),
                     work_experience:
                       data?.experience?.[0] &&
