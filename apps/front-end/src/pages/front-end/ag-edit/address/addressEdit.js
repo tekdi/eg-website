@@ -29,6 +29,7 @@ export default function AddressEdit({ ip }) {
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
@@ -284,6 +285,7 @@ export default function AddressEdit({ ip }) {
 
   const setGramp = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
+    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getGrampanchyat({
         block: block,
@@ -314,6 +316,7 @@ export default function AddressEdit({ ip }) {
       newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
       setSchemaData(newSchema);
     }
+    setLoading(false);
     return newSchema;
   };
 
@@ -463,6 +466,7 @@ export default function AddressEdit({ ip }) {
           >
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
+              isLoading={loading}
               mt="3"
               type="submit"
               onPress={() => formRef?.current?.submit()}
