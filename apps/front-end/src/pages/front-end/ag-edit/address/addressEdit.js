@@ -29,7 +29,6 @@ export default function AddressEdit({ ip }) {
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
@@ -285,7 +284,7 @@ export default function AddressEdit({ ip }) {
 
   const setGramp = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
-    setLoading(true);
+    setIsDisable(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getGrampanchyat({
         block: block,
@@ -316,7 +315,7 @@ export default function AddressEdit({ ip }) {
       newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
       setSchemaData(newSchema);
     }
-    setLoading(false);
+    setIsDisable(false);
     return newSchema;
   };
 
@@ -434,17 +433,15 @@ export default function AddressEdit({ ip }) {
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
@@ -466,7 +463,6 @@ export default function AddressEdit({ ip }) {
           >
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
-              isLoading={loading}
               mt="3"
               type="submit"
               onPress={() => formRef?.current?.submit()}
@@ -474,8 +470,6 @@ export default function AddressEdit({ ip }) {
               {pages[pages?.length - 1] === page && t("SAVE")}
             </FrontEndTypo.Primarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>
