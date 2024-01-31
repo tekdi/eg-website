@@ -59,18 +59,13 @@ export default function PhotoUpload({ aadhar_no, formData }) {
             value={formData?.[`profile_photo_${page}`]?.id}
             onChange={(e) => console.log(e)}
           />
-          {errors?.fileSize ? (
-            <H2 color="red.400">{errors?.fileSize}</H2>
-          ) : (
-            <Fragment />
-          )}
+          {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
           <FrontEndTypo.Primarybutton
             isLoading={loading}
             p="4"
             mt="4"
             onPress={() => {
               navigate(`/profile/edit/upload/${page + 1}`);
-              navigate(0);
             }}
           >
             {t("SAVE_AND_NEXT")}
