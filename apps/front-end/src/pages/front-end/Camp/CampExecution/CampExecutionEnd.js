@@ -8,22 +8,21 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function CampExecutionEnd({ facilitator, learnerCount }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [error, setError] = React.useState();
-  const [miscActivities, setMiscActivities] = React.useState({});
-  const [disable, setDisable] = React.useState(true);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const [sessionList, setSessionList] = React.useState(false);
-  const [learnerAttendanceCount, setLearnerAttendanceCount] =
-    React.useState(false);
-  const [todaysActivity, setTodaysActivity] = React.useState();
+  const [error, setError] = useState();
+  const [miscActivities, setMiscActivities] = useState();
+  const [disable, setDisable] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [sessionList, setSessionList] = useState(false);
+  const [learnerAttendanceCount, setLearnerAttendanceCount] = useState(false);
+  const [todaysActivity, setTodaysActivity] = useState();
 
   const navigate = useNavigate();
 
@@ -37,7 +36,7 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
     setTodaysActivity(activity?.[0] || {});
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (todaysActivity?.id) {
       const resultAttendance = await campService.CampAttendance({
         id: todaysActivity?.id,
@@ -90,7 +89,6 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
     await campService.addMoodActivity(obj);
     navigate(`/camps`);
   };
-
   return (
     <Layout
       _appBar={{
