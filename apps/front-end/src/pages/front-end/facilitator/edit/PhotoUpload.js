@@ -1,49 +1,18 @@
-import React from "react";
-import {
-  Alert,
-  Box,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Pressable,
-  VStack,
-} from "native-base";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  uploadRegistryService,
-  Camera,
-  Layout,
-  H1,
-  IconByName,
-  H2,
-  getBase64,
-  BodyMedium,
-  filterObject,
-  FrontEndTypo,
-  enumRegistryService,
-  getOptions,
-  ImageView,
-} from "@shiksha/common-lib";
+import React, { Fragment, useEffect, useState } from "react";
+import { Image, VStack } from "native-base";
+import { Layout, H2, FrontEndTypo } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
 
-export default function PhotoUpload({
-  aadhar_no,
-  formData,
-  cameraFile,
-  setCameraFile,
-}) {
+export default function PhotoUpload({ aadhar_no, formData }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { photoNo } = useParams();
   const page = photoNo ? parseInt(photoNo) : 1;
-  const uplodInputRef = React.useRef();
-  const [loading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState({});
-  const [file, setFile] = React.useState();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [file, setFile] = useState();
 
   const onPressBackButton = () => {
     if (page === 1) {
@@ -53,7 +22,7 @@ export default function PhotoUpload({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (page >= 4) {
       if (!aadhar_no || aadhar_no === "") {
         navigate(`/profile/edit/aadhaar_details`);
@@ -86,14 +55,11 @@ export default function PhotoUpload({
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),
             }}
+            key={page}
             value={formData?.[`profile_photo_${page}`]?.id}
             onChange={(e) => console.log(e)}
           />
-          {errors?.fileSize ? (
-            <H2 color="red.400">{errors?.fileSize}</H2>
-          ) : (
-            <React.Fragment />
-          )}
+          {errors?.fileSize && <H2 color="red.400">{errors?.fileSize}</H2>}
           <FrontEndTypo.Primarybutton
             isLoading={loading}
             p="4"
