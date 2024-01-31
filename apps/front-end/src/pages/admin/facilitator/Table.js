@@ -23,7 +23,7 @@ const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
       <HStack>
-        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
+        <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
       </HStack>
     </Pressable>
   );
@@ -109,7 +109,11 @@ function Table({
         name: t("STATUS"),
         selector: (row) => (
           <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
-            <ChipStatus status={row?.program_faciltators?.status} />
+            <ChipStatus
+              py="1"
+              px="1"
+              status={row?.program_faciltators?.status}
+            />
           </Pressable>
         ),
         wrap: true,
@@ -133,28 +137,19 @@ function Table({
         selector: (row) => (
           <Button.Group
             isAttached
-            divider={<h3>|</h3>}
-            my="3"
-            size="sm"
-            h="10"
-            marginTop="8px"
-            borderRadius="full"
-            background="white"
+            divider={<div style={{ background: "#333", padding: "0.5px" }} />}
+            my="1"
+            h="6"
+            rounded={"full"}
             shadow="BlueOutlineShadow"
             borderWidth="1px"
-            borderColor="#084B82"
-            lineHeight={8}
-            _text={{
-              color: "blueText.400",
-              fontSize: "14px",
-              fontWeight: "700",
-            }}
           >
             <Button
               background="white"
+              px="1.5"
               _text={{
                 color: "blueText.400",
-                fontSize: "14px",
+                fontSize: "12px",
                 fontWeight: "700",
               }}
               onPress={() => {
@@ -163,28 +158,26 @@ function Table({
             >
               {t("VIEW")}
             </Button>
-            <Button variant="outline">
-              <Menu
-                w="190"
-                placement="bottom right"
-                trigger={(triggerProps) => dropDown(triggerProps, t)}
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => dropDown(triggerProps, t)}
+            >
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/facilitator/${row?.id}`);
+                }}
               >
-                <Menu.Item
-                  onPress={() => {
-                    navigate(`/admin/facilitator/${row?.id}`);
-                  }}
-                >
-                  {t("VIEW")}
-                </Menu.Item>
-                <Menu.Item
-                  onPress={() => {
-                    navigate(`/admin/Certification/${row?.id}`);
-                  }}
-                >
-                  {t("DOWNLOAD_CERTIFICATE")}
-                </Menu.Item>
-              </Menu>
-            </Button>
+                {t("VIEW")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/Certification/${row?.id}`);
+                }}
+              >
+                {t("DOWNLOAD_CERTIFICATE")}
+              </Menu.Item>
+            </Menu>
           </Button.Group>
         ),
       },
@@ -239,7 +232,15 @@ function Table({
         </HStack>
       </ScrollView>
       <DataTable
-        customStyles={tableCustomStyles}
+        customStyles={{
+          ...tableCustomStyles,
+          rows: {
+            style: {
+              minHeight: "45px", // override the row height
+              cursor: "pointer",
+            },
+          },
+        }}
         columns={columnsMemoized}
         data={data}
         persistTableHead

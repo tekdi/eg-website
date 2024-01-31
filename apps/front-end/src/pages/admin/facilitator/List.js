@@ -434,23 +434,23 @@ export default function List({ footerLinks, userTokenInfo }) {
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
-          <ScrollView
+          {/* <ScrollView
             maxH={Height - refAppBar?.clientHeight}
             minH={Height - refAppBar?.clientHeight}
-          >
-            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-              <Table
-                filter={filter}
-                setFilter={setFilterObject}
-                facilitator={userTokenInfo?.authUser}
-                facilitaorStatus={facilitaorStatus}
-                paginationTotalRows={paginationTotalRows}
-                data={data}
-                loading={loading}
-                enumOptions={enumOptions}
-              />
-            </Box>
-          </ScrollView>
+          > */}
+          <Box roundedBottom={"2xl"} px={2}>
+            <Table
+              filter={filter}
+              setFilter={setFilterObject}
+              facilitator={userTokenInfo?.authUser}
+              facilitaorStatus={facilitaorStatus}
+              paginationTotalRows={paginationTotalRows}
+              data={data}
+              loading={loading}
+              enumOptions={enumOptions}
+            />
+          </Box>
+          {/* </ScrollView> */}
         </Box>
       </HStack>
     </Layout>
