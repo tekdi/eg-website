@@ -45,11 +45,12 @@ export default function AddressEdit({ ip }) {
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData?.result;
     const { lat, long } = finalData;
+    let programSelected = jsonParse(localStorage.getItem("program"));
     setFormData({
       ...formData,
       location: { lat, long },
       address: finalData?.address == "null" ? "" : finalData?.address,
-      state: finalData?.state,
+      state: programSelected?.state_name,
       district: finalData?.district,
       block: finalData?.block,
       village: finalData?.village,

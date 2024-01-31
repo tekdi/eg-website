@@ -84,6 +84,7 @@ export default function PrerakOnboardingForm({
         if (!ListOfEnum?.error) {
           setEnumObj(ListOfEnum?.data);
         }
+
         if (step === "qualification_details") {
           updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
 
@@ -137,7 +138,8 @@ export default function PrerakOnboardingForm({
           };
           setFormData(formDataObject);
         } else {
-          setFormData(result);
+          let programSelected = jsonParse(localStorage.getItem("program"));
+          setFormData({ ...result, state: programSelected?.state_name });
         }
       }
     };
