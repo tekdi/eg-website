@@ -34,6 +34,9 @@ const AdminBeneficiariesDuplicatesByAadhaar = React.lazy(() =>
 const AdminBeneficiariesList = React.lazy(() =>
   import("pages/admin/beneficiaries/AdminBeneficiariesList")
 );
+const AdminReports = React.lazy(() =>
+  import("pages/admin/reports/AdminReports")
+);
 
 const EnrollmentVerificationList = React.lazy(() =>
   import("pages/admin/beneficiaries/enrollment/EnrollmentVerificationList")
@@ -86,6 +89,7 @@ export default [
   { path: "/admin", component: Orientation },
   { path: "/attendence/:id", component: Attendence },
   { path: "/admin/learners", component: AdminBeneficiariesList },
+  { path: "/admin/reports/:name", component: AdminReports },
   {
     path: "/admin/learners/enrollmentVerificationList",
     component: EnrollmentVerificationList,
