@@ -61,12 +61,14 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     setuserId(id?.id);
     const { result } = await benificiaryRegistoryService.getOne(id?.id);
+    let programSelected = jsonParse(localStorage.getItem("program"));
+
     if (result) {
       setFormData({
         ...formData,
         device_ownership: result?.core_beneficiaries?.device_ownership,
         device_type: result?.core_beneficiaries?.device_type,
-        state: result?.state,
+        state: programSelected?.state_name,
         district: result?.district,
         address: result?.address == "null" ? "" : result?.address,
         block: result?.block,

@@ -74,14 +74,13 @@ export default {
       type: "object",
       required: ["district", "block", "village"],
       properties: {
-        // state: {
-        //   title: "STATE",
-        //   type: "string",
-        //   format: "select",
-        //   readOnly: "",
-        // },
         labelAddress: {
           type: "string",
+        },
+        state: {
+          title: "STATE",
+          type: "string",
+          format: "hidden",
         },
         district: {
           title: "DISTRICT",
