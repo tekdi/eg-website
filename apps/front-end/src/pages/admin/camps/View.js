@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -265,7 +265,7 @@ export default function View({ footerLinks }) {
   const { id } = useParams();
   const [showCheckboxes, setShowCheckboxes] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState([]);
-
+  const [campId, setCampId] = React.useState();
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
       const campConsent = await campService.getCampAdminConsent({
@@ -337,20 +337,27 @@ export default function View({ footerLinks }) {
     }
 
     if (selectedRows?.length > 0) {
-      alert("reassigned successfull");
-      // navigate(`/admin/camps/${id}/reassignPrerak/${data?.facilitator?.id}`, {
-      //   state: { selectedRows },
-      // });
+      // const obj = { learner_id: selectedRows, old_camp_id: campId };
+      // console.log({ obj });
+      // const result = campService.multipleReassign(obj);
+      // console.log({ result });
+      navigate(`/admin/camps/${id}/reassignPrerak/${selectedRows}`, {
+        state: { selectedRows },
+      });
     }
   };
 
-  const handleSelectRow = (state) => {
-    const arr = state?.selectedRows;
-    const selectedIds = arr?.map((e) => e?.id);
-    setSelectedRows(selectedIds);
-  };
+  const handleSelectRow = useCallback(
+    (state, id) => {
+      const campId = Number(id);
+      const arr = state?.selectedRows;
+      const selectedIds = arr?.map((e) => e?.id);
+      setSelectedRows(selectedIds);
+      setCampId(campId);
+    },
+    [setSelectedRows, setCampId]
+  );
 
-  console.log({ selectedRows });
   // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
@@ -614,7 +621,9 @@ export default function View({ footerLinks }) {
                 columns={columns(t, navigate, data, consentData, id)}
                 data={userData}
                 selectableRows={showCheckboxes}
-                onSelectedRowsChange={handleSelectRow}
+                onSelectedRowsChange={(selectedRows) =>
+                  handleSelectRow(selectedRows, id)
+                }
               />
             </ScrollView>
           </CardComponent>
