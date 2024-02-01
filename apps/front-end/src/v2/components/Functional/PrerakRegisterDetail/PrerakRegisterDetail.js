@@ -125,6 +125,8 @@ export default function PrerakRegisterDetail({
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
 
+  // Toggle consent state based on user agreement
+
   const handleCheckboxChange = (isAgree) => {
     setYesChecked(isAgree);
     setNoChecked(!isAgree);
@@ -537,7 +539,7 @@ export default function PrerakRegisterDetail({
                     }}
                   >
                     <HStack alignItems={"center"} space={2}>
-                      {t("T&C")}
+                      {t("TERMS_AND_CONDITIONS")}
                       {!consentCompleted && (
                         <IconByName
                           name="CheckboxCircleFillIcon"

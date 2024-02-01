@@ -23,3 +23,5 @@ const SetConsentLang = () => {
 };
 
 export default SetConsentLang;
+
+SetConsentLang.propTypes = {};
