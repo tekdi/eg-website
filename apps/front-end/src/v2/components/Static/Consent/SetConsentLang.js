@@ -3,6 +3,7 @@ import { getLanguage } from "v2/utils/Helper/JSHelper";
 import ConsentLang from "./ConsentLang.json";
 import { VStack } from "native-base";
 import { FrontEndTypo } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 const SetConsentLang = () => {
   const lang = getLanguage();
