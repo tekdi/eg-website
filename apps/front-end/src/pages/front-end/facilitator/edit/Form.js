@@ -330,7 +330,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   };
 
   const otpfunction = async () => {
-    if (formData?.mobile.length < 10) {
+    if (formData?.mobile?.length < 10) {
       const newErrors = {
         mobile: {
           __errors: t("MINIMUM_LENGTH_IS_10"),

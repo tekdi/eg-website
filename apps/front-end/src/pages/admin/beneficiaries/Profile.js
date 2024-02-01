@@ -68,9 +68,9 @@ const columns = (t) => [
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         <AdminTypo.H5 bold>
-          {row?.program_faciltators.length > 0
+          {row?.program_faciltators?.length > 0
             ? t("PRERAK")
-            : row?.program_beneficiaries.length > 0
+            : row?.program_beneficiaries?.length > 0
             ? t("LEARNER")
             : ""}
         </AdminTypo.H5>
