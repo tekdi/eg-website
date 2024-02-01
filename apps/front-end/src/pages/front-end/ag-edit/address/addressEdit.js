@@ -45,11 +45,12 @@ export default function AddressEdit({ ip }) {
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData?.result;
     const { lat, long } = finalData;
+    let programSelected = jsonParse(localStorage.getItem("program"));
     setFormData({
       ...formData,
       location: { lat, long },
       address: finalData?.address == "null" ? "" : finalData?.address,
-      state: finalData?.state,
+      state: programSelected?.state_name,
       district: finalData?.district,
       block: finalData?.block,
       village: finalData?.village,
@@ -284,7 +285,7 @@ export default function AddressEdit({ ip }) {
 
   const setGramp = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
-    setLoading(true);
+    setIsDisable(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getGrampanchyat({
         block: block,
@@ -315,7 +316,7 @@ export default function AddressEdit({ ip }) {
       newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
       setSchemaData(newSchema);
     }
-    setLoading(false);
+    setIsDisable(false);
     return newSchema;
   };
 
@@ -433,17 +434,15 @@ export default function AddressEdit({ ip }) {
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
@@ -472,8 +471,6 @@ export default function AddressEdit({ ip }) {
               {pages[pages?.length - 1] === page && t("SAVE")}
             </FrontEndTypo.Primarybutton>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>

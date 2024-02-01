@@ -74,14 +74,13 @@ export default {
       type: "object",
       required: ["district", "block", "village"],
       properties: {
-        // state: {
-        //   title: "STATE",
-        //   type: "string",
-        //   format: "select",
-        //   readOnly: "",
-        // },
         labelAddress: {
           type: "string",
+        },
+        state: {
+          title: "STATE",
+          type: "string",
+          format: "hidden",
         },
         district: {
           title: "DISTRICT",
@@ -216,6 +215,8 @@ export default {
         qualification_ids: {
           type: "array",
           label: "TEACHING_RALATED_DEGREE",
+          format: "MultiCheck",
+          grid: 1,
           items: {
             type: ["string", "number"],
           },

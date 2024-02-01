@@ -608,7 +608,7 @@ export const MultiCheck = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { _hstack, icons, grid, label, format } = schema || {};
+  const { _hstack, _subHstack, icons, grid, label, format } = schema || {};
   const { enumOptions } = options || {};
   let items = [enumOptions];
   if (grid && enumOptions?.constructor.name === "Array") {
@@ -642,7 +642,13 @@ export const MultiCheck = ({
       )}
       <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
-          <Box gap={"2"} key={subItem} flexDirection="row" flexWrap="wrap">
+          <HStack
+            space="2"
+            key={subKey || ""}
+            flexDirection="row"
+            flexWrap="wrap"
+            {..._subHstack}
+          >
             {subItem?.map((item, key) => (
               <label key={item}>
                 <HStack alignItems="center" space="3" flex="1">
@@ -674,7 +680,7 @@ export const MultiCheck = ({
                 </HStack>
               </label>
             ))}
-          </Box>
+          </HStack>
         ))}
       </Stack>
     </FormControl>

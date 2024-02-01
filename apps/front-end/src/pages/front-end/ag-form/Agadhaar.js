@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/SchemaAdhaar.js";
@@ -33,38 +33,42 @@ import AadhaarNumberValidation from "component/AadhaarNumberValidation.js";
 
 export default function Agform({ userTokenInfo, footerLinks }) {
   const textAreaRef = useRef();
-  const [textVisible, setTextVisible] = React.useState(false);
+  const [textVisible, setTextVisible] = useState(false);
   const { t } = useTranslation();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState();
-  const [isExistflag, setisExistflag] = React.useState();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [addmodal, setaddmodal] = React.useState(false);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [submitBtn, setSubmitBtn] = useState();
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [userId, setUserId] = useState();
+  const [isExistflag, setIsExistflag] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addmodal, setAddmodal] = useState(false);
+  const [isDisable, setIsDisable] = useState(false);
   const id = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  React.useEffect(async () => {
-    setuserId(id?.id);
-    if (userId) {
-      let data = await benificiaryRegistoryService.getOne(userId);
 
-      setFormData({
-        aadhar_no: data?.result?.aadhar_no,
-        edit_page_type: "add_ag_duplication",
-        is_duplicate: "no",
-      });
-    }
+  useEffect(() => {
+    setUserId(id?.id);
+    const fetchData = async () => {
+      if (userId) {
+        let data = await benificiaryRegistoryService.getOne(userId);
+
+        setFormData({
+          aadhar_no: data?.result?.aadhar_no,
+          edit_page_type: "add_ag_duplication",
+          is_duplicate: "no",
+        });
+      }
+    };
+    fetchData();
   }, [userId]);
+
   const onPressBackButton = async () => {
     const route = location?.state?.route;
     if (route) {
@@ -77,7 +81,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       });
     }
   };
-  const ref = React.createRef(null);
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -116,7 +119,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -186,13 +189,13 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({ aadhar_no: data?.aadhar_no });
         if (result?.registeredAsFacilitator) {
-          setisExistflag("registeredAsFacilitator");
+          setIsExistflag("registeredAsFacilitator");
         } else if (result?.underSameFacilitator) {
-          setisExistflag("underSameFacilitator");
+          setIsExistflag("underSameFacilitator");
         } else if (result?.registeredAsBeneficiaries) {
-          setisExistflag("registeredAsBeneficiaries");
+          setIsExistflag("registeredAsBeneficiaries");
         } else {
-          setisExistflag();
+          setIsExistflag();
         }
       }
     }
@@ -219,12 +222,10 @@ export default function Agform({ userTokenInfo, footerLinks }) {
       is_duplicate: "no",
     };
     await AgRegistryService.updateAg(adddata, userId);
-    navigate(`/aadhaar-kyc/${userId}`, {
-      state: { aadhar_no: formData?.aadhar_no, pathname: "/beneficiary/list" },
-    });
+    navigate(`/dashboard`);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isExistflag) {
       setFormData({
         ...formData,
@@ -264,7 +265,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         state: { aadhar_no: formData?.aadhar_no },
       });
       setTextVisible(false);
-      setaddmodal(!addmodal);
+      setAddmodal(!addmodal);
     } else {
       setIsDisable(false);
       setTextVisible(true);
@@ -295,7 +296,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
 
         {page && page !== "" && (
           <Form
-            key={lang + addBtn}
+            key={lang}
             ref={formRef}
             widgets={{ RadioBtn, CustomR, CustomOTPBox, Aadhaar }}
             templates={{
@@ -339,7 +340,9 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 type="submit"
                 onPress={() => formRef?.current?.submit()}
               >
-                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
+                {pages[pages?.length - 1] === page
+                  ? t("SAVE_AND_HOME")
+                  : submitBtn}
               </FrontEndTypo.Primarybutton>
             )}
           </Form>
@@ -385,7 +388,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                   py="2"
                   width="100%"
                   onPress={() => {
-                    setaddmodal(!addmodal);
+                    setAddmodal(!addmodal);
                     setModalVisible(!modalVisible);
                   }}
                 >
@@ -412,7 +415,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         </Modal.Content>
       </Modal>
 
-      <Modal isOpen={addmodal} onClose={() => setaddmodal(false)} size="md">
+      <Modal isOpen={addmodal} onClose={() => setAddmodal(false)} size="md">
         <Modal.Content py="0">
           <Modal.Body>
             <VStack alignItems={"center"}>

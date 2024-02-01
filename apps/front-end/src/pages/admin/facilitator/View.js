@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, memo } from "react";
+import React, { useCallback, useEffect, useState, memo, lazy } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -27,10 +27,11 @@ import {
 } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
-import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
+const StatusButton = lazy(() => import("./view/StatusButton"));
+
 const checkboxoptions = [
   {
     label: "AVAILABILITY",
@@ -179,21 +180,24 @@ export default function FacilitatorView({ footerLinks }) {
     profileDetails();
   }, [profileDetails]);
 
-  useEffect(async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
+  useEffect(() => {
+    const fetchData = async () => {
+      const obj = {
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+      };
+      const result = await benificiaryRegistoryService.getEditFields(obj);
+      if (result.data[0]) {
+        setEditData(result?.data[0]);
+      }
+      let field;
+      const parseField = result?.data[0]?.fields;
+      if (parseField && typeof parseField === "string") {
+        field = JSON.parse(parseField);
+      }
+      setFieldCheck(field || []);
     };
-    const result = await benificiaryRegistoryService.getEditFields(obj);
-    if (result.data[0]) {
-      setEditData(result?.data[0]);
-    }
-    let field;
-    const parseField = result?.data[0]?.fields;
-    if (parseField && typeof parseField === "string") {
-      field = JSON.parse(parseField);
-    }
-    setFieldCheck(field || []);
+    fetchData();
   }, []);
 
   const editRequest = async () => {
@@ -678,7 +682,7 @@ export default function FacilitatorView({ footerLinks }) {
                       </FrontEndTypo.H3>
                     ),
                     teching_qualification: qualifications
-                      ?.map((e) => e?.name)
+                      ?.map((e) => t(e?.name))
                       .join(", "),
                     work_experience:
                       data?.experience?.[0] &&

@@ -61,12 +61,14 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   React.useEffect(async () => {
     setuserId(id?.id);
     const { result } = await benificiaryRegistoryService.getOne(id?.id);
+    let programSelected = jsonParse(localStorage.getItem("program"));
+
     if (result) {
       setFormData({
         ...formData,
         device_ownership: result?.core_beneficiaries?.device_ownership,
         device_type: result?.core_beneficiaries?.device_type,
-        state: result?.state,
+        state: programSelected?.state_name,
         district: result?.district,
         address: result?.address == "null" ? "" : result?.address,
         block: result?.block,
@@ -483,7 +485,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           gramp,
           schemaData: newSchema,
         });
-        setSchemaData(newSchema);
+        setSchema(newSchema);
       } else {
         newSchema = await setVilage({
           state,
@@ -506,7 +508,6 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   const setGramp = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
-    setLoading(true);
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getGrampanchyat({
         block: block,
@@ -522,7 +523,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
           format: "select",
         });
       }
-      setSchemaData(newSchema);
+      setSchema(newSchema);
 
       if (schema?.["properties"]?.["village"] && gramp) {
         newSchema = await setVilage({
@@ -535,7 +536,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
       }
     } else {
       newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-      setSchemaData(newSchema);
+      setSchema(newSchema);
     }
     setLoading(false);
     return newSchema;

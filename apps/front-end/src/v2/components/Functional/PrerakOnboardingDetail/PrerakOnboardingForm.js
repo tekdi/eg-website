@@ -45,7 +45,7 @@ export default function PrerakOnboardingForm({
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState();
   const [yearsRange, setYearsRange] = useState([1980, 2030]);
-  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState();
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const [qualifications, setQualifications] = useState([]);
@@ -53,6 +53,10 @@ export default function PrerakOnboardingForm({
   const [otpButton, setOtpButton] = useState(false);
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
+
+  useEffect(() => {
+    setLang(localStorage.getItem("lang"));
+  }, []);
 
   const getEditAccess = async () => {
     const id = userid;
@@ -69,71 +73,77 @@ export default function PrerakOnboardingForm({
     setFields(field || []);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     setLoading(true);
-
-    const id = userid;
-    if (id) {
-      const result = await facilitatorRegistryService.getOne({ id });
-      setFacilitator(result);
-      const ListOfEnum = await enumRegistryService.listOfEnum();
-      if (!ListOfEnum?.error) {
-        setEnumObj(ListOfEnum?.data);
-      }
-      if (step === "qualification_details") {
-        updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
-
-        const dataF = result?.qualifications;
-        const arr = result?.program_faciltators?.qualification_ids;
-        let arrData = arr
-          ? JSON.parse(arr)
-              ?.filter((e) =>
-                qualifications.find(
-                  (item) => item.id == e && item.type === "teaching"
-                )
-              )
-              ?.map((e) => `${e}`)
-          : [];
-        const newData = {
-          ...dataF,
-          qualification_reference_document_id:
-            dataF?.qualification_reference_document_id || "",
-          qualification_ids: arrData,
-          qualification_master_id: `${
-            dataF?.qualification_master_id ? dataF?.qualification_master_id : ""
-          }`,
-          type_of_document: dataF?.document_reference?.doument_type,
-        };
-        setFormData({
-          ...newData,
-          has_diploma: result?.core_faciltator?.has_diploma,
-          diploma_details:
-            result?.core_faciltator?.diploma_details || undefined,
-        });
-      } else if (step === "reference_details") {
-        if (result?.references?.designation === "") {
-          const newData = {
-            ...result?.references,
-            designation: undefined,
-          };
-          setFormData(newData);
-        } else {
-          const newData = result?.references;
-          setFormData(newData);
+    const fetchData = async () => {
+      const id = userid;
+      if (id) {
+        const result = await facilitatorRegistryService.getOne({ id });
+        setFacilitator(result);
+        const ListOfEnum = await enumRegistryService.listOfEnum();
+        if (!ListOfEnum?.error) {
+          setEnumObj(ListOfEnum?.data);
         }
-      } else if (step === "basic_details") {
-        const formDataObject = {
-          first_name: result?.first_name,
-          middle_name:
-            result?.middle_name !== "" ? result?.middle_name : undefined,
-          last_name: result?.last_name !== "" ? result?.last_name : undefined,
-          dob: result?.dob,
-        };
-        setFormData(formDataObject);
-      } else {
-        setFormData(result);
+
+        if (step === "qualification_details") {
+          updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
+
+          const dataF = result?.qualifications;
+          const arr = result?.program_faciltators?.qualification_ids;
+          let arrData = arr
+            ? JSON.parse(arr)
+                ?.filter((e) =>
+                  qualifications.find(
+                    (item) => item.id == e && item.type === "teaching"
+                  )
+                )
+                ?.map((e) => `${e}`)
+            : [];
+          const newData = {
+            ...dataF,
+            qualification_reference_document_id:
+              dataF?.qualification_reference_document_id || "",
+            qualification_ids: arrData,
+            qualification_master_id: `${
+              dataF?.qualification_master_id
+                ? dataF?.qualification_master_id
+                : ""
+            }`,
+            type_of_document: dataF?.document_reference?.doument_type,
+          };
+          setFormData({
+            ...newData,
+            has_diploma: result?.core_faciltator?.has_diploma,
+            diploma_details:
+              result?.core_faciltator?.diploma_details || undefined,
+          });
+        } else if (step === "reference_details") {
+          if (result?.references?.designation === "") {
+            const newData = {
+              ...result?.references,
+              designation: undefined,
+            };
+            setFormData(newData);
+          } else {
+            const newData = result?.references;
+            setFormData(newData);
+          }
+        } else if (step === "basic_details") {
+          const formDataObject = {
+            first_name: result?.first_name,
+            middle_name:
+              result?.middle_name !== "" ? result?.middle_name : undefined,
+            last_name: result?.last_name !== "" ? result?.last_name : undefined,
+            dob: result?.dob,
+          };
+          setFormData(formDataObject);
+        } else {
+          let programSelected = jsonParse(localStorage.getItem("program"));
+          setFormData({ ...result, state: programSelected?.state_name });
+        }
       }
-    }
+    };
+    fetchData();
     getEditAccess();
     setLoading(false);
   }, [qualifications]);
@@ -153,7 +163,7 @@ export default function PrerakOnboardingForm({
     },
 
     qualification_ids: {
-      "ui:widget": "checkboxes",
+      "ui:widget": "MultiCheck",
     },
     has_diploma: {
       "ui:widget": "RadioBtn",
@@ -192,9 +202,12 @@ export default function PrerakOnboardingForm({
     }
   };
 
-  useEffect(async () => {
-    const qData = await facilitatorRegistryService.getQualificationAll();
-    setQualifications(qData);
+  useEffect(() => {
+    const fetchData = async () => {
+      const qData = await facilitatorRegistryService.getQualificationAll();
+      setQualifications(qData);
+    };
+    fetchData();
   }, [page]);
 
   const setSchemaData = (newSchema) => {
@@ -227,126 +240,148 @@ export default function PrerakOnboardingForm({
   };
 
   // update schema
-  useEffect(async () => {
-    let newSchema = schema;
+  useEffect(() => {
+    const fetchData = async () => {
+      let newSchema = schema;
 
-    if (schema?.properties?.qualification_master_id) {
-      setLoading(true);
-      if (schema?.["properties"]?.["qualification_master_id"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_master_id",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification_master_id) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex =
-                  newSchema?.properties?.qualification_master_id?.enum[index];
-              }
-            }
-          );
-          if (
-            valueIndex !== "" &&
-            formData?.qualification_master_id == valueIndex
-          ) {
+      try {
+        if (schema?.properties?.district) {
+          let programSelected = null;
+          try {
+            programSelected = jsonParse(localStorage.getItem("program"));
+          } catch (error) {}
+          //add user specific state
+          if (programSelected != null) {
+            newSchema = await setDistric({
+              schemaData: newSchema,
+              state: programSelected?.state_name,
+              district: formData?.district,
+              block: formData?.block,
+              gramp: formData?.grampanchayat,
+            });
+          }
+        }
+        if (schema?.properties?.device_ownership) {
+          if (formData?.device_ownership == "no") {
             setAlert(t("YOU_NOT_ELIGIBLE"));
           } else {
             setAlert();
           }
         }
-      }
-      if (schema?.["properties"]?.["qualification_reference_document_id"]) {
-        const id = userid;
-        newSchema = getOptions(newSchema, {
-          key: "qualification_reference_document_id",
-          extra: {
-            userId: id,
-            document_type: formData?.type_of_document,
-          },
-        });
-      }
+        if (schema?.properties?.designation) {
+          newSchema = getOptions(newSchema, {
+            key: "designation",
+            arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
+            title: "title",
+            value: "value",
+          });
+        }
+        if (schema?.["properties"]?.["marital_status"]) {
+          newSchema = getOptions(newSchema, {
+            key: "social_category",
+            arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
+            title: "title",
+            value: "value",
+          });
 
-      if (schema?.["properties"]?.["qualification_ids"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification_ids",
-          arr: qualifications,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
-    }
-    if (schema?.properties?.district) {
-      let programSelected = null;
-      try {
-        programSelected = jsonParse(localStorage.getItem("program"));
-      } catch (error) {}
-      //add user specific state
-      if (programSelected != null) {
-        newSchema = await setDistric({
-          schemaData: newSchema,
-          state: programSelected?.state_name,
-          district: formData?.district,
-          block: formData?.block,
-          gramp: formData?.grampanchayat,
-        });
-      }
-    }
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
-    }
-    if (schema?.properties?.designation) {
-      newSchema = getOptions(newSchema, {
-        key: "designation",
-        arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
-        title: "title",
-        value: "value",
-      });
-    }
-    if (schema?.["properties"]?.["marital_status"]) {
-      newSchema = getOptions(newSchema, {
-        key: "social_category",
-        arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
-        title: "title",
-        value: "value",
-      });
+          newSchema = getOptions(newSchema, {
+            key: "marital_status",
+            arr: enumObj?.MARITAL_STATUS,
+            title: "title",
+            value: "value",
+          });
+        }
 
-      newSchema = getOptions(newSchema, {
-        key: "marital_status",
-        arr: enumObj?.MARITAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-    }
+        if (schema?.["properties"]?.["device_type"]) {
+          newSchema = getOptions(newSchema, {
+            key: "device_type",
+            arr: enumObj?.MOBILE_TYPE,
+            title: "title",
+            value: "value",
+          });
+        }
 
-    if (schema?.["properties"]?.["device_type"]) {
-      newSchema = getOptions(newSchema, {
-        key: "device_type",
-        arr: enumObj?.MOBILE_TYPE,
-        title: "title",
-        value: "value",
-      });
-    }
+        if (schema?.["properties"]?.["document_id"]) {
+          const id = userid;
+          newSchema = getOptions(newSchema, {
+            key: "document_id",
+            extra: { userId: id },
+          });
+        }
+        setLoading(false);
+        setSchemaData(newSchema);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [
+    page,
+    formData?.district,
+    formData?.block,
+    formData?.grampanchayat,
+    formData?.village,
+  ]);
 
-    if (schema?.["properties"]?.["document_id"]) {
-      const id = userid;
-      newSchema = getOptions(newSchema, {
-        key: "document_id",
-        extra: { userId: id },
-      });
-    }
+  useEffect(() => {
+    let newSchema = schema;
+    const fetchData = async () => {
+      if (schema?.properties?.qualification_master_id) {
+        setLoading(true);
+        if (schema?.["properties"]?.["qualification_master_id"]) {
+          newSchema = getOptions(newSchema, {
+            key: "qualification_master_id",
+            arr: qualifications,
+            title: "name",
+            value: "id",
+            filters: { type: "qualification" },
+          });
+          if (newSchema?.properties?.qualification_master_id) {
+            let valueIndex = "";
+            newSchema?.properties?.qualification_master_id?.enumNames?.forEach(
+              (e, index) => {
+                if (e.match("12")) {
+                  valueIndex =
+                    newSchema?.properties?.qualification_master_id?.enum[index];
+                }
+              }
+            );
+            if (
+              valueIndex !== "" &&
+              formData?.qualification_master_id == valueIndex
+            ) {
+              setAlert(t("YOU_NOT_ELIGIBLE"));
+            } else {
+              setAlert();
+            }
+          }
+        }
+        if (schema?.["properties"]?.["qualification_reference_document_id"]) {
+          const id = userid;
+          newSchema = getOptions(newSchema, {
+            key: "qualification_reference_document_id",
+            extra: {
+              userId: id,
+              document_type: formData?.type_of_document,
+            },
+          });
+        }
+
+        if (schema?.["properties"]?.["qualification_ids"]) {
+          newSchema = getOptions(newSchema, {
+            key: "qualification_ids",
+            arr: qualifications,
+            title: "name",
+            value: "id",
+            filters: { type: "teaching" },
+          });
+        }
+      }
+    };
+    fetchData();
     setLoading(false);
     setSchemaData(newSchema);
-  }, [page, formData?.district, formData?.block, formData?.gramPanchayat]);
+  }, [formData?.qualification_ids]);
 
   useEffect(() => {
     if (schema1.type === "step") {
