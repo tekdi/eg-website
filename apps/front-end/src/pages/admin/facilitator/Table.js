@@ -22,9 +22,7 @@ import { useNavigate } from "react-router-dom";
 const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack>
-        <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
-      </HStack>
+      <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
     </Pressable>
   );
 };
@@ -92,11 +90,11 @@ function Table({
       },
       {
         name: t("DISTRICT"),
-        selector: (row) => (row?.district ? row?.district : "-"),
+        selector: (row) => row?.district || "-",
       },
       {
         name: t("BLOCK"),
-        selector: (row) => (row?.block ? row?.block : "-"),
+        selector: (row) => row?.block || "-",
       },
 
       {
