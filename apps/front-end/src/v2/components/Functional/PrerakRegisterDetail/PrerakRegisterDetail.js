@@ -12,6 +12,9 @@ import {
   Modal,
   Alert,
   Heading,
+  Checkbox,
+  View,
+  Dimensions,
 } from "native-base";
 import React, { useEffect, useState, useRef, createRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +32,7 @@ import {
   removeOnboardingMobile,
   login,
   jsonParse,
+  useWindowSize,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
@@ -43,6 +47,7 @@ import {
 import { getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
 import Loader from "v2/components/Static/Loader/Loader.js";
+import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
 
 export default function PrerakRegisterDetail({
   t,
@@ -51,6 +56,7 @@ export default function PrerakRegisterDetail({
   registerFormData,
   setRegisterFormData,
   ip,
+  showIntroductionOfProject,
 }) {
   const navigate = useNavigate();
   //screen variable
@@ -101,6 +107,13 @@ export default function PrerakRegisterDetail({
   const [isLoginShow, setIsLoginShow] = useState(false);
   const [isUserExistModalText, setIsUserExistModalText] = useState("");
   const [isUserExistStatus, setIsUserExistStatus] = useState("");
+  const [width, height] = useWindowSize();
+
+  // Consent modals
+  const [isConsentModal, setIsConsentModal] = useState(false);
+  const [consentCompleted, setConsentCompleted] = useState(true);
+  const [yesChecked, setYesChecked] = useState(false);
+  const [noChecked, setNoChecked] = useState(false);
 
   //form variable
   const [lang, setLang] = useState(getLanguage());
@@ -111,6 +124,19 @@ export default function PrerakRegisterDetail({
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
+
+  const handleCheckboxChange = (isAgree) => {
+    setYesChecked(isAgree);
+    setNoChecked(!isAgree);
+    if (isAgree) {
+      setConsentCompleted(false);
+      setIsConsentModal(false);
+    } else {
+      setConsentCompleted(true);
+      showIntroductionOfProject();
+    }
+  };
+
   useEffect(() => {
     setErrors({});
     if (currentForm == 0) {
@@ -500,17 +526,39 @@ export default function PrerakRegisterDetail({
                   {t("VERIFY_OTP")}
                 </FrontEndTypo.Primarybutton>
               ) : (
-                <FrontEndTypo.Primarybutton
-                  isLoading={loading}
-                  type="submit"
-                  p="4"
-                  mt="10"
-                  onPress={(e) => {
-                    formRef?.current?.submit();
-                  }}
-                >
-                  {t("SAVE_AND_NEXT")}
-                </FrontEndTypo.Primarybutton>
+                <VStack>
+                  <FrontEndTypo.H3
+                    cursor="pointer"
+                    mt="5"
+                    TextDecoration="underline"
+                    color={"blueText.400"}
+                    onPress={() => {
+                      setIsConsentModal(true);
+                    }}
+                  >
+                    <HStack alignItems={"center"} space={2}>
+                      {t("T&C")}
+                      {!consentCompleted && (
+                        <IconByName
+                          name="CheckboxCircleFillIcon"
+                          color="successColor"
+                        />
+                      )}
+                    </HStack>
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.Primarybutton
+                    isDisabled={consentCompleted}
+                    isLoading={loading}
+                    type="submit"
+                    p="4"
+                    mt="10"
+                    onPress={(e) => {
+                      formRef?.current?.submit();
+                    }}
+                  >
+                    {t("SAVE_AND_NEXT")}
+                  </FrontEndTypo.Primarybutton>
+                </VStack>
               )}
             </Form>
           </Box>
@@ -631,6 +679,40 @@ export default function PrerakRegisterDetail({
                     >
                       {t("LOGIN")}
                     </FrontEndTypo.Primarybutton>
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+
+          <Modal
+            size={"xl"}
+            isOpen={isConsentModal}
+            _backdrop={{ opacity: "0.7" }}
+          >
+            <Modal.Content>
+              <Modal.Body p="5" pb="10">
+                <SetConsentLang />
+                <VStack space="5">
+                  <HStack space={6} justifyContent={"center"}>
+                    <Checkbox
+                      isChecked={noChecked}
+                      value={noChecked}
+                      onChange={() => {
+                        handleCheckboxChange(false);
+                      }}
+                    >
+                      {t("NO")}
+                    </Checkbox>
+                    <Checkbox
+                      isChecked={yesChecked}
+                      value={yesChecked}
+                      onChange={() => {
+                        handleCheckboxChange(true);
+                      }}
+                    >
+                      {t("YES")}
+                    </Checkbox>
                   </HStack>
                 </VStack>
               </Modal.Body>

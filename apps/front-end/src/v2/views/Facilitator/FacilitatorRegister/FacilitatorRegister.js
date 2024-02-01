@@ -214,6 +214,9 @@ function FacilitatorRegister() {
   const showPrerakDuties = () => {
     setActiveScreenName("prerakDuties");
   };
+  const showIntroductionOfProject = () => {
+    setActiveScreenName("introductionOfProject");
+  };
 
   const showApplyNow = () => {
     setActiveScreenName("registerForm");
@@ -286,6 +289,7 @@ function FacilitatorRegister() {
             setCurrentForm={setCurrentForm}
             registerFormData={registerFormData}
             setRegisterFormData={setRegisterFormData}
+            showIntroductionOfProject={showIntroductionOfProject}
             ip={ip}
           />
         }
