@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
@@ -111,20 +111,20 @@ export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
 
   const [width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const [schema, setSchema] = React.useState();
-  const [filter, setFilter] = React.useState({});
-  const previousDistrictLength = React.useRef(filter?.district?.length);
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const [schema, setSchema] = useState();
+  const [filter, setFilter] = useState({});
+  const previousDistrictLength = useRef(filter?.district?.length);
 
-  const [loading, setLoading] = React.useState(true);
-  const [facilitaorStatus, setFacilitaorStatus] = React.useState();
+  const [loading, setLoading] = useState(true);
+  const [facilitaorStatus, setFacilitaorStatus] = useState();
 
-  const [data, setData] = React.useState([]);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [enumOptions, setEnumOptions] = React.useState({});
+  const [data, setData] = useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [enumOptions, setEnumOptions] = useState({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const result = await enumRegistryService.statuswiseCount();
       setFacilitaorStatus(result);
@@ -158,7 +158,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchData();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchBlocks = async () => {
       if (schema && filter?.district?.length > 0) {
         const blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -191,11 +191,11 @@ export default function List({ footerLinks, userTokenInfo }) {
     setPaginationTotalRows(result?.data?.totalCount || 0);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchFilteredData();
   }, [filter]);
 
-  const setFilterObject = React.useCallback(
+  const setFilterObject = useCallback(
     (data) => {
       setFilter((prevFilter) => {
         if (prevFilter.length > 0) {
@@ -209,14 +209,14 @@ export default function List({ footerLinks, userTokenInfo }) {
     [setFilter, setQueryParameters]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const arr = ["district", "block", "qualificationIds", "work_experience"];
     const data = urlData(arr);
 
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
   }, []);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     async (data) => {
       const { district, qualificationIds, work_experience, block } =
         data?.formData || {};
@@ -243,27 +243,24 @@ export default function List({ footerLinks, userTokenInfo }) {
     [filter, setFilterObject]
   );
 
-  const clearFilter = React.useCallback(() => {
+  const clearFilter = useCallback(() => {
     setFilter({});
     setFilterObject([]);
   }, [setFilterObject]);
 
-  const [modal, setModal] = React.useState(false);
+  const [modal, setModal] = useState(false);
   const exportPrerakCSV = async () => {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback(
+  const handleSearch = useCallback(
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
     [filter]
   );
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout
@@ -398,7 +395,9 @@ export default function List({ footerLinks, userTokenInfo }) {
           <HStack ref={ref}></HStack>
           <ScrollView
             maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+              Height -
+              (refAppBar?.clientHeight + ref?.current?.clientHeight) -
+              72
             }
           >
             <VStack space={3} py="5">
@@ -434,23 +433,23 @@ export default function List({ footerLinks, userTokenInfo }) {
           </ScrollView>
         </Box>
         <Box flex={[5, 5, 4]}>
-          {/* <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
-          > */}
-          <Box roundedBottom={"2xl"} px={2}>
-            <Table
-              filter={filter}
-              setFilter={setFilterObject}
-              facilitator={userTokenInfo?.authUser}
-              facilitaorStatus={facilitaorStatus}
-              paginationTotalRows={paginationTotalRows}
-              data={data}
-              loading={loading}
-              enumOptions={enumOptions}
-            />
-          </Box>
-          {/* </ScrollView> */}
+          <ScrollView
+            maxH={Height - refAppBar?.clientHeight - 72}
+            minH={Height - refAppBar?.clientHeight - 72}
+          >
+            <Box roundedBottom={"2xl"} px={2}>
+              <Table
+                filter={filter}
+                setFilter={setFilterObject}
+                facilitator={userTokenInfo?.authUser}
+                facilitaorStatus={facilitaorStatus}
+                paginationTotalRows={paginationTotalRows}
+                data={data}
+                loading={loading}
+                enumOptions={enumOptions}
+              />
+            </Box>
+          </ScrollView>
         </Box>
       </HStack>
     </Layout>
