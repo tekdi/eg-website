@@ -534,11 +534,9 @@ export default function AgAdminProfile({ footerLinks }) {
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              {[
-                "enrolled",
-                "enrolled_ip_verified",
-                "registered_in_camp",
-              ].includes(data?.program_beneficiaries?.status)
+              {["enrolled_ip_verified", "registered_in_camp"].includes(
+                data?.program_beneficiaries?.status
+              )
                 ? `${
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
