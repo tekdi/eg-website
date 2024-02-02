@@ -276,11 +276,14 @@ export const Filter = ({ filter, setFilter }) => {
 
   const setFilterObject = React.useCallback(
     (data) => {
+      const { facilitator: newFacilitator, ...otherData } = data;
+      const facilitator =
+        newFacilitator?.length > 0 ? { facilitator: newFacilitator } : {};
       if (data?.district) {
         const { district } = data;
         setFacilitatorFilter({ ...facilitatorFilter, district });
       }
-      setFilter(data);
+      setFilter({ ...otherData, ...facilitator });
       setQueryParameters(data);
     },
     [facilitatorFilter]

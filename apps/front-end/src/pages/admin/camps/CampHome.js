@@ -295,11 +295,19 @@ export const Filter = ({ filter, setFilter }) => {
   const [facilitator, setFacilitator] = React.useState([]);
 
   const setFilterObject = (data) => {
+    const { facilitator: newFacilitator, ...otherData } = data;
+    const facilitator =
+      newFacilitator?.length > 0 ? { facilitator: newFacilitator } : {};
+
     if (data?.district) {
       const { district, block } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+      setFacilitatorFilter({
+        ...facilitatorFilter,
+        district,
+        block,
+      });
     }
-    setFilter(data);
+    setFilter({ ...otherData, ...facilitator });
     setFilterLocalStorage(filterName, data);
   };
 
