@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
+import PropTypes from "prop-types";
 
 const ConsentForm = ({ consentData, row, t }) => {
   let learnerConsentData = Array.isArray(consentData)
@@ -330,7 +331,6 @@ export default function View({ footerLinks }) {
       setShowCheckboxes(true);
       return;
     }
-
     if (selectedRows?.length > 0) {
       navigate(`/admin/camps/${id}/reassign`, {
         state: { selectedRows },
@@ -702,3 +702,7 @@ export default function View({ footerLinks }) {
     </Layout>
   );
 }
+
+View.PropTypes = {
+  footerLinks: PropTypes.any,
+};

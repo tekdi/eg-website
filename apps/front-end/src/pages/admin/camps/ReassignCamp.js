@@ -25,6 +25,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { Filter } from "./CampHome";
+import PropTypes from "prop-types";
 
 const columns = (t, setModal) => [
   {
@@ -150,7 +151,7 @@ const tableStyles = {
     },
   },
 };
-export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
+export default function ReassignCamp({ footerLinks, userTokenInfo }) {
   const { id, user_id } = useParams();
   const [data, setData] = useState();
   const navigate = useNavigate();
@@ -262,7 +263,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 setQueryParameters(e);
               }}
               customStyles={tableCustomStyles}
-              columns={[...columns(navigate, t, setModal)]}
+              columns={[...columns(t, setModal)]}
               persistTableHead
               facilitator={userTokenInfo?.authUser}
               pagination
@@ -329,3 +330,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+ReassignCamp.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};
