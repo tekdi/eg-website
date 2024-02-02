@@ -153,7 +153,6 @@ const tableStyles = {
 };
 export default function ReassignCamp({ footerLinks, userTokenInfo }) {
   const { id, user_id } = useParams();
-  const [data, setData] = useState();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -173,7 +172,6 @@ export default function ReassignCamp({ footerLinks, userTokenInfo }) {
   useEffect(async () => {
     let newFilter = filter;
     const result = await benificiaryRegistoryService.getOne(user_id);
-    setData(result?.result);
     const qData = await campService.getCampList(newFilter);
     const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
     setCampData(filtered);
