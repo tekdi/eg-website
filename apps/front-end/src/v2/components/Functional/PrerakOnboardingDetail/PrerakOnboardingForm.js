@@ -58,95 +58,121 @@ export default function PrerakOnboardingForm({
     setLang(localStorage.getItem("lang"));
   }, []);
 
+  useEffect(() => {
+    setLoading(true);
+
+    const fetchData = async () => {
+      try {
+        const id = userid;
+        if (id) {
+          const result = await facilitatorRegistryService.getOne({ id });
+          setFacilitator(result);
+          const ListOfEnum = await enumRegistryService.listOfEnum();
+          if (!ListOfEnum?.error) {
+            setEnumObj(ListOfEnum?.data);
+          }
+          if (step === "qualification_details") {
+            updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
+
+            const dataF = result?.qualifications;
+            const arr = result?.program_faciltators?.qualification_ids;
+            let arrData = arr
+              ? JSON.parse(arr)
+                  ?.filter((e) =>
+                    qualifications.find(
+                      (item) => item.id == e && item.type === "teaching"
+                    )
+                  )
+                  ?.map((e) => `${e}`)
+              : [];
+            const newData = {
+              ...dataF,
+              qualification_reference_document_id:
+                dataF?.qualification_reference_document_id || "",
+              qualification_ids: arrData,
+              qualification_master_id: `${
+                dataF?.qualification_master_id
+                  ? dataF?.qualification_master_id
+                  : ""
+              }`,
+              type_of_document: dataF?.document_reference?.doument_type,
+            };
+            setFormData({
+              ...newData,
+              has_diploma: result?.core_faciltator?.has_diploma,
+              diploma_details:
+                result?.core_faciltator?.diploma_details || undefined,
+            });
+          } else if (step === "reference_details") {
+            if (result?.references?.designation === "") {
+              const newData = {
+                ...result?.references,
+                designation: undefined,
+              };
+              setFormData(newData);
+            } else {
+              const newData = result?.references;
+              setFormData(newData);
+            }
+          } else if (step === "basic_details") {
+            const formDataObject = {
+              first_name: result?.first_name,
+              middle_name:
+                result?.middle_name !== "" ? result?.middle_name : undefined,
+              last_name:
+                result?.last_name !== "" ? result?.last_name : undefined,
+              dob: result?.dob,
+            };
+            setFormData(formDataObject);
+          } else {
+            let programSelected = jsonParse(localStorage.getItem("program"));
+            setFormData({ ...result, state: programSelected?.state_name });
+          }
+          getEditAccess();
+        }
+      } catch (error) {
+        // Handle errors if necessary
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [step]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const qData = await facilitatorRegistryService.getQualificationAll();
+        setQualifications(qData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (step === "qualification_details") {
+      fetchData();
+    }
+  }, []);
+
   const getEditAccess = async () => {
     const id = userid;
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
-    const result = await facilitatorRegistryService.getEditRequests(obj);
-    let field;
-    const parseField = result?.data?.[0]?.fields;
-    if (parseField && typeof parseField === "string") {
-      field = JSON.parse(parseField);
-    }
-    setFields(field || []);
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      const id = userid;
-      if (id) {
-        const result = await facilitatorRegistryService.getOne({ id });
-        setFacilitator(result);
-        const ListOfEnum = await enumRegistryService.listOfEnum();
-        if (!ListOfEnum?.error) {
-          setEnumObj(ListOfEnum?.data);
-        }
-
-        if (step === "qualification_details") {
-          updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
-
-          const dataF = result?.qualifications;
-          const arr = result?.program_faciltators?.qualification_ids;
-          let arrData = arr
-            ? JSON.parse(arr)
-                ?.filter((e) =>
-                  qualifications.find(
-                    (item) => item.id == e && item.type === "teaching"
-                  )
-                )
-                ?.map((e) => `${e}`)
-            : [];
-          const newData = {
-            ...dataF,
-            qualification_reference_document_id:
-              dataF?.qualification_reference_document_id || "",
-            qualification_ids: arrData,
-            qualification_master_id: `${
-              dataF?.qualification_master_id
-                ? dataF?.qualification_master_id
-                : ""
-            }`,
-            type_of_document: dataF?.document_reference?.doument_type,
-          };
-          setFormData({
-            ...newData,
-            has_diploma: result?.core_faciltator?.has_diploma,
-            diploma_details:
-              result?.core_faciltator?.diploma_details || undefined,
-          });
-        } else if (step === "reference_details") {
-          if (result?.references?.designation === "") {
-            const newData = {
-              ...result?.references,
-              designation: undefined,
-            };
-            setFormData(newData);
-          } else {
-            const newData = result?.references;
-            setFormData(newData);
-          }
-        } else if (step === "basic_details") {
-          const formDataObject = {
-            first_name: result?.first_name,
-            middle_name:
-              result?.middle_name !== "" ? result?.middle_name : undefined,
-            last_name: result?.last_name !== "" ? result?.last_name : undefined,
-            dob: result?.dob,
-          };
-          setFormData(formDataObject);
-        } else {
-          let programSelected = jsonParse(localStorage.getItem("program"));
-          setFormData({ ...result, state: programSelected?.state_name });
-        }
+    try {
+      const result = await facilitatorRegistryService.getEditRequests(obj);
+      let field;
+      const parseField = result?.data?.[0]?.fields;
+      if (parseField && typeof parseField === "string") {
+        field = JSON.parse(parseField);
       }
-    };
-    fetchData();
-    getEditAccess();
-    setLoading(false);
-  }, [qualifications]);
+      setFields(field || []);
+    } catch (error) {
+      console.error("Failed to get edit access:", error);
+    }
+  };
 
   const uiSchema = {
     labelAddress: {
@@ -201,14 +227,6 @@ export default function PrerakOnboardingForm({
       }
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      setQualifications(qData);
-    };
-    fetchData();
-  }, [page]);
 
   const setSchemaData = (newSchema) => {
     setSchema(accessControl(newSchema, fields));
