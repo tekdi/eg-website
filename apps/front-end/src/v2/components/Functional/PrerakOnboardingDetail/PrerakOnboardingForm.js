@@ -125,7 +125,8 @@ export default function PrerakOnboardingForm({
             };
             setFormData(formDataObject);
           } else {
-            setFormData(result);
+            let programSelected = jsonParse(localStorage.getItem("program"));
+            setFormData({ ...result, state: programSelected?.state_name });
           }
           getEditAccess();
         }
