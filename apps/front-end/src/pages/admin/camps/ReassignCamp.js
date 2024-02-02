@@ -1,15 +1,14 @@
 import {
-  IconByName,
   AdminLayout as Layout,
   AdminTypo,
   benificiaryRegistoryService,
-  ImageView,
   FrontEndTypo,
   tableCustomStyles,
   campService,
   useWindowSize,
   setQueryParameters,
   BodyMedium,
+  UserCard,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -19,11 +18,11 @@ import {
   ScrollView,
   useToast,
   Alert,
+  Stack,
 } from "native-base";
 import { CampChipStatus } from "component/Chip";
-import { useNavigate, useParams } from "react-router-dom";
-import React from "react";
-import { ChipStatus } from "component/BeneficiaryStatus";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { Filter } from "./CampHome";
@@ -81,24 +80,97 @@ const columns = (navigate, t, setModal) => [
     attr: "count",
   },
 ];
+const column = (t) => [
+  {
+    name: "Id",
+    selector: (row) => row?.id,
+    wrap: true,
+  },
+  {
+    name: t("ENROLLMENT_NO"),
+    selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
+    wrap: true,
+  },
+  {
+    name: t("LEARNERS_NAME"),
+    minWidth: "250px",
+    selector: (row) => (
+      <UserCard
+        _hstack={{ borderWidth: 0, p: 1 }}
+        key={row}
+        title={
+          <AdminTypo.H6 bold>
+            {[
+              row?.program_beneficiaries?.[0]?.enrollment_first_name,
+              row?.program_beneficiaries?.[0]?.enrollment_middle_name,
+              row?.program_beneficiaries?.[0]?.enrollment_last_name,
+            ]
+              .filter((e) => e)
+              .join(" ")}
+          </AdminTypo.H6>
+        }
+        image={
+          row?.profile_photo_1?.id ? { urlObject: row?.profile_photo_1 } : null
+        }
+      />
+    ),
+    wrap: true,
+  },
+];
 
+const tableStyles = {
+  table: {
+    style: {
+      borderCollapse: "collapse",
+      jus: "center",
+      border: "1px solid #dddddd",
+      width: "95%",
+      margin: "0 auto",
+    },
+  },
+  rows: {
+    style: {
+      minHeight: "55px", // override the row height
+      cursor: "pointer",
+    },
+  },
+  headCells: {
+    style: {
+      background: "#ff0000",
+      color: "white",
+      size: "16px",
+      justifyContent: "flex-start",
+      height: "50px",
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "flex-start",
+    },
+  },
+};
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const { id, user_id } = useParams();
-  const [data, setData] = React.useState();
+  const [data, setData] = useState();
   const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const [filter, setFilter] = React.useState({ limit: 10 });
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [campData, setCampData] = React.useState();
+  const [filter, setFilter] = useState({ limit: 10 });
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [campData, setCampData] = useState();
   const [Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const [modal, setModal] = React.useState();
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const [modal, setModal] = useState();
   const toast = useToast();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const location = useLocation();
+  const { state } = location;
+  const { selectedRows } = state || {};
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let newFilter = filter;
     const result = await benificiaryRegistoryService.getOne(user_id);
     setData(result?.result);
@@ -111,11 +183,15 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
   const reassignCamp = async () => {
     setIsButtonLoading(true);
+    const idsArray = selectedRows.map((row) => row.id);
+    const oldCampId = parseInt(id);
+    const newCampId = modal?.id;
     const obj = {
-      learner_id: parseInt(user_id),
-      camp_id: modal?.id,
+      learner_id: idsArray,
+      old_camp_id: oldCampId,
+      id: newCampId,
     };
-    const result = await campService.reassignCamp(obj);
+    const result = await campService.multipleReassign(obj);
     if (result?.status !== 200) {
       setIsButtonLoading(false);
       toast.show({
@@ -154,118 +230,17 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       getRefAppBar={(e) => setRefAppBar(e)}
     >
       <VStack p={"4"} space={"3%"} width={"100%"}>
-        <Box>
-          <HStack alignItems={"center"} space="1" pt="3">
-            <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
-              {t("PROFILE")}
-            </AdminTypo.H1>
-            <IconByName
-              size="sm"
-              name="ArrowRightSLineIcon"
-              onPress={(e) => navigate(-1)}
-            />
-
-            <AdminTypo.H1
-              color="textGreyColor.800"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              {data?.program_beneficiaries?.status === "enrolled_ip_verified"
-                ? `${
-                    data?.program_beneficiaries?.enrollment_first_name ?? "-"
-                  } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
-                : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
-            </AdminTypo.H1>
-          </HStack>
-          <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
-            <VStack space="4" flexWrap="wrap">
-              <ChipStatus status={data?.program_beneficiaries?.status} />
-              <HStack
-                bg="textMarronColor.600"
-                rounded={"md"}
-                p="2"
-                alignItems="center"
-                space="2"
-              >
-                <IconByName
-                  isDisabled
-                  _icon={{ size: "20px" }}
-                  name="MapPinLineIcon"
-                  color="white"
-                />
-                <AdminTypo.H6 color="white" bold>
-                  {[
-                    data?.state,
-                    data?.district,
-                    data?.block,
-                    data?.village,
-                    data?.grampanchayat,
-                  ]
-                    .filter((e) => e)
-                    .join(",")}
-                </AdminTypo.H6>
-              </HStack>
-              <HStack
-                bg="textMarronColor.600"
-                rounded={"md"}
-                p="2"
-                alignItems="center"
-                space="2"
-              >
-                <IconByName
-                  isDisabled
-                  _icon={{ size: "20px" }}
-                  name="Cake2LineIcon"
-                  color="white"
-                />
-                <AdminTypo.H6 color="white" bold>
-                  {data?.program_beneficiaries?.status ===
-                  "enrolled_ip_verified"
-                    ? data?.program_beneficiaries?.enrollment_dob
-                    : data?.dob ?? "-"}
-                </AdminTypo.H6>
-              </HStack>
-
-              <HStack
-                bg="textMarronColor.600"
-                rounded={"md"}
-                alignItems="center"
-                p="2"
-              >
-                <IconByName
-                  isDisabled
-                  _icon={{ size: "20px" }}
-                  name="CellphoneLineIcon"
-                  color="white"
-                />
-                <AdminTypo.H6 color="white" bold>
-                  {data?.mobile}
-                </AdminTypo.H6>
-              </HStack>
-            </VStack>
-            <HStack flex="0.5" justifyContent={"center"}>
-              {data?.profile_photo_1?.id ? (
-                <ImageView
-                  source={{
-                    document_id: data?.profile_photo_1?.id,
-                  }}
-                  alt="Alternate Text"
-                  width={"200px"}
-                  height={"200px"}
-                />
-              ) : (
-                <IconByName
-                  isDisabled
-                  name="AccountCircleLineIcon"
-                  color="gray.300"
-                  _icon={{ size: "190px" }}
-                />
-              )}
-            </HStack>
-          </HStack>
-        </Box>
+        <Stack p={2} height={"300px"}>
+          <DataTable
+            title={t("SELECTED_LEARNER_COUNT") + ` :- ${selectedRows?.length}`}
+            customStyles={tableStyles}
+            columns={column(t)}
+            persistTableHead
+            data={selectedRows}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="250px"
+          />
+        </Stack>
         <HStack justifyContent={"center"}>
           <Alert status="warning" mb="3" mt="4">
             <HStack space="2" color>

@@ -137,7 +137,7 @@ export default [
   { path: "/", component: Orientation },
   { path: "/admin/camps", component: CampHome },
   { path: "/admin/camps/:id", component: ViewCamp },
-  { path: "/admin/camps/:id/reassign/:user_id", component: ReassignCamp },
+  { path: "/admin/camps/:id/reassign", component: ReassignCamp },
   {
     path: "/admin/camps/:id/reassignPrerak/:user_id",
     component: ReassignPrerak,

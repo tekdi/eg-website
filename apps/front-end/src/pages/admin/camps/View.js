@@ -337,11 +337,7 @@ export default function View({ footerLinks }) {
     }
 
     if (selectedRows?.length > 0) {
-      // const obj = { learner_id: selectedRows, old_camp_id: campId };
-      // console.log({ obj });
-      // const result = campService.multipleReassign(obj);
-      // console.log({ result });
-      navigate(`/admin/camps/${id}/reassignPrerak/${selectedRows}`, {
+      navigate(`/admin/camps/${id}/reassign`, {
         state: { selectedRows },
       });
     }
@@ -351,8 +347,7 @@ export default function View({ footerLinks }) {
     (state, id) => {
       const campId = Number(id);
       const arr = state?.selectedRows;
-      const selectedIds = arr?.map((e) => e?.id);
-      setSelectedRows(selectedIds);
+      setSelectedRows(arr);
       setCampId(campId);
     },
     [setSelectedRows, setCampId]
