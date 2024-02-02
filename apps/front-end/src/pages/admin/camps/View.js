@@ -26,7 +26,6 @@ import {
   Pressable,
   Stack,
   ScrollView,
-  Checkbox,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";

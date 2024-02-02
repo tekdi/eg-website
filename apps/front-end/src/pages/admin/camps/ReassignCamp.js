@@ -11,7 +11,6 @@ import {
   UserCard,
 } from "@shiksha/common-lib";
 import {
-  Box,
   HStack,
   Modal,
   VStack,
@@ -27,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { Filter } from "./CampHome";
 
-const columns = (navigate, t, setModal) => [
+const columns = (t, setModal) => [
   {
     name: t("CAMP_ID"),
     selector: (row) => row?.id,
