@@ -88,7 +88,7 @@ const totalDistance = ({ row, data }) =>
     data?.properties?.long
   );
 
-const columns = (t, data, consentData, id) => [
+const columns = (t, data, consentData) => [
   {
     name: "Id",
     selector: (row) => row?.id,
@@ -191,7 +191,7 @@ const ActionButton = ({ row, t }) => {
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [data, setDataa] = useState([]);
+  const [data, setData] = useState([]);
   const [userData, setUserData] = useState([]);
   const [facilities, setFacilities] = useState([]);
   const [propertyFacilities, setPropertyFacilities] = useState({});
@@ -222,7 +222,7 @@ export default function View({ footerLinks }) {
     try {
       const result = await campService.getFacilatorAdminCampList({ id });
       const camp = result?.data?.camp;
-      setDataa(camp);
+      setData(camp);
       setUserData(result?.data?.camp?.beneficiaries);
       setEdit(camp?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
@@ -551,7 +551,7 @@ export default function View({ footerLinks }) {
           >
             <ScrollView w={["100%", "100%"]}>
               <DataTable
-                columns={columns(t, navigate, data, consentData, id)}
+                columns={columns(t, data, consentData)}
                 data={userData}
                 selectableRows={showCheckboxes}
                 onSelectedRowsChange={(selectedRows) =>
@@ -650,4 +650,6 @@ export default function View({ footerLinks }) {
 
 View.PropTypes = {
   footerLinks: PropTypes.any,
+  row: PropTypes.any,
+  t: PropTypes.any,
 };
