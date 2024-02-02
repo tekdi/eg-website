@@ -165,82 +165,28 @@ const columns = (t, data, consentData, id) => [
   {
     minWidth: "250px",
     name: t("ACTION"),
-    selector: (row) => <ActionButton {...{ row, data, t, id }} />,
+    selector: (row) => <ActionButton {...{ row, t }} />,
   },
 ];
 
-const ActionButton = ({ row, data, t, id }) => {
+const ActionButton = ({ row, t }) => {
   const navigate = useNavigate();
-  return data?.group?.status === "camp_initiated" ? (
+  return (
     <AdminTypo.Secondarybutton
-      // background="white"
-      // _text={{
-      //   color: "blueText.400",
-      //   fontSize: "14px",
-      //   fontWeight: "700",
-      // }}
+      background="white"
+      _text={{
+        color: "blueText.400",
+        fontSize: "14px",
+        fontWeight: "700",
+      }}
+      my="2"
+      mx="1"
       onPress={() => {
         navigate(`/admin/beneficiary/${row?.id}`);
       }}
     >
       {t("VIEW_PROFILE")}
     </AdminTypo.Secondarybutton>
-  ) : (
-    <Button.Group
-      isAttached
-      divider={<h3>|</h3>}
-      my="3"
-      size="sm"
-      h="10"
-      marginTop="8px"
-      borderRadius="full"
-      background="white"
-      shadow="BlueOutlineShadow"
-      borderWidth="1px"
-      borderColor="#084B82"
-      lineHeight={8}
-      _text={{
-        color: "blueText.400",
-        fontSize: "14px",
-        fontWeight: "700",
-      }}
-    >
-      <Button
-        background="white"
-        _text={{
-          color: "blueText.400",
-          fontSize: "14px",
-          fontWeight: "700",
-        }}
-        onPress={() => {
-          navigate(`/admin/beneficiary/${row?.id}`);
-        }}
-      >
-        {t("VIEW_PROFILE")}
-      </Button>
-      <Button variant="outline">
-        <Menu
-          w="190"
-          placement="bottom right"
-          trigger={(triggerProps) => dropDown(triggerProps, t)}
-        >
-          <Menu.Item
-            onPress={() => {
-              navigate(`/admin/beneficiary/${row?.id}`);
-            }}
-          >
-            {t("VIEW_PROFILE")}
-          </Menu.Item>
-          {/* <Menu.Item
-            onPress={() => {
-              navigate(`/admin/camps/${id}/reassign/${row?.id}`);
-            }}
-          >
-            {t("REASSIGN")}
-          </Menu.Item> */}
-        </Menu>
-      </Button>
-    </Button.Group>
   );
 };
 
@@ -594,14 +540,15 @@ export default function View({ footerLinks }) {
             </VStack>
           </CardComponent>
         </HStack>
-
         <HStack space={4}>
           <CardComponent
             _vstack={{ bg: "light.100", flex: 2, space: 4 }}
             _header={{ bg: "light.100" }}
             title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
             onEdit={edit && navTOedit("edit_family_consent")}
-            onButtonClick={handleButtonClick}
+            onButtonClick={
+              data?.group?.status !== "camp_initiated" && handleButtonClick
+            }
             buttonText={<AdminTypo.H5>{t("REASSIGN")}</AdminTypo.H5>}
           >
             <ScrollView w={["100%", "100%"]}>
