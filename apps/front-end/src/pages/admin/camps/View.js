@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -243,29 +243,25 @@ const ActionButton = ({ row, data, t, id }) => {
     </Button.Group>
   );
 };
-// const CustomCheckbox = ({ onChange, row, isChecked }) => (
-//   <Checkbox isChecked={isChecked} onChange={() => onChange(row?.id)} />
-// );
 
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [data, setDataa] = React.useState([]);
-  const [userData, setUserData] = React.useState([]);
-  const [facilities, setFacilities] = React.useState([]);
-  const [propertyFacilities, setPropertyFacilities] = React.useState({});
-  const [properties, setProperties] = React.useState([]);
-  const [enumOptions, setEnumOptions] = React.useState();
-  const [consentData, setConsentData] = React.useState([]);
-  const [status, setStatus] = React.useState(false);
-  const [errorList, setErrorList] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [edit, setEdit] = React.useState(false);
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [data, setDataa] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const [facilities, setFacilities] = useState([]);
+  const [propertyFacilities, setPropertyFacilities] = useState({});
+  const [properties, setProperties] = useState([]);
+  const [enumOptions, setEnumOptions] = useState();
+  const [consentData, setConsentData] = useState([]);
+  const [status, setStatus] = useState(false);
+  const [errorList, setErrorList] = useState();
+  const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const { id } = useParams();
-  const [showCheckboxes, setShowCheckboxes] = React.useState(false);
-  const [selectedRows, setSelectedRows] = React.useState([]);
-  const [campId, setCampId] = React.useState();
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
       const campConsent = await campService.getCampAdminConsent({
@@ -277,7 +273,7 @@ export default function View({ footerLinks }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     try {
       const result = await campService.getFacilatorAdminCampList({ id });
@@ -320,7 +316,7 @@ export default function View({ footerLinks }) {
     return send;
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     const qData = await enumRegistryService.listOfEnum();
     const data = qData?.data?.CAMP_PROPERTY_FACILITIES;
@@ -344,13 +340,11 @@ export default function View({ footerLinks }) {
   };
 
   const handleSelectRow = useCallback(
-    (state, id) => {
-      const campId = Number(id);
+    (state) => {
       const arr = state?.selectedRows;
       setSelectedRows(arr);
-      setCampId(campId);
     },
-    [setSelectedRows, setCampId]
+    [setSelectedRows]
   );
 
   // Table component
