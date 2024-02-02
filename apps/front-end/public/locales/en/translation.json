@@ -10,6 +10,7 @@
   "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER": "Aadhaar first number should be grater than 1 and 12 digit valid number",
   "AADHAAR_NO": "Aadhaar No",
   "AADHAAR_NUMBER": "Aadhaar Number",
+  "TERMS_AND_CONDITIONS": "* Terms and Conditions",
   "AADHAAR_NUMBER_ALREADY_EXISTS": "Aadhaar number already exists",
   "AADHAAR_NUMBER_KYC": "Aadhaar Number KYC",
   "AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCH_MESSAGE": "The Aadhaar number does not match. Please contact IP and correct details and repeat OKYC.",
