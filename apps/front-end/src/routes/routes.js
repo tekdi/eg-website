@@ -7,6 +7,14 @@ const FacilitatorRegister = lazy(() =>
 const FacilitatorOnboarding = lazy(() =>
   import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
 );
+
+const FooterTest = lazy(() =>
+  import("v2/components/Static/PageFooter/FooterTest")
+);
+
+const FooterTestRoute1 = lazy(() =>
+  import("v2/components/Static/PageFooter/FooterTestRoute1")
+);
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
@@ -352,5 +360,9 @@ export default [
     component: FacilitatorOnboarding,
   },
   { path: "/profile/edit/:step/:photoNo", component: FacilitatorOnboarding },
+
+  { path: "/footerTest", component: FooterTest },
+  { path: "/footerTestRoute1", component: FooterTestRoute1 },
+
   //end v2 code
 ];

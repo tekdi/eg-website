@@ -114,6 +114,13 @@ function FacilitatorOnboarding() {
     "aadhaar_details",
   ];
   const arrayformValue = ["vo_experience", "experience"];
+
+  // Define the footer links
+  const footerLinks = [
+    { title: "Home", route: "/" },
+    { title: "About", route: "/about" },
+    // Add more links as needed
+  ];
   const Show_Edit_details = () => {
     if (formValue.includes(activeScreenName)) {
       return (
@@ -122,6 +129,7 @@ function FacilitatorOnboarding() {
           showAppBar={true}
           funBackButton={funBackButton}
           showHelpButton={true}
+          _footer={{ menues: footerLinks }}
           customComponent={
             <PrerakOnboardingForm
               userTokenInfo={userTokenInfo}

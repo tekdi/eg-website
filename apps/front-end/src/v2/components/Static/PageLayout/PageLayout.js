@@ -1,7 +1,9 @@
-import React from "react";
-import { Box, Center, Stack, ScrollView } from "native-base";
+// PageLayout.jsx
+import React, { useState } from "react";
+import { Center, ScrollView } from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";
 import PageHeader from "../PageHeader/PageHeader";
+import PageFooter from "../PageFooter/PageFooter";
 
 export default function PageLayout({
   t,
@@ -12,8 +14,16 @@ export default function PageLayout({
   funBackButton,
   showLangChange,
   funLangChange,
+  _footer,
+  getRefFoot,
 }) {
   const [width, height] = getWindowSize();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleTabPress = (index) => {
+    setActiveIndex(index);
+  };
+
   return (
     <Center>
       {isPageMiddle ? (
@@ -41,7 +51,14 @@ export default function PageLayout({
           ) : (
             <></>
           )}
+
           {customComponent ? customComponent : <></>}
+
+          <PageFooter
+            t={t}
+            activeIndex={activeIndex}
+            onTabPress={handleTabPress}
+          />
         </ScrollView>
       )}
     </Center>

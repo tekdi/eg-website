@@ -43,6 +43,7 @@
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.0",
     "react-zoom-pan-pinch": "^3.1.0",
+    "remixicon-react": "^1.0.0",
     "styled-components": "^5.3.11",
     "use-screenshot-hook": "^1.0.2",
     "web-vitals": "^0.2.4",
