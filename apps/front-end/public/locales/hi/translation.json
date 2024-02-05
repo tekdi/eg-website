@@ -642,6 +642,7 @@
   "IDENTIFY_BENEFICIARY": "शिक्षार्थी की पहचान करें",
   "IDENTIFY_THE_AG_LEARNER": "शिक्षार्थी की पहचान करें",
   "IDENTITY_VERIFICATION": "पहचान वेरिफिकेशन",
+  "IMAGE_DIMENSIONS_MESSAGE": "फोटो का डाइमेंशन्स कम से कम 1024x768 होना चाहिए।",
   "IN_PROGRESS": "कार्य प्रगति पर है",
   "INACTIVE_GOVERNMENT_PRIVATE_SCHOOL": "निष्क्रिय सरकारी/निजी स्कूल",
   "INCOMPLETE": "पूरा नही",
