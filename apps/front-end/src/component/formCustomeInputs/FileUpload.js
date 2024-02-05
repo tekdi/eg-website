@@ -5,7 +5,7 @@ import {
   uploadRegistryService,
 } from "@shiksha/common-lib";
 import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 
@@ -22,11 +22,11 @@ const FileUpload = ({ value, onChange, schema }) => {
     height,
   } = schema || {};
 
-  const uplodInputRef = React.useRef();
-  const [loading, setLoading] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [errors, setErrors] = React.useState({});
-  const [file, setFile] = React.useState();
+  const uplodInputRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [errors, setErrors] = useState({});
+  const [file, setFile] = useState();
   const { t } = useTranslation();
   const uploadProfile = async (file) => {
     setLoading(true);
@@ -57,30 +57,54 @@ const FileUpload = ({ value, onChange, schema }) => {
   };
 
   const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file["type"] === "application/pdf") {
+    setErrors(null); // Clear any previous errors
+
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (file.type === "application/pdf") {
       uploadProfile(file);
-    } else if (file && file.size <= 1048576 * 10) {
-      if (file instanceof File) {
-        const maxWidthOrHeight = Math.max(width || 1280, height || 740);
-        const compressedImage = await imageCompression(file, {
-          maxSizeMB: 0.1,
-          maxWidthOrHeight,
-          useWebWorker: true,
-        });
+    } else {
+      const maxWidthOrHeight = Math.max(1280, 740);
 
-        const uploadFile = new File([compressedImage], file.name, {
-          type: file.type,
-        });
+      // Compress the image
+      const compressedImage = await imageCompression(file, {
+        maxSizeMB: 0.1,
+        maxWidthOrHeight,
+        useWebWorker: true,
+      });
 
-        uploadProfile(uploadFile);
-      } else {
-        setErrors({ fileSize: t("FILE_SIZE") });
-      }
+      // Read the compressed image to get its dimensions
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = function () {
+          const imageWidth = this.width;
+          const imageHeight = this.height;
+
+          if (imageWidth < 1024 || imageHeight < 768) {
+            setErrors({
+              imageSize: t("IMAGE_DIMENSIONS_MESSAGE"),
+            });
+          } else {
+            const uploadFile = new File([compressedImage], file.name, {
+              type: file.type,
+            });
+            uploadProfile(uploadFile);
+          }
+        };
+      };
+
+      reader.readAsDataURL(compressedImage);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFile(value);
   }, [value]);
 
@@ -166,6 +190,9 @@ const FileUpload = ({ value, onChange, schema }) => {
       )}
       {errors?.fileSize && (
         <FrontEndTypo.H2 color="red.400">{errors?.fileSize}</FrontEndTypo.H2>
+      )}
+      {errors?.imageSize && (
+        <FrontEndTypo.H2 color="red.400">{errors?.imageSize}</FrontEndTypo.H2>
       )}
     </VStack>
   );

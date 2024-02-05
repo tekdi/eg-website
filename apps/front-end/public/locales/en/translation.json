@@ -643,6 +643,7 @@
   "IDENTIFY_BENEFICIARY": "Identify Learner",
   "IDENTIFY_THE_AG_LEARNER": "Identify Learner",
   "IDENTITY_VERIFICATION": "Identity Verification",
+  "IMAGE_DIMENSIONS_MESSAGE": "Image dimensions must be at least 1024x768.",
   "IN_PROGRESS": "In Progress",
   "INACTIVE_GOVERNMENT_PRIVATE_SCHOOL": "Inactive Government / Private Schools",
   "INCOMPLETE": "Incomplete",
