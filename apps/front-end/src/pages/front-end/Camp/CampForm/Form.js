@@ -45,6 +45,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   const [isEdit] = React.useState(true);
   const [campDetails, setCampDetails] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
+  const programSelected = jsonParse(localStorage.getItem("program"));
 
   const getLocation = async () => {
     setLoading(true);
@@ -202,7 +203,6 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
     if (schema?.properties?.district) {
-      let programSelected = jsonParse(localStorage.getItem("program"));
       await setDistric({
         schemaData: newSchema,
         state: programSelected?.state_name,
@@ -435,17 +435,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
-    setFormData(newData);
-
-    if (id === "root_state") {
-      await setDistric({
-        schemaData: schema,
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-      });
-    }
-
+    setFormData({ ...newData, state: programSelected?.state_name });
     if (id === "root_district") {
       await setBlock({
         district: data?.district,
