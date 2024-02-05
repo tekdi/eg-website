@@ -57,7 +57,7 @@ const FileUpload = ({ value, onChange, schema }) => {
   };
 
   const handleFileInputChange = async (e) => {
-    setErrors(null); // Clear any previous errors
+    setErrors({}); // Clear any previous errors
 
     const file = e.target.files[0];
 
