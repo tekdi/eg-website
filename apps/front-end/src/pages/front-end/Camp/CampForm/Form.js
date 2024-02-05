@@ -202,19 +202,10 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
     if (schema?.properties?.district) {
-      const qData = await geolocationRegistryService.getStates();
-
-      if (schema?.["properties"]?.["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData?.states,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
+      let programSelected = jsonParse(localStorage.getItem("program"));
       await setDistric({
         schemaData: newSchema,
-        state: formData?.state,
+        state: programSelected?.state_name,
         district: formData?.district,
         block: formData?.block,
         gramp: formData?.grampanchayat,

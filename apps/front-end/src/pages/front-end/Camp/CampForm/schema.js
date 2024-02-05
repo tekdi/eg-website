@@ -6,7 +6,6 @@ export default {
       type: "object",
       required: [
         "property_type",
-        "state",
         "district",
         "block",
         "village",
@@ -27,11 +26,6 @@ export default {
         street: {
           title: "STREET_ADDRESS",
           type: ["string", "null"],
-        },
-        state: {
-          title: "STATE",
-          type: "string",
-          format: "select",
         },
         district: {
           title: "DISTRICT",
