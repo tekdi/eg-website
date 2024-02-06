@@ -44,6 +44,7 @@
   "ADD_AADHAAR_NUMBER_ERROR_MESSAGE": "First Enter your Aadhaar number and then proceed to Aadhaar number KYC.",
   "ADD_ADDRESS": "Add address",
   "ADD_AG_PROFILE_PHOTO": "Add Learner's Profile Photo",
+  "ADD_AG_PROFILE_PHOTO_INSTRUCTION": "The photo should be clear, full face, front view and eyes should be open.",
   "Add_AGS_PROFILE": "Add Learner's Profile Photo",
   "ADD_AN_AG": "Add Learner",
   "ADD_AN_AG_LEARNER": "Add Learner",
