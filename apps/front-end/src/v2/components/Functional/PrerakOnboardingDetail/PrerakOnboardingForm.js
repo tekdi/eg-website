@@ -911,6 +911,7 @@ export default function PrerakOnboardingForm({
   if (page === "upload") {
     return (
       <PhotoUpload
+        key={facilitator}
         {...{
           formData,
           cameraFile,
