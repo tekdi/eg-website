@@ -1,4 +1,3 @@
-// PageLayout.jsx
 import React, { useState } from "react";
 import { Center, ScrollView } from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";
@@ -14,8 +13,6 @@ export default function PageLayout({
   funBackButton,
   showLangChange,
   funLangChange,
-  _footer,
-  getRefFoot,
 }) {
   const [width, height] = getWindowSize();
   const [activeIndex, setActiveIndex] = useState(0);

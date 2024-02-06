@@ -1,16 +1,14 @@
-// PageFooter.jsx
 import React, { useEffect, useState } from "react";
 import { Box, Text, HStack, Center, VStack, useTheme } from "native-base";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getWindowSize } from "../../../utils/Helper/JSHelper";
 import { IconByName } from "@shiksha/common-lib";
 
-const PageFooter = ({ activeIndex, onTabPress, ...props }) => {
+const PageFooter = ({ t, activeIndex, onTabPress }) => {
   const { t } = useTranslation();
   const [width] = getWindowSize();
   const { colors } = useTheme();
-  const { pathname } = useLocation();
 
   const menus = [
     {
@@ -28,29 +26,15 @@ const PageFooter = ({ activeIndex, onTabPress, ...props }) => {
     { title: "Dashboards", route: "/table", icon: "DashboardLineIcon" },
   ];
 
-  useEffect(() => {
-    const selectedIndex = menus.findIndex((item) =>
-      pathname.startsWith(item.route)
-    );
-    onTabPress(selectedIndex >= 0 ? selectedIndex : 0);
-  }, [pathname, menus, onTabPress]);
-
   return (
-    <Box
-      width={width}
-      flex={1}
-      safeAreaTop
-      position="fixed"
-      bottom="0"
-      {...props}
-    >
+    <Box width={width} flex={1} safeAreaTop position="fixed" bottom="0">
       <HStack bg="white" alignItems="center" safeAreaBottom shadow={6}>
         {menus.map((item, index) => (
           <Link
             key={index}
             style={{ flex: 1, textDecoration: "none" }}
             to={item.route}
-            onClick={() => onTabPress(index)} // Update selected tab on click
+            onClick={() => onTabPress(index)}
           >
             <Center>
               <VStack alignItems="center">
@@ -62,6 +46,7 @@ const PageFooter = ({ activeIndex, onTabPress, ...props }) => {
                   borderTopWidth={4}
                   roundedBottom="4px"
                 />
+                {console.log("activeIndex", activeIndex, "index", index)}
                 <VStack py="3" alignItems="center">
                   <IconByName
                     name={item?.icon}

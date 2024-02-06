@@ -1,8 +1,5 @@
-// FooterTestRoute1.jsx
 import React from "react";
 import PageLayout from "../PageLayout/PageLayout";
-import getWindowSize from "v2/utils/Helper/JSHelper";
-import PageFooter from "./PageFooter";
 
 const FooterTest = ({ menus }) => {
   const handleBackButton = () => {
@@ -11,10 +8,6 @@ const FooterTest = ({ menus }) => {
 
   const handleLangChange = () => {
     console.log("Language change clicked");
-  };
-
-  const handleHelpButton = () => {
-    console.log("Help button clicked");
   };
 
   const pageLayoutProps = {
