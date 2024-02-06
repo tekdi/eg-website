@@ -17,9 +17,9 @@ const SetConsentLang = () => {
       </FrontEndTypo.H4>
       <FrontEndTypo.H4>{ConsentJson?.TEXT_2}</FrontEndTypo.H4>
       <FrontEndTypo.H4>{ConsentJson?.TEXT_3}</FrontEndTypo.H4>
-      <FrontEndTypo.H3 textAlign={"center"}>
+      <FrontEndTypo.H4 textAlign={"center"}>
         {ConsentJson?.TEXT_4}
-      </FrontEndTypo.H3>
+      </FrontEndTypo.H4>
     </VStack>
   );
 };
