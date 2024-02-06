@@ -99,7 +99,7 @@ export default function PrerakOnboardingForm({
             };
             setFormData({
               ...newData,
-              has_diploma: result?.core_faciltator?.has_diploma,
+              has_diploma: result?.core_faciltator?.has_diploma || undefined,
               diploma_details:
                 result?.core_faciltator?.diploma_details || undefined,
             });
@@ -247,7 +247,7 @@ export default function PrerakOnboardingForm({
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
       const required = constantSchema?.required.filter((item) =>
-        ["has_diploma"].includes(item)
+        ["has_diploma", "qualification_ids"].includes(item)
       );
       setSchemaData({ ...constantSchema, properties, required });
     } else if (hasDiploma) {
@@ -553,6 +553,15 @@ export default function PrerakOnboardingForm({
         if (validation) {
           errors?.aadhar_no?.addError(`${t(validation)}`);
         }
+      }
+    }
+    if (step === "qualification_details") {
+      if (data?.qualification_ids.length === 0) {
+        errors?.qualification_ids?.addError(
+          `${t("REQUIRED_MESSAGE")} "${t(
+            schema?.properties?.qualification_ids?.label
+          )}"`
+        );
       }
     }
     return errors;
