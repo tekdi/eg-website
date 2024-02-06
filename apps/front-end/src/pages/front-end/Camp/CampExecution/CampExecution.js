@@ -109,17 +109,20 @@ export default function CampExecution({ footerLinks, setAlert }) {
 
   const startCamp = async () => {
     setLoading(true);
-    if (activeChip) {
+    if (activeChip && cameraFile) {
       const payLoad = {
         camp_id: id,
         camp_day_happening: "yes",
         mood: activeChip,
+        ...data,
+        photo_1: `${cameraFile}`,
       };
-      const data = await campService.campActivity(payLoad);
-      const activitiesData = data?.insert_camp_days_activities_tracker_one;
-      uploadAttendencePicture(activitiesData?.id);
+      const result = await campService.campActivity(payLoad);
+      const activitiesData = result?.insert_camp_days_activities_tracker_one;
       setActivityId(activitiesData?.id);
       setTodaysActivity(activitiesData);
+      setCameraFile();
+      setCameraUrl();
     } else {
       setError("SELECT_MESSAGE");
     }
@@ -138,23 +141,23 @@ export default function CampExecution({ footerLinks, setAlert }) {
   };
 
   // uploadAttendencePicture from start camp
-  const uploadAttendencePicture = async (activitiesId) => {
-    if (cameraFile) {
-      const dataQ = {
-        ...data,
-        context_id: activitiesId,
-        user_id: facilitator?.id,
-        status: "present",
-        reason: "camp_started",
-        photo_1: `${cameraFile}`,
-      };
-      await campService.markCampAttendance(dataQ);
-      setCameraFile();
-    } else {
-      setError("Capture Picture First");
-    }
-    setCameraUrl();
-  };
+  // const uploadAttendencePicture = async (activitiesId) => {
+  //   if (cameraFile) {
+  //     const dataQ = {
+  //       ...data,
+  //       context_id: activitiesId,
+  //       user_id: facilitator?.id,
+  //       status: "present",
+  //       reason: "camp_started",
+  //       photo_1: `${cameraFile}`,
+  //     };
+  //     await campService.markCampAttendance(dataQ);
+  //     setCameraFile();
+  //   } else {
+  //     setError("Capture Picture First");
+  //   }
+  //   setCameraUrl();
+  // };
 
   const getAccess = React.useCallback(async () => {
     if (
@@ -207,6 +210,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
               setStart(e);
             },
             cameraUrl,
+            filePreFix: `camp_prerak_attendace_user_id_${facilitator?.id}_`,
             setCameraUrl: async (url, file) => {
               setProgress(0);
               if (file) {
@@ -326,7 +330,9 @@ export default function CampExecution({ footerLinks, setAlert }) {
   } else if (page === "endcamp") {
     return (
       <React.Suspense fallback={<Loading />}>
-        <CampExecutionEnd {...{ learnerCount, todaysActivity, facilitator }} />
+        <CampExecutionEnd
+          {...{ learnerCount, todaysActivity, facilitator, todaysActivity }}
+        />
       </React.Suspense>
     );
   } else if (page === "attendance") {
