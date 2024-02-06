@@ -1063,6 +1063,7 @@
   "REFERENCE_CONTACT_DETAILS": "Reference Contact Details",
   "REFERENCE_DETAILS": "Reference Details",
   "REFERENCE_FULL_NAME": "Reference Full Name",
+  "REFERENCE_DETAILS_INSTRUCTION": "Details of the person who knows you well and from whom information about you can be sought. This person should not be a family member.",
   "REFERENCE_NUMBER_SHOULD_NOT_BE_SAME": "Reference contact number should not be same as your number",
   "REFRESH_ASSESSMENT_MESSAGE": "Are you sure you want to reload, all the progress will be lost?",
   "REGION": "Region",
