@@ -14,6 +14,7 @@ import {
   BodyMedium,
   GetEnumValue,
   mapDistance,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -542,7 +543,18 @@ export default function View({ footerLinks }) {
           <CardComponent
             _vstack={{ bg: "light.100", flex: 2, space: 4 }}
             _header={{ bg: "light.100" }}
-            title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+            title={
+              <VStack>
+                <FrontEndTypo.H1>
+                  {t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+                </FrontEndTypo.H1>
+                <FrontEndTypo.H4>
+                  {t("SELECTED_LEARNER_COUNT") +
+                    " : " +
+                    `${selectedRows?.length}`}
+                </FrontEndTypo.H4>
+              </VStack>
+            }
             onEdit={edit && navTOedit("edit_family_consent")}
             onButtonClick={
               data?.group?.status !== "camp_initiated" && handleButtonClick
