@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
+import PropTypes from "prop-types";
 import {
   geolocationRegistryService,
   Layout,
@@ -28,23 +29,24 @@ import CampSelectedLearners from "../CampSelectedLearners.js";
 import CampKitMaterialDetails from "../CampKitMaterialDetails.js";
 
 // App
-export default function App({ userTokenInfo, footerLinks }) {
+export default function App({ footerLinks }) {
   const { step } = useParams();
   const { id } = useParams();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState();
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = React.useState(false);
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const formRef = useRef();
+  const [formData, setFormData] = useState();
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isEdit] = React.useState(true);
-  const [campDetails, setCampDetails] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState({});
+  const [isEdit] = useState(true);
+  const [campDetails, setCampDetails] = useState();
+  const [enumOptions, setEnumOptions] = useState({});
+  const programSelected = jsonParse(localStorage.getItem("program"));
 
   const getLocation = async () => {
     setLoading(true);
@@ -63,14 +65,14 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     const result = await campService.getCampDetails({ id });
     setCampDetails(result?.data);
     setLoading(false);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     if (step === "edit_camp_location") {
       getLocation();
@@ -154,7 +156,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     fetchData();
 
@@ -163,7 +165,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     };
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const facilitiesData = enumOptions?.CAMP_PROPERTY_FACILITIES;
     if (step === "edit_property_facilities") {
       const properties = schema1.properties;
@@ -191,7 +193,7 @@ export default function App({ userTokenInfo, footerLinks }) {
   }, [step, campDetails]);
 
   // update schema
-  React.useEffect(async () => {
+  useEffect(async () => {
     let newSchema = schema;
     if (schema?.["properties"]?.["property_type"]) {
       newSchema = getOptions(newSchema, {
@@ -202,19 +204,9 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
     if (schema?.properties?.district) {
-      const qData = await geolocationRegistryService.getStates();
-
-      if (schema?.["properties"]?.["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData?.states,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
       await setDistric({
         schemaData: newSchema,
-        state: formData?.state,
+        state: programSelected?.state_name,
         district: formData?.district,
         block: formData?.block,
         gramp: formData?.grampanchayat,
@@ -222,7 +214,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
   }, [enumOptions, page, formData]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -444,17 +436,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
-    setFormData(newData);
-
-    if (id === "root_state") {
-      await setDistric({
-        schemaData: schema,
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-      });
-    }
-
+    setFormData({ ...newData, state: programSelected?.state_name });
     if (id === "root_district") {
       await setBlock({
         district: data?.district,
@@ -608,3 +590,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+Form.PropTypes = {
+  footerLinks: PropTypes.any,
+};
