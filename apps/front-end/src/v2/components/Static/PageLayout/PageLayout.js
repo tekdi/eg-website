@@ -1,3 +1,4 @@
+// PageLayout.jsx
 import React, { useState } from "react";
 import { Center, ScrollView } from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";

@@ -1,3 +1,4 @@
+// PageFooter.jsx
 import React, { useEffect, useState } from "react";
 import { Box, Text, HStack, Center, VStack, useTheme } from "native-base";
 import { Link } from "react-router-dom";
@@ -5,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getWindowSize } from "../../../utils/Helper/JSHelper";
 import { IconByName } from "@shiksha/common-lib";
 
-const PageFooter = ({ t, activeIndex, onTabPress }) => {
+const PageFooter = ({ activeIndex, onTabPress }) => {
   const { t } = useTranslation();
   const [width] = getWindowSize();
   const { colors } = useTheme();
@@ -46,7 +47,6 @@ const PageFooter = ({ t, activeIndex, onTabPress }) => {
                   borderTopWidth={4}
                   roundedBottom="4px"
                 />
-                {console.log("activeIndex", activeIndex, "index", index)}
                 <VStack py="3" alignItems="center">
                   <IconByName
                     name={item?.icon}
