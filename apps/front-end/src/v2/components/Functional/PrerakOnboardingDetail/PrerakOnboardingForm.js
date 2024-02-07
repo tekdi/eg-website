@@ -139,7 +139,7 @@ export default function PrerakOnboardingForm({
     };
 
     fetchData();
-  }, [step]);
+  }, [step, qualifications]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -880,6 +880,25 @@ export default function PrerakOnboardingForm({
     }
     if (id === "root_has_diploma") {
       updateSchemaBasedOnDiploma(data?.has_diploma);
+    }
+
+    if (id === "root_qualification_ids") {
+      if (
+        formData?.qualification_ids.includes("11") &&
+        data?.qualification_ids?.length <= 1
+      ) {
+        setFormData({ ...formData, qualification_ids: ["11"] });
+      } else if (
+        data?.qualification_ids.includes("11") &&
+        !formData?.qualification_ids.includes("11")
+      ) {
+        setFormData({ ...formData, qualification_ids: ["11"] });
+      } else {
+        setFormData({
+          ...formData,
+          qualification_ids: data?.qualification_ids?.filter((e) => e !== "11"),
+        });
+      }
     }
   };
 
