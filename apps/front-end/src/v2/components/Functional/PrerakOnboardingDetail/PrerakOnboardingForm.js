@@ -883,11 +883,26 @@ export default function PrerakOnboardingForm({
     }
 
     if (id === "root_qualification_ids") {
-      if (data?.qualification_ids.includes("11")) {
+      if (
+        formData?.qualification_ids.includes("11") &&
+        data?.qualification_ids?.length <= 1
+      ) {
         setFormData({ ...formData, qualification_ids: ["11"] });
+      } else if (
+        data?.qualification_ids.includes("11") &&
+        !formData?.qualification_ids.includes("11")
+      ) {
+        setFormData({ ...formData, qualification_ids: ["11"] });
+      } else {
+        setFormData({
+          ...formData,
+          qualification_ids: data?.qualification_ids?.filter((e) => e !== "11"),
+        });
       }
     }
   };
+
+  console.log(formData?.qualification_ids);
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
