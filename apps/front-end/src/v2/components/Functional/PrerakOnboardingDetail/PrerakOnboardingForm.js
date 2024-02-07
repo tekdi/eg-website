@@ -139,7 +139,7 @@ export default function PrerakOnboardingForm({
     };
 
     fetchData();
-  }, [step]);
+  }, [step, qualifications]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -880,6 +880,12 @@ export default function PrerakOnboardingForm({
     }
     if (id === "root_has_diploma") {
       updateSchemaBasedOnDiploma(data?.has_diploma);
+    }
+
+    if (id === "root_qualification_ids") {
+      if (data?.qualification_ids.includes("11")) {
+        setFormData({ ...formData, qualification_ids: ["11"] });
+      }
     }
   };
 
