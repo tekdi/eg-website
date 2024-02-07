@@ -252,6 +252,7 @@ export default function App({ footerLinks }) {
       if (step === "edit_camp_location") {
         result = await campService.updateCampDetails({
           ...data,
+          state: programSelected?.state_name,
           edit_page_type: step,
           ...(overide || {}),
           id: id,
