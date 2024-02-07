@@ -6,35 +6,26 @@ import {
   CardComponent,
   IconByName,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampExecutionEnd({ facilitator, learnerCount }) {
+export default function CampExecutionEnd({
+  facilitator,
+  learnerCount,
+  todaysActivity,
+}) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [error, setError] = useState();
   const [miscActivities, setMiscActivities] = useState();
   const [disable, setDisable] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sessionList, setSessionList] = useState(false);
   const [learnerAttendanceCount, setLearnerAttendanceCount] = useState(false);
-  const [todaysActivity, setTodaysActivity] = useState();
 
   const navigate = useNavigate();
-
-  useEffect(async () => {
-    const obj = {
-      id: id,
-      start_date: moment(new Date()).format("YYYY-MM-DD"),
-    };
-    const data = await campService.getActivity(obj);
-    const activity = data?.data?.camp_days_activities_tracker;
-    setTodaysActivity(activity?.[0] || {});
-  }, []);
 
   useEffect(async () => {
     if (todaysActivity?.id) {
@@ -142,14 +133,6 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
             <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
           </HStack>
         </Alert>
-        {error && (
-          <Alert status="danger">
-            <HStack alignItems={"center"} space={2}>
-              <Alert.Icon />
-              <FrontEndTypo.H3>{t(error)}</FrontEndTypo.H3>
-            </HStack>
-          </Alert>
-        )}
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
         >

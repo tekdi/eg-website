@@ -286,6 +286,7 @@ export default function CampAttendancePage({ activityId }) {
               setUserData();
             },
             cameraUrl,
+            filePreFix: `camp_leaner_attendace_user_id_${userData?.id}_`,
             setCameraUrl: async (url, file) => {
               setProgress(0);
               if (file) {
