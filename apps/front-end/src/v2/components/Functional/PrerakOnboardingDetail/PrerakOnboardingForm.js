@@ -902,8 +902,6 @@ export default function PrerakOnboardingForm({
     }
   };
 
-  console.log(formData?.qualification_ids);
-
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
