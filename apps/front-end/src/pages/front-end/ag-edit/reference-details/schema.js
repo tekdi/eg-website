@@ -5,6 +5,7 @@ export default {
   properties: {
     1: {
       title: "REFERENCE_DETAILS",
+      description: "REFERENCE_DETAILS_INSTRUCTION",
       type: "object",
       properties: {
         referencefullname: {
