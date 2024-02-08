@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, VStack } from "native-base";
 import {
   Layout,
@@ -15,7 +15,7 @@ export default function BenificiaryProfilePhoto() {
   const { t } = useTranslation();
   const { id, photoNo } = useParams();
   const page = photoNo ? parseInt(photoNo) : 1;
-  const [file, setFile] = React.useState();
+  const [file, setFile] = useState();
   const [benificiary, setBenificiary] = useState({});
 
   const onPressBackButton = () => {
@@ -26,12 +26,12 @@ export default function BenificiaryProfilePhoto() {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
   }, [id, photoNo]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!(page < 4)) {
       navigate(`/beneficiary/${id}/basicdetails`);
     }
@@ -60,6 +60,7 @@ export default function BenificiaryProfilePhoto() {
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),
             }}
+            key={page}
             value={file?.id}
             onChange={(e) => console.log(e)}
           />
