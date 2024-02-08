@@ -49,7 +49,7 @@ export function AddButton({ icon, iconType, ...btnProps }) {
   );
 }
 
-AddButton.PropTypes = {
+AddButton.propTypes = {
   icon: PropTypes.any,
   iconType: PropTypes.any,
   btnProps: PropTypes.any,
@@ -67,7 +67,7 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
   );
 }
 
-RemoveButton.PropTypes = {
+RemoveButton.propTypes = {
   icon: PropTypes.any,
   iconType: PropTypes.any,
   btnProps: PropTypes.any,
@@ -479,7 +479,7 @@ select.propTypes = {
   schema: PropTypes.any,
 };
 // rjsf custom readOnly field
-export const ReadOnly = ({ value, onChange, required, schema }) => {
+export const ReadOnly = ({ value, required, schema }) => {
   const { title } = schema || {};
   const { t } = useTranslation();
   return (
@@ -503,8 +503,12 @@ export const ReadOnly = ({ value, onChange, required, schema }) => {
     </HStack>
   );
 };
-
-export const Location = ({ value, onChange, required, schema }) => {
+ReadOnly.propTypes = {
+  value: PropTypes.any,
+  required: PropTypes.any,
+  schema: PropTypes.any,
+};
+export const Location = ({ value, onChange, schema }) => {
   const { lat, long } = schema || {};
   const { t } = useTranslation();
   const [latData, longData, error] = useLocationData() || [];
@@ -537,6 +541,11 @@ export const Location = ({ value, onChange, required, schema }) => {
       <Button onPress={updateValue}>{t("UPDATE")}</Button>
     </HStack>
   );
+};
+Location.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  schema: PropTypes.any,
 };
 
 // rjsf custom HFieldTemplate title layout Template use in orientation
@@ -593,7 +602,17 @@ export const HFieldTemplate = ({
     </HStack>
   );
 };
-
+HFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  style: PropTypes.any,
+  label: PropTypes.any,
+  help: PropTypes.any,
+  description: PropTypes.any,
+  errors: PropTypes.any,
+  required: PropTypes.any,
+  schema: PropTypes.any,
+  children: PropTypes.any,
+};
 // rjsf custom MultiCheck field
 export const MultiCheck = ({
   options,
@@ -676,6 +695,13 @@ export const MultiCheck = ({
     </FormControl>
   );
 };
+MultiCheck.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  schema: PropTypes.any,
+  required: PropTypes.any,
+};
 
 // select between 2 values radio button (yes or no)
 const CheckUncheck = ({ required, schema, value, onChange }) => {
@@ -707,16 +733,14 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
     </HStack>
   );
 };
-
+CheckUncheck.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  schema: PropTypes.any,
+  required: PropTypes.any,
+};
 // rjsf custom textarea field
-const Textarea = ({
-  schema,
-  options,
-  value,
-  onChange,
-  required,
-  isInvalid,
-}) => {
+const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
   const [isFocus, setIsfocus] = useState(false);
   const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
@@ -777,7 +801,13 @@ const Textarea = ({
     </FormControl>
   );
 };
-
+Textarea.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  schema: PropTypes.any,
+  required: PropTypes.any,
+  isInvalid: PropTypes.any,
+};
 const validator = customizeValidator({
   customFormats: {
     MobileNumber: /^[6-9]\d{8}9$/,
