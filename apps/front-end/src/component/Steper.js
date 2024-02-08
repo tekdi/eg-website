@@ -1,6 +1,7 @@
 import { IconByName } from "@shiksha/common-lib";
 import { Box, HStack, Stack, Text, VStack, useTheme } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 const Circal = ({ text, color, size, ...props }) => (
   <VStack>
@@ -16,7 +17,11 @@ const Circal = ({ text, color, size, ...props }) => (
     <Text fontSize={size ? size : "12px"}>{text}</Text>
   </VStack>
 );
-
+Circal.propTypes = {
+  text: PropTypes.any,
+  color: PropTypes.any,
+  size: PropTypes.any,
+};
 export default function Steper({
   type,
   steps,
@@ -27,14 +32,14 @@ export default function Steper({
   bg,
 }) {
   progress = !isNaN(parseInt(progress)) ? parseInt(progress) : 0;
-  const [per, setPer] = React.useState(0);
-  const [stepPer, setStepPer] = React.useState(0);
-  const [stage, setStage] = React.useState({});
+  const [per, setPer] = useState(0);
+  const [stepPer, setStepPer] = useState(0);
+  const [stage, setStage] = useState({});
   const { colors } = useTheme();
   const ncColor = cColor ? cColor : colors?.["textMaroonColor"]?.["600"];
   const nrColor = rColor ? rColor : colors?.["textMaroonColor"]?.["350"];
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (steps?.length > 0) {
       let newPer = 0;
       let stpeTotal = 0;
@@ -81,6 +86,15 @@ export default function Steper({
     />
   );
 }
+Steper.propTypes = {
+  type: PropTypes.any,
+  steps: PropTypes.any,
+  progress: PropTypes.any,
+  cColor: PropTypes.any,
+  rColor: PropTypes.any,
+  size: PropTypes.any,
+  bg: PropTypes.any,
+};
 
 const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
   return (
@@ -135,7 +149,14 @@ const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
     </Box>
   );
 };
-
+LineSteper.propTypes = {
+  per: PropTypes.any,
+  stepPer: PropTypes.any,
+  steps: PropTypes.any,
+  cColor: PropTypes.any,
+  rColor: PropTypes.any,
+  size: PropTypes.any,
+};
 const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
   const nSize = parseInt(size ? size : "40px");
   const fontSize = Math.floor(nSize / 5);
@@ -206,4 +227,13 @@ const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
       )}
     </HStack>
   );
+};
+CircalSteper.propTypes = {
+  steps: PropTypes.any,
+  size: PropTypes.any,
+  cColor: PropTypes.any,
+  rColor: PropTypes.any,
+  bg: PropTypes.any,
+  per: PropTypes.any,
+  stage: PropTypes.any,
 };
