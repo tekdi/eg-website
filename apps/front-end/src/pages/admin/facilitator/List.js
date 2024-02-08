@@ -214,10 +214,19 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchFilteredData();
   }, [filter]);
 
-  const setFilterObject = useCallback((data) => {
-    setFilter(data);
-    setQueryParameters(data);
-  }, []);
+  const setFilterObject = useCallback(
+    (data) => {
+      setFilter((prevFilter) => {
+        if (prevFilter?.length > 0) {
+          return prevFilter;
+        } else {
+          return data;
+        }
+      });
+      setQueryParameters(data);
+    },
+    [setFilter, setQueryParameters]
+  );
 
   useEffect(() => {
     const arr = ["district", "block", "qualificationIds", "status"];
@@ -490,8 +499,8 @@ export default function List({ footerLinks, userTokenInfo }) {
 
         <Box flex={[5, 5, 4]}>
           <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
+            maxH={Height - refAppBar?.clientHeight - 72}
+            minH={Height - refAppBar?.clientHeight - 72}
           >
             <Box roundedBottom={"2xl"} pl="0" py={6} px={4} mb={5}>
               <Table

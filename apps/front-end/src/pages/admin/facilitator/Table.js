@@ -1,6 +1,5 @@
 import {
   IconByName,
-  ImageView,
   AdminTypo,
   tableCustomStyles,
   enumRegistryService,
@@ -8,7 +7,7 @@ import {
 import { ChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useState, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -16,9 +15,7 @@ import { useNavigate } from "react-router-dom";
 const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack>
-        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
-      </HStack>
+      <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
     </Pressable>
   );
 };
@@ -44,13 +41,13 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
       {
         name: t("NAME"),
         selector: (row) => (
-          <HStack>
+          <HStack display="inline-block" width={"100%"}>
             <Pressable
               style={{ flexDirection: "row", justifyContent: "space-between" }}
               onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
             >
-              <HStack alignItems={"center"} space={2}>
-                {row?.profile_photo_1?.name ? (
+              {/* <HStack alignItems={"center"}> */}
+              {/* {row?.profile_photo_1?.name ? (
                   <ImageView
                     urlObject={row?.profile_photo_1}
                     alt="Alternate Text"
@@ -64,30 +61,27 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
                     color="gray.300"
                     _icon={{ size: "35" }}
                   />
-                )}
-                <AdminTypo.H6 bold>
-                  {`${row?.first_name} ${row?.last_name || ""}`}
-                </AdminTypo.H6>
-              </HStack>
+                )} */}
+              <AdminTypo.H6 bold word-wrap="break-word" dispa>
+                {`${row?.first_name} ${row?.last_name || ""}`}
+              </AdminTypo.H6>
+              {/* </HStack> */}
             </Pressable>
           </HStack>
         ),
         attr: "name",
-        wrap: "true",
-        width: "250px",
+        width: "150px",
+        wrap: true,
       },
       {
         name: t("DISTRICT"),
-        selector: (row) => (row?.district ? row?.district : "-"),
+        selector: (row) => row?.district || "-",
       },
       {
-        name: t("OKYC_VERIFICATION"),
-        wrap: true,
-        selector: (row) =>
-          ["okyc_ip_verified"].includes(row?.aadhar_verified)
-            ? t("YES")
-            : t("NO"),
+        name: t("BLOCK"),
+        selector: (row) => row?.block || "-",
       },
+
       {
         name: t("MOBILE_NUMBER"),
         selector: (row) => row?.mobile,
@@ -98,7 +92,11 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         name: t("STATUS"),
         selector: (row) => (
           <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
-            <ChipStatus status={row?.program_faciltators?.status} />
+            <ChipStatus
+              py="1"
+              px="1"
+              status={row?.program_faciltators?.status}
+            />
           </Pressable>
         ),
         wrap: true,
@@ -106,10 +104,15 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         width: "150px",
       },
       {
-        name: t("GENDER"),
-        selector: (row) => row?.gender,
-        attr: "gender",
-        width: "100px",
+        name: t("OKYC_VERIFICATION"),
+        wrap: true,
+        selector: (row) => {
+          return row?.aadhar_verified === "okyc_ip_verified"
+            ? t("OKYC_IP_VERIFIED")
+            : row?.aadhar_verified === "yes"
+            ? t("YES")
+            : t("NO");
+        },
       },
       {
         minWidth: "140px",
@@ -117,28 +120,19 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         selector: (row) => (
           <Button.Group
             isAttached
-            divider={<h3>|</h3>}
-            my="3"
-            size="sm"
-            h="8"
-            marginTop="8px"
-            borderRadius="full"
-            background="white"
+            divider={<div style={{ background: "#333", padding: "0.5px" }} />}
+            my="1"
+            h="6"
+            rounded={"full"}
             shadow="BlueOutlineShadow"
             borderWidth="1px"
-            borderColor="#084B82"
-            lineHeight={1}
-            _text={{
-              color: "blueText.400",
-              fontSize: "14px",
-              fontWeight: "700",
-            }}
           >
             <Button
               background="white"
+              px="1.5"
               _text={{
                 color: "blueText.400",
-                fontSize: "14px",
+                fontSize: "12px",
                 fontWeight: "700",
               }}
               onPress={() => {
@@ -147,28 +141,26 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             >
               {t("VIEW")}
             </Button>
-            <Button variant="outline">
-              <Menu
-                w="190"
-                placement="bottom right"
-                trigger={(triggerProps) => dropDown(triggerProps, t)}
+            <Menu
+              w="190"
+              placement="bottom right"
+              trigger={(triggerProps) => dropDown(triggerProps, t)}
+            >
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/facilitator/${row?.id}`);
+                }}
               >
-                <Menu.Item
-                  onPress={() => {
-                    navigate(`/admin/facilitator/${row?.id}`);
-                  }}
-                >
-                  {t("VIEW")}
-                </Menu.Item>
-                <Menu.Item
-                  onPress={() => {
-                    navigate(`/admin/Certification/${row?.id}`);
-                  }}
-                >
-                  {t("DOWNLOAD_CERTIFICATE")}
-                </Menu.Item>
-              </Menu>
-            </Button>
+                {t("VIEW")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate(`/admin/Certification/${row?.id}`);
+                }}
+              >
+                {t("DOWNLOAD_CERTIFICATE")}
+              </Menu.Item>
+            </Menu>
           </Button.Group>
         ),
       },
@@ -176,10 +168,6 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     []
   );
 
-  useEffect(async () => {
-    const result = await enumRegistryService.statuswiseCount();
-    setSelectedData(result);
-  }, []);
   const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
@@ -217,7 +205,17 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         </AdminTypo.H5>
       </VStack>
       <DataTable
-        customStyles={tableCustomStyles}
+        customStyles={{
+          ...tableCustomStyles,
+          rows: {
+            style: {
+              minHeight: "20px", // override the row height
+              cursor: "pointer",
+            },
+          },
+          cells: { style: { padding: "0" } },
+          pagination: { style: { margin: "20px 0" } },
+        }}
         columns={columnsMemoized}
         data={data}
         persistTableHead

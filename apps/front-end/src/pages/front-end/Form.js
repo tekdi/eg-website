@@ -721,14 +721,14 @@ export default function App({ facilitator, ip, onClick }) {
     if (schema?.properties?.first_name) {
       newFormData = {
         ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        ["first_name"]: newFormData?.first_name?.replaceAll(" ", ""),
       };
     }
 
     if (schema?.properties?.last_name && newFormData?.last_name) {
       newFormData = {
         ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+        ["last_name"]: newFormData?.last_name?.replaceAll(" ", ""),
       };
     }
 
