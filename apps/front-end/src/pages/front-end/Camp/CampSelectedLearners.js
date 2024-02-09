@@ -68,7 +68,7 @@ export default function CampSelectedLearners() {
 
   const updateLearner = async () => {
     setIsDisable(true);
-    if (selectedIds.length !== 0) {
+    if (selectedIds?.length !== 0) {
       setIsDisable(true);
       const updateLearner = {
         learner_ids: selectedIds,
@@ -142,7 +142,7 @@ export default function CampSelectedLearners() {
             </Alert>
           )}
         </AdminTypo.H3>
-        {nonRegister.length > 0 && (
+        {nonRegister?.length > 0 && (
           <HStack
             space={2}
             paddingRight={2}

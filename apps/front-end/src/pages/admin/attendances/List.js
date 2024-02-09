@@ -63,7 +63,7 @@ const columns = (t, navigate) => [
   {
     name: t("PERSON_PHOTO"),
     selector: (row) =>
-      row?.user?.profile_photo_1.length ? (
+      row?.user?.profile_photo_1?.length ? (
         <ImageView
           source={{ document_id: row?.user?.profile_photo_1?.[0]?.id }}
         />

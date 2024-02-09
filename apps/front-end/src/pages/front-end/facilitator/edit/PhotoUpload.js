@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, VStack } from "native-base";
 import { Layout, FrontEndTypo } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,7 +19,7 @@ export default function PhotoUpload({ aadhar_no, formData }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (page >= 4) {
       if (!aadhar_no || aadhar_no === "") {
         navigate(`/profile/edit/aadhaar_details`);
@@ -53,8 +53,8 @@ export default function PhotoUpload({ aadhar_no, formData }) {
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),
             }}
+            key={formData?.[`profile_photo_${page}`]?.id + page}
             value={formData?.[`profile_photo_${page}`]?.id}
-            key={formData?.[`profile_photo_${page}`]?.id}
             onChange={(e) => console.log(e)}
           />
           <FrontEndTypo.Primarybutton

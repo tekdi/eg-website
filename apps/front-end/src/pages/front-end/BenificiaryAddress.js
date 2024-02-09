@@ -24,8 +24,8 @@ export default function BenificiaryAddress() {
       edit_req_for_context_id: userId,
     };
     const result = await benificiaryRegistoryService.getEditRequest(obj);
-    if (result?.data.length > 0) {
-      const fieldData = JSON.parse(result?.data[0]?.fields);
+    if (result?.data?.length > 0) {
+      const fieldData = JSON.parse(result?.data?.[0]?.fields);
       setRequestData(fieldData);
     }
     const data = await benificiaryRegistoryService.getOne(userId);

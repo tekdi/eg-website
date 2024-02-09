@@ -71,3 +71,10 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+self.addEventListener("fetch", (event) => {
+  if (event.request.mode === "navigate") {
+    // If it's a navigation request (HTML file), don't cache it
+    return;
+  }
+});

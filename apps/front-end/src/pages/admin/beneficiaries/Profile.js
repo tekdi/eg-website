@@ -68,9 +68,9 @@ const columns = (t) => [
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         <AdminTypo.H5 bold>
-          {row?.program_faciltators.length > 0
+          {row?.program_faciltators?.length > 0
             ? t("PRERAK")
-            : row?.program_beneficiaries.length > 0
+            : row?.program_beneficiaries?.length > 0
             ? t("LEARNER")
             : ""}
         </AdminTypo.H5>
@@ -534,11 +534,9 @@ export default function AgAdminProfile({ footerLinks }) {
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              {[
-                "enrolled",
-                "enrolled_ip_verified",
-                "registered_in_camp",
-              ].includes(data?.program_beneficiaries?.status)
+              {["enrolled_ip_verified", "registered_in_camp"].includes(
+                data?.program_beneficiaries?.status
+              )
                 ? `${
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
