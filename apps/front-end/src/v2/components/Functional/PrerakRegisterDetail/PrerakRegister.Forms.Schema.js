@@ -10,6 +10,11 @@ export const basicRegister = {
       title: "FIRST_NAME",
       regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
+    middle_name: {
+      type: "string",
+      title: "MIDDLE_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+    },
     last_name: {
       type: "string",
       title: "LAST_NAME",
