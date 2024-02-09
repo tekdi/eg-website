@@ -548,7 +548,7 @@ export default function PrerakRegisterDetail({
                       formRef?.current?.submit();
                     }}
                   >
-                    {t("SAVE_AND_NEXT")}
+                    {t("CONSENT_TO_SHARE_INFORMATION")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               )}
