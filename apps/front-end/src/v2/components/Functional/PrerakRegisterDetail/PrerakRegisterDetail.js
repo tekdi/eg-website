@@ -110,7 +110,7 @@ export default function PrerakRegisterDetail({
   const [width, height] = useWindowSize();
 
   // Consent modals
-  const [isConsentModal, setIsConsentModal] = useState(false);
+  const [isConsentModal, setIsConsentModal] = useState();
   const [consentCompleted, setConsentCompleted] = useState(true);
   const [yesChecked, setYesChecked] = useState(false);
   const [noChecked, setNoChecked] = useState(false);
@@ -126,18 +126,6 @@ export default function PrerakRegisterDetail({
   const [schema, setSchema] = useState({});
 
   // Toggle consent state based on user agreement
-
-  const handleCheckboxChange = (isAgree) => {
-    setYesChecked(isAgree);
-    setNoChecked(!isAgree);
-    if (isAgree) {
-      setConsentCompleted(false);
-      setIsConsentModal(false);
-    } else {
-      setConsentCompleted(true);
-      showIntroductionOfProject();
-    }
-  };
 
   useEffect(() => {
     setErrors({});
@@ -205,21 +193,37 @@ export default function PrerakRegisterDetail({
     });
     return err;
   };
+
+  const handleCheckboxChange = (isAgree) => {
+    setYesChecked(isAgree);
+    setNoChecked(!isAgree);
+    if (isAgree) {
+      setConsentCompleted(false);
+      //sent otp to mobile number
+      const fetchData = async () => {
+        await sendAndVerifyOtp(schema, {
+          mobile: isConsentModal?.mobile,
+        });
+        setIsConsentModal();
+        setCurrentForm(1);
+        setYesChecked(!isAgree);
+      };
+      fetchData();
+    } else {
+      setConsentCompleted(true);
+      showIntroductionOfProject();
+    }
+  };
+
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     if (currentForm == 0) {
       setIsloading(true);
-      setFormData(newFormData);
-      setRegisterFormData(newFormData);
-      //check if user exist on mobile number
       let isExist = await checkMobileExist(newFormData?.mobile);
       if (!isExist) {
-        //sent otp to mobile number
-        await sendAndVerifyOtp(schema, {
-          mobile: newFormData?.mobile,
-        });
-        setCurrentForm(1);
+        setIsConsentModal(newFormData);
       }
+
       setIsloading(false);
     } else if (currentForm == 1) {
       setIsloading(true);
@@ -400,6 +404,7 @@ export default function PrerakRegisterDetail({
     }
     return isExist;
   };
+
   const userExistClick = () => {
     if (
       isUserExistStatus == "EXIST_LOGIN" ||
@@ -451,13 +456,18 @@ export default function PrerakRegisterDetail({
     let first_name = registerFormData?.first_name
       ? registerFormData.first_name.replaceAll(" ", "")
       : "";
+    let middle_name = registerFormData?.middle_name
+      ? registerFormData.middle_name.replaceAll(" ", "")
+      : "";
     let last_name = registerFormData?.last_name
       ? registerFormData.last_name.replaceAll(" ", "")
       : "";
     let lang = localStorage.getItem("lang");
+
     const result = await facilitatorRegistryService.registerV2(
       {
         first_name: first_name,
+        middle_name: middle_name,
         last_name: last_name,
         mobile: registerFormData?.mobile.toString(),
         lang: lang,
@@ -529,27 +539,7 @@ export default function PrerakRegisterDetail({
                 </FrontEndTypo.Primarybutton>
               ) : (
                 <VStack>
-                  <FrontEndTypo.H3
-                    cursor="pointer"
-                    mt="5"
-                    TextDecoration="underline"
-                    color={"blueText.400"}
-                    onPress={() => {
-                      setIsConsentModal(true);
-                    }}
-                  >
-                    <HStack alignItems={"center"} space={2}>
-                      {t("TERMS_AND_CONDITIONS")}
-                      {!consentCompleted && (
-                        <IconByName
-                          name="CheckboxCircleFillIcon"
-                          color="successColor"
-                        />
-                      )}
-                    </HStack>
-                  </FrontEndTypo.H3>
                   <FrontEndTypo.Primarybutton
-                    isDisabled={consentCompleted}
                     isLoading={loading}
                     type="submit"
                     p="4"
@@ -704,7 +694,7 @@ export default function PrerakRegisterDetail({
                         handleCheckboxChange(false);
                       }}
                     >
-                      {t("NO")}
+                      {t("NO_GO_BACK")}
                     </Checkbox>
                     <Checkbox
                       isChecked={yesChecked}
@@ -713,7 +703,7 @@ export default function PrerakRegisterDetail({
                         handleCheckboxChange(true);
                       }}
                     >
-                      {t("YES")}
+                      {t("YES_GO_FORWARD")}
                     </Checkbox>
                   </HStack>
                 </VStack>
