@@ -21,9 +21,9 @@ export default function Chip({ label, children, isActive, ...props }) {
   );
 }
 Chip.propTypes = {
-  label: PropTypes.any,
+  label: PropTypes.string,
   children: PropTypes.any,
-  isActive: PropTypes.any,
+  isActive: PropTypes.bool,
 };
 // ChipStatus
 export function ChipStatus({ width, status, ...props }) {
@@ -106,8 +106,8 @@ export function ChipStatus({ width, status, ...props }) {
   );
 }
 ChipStatus.propTypes = {
-  width: PropTypes.any,
-  status: PropTypes.any,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  status: PropTypes.string,
 };
 
 // ChipStatus
@@ -170,5 +170,5 @@ export function CampChipStatus({ status, ...props }) {
   );
 }
 CampChipStatus.propTypes = {
-  status: PropTypes.any,
+  status: PropTypes.string,
 };

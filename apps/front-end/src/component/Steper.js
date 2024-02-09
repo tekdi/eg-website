@@ -18,9 +18,9 @@ const Circal = ({ text, color, size, ...props }) => (
   </VStack>
 );
 Circal.propTypes = {
-  text: PropTypes.any,
-  color: PropTypes.any,
-  size: PropTypes.any,
+  text: PropTypes.string,
+  color: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 export default function Steper({
   type,
@@ -88,12 +88,12 @@ export default function Steper({
 }
 Steper.propTypes = {
   type: PropTypes.any,
-  steps: PropTypes.any,
+  steps: PropTypes.array,
   progress: PropTypes.any,
-  cColor: PropTypes.any,
-  rColor: PropTypes.any,
-  size: PropTypes.any,
-  bg: PropTypes.any,
+  cColor: PropTypes.string,
+  rColor: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  bg: PropTypes.string,
 };
 
 const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
@@ -153,9 +153,9 @@ LineSteper.propTypes = {
   per: PropTypes.any,
   stepPer: PropTypes.any,
   steps: PropTypes.any,
-  cColor: PropTypes.any,
-  rColor: PropTypes.any,
-  size: PropTypes.any,
+  cColor: PropTypes.string,
+  rColor: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
   const nSize = parseInt(size ? size : "40px");
@@ -229,11 +229,11 @@ const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
   );
 };
 CircalSteper.propTypes = {
-  steps: PropTypes.any,
-  size: PropTypes.any,
-  cColor: PropTypes.any,
-  rColor: PropTypes.any,
-  bg: PropTypes.any,
+  steps: PropTypes.array,
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  cColor: PropTypes.string,
+  rColor: PropTypes.string,
+  bg: PropTypes.string,
   per: PropTypes.any,
   stage: PropTypes.any,
 };

@@ -35,11 +35,11 @@ export default function Chip({
   );
 }
 Chip.propTypes = {
-  label: PropTypes.any,
+  label: PropTypes.string,
   children: PropTypes.any,
-  is_duplicate: PropTypes.any,
-  is_deactivated: PropTypes.any,
-  isActive: PropTypes.any,
+  is_duplicate: PropTypes.bool,
+  is_deactivated: PropTypes.bool,
+  isActive: PropTypes.bool,
   _text: PropTypes.any,
 };
 // ChipStatus
@@ -181,10 +181,10 @@ export function ChipStatus({
   );
 }
 ChipStatus.propTypes = {
-  status: PropTypes.any,
+  status: PropTypes.string,
   statusCount: PropTypes.any,
   sufix: PropTypes.any,
   prefix: PropTypes.any,
-  is_duplicate: PropTypes.any,
-  is_deactivated: PropTypes.any,
+  is_duplicate: PropTypes.bool,
+  is_deactivated: PropTypes.bool,
 };
