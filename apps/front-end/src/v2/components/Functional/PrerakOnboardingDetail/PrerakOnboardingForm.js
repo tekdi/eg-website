@@ -5,7 +5,6 @@ import { Alert, Box, HStack } from "native-base";
 import {
   facilitatorRegistryService,
   geolocationRegistryService,
-  Layout,
   BodyMedium,
   filterObject,
   FrontEndTypo,
@@ -99,7 +98,7 @@ export default function PrerakOnboardingForm({
             };
             setFormData({
               ...newData,
-              has_diploma: result?.core_faciltator?.has_diploma,
+              has_diploma: result?.core_faciltator?.has_diploma || undefined,
               diploma_details:
                 result?.core_faciltator?.diploma_details || undefined,
             });
@@ -139,7 +138,7 @@ export default function PrerakOnboardingForm({
     };
 
     fetchData();
-  }, [step]);
+  }, [step, qualifications]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -247,7 +246,7 @@ export default function PrerakOnboardingForm({
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
       const required = constantSchema?.required.filter((item) =>
-        ["has_diploma"].includes(item)
+        ["has_diploma", "qualification_ids"].includes(item)
       );
       setSchemaData({ ...constantSchema, properties, required });
     } else if (hasDiploma) {
@@ -482,7 +481,7 @@ export default function PrerakOnboardingForm({
     }
   };
 
-  const customValidate = (data, errors, c, asd) => {
+  const customValidate = (data, errors) => {
     if (step === "contact_details") {
       if (data?.mobile) {
         validation({
@@ -545,14 +544,13 @@ export default function PrerakOnboardingForm({
         });
       }
     }
-    if (step === "aadhaar_details") {
-      if (data?.aadhar_no) {
-        const validation = AadhaarNumberValidation({
-          aadhaar: data?.aadhar_no,
-        });
-        if (validation) {
-          errors?.aadhar_no?.addError(`${t(validation)}`);
-        }
+    if (step === "qualification_details") {
+      if (data?.qualification_ids.length === 0) {
+        errors?.qualification_ids?.addError(
+          `${t("REQUIRED_MESSAGE")} "${t(
+            schema?.properties?.qualification_ids?.label
+          )}"`
+        );
       }
     }
     return errors;
@@ -721,7 +719,7 @@ export default function PrerakOnboardingForm({
         facilitator?.mobile !== data?.mobile
       ) {
         const result = await userExist({ mobile: data?.mobile });
-        if (result.registeredAsFacilitator) {
+        if (result?.registeredAsFacilitator) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
@@ -789,10 +787,20 @@ export default function PrerakOnboardingForm({
     }
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
+        const validation = AadhaarNumberValidation({
+          aadhaar: data?.aadhar_no,
+        });
+        if (validation) {
+          const newErrors = {
+            aadhar_no: {
+              __errors: [t(validation)],
+            },
+          };
+          setErrors(newErrors);
+        }
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
-
         if (result?.success) {
           const newErrors = {
             aadhar_no: {
@@ -803,7 +811,6 @@ export default function PrerakOnboardingForm({
         }
       }
     }
-
     if (id === "root_qualification") {
       if (schema?.properties?.qualification) {
         let valueIndex = "";
@@ -881,6 +888,25 @@ export default function PrerakOnboardingForm({
     if (id === "root_has_diploma") {
       updateSchemaBasedOnDiploma(data?.has_diploma);
     }
+
+    if (id === "root_qualification_ids") {
+      if (
+        formData?.qualification_ids.includes("11") &&
+        data?.qualification_ids?.length <= 1
+      ) {
+        setFormData({ ...formData, qualification_ids: ["11"] });
+      } else if (
+        data?.qualification_ids.includes("11") &&
+        !formData?.qualification_ids.includes("11")
+      ) {
+        setFormData({ ...formData, qualification_ids: ["11"] });
+      } else {
+        setFormData({
+          ...formData,
+          qualification_ids: data?.qualification_ids?.filter((e) => e !== "11"),
+        });
+      }
+    }
   };
 
   const onSubmit = async (data) => {
@@ -907,7 +933,6 @@ export default function PrerakOnboardingForm({
       }
     }
   };
-
   if (page === "upload") {
     return (
       <PhotoUpload
@@ -932,7 +957,6 @@ export default function PrerakOnboardingForm({
     }
     localStorage.setItem("backToProfile", backToProfile);
   };
-
   return (
     <Box py={6} px={4} mb={5}>
       {alert && (
@@ -984,14 +1008,25 @@ export default function PrerakOnboardingForm({
                 {t("SAVE_AND_NEXT")}
               </FrontEndTypo.Primarybutton>
 
-              <FrontEndTypo.Secondarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(true)}
-              >
-                {t("SAVE_AND_PROFILE")}
-              </FrontEndTypo.Secondarybutton>
+              {step === "aadhaar_details" ? (
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => navigatePage("/profile", "")}
+                >
+                  {t("GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              ) : (
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("SAVE_AND_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              )}
             </Box>
           )}
         </Form>

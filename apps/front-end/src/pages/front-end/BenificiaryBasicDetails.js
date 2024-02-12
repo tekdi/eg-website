@@ -36,7 +36,7 @@ export default function BenificiaryBasicDetails() {
     };
     const resultData = await benificiaryRegistoryService.getEditRequest(obj);
     if (resultData?.data?.length > 0) {
-      const fieldData = JSON.parse(resultData?.data[0]?.fields);
+      const fieldData = JSON.parse(resultData?.data?.[0]?.fields);
       setRequestData(fieldData);
     }
   }, []);

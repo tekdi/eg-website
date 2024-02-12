@@ -8,26 +8,27 @@ import {
   enumRegistryService,
   getOptions,
 } from "@shiksha/common-lib";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { templates, widgets } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import schema1 from "./schema";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { Alert, Box, VStack } from "native-base";
+import PropTypes from "prop-types";
 
 export default function CommunityView({ footerLinks }) {
   const { t } = useTranslation();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [schema, setSchema] = React.useState({});
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [addMore, setAddMore] = React.useState();
-  const [data, setData] = React.useState({});
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const formRef = React.useRef();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [schema, setSchema] = useState({});
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [addMore, setAddMore] = useState();
+  const [data, setData] = useState({});
+  const [enumOptions, setEnumOptions] = useState({});
+  const formRef = useRef();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await enumRegistryService.listOfEnum();
     setEnumOptions(qData?.data ? qData?.data : {});
     const data = qData?.data?.COMMUNITY_MEMBER_DESIGNATIONS;
@@ -36,13 +37,14 @@ export default function CommunityView({ footerLinks }) {
       newSchema = getOptions(newSchema, {
         key: "designation",
         arr: data,
+        title: "title",
         value: "value",
       });
       setSchema(newSchema);
     }
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const getData = await benificiaryRegistoryService.getCommunityReferences({
       context: "community.user",
     });
@@ -225,3 +227,7 @@ export default function CommunityView({ footerLinks }) {
     </Layout>
   );
 }
+
+CommunityView.PropTypes = {
+  footerLinks: PropTypes.any,
+};
