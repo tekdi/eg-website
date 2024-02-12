@@ -9,7 +9,6 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import AadhaarNumberValidation from "component/AadhaarNumberValidation";
 import {
   HStack,
   VStack,
@@ -18,33 +17,34 @@ import {
   Avatar,
   Alert,
   Modal,
+  Stack,
 } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(true);
-  const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
-  const [campList, setCampList] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState();
-  const [communityLength, setCommunityLength] = React.useState(0);
-  const [ipStatus, setIpStatus] = React.useState();
-  const [modal, setModal] = React.useState(false);
-  const [campId, setCampId] = React.useState("");
-  const [campSelected, setCampSelected] = React.useState("");
-  const [campSetting, setCampSetting] = React.useState("");
+  const [loading, setLoading] = useState(true);
+  const [nonRegisteredUser, setNonRegisteredUser] = useState([]);
+  const [campList, setCampList] = useState();
+  const [enumOptions, setEnumOptions] = useState();
+  const [communityLength, setCommunityLength] = useState(0);
+  const [ipStatus, setIpStatus] = useState();
+  const [modal, setModal] = useState(false);
+  const [campId, setCampId] = useState("");
+  const [campSelected, setCampSelected] = useState("");
+  const [campSetting, setCampSetting] = useState();
   const campSettingData = () => {
     return (
-      campSetting.preferred_start_time &&
-      campSetting.preferred_end_time &&
-      campSetting.week_off == null
+      campSetting?.preferred_start_time === null &&
+      campSetting?.preferred_end_time === null &&
+      campSetting?.week_off === null
     );
   };
-
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
     const campList = await campService.campList();
     const enums = await enumRegistryService.listOfEnum();
@@ -281,7 +281,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                 {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
               {["registered", "camp_ip_verified"].includes(campSelected) && (
-                <React.Fragment>
+                <Stack space={4}>
                   <FrontEndTypo.Secondarybutton
                     onPress={() => {
                       navigate(`/camps/${campId}/settings`);
@@ -307,7 +307,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                       {t("CAMP_EXECUTION")}
                     </FrontEndTypo.Primarybutton>
                   )}
-                </React.Fragment>
+                </Stack>
               )}
             </VStack>
           </Modal.Body>
@@ -316,3 +316,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+CampDashboard.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};
