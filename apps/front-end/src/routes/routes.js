@@ -7,10 +7,17 @@ const FacilitatorRegister = lazy(() =>
 const FacilitatorOnboarding = lazy(() =>
   import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
 );
+//online_beneficiery_onboarding
+const BeneficiaryRegister = lazy(() =>
+  import("v2/views/Beneficiary/BeneficiaryRegister/BeneficiaryRegister")
+);
+const BeneficiaryOnboarding = lazy(() =>
+  import("v2/views/Beneficiary/BeneficiaryOnboarding/BeneficiaryOnboarding")
+);
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
-const Home = React.lazy(() => import("pages/front-end/Home"));
+//const Home = React.lazy(() => import("pages/front-end/Home"));
 const basicDetails = React.lazy(() =>
   import("../pages/front-end/ag-edit/parts/basicDetails")
 );
@@ -52,7 +59,7 @@ const EnrollmentForm = React.lazy(() =>
 const Agduplicate = React.lazy(() =>
   import("pages/front-end/ag-form/Agduplicate")
 );
-const Agform = React.lazy(() => import("pages/front-end/ag-form/Agform"));
+//const Agform = React.lazy(() => import("pages/front-end/ag-form/Agform"));
 const Docschecklist = React.lazy(() =>
   import("pages/front-end/ag-form/Docschecklist")
 );
@@ -68,10 +75,10 @@ const BenificiaryProfileView = React.lazy(() =>
 const CountScreenView = React.lazy(() =>
   import("pages/front-end/CountScreenView")
 );
-const AgformUpdate = React.lazy(() =>
+/*const AgformUpdate = React.lazy(() =>
   import("pages/front-end/ag-form/Agformupdate")
-);
-const Agadhaar = React.lazy(() => import("pages/front-end/ag-form/Agadhaar"));
+);*/
+//const Agadhaar = React.lazy(() => import("pages/front-end/ag-form/Agadhaar"));
 const Success = React.lazy(() => import("pages/front-end/Success"));
 const Profile = React.lazy(() => import("pages/front-end/facilitator/Profile"));
 const Certificate = React.lazy(() =>
@@ -95,12 +102,12 @@ const BenificiaryEnrollment = React.lazy(() =>
 const BenificiaryAadhaarDetails = React.lazy(() =>
   import("pages/front-end/BenificiaryAadhaarDetails")
 );
-const EditForm = React.lazy(() =>
+/*const EditForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/Form")
 );
 const ArrayForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/ArrayForm")
-);
+);*/
 const FacilitatorBasicDetails = React.lazy(() =>
   import("pages/front-end/facilitator/FacilitatorBasicDetails")
 );
@@ -171,7 +178,7 @@ const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
-  { path: "/form", component: Home },
+  //{ path: "/form", component: Home },
   //old facilitator registration
   /*{
     path: "/facilitator-self-onboarding",
@@ -220,9 +227,10 @@ export default [
     component: referencedetails,
   },
   //add a new route /ag/:ID(param), component:basic details
-  { path: "/beneficiary", component: Agform },
+  //old beneficiary registration
+  /*{ path: "/beneficiary", component: Agform },
   { path: "/beneficiary/:id/2", component: AgformUpdate },
-  { path: "/beneficiary/:id/3", component: Agadhaar },
+  { path: "/beneficiary/:id/3", component: Agadhaar },*/
   { path: "/beneficiary/:id/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
@@ -280,12 +288,14 @@ export default [
   },
   { path: "/profile", component: Profile },
   { path: "/certificate", component: Certificate },
+  //old facilitator onboarding
   /*{ path: "/profile/edit/array-form/:type", component: ArrayForm },*/
   /*{ path: "/profile/edit/:step", component: EditForm },*/
   {
     path: "/profile/:id/aadhaardetails",
     component: AadhaarDetails,
   },
+  //old facilitator onboarding
   /*{ path: "/profile/edit/:step/:photoNo", component: EditForm },*/
   {
     path: "/facilitatorbasicdetail",
@@ -352,5 +362,11 @@ export default [
     component: FacilitatorOnboarding,
   },
   { path: "/profile/edit/:step/:photoNo", component: FacilitatorOnboarding },
+  //new beneficiary registration
+  { path: "/beneficiary", component: BeneficiaryRegister },
+  //new beneficiary onboarding
+  { path: "/beneficiary/:id/:number", component: BeneficiaryOnboarding },
+  //new beneficiary update
+  
   //end v2 code
 ];
