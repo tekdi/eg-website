@@ -18,7 +18,10 @@ import {
   jsonParse,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { templates, widgets } from "../../../../component/BaseInput.js";
+import {
+  templates,
+  widgets,
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App

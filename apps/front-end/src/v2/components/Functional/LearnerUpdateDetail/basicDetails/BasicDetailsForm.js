@@ -23,7 +23,7 @@ import {
   BaseInputTemplate,
   RadioBtn,
   CustomR,
-} from "../../../../component/BaseInput.js";
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 
 // App

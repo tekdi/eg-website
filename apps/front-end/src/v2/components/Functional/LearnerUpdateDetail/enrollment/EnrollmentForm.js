@@ -24,7 +24,7 @@ import {
   transformErrors,
   scrollToField,
   validator,
-} from "../../../../component/BaseInput.js";
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 
@@ -155,7 +155,7 @@ const getSubjects = async (schemaData, value, page) => {
 };
 
 // App
-export default function App() {
+export default function EnrollmentForm() {
   const { t } = useTranslation();
   const { step, id } = useParams();
   const userId = id;

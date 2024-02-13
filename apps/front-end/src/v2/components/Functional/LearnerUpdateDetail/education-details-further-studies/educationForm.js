@@ -24,7 +24,7 @@ import {
   BaseInputTemplate,
   CustomR,
   select,
-} from "../../../../component/BaseInput.js";
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App

@@ -96,7 +96,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const createAg = async () => {
+  const createBeneficiary = async () => {
     let program = await getSelectedProgramId();
     let acadamic = await getSelectedAcademicYear();
     const formDataNew = {
@@ -107,7 +107,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         academic_year_id: acadamic?.academic_year_id,
       },
     };
-    let url = await AgRegistryService.createAg(formDataNew);
+    let url = await AgRegistryService.createBeneficiary(formDataNew);
 
     if (url?.data) {
       navigate(`/beneficiary/${url?.data?.user?.id}/2`);
@@ -166,7 +166,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           };
           setErrors(newErrors);
         } else {
-          createAg();
+          createBeneficiary();
         }
       } else if (status === false) {
         const newErrors = {

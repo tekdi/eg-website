@@ -2,8 +2,7 @@ import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack } from "native-base";
-
+import { Alert, Box, Button, HStack } from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -11,8 +10,6 @@ import {
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
-  getOptions,
-  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -22,13 +19,11 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-  CustomR,
-} from "../../../../component/BaseInput.js";
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
-import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
 // App
-export default function PersonalDetails({ ip }) {
+export default function ReferenceDetails({ ip }) {
   const { t } = useTranslation();
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -40,44 +35,39 @@ export default function PersonalDetails({ ip }) {
   const [alert, setAlert] = React.useState();
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [fields, setFields] = React.useState([]);
-  const [isDisable, setIsDisable] = React.useState(false);
-
   const userId = id;
   const navigate = useNavigate();
+  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
-  //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
-    setFormData(qData?.result);
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
-    const result = await facilitatorRegistryService.getEditRequests(obj);
-    let field;
-    const parseField = result?.data?.[0]?.fields;
-    if (parseField && typeof parseField === "string") {
-      field = JSON.parse(parseField);
-    }
-    setFields(field || []);
+    setFormData(qData.result);
   }, []);
 
   React.useEffect(async () => {
-    let marital_status = formData?.extended_users?.marital_status;
-    let social_category = formData?.extended_users?.social_category;
+    let rfirst_name = formData?.references?.[0]?.first_name;
+    let rmiddle_name = formData?.references?.[0]?.middle_name;
+    let rlast_name = formData?.references?.[0]?.last_name;
+    let rrelation = formData?.references?.[0]?.relation;
+    let rcontact_number = formData?.references?.[0]?.contact_number;
 
     setFormData({
       ...formData,
-      edit_page_type: "personal",
-      marital_status: marital_status,
-      social_category: social_category,
+      referencefullname: {
+        first_name: rfirst_name,
+        middle_name: rmiddle_name == "null" ? "" : rmiddle_name,
+        last_name: rlast_name == "null" ? "" : rlast_name,
+        relation: rrelation,
+        contact_number: rcontact_number,
+      },
     });
   }, [formData?.id]);
+
+  const uiSchema = {};
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -92,7 +82,7 @@ export default function PersonalDetails({ ip }) {
       }
       if (nextIndex !== undefined) {
         setPage(nextIndex);
-        setSchemaData(properties[nextIndex]);
+        setSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "6" });
         setPage("SAVE");
@@ -107,7 +97,7 @@ export default function PersonalDetails({ ip }) {
       if (pageNumber !== "") {
         if (page !== pageNumber) {
           setPage(pageNumber);
-          setSchemaData(properties[pageNumber]);
+          setSchema(properties[pageNumber]);
         }
       } else {
         nextPreviewStep();
@@ -115,33 +105,14 @@ export default function PersonalDetails({ ip }) {
     }
   };
 
-  React.useEffect(async () => {
-    const ListOfEnum = await enumRegistryService.listOfEnum();
-    let newSchema = schema;
-    if (schema["properties"]?.["marital_status"]) {
-      newSchema = getOptions(newSchema, {
-        key: "social_category",
-        arr: ListOfEnum?.data?.BENEFICIARY_SOCIAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-
-      newSchema = getOptions(newSchema, {
-        key: "marital_status",
-        arr: ListOfEnum?.data?.MARITAL_STATUS,
-        title: "title",
-        value: "value",
-      });
-      setSchemaData(newSchema);
-    }
-  }, [page]);
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       setPage(newSteps[0]);
-      setSchemaData(properties[newSteps[0]]);
+      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
+
       setSubmitBtn(t("NEXT"));
     }
   }, []);
@@ -166,7 +137,54 @@ export default function PersonalDetails({ ip }) {
     }
   };
 
-  const transformErrors = (errors) => {
+  const customValidate = (data, errors, c) => {
+    if (data?.referencefullname?.contact_number) {
+      if (data?.referencefullname?.contact_number.toString()?.length !== 10) {
+        errors.referencefullname.contact_number.addError(
+          t("MINIMUM_LENGTH_IS_10")
+        );
+      }
+      if (
+        !(
+          data?.referencefullname?.contact_number > 6000000000 &&
+          data?.referencefullname?.contact_number < 9999999999
+        )
+      ) {
+        errors.referencefullname.contact_number.addError(
+          t("PLEASE_ENTER_VALID_NUMBER")
+        );
+      }
+    }
+
+    ["relation", "first_name"].forEach((key) => {
+      if (
+        key === "first_name" &&
+        data?.referencefullname?.first_name?.replaceAll(" ", "") === ""
+      ) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (
+        data?.referencefullname?.[key] &&
+        !data?.referencefullname?.[key]?.match(/^[a-zA-Z ]*$/g)
+      ) {
+        errors?.[`referencefullname`]?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (key === "relation" && data?.relation?.replaceAll(" ", "") === "") {
+        errors?.[`referencefullname`]?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+    });
+
+    return errors;
+  };
+  const transformErrors = (errors, uiSchema) => {
     return errors.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
@@ -188,6 +206,19 @@ export default function PersonalDetails({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
+    if (id === "root_contact_number") {
+      if (data?.mobile?.toString()?.length === 10) {
+        await userExist({ mobile: data?.mobile });
+
+        const newErrors = {
+          mobile: {
+            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    setFormData(newData);
   };
 
   const onError = (data) => {
@@ -197,42 +228,44 @@ export default function PersonalDetails({ ip }) {
     }
   };
 
-  const Submit = async (data) => {
-    setIsDisable(true);
-    await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+  const onSubmit = async (data) => {
+    setIsButtonLoading(true);
+    if (formData?.referencefullname?.contact_number.toString()?.length !== 10) {
+      const newErrors = {
+        contact_number: {
+          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
+    } else {
+      await AgRegistryService.updateAg(formData?.referencefullname, userId);
+      navigate(`/beneficiary/${userId}/basicdetails`);
+    }
   };
 
-  const setSchemaData = (newSchema) => {
-    setSchema(accessControl(newSchema, fields));
-  };
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("PERSONAL_DETAILS"),
+        name: t("REFERENCE_DETAILS"),
         lang,
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* Box */}
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
         {page && page !== "" ? (
           <Form
             key={lang}
             ref={formRef}
-            widgets={{ CustomR }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -247,18 +280,21 @@ export default function PersonalDetails({ ip }) {
             {...{
               validator,
               schema: schema || {},
+              uiSchema,
               formData,
+              customValidate,
               onChange,
               onError,
+              onSubmit,
               transformErrors,
             }}
           >
             <FrontEndTypo.Primarybutton
-              isDisabled={isDisable}
+              isLoading={isButtonLoading}
               mt="3"
               variant={"primary"}
               type="submit"
-              onPress={() => Submit()}
+              onPress={() => formRef?.current?.submit()}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>

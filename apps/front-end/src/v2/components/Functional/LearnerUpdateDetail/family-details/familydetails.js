@@ -20,7 +20,7 @@ import {
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-} from "../../../../component/BaseInput.js";
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 
