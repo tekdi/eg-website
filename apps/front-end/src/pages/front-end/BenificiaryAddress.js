@@ -24,8 +24,8 @@ export default function BenificiaryAddress() {
       edit_req_for_context_id: userId,
     };
     const result = await benificiaryRegistoryService.getEditRequest(obj);
-    if (result?.data.length > 0) {
-      const fieldData = JSON.parse(result?.data[0]?.fields);
+    if (result?.data?.length > 0) {
+      const fieldData = JSON.parse(result?.data?.[0]?.fields);
       setRequestData(fieldData);
     }
     const data = await benificiaryRegistoryService.getOne(userId);
@@ -78,16 +78,15 @@ export default function BenificiaryAddress() {
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
               {/* {isAddressDetailsEdit() && ( */}
-                <IconByName
-                  name="EditBoxLineIcon"
-                  _icon={{ size: "20" }}
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${userId}/address`);
-                  }}
-                />
+              <IconByName
+                name="EditBoxLineIcon"
+                _icon={{ size: "20" }}
+                color="iconColor.100"
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${userId}/address`);
+                }}
+              />
               {/* )} */}
-             
             </HStack>
             <Box paddingTop="2">
               <Progress
@@ -100,7 +99,7 @@ export default function BenificiaryAddress() {
                   "grampanchayat",
                 ])}
                 size="xs"
-                colorScheme="info"
+                colorScheme="red"
               />
             </Box>
             <VStack space="2" paddingTop="5">
@@ -218,7 +217,6 @@ export default function BenificiaryAddress() {
                   ) : (
                     "-"
                   )}
-                 
                 </FrontEndTypo.H3>
               </HStack>
               <HStack space={2} alignItems="Center">

@@ -50,7 +50,7 @@ export default function App({ footerLinks, userTokenInfo }) {
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 alignItems="center"
                 p="2"
@@ -59,14 +59,14 @@ export default function App({ footerLinks, userTokenInfo }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="CellphoneLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.mobile}
                 </AdminTypo.H6>
               </HStack>
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -76,9 +76,9 @@ export default function App({ footerLinks, userTokenInfo }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="MapPinLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {[
                     data?.state,
                     data?.district,
@@ -105,7 +105,7 @@ export default function App({ footerLinks, userTokenInfo }) {
                 <IconByName
                   isDisabled
                   name="AccountCircleLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                   _icon={{ size: "180px" }}
                 />
               )}

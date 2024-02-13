@@ -22,6 +22,7 @@ import * as uploadRegistryService from './services/uploadRegistryService'
 import * as geolocationRegistryService from './services/geolocationRegistryService'
 import * as benificiaryRegistoryService from './services/benificiaryRegistoryService'
 import * as campService from './services/campService'
+import * as cohortService from './services/cohortService'
 import * as attendanceService from './services/attendanceService'
 import * as ConsentService from './services/ConsentService'
 import * as AgRegistryService from './services/AgRegistryService'
@@ -84,6 +85,7 @@ export {
   enumRegistryService,
   benificiaryRegistoryService,
   campService,
+  cohortService,
   attendanceService,
   ConsentService,
   CheatSheet,
@@ -101,8 +103,7 @@ export {
   UserCard,
   GeoLocation,
   useLocationData,
-  SunbirdPlayer,
-
+  SunbirdPlayer
 }
 
 export * from './services/RestClient'

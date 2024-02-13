@@ -114,7 +114,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                     "availability",
                   ])}
                   size="xs"
-                  colorScheme="info"
+                  colorScheme="red"
                 />
               </Box>
             </VStack>
@@ -142,7 +142,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                     ["qualification_ids", "qua_name"]
                   )}
                   size="xs"
-                  colorScheme="info"
+                  colorScheme="red"
                 />
               </Box>
               <VStack space="2" paddingTop="5">
@@ -182,7 +182,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
                       onPress={(e) => {
-                        navigate(`/profile/edit/array-form/vo_experience`);
+                        navigate(`/profile/edit/vo_experience`);
                       }}
                     />
                   )}
@@ -207,7 +207,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
                       onPress={(e) => {
-                        navigate(`/profile/edit/array-form/experience`);
+                        navigate(`/profile/edit/experience`);
                       }}
                     />
                   )}
@@ -246,7 +246,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                     "aadhar_verified",
                   ])}
                   size="xs"
-                  colorScheme="info"
+                  colorScheme="red"
                 />
               </Box>
             </VStack>

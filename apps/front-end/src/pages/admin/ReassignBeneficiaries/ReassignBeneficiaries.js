@@ -634,7 +634,7 @@ export const Filter = ({
             }}
           />
           {isMore && (
-            <Button
+            <AdminTypo.H5
               onPress={(e) =>
                 setFacilitatorFilter({
                   ...facilitatorFilter,
@@ -645,9 +645,10 @@ export const Filter = ({
                 })
               }
               pr="2"
+              color="textMaroonColor.600"
             >
-              {t("MORE")}
-            </Button>
+              + {t("MORE")}
+            </AdminTypo.H5>
           )}
         </VStack>
       </HStack>

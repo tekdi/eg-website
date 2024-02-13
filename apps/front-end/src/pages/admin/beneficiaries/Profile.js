@@ -68,9 +68,9 @@ const columns = (t) => [
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         <AdminTypo.H5 bold>
-          {row?.program_faciltators.length > 0
+          {row?.program_faciltators?.length > 0
             ? t("PRERAK")
-            : row?.program_beneficiaries.length > 0
+            : row?.program_beneficiaries?.length > 0
             ? t("LEARNER")
             : ""}
         </AdminTypo.H5>
@@ -534,11 +534,9 @@ export default function AgAdminProfile({ footerLinks }) {
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              {[
-                "enrolled",
-                "enrolled_ip_verified",
-                "registered_in_camp",
-              ].includes(data?.program_beneficiaries?.status)
+              {["enrolled_ip_verified", "registered_in_camp"].includes(
+                data?.program_beneficiaries?.status
+              )
                 ? `${
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
@@ -561,7 +559,7 @@ export default function AgAdminProfile({ footerLinks }) {
                 status={data?.program_beneficiaries?.status}
               />
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -571,9 +569,9 @@ export default function AgAdminProfile({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="MapPinLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {[
                     data?.state,
                     data?.district,
@@ -586,7 +584,7 @@ export default function AgAdminProfile({ footerLinks }) {
                 </AdminTypo.H6>
               </HStack>
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -596,9 +594,9 @@ export default function AgAdminProfile({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="Cake2LineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.program_beneficiaries?.status ===
                   "enrolled_ip_verified"
                     ? data?.program_beneficiaries?.enrollment_dob
@@ -607,7 +605,7 @@ export default function AgAdminProfile({ footerLinks }) {
               </HStack>
 
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 alignItems="center"
                 p="2"
@@ -616,9 +614,9 @@ export default function AgAdminProfile({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="CellphoneLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.mobile}
                 </AdminTypo.H6>
               </HStack>

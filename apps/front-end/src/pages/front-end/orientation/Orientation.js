@@ -9,6 +9,11 @@ import {
   enumRegistryService,
   getOptions,
   EVENTS_COLORS,
+  cohortService,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  jsonParse,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -21,7 +26,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import Form from "@rjsf/core";
 import orientationPopupSchema from "./orientationPopupSchema";
 import validator from "@rjsf/validator-ajv8";
-
+import PropTypes from "prop-types";
 import {
   HFieldTemplate,
   templates,
@@ -37,6 +42,8 @@ import {
   Image,
   Pressable,
   Text,
+  Select,
+  CheckIcon,
 } from "native-base";
 import moment from "moment";
 import OrientationScreen from "./OrientationScreen";
@@ -46,6 +53,7 @@ export default function Orientation({ footerLinks }) {
   const formRef = React.useRef();
   const calendarRef = useRef(null);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [modal, setModal] = React.useState(true);
   const [formData, setFormData] = React.useState({});
   const [schema, setSchema] = React.useState({});
   const [eventList, setEventList] = React.useState();
@@ -57,8 +65,20 @@ export default function Orientation({ footerLinks }) {
   const [userIds, setUserIds] = React.useState({});
   const nowDate = new Date();
   const [goToDate, setGoToDate] = React.useState(moment().toDate());
+  const [selectedAcademic, setSelectedAcademic] = React.useState();
+  const [academicYear, setAcademicYear] = React.useState();
+  const [academicData, setAcademicData] = React.useState();
+  const [programID, setProgramID] = React.useState();
+  const [programData, setProgramData] = React.useState([]);
 
   React.useEffect(() => {
+    const fetchData = async () => {
+      let academic_Id = await getSelectedAcademicYear();
+      if (academic_Id) {
+        setModal(false);
+      }
+    };
+    fetchData();
     getEventLists();
   }, []);
 
@@ -117,7 +137,7 @@ export default function Orientation({ footerLinks }) {
             {required ? "*" : null}
           </AdminTypo.H6>
         </HStack>
-        <HStack alignItems="left" flex={["1", "3", "4"]}>
+        <HStack alignItems="left" flex={["1", "1", "4"]}>
           <AdminTypo.Secondarybutton
             leftIcon={
               <Text maxWidth="10px" alignItems="left">
@@ -178,7 +198,6 @@ export default function Orientation({ footerLinks }) {
   };
   const onChange = async (data, id) => {
     setErrors({});
-    // formRef?.current?.validateForm();
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
     if (newData?.end_date) {
@@ -234,7 +253,7 @@ export default function Orientation({ footerLinks }) {
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
       } else if (error.name === "format") {
-        const { format } = error?.params ? error?.params : {};
+        const { format } = error?.params || {};
         let message = "REQUIRED_MESSAGE";
         if (format === "email") {
           message = "PLEASE_ENTER_VALID_EMAIL";
@@ -316,11 +335,39 @@ export default function Orientation({ footerLinks }) {
     }
   };
 
-  console.log(formData);
+  const cohortData = React.useCallback(async () => {
+    const data = await cohortService.getAcademicYear();
+    setAcademicData(data?.data);
+  }, [modalVisible]);
+
+  React.useEffect(() => {
+    cohortData();
+  }, [modalVisible]);
+
+  const handleYearChange = (itemValue) => {
+    setAcademicYear(itemValue);
+    const parseData = jsonParse(itemValue);
+    const fetchData = async () => {
+      const data = await cohortService.getPrograms(parseData?.academic_year_id);
+      setProgramData(data?.data);
+    };
+    fetchData();
+  };
+
+  const handleContinueBtn = () => {
+    const parseData = jsonParse(programID);
+    const academicYearparseData = jsonParse(academicYear);
+    setSelectedAcademicYear(academicYearparseData);
+    setSelectedProgramId(parseData);
+    setSelectedAcademic({ parseData, academicYearparseData });
+    setModal(false);
+  };
+
   return (
     <Layout
       _appBar={{
         isShowNotificationButton: true,
+        selectedAcademic: selectedAcademic,
       }}
       _subHeader={{
         bg: "white",
@@ -335,11 +382,9 @@ export default function Orientation({ footerLinks }) {
         <Box>
           <VStack>
             <Box>
-              <HStack alignItems="Center" py="4">
-                <IconByName name="Home4LineIcon" fontSize="24px" />
-                <AdminTypo.H1 color="textGreyColor.800" bold>
-                  {t("HOME")}
-                </AdminTypo.H1>
+              <HStack alignItems="Center" py="4" space="2">
+                <IconByName name="Home4LineIcon" size="md" />
+                <AdminTypo.H4 bold>{t("HOME")}</AdminTypo.H4>
               </HStack>
             </Box>
             <HStack>
@@ -353,7 +398,7 @@ export default function Orientation({ footerLinks }) {
                   <VStack alignItems={"Center"}>
                     <Image
                       source={{
-                        uri: "/orientation.svg",
+                        uri: "/orientation.png",
                       }}
                       alt="Prerak Orientation"
                       size={"sm"}
@@ -411,9 +456,9 @@ export default function Orientation({ footerLinks }) {
             </VStack>
           </BoxBlue> */}
             </HStack>
-            <AdminTypo.H3 bold pt="8" pb="3">
+            <AdminTypo.H4 color="textMaroonColor.500" bold pt="8" pb="3">
               {t("YOUR_CALENDAR")}
-            </AdminTypo.H3>
+            </AdminTypo.H4>
           </VStack>
           <HStack
             px="2"
@@ -438,7 +483,7 @@ export default function Orientation({ footerLinks }) {
               />
               <VStack space="4">
                 {reminders?.data?.FACILITATOR_EVENT_TYPE.map((e, key) => (
-                  <HStack alignItems="Center" space="md" key={key}>
+                  <HStack alignItems="Center" space="md" key={e?.title}>
                     <CheckCircleIcon
                       size="4"
                       color={
@@ -537,9 +582,9 @@ export default function Orientation({ footerLinks }) {
             <Modal.Content {...styles.modalxxl}>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0" bg="white">
-                <AdminTypo.H1 textAlign="center" bold>
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.500">
                   {t("SCHEDULE_EVENT")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
 
               <Modal.Body pt="4" pb="10" bg="white">
@@ -557,7 +602,7 @@ export default function Orientation({ footerLinks }) {
                     {...{
                       widgets,
                       validator,
-                      schema: schema ? schema : {},
+                      schema: schema || {},
                       formData,
                       uiSchema,
                       onChange,
@@ -593,6 +638,97 @@ export default function Orientation({ footerLinks }) {
           <OrientationScreen {...{ isOpen, setIsOpen, userIds, setUserIds }} />
         </Box>
       )}
+
+      <Modal isOpen={modal} safeAreaTop={true} size="xl">
+        <Modal.Content>
+          <Modal.Header p="5" borderBottomWidth="0">
+            <AdminTypo.H3 textAlign="center" color="black">
+              {t("SELECT_YOUR_COHORT")}
+            </AdminTypo.H3>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <HStack
+                space="5"
+                borderBottomWidth={1}
+                borderBottomColor="gray.300"
+                pb="5"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <AdminTypo.H4> {t("ACADEMIC_YEAR")}</AdminTypo.H4>
+
+                <Select
+                  selectedValue={academicYear}
+                  minWidth="200"
+                  accessibilityLabel="Choose Service"
+                  placeholder={t("SELECT")}
+                  _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                  mt={1}
+                  onValueChange={(itemValue) => handleYearChange(itemValue)}
+                >
+                  {academicData?.map((item) => {
+                    return (
+                      <Select.Item
+                        key={item.id}
+                        label={item?.academic_year_name}
+                        value={JSON.stringify(item)}
+                      />
+                    );
+                  })}
+                </Select>
+              </HStack>
+              <HStack
+                space="5"
+                borderBottomWidth={1}
+                borderBottomColor="gray.300"
+                pb="5"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
+
+                <Select
+                  selectedValue={programID}
+                  minWidth="200"
+                  accessibilityLabel="Choose Service"
+                  placeholder={t("SELECT")}
+                  _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                  mt={1}
+                  onValueChange={(itemValue) => setProgramID(itemValue)}
+                >
+                  {programData?.map((item) => {
+                    return (
+                      <Select.Item
+                        key={item.id}
+                        label={item?.state_name}
+                        value={JSON.stringify(item)}
+                      />
+                    );
+                  })}
+                </Select>
+              </HStack>
+              {programID && (
+                <VStack alignItems={"center"}>
+                  <AdminTypo.Dangerbutton onPress={handleContinueBtn}>
+                    {t("CONTINUE")}
+                  </AdminTypo.Dangerbutton>
+                </VStack>
+              )}
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
+
+Orientation.propTypes = {
+  footerLinks: PropTypes.any,
+};

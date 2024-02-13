@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../component/BaseInput";
-
 import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Image,
   Button,
   HStack,
   ScrollView,
@@ -24,38 +22,17 @@ import {
   enumRegistryService,
   GetEnumValue,
   facilitatorRegistryService,
+  tableCustomStyles,
   setFilterLocalStorage,
   getFilterLocalStorage,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
 import { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-
 const filterName = "camp_filter";
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-      cursor: "pointer",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
 
 const columns = (t, navigate) => [
   {
@@ -127,7 +104,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
-  const [campFilterStatus, setCampFilterStatus] = useState([]);
+  const [campFilterStatus, setCampFilterStatus] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
 
@@ -145,14 +122,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   }, []);
 
   React.useEffect(async () => {
+    let newFilter = filter;
     if (urlFilterApply) {
-      let newFilter = filter;
       if (filter?.status === "all") {
         const { status, ...dataFilter } = filter || {};
-        console.log({ dataFilter });
         newFilter = dataFilter;
       }
-
       const qData = await campService.getCampList(newFilter);
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
@@ -170,7 +145,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       _sidebar={footerLinks}
     >
       <HStack
-        space={[0, 0, "2"]}
+        space={[0, 0, "4"]}
         p="2"
         my="1"
         mb="3"
@@ -180,21 +155,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       >
         <HStack
           justifyContent={"space-between"}
-          space={"4"}
+          space={"6"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space={2}>
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1>{t("ALL_CAMPS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
       </HStack>
       <HStack>
@@ -218,10 +185,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <HStack pb="2">
               {campFilterStatus?.map((item) => {
                 return (
-                  <AdminTypo.H5
+                  <AdminTypo.H6
                     key={"table"}
                     color={
-                      filter?.status == t(item?.status) ? "blueText.400" : ""
+                      filter?.status == t(item?.status)
+                        ? "textMaroonColor.600"
+                        : ""
                     }
                     bold={filter?.status == t(item?.status)}
                     cursor={"pointer"}
@@ -243,7 +212,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     {filter?.status == t(item?.status)
                       ? `(${paginationTotalRows})` + " "
                       : " "}
-                  </AdminTypo.H5>
+                  </AdminTypo.H6>
                 );
               })}
             </HStack>
@@ -254,7 +223,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilter(e);
                   setFilterLocalStorage(filterName, e);
                 }}
-                customStyles={CustomStyles}
+                customStyles={tableCustomStyles}
                 columns={[...columns(t, navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
@@ -278,6 +247,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   [setFilter, filter]
                 )}
                 onRowClicked={handleRowClick}
+                dense
+                highlightOnHover
               />
             </Box>
           </ScrollView>
@@ -295,11 +266,19 @@ export const Filter = ({ filter, setFilter }) => {
   const [facilitator, setFacilitator] = React.useState([]);
 
   const setFilterObject = (data) => {
+    const { facilitator: newFacilitator, ...otherData } = data;
+    const facilitator =
+      newFacilitator?.length > 0 ? { facilitator: newFacilitator } : {};
+
     if (data?.district) {
       const { district, block } = data;
-      setFacilitatorFilter({ ...facilitatorFilter, district, block });
+      setFacilitatorFilter({
+        ...facilitatorFilter,
+        district,
+        block,
+      });
     }
-    setFilter(data);
+    setFilter({ ...otherData, ...facilitator });
     setFilterLocalStorage(filterName, data);
   };
 
@@ -362,12 +341,20 @@ export const Filter = ({ filter, setFilter }) => {
       "ui:options": {},
     },
   };
-  React.useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setGetDistrictsAll(getDistricts?.districts);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const programResult = await getSelectedProgramId();
+      let name = programResult?.state_name;
+      const getDistricts = await geolocationRegistryService.getDistricts({
+        name,
+      });
+
+      if (Array.isArray(getDistricts?.districts)) {
+        setGetDistrictsAll(getDistricts?.districts);
+      }
+    };
+    fetchData();
   }, []);
 
   React.useEffect(async () => {
@@ -380,19 +367,22 @@ export const Filter = ({ filter, setFilter }) => {
     setGetBlocksAll(blockData);
   }, [filter?.district]);
 
-  const onChange = async (data) => {
-    const { district: newDistrict, block: newBlock } = data?.formData || {};
-    const { district, block, ...remainData } = filter;
-    setFilterObject({
-      ...remainData,
-      ...(newDistrict?.length > 0
-        ? {
-            district: newDistrict,
-            ...(newBlock?.length > 0 ? { block: newBlock } : {}),
-          }
-        : {}),
-    });
-  };
+  const onChange = React.useCallback(
+    async (data) => {
+      const { district: newDistrict, block: newBlock } = data?.formData || {};
+      const { district, block, ...remainData } = filter || {};
+      setFilterObject({
+        ...remainData,
+        ...(newDistrict && newDistrict?.length > 0
+          ? {
+              district: newDistrict,
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
+          : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
   const clearFilter = () => {
     setFilter({});
@@ -479,4 +469,13 @@ export const Filter = ({ filter, setFilter }) => {
       />
     </VStack>
   );
+};
+
+Filter.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+};
+CampHome.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
 };

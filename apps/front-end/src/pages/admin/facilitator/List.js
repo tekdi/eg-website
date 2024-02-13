@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
+import PropTypes from "prop-types";
 import {
   Box,
   HStack,
@@ -10,9 +10,10 @@ import {
   Button,
   Input,
   Modal,
-  Image,
+  Stack,
 } from "native-base";
 import {
+  getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
   useWindowSize,
@@ -22,8 +23,8 @@ import {
   enumRegistryService,
   setQueryParameters,
   urlData,
-  CustomRadio,
   getOptions,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -40,10 +41,12 @@ const uiSchema = {
     "ui:widget": MultiCheck,
     "ui:options": {},
   },
-  work_experience: {
-    "ui:widget": CustomRadio,
-  },
+
   block: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+  status: {
     "ui:widget": MultiCheck,
     "ui:options": {},
   },
@@ -56,7 +59,12 @@ const schemat = {
       type: "array",
       title: "DISTRICT",
       grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
+      _hstack: {
+        maxH: 135,
+        overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
+      },
       items: {
         type: "string",
       },
@@ -69,98 +77,87 @@ const schemat = {
       _hstack: {
         maxH: 130,
         overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
       },
       items: {
         type: "string",
+        enum: [],
       },
       uniqueItems: true,
     },
-    qualificationIds: {
+    status: {
       type: "array",
-      title: "QUALIFICATION",
+      title: "STATUS",
       grid: 1,
-      _hstack: { maxH: 135, overflowY: "scroll" },
-      items: {
-        type: "string",
+      _hstack: {
+        maxH: 130,
+        overflowY: "scroll",
       },
-      uniqueItems: true,
-    },
-    work_experience: {
-      type: "array",
-      title: "WORK_EXPERIENCES",
-      _hstack: { maxH: 130, overflowY: "scroll" },
       items: {
         type: "string",
-        enumNames: [
-          "All",
-          "0 yrs",
-          "1 yrs",
-          "2 yrs",
-          "3 yrs",
-          "4 yrs",
-          "5 yrs",
-        ],
-        enum: ["All", "0", "1", "2", "3", "4", "5"],
       },
       uniqueItems: true,
     },
   },
 };
-
 export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-
   const [width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const [schema, setSchema] = React.useState();
-  const [filter, setFilter] = React.useState({});
-  const previousDistrictLength = React.useRef(filter?.district?.length);
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const [schema, setSchema] = useState();
+  const [filter, setFilter] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(true);
+  const [modal, setModal] = useState(false);
+  const [data, setData] = useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [enumOptions, setEnumOptions] = useState({});
+  const [program, setProgram] = useState();
+  const [academicYear, setAcademicYear] = useState();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
 
-  const [loading, setLoading] = React.useState(true);
-  const [facilitaorStatus, setFacilitaorStatus] = React.useState();
+  const handleOpenButtonClick = () => {
+    setIsDrawerOpen((prevState) => !prevState);
+  };
 
-  const [data, setData] = React.useState([]);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [enumOptions, setEnumOptions] = React.useState({});
-
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
-      const result = await enumRegistryService.statuswiseCount();
-      setFacilitaorStatus(result);
-      const data = await enumRegistryService.listOfEnum();
-      setEnumOptions(data?.data ? data?.data : {});
-
-      const getQualification =
-        await facilitatorRegistryService.getQualificationAll();
-      let newSchema = getOptions(schemat, {
-        key: "qualificationIds",
-        arr: getQualification,
-        title: "name",
-        value: "id",
-      });
-
-      let name = "RAJASTHAN";
+      const programResult = await getSelectedProgramId();
+      let academic_Id = await getSelectedAcademicYear();
+      setAcademicYear(academic_Id);
+      setProgram(programResult);
+      let name = programResult?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+
+      let newSchema = getOptions(schemat, {
+        key: "status",
+        arr: data?.data?.FACILITATOR_STATUS,
+        title: "title",
+        value: "value",
+      });
+
       newSchema = getOptions(newSchema, {
         key: "district",
         arr: getDistricts?.districts,
         title: "district_name",
         value: "district_name",
       });
-
       setSchema(newSchema);
       setLoading(false);
     };
-
     fetchData();
   }, []);
 
-  React.useEffect(() => {
-    const fetchBlocks = async () => {
-      if (schema && filter?.district?.length > 0) {
+  const fetchBlocks = useCallback(async () => {
+    if (schema) {
+      if (filter?.district?.length > 0) {
         const blockData = await geolocationRegistryService.getMultipleBlocks({
           districts: filter?.district,
         });
@@ -171,34 +168,46 @@ export default function List({ footerLinks, userTokenInfo }) {
           value: "block_name",
         });
         setSchema(newSchema);
+      } else {
+        const newSchema = {
+          ...schema,
+          properties: {
+            ...schema.properties,
+            block: schemat?.properties?.block || {},
+          },
+        };
+        setSchema(newSchema);
+      }
+    }
+  }, [filter?.district]);
+
+  useEffect(() => {
+    fetchBlocks();
+  }, [filter?.district]);
+
+  useEffect(() => {
+    const fetchFilteredData = async () => {
+      if (urlFilterApply) {
+        setTableLoading(true);
+        const result = await facilitatorRegistryService.filter({
+          ...filter,
+          limit: filter?.limit || 10,
+        });
+
+        setData(result.data?.data);
+        setPaginationTotalRows(result?.data?.totalCount || 0);
+
+        setTableLoading(false);
       }
     };
 
-    // Check if the length of districts has changed
-    if (filter?.district?.length !== previousDistrictLength.current) {
-      fetchBlocks();
-      previousDistrictLength.current = filter?.district?.length;
-    }
-  }, [filter?.district, schema, geolocationRegistryService]);
-
-  const fetchFilteredData = async () => {
-    const result = await facilitatorRegistryService.filter({
-      ...filter,
-      limit: filter.limit || 10,
-    });
-
-    setData(result.data?.data);
-    setPaginationTotalRows(result?.data?.totalCount || 0);
-  };
-
-  React.useEffect(() => {
     fetchFilteredData();
   }, [filter]);
 
-  const setFilterObject = React.useCallback(
+  const setFilterObject = useCallback(
     (data) => {
       setFilter((prevFilter) => {
-        if (prevFilter.length > 0) {
+        if (prevFilter?.length > 0) {
           return prevFilter;
         } else {
           return data;
@@ -209,64 +218,56 @@ export default function List({ footerLinks, userTokenInfo }) {
     [setFilter, setQueryParameters]
   );
 
-  React.useEffect(() => {
-    const arr = ["district", "block", "qualificationIds", "work_experience"];
+  useEffect(() => {
+    const arr = ["district", "block", "status"];
     const data = urlData(arr);
-
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
+    setUrlFilterApply(true);
   }, []);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     async (data) => {
-      const { district, qualificationIds, work_experience, block } =
-        data?.formData || {};
-
-      if (
-        (district.length ||
-          qualificationIds.length ||
-          work_experience.length ||
-          block.length) > 0
-      ) {
-        setFilterObject({
-          ...filter,
-          ...(district && district?.length > 0 ? { district } : {}),
-          ...(qualificationIds && qualificationIds?.length > 0
-            ? { qualificationIds }
-            : {}),
-          ...(work_experience && work_experience?.length > 0
-            ? { work_experience }
-            : {}),
-          ...(block && block?.length > 0 ? { block } : {}),
-        });
-      }
+      const {
+        district: newDistrict,
+        block: newBlock,
+        status: newStatus,
+      } = data?.formData || {};
+      const { district, block, status, ...remainData } = filter || {};
+      const finalFilter = {
+        ...remainData,
+        ...(newDistrict && newDistrict?.length > 0
+          ? {
+              district: newDistrict,
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
+          : {}),
+        ...(newStatus && newStatus?.length > 0 ? { status: newStatus } : {}),
+      };
+      setFilterObject(finalFilter);
     },
-    [filter, setFilterObject]
+    [filter]
   );
 
-  const clearFilter = React.useCallback(() => {
+  const clearFilter = useCallback(() => {
     setFilter({});
-    setFilterObject([]);
+    setFilterObject({});
   }, [setFilterObject]);
 
-  const [modal, setModal] = React.useState(false);
   const exportPrerakCSV = async () => {
     await facilitatorRegistryService.exportFacilitatorsCsv(filter);
   };
 
-  const handleSearch = React.useCallback(
+  const handleSearch = useCallback(
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
     [filter]
   );
-
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout
+      widthApp={width}
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
       loading={loading}
@@ -274,29 +275,20 @@ export default function List({ footerLinks, userTokenInfo }) {
       <HStack
         space={[0, 0, "2"]}
         p="2"
-        my="1"
-        mb="3"
         justifyContent="space-between"
         flexWrap="wrap"
         gridGap="2"
+        ref={ref}
       >
         <HStack
           justifyContent={"space-between"}
           space={"4"}
           alignItems="center"
         >
-          <HStack justifyContent="space-between" alignItems="center">
+          <HStack justifyContent="space-between" alignItems="center" space="2">
             <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H1> {t("ALL_PRERAKS")}</AdminTypo.H1>
+            <AdminTypo.H4 bold> {t("ALL_PRERAKS")}</AdminTypo.H4>
           </HStack>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
         </HStack>
         <Input
           size={"xs"}
@@ -355,9 +347,9 @@ export default function List({ footerLinks, userTokenInfo }) {
             <Modal.Content>
               <Modal.CloseButton />
               <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H1 textAlign="center">
+                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
                   {t("SEND_AN_INVITE")}
-                </AdminTypo.H1>
+                </AdminTypo.H3>
               </Modal.Header>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
@@ -369,7 +361,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding/${userTokenInfo?.authUser?.program_users[0]?.organisation_id}`}
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear?.academic_year_id}&program_id=${program?.program_id}`}
                     >
                       <HStack space="3">
                         <IconByName
@@ -390,63 +382,120 @@ export default function List({ footerLinks, userTokenInfo }) {
           </Modal>
         </HStack>
       </HStack>
-      <HStack>
-        <Box
-          flex={[2, 2, 1]}
-          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
-        >
-          <HStack ref={ref}></HStack>
-          <ScrollView
-            maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
-            }
+      <HStack ml="-1">
+        <Stack style={{ position: "relative", overflowX: "hidden" }}>
+          <Stack
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "0",
+              transition: "left 0.3s ease",
+              width: "250px",
+              height: "100%",
+              background: "white",
+              zIndex: 1,
+            }}
           >
-            <VStack space={3} py="5">
-              <HStack
-                alignItems="center"
-                justifyContent="space-between"
-                borderBottomWidth="2"
-                borderColor="#eee"
-                flexWrap="wrap"
+            <Box
+              flex={[2, 2, 1]}
+              style={{
+                borderRightColor: "dividerColor",
+                borderRightWidth: "2px",
+              }}
+            >
+              <ScrollView
+                maxH={
+                  Height -
+                  (refAppBar?.clientHeight + ref?.current?.clientHeight)
+                }
               >
-                <HStack>
-                  <IconByName isDisabled name="FilterLineIcon" />
-                  <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
-                </HStack>
-                <Button variant="link" pt="3" onPress={clearFilter}>
-                  <AdminTypo.H6 color="blueText.400" underline bold>
-                    {t("CLEAR_FILTER")}
-                  </AdminTypo.H6>
-                </Button>
-              </HStack>
-              <Box p={[0, 0, 3]} pr="3">
-                <Form
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  onChange={onChange}
-                  validator={validator}
-                  formData={filter}
-                >
-                  <Button display={"none"} type="submit"></Button>
-                </Form>
-              </Box>
-            </VStack>
-          </ScrollView>
-        </Box>
+                <VStack space={3} py="5">
+                  <HStack
+                    alignItems="center"
+                    justifyContent="space-between"
+                    borderBottomWidth="2"
+                    borderColor="#eee"
+                    flexWrap="wrap"
+                  >
+                    <HStack>
+                      {/* <IconByName isDisabled name="FilterLineIcon" /> */}
+                      <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+                    </HStack>
+                    <Button variant="link" pt="3" onPress={clearFilter}>
+                      <AdminTypo.H6 color="blueText.400" underline bold>
+                        {t("CLEAR_FILTER")}(
+                        {
+                          Object.keys(filter || {}).filter(
+                            (e) => !["limit", "page"].includes(e)
+                          ).length
+                        }
+                        )
+                      </AdminTypo.H6>
+                    </Button>
+                  </HStack>
+                  <Box p={[0, 0, 3]} pr="3">
+                    <Form
+                      schema={schema || {}}
+                      uiSchema={uiSchema}
+                      onChange={onChange}
+                      validator={validator}
+                      formData={filter}
+                    >
+                      <Button display={"none"} type="submit"></Button>
+                    </Form>
+                  </Box>
+                </VStack>
+              </ScrollView>
+            </Box>
+          </Stack>
+
+          <Stack
+            style={{
+              marginLeft: isDrawerOpen ? "250px" : "0",
+              transition: "margin-left 0.3s ease",
+            }}
+          />
+        </Stack>
+        <VStack
+          ml={"-1"}
+          rounded={"xs"}
+          height={"50px"}
+          bg={
+            filter?.district || filter?.state || filter?.block || filter?.status
+              ? "textRed.400"
+              : "#E0E0E0"
+          }
+          justifyContent="center"
+          onClick={handleOpenButtonClick}
+        >
+          <IconByName
+            name={isDrawerOpen ? "ArrowLeftSLineIcon" : "FilterLineIcon"}
+            color={
+              filter?.state ||
+              filter?.district ||
+              filter?.block ||
+              filter?.status
+                ? "white"
+                : "black"
+            }
+            _icon={{ size: "30px" }}
+          />
+        </VStack>
+
         <Box flex={[5, 5, 4]}>
           <ScrollView
-            maxH={Height - refAppBar?.clientHeight}
-            minH={Height - refAppBar?.clientHeight}
+            maxH={Height - refAppBar?.clientHeight - 72}
+            minH={Height - refAppBar?.clientHeight - 72}
           >
-            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+            <Box roundedBottom={"2xl"} pl="0" px={4}>
               <Table
+                height={Height - refAppBar?.clientHeight}
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}
-                facilitaorStatus={facilitaorStatus}
                 paginationTotalRows={paginationTotalRows}
                 data={data}
-                loading={loading}
+                loading={tableLoading}
                 enumOptions={enumOptions}
               />
             </Box>
@@ -456,3 +505,5 @@ export default function List({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+List.propTypes = { footerLinks: PropTypes.any, userTokenInfo: PropTypes.any };

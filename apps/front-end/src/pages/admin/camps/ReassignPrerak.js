@@ -9,6 +9,10 @@ import {
   useWindowSize,
   facilitatorRegistryService,
   BodyMedium,
+  geolocationRegistryService,
+  getOptions,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -18,12 +22,19 @@ import {
   ScrollView,
   useToast,
   Alert,
+  Stack,
+  Button,
+  Input,
 } from "native-base";
+import Form from "@rjsf/core";
 import { ChipStatus } from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
-import React from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import { MultiCheck } from "component/BaseInput";
+import validator from "@rjsf/validator-ajv8";
+import { debounce } from "lodash";
 
 const columns = (navigate, t, setModal) => [
   {
@@ -80,30 +91,116 @@ const columns = (navigate, t, setModal) => [
   },
 ];
 
+const uiSchema = {
+  district: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+  block: {
+    "ui:widget": MultiCheck,
+    "ui:options": {},
+  },
+};
+const filterName = "camp_reassign_filter";
+
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const { id, user_id } = useParams();
-  const [data, setData] = React.useState();
+  const [data, setData] = useState();
   const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const [filter, setFilter] = React.useState({ limit: 10, page: 1 });
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [prerakData, setPrerakData] = React.useState();
+  const [filter, setFilter] = useState();
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [prerakData, setPrerakData] = useState();
   const [Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const [modal, setModal] = React.useState();
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const [modal, setModal] = useState();
   const toast = useToast();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isDisable, setIsDisable] = useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [schema, setSchema] = useState();
 
-  React.useEffect(async () => {
+  const handleOpenButtonClick = () => {
+    setDrawerOpen((prevState) => !prevState);
+  };
+  const schemat = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: t("DISTRICT"),
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: t("BLOCKS"),
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "2px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+    },
+  };
+
+  useEffect(async () => {
     const id = user_id;
     const result = await facilitatorRegistryService.getOne({ id });
     setData(result);
     setLoading(false);
+    const data = getFilterLocalStorage(filterName);
+    if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
+  }, [id]);
+
+  useEffect(async () => {
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name: "RAJASTHAN",
+    });
+    let newSchema = getOptions(schemat, {
+      key: "district",
+      arr: getDistricts?.districts,
+      title: "district_name",
+      value: "district_name",
+    });
+    setSchema(newSchema);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(() => {
+    const fetchBlocks = async () => {
+      if (schema && filter?.district?.length > 0) {
+        const blockData = await geolocationRegistryService.getMultipleBlocks({
+          districts: filter?.district,
+        });
+        let newSchema = getOptions(schema, {
+          key: "block",
+          arr: blockData,
+          title: "block_name",
+          value: "block_name",
+        });
+        setSchema(newSchema);
+      }
+    };
+    fetchBlocks();
+  }, [filter?.district]);
+
+  useEffect(async () => {
     let newFilter = filter;
     const qData = await campService.getPrerakDetails(newFilter);
     setPrerakData(qData?.data);
@@ -149,7 +246,41 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       navigate(`/admin/camps/${id}`);
     }
   };
+  const setFilterObject = useCallback((prerakData) => {
+    setFilter(prerakData);
+    setFilterLocalStorage(filterName, prerakData);
+  }, []);
+  const onChange = useCallback(
+    async (prerakData) => {
+      const { district: newDistrict, block: newBlock } =
+        prerakData?.formData || {};
+      const { district, block, ...remainData } = filter || {};
+      setFilterObject({
+        ...remainData,
+        ...(newDistrict && newDistrict?.length > 0
+          ? {
+              district: newDistrict,
+              ...(newBlock?.length > 0 ? { block: newBlock } : {}),
+            }
+          : {}),
+      });
+    },
+    [filter, setFilterObject]
+  );
 
+  const clearFilter = useCallback(() => {
+    setFilter({});
+    setFilterObject({});
+  }, [filter, setFilterObject]);
+
+  const handleSearch = useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
   return (
     <Layout
       _sidebar={footerLinks}
@@ -160,17 +291,15 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         <Box>
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
-              {t("PROFILE")}
-            </AdminTypo.H1>
+            <AdminTypo.H4>{t("PROFILE")}</AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
 
-            <AdminTypo.H1
-              color="textGreyColor.800"
+            <AdminTypo.H4
+              bold
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
@@ -180,13 +309,13 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
                   } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
                 : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
           </HStack>
           <HStack p="5" justifyContent={"space-between"} flexWrap="wrap">
             <VStack space="4" flexWrap="wrap">
               <ChipStatus status={data?.status} />
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -196,9 +325,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="MapPinLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {[
                     data?.state,
                     data?.district,
@@ -211,7 +340,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 </AdminTypo.H6>
               </HStack>
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -221,9 +350,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="Cake2LineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.program_beneficiaries?.status ===
                   "enrolled_ip_verified"
                     ? data?.program_beneficiaries?.enrollment_dob
@@ -232,7 +361,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               </HStack>
 
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 alignItems="center"
                 p="2"
@@ -241,9 +370,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="CellphoneLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.mobile}
                 </AdminTypo.H6>
               </HStack>
@@ -268,40 +397,147 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               )}
             </HStack>
           </HStack>
+          <VStack alignItems={"center"}>
+            <Input
+              size={"xs"}
+              minH="40px"
+              maxH="40px"
+              onScroll={false}
+              InputLeftElement={
+                <IconByName
+                  color="coolGray.500"
+                  name="SearchLineIcon"
+                  isDisabled
+                  pl="2"
+                />
+              }
+              placeholder={t("SEARCH_BY_PRERAK_NAME")}
+              variant="outline"
+              onChange={debouncedHandleSearch}
+            />
+          </VStack>
         </Box>
-        <ScrollView
-          maxH={Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)}
-        >
-          <DataTable
-            filter={filter}
-            setFilter={(e) => {
-              setFilter(e);
-              setQueryParameters(e);
-            }}
-            customStyles={tableCustomStyles}
-            columns={[...columns(navigate, t, setModal)]}
-            persistTableHead
-            facilitator={userTokenInfo?.authUser}
-            pagination
-            paginationTotalRows={paginationTotalRows}
-            paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-            defaultSortAsc
-            paginationServer
-            data={prerakData}
-            onChangeRowsPerPage={(e) => {
-              setFilter({ ...filter, limit: e?.toString() });
-            }}
-            onChangePage={(e) => {
-              setFilter({ ...filter, page: e?.toString() });
-            }}
-          />
-        </ScrollView>
+        <HStack space={2}>
+          <Stack style={{ position: "relative", overflowX: "hidden" }}>
+            <Stack
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "0",
+                transition: "left 0.3s ease",
+                width: "250px",
+                height: "100%",
+                background: "white",
+                zIndex: 1,
+              }}
+            >
+              <Box
+                flex={[2, 2, 1]}
+                style={{
+                  borderRightColor: "dividerColor",
+                  borderRightWidth: "2px",
+                }}
+              >
+                <ScrollView
+                  maxH={
+                    Height -
+                    (refAppBar?.clientHeight + ref?.current?.clientHeight)
+                  }
+                >
+                  <VStack space={3} py="5">
+                    <HStack
+                      alignItems="center"
+                      justifyContent="space-between"
+                      borderBottomWidth="2"
+                      borderColor="#eee"
+                      flexWrap="wrap"
+                    >
+                      <HStack>
+                        {/* <IconByName isDisabled name="FilterLineIcon" /> */}
+                        <AdminTypo.H5 bold>{t("FILTERS")}</AdminTypo.H5>
+                      </HStack>
+                      <Button variant="link" pt="3" onPress={clearFilter}>
+                        <AdminTypo.H6 color="blueText.400" underline bold>
+                          {t("CLEAR_FILTER")}
+                        </AdminTypo.H6>
+                      </Button>
+                    </HStack>
+                    <Box p={[0, 0, 3]} pr="3">
+                      <Form
+                        schema={schema}
+                        uiSchema={uiSchema}
+                        onChange={onChange}
+                        validator={validator}
+                        formData={filter}
+                      >
+                        <Button display={"none"} type="submit"></Button>
+                      </Form>
+                    </Box>
+                  </VStack>
+                </ScrollView>
+              </Box>
+            </Stack>
+
+            <Stack
+              style={{
+                marginLeft: isDrawerOpen ? "250px" : "0",
+                transition: "margin-left 0.3s ease",
+              }}
+            />
+          </Stack>
+          <VStack
+            ml={"-1"}
+            rounded={"xs"}
+            height={"50px"}
+            bg={filter?.district || filter?.block ? "textRed.400" : "#E0E0E0"}
+            justifyContent="center"
+            onClick={handleOpenButtonClick}
+          >
+            <IconByName
+              name={isDrawerOpen ? "ArrowLeftSLineIcon" : "FilterLineIcon"}
+              color={filter?.district || filter?.block ? "white" : "black"}
+              _icon={{ size: "30px" }}
+            />
+          </VStack>
+
+          <ScrollView
+            maxH={
+              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
+            }
+          >
+            <DataTable
+              filter={filter}
+              setFilter={(e) => {
+                setFilter(e);
+                setFilterLocalStorage(filterName, e);
+              }}
+              customStyles={tableCustomStyles}
+              columns={[...columns(navigate, t, setModal)]}
+              persistTableHead
+              facilitator={userTokenInfo?.authUser}
+              pagination
+              paginationTotalRows={paginationTotalRows}
+              paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+              defaultSortAsc
+              paginationServer
+              data={prerakData}
+              onChangeRowsPerPage={(e) => {
+                setFilter({ ...filter, limit: e?.toString() });
+              }}
+              onChangePage={(e) => {
+                setFilter({ ...filter, page: e?.toString() });
+              }}
+            />
+          </ScrollView>
+        </HStack>
       </VStack>
 
       <Modal isOpen={modal} size="lg">
         <Modal.Content>
           <Modal.Header>
-            <FrontEndTypo.H1>{t("REASSIGN_CAMP")}</FrontEndTypo.H1>
+            <FrontEndTypo.H2 color="textMaroonColor.600">
+              {t("REASSIGN_CAMP")}
+            </FrontEndTypo.H2>
           </Modal.Header>
           <Modal.Body p="5">
             <VStack>

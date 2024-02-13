@@ -226,25 +226,15 @@ function EnrollmentVerificationList({ footerLinks }) {
       _sidebar={footerLinks}
     >
       <HStack p="4" justifyContent="space-between" ref={refSubHeader}>
-        <HStack justifyContent="space-between" alignItems="center">
-          <IconByName isDisabled name="GraduationCap" _icon={{ size: "35" }} />
-          <AdminTypo.H1 color="Activatedcolor.400">
-            {t("All_AG_LEARNERS")}
-          </AdminTypo.H1>
+        <HStack justifyContent="space-between" alignItems="center" space={2}>
+          <IconByName isDisabled name="GraduationCap" size="md" />
+          <AdminTypo.H4>{t("All_AG_LEARNERS")}</AdminTypo.H4>
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
             onPress={(e) => navigate("/admin/learners")}
           />
-          <AdminTypo.H1 px="3">{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H1>
-          <Image
-            source={{
-              uri: "/box.svg",
-            }}
-            alt=""
-            size={"28px"}
-            resizeMode="contain"
-          />
+          <AdminTypo.H4 bold>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}

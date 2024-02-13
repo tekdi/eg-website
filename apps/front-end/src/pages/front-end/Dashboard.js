@@ -9,12 +9,31 @@ import {
   BodyMedium,
   AdminTypo,
   testRegistryService,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
+  getOnboardingURLData,
+  H1,
+  setSelectedProgramId,
+  getOnboardingMobile,
+  setSelectedAcademicYear,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Stack, Image, Alert, Modal } from "native-base";
-import React from "react";
+import {
+  HStack,
+  VStack,
+  Stack,
+  Image,
+  Alert,
+  Modal,
+  CloseIcon,
+  Select,
+  CheckIcon,
+} from "native-base";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 const styles = {
   inforBox: {
@@ -35,90 +54,192 @@ const styles = {
 
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
-  const [facilitator, setFacilitator] = React.useState({});
-  const [certificateData, setCertificateData] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
+  const [facilitator, setFacilitator] = useState({ notLoaded: true });
+  const [certificateData, setCertificateData] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [progress, setProgress] = React.useState(0);
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [progress, setProgress] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
-  const [isEventActive, setIsEventActive] = React.useState(false);
-  const [lmsDEtails, setLmsDetails] = React.useState();
+  const [isEventActive, setIsEventActive] = useState(false);
+  const [lmsDEtails, setLmsDetails] = useState();
   const { id } = userTokenInfo?.authUser || [];
-  const [random, setRandom] = React.useState();
-  const [events, setEvents] = React.useState("");
+  const [random, setRandom] = useState();
+  const [events, setEvents] = useState("");
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
-  React.useEffect(async () => {
-    if (userTokenInfo) {
-      const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
-      setFacilitator(fa_data);
-      const c_data =
-        await facilitatorRegistryService.getPrerakCertificateDetails({
-          id: fa_id,
+  //fetch URL data and store fix for 2 times render useEffect call
+  const [countLoad, setCountLoad] = useState(0);
+  const [loadAll, setLoadAll] = useState(false);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [academicYear, setAcademicYear] = useState(null);
+  const [academicData, setAcademicData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operation
+
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        //get user info
+        if (userTokenInfo) {
+          const fa_data = await facilitatorRegistryService.getInfo();
+          setFacilitator(fa_data);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        try {
+          const c_data =
+            await facilitatorRegistryService.getPrerakCertificateDetails({
+              id: fa_id,
+            });
+          const data =
+            c_data?.data?.filter(
+              (e) => e?.type === "prerak_camp_execution_training"
+            )?.[0] || {};
+          setCertificateData(data);
+          if (data?.lms_test_tracking?.length > 0) {
+            setLmsDetails(data?.lms_test_tracking?.[0]);
+          }
+
+          const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+          const format = "HH:mm:ss";
+          const time = moment(moment().format(format), format);
+          const beforeTime = moment(data?.start_time, format);
+          const afterTime = moment(data?.end_time, format);
+          if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+            setIsEventActive(true);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchdata();
+  }, [selectedCohortData]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
         });
-      const data =
-        c_data?.data?.filter(
-          (e) => e?.type === "prerak_camp_execution_training"
-        )?.[0] || {};
-      setCertificateData(data);
-      if (data?.lms_test_tracking?.length > 0) {
-        setLmsDetails(data?.lms_test_tracking?.[0]);
-      }
-
-      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-      const format = "HH:mm:ss";
-      const time = moment(moment().format(format), format);
-      const beforeTime = moment(data?.start_time, format);
-      const afterTime = moment(data?.end_time, format);
-      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-        setIsEventActive(true);
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
       }
     }
-    setLoading(false);
-  }, []);
+    fetchData();
+  }, [academicYear]);
 
-  React.useEffect(async () => {
-    const getCertificate = await testRegistryService.getCertificate({
-      id,
-    });
-    if (getCertificate?.data?.length > 0) {
-      setLmsDetails(getCertificate?.data?.[0]);
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      const getCertificate = await testRegistryService.getCertificate({
+        id,
+      });
+      if (getCertificate?.data?.length > 0) {
+        setLmsDetails(getCertificate?.data?.[0]);
+      }
     }
+    fetchData();
   }, []);
 
-  React.useEffect(() => {
-    const res = objProps(facilitator);
-    setProgress(
-      arrList(
-        {
-          ...res,
-          qua_name: facilitator?.qualifications?.qualification_master?.name,
-        },
-        [
-          "device_ownership",
-          "mobile",
-          "device_type",
-          "gender",
-          "marital_status",
-          "social_category",
-          "name",
-          "contact_number",
-          "availability",
-          "aadhar_no",
-          "aadhaar_verification_mode",
-          "aadhar_verified",
-          "qualification_ids",
-          "qua_name",
-        ]
-      )
-    );
+  useEffect(() => {
+    async function fetchData() {
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const res = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...res,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            [
+              "device_ownership",
+              "mobile",
+              "device_type",
+              "gender",
+              "marital_status",
+              "social_category",
+              "name",
+              "contact_number",
+              "availability",
+              "aadhar_no",
+              "aadhaar_verification_mode",
+              "aadhar_verified",
+              "qualification_ids",
+              "qua_name",
+            ]
+          )
+        );
+        //check exist user registered
+        try {
+          let onboardingURLData = await getOnboardingURLData();
+          setCohortData(onboardingURLData?.cohortData);
+          setProgramData(onboardingURLData?.programData);
+          //get program id and store in localstorage
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          setSelectedProgramData(program_data[0]);
+          await setSelectedProgramId(program_data[0]);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no != null &&
+            mobile_no_onboarding != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            localStorage.setItem("loadCohort", "yes");
+            setIsUserRegisterExist(true);
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {}
+      }
+    }
+    fetchData();
   }, [facilitator]);
 
   const handleRandomise = async () => {
     const doIdArray = modalVisible?.params?.do_id;
-    console.log({ doIdArray });
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
@@ -179,6 +300,72 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     return isAllow < 3;
   };
 
+  //multi cohort
+
+  const selectAcademicYear = async () => {
+    setSelectCohortForm(false);
+  };
+
+  const removeRegisterExist = async () => {
+    try {
+      try {
+        localStorage.removeItem("loadCohort");
+      } catch (e) {}
+      await removeOnboardingURLData();
+      await removeOnboardingMobile();
+      setIsUserRegisterExist(false);
+      await showSelectCohort();
+    } catch (error) {
+      console.error("Failed to remove registration existence:", error);
+    }
+  };
+
+  const userExistRegisterClick = async () => {
+    let onboardingURLData = await getOnboardingURLData();
+    const register_exist_user =
+      await facilitatorRegistryService.RegisterUserExist({
+        program_id: parseInt(onboardingURLData?.programId),
+        academic_year_id: parseInt(onboardingURLData?.cohortId),
+        parent_ip: onboardingURLData?.id,
+      });
+    if (register_exist_user?.success == true) {
+      try {
+        await removeOnboardingURLData();
+        await removeOnboardingMobile();
+        setIsUserRegisterExist(false);
+        window.location.reload();
+      } catch (e) {}
+    } else {
+      alert(register_exist_user?.message);
+    }
+  };
+
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+      } else {
+        setSelectCohortForm(true);
+      }
+    }
+  };
+
+  const handleAcademicYear = async (item) => {
+    setAcademicYear(item);
+  };
+
   return (
     <Layout
       loading={loading}
@@ -186,8 +373,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         profile_url: facilitator?.profile_photo_1?.name,
         name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
-        facilitator,
       }}
+      facilitator={facilitator}
       _footer={{ menues: footerLinks }}
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
@@ -223,8 +410,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </HStack>
             {isEventActive
               ? certificateData?.type == "prerak_camp_execution_training" && (
-                  <HStack py="4" flex="1" px="6">
-                    <AdminTypo.Dangerbutton
+                  <HStack py="2" flex="1" px="4">
+                    <FrontEndTypo.Primarybutton
                       onPress={() => {
                         setModalVisible(certificateData);
                         const doIdArray = certificateData?.params?.do_id;
@@ -236,18 +423,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.Dangerbutton>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 )
               : lmsDEtails?.id && (
-                  <HStack py="4" flex="1" px="6">
-                    <AdminTypo.Dangerbutton
+                  <HStack py="2" flex="1" px="4">
+                    <FrontEndTypo.Primarybutton
+                      fontSize
                       onPress={() => {
                         setModalVisible(certificateData);
                       }}
                     >
                       {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.Dangerbutton>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 )}
             <Modal
@@ -354,22 +542,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           ].includes(facilitator.status) && (
             <Stack>
               <RedOutlineButton
-                background="#FCEEE2"
+                background="bgYellowColor.400"
                 mx="5"
                 p="10"
                 width="40%"
-                shadow="RedBoxShadow"
+                shadow="RedBlackShadow"
                 onPress={(e) => navigate("/beneficiary")}
               >
                 <Image
                   source={{
-                    uri: "/addAg.svg",
+                    uri: "/images/learner/add_learner.png",
                   }}
                   alt="Add AG"
                   size={"sm"}
                   resizeMode="contain"
                 />
-                <FrontEndTypo.H4 color="textMaroonColor.400" bold>
+                <FrontEndTypo.H4 mt="2" color="textBlack.500" bold>
                   {t("ADD_AN_AG")}
                 </FrontEndTypo.H4>
               </RedOutlineButton>
@@ -388,6 +576,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <Stack>
                 <VStack p="5" pt={1}>
                   <FrontEndTypo.Primarybutton
+                    //old route for complete profile
+                    //onPress={(e) => navigate("/profile/edit/basic_details")}
+                    //old route for complete profile
                     onPress={(e) => navigate("/profile/edit/basic_details")}
                     bold
                     flex="1"
@@ -398,7 +589,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
-            <Stack p="5">
+            <Stack p="5" space={4}>
               {[undefined].includes(facilitator?.aadhar_no) && (
                 <Stack space="3">
                   <Alert status="warning" alignItems={"start"}>
@@ -416,7 +607,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.Primarybutton>
                 </Stack>
               )}
-              {["upload"].includes(facilitator?.aadhaar_verification_mode) && (
+              {["upload", ""].includes(
+                facilitator?.aadhaar_verification_mode
+              ) && (
                 <Stack space="3">
                   <Alert status="warning" alignItems={"start"}>
                     <HStack alignItems="center" space="2" color>
@@ -440,7 +633,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {isDocumentUpload() && (
-            <Stack bg="bgPinkColor.300" space="6" p={4}>
+            <Stack bg="bgYellowColor.400" space="6" p={4}>
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("UPLOAD_YOUR_DOCUMENTS")}
               </FrontEndTypo.H2>
@@ -506,6 +699,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       isDisabled
                       name="Upload2FillIcon"
                       _icon={{ size: "25px" }}
+                      color="gray.800"
                     />
                   }
                   onPress={(e) => navigate("/profile")}
@@ -517,6 +711,88 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
         </VStack>
       </VStack>
+      <Modal
+        isOpen={selectCohortForm}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Header p="5" borderBottomWidth="0">
+            <H1 textAlign="center">{t("SELECT_COHORT_INFO")}</H1>
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <Select
+                selectedValue={academicYear}
+                accessibilityLabel="Choose Service"
+                placeholder={t("SELECT")}
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) => handleAcademicYear(itemValue)}
+              >
+                {academicData?.map((item, index) => {
+                  return (
+                    <Select.Item
+                      key={item.id}
+                      label={item?.academic_year_name}
+                      value={item?.academic_year_id}
+                    />
+                  );
+                })}
+              </Select>
+              <HStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={async (e) => {
+                    selectAcademicYear();
+                  }}
+                >
+                  {t("SELECT_COHORT_NEXT")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={isUserRegisterExist}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Header p="5" borderBottomWidth="0">
+            <H1 textAlign="center">{t("REGISTER_EXIST_CONFIRM")}</H1>
+            <CloseIcon
+              onClick={async () => await removeRegisterExist()}
+              style={{ cursor: "pointer" }}
+            />
+          </Modal.Header>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <FrontEndTypo.H2 textAlign="center">
+                {t("REGISTER_EXIST_CONFIRM_INFO")
+                  .replace("{{state}}", programData?.program_name)
+                  .replace("{{year}}", cohortData?.academic_year_name)}
+              </FrontEndTypo.H2>
+              <HStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={async (e) => {
+                    userExistRegisterClick();
+                  }}
+                >
+                  {t("REGISTER_EXIST_INFO")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
@@ -664,4 +940,8 @@ const InfoBox = ({ status, progress }) => {
   }
 
   return infoBox;
+};
+Dashboard.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
 };

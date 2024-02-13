@@ -87,7 +87,7 @@ export default function BenificiaryAadhaarDetails() {
                   "aadhaar_verification_mode",
                 ])}
                 size="xs"
-                colorScheme="info"
+                colorScheme="red"
               />
             </Box>
             <VStack space="2" pt="5">

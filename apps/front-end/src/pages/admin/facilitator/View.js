@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, memo } from "react";
+import React, { useCallback, useEffect, useState, memo, lazy } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -11,6 +11,7 @@ import {
   tableCustomStyles,
   benificiaryRegistoryService,
   CardComponent,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -26,10 +27,11 @@ import {
 } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
 import NotFound from "../../NotFound";
-import StatusButton from "./view/StatusButton";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
+const StatusButton = lazy(() => import("./view/StatusButton"));
+
 const checkboxoptions = [
   {
     label: "AVAILABILITY",
@@ -178,21 +180,24 @@ export default function FacilitatorView({ footerLinks }) {
     profileDetails();
   }, [profileDetails]);
 
-  useEffect(async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
+  useEffect(() => {
+    const fetchData = async () => {
+      const obj = {
+        edit_req_for_context: "users",
+        edit_req_for_context_id: id,
+      };
+      const result = await benificiaryRegistoryService.getEditFields(obj);
+      if (result.data[0]) {
+        setEditData(result?.data[0]);
+      }
+      let field;
+      const parseField = result?.data[0]?.fields;
+      if (parseField && typeof parseField === "string") {
+        field = JSON.parse(parseField);
+      }
+      setFieldCheck(field || []);
     };
-    const result = await benificiaryRegistoryService.getEditFields(obj);
-    if (result.data[0]) {
-      setEditData(result?.data[0]);
-    }
-    let field;
-    const parseField = result?.data[0]?.fields;
-    if (parseField && typeof parseField === "string") {
-      field = JSON.parse(parseField);
-    }
-    setFieldCheck(field || []);
+    fetchData();
   }, []);
 
   const editRequest = async () => {
@@ -334,22 +339,22 @@ export default function FacilitatorView({ footerLinks }) {
         <VStack flex={1} space={"5"} p="3" mb="5">
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">
+            <AdminTypo.H4 bold color="Activatedcolor.400">
               {t("ALL_PRERAK")}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
               onPress={(e) => navigate(-1)}
             />
-            <AdminTypo.H1
-              color="textGreyColor.800"
+            <AdminTypo.H4
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
+              bold
             >
               {data?.first_name} {data?.last_name}
-            </AdminTypo.H1>
+            </AdminTypo.H4>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
@@ -363,7 +368,7 @@ export default function FacilitatorView({ footerLinks }) {
             <VStack space="4" flexWrap="wrap">
               <ChipStatus status={data?.status} />
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 alignItems="center"
                 p="2"
@@ -372,14 +377,14 @@ export default function FacilitatorView({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="CellphoneLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {data?.mobile}
                 </AdminTypo.H6>
               </HStack>
               <HStack
-                bg="badgeColor.400"
+                bg="textMaroonColor.600"
                 rounded={"md"}
                 p="2"
                 alignItems="center"
@@ -389,9 +394,9 @@ export default function FacilitatorView({ footerLinks }) {
                   isDisabled
                   _icon={{ size: "20px" }}
                   name="MapPinLineIcon"
-                  color="textGreyColor.300"
+                  color="white"
                 />
-                <AdminTypo.H6 color="textGreyColor.600" bold>
+                <AdminTypo.H6 color="white" bold>
                   {[
                     data?.state,
                     data?.district,
@@ -584,290 +589,148 @@ export default function FacilitatorView({ footerLinks }) {
             </Modal.Content>
           </Modal>
 
-          <VStack space={"5"} p="5" mt="6">
-            <HStack>
-              <AdminTypo.H4 color="textGreyColor.800" bold>
-                {t("PROFILE_DETAILS").toUpperCase()}
-              </AdminTypo.H4>
-            </HStack>
+          <VStack space={"5"} p="4">
+            <AdminTypo.H4 color="textGreyColor.800" bold>
+              {t("PROFILE_DETAILS").toUpperCase()}
+            </AdminTypo.H4>
+
             <HStack justifyContent="space-between">
-              <VStack space={"5"} w="50%" bg="light.100" p="6" rounded="xl">
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="center"
-                  borderColor="light.400"
-                  pb="1"
-                  borderBottomWidth="1"
-                >
-                  <AdminTypo.H5 color="textGreyColor" bold>
-                    {t("BASIC_DETAILS")}
-                  </AdminTypo.H5>
-                  {/* <IconByName
-                    color="editIcon.300"
-                    size="30px"
-                    name="EditBoxLineIcon"
-                  /> */}
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                    {t("FIRST_NAME")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
-                    {showData(data?.first_name)}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                    {t("MIDDLE_NAME")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" pl="1" bold>
-                    {showData(data?.middle_name)}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                    {t("LAST_NAME")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
-                    {showData(data?.last_name)}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.7" color="textGreyColor.550">
-                    {t("MOBILE_NO")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
-                    {showData(data?.mobile)}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                    {t("DATE_OF_BIRTH")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
-                    {showData(data?.dob)}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.69" color="textGreyColor.550">
-                    {t("GENDER")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5 flex="1" color="textGreyColor.800" bold>
-                    {showData(data?.gender)}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.4" color="textGreyColor.550">
-                    {t("ADDRESS")}:
-                  </AdminTypo.H5>
-                  <AdminTypo.H5
-                    color="textGreyColor.800"
-                    flex="0.4"
-                    pl="1"
-                    bold
-                  >
-                    {[
-                      data?.state,
-                      data?.district,
-                      data?.block,
-                      data?.village,
-                      data?.grampanchayat,
-                    ].filter((e) => e).length > 0
-                      ? [
-                          data?.state,
-                          data?.district,
-                          data?.block,
-                          data?.village,
-                          data?.grampanchayat,
-                        ]
-                          .filter((e) => e)
-                          .join(", ")
-                      : "-"}
-                  </AdminTypo.H5>
-                </HStack>
-                <HStack>
-                  <AdminTypo.H5 bold flex="0.67" color="textGreyColor.550">
-                    {t("AADHAAR_NO")}:
-                  </AdminTypo.H5>
-                  <HStack
-                    flex="1"
-                    alignItems={"center"}
-                    space={"4"}
-                    justifyContent={"space-between"}
-                  >
-                    <AdminTypo.H5
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                      color="textGreyColor.800"
-                      bold
-                    >
-                      {showData(data?.aadhar_no)}
-                    </AdminTypo.H5>
-                    <IconByName
-                      bg="white"
-                      color="textMaroonColor.400"
-                      name="PencilLineIcon"
-                      onPress={(e) => {
-                        setAadhaarValue(data?.aadhar_no);
-                        setAdhaarModalVisible(!adhaarModalVisible);
-                      }}
-                    />
-                  </HStack>
-                </HStack>
+              <VStack w="50%">
+                <CardComponent
+                  _body={{ bg: "light.100" }}
+                  _header={{ bg: "light.100" }}
+                  _vstack={{ space: 0 }}
+                  _hstack={{ borderBottomWidth: 0, p: 1 }}
+                  title={t("BASIC_DETAILS")}
+                  label={[
+                    "FIRST_NAME",
+                    "MIDDLE_NAME",
+                    "LAST_NAME",
+                    "MOBILE_NO",
+                    "DATE_OF_BIRTH",
+                    "GENDER",
+                    "ADDRESS",
+                    "AADHAAR_NO",
+                  ]}
+                  item={showData({
+                    ...data,
+                    address:
+                      [
+                        data?.state,
+                        data?.district,
+                        data?.block,
+                        data?.village,
+                        data?.grampanchayat,
+                      ].filter((e) => e).length > 0
+                        ? [
+                            data?.state,
+                            data?.district,
+                            data?.block,
+                            data?.village,
+                            data?.grampanchayat,
+                          ]
+                            .filter((e) => e)
+                            .join(", ")
+                        : "-",
+                    aadhaar: (
+                      <HStack space={4} alignItems={"center"}>
+                        <FrontEndTypo.H3>
+                          {data?.aadhar_no ? data?.aadhar_no : "-"}
+                        </FrontEndTypo.H3>
+                        <IconByName
+                          bg="light.100"
+                          color="textMaroonColor.400"
+                          name="PencilLineIcon"
+                          onPress={(e) => {
+                            setAdhaarModalVisible(!adhaarModalVisible);
+                          }}
+                        />
+                      </HStack>
+                    ),
+                  })}
+                  arr={[
+                    "first_name",
+                    "middle_name",
+                    "last_name",
+                    "mobile",
+                    "dob",
+                    "gender",
+                    "address",
+                    "aadhaar",
+                  ]}
+                  // onEdit={(e) => navigate(`/beneficiary/edit/${id}/contact-info`)}
+                />
               </VStack>
-              <VStack
-                space={"5"}
-                w="50%"
-                bg="light.100"
-                p="6"
-                rounded="xl"
-                ml="3"
-              >
-                <HStack bg="light.100" p="1" mx="1" rounded="xl">
-                  <VStack space="20px" w="100%">
-                    <VStack space="20px" w="100%" rounded="xl">
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        borderColor="light.400"
-                        pb="1"
-                        borderBottomWidth="1"
-                      >
-                        <AdminTypo.H5 color="textGreyColor" bold>
-                          {t("EDUCATION")}
-                        </AdminTypo.H5>
-                        {/* <IconByName
-                          color="editIcon.300"
-                          size="30px"
-                          name="EditBoxLineIcon"
-                        /> */}
-                      </HStack>
-                      <HStack>
-                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                          {t("QUALIFICATION")}:
-                        </AdminTypo.H5>
-                        <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
-                          {
-                            <AdminTypo.H5 color="textGreyColor.800" bold>
-                              {data?.qualifications?.qualification_master?.name}
-                            </AdminTypo.H5>
-                          }
-                        </AdminTypo.H5>
-                      </HStack>
+              <VStack space={"2"} w="50%" ml="3">
+                <CardComponent
+                  _body={{ bg: "light.100" }}
+                  _header={{ bg: "light.100" }}
+                  _vstack={{ space: 0 }}
+                  _hstack={{ borderBottomWidth: 0, p: 1 }}
+                  title={t("EDUCATION")}
+                  label={[
+                    "QUALIFICATION",
+                    "TEACHING_QUALIFICATION",
+                    "WORK_EXPERIENCE",
+                    "VOLUNTEER_EXPERIENCE",
+                  ]}
+                  item={{
+                    ...data,
+                    qualification: (
+                      <FrontEndTypo.H3>
+                        {data?.qualifications?.qualification_master?.name}
+                      </FrontEndTypo.H3>
+                    ),
+                    teching_qualification: qualifications
+                      ?.map((e) => t(e?.name))
+                      .join(", "),
+                    work_experience:
+                      data?.experience?.[0] &&
+                      data?.experience?.map((e, key) => (
+                        <Experience key={e} {...e} />
+                      )),
+                    volunteer_experience:
+                      data?.vo_experience?.[0] &&
+                      data?.vo_experience?.map((e, key) => (
+                        <Experience key={e} {...e} />
+                      )),
+                  }}
+                  arr={[
+                    "qualification",
+                    "teching_qualification",
+                    "work_experience",
+                    "volunteer_experience",
+                  ]}
+                  // onEdit={(e) => navigate(`/beneficiary/edit/${id}/contact-info`)}
+                />
+                <CardComponent
+                  _body={{ bg: "light.100" }}
+                  _header={{ bg: "light.100" }}
+                  _vstack={{ space: 0 }}
+                  _hstack={{ borderBottomWidth: 0, p: 1 }}
+                  title={t("OTHER_DETAILS")}
+                  label={["AVAILABILITY", "DEVICE_OWNERSHIP", "TYPE_OF_DEVICE"]}
+                  item={showData({
+                    ...data,
+                    availability:
+                      data?.program_faciltators?.availability
+                        ?.replaceAll("_", " ")
+                        ?.charAt(0)
+                        ?.toUpperCase() +
+                      data?.program_faciltators?.availability
+                        ?.replaceAll("_", " ")
+                        ?.slice(1),
 
-                      <HStack space="2">
-                        <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                          {t("TEACHING_QUALIFICATION")}:
-                        </AdminTypo.H5>
-                        {
-                          <AdminTypo.H5
-                            flex="0.7"
-                            color="textGreyColor.800"
-                            bold
-                          >
-                            {qualifications?.map((e) => e?.name).join(", ")}
-                          </AdminTypo.H5>
-                        }
-                      </HStack>
-
-                      <VStack space="4">
-                        <HStack space="2">
-                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                            {t("WORK_EXPERIENCE")}:
-                          </AdminTypo.H5>
-                          <VStack flex="0.7" space={5} width="70%">
-                            <AdminTypo.H5 bold>
-                              {data?.experience ? (
-                                data?.experience?.map((e, key) => (
-                                  <Experience key={e} {...e} />
-                                ))
-                              ) : (
-                                <AdminTypo.H5
-                                  flex="0.7"
-                                  color="textGreyColor.800"
-                                  bold
-                                >
-                                  {"-"}
-                                </AdminTypo.H5>
-                              )}
-                            </AdminTypo.H5>
-                          </VStack>
-                        </HStack>
-                        <HStack space="2">
-                          <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                            {t("VOLUNTEER_EXPERIENCE")}:
-                          </AdminTypo.H5>
-                          <VStack flex="0.7" space={5} width="70%" pl="1">
-                            <AdminTypo.H5 bold>
-                              {data?.vo_experience ? (
-                                data?.vo_experience?.map((e, key) => (
-                                  <Experience key={e} {...e} />
-                                ))
-                              ) : (
-                                <AdminTypo.H5
-                                  flex="0.7"
-                                  color="textGreyColor.800"
-                                  bold
-                                >
-                                  {"-"}
-                                </AdminTypo.H5>
-                              )}
-                            </AdminTypo.H5>
-                          </VStack>
-                        </HStack>
-                      </VStack>
-                    </VStack>
-                  </VStack>
-                </HStack>
-                <VStack space="20px" w="100%" mt="3" rounded="xl">
-                  <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    borderColor="light.400"
-                    pb="1"
-                    borderBottomWidth="1"
-                  >
-                    <AdminTypo.H5 color="textGreyColor" bold>
-                      {t("OTHER_DETAILS")}
-                    </AdminTypo.H5>
-                  </HStack>
-                  <HStack>
-                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                      {t("AVAILABILITY")}:
-                    </AdminTypo.H5>
-                    <AdminTypo.H5 flex="0.69" color="textGreyColor.800" bold>
-                      {showData(
-                        data?.program_faciltators?.availability?.replaceAll(
-                          "_",
-                          " "
-                        )
-                      )}
-                    </AdminTypo.H5>
-                  </HStack>
-                  <HStack>
-                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                      {t("DEVICE_OWNERSHIP")}:
-                    </AdminTypo.H5>
-                    <AdminTypo.H5 flex="0.69" color="textGreyColor.800" bold>
-                      {showData(data?.device_ownership)}
-                    </AdminTypo.H5>
-                  </HStack>
-                  <HStack>
-                    <AdminTypo.H5 flex="1" bold color="textGreyColor.550">
-                      {t("TYPE_OF_DEVICE")}:
-                    </AdminTypo.H5>
-                    <AdminTypo.H5 flex="0.7" color="textGreyColor.800" bold>
-                      {showData(data?.device_type)}
-                    </AdminTypo.H5>
-                  </HStack>
-                </VStack>
+                    device_ownership:
+                      data?.device_ownership.charAt(0).toUpperCase() +
+                      data?.device_ownership.slice(1),
+                    device_type:
+                      data?.device_type.charAt(0).toUpperCase() +
+                      data?.device_type.slice(1),
+                  })}
+                  arr={["availability", "device_ownership", "device_type"]}
+                  // onEdit={(e) => navigate(`/beneficiary/edit/${id}/contact-info`)}
+                />
               </VStack>
             </HStack>
 
@@ -909,7 +772,9 @@ export default function FacilitatorView({ footerLinks }) {
               </VStack>
             )}
           </VStack>
-          <StatusButton {...{ data, setData }} />
+          <StatusButton
+            {...{ data, setData, updateDataCallBack: profileDetails }}
+          />
         </VStack>
         <Modal isOpen={adhaarModalVisible} avoidKeyboard size="xl">
           <Modal.Content>
@@ -1096,6 +961,10 @@ const SelectAllCheckBox = memo(
       [fields, fieldCheck, setFieldCheck]
     );
 
-    return <Checkbox onChange={handleChange}>{title}</Checkbox>;
+    return (
+      <Checkbox onChange={handleChange} colorScheme="danger">
+        {title}
+      </Checkbox>
+    );
   }
 );

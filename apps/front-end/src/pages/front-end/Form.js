@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../parts/schema.js";
-import { Alert, Box, Center, HStack, Image, Modal, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  Center,
+  HStack,
+  Image,
+  InfoIcon,
+  InfoOutlineIcon,
+  Modal,
+  VStack,
+} from "native-base";
 import Steper from "../../component/Steper";
 import {
   facilitatorRegistryService,
@@ -21,6 +31,10 @@ import {
   sendAndVerifyOtp,
   FrontEndTypo,
   getOptions,
+  getOnboardingURLData,
+  setOnboardingMobile,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +45,38 @@ import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
+  //fetch URL data and store fix for 2 times render useEffect call
+  const [countLoad, setCountLoad] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        let onboardingURLData = await getOnboardingURLData();
+        setCohortData(onboardingURLData?.cohortData);
+        setProgramData(onboardingURLData?.programData);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  //already registred modals
+  const [isUserExistModal, setIsUserExistModal] = useState(false);
+  const [isUserExistResponse, setIsUserExistResponse] = useState(null);
+  const [isLoginShow, setIsLoginShow] = useState(false);
+  const [isUserExistModalText, setIsUserExistModalText] = useState("");
+  const [isUserExistStatus, setIsUserExistStatus] = useState("");
+
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -262,11 +308,15 @@ export default function App({ facilitator, ip, onClick }) {
 
   const formSubmitCreate = async (formData) => {
     setLoading(true);
-    const result = await facilitatorRegistryService.register({
-      ...formData,
-      mobile: `${formData.mobile}`,
-      parent_ip: ip?.id,
-    });
+    const result = await facilitatorRegistryService.register(
+      {
+        ...formData,
+        mobile: `${formData.mobile}`,
+        parent_ip: ip?.id,
+      },
+      programData?.program_id,
+      cohortData?.academic_year_id
+    );
     setLoading(false);
     return result;
   };
@@ -464,15 +514,93 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await facilitatorRegistryService.isExist({ mobile });
-    if (result?.registeredAsFacilitator) {
-      const newErrors = {
-        mobile: {
-          __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-        },
-      };
-      setErrors(newErrors);
-      return true;
+    const result = await facilitatorRegistryService.isUserExist({ mobile });
+    if (result?.data) {
+      let response_isUserExist = result?.data;
+      if (
+        (response_isUserExist?.program_faciltators &&
+          response_isUserExist?.program_faciltators.length > 0) ||
+        (response_isUserExist?.program_beneficiaries &&
+          response_isUserExist?.program_beneficiaries.length > 0)
+      ) {
+        const newErrors = {
+          mobile: {
+            __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+          },
+        };
+        setErrors(newErrors);
+        setIsUserExistModal(true);
+        setIsUserExistResponse(response_isUserExist);
+        if (response_isUserExist?.program_beneficiaries.length > 0) {
+          setIsUserExistStatus("DONT_ALLOW_MOBILE");
+          setIsUserExistModalText(t("DONT_ALLOW_MOBILE"));
+          setIsLoginShow(false);
+        } else if (response_isUserExist?.program_faciltators.length > 0) {
+          for (
+            let i = 0;
+            i < response_isUserExist?.program_faciltators.length;
+            i++
+          ) {
+            let facilator_data = response_isUserExist?.program_faciltators[i];
+            if (facilator_data?.program_id == programData?.program_id) {
+              if (
+                facilator_data?.academic_year_id == cohortData?.academic_year_id
+              ) {
+                setIsUserExistStatus("EXIST_LOGIN");
+                setIsUserExistModalText(
+                  t("EXIST_LOGIN")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)
+                );
+                setIsLoginShow(true);
+                break;
+              } else if (
+                facilator_data?.academic_year_id != cohortData?.academic_year_id
+              ) {
+                const academic_year =
+                  await facilitatorRegistryService.getCohort({
+                    cohortId: facilator_data?.academic_year_id,
+                  });
+                const program_data =
+                  await facilitatorRegistryService.getProgram({
+                    programId: facilator_data?.program_id,
+                  });
+                setIsUserExistStatus("REGISTER_EXIST");
+                setIsUserExistModalText(
+                  t("REGISTER_EXIST")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)
+                    .replace("{{old_state}}", program_data[0]?.program_name)
+                    .replace("{{old_year}}", academic_year?.academic_year_name)
+                );
+                setOnboardingMobile(mobile);
+                setIsLoginShow(true);
+              }
+            } else {
+              const academic_year = await facilitatorRegistryService.getCohort({
+                cohortId: facilator_data?.academic_year_id,
+              });
+              const program_data = await facilitatorRegistryService.getProgram({
+                programId: facilator_data?.program_id,
+              });
+              setIsUserExistStatus("DONT_ALLOW");
+              setIsUserExistModalText(
+                t("DONT_ALLOW")
+                  .replace("{{state}}", programData?.program_name)
+                  .replace("{{year}}", cohortData?.academic_year_name)
+                  .replace("{{old_state}}", program_data[0]?.program_name)
+                  .replace("{{old_year}}", academic_year?.academic_year_name)
+              );
+              setIsLoginShow(false);
+              break;
+            }
+          }
+        }
+        return true;
+      } else {
+        setIsUserExistModal(false);
+        setIsUserExistResponse(null);
+      }
     }
     return false;
   };
@@ -577,19 +705,30 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
+  const userExistClick = () => {
+    if (
+      isUserExistStatus == "EXIST_LOGIN" ||
+      isUserExistStatus == "REGISTER_EXIST"
+    ) {
+      navigate("/");
+    } else {
+      setIsUserExistModal(false);
+    }
+  };
+
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
         ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        ["first_name"]: newFormData?.first_name?.replaceAll(" ", ""),
       };
     }
 
     if (schema?.properties?.last_name && newFormData?.last_name) {
       newFormData = {
         ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+        ["last_name"]: newFormData?.last_name?.replaceAll(" ", ""),
       };
     }
 
@@ -638,6 +777,8 @@ export default function App({ facilitator, ip, onClick }) {
               setErrors(newErrors);
             } else {
               if (data?.username && data?.password) {
+                await removeOnboardingURLData();
+                await removeOnboardingMobile();
                 setCredentials(data);
               }
             }
@@ -853,6 +994,16 @@ export default function App({ facilitator, ip, onClick }) {
             progress={page - 1}
           />
         </Box>
+        <Alert status="info" shadow="AlertShadow" alignItems={"start"} mb="3">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <FrontEndTypo.H3>
+              {t("REGISTER_MESSAGE")
+                .replace("{{state}}", programData?.program_name)
+                .replace("{{year}}", cohortData?.academic_year_name)}
+            </FrontEndTypo.H3>
+          </HStack>
+        </Alert>
         {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
@@ -909,6 +1060,35 @@ export default function App({ facilitator, ip, onClick }) {
           </Form>
         )}
       </Box>
+      <Modal
+        isOpen={isUserExistModal}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Body p="5" pb="10">
+            <VStack space="5">
+              <H1 textAlign="center">
+                <Alert.Icon />
+              </H1>
+              <FrontEndTypo.H2 textAlign="center">
+                {isUserExistModalText}
+              </FrontEndTypo.H2>
+              <HStack space="5" pt="5">
+                <FrontEndTypo.Primarybutton
+                  flex={1}
+                  onPress={async (e) => {
+                    userExistClick();
+                  }}
+                >
+                  {isLoginShow ? t("LOGIN") : t("OK")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
       <Modal
         isOpen={credentials}
         safeAreaTop={true}

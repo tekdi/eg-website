@@ -8,15 +8,13 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CampExecutionEnd({ facilitator, learnerCount }) {
+function CampExecutionEnd({ facilitator, learnerCount }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [error, setError] = React.useState();
-  const [miscActivities, setMiscActivities] = React.useState({});
   const [disable, setDisable] = React.useState(true);
   const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -37,12 +35,11 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
     setTodaysActivity(activity?.[0] || {});
   }, []);
 
-  React.useEffect(async () => {
+  const fetchData = useCallback(async () => {
     if (todaysActivity?.id) {
       const resultAttendance = await campService.CampAttendance({
         id: todaysActivity?.id,
       });
-      setMiscActivities(todaysActivity?.misc_activities);
       let attendances = resultAttendance?.data || [];
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
@@ -62,16 +59,12 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
         return facilitator?.id === item?.user?.id;
       });
 
-      const learnerAttendance = attendances?.filter((item) => {
-        return facilitator?.id !== item?.user?.id;
-      });
-
-      if (learnerAttendance?.length >= learnerCount) {
+      if (attendances?.length > learnerCount) {
         setLearnerAttendanceCount(true);
       }
 
       if (
-        learnerAttendance?.length >= learnerCount &&
+        attendances?.length > learnerCount &&
         faciltatorAttendanceData?.id &&
         (todaysActivity?.misc_activities || sessionListData)
       ) {
@@ -79,9 +72,13 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
       }
     }
     setLoading(false);
-  }, [todaysActivity?.id, step, learnerCount, facilitator]);
+  }, [todaysActivity?.id, step, learnerCount, facilitator, id]);
 
-  const endCamp = async () => {
+  React.useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const endCamp = React.useCallback(async () => {
     setDisable(true);
     const obj = {
       id: todaysActivity?.id,
@@ -89,7 +86,9 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
     };
     await campService.addMoodActivity(obj);
     navigate(`/camps`);
-  };
+  }, [todaysActivity?.id, navigate]);
+
+  const airplaneImageUri = React.useMemo(() => "/airoplane.gif", []);
 
   return (
     <Layout
@@ -113,7 +112,7 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
         >
           <Image
             source={{
-              uri: "/airoplane.gif",
+              uri: airplaneImageUri,
             }}
             alt="airoplane.gif"
             position="absolute"
@@ -144,14 +143,6 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
             <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
           </HStack>
         </Alert>
-        {error && (
-          <Alert status="danger">
-            <HStack alignItems={"center"} space={2}>
-              <Alert.Icon />
-              <FrontEndTypo.H3>{t(error)}</FrontEndTypo.H3>
-            </HStack>
-          </Alert>
-        )}
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
         >
@@ -171,7 +162,7 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
             <FrontEndTypo.H1 color={"textMaroonColor.400"}>
               {t("TODAYS_TASKS")}
             </FrontEndTypo.H1>
-            {(miscActivities || sessionList) && (
+            {(todaysActivity?.misc_activities || sessionList) && (
               <IconByName name="CheckboxCircleFillIcon" color="successColor" />
             )}
           </HStack>
@@ -204,3 +195,5 @@ export default function CampExecutionEnd({ facilitator, learnerCount }) {
     </Layout>
   );
 }
+
+export default CampExecutionEnd;

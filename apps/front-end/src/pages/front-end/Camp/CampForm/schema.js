@@ -6,7 +6,6 @@ export default {
       type: "object",
       required: [
         "property_type",
-        "state",
         "district",
         "block",
         "village",
@@ -27,11 +26,6 @@ export default {
         street: {
           title: "STREET_ADDRESS",
           type: ["string", "null"],
-        },
-        state: {
-          title: "STATE",
-          type: "string",
-          format: "select",
         },
         district: {
           title: "DISTRICT",
@@ -109,7 +103,7 @@ export default {
         kit_received: {
           label: "DID_YOU_RECEIVE_A_KIT",
           type: "string",
-          format: "radio",
+          format: "RadioBtn",
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
@@ -117,7 +111,7 @@ export default {
           label: "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT",
           type: ["string", "null"],
           grid: 2,
-          format: "radio",
+          format: "RadioBtn",
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
@@ -149,7 +143,7 @@ export default {
         kit_received: {
           label: "DID_YOU_RECEIVE_A_KIT",
           type: "string",
-          format: "radio",
+          format: "RadioBtn",
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
@@ -157,7 +151,7 @@ export default {
           label: "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT",
           type: ["string", "null"],
           grid: 2,
-          format: "radio",
+          format: "RadioBtn",
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },

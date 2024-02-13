@@ -5,10 +5,11 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import { Alert, Box, HStack, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const customStyles = {
   header: {
@@ -66,6 +67,7 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
+    width: "65px",
   },
   {
     name: t("PARTIALLY"),
@@ -79,11 +81,12 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
+    width: "65px",
   },
   {
     name: t("INCOMPLETE"),
     selector: "incomplete",
-    minWidth: "50px",
+    minWidth: "60px",
     cell: (row) => (
       <input
         type="radio"
@@ -92,15 +95,16 @@ const columns = (handleCheckboxChange, kitFeadback, t) => [
         name={`status-${row.value}`}
       />
     ),
+    width: "70px",
   },
 ];
 
 export default function CampKitMaterialDetails({ footerLinks }) {
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [kitFeadback, setKitFeadback] = React.useState({});
-  const [tableData, setTableData] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [kitFeadback, setKitFeadback] = useState({});
+  const [tableData, setTableData] = useState();
+  const [isDisable, setIsDisable] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
 
   const { id } = useParams();
@@ -109,7 +113,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     navigate(`/camps/${id}`);
   };
 
-  React.useEffect(async (e) => {
+  useEffect(async (e) => {
     // enum api all
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.KIT_MATERIALS_CHECKLISTS;
@@ -120,7 +124,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     setKitFeadback(result?.kit?.list_of_materials || {});
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const isSaveDisabled = !tableData?.every((row) => kitFeadback[row.value]);
     setIsDisable(isSaveDisabled);
   }, [tableData, kitFeadback]);
@@ -157,7 +161,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack space={"2"}>
+      <VStack space={"2"} p={4}>
         <DataTable
           title={t("CAMP_KIT_MATERIAL_DETAILS")}
           customStyles={customStyles}
@@ -189,3 +193,7 @@ export default function CampKitMaterialDetails({ footerLinks }) {
     </Layout>
   );
 }
+
+CampKitMaterialDetails.propTypes = {
+  footerLinks: PropTypes.any,
+};

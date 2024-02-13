@@ -202,8 +202,10 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               _hstack={{ borderBottomWidth: 0 }}
               title={t("OTHER_DETAILS")}
               label={["Availability", "Designation", "Contact"]}
-              item={facilitator}
-              arr={["name"]}
+              item={{
+                availability: [facilitator?.program_faciltators?.availability],
+              }}
+              arr={["availability"]}
               onEdit={(e) =>
                 navigate(`/profile/edit/work_availability_details`)
               }

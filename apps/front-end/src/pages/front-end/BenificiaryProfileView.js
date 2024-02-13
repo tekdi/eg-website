@@ -317,7 +317,7 @@ export default function BenificiaryProfileView(props) {
                       ]
                     )}
                     size="xs"
-                    colorScheme="info"
+                    colorScheme="danger"
                   />
                 </Box>
                 <VStack space="2" paddingTop="5">

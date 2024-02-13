@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -14,6 +14,7 @@ import {
   BodyMedium,
   GetEnumValue,
   mapDistance,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -21,8 +22,6 @@ import {
   VStack,
   Modal,
   Alert,
-  Button,
-  Menu,
   Pressable,
   Stack,
   ScrollView,
@@ -31,6 +30,7 @@ import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
+import PropTypes from "prop-types";
 
 const ConsentForm = ({ consentData, row, t }) => {
   let learnerConsentData = Array.isArray(consentData)
@@ -89,7 +89,7 @@ const totalDistance = ({ row, data }) =>
     data?.properties?.long
   );
 
-const columns = (t, navigate, data, consentData, id) => [
+const columns = (t, data, consentData) => [
   {
     name: "Id",
     selector: (row) => row?.id,
@@ -164,103 +164,49 @@ const columns = (t, navigate, data, consentData, id) => [
   {
     minWidth: "250px",
     name: t("ACTION"),
-    selector: (row) => <ActionButton {...{ row, data, t, id }} />,
+    selector: (row) => <ActionButton {...{ row, t }} />,
   },
 ];
 
-const ActionButton = ({ row, data, t, id }) => {
+const ActionButton = ({ row, t }) => {
   const navigate = useNavigate();
-  return data?.group?.status === "camp_initiated" ? (
+  return (
     <AdminTypo.Secondarybutton
-      // background="white"
-      // _text={{
-      //   color: "blueText.400",
-      //   fontSize: "14px",
-      //   fontWeight: "700",
-      // }}
+      background="white"
+      _text={{
+        color: "blueText.400",
+        fontSize: "14px",
+        fontWeight: "700",
+      }}
+      my="2"
+      mx="1"
       onPress={() => {
         navigate(`/admin/beneficiary/${row?.id}`);
       }}
     >
       {t("VIEW_PROFILE")}
     </AdminTypo.Secondarybutton>
-  ) : (
-    <Button.Group
-      isAttached
-      divider={<h3>|</h3>}
-      my="3"
-      size="sm"
-      h="10"
-      marginTop="8px"
-      borderRadius="full"
-      background="white"
-      shadow="BlueOutlineShadow"
-      borderWidth="1px"
-      borderColor="#084B82"
-      lineHeight={8}
-      _text={{
-        color: "blueText.400",
-        fontSize: "14px",
-        fontWeight: "700",
-      }}
-    >
-      <Button
-        background="white"
-        _text={{
-          color: "blueText.400",
-          fontSize: "14px",
-          fontWeight: "700",
-        }}
-        onPress={() => {
-          navigate(`/admin/beneficiary/${row?.id}`);
-        }}
-      >
-        {t("VIEW_PROFILE")}
-      </Button>
-      <Button variant="outline">
-        <Menu
-          w="190"
-          placement="bottom right"
-          trigger={(triggerProps) => dropDown(triggerProps, t)}
-        >
-          <Menu.Item
-            onPress={() => {
-              navigate(`/admin/beneficiary/${row?.id}`);
-            }}
-          >
-            {t("VIEW_PROFILE")}
-          </Menu.Item>
-          <Menu.Item
-            onPress={() => {
-              navigate(`/admin/camps/${id}/reassign/${row?.id}`);
-            }}
-          >
-            {t("REASSIGN")}
-          </Menu.Item>
-        </Menu>
-      </Button>
-    </Button.Group>
   );
 };
 
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [data, setDataa] = React.useState([]);
-  const [userData, setUserData] = React.useState([]);
-  const [facilities, setFacilities] = React.useState([]);
-  const [propertyFacilities, setPropertyFacilities] = React.useState({});
-  const [properties, setProperties] = React.useState([]);
-  const [enumOptions, setEnumOptions] = React.useState();
-  const [consentData, setConsentData] = React.useState([]);
-  const [status, setStatus] = React.useState(false);
-  const [errorList, setErrorList] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [edit, setEdit] = React.useState(false);
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
-
+  const [data, setData] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const [facilities, setFacilities] = useState([]);
+  const [propertyFacilities, setPropertyFacilities] = useState({});
+  const [properties, setProperties] = useState([]);
+  const [enumOptions, setEnumOptions] = useState();
+  const [consentData, setConsentData] = useState([]);
+  const [status, setStatus] = useState(false);
+  const [errorList, setErrorList] = useState();
+  const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const { id } = useParams();
-
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
       const campConsent = await campService.getCampAdminConsent({
@@ -272,12 +218,12 @@ export default function View({ footerLinks }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     try {
       const result = await campService.getFacilatorAdminCampList({ id });
       const camp = result?.data?.camp;
-      setDataa(camp);
+      setData(camp);
       setUserData(result?.data?.camp?.beneficiaries);
       setEdit(camp?.group?.status === "change_required");
       setPropertyFacilities(jsonParse(camp?.properties?.property_facilities));
@@ -292,7 +238,6 @@ export default function View({ footerLinks }) {
     }
     setLoading(false);
   }, []);
-
   const updateCampStatus = async () => {
     setIsButtonLoading(true);
     const { error, ...result } = await campService.updateCampStatus({
@@ -316,7 +261,7 @@ export default function View({ footerLinks }) {
     return send;
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     const qData = await enumRegistryService.listOfEnum();
     const data = qData?.data?.CAMP_PROPERTY_FACILITIES;
@@ -325,8 +270,28 @@ export default function View({ footerLinks }) {
     setLoading(false);
   }, []);
 
-  // Table component
+  const handleButtonClick = () => {
+    setShowCheckboxes(!showCheckboxes);
+    if (!showCheckboxes) {
+      setShowCheckboxes(true);
+      return;
+    }
+    if (selectedRows?.length > 0) {
+      navigate(`/admin/camps/${id}/reassign`, {
+        state: { selectedRows },
+      });
+    }
+  };
 
+  const handleSelectRow = useCallback(
+    (state) => {
+      const arr = state?.selectedRows;
+      setSelectedRows(arr);
+    },
+    [setSelectedRows]
+  );
+
+  // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack flex={1} space={"5"} p="3" mb="5">
@@ -361,23 +326,21 @@ export default function View({ footerLinks }) {
         )}
         <HStack alignItems={"center"} space="1" pt="3">
           <IconByName name="UserLineIcon" size="md" />
-          <AdminTypo.H1 color="Activatedcolor.400">
-            {t("ALL_CAMPS")}
-          </AdminTypo.H1>
+          <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(-1)}
+            onPress={(e) => navigate(`/admin/camps`)}
           />
-          <AdminTypo.H1
-            color="textGreyColor.800"
+          <AdminTypo.H4
+            bold
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
             enumOptions
           >
             {data?.id}
-          </AdminTypo.H1>
+          </AdminTypo.H4>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -441,7 +404,7 @@ export default function View({ footerLinks }) {
           </VStack>
           {[
             properties?.photo_other,
-            properties.photo_building,
+            properties?.photo_building,
             properties?.photo_classroom,
           ].map(
             (item) =>
@@ -537,12 +500,12 @@ export default function View({ footerLinks }) {
             ]}
             item={{
               ...data,
-              kit_received: data.kit_received === "yes" ? t("YES") : t("NO"),
+              kit_received: data?.kit_received === "yes" ? t("YES") : t("NO"),
               kit_was_sufficient:
-                data.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
+                data?.kit_was_sufficient === "yes" ? t("YES") : t("NO"),
               kit_ratings: (
                 <StarRating
-                  value={data.kit_ratings}
+                  value={data?.kit_ratings}
                   schema={{
                     totalStars: 5,
                     readOnly: true,
@@ -576,22 +539,36 @@ export default function View({ footerLinks }) {
             </VStack>
           </CardComponent>
         </HStack>
-
         <HStack space={4}>
           <CardComponent
-            _vstack={{
-              bg: "light.100",
-              flex: 2,
-              space: 4,
-            }}
+            _vstack={{ bg: "light.100", flex: 2, space: 4 }}
             _header={{ bg: "light.100" }}
-            title={t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+            title={
+              <VStack>
+                <FrontEndTypo.H1>
+                  {t("LEARNER_DETAILS_FAMILY_CONSENT_LETTERS")}
+                </FrontEndTypo.H1>
+                <FrontEndTypo.H4>
+                  {t("SELECTED_LEARNER_COUNT") +
+                    " : " +
+                    `${selectedRows?.length}`}
+                </FrontEndTypo.H4>
+              </VStack>
+            }
             onEdit={edit && navTOedit("edit_family_consent")}
+            onButtonClick={
+              data?.group?.status !== "camp_initiated" && handleButtonClick
+            }
+            buttonText={<AdminTypo.H5>{t("REASSIGN")}</AdminTypo.H5>}
           >
             <ScrollView w={["100%", "100%"]}>
               <DataTable
-                columns={columns(t, navigate, data, consentData, id)}
+                columns={columns(t, data, consentData)}
                 data={userData}
+                selectableRows={showCheckboxes}
+                onSelectedRowsChange={(selectedRows) =>
+                  handleSelectRow(selectedRows, id)
+                }
               />
             </ScrollView>
           </CardComponent>
@@ -610,7 +587,7 @@ export default function View({ footerLinks }) {
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
                 <AdminTypo.Secondarybutton
-                  status="info"
+                  status="warning"
                   isDisabled={isButtonLoading}
                   onPress={() => setStatus("change_required")}
                 >
@@ -682,3 +659,9 @@ export default function View({ footerLinks }) {
     </Layout>
   );
 }
+
+View.PropTypes = {
+  footerLinks: PropTypes.any,
+  row: PropTypes.any,
+  t: PropTypes.any,
+};
