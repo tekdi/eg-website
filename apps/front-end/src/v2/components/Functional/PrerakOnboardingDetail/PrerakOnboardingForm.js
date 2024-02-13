@@ -969,6 +969,7 @@ export default function PrerakOnboardingForm({
       )}
       {page && page !== "" && schema && (
         <Form
+          liveValidate={step === "aadhaar_details"}
           key={lang + schema}
           ref={formRef}
           extraErrors={errors}
