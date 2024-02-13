@@ -229,7 +229,7 @@ const styles = {
   },
 };
 
-export default function PrerakListView({ userTokenInfo, footerLinks }) {
+export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [facilitator, setFacilitator] = React.useState({});
   const navigate = useNavigate();
   const [filter, setFilter] = React.useState({ limit: 6 });

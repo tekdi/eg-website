@@ -12,7 +12,7 @@ import {
 } from "@shiksha/common-lib";
 import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
-import ProfilePhoto from "./facilitator/ProfilePhoto";
+import ProfilePhoto from "../../Functional/ProfilePhoto/ProfilePhoto";
 
 export default function BenificiaryBasicDetails() {
   const { id } = useParams();

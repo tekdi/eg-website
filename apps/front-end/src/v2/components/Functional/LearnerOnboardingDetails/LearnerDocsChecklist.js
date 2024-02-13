@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Docschecklist = ({ footerLinks, setAlert }) => {
+const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [selectData, setselectData] = useState([]);
@@ -548,4 +548,4 @@ const Docschecklist = ({ footerLinks, setAlert }) => {
   );
 };
 
-export default Docschecklist;
+export default LearnerDocsChecklist;

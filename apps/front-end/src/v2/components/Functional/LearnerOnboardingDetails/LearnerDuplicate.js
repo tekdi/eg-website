@@ -20,7 +20,7 @@ import {
 } from "native-base";
 import { useNavigate } from "react-router-dom";
 
-const Agduplicate = () => {
+const LearnerDuplicate = () => {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
@@ -231,4 +231,4 @@ const Agduplicate = () => {
   );
 };
 
-export default Agduplicate;
+export default LearnerDuplicate;

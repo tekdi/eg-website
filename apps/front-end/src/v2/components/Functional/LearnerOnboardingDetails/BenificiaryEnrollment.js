@@ -9,7 +9,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import schema1 from "../../v2/components/Functional/LearnerUpdateDetail/enrollment/schema";
+import schema1 from "../LearnerUpdateDetail/enrollment/schema";
 import moment from "moment";
 import EnrollmentMessage from "component/EnrollmentMessage";
 

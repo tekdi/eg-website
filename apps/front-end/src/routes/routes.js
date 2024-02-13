@@ -17,25 +17,22 @@ const BeneficiaryOnboarding = lazy(() =>
 const BeneficiaryUpdate = lazy(() =>
   import("v2/views/Beneficiary/BeneficiaryUpdate/BeneficiaryUpdate")
 );
+const BenificiaryProfilePhoto = lazy(() =>
+  import("v2/views/Beneficiary/BenificiaryProfilePhoto/BenificiaryProfilePhoto")
+);
+const BenificiaryProfileView = lazy(() =>
+  import("v2/views/Beneficiary/BenificiaryProfileView/BenificiaryProfileView")
+);
+const BenificiaryListView = lazy(() =>
+  import("v2/views/Beneficiary/BenificiaryListView/BenificiaryListView")
+);
+
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
 //const Home = React.lazy(() => import("pages/front-end/Home"));
-const Agduplicate = React.lazy(() =>
-  import("pages/front-end/ag-form/Agduplicate")
-);
-//const Agform = React.lazy(() => import("pages/front-end/ag-form/Agform"));
-const Docschecklist = React.lazy(() =>
-  import("pages/front-end/ag-form/Docschecklist")
-);
 const LearnerProfile = React.lazy(() =>
   import("pages/front-end/ag-form/LearnerProfile")
-);
-const BenificiaryListView = React.lazy(() =>
-  import("pages/front-end/BenificiaryListView")
-);
-const BenificiaryProfileView = React.lazy(() =>
-  import("pages/front-end/BenificiaryProfileView")
 );
 const CountScreenView = React.lazy(() =>
   import("pages/front-end/CountScreenView")
@@ -49,21 +46,6 @@ const Certificate = React.lazy(() =>
 const AdharKyc = React.lazy(() =>
   import("pages/front-end/AadhaarKyc/AadhaarKyc")
 );
-const BenificiaryBasicDetails = React.lazy(() =>
-  import("pages/front-end/BenificiaryBasicDetails")
-);
-const BenificiaryEducation = React.lazy(() =>
-  import("pages/front-end/BenificiaryEducation")
-);
-const BenificiaryJourney = React.lazy(() =>
-  import("pages/front-end/BenificiaryJourney")
-);
-const BenificiaryEnrollment = React.lazy(() =>
-  import("pages/front-end/BenificiaryEnrollment")
-);
-const BenificiaryAadhaarDetails = React.lazy(() =>
-  import("pages/front-end/BenificiaryAadhaarDetails")
-);
 const EditForm = React.lazy(() =>
   import("pages/front-end/facilitator/edit/Form")
 );
@@ -76,14 +58,8 @@ const FacilitatorBasicDetails = React.lazy(() =>
 const FacilitatorQualification = React.lazy(() =>
   import("pages/front-end/facilitator/FacilitatorQualification")
 );
-const BenificiaryProfilePhoto = React.lazy(() =>
-  import("pages/front-end/BenificiaryProfilePhoto")
-);
 const AadhaarDetails = React.lazy(() =>
   import("pages/front-end/facilitator/AadhaarDetails")
-);
-const BenificiaryAddress = React.lazy(() =>
-  import("pages/front-end/BenificiaryAddress")
 );
 const CommunityView = React.lazy(() =>
   import("pages/front-end/community/CommunityView")
@@ -102,12 +78,6 @@ const CampRegistration = React.lazy(() =>
 const CampForm = React.lazy(() => import("pages/front-end/Camp/CampForm/Form"));
 const CampLeanerList = React.lazy(() =>
   import("pages/front-end/Camp/CampLearnerList")
-);
-const PcrDetails = React.lazy(() =>
-  import("pages/front-end/PCRDetails.js/PcrDetails")
-);
-const PcrView = React.lazy(() =>
-  import("pages/front-end/PCRDetails.js/PcrView")
 );
 
 const FileView = React.lazy(() => import("pages/FileView"));
@@ -148,16 +118,8 @@ export default [
   },*/
   { path: "/dashboard", component: Dashboard },
   //add a new route /ag/:ID(param), component:basic details
-  { path: "/beneficiary/:id/4", component: Agduplicate },
   { path: "/AgSuccess", component: Success },
   { path: "/learnerProfile", component: LearnerProfile },
-  { path: "/beneficiary/:id/docschecklist", component: Docschecklist },
-  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
-  { path: "/beneficiary/:id", component: BenificiaryProfileView },
-  {
-    path: "/beneficiary/list",
-    component: BenificiaryListView,
-  },
   { path: "/table", component: CountScreenView },
   {
     path: "/aadhaar-kyc/:id",
@@ -166,42 +128,6 @@ export default [
   {
     path: "/aadhaar-kyc/:id/:type",
     component: AdharKyc,
-  },
-  {
-    path: "/beneficiary/:id/basicdetails",
-    component: BenificiaryBasicDetails,
-  },
-  {
-    path: "/beneficiary/:id/educationdetails",
-    component: BenificiaryEducation,
-  },
-  {
-    path: "/beneficiary/:id/benificiaryJourney",
-    component: BenificiaryJourney,
-  },
-  {
-    path: "/beneficiary/:id/enrollmentdetails",
-    component: BenificiaryEnrollment,
-  },
-  {
-    path: "/beneficiary/:id/aadhaardetails",
-    component: BenificiaryAadhaarDetails,
-  },
-  {
-    path: "/beneficiary/:id/addressdetails",
-    component: BenificiaryAddress,
-  },
-  {
-    path: "/beneficiary/:id/upload/:photoNo",
-    component: BenificiaryProfilePhoto,
-  },
-  {
-    path: "/beneficiary/:id/pcrdetails",
-    component: PcrDetails,
-  },
-  {
-    path: "/beneficiary/:id/pcrview",
-    component: PcrView,
   },
   { path: "/profile", component: Profile },
   { path: "/certificate", component: Certificate },
@@ -282,8 +208,18 @@ export default [
   //new beneficiary registration
   { path: "/beneficiary", component: BeneficiaryRegister },
   //new beneficiary onboarding
-  { path: "/beneficiary/:id/:number", component: BeneficiaryOnboarding },
+  { path: "/beneficiary/:id/:type", component: BeneficiaryOnboarding },
   //new beneficiary update
   { path: "/beneficiary/edit/:id/:type", component: BeneficiaryUpdate },
+  {
+    path: "/beneficiary/:id/upload/:photoNo",
+    component: BenificiaryProfilePhoto,
+  },
+  { path: "/beneficiary/profile/:id", component: BenificiaryProfileView },
+  { path: "/beneficiary/:id", component: BenificiaryProfileView },
+  {
+    path: "/beneficiary/list",
+    component: BenificiaryListView,
+  },
   //end v2 code
 ];
