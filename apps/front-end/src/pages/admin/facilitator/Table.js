@@ -1,6 +1,5 @@
 import {
   IconByName,
-  ImageView,
   AdminTypo,
   tableCustomStyles,
   enumRegistryService,
@@ -8,7 +7,7 @@ import {
 import { ChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useState, useMemo, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -16,170 +15,181 @@ import { useNavigate } from "react-router-dom";
 const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack>
-        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
-      </HStack>
+      <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
     </Pressable>
   );
 };
 
+const pagination = [10, 15, 25, 50, 100];
+
+const columns = (t, navigate) => [
+  {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.id,
+    sortable: true,
+    attr: "id",
+    wrap: true,
+    width: "100px",
+    compact: true,
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack display="inline-block" width={"100%"}>
+        <Pressable
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+          onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
+        >
+          {/* <HStack alignItems={"center"}> */}
+          {/* {row?.profile_photo_1?.name ? (
+                <ImageView
+                  urlObject={row?.profile_photo_1}
+                  alt="Alternate Text"
+                  width={"35px"}
+                  height={"35px"}
+                />
+              ) : (
+                <IconByName
+                  isDisabled
+                  name="AccountCircleLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "35" }}
+                />
+              )} */}
+          <AdminTypo.H6 bold word-wrap="break-word">
+            {`${row?.first_name} ${row?.last_name || ""}`}
+          </AdminTypo.H6>
+          {/* </HStack> */}
+        </Pressable>
+      </HStack>
+    ),
+    attr: "name",
+    width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("DISTRICT"),
+    selector: (row) => row?.district || "-",
+    compact: true,
+  },
+  {
+    name: t("BLOCK"),
+    selector: (row) => row?.block || "-",
+    compact: true,
+  },
+
+  {
+    name: t("MOBILE_NUMBER"),
+    selector: (row) => row?.mobile,
+    attr: "mobile",
+    wrap: true,
+    compact: true,
+  },
+  {
+    name: t("STATUS"),
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
+        <ChipStatus py="0.5" px="1" status={row?.program_faciltators?.status} />
+      </Pressable>
+    ),
+    wrap: true,
+    attr: "status",
+    width: "150px",
+    compact: true,
+  },
+  {
+    name: (
+      <VStack display="inline-block" width={"100%"}>
+        {t("OKYC_VERIFICATION")}
+      </VStack>
+    ),
+    // wrap: true,
+    selector: (row) => {
+      return row?.aadhar_verified === "okyc_ip_verified"
+        ? t("OKYC_IP_VERIFIED")
+        : row?.aadhar_verified === "yes"
+        ? t("YES")
+        : t("NO");
+    },
+    compact: true,
+    minWidth: "50px",
+  },
+  {
+    minWidth: "140px",
+    name: t("ACTION"),
+    selector: (row) => (
+      <Button.Group
+        isAttached
+        divider={<div style={{ background: "#333", padding: "0.5px" }} />}
+        my="1"
+        h="6"
+        rounded={"full"}
+        shadow="BlueOutlineShadow"
+        borderWidth="1px"
+      >
+        <Button
+          background="white"
+          px="1.5"
+          _text={{
+            color: "blueText.400",
+            fontSize: "12px",
+            fontWeight: "700",
+          }}
+          onPress={() => {
+            navigate(`/admin/facilitator/${row?.id}`);
+          }}
+        >
+          {t("VIEW")}
+        </Button>
+        <Menu
+          w="190"
+          placement="bottom right"
+          trigger={(triggerProps) => dropDown(triggerProps, t)}
+        >
+          <Menu.Item
+            onPress={() => {
+              navigate(`/admin/facilitator/${row?.id}`);
+            }}
+          >
+            {t("VIEW")}
+          </Menu.Item>
+          <Menu.Item
+            onPress={() => {
+              navigate(`/admin/Certification/${row?.id}`);
+            }}
+          >
+            {t("DOWNLOAD_CERTIFICATE")}
+          </Menu.Item>
+        </Menu>
+      </Button.Group>
+    ),
+    center: true,
+  },
+];
+
 // Table component
-function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
+function Table({
+  filter,
+  setFilter,
+  paginationTotalRows,
+  data,
+  loading,
+  height,
+}) {
   const { t } = useTranslation();
   const [selectedData, setSelectedData] = useState();
   const navigate = useNavigate();
 
-  const pagination = [10, 15, 25, 50, 100];
-
-  const columns = useCallback(
-    (t, navigate) => [
-      {
-        name: t("PRERAK_ID"),
-        selector: (row) => row?.id,
-        sortable: true,
-        attr: "id",
-        wrap: true,
-        width: "100px",
-      },
-      {
-        name: t("NAME"),
-        selector: (row) => (
-          <HStack>
-            <Pressable
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-              onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
-            >
-              <HStack alignItems={"center"} space={2}>
-                {row?.profile_photo_1?.name ? (
-                  <ImageView
-                    urlObject={row?.profile_photo_1}
-                    alt="Alternate Text"
-                    width={"35px"}
-                    height={"35px"}
-                  />
-                ) : (
-                  <IconByName
-                    isDisabled
-                    name="AccountCircleLineIcon"
-                    color="gray.300"
-                    _icon={{ size: "35" }}
-                  />
-                )}
-                <AdminTypo.H6 bold>
-                  {`${row?.first_name} ${row?.last_name || ""}`}
-                </AdminTypo.H6>
-              </HStack>
-            </Pressable>
-          </HStack>
-        ),
-        attr: "name",
-        wrap: "true",
-        width: "250px",
-      },
-      {
-        name: t("DISTRICT"),
-        selector: (row) => (row?.district ? row?.district : "-"),
-      },
-      {
-        name: t("OKYC_VERIFICATION"),
-        wrap: true,
-        selector: (row) =>
-          ["okyc_ip_verified"].includes(row?.aadhar_verified)
-            ? t("YES")
-            : t("NO"),
-      },
-      {
-        name: t("MOBILE_NUMBER"),
-        selector: (row) => row?.mobile,
-        attr: "mobile",
-        wrap: true,
-      },
-      {
-        name: t("STATUS"),
-        selector: (row) => (
-          <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
-            <ChipStatus status={row?.program_faciltators?.status} />
-          </Pressable>
-        ),
-        wrap: true,
-        attr: "status",
-        width: "150px",
-      },
-      {
-        name: t("GENDER"),
-        selector: (row) => row?.gender,
-        attr: "gender",
-        width: "100px",
-      },
-      {
-        minWidth: "140px",
-        name: t("ACTION"),
-        selector: (row) => (
-          <Button.Group
-            isAttached
-            divider={<h3>|</h3>}
-            my="3"
-            size="sm"
-            h="8"
-            marginTop="8px"
-            borderRadius="full"
-            background="white"
-            shadow="BlueOutlineShadow"
-            borderWidth="1px"
-            borderColor="#084B82"
-            lineHeight={1}
-            _text={{
-              color: "blueText.400",
-              fontSize: "14px",
-              fontWeight: "700",
-            }}
-          >
-            <Button
-              background="white"
-              _text={{
-                color: "blueText.400",
-                fontSize: "14px",
-                fontWeight: "700",
-              }}
-              onPress={() => {
-                navigate(`/admin/facilitator/${row?.id}`);
-              }}
-            >
-              {t("VIEW")}
-            </Button>
-            <Button variant="outline">
-              <Menu
-                w="190"
-                placement="bottom right"
-                trigger={(triggerProps) => dropDown(triggerProps, t)}
-              >
-                <Menu.Item
-                  onPress={() => {
-                    navigate(`/admin/facilitator/${row?.id}`);
-                  }}
-                >
-                  {t("VIEW")}
-                </Menu.Item>
-                <Menu.Item
-                  onPress={() => {
-                    navigate(`/admin/Certification/${row?.id}`);
-                  }}
-                >
-                  {t("DOWNLOAD_CERTIFICATE")}
-                </Menu.Item>
-              </Menu>
-            </Button>
-          </Button.Group>
-        ),
-      },
-    ],
-    []
-  );
-
-  useEffect(async () => {
-    const result = await enumRegistryService.statuswiseCount();
-    setSelectedData(result);
+  useEffect(() => {
+    const getData = async () => {
+      const result = await enumRegistryService.statuswiseCount();
+      setSelectedData(result);
+    };
+    getData();
   }, []);
+
   const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/facilitator/${row?.id}`);
@@ -217,7 +227,18 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         </AdminTypo.H5>
       </VStack>
       <DataTable
-        customStyles={tableCustomStyles}
+        fixedHeader={true}
+        fixedHeaderScrollHeight={`${height - 160}px`}
+        customStyles={{
+          ...tableCustomStyles,
+          rows: {
+            style: {
+              minHeight: "20px", // override the row height
+              cursor: "pointer",
+            },
+          },
+          pagination: { style: { margin: "5px 0 5px 0" } },
+        }}
         columns={columnsMemoized}
         data={data}
         persistTableHead

@@ -1,29 +1,9 @@
-import {
-  Center,
-  VStack,
-  Image,
-  HStack,
-  Text,
-  Input,
-  Stack,
-  Box,
-  Button,
-  Pressable,
-  Modal,
-  Alert,
-  Heading,
-  Checkbox,
-  View,
-  Dimensions,
-} from "native-base";
-import React, { useEffect, useState, useRef, createRef } from "react";
+import { VStack, HStack, Box, Modal, Alert, Checkbox } from "native-base";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FrontEndTypo,
   getOnboardingURLData,
-  H1,
-  H3,
-  BodySmall,
   IconByName,
   facilitatorRegistryService,
   setOnboardingMobile,
@@ -31,8 +11,8 @@ import {
   removeOnboardingURLData,
   removeOnboardingMobile,
   login,
-  jsonParse,
   useWindowSize,
+  Loading,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
@@ -60,20 +40,24 @@ export default function PrerakRegisterDetail({
 }) {
   const navigate = useNavigate();
   //screen variable
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   //register user variables
-  const ref = createRef(null);
   const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
   const [credentials, setCredentials] = useState();
+  const [imageLoading, setImageLoading] = useState(true);
+
   useEffect(() => {
     if (credentials) {
-      getImage();
+      setTimeout(() => {
+        takeScreenshot("jpg", { backgroundColor: "white" });
+        setImageLoading(false);
+      }, 1000);
     }
   }, [credentials]);
+
   const downloadImage = () => {
-    var FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
+    const FileSaver = require("file-saver");
+    FileSaver.saveAs(`${image}`, "image.jpg");
   };
 
   //fetch URL data and store fix for 2 times render useEffect call
@@ -110,7 +94,7 @@ export default function PrerakRegisterDetail({
   const [width, height] = useWindowSize();
 
   // Consent modals
-  const [isConsentModal, setIsConsentModal] = useState(false);
+  const [isConsentModal, setIsConsentModal] = useState();
   const [consentCompleted, setConsentCompleted] = useState(true);
   const [yesChecked, setYesChecked] = useState(false);
   const [noChecked, setNoChecked] = useState(false);
@@ -126,18 +110,6 @@ export default function PrerakRegisterDetail({
   const [schema, setSchema] = useState({});
 
   // Toggle consent state based on user agreement
-
-  const handleCheckboxChange = (isAgree) => {
-    setYesChecked(isAgree);
-    setNoChecked(!isAgree);
-    if (isAgree) {
-      setConsentCompleted(false);
-      setIsConsentModal(false);
-    } else {
-      setConsentCompleted(true);
-      showIntroductionOfProject();
-    }
-  };
 
   useEffect(() => {
     setErrors({});
@@ -205,24 +177,40 @@ export default function PrerakRegisterDetail({
     });
     return err;
   };
+
+  const handleCheckboxChange = (isAgree) => {
+    setYesChecked(isAgree);
+    setNoChecked(!isAgree);
+    if (isAgree) {
+      setConsentCompleted(false);
+      //sent otp to mobile number
+      const fetchData = async () => {
+        await sendAndVerifyOtp(schema, {
+          mobile: isConsentModal?.mobile,
+        });
+        setIsConsentModal();
+        setCurrentForm(1);
+        setYesChecked(!isAgree);
+      };
+      fetchData();
+    } else {
+      setConsentCompleted(true);
+      showIntroductionOfProject();
+    }
+  };
+
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     if (currentForm == 0) {
-      setIsloading(true);
-      setFormData(newFormData);
-      setRegisterFormData(newFormData);
-      //check if user exist on mobile number
+      setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.mobile);
       if (!isExist) {
-        //sent otp to mobile number
-        await sendAndVerifyOtp(schema, {
-          mobile: newFormData?.mobile,
-        });
-        setCurrentForm(1);
+        setIsConsentModal(newFormData);
       }
-      setIsloading(false);
+
+      setIsLoading(false);
     } else if (currentForm == 1) {
-      setIsloading(true);
+      setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
       if (!isExist) {
         //verify otp
@@ -263,7 +251,7 @@ export default function PrerakRegisterDetail({
           setErrors(newErrors);
         }
       }
-      setIsloading(false);
+      setIsLoading(false);
     }
   };
   const transformErrors = (errors, uiSchema) => {
@@ -400,6 +388,7 @@ export default function PrerakRegisterDetail({
     }
     return isExist;
   };
+
   const userExistClick = () => {
     if (
       isUserExistStatus == "EXIST_LOGIN" ||
@@ -451,13 +440,18 @@ export default function PrerakRegisterDetail({
     let first_name = registerFormData?.first_name
       ? registerFormData.first_name.replaceAll(" ", "")
       : "";
+    let middle_name = registerFormData?.middle_name
+      ? registerFormData.middle_name.replaceAll(" ", "")
+      : "";
     let last_name = registerFormData?.last_name
       ? registerFormData.last_name.replaceAll(" ", "")
       : "";
     let lang = localStorage.getItem("lang");
+
     const result = await facilitatorRegistryService.registerV2(
       {
         first_name: first_name,
+        middle_name: middle_name,
         last_name: last_name,
         mobile: registerFormData?.mobile.toString(),
         lang: lang,
@@ -470,7 +464,6 @@ export default function PrerakRegisterDetail({
   };
   return (
     <>
-      {" "}
       {isLoading ? (
         <PageLayout t={t} isPageMiddle={true} customComponent={<Loader />} />
       ) : (
@@ -529,27 +522,7 @@ export default function PrerakRegisterDetail({
                 </FrontEndTypo.Primarybutton>
               ) : (
                 <VStack>
-                  <FrontEndTypo.H3
-                    cursor="pointer"
-                    mt="5"
-                    TextDecoration="underline"
-                    color={"blueText.400"}
-                    onPress={() => {
-                      setIsConsentModal(true);
-                    }}
-                  >
-                    <HStack alignItems={"center"} space={2}>
-                      {t("TERMS_AND_CONDITIONS")}
-                      {!consentCompleted && (
-                        <IconByName
-                          name="CheckboxCircleFillIcon"
-                          color="successColor"
-                        />
-                      )}
-                    </HStack>
-                  </FrontEndTypo.H3>
                   <FrontEndTypo.Primarybutton
-                    isDisabled={consentCompleted}
                     isLoading={loading}
                     type="submit"
                     p="4"
@@ -558,7 +531,7 @@ export default function PrerakRegisterDetail({
                       formRef?.current?.submit();
                     }}
                   >
-                    {t("SAVE_AND_NEXT")}
+                    {t("CONSENT_TO_SHARE_INFORMATION")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               )}
@@ -573,9 +546,9 @@ export default function PrerakRegisterDetail({
             <Modal.Content>
               <Modal.Body p="5" pb="10">
                 <VStack space="5">
-                  <H1 textAlign="center">
+                  <FrontEndTypo.H1 textAlign="center">
                     <Alert.Icon />
-                  </H1>
+                  </FrontEndTypo.H1>
                   <FrontEndTypo.H2 textAlign="center">
                     {isUserExistModalText}
                   </FrontEndTypo.H2>
@@ -601,88 +574,97 @@ export default function PrerakRegisterDetail({
           >
             <Modal.Content>
               <Modal.Header p="5" borderBottomWidth="0">
-                <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
+                <FrontEndTypo.H1 textAlign="center">
+                  {t("STORE_YOUR_CREDENTIALS")}
+                </FrontEndTypo.H1>
               </Modal.Header>
-              <Modal.Body p="5" pb="10">
-                <VStack space="5">
-                  <VStack
-                    space="2"
-                    bg="gray.100"
-                    p="1"
-                    rounded="lg"
-                    borderWidth={1}
-                    borderColor="gray.300"
-                    w="100%"
-                  >
-                    <HStack alignItems="center" space="1" flex="1">
-                      <H3 flex="0.3">{t("USERNAME")}</H3>
-                      <BodySmall
-                        py="1"
-                        px="2"
-                        flex="0.7"
-                        wordWrap="break-word"
-                        whiteSpace="break-spaces"
-                        overflow="hidden"
-                        bg="success.100"
-                        borderWidth="1"
-                        borderColor="success.500"
-                      >
-                        {credentials?.username}
-                      </BodySmall>
-                    </HStack>
-                    <HStack alignItems="center" space="1" flex="1">
-                      <H3 flex="0.3">{t("PASSWORD")}</H3>
-                      <BodySmall
-                        py="1"
-                        px="2"
-                        flex="0.7"
-                        wordWrap="break-word"
-                        whiteSpace="break-spaces"
-                        overflow="hidden"
-                        bg="success.100"
-                        borderWidth="1"
-                        borderColor="success.500"
-                      >
-                        {credentials?.password}
-                      </BodySmall>
-                    </HStack>
-                  </VStack>
-                  <VStack alignItems="center">
-                    <Clipboard
-                      text={`username: ${credentials?.username}, password: ${credentials?.password}`}
-                      onPress={(e) => {
-                        setCredentials({ ...credentials, copy: true });
-                        downloadImage();
-                      }}
+              <Modal.Body pt="0" p="5" pb="10">
+                {imageLoading && <Loading height="100%" width="100%" />}
+                {!imageLoading && (
+                  <VStack space="5">
+                    <VStack
+                      space="2"
+                      bg="gray.100"
+                      p="1"
+                      rounded="lg"
+                      borderWidth={1}
+                      borderColor="gray.300"
+                      w="100%"
                     >
-                      <HStack space="3">
-                        <IconByName
-                          name="FileCopyLineIcon"
-                          isDisabled
-                          rounded="full"
-                          color="blue.300"
-                        />
-                        <H3 color="blue.300">
-                          {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                        </H3>
+                      <HStack alignItems="center" space="1" flex="1">
+                        <FrontEndTypo.H3 flex="0.3">
+                          {t("USERNAME")}
+                        </FrontEndTypo.H3>
+                        <FrontEndTypo.H4
+                          py="1"
+                          px="2"
+                          flex="0.7"
+                          wordWrap="break-word"
+                          whiteSpace="break-spaces"
+                          overflow="hidden"
+                          bg="success.100"
+                          borderWidth="1"
+                          borderColor="success.500"
+                        >
+                          {credentials?.username}
+                        </FrontEndTypo.H4>
                       </HStack>
-                    </Clipboard>
+                      <HStack alignItems="center" space="1" flex="1">
+                        <FrontEndTypo.H3 flex="0.3">
+                          {t("PASSWORD")}
+                        </FrontEndTypo.H3>
+                        <FrontEndTypo.H4
+                          py="1"
+                          px="2"
+                          flex="0.7"
+                          wordWrap="break-word"
+                          whiteSpace="break-spaces"
+                          overflow="hidden"
+                          bg="success.100"
+                          borderWidth="1"
+                          borderColor="success.500"
+                        >
+                          {credentials?.password}
+                        </FrontEndTypo.H4>
+                      </HStack>
+                    </VStack>
+                    <VStack alignItems="center">
+                      <Clipboard
+                        text={`username: ${credentials?.username}, password: ${credentials?.password}`}
+                        onPress={(e) => {
+                          setCredentials({ ...credentials, copy: true });
+                          downloadImage();
+                        }}
+                      >
+                        <HStack space="3">
+                          <IconByName
+                            name="FileCopyLineIcon"
+                            isDisabled
+                            rounded="full"
+                            color="blue.300"
+                          />
+                          <FrontEndTypo.H3 color="blue.300">
+                            {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
+                          </FrontEndTypo.H3>
+                        </HStack>
+                      </Clipboard>
+                    </VStack>
+                    <HStack space="5" pt="5">
+                      <FrontEndTypo.Primarybutton
+                        flex={1}
+                        isDisabled={!credentials?.copy}
+                        onPress={async (e) => {
+                          const { copy, ...cData } = credentials;
+                          await login(cData);
+                          navigate("/");
+                          navigate(0);
+                        }}
+                      >
+                        {t("LOGIN")}
+                      </FrontEndTypo.Primarybutton>
+                    </HStack>
                   </VStack>
-                  <HStack space="5" pt="5">
-                    <FrontEndTypo.Primarybutton
-                      flex={1}
-                      isDisabled={!credentials?.copy}
-                      onPress={async (e) => {
-                        const { copy, ...cData } = credentials;
-                        await login(cData);
-                        navigate("/");
-                        navigate(0);
-                      }}
-                    >
-                      {t("LOGIN")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                </VStack>
+                )}
               </Modal.Body>
             </Modal.Content>
           </Modal>
@@ -704,7 +686,7 @@ export default function PrerakRegisterDetail({
                         handleCheckboxChange(false);
                       }}
                     >
-                      {t("NO")}
+                      {t("NO_GO_BACK")}
                     </Checkbox>
                     <Checkbox
                       isChecked={yesChecked}
@@ -713,7 +695,7 @@ export default function PrerakRegisterDetail({
                         handleCheckboxChange(true);
                       }}
                     >
-                      {t("YES")}
+                      {t("YES_GO_FORWARD")}
                     </Checkbox>
                   </HStack>
                 </VStack>
