@@ -750,7 +750,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       const uploadDoc = await uploadRegistryService.uploadFile(form_data);
       if (uploadDoc) {
         setIsButtonLoading(false);
-        navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
+        navigate(`/`);
       }
     }
   };
@@ -806,7 +806,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             variant={"secondary"}
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
-              navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
+              navigate(`/`);
             }}
           >
             {t("SKIP")}
@@ -892,7 +892,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
               variant={"secondary"}
               leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
               onPress={(e) => {
-                navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
+                navigate(`/`);
               }}
             >
               {t("SKIP")}

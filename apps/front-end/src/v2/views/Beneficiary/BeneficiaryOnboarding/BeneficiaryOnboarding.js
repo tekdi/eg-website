@@ -24,20 +24,20 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
             footerLinks={footerLinks}
           />
         );
-      case "3":
-        return (
-          <LearnerAdhaar
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
-        );
-      case "4":
-        return (
-          <LearnerDuplicate
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
-        );
+      // case "3":
+      //   return (
+      //     <LearnerAdhaar
+      //       userTokenInfo={userTokenInfo}
+      //       footerLinks={footerLinks}
+      //     />
+      //   );
+      // case "4":
+      //   return (
+      //     <LearnerDuplicate
+      //       userTokenInfo={userTokenInfo}
+      //       footerLinks={footerLinks}
+      //     />
+      //   );
       case "docschecklist":
         return (
           <LearnerDocsChecklist
@@ -89,17 +89,11 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
         );
       case "pcrdetails":
         return (
-          <PcrDetails
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
+          <PcrDetails userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
         );
       case "pcrview":
         return (
-          <PcrView
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
+          <PcrView userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
         );
       default:
         return (
