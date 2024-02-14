@@ -39,6 +39,14 @@ export default function BenificiaryEnrollment() {
     setEnumOptions(data?.data ? data?.data : {});
   }, []);
 
+  const onEditFunc = () => {
+    if (
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" &&
+      benificiary?.program_beneficiaries?.status !== "registered_in_camp"
+    ) {
+      return { onEdit: navigate(`/beneficiary/edit/${id}/enrollment-details`) };
+    }
+  };
   return (
     <Layout
       loading={loading}
@@ -125,11 +133,7 @@ export default function BenificiaryEnrollment() {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
               : {})}
-            onEdit={
-              benificiary?.program_beneficiaries?.status !==
-                "enrolled_ip_verified" &&
-              ((e) => navigate(`/beneficiary/edit/${id}/enrollment-details`))
-            }
+            {...(onEditFunc() || {})}
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}

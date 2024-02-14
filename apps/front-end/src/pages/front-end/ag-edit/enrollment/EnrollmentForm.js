@@ -560,7 +560,11 @@ export default function App() {
     }
     setBtnLoading(false);
   };
-  if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
+  if (
+    ["enrolled_ip_verified", "registered_in_camp"].includes(
+      benificiary?.program_beneficiaries?.status
+    )
+  ) {
     return (
       <Layout
         loading={loading}
