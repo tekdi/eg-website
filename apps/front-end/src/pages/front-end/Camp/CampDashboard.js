@@ -24,6 +24,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
+const campSettingData = (item) => {
+  return (
+    item?.preferred_start_time === null &&
+    item?.preferred_end_time === null &&
+    item?.week_off === null
+  );
+};
 export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -33,17 +40,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const [enumOptions, setEnumOptions] = useState();
   const [communityLength, setCommunityLength] = useState(0);
   const [ipStatus, setIpStatus] = useState();
-  const [modal, setModal] = useState(false);
-  const [campId, setCampId] = useState("");
   const [campSelected, setCampSelected] = useState("");
-  const [campSetting, setCampSetting] = useState();
-  const campSettingData = () => {
-    return (
-      campSetting?.preferred_start_time === null &&
-      campSetting?.preferred_end_time === null &&
-      campSetting?.week_off === null
-    );
-  };
+
   useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
     const campList = await campService.campList();
@@ -61,7 +59,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
-    setCampSetting(campList.data?.camps[0]);
   }, []);
 
   return (
@@ -137,9 +134,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                       <Pressable
                         key={item}
                         onPress={() => {
-                          setModal(true);
-                          setCampId(item?.id);
-                          setCampSelected(item?.group?.status);
+                          setCampSelected(item);
                         }}
                         bg="boxBackgroundColour.100"
                         shadow="AlertShadow"
@@ -263,8 +258,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         </VStack>
       </VStack>
       <Modal
-        isOpen={modal}
-        onClose={() => setModal(false)}
+        isOpen={campSelected}
+        onClose={() => setCampSelected()}
         safeAreaTop={true}
         size="xl"
       >
@@ -275,21 +270,23 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
               <FrontEndTypo.Primarybutton
                 m="2"
                 onPress={() => {
-                  navigate(`/camps/${campId}`);
+                  navigate(`/camps/${campSelected?.id}`);
                 }}
               >
                 {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-              {["registered", "camp_ip_verified"].includes(campSelected) && (
+              {["registered", "camp_ip_verified"].includes(
+                campSelected?.group?.status
+              ) && (
                 <Stack space={4}>
                   <FrontEndTypo.Secondarybutton
                     onPress={() => {
-                      navigate(`/camps/${campId}/settings`);
+                      navigate(`/camps/${campSelected?.id}/settings`);
                     }}
                   >
                     {t("CAMP_SETTINGS")}
                   </FrontEndTypo.Secondarybutton>
-                  {campSettingData() ? (
+                  {campSettingData(campSelected) ? (
                     <Alert mt={4} status="warning">
                       <HStack space={2}>
                         <Alert.Icon />
@@ -301,7 +298,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                   ) : (
                     <FrontEndTypo.Primarybutton
                       onPress={() => {
-                        navigate(`/camps/${campId}/campexecution`);
+                        navigate(`/camps/${campSelected?.id}/campexecution`);
                       }}
                     >
                       {t("CAMP_EXECUTION")}
