@@ -747,10 +747,14 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         form_data.append(key, item[key]);
       }
 
-      const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      if (uploadDoc) {
-        setIsButtonLoading(false);
-        navigate(`/`);
+      try {
+        const uploadDoc = await uploadRegistryService.uploadFile(form_data);
+        if (uploadDoc) {
+          setIsButtonLoading(false);
+          navigate(`/`);
+        }
+      } catch (error) {
+        console.error("Upload failed:", error);
       }
     }
   };
