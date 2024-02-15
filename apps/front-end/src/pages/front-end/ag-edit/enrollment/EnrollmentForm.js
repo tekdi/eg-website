@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
@@ -27,6 +27,7 @@ import {
 } from "../../../../component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
@@ -159,21 +160,21 @@ export default function App() {
   const { t } = useTranslation();
   const { step, id } = useParams();
   const userId = id;
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [fixedSchema, setFixedSchema] = React.useState({});
-  const [benificiary, setBenificiary] = React.useState({});
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [notMatched, setNotMatched] = React.useState();
-  const [loading, setLoading] = React.useState(false);
-  const [btnLoading, setBtnLoading] = React.useState(false);
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [fixedSchema, setFixedSchema] = useState({});
+  const [benificiary, setBenificiary] = useState({});
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [notMatched, setNotMatched] = useState();
+  const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
 
-  const [uiSchema, setUiSchema] = React.useState({
+  const [uiSchema, setUiSchema] = useState({
     subjects: {
       "ui:widget": "checkboxes",
     },
@@ -306,7 +307,7 @@ export default function App() {
     return err;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
     const newStep = step || newSteps[0];
@@ -314,7 +315,7 @@ export default function App() {
     setPages(newSteps);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (page) {
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
@@ -560,7 +561,11 @@ export default function App() {
     }
     setBtnLoading(false);
   };
-  if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
+  if (
+    ["enrolled_ip_verified", "registered_in_camp"].includes(
+      benificiary?.program_beneficiaries?.status
+    )
+  ) {
     return (
       <Layout
         loading={loading}
@@ -689,3 +694,7 @@ const AlertCustom = ({ alert }) => (
     </HStack>
   </Alert>
 );
+
+AlertCustom.propTypes = {
+  alert: PropTypes.string,
+};

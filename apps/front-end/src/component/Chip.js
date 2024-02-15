@@ -1,6 +1,7 @@
 import { Box } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { t } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 export default function Chip({ label, children, isActive, ...props }) {
   return (
@@ -19,13 +20,17 @@ export default function Chip({ label, children, isActive, ...props }) {
     </Box>
   );
 }
-
+Chip.propTypes = {
+  label: PropTypes.string,
+  children: PropTypes.node,
+  isActive: PropTypes.bool,
+};
 // ChipStatus
 export function ChipStatus({ width, status, ...props }) {
-  const [color, setColor] = React.useState("appliedColor");
-  const [newStatus, setNewStatus] = React.useState(status);
+  const [color, setColor] = useState("appliedColor");
+  const [newStatus, setNewStatus] = useState(status);
 
-  React.useEffect(() => {
+  useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "application_screened":
       case "screened":
@@ -100,13 +105,17 @@ export function ChipStatus({ width, status, ...props }) {
     />
   );
 }
+ChipStatus.propTypes = {
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  status: PropTypes.string,
+};
 
 // ChipStatus
 export function CampChipStatus({ status, ...props }) {
-  const [color, setColor] = React.useState("appliedColor");
-  const [newStatus, setNewStatus] = React.useState(status);
+  const [color, setColor] = useState("appliedColor");
+  const [newStatus, setNewStatus] = useState(status);
 
-  React.useEffect(() => {
+  useEffect(() => {
     switch (status && status?.toLowerCase()) {
       case "rejected":
         setNewStatus(t("REJECTED"));
@@ -160,3 +169,6 @@ export function CampChipStatus({ status, ...props }) {
     />
   );
 }
+CampChipStatus.propTypes = {
+  status: PropTypes.string,
+};

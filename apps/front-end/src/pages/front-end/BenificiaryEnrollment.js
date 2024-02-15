@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { VStack } from "native-base";
 import {
   ItemComponent,
@@ -15,13 +15,13 @@ import EnrollmentMessage from "component/EnrollmentMessage";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
-  const [benificiary, setbenificiary] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
+  const [benificiary, setbenificiary] = useState();
+  const [enumOptions, setEnumOptions] = useState({});
+  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     agDetails();
   }, [id]);
 
@@ -34,11 +34,19 @@ export default function BenificiaryEnrollment() {
     setbenificiary(result?.result);
     setLoading(false);
   };
-  React.useEffect(async () => {
+  useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
   }, []);
 
+  const onEditFunc = () => {
+    if (
+      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" &&
+      benificiary?.program_beneficiaries?.status !== "registered_in_camp"
+    ) {
+      return { onEdit: navigate(`/beneficiary/edit/${id}/enrollment-details`) };
+    }
+  };
   return (
     <Layout
       loading={loading}
@@ -125,11 +133,7 @@ export default function BenificiaryEnrollment() {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
               : {})}
-            onEdit={
-              benificiary?.program_beneficiaries?.status !==
-                "enrolled_ip_verified" &&
-              ((e) => navigate(`/beneficiary/edit/${id}/enrollment-details`))
-            }
+            {...(onEditFunc() || {})}
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}
