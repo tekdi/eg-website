@@ -62,7 +62,7 @@ export default StarRating;
 
 StarRating.propTypes = {
   value: PropTypes.any,
-  onChange: PropTypes.any,
-  required: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
   schema: PropTypes.any,
 };

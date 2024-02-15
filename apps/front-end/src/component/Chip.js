@@ -22,7 +22,7 @@ export default function Chip({ label, children, isActive, ...props }) {
 }
 Chip.propTypes = {
   label: PropTypes.string,
-  children: PropTypes.any,
+  children: PropTypes.node,
   isActive: PropTypes.bool,
 };
 // ChipStatus

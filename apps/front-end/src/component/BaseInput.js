@@ -86,7 +86,7 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
 };
 TitleFieldTemplate.propTypes = {
   id: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
   title: PropTypes.any,
 };
 // rjsf custom DescriptionFieldTemplate field layout Template use in all form
@@ -246,10 +246,10 @@ FieldTemplate.propTypes = {
   style: PropTypes.any,
   label: PropTypes.any,
   help: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
   description: PropTypes.any,
   errors: PropTypes.any,
-  children: PropTypes.any,
+  children: PropTypes.node,
   schema: PropTypes.any,
 };
 // rjsf custom ObjectFieldTemplate object field layout Template use in all form
@@ -296,8 +296,8 @@ export const CustomR = ({
 CustomR.propTypes = {
   options: PropTypes.any,
   value: PropTypes.any,
-  onChange: PropTypes.any,
-  required: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
   schema: PropTypes.any,
 };
 // rjsf custom RadioBtn field
@@ -363,8 +363,8 @@ export const RadioBtn = ({
 RadioBtn.propTypes = {
   options: PropTypes.any,
   value: PropTypes.any,
-  onChange: PropTypes.any,
-  required: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
   schema: PropTypes.any,
   directionColumn: PropTypes.any,
 };
@@ -474,8 +474,8 @@ export const select = ({ options, value, onChange, required, schema }) => {
 select.propTypes = {
   options: PropTypes.any,
   value: PropTypes.any,
-  onChange: PropTypes.any,
-  required: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
   schema: PropTypes.any,
 };
 // rjsf custom readOnly field
@@ -505,7 +505,7 @@ export const ReadOnly = ({ value, required, schema }) => {
 };
 ReadOnly.propTypes = {
   value: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
   schema: PropTypes.any,
 };
 export const Location = ({ value, onChange, schema }) => {
@@ -544,7 +544,7 @@ export const Location = ({ value, onChange, schema }) => {
 };
 Location.propTypes = {
   value: PropTypes.any,
-  onChange: PropTypes.any,
+  onChange: PropTypes.func,
   schema: PropTypes.any,
 };
 
@@ -609,9 +609,9 @@ HFieldTemplate.propTypes = {
   help: PropTypes.any,
   description: PropTypes.any,
   errors: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
   schema: PropTypes.any,
-  children: PropTypes.any,
+  children: PropTypes.node,
 };
 // rjsf custom MultiCheck field
 export const MultiCheck = ({
@@ -698,9 +698,9 @@ export const MultiCheck = ({
 MultiCheck.propTypes = {
   options: PropTypes.any,
   value: PropTypes.any,
-  onChange: PropTypes.any,
+  onChange: PropTypes.func,
   schema: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
 };
 
 // select between 2 values radio button (yes or no)
@@ -735,9 +735,9 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
 };
 CheckUncheck.propTypes = {
   value: PropTypes.any,
-  onChange: PropTypes.any,
+  onChange: PropTypes.func,
   schema: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
 };
 // rjsf custom textarea field
 const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
@@ -803,9 +803,9 @@ const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
 };
 Textarea.propTypes = {
   value: PropTypes.any,
-  onChange: PropTypes.any,
+  onChange: PropTypes.func,
   schema: PropTypes.any,
-  required: PropTypes.any,
+  required: PropTypes.bool,
   isInvalid: PropTypes.any,
 };
 const validator = customizeValidator({

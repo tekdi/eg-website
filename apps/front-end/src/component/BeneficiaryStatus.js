@@ -36,7 +36,7 @@ export default function Chip({
 }
 Chip.propTypes = {
   label: PropTypes.string,
-  children: PropTypes.any,
+  children: PropTypes.node,
   is_duplicate: PropTypes.bool,
   is_deactivated: PropTypes.bool,
   isActive: PropTypes.bool,
