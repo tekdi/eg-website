@@ -17,7 +17,10 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import { widgets, templates } from "../../../Static/FormBaseInput/FormBaseInput.js";
+import {
+  widgets,
+  templates,
+} from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 
 // App
@@ -126,6 +129,15 @@ export default function FutureStudy({ userTokenInfo }) {
         extra: getOptions(newSchema["properties"]?.["aspiration_mapping"], {
           key: "type_of_support_needed",
           arr: career_aspiration.data?.TYPE_OF_SUPPORT_NEEDED,
+          title: "title",
+          value: "value",
+        }),
+      });
+      newSchema = getOptions(newSchema, {
+        key: "aspiration_mapping",
+        extra: getOptions(newSchema["properties"]?.["aspiration_mapping"], {
+          key: "parent_support",
+          arr: career_aspiration.data?.PARENT_SUPPORT,
           title: "title",
           value: "value",
         }),
@@ -264,13 +276,16 @@ export default function FutureStudy({ userTokenInfo }) {
                 type_of_support_needed: {
                   "ui:widget": "MultiCheck",
                 },
+                parent_support: {
+                  "ui:widget": "RadioBtn",
+                },
               },
             }}
             {...{
               widgets,
               templates,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               formData,
               onChange,
               onError,
