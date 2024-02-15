@@ -40,8 +40,6 @@ export default {
             },
             parent_support: {
               label: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
-
-              minItems: 1,
               type: "string",
               grid: 1,
               format: "RadioBtn",
