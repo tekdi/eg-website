@@ -122,12 +122,12 @@ export default function BenificiaryProfileView(props) {
     switch (status) {
       case "identified":
       case "ready_to_enroll":
-      case "enrolled":
-      case "approved_ip":
-      case "registered_in_camp":
-      case "pragati_syc":
-      case "activate":
-      case "enrolled_ip_verified":
+      // case "enrolled":
+      // case "approved_ip":
+      // case "registered_in_camp":
+      // case "pragati_syc":
+      // case "activate":
+      // case "enrolled_ip_verified":
       case null:
         return (
           <FrontEndTypo.Secondarybutton
@@ -163,12 +163,12 @@ export default function BenificiaryProfileView(props) {
     switch (status) {
       case "identified":
       case "ready_to_enroll":
-      case "enrolled":
-      case "approved_ip":
-      case "registered_in_camp":
-      case "pragati_syc":
-      case "activate":
-      case "enrolled_ip_verified":
+      // case "enrolled":
+      // case "approved_ip":
+      // case "registered_in_camp":
+      // case "pragati_syc":
+      // case "activate":
+      // case "enrolled_ip_verified":
       case null:
         return (
           <FrontEndTypo.Secondarybutton
