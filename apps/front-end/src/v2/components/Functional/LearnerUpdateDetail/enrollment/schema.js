@@ -43,7 +43,7 @@ export default {
         enrollment_date: {
           type: "string",
           label: "ENROLLMENT_DATE",
-          format: "alt-date",
+          format: "DMY",
         },
         subjects: {
           minItems: 1,

@@ -852,7 +852,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         _footer={{ menues: footerLinks }}
       >
         <VStack py={6} px={4} mb={5} space="6">
-          <H1 color="red.1000">{t("Add_AGS_PROFILE")}</H1>
+          <H1 color="red.1000">{t("ADD_AG_PROFILE_PHOTO")}</H1>
 
           <Button
             variant={"primary"}

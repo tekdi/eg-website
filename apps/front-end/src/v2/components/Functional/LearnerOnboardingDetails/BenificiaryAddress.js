@@ -47,6 +47,7 @@ export default function BenificiaryAddress() {
         "block",
         "village",
         "grampanchayat",
+        "pincode",
       ].includes(e)
     );
     return !!(
@@ -97,6 +98,7 @@ export default function BenificiaryAddress() {
                   "block",
                   "village",
                   "grampanchayat",
+                  "pincode",
                 ])}
                 size="xs"
                 colorScheme="red"
@@ -234,6 +236,34 @@ export default function BenificiaryAddress() {
                   ) : (
                     "-"
                   )}
+                </FrontEndTypo.H3>
+              </HStack>
+              <HStack
+                space={2}
+                alignItems="Center"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
+                <FrontEndTypo.H3
+                  color="textGreyColor.50"
+                  fontWeight="400"
+                  flex="3"
+                  pb="2"
+                >
+                  {t("PINCODE")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="4"
+                >
+                  {benificiary?.pincode ? (
+                    <Text>{benificiary?.pincode}</Text>
+                  ) : (
+                    "-"
+                  )}
+                  {console.log("pincode", benificiary?.pincode)}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>

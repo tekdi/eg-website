@@ -183,6 +183,7 @@ export default function EnrollmentForm() {
         hideNowButton: true,
         hideClearButton: true,
         yearsRange: [2023, moment().format("YYYY")],
+        format: "DMY",
       },
     },
     enrollment_dob: {

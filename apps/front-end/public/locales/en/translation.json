@@ -798,6 +798,7 @@
   "MARK_AS_COMPLETE": "Enrollment Documents Completed",
   "MARK_AS_DROPOUT": "Mark as Dropout",
   "MARK_AS_WHATSAPP_NO": "Mark as Whatsapp number?",
+  "MARK_AS_WHATSAPP_REGISTER": "Is WhatsApp registered on the mobile number?",
   "MARK_ATTENDANCE": "Mark attendance",
   "MARK_ATTENDANCE_ALL": "Mark Attendance for all",
   "MARK_ATTENDANCE_ORIENTATION": "Mark Attendance For Orientation",
