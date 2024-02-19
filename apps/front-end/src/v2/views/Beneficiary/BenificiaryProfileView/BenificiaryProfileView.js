@@ -57,13 +57,13 @@ export default function BenificiaryProfileView(props) {
     );
   }, []);
 
-  React.useEffect(() => {
-    if (benificiary?.aadhar_no === null) {
-      setAlert(t("AADHAAR_REQUIRED_MESSAGE"));
-    } else {
-      setAlert();
-    }
-  }, [benificiary]);
+  // React.useEffect(() => {
+  //   if (benificiary?.aadhar_no === null) {
+  //     setAlert(t("AADHAAR_REQUIRED_MESSAGE"));
+  //   } else {
+  //     setAlert();
+  //   }
+  // }, [benificiary]);
 
   const res = objProps(benificiary);
 
@@ -367,12 +367,13 @@ export default function BenificiaryProfileView(props) {
                         />
                       )}
                   </HStack>
+                  {/*
                   <Divider
                     orientation="horizontal"
                     bg="btnGray.100"
                     thickness="1"
                   />
-                  <HStack alignItems="Center" justifyContent="space-between">
+                   <HStack alignItems="Center" justifyContent="space-between">
                     <HStack alignItems="Center" space="md">
                       <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
 
@@ -391,7 +392,7 @@ export default function BenificiaryProfileView(props) {
                           color="textMaroonColor.400"
                         />
                       )}
-                  </HStack>
+                  </HStack> */}
                 </VStack>
               </VStack>
             </Box>
@@ -465,49 +466,29 @@ export default function BenificiaryProfileView(props) {
                   </HStack>
                 </Alert>
               )}
-              {benificiary?.aadhar_no === null ? (
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="Center"
-                  p="3"
-                >
-                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                    {t("ENROLLMENT_DETAILS")}
-                  </FrontEndTypo.H3>
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        color="textMaroonColor.400"
-                        size="sm"
-                      />
-                    )}
-                </HStack>
-              ) : (
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="Center"
-                  p="3"
-                  pr="0"
-                >
-                  <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                    {t("ENROLLMENT_DETAILS")}
-                  </FrontEndTypo.H3>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={(e) => {
-                          navigate(`/beneficiary/${id}/enrollmentdetails`);
-                        }}
-                        color="textMaroonColor.400"
-                      />
-                    )}
-                </HStack>
-              )}
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="0"
+              >
+                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                  {t("ENROLLMENT_DETAILS")}
+                </FrontEndTypo.H3>
+
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/enrollmentdetails`);
+                      }}
+                      color="textMaroonColor.400"
+                    />
+                  )}
+              </HStack>
+
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"
