@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./BeneficiaryRegister.Schema.js";
-import { Alert, Box, HStack } from "native-base";
+import { Alert, Box, HStack, Modal } from "native-base";
 import {
   AgRegistryService,
   Layout,
@@ -13,6 +13,8 @@ import {
   FrontEndTypo,
   getSelectedProgramId,
   getSelectedAcademicYear,
+  benificiaryRegistoryService,
+  IconByName,
   getOptions,
   enumRegistryService,
 } from "@shiksha/common-lib";
@@ -52,6 +54,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = useState(false);
+  const [isExistModal, setIsExistModal] = useState(false);
 
   const onPressBackButton = async (e) => {
     setotpbtn(false);
@@ -119,6 +122,43 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     }
   };
 
+  const SendOtp = async () => {
+    setIsExistModal(false);
+    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+      ...formData,
+      hash: localStorage.getItem("hash"),
+    });
+    setverifyOtpData(otpData);
+    if (status === true) {
+      const data = await formSubmitCreate(formData);
+      if (data?.error) {
+        const newErrors = {
+          mobile: {
+            __errors:
+              data?.error?.constructor?.name === "String"
+                ? [data?.error]
+                : data?.error?.constructor?.name === "Array"
+                ? data?.error
+                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        createBeneficiary();
+      }
+    } else if (status === false) {
+      const newErrors = {
+        otp: {
+          __errors: [t("USER_ENTER_VALID_OTP")],
+        },
+      };
+      setErrors(newErrors);
+    } else {
+      setSchema(newSchema);
+      setotpbtn(true);
+    }
+  };
+
   const otpfunction = async () => {
     if (formData?.mobile?.length < 10) {
       const data = await formSubmitCreate(formData);
@@ -146,46 +186,21 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
               : data?.error?.constructor?.name === "Array"
               ? data?.error
               : [t("PLEASE_ENTER_VALID_NUMBER")],
+          otpbtn,
         },
       };
       setErrors(newErrors);
     }
     if (formData?.mobile?.length === 10) {
-      const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-        ...formData,
-        hash: localStorage.getItem("hash"),
-      });
-      setverifyOtpData(otpData);
-      if (status === true) {
-        const data = await formSubmitCreate(formData);
-        if (data?.error) {
-          const newErrors = {
-            mobile: {
-              __errors:
-                data?.error?.constructor?.name === "String"
-                  ? [data?.error]
-                  : data?.error?.constructor?.name === "Array"
-                  ? data?.error
-                  : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        } else {
-          createBeneficiary();
-        }
-      } else if (status === false) {
-        const newErrors = {
-          otp: {
-            __errors: [t("USER_ENTER_VALID_OTP")],
-          },
-        };
-        setErrors(newErrors);
+      const data = await benificiaryRegistoryService.isUserExists(formData);
+      if (data?.is_data_found) {
+        setIsExistModal(true);
       } else {
-        setSchema(newSchema);
-        setotpbtn(true);
+        await SendOtp();
       }
     }
   };
+
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -511,6 +526,29 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         ) : (
           <Fragment />
         )}
+
+        <Modal isOpen={isExistModal} size="lg">
+          <Modal.Content>
+            <Modal.Body alignItems={"center"} textAlign={"center"} p="5">
+              <IconByName
+                name="ErrorWarningLineIcon"
+                isDisabled
+                color="textMaroonColor.300"
+              />
+              <FrontEndTypo.H3>{t("PROFILE_EXIST")}</FrontEndTypo.H3>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-between"}>
+              <FrontEndTypo.Secondarybutton
+                onPress={() => setIsExistModal(false)}
+              >
+                {t("GO_BACK")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton onPress={async () => await SendOtp()}>
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </Box>
     </Layout>
   );
