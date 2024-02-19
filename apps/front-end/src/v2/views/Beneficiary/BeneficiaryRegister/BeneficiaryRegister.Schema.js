@@ -5,7 +5,7 @@ export default {
     1: {
       title: "IDENTIFY_BENEFICIARY",
       type: "object",
-      required: ["first_name", "dob"],
+      required: ["first_name", "dob", "career_aspiration"],
       properties: {
         first_name: {
           type: "string",
@@ -22,6 +22,19 @@ export default {
           title: "LAST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
+        career_aspiration: {
+          minItems: 1,
+          type: "string",
+          label: "CAREER_ASPIRATION",
+          grid: 1,
+          format: "RadioBtn",
+        },
+
+        career_aspiration_details: {
+          type: ["string", "null"],
+          title: "TELL_IN_DETAIL",
+        },
+
         dob: {
           type: "string",
           format: "date",

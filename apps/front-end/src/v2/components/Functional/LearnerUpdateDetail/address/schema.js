@@ -41,6 +41,11 @@ export default {
           type: "string",
           format: "select",
         },
+        pincode: {
+          title: "PINCODE",
+          type: "string",
+          readOnly: "",
+        },
 
         edit_page_type: {
           type: "string",

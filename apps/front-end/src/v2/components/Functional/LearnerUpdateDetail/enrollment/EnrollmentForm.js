@@ -39,7 +39,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     "enrollment_status",
     "enrolled_for_board",
     "enrollment_number",
-    "enrollment_aadhaar_no",
+    // "enrollment_aadhaar_no",
     "enrollment_date",
     "subjects",
     "payment_receipt_document_id",
@@ -73,7 +73,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             "enrollment_number",
             "enrollment_date",
             "subjects",
-            "enrollment_aadhaar_no",
+            // "enrollment_aadhaar_no",
             "payment_receipt_document_id",
           ].includes(item)
       );
@@ -183,6 +183,7 @@ export default function EnrollmentForm() {
         hideNowButton: true,
         hideClearButton: true,
         yearsRange: [2023, moment().format("YYYY")],
+        format: "DMY",
       },
     },
     enrollment_dob: {
@@ -274,14 +275,14 @@ export default function EnrollmentForm() {
   const validate = (data, key) => {
     let error = {};
     switch (key) {
-      case "enrollment_aadhaar_no":
-        if (
-          data.enrollment_aadhaar_no &&
-          `${data?.enrollment_aadhaar_no}` !== `${benificiary?.aadhar_no}`
-        ) {
-          error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
-        }
-        break;
+      // case "enrollment_aadhaar_no":
+      //   if (
+      //     data.enrollment_aadhaar_no &&
+      //     `${data?.enrollment_aadhaar_no}` !== `${benificiary?.aadhar_no}`
+      //   ) {
+      //     error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
+      //   }
+      //   break;
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
           error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
@@ -450,21 +451,21 @@ export default function EnrollmentForm() {
         setErrors();
         break;
 
-      case "root_enrollment_aadhaar_no":
-        const result = validate(data, "enrollment_aadhaar_no");
-        if (result?.enrollment_aadhaar_no) {
-          setErrors({
-            ...errors,
-            enrollment_aadhaar_no: {
-              __errors: [result?.enrollment_aadhaar_no],
-            },
-          });
-        } else {
-          let { enrollment_aadhaar_no, ...otherError } = errors || {};
-          setErrors(otherError);
-        }
+      // case "root_enrollment_aadhaar_no":
+      //   const result = validate(data, "enrollment_aadhaar_no");
+      //   if (result?.enrollment_aadhaar_no) {
+      //     setErrors({
+      //       ...errors,
+      //       enrollment_aadhaar_no: {
+      //         __errors: [result?.enrollment_aadhaar_no],
+      //       },
+      //     });
+      //   } else {
+      //     let { enrollment_aadhaar_no, ...otherError } = errors || {};
+      //     setErrors(otherError);
+      //   }
 
-        break;
+      //   break;
       case "root_enrollment_dob":
         const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
         if (age?.enrollment_dob) {
@@ -517,9 +518,7 @@ export default function EnrollmentForm() {
       }
     }
     if (keys?.length > 0) {
-      const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
-        (e) => keys.includes(e)
-      );
+      const errorData = ["enrollment_number"].filter((e) => keys.includes(e));
       if (errorData.length > 0) {
         if (
           errorData.includes("enrollment_number") &&
@@ -643,11 +642,11 @@ export default function EnrollmentForm() {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {notMatched?.includes("enrollment_aadhaar_no") && (
+              {/* {notMatched?.includes("enrollment_aadhaar_no") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
-              )}
+              )} */}
 
               {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">

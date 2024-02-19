@@ -14,7 +14,7 @@ export default {
         },
         mark_as_whatsapp_number: {
           type: "string",
-          label: "MARK_AS_WHATSAPP_NO",
+          label: "MARK_AS_WHATSAPP_REGISTER",
           format: "RadioBtn",
 
           enumNames: ["YES", "NO"],

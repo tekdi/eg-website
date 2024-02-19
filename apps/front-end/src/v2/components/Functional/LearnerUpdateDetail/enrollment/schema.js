@@ -9,7 +9,6 @@ export default {
         "enrollment_status",
         "enrolled_for_board",
         "enrollment_number",
-        "enrollment_aadhaar_no",
         "subjects",
         "enrollment_date",
         "payment_receipt_document_id",
@@ -33,17 +32,11 @@ export default {
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
-        enrollment_aadhaar_no: {
-          title: "AADHAAR_NUMBER",
-          description: "AS_PER_ENROLLMENT_RECEIPT",
-          label: "AADHAAR_NUMBER",
-          type: "string",
-          regex: /^\d{0,12}$/,
-        },
+
         enrollment_date: {
           type: "string",
           label: "ENROLLMENT_DATE",
-          format: "alt-date",
+          format: "DMY",
         },
         subjects: {
           minItems: 1,
