@@ -330,7 +330,7 @@ export default function View({ footerLinks }) {
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(-1)}
+            onPress={(e) => navigate(`/admin/camps`)}
           />
           <AdminTypo.H4
             bold
