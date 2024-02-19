@@ -5,20 +5,20 @@ export default {
     1: {
       // title: "FURTHER_STUDIES",
       type: "object",
-      required: ["career_aspiration", "aspiration_mapping"],
+      required: ["aspiration_mapping"],
       properties: {
-        career_aspiration: {
-          minItems: 1,
-          type: "string",
-          label: "CAREER_ASPIRATION",
-          grid: 1,
-          format: "RadioBtn",
-        },
+        // career_aspiration: {
+        //   minItems: 1,
+        //   type: "string",
+        //   label: "CAREER_ASPIRATION",
+        //   grid: 1,
+        //   format: "RadioBtn",
+        // },
 
-        career_aspiration_details: {
-          type: ["string", "null"],
-          title: "TELL_IN_DETAIL",
-        },
+        // career_aspiration_details: {
+        //   type: ["string", "null"],
+        //   title: "TELL_IN_DETAIL",
+        // },
 
         aspiration_mapping: {
           type: "object",

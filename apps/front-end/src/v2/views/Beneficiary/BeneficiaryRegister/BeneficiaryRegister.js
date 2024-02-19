@@ -13,6 +13,8 @@ import {
   FrontEndTypo,
   getSelectedProgramId,
   getSelectedAcademicYear,
+  getOptions,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -71,6 +73,9 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         hideClearButton: true,
         format: "DMY",
       },
+    },
+    career_aspiration: {
+      "ui:widget": "RadioBtn",
     },
   };
 
@@ -214,6 +219,23 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         facilitator_id: localStorage.getItem("id"),
       },
     });
+
+    const fetchData = async () => {
+      const career_aspiration = await enumRegistryService.listOfEnum();
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      let newSchema = properties[newSteps[0]];
+      newSchema = getOptions(newSchema, {
+        key: "career_aspiration",
+        arr: career_aspiration?.data?.CAREER_ASPIRATION,
+        title: "title",
+        value: "value",
+      });
+
+      setSchema(newSchema);
+    };
+
+    fetchData();
   }, []);
 
   const formSubmitCreate = async (formData) => {};
