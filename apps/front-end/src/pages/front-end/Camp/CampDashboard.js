@@ -23,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import Chip from "component/BeneficiaryStatus";
 
 const campSettingData = (item) => {
   return (
@@ -146,7 +147,10 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                           alignItems={"center"}
                           justifyContent={"space-between"}
                         >
-                          <VStack>
+                          <Chip rounded="full" alignItems={"center"}>
+                            {item?.id}
+                          </Chip>
+                          <VStack flex={"0.9"}>
                             <FrontEndTypo.H3>
                               {`${t("CAMP")} ${String(index).padStart(2, "0")}`}
                             </FrontEndTypo.H3>
