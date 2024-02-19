@@ -60,6 +60,19 @@ export function LabelMobileWidget() {
     </>
   );
 }
+export function EnrollmentLabelMobileWidget() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <FrontEndTypo.H2 color="textMaroonColor.400">
+        {t("ENROLLMENT_MOBILE_NUMBER")}
+      </FrontEndTypo.H2>
+      <Text color="textMaroonColor.400" mb={1}>
+        {t("AS_PER_ENROLLMENT_RECEIPT")}
+      </Text>
+    </>
+  );
+}
 
 export function LabelAddressWidget() {
   const { t } = useTranslation();
@@ -811,6 +824,7 @@ const widgets = {
   //v2 widget
   LabelNameWidget,
   LabelMobileWidget,
+  EnrollmentLabelMobileWidget,
   LabelAddressWidget,
   LabelVerifyNameWidget,
   MobileNumberReadOnly,

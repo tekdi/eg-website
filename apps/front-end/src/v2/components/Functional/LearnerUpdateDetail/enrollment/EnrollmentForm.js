@@ -16,6 +16,7 @@ import {
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
+import validator from "@rjsf/validator-ajv8";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   widgets,
@@ -23,7 +24,6 @@ import {
   onError,
   transformErrors,
   scrollToField,
-  validator,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
@@ -41,6 +41,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     "enrolled_for_board",
     "enrollment_number",
     // "enrollment_aadhaar_no",
+    "enrollment_mobile_no",
     "enrollment_date",
     "subjects",
     "payment_receipt_document_id",
@@ -75,6 +76,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             "enrollment_date",
             "subjects",
             // "enrollment_aadhaar_no",
+            "enrollment_mobile_no",
             "payment_receipt_document_id",
           ].includes(item)
       );
@@ -186,6 +188,9 @@ export default function EnrollmentForm() {
         yearsRange: [2023, moment().format("YYYY")],
         format: "DMY",
       },
+    },
+    enrollmentlabelMobile: {
+      "ui:widget": "EnrollmentLabelMobileWidget",
     },
     enrollment_dob: {
       "ui:widget": "alt-date",
