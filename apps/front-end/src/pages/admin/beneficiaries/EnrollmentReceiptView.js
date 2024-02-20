@@ -25,8 +25,8 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 
 const checkboxIcons = [
-  { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
   { name: "CloseCircleLineIcon", activeColor: "red.500" },
+  { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
 ];
 
 export default function EnrollmentReceiptView({ footerLinks }) {
@@ -163,7 +163,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
                 <ValidationBox error={error?.enrollment_details}>
                   <VStack space={4}>
-                    <HStack alignItems="center" space="8">
+                    <HStack
+                      alignItems="center"
+                      justifyContent={"center"}
+                      space="8"
+                    >
                       {data?.profile_photo_1?.name ||
                       data?.profile_photo_2?.name ||
                       data?.profile_photo_3?.name ? (
@@ -195,27 +199,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     </HStack>
 
                     <HStack space={4} alignItems="center">
-                      <CustomRadio
-                        options={{
-                          enumOptions: [{ value: "yes" }, { value: "no" }],
-                        }}
-                        schema={{
-                          grid: 1,
-                          icons: checkboxIcons,
-                          _box: { flex: "1", gap: "2" },
-                          _hstack: { space: "6" },
-                          _pressable: {
-                            p: 0,
-                            mb: 0,
-                            borderWidth: 0,
-                            style: {},
-                          },
-                        }}
-                        value={reason?.enrollment_details}
-                        onChange={(e) => {
-                          setReason({ ...reason, enrollment_details: e });
-                        }}
-                      />
                       <VStack flex={4}>
                         <TextInfo
                           _box={{ space: "2" }}
@@ -257,32 +240,46 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                               ),
                             },
                             {
-                              label: "AADHAAR_NUMBER",
-                              keyArr: "enrollment_aadhaar_no",
+                              label: "MOBILE_NUMBER",
+                              keyArr: "enrollment_mobile_no",
                             },
                           ]}
+                        />
+
+                        <CustomRadio
+                          options={{
+                            enumOptions: [{ value: "no" }, { value: "yes" }],
+                          }}
+                          schema={{
+                            icons: checkboxIcons,
+                            _box: {
+                              flex: "1",
+                              gap: "2",
+                              alignItems: "center",
+                              padding: "10px",
+                            },
+                            _hstack: { space: "6" },
+                            _subHstack: {
+                              justifyContent: "space-between",
+                              width: "120px",
+                            },
+                            _pressable: {
+                              p: 0,
+                              mb: 0,
+                              borderWidth: 0,
+                              style: {},
+                            },
+                          }}
+                          value={reason?.enrollment_details}
+                          onChange={(e) => {
+                            setReason({ ...reason, enrollment_details: e });
+                          }}
                         />
                       </VStack>
                     </HStack>
                   </VStack>
                 </ValidationBox>
                 <ValidationBox error={error?.learner_enrollment_details}>
-                  <CustomRadio
-                    options={{
-                      enumOptions: [{ value: "yes" }, { value: "no" }],
-                    }}
-                    schema={{
-                      grid: 1,
-                      icons: checkboxIcons,
-                      _box: { flex: "1", gap: "2" },
-                      _hstack: { space: "4" },
-                      _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
-                    }}
-                    value={reason?.learner_enrollment_details}
-                    onChange={(e) => {
-                      setReason({ ...reason, learner_enrollment_details: e });
-                    }}
-                  />
                   <VStack flex={4}>
                     <TextInfo
                       _box={{ space: "2" }}
@@ -311,6 +308,31 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                           )),
                         },
                       ]}
+                    />
+                    <CustomRadio
+                      options={{
+                        enumOptions: [{ value: "no" }, { value: "yes" }],
+                      }}
+                      schema={{
+                        icons: checkboxIcons,
+                        _box: {
+                          flex: "1",
+                          gap: "20px",
+                          alignItems: "center",
+                          padding: "10px",
+                          width: "100%",
+                        },
+                        _hstack: { space: "4" },
+                        _subHstack: {
+                          justifyContent: "space-between",
+                          width: "120px",
+                        },
+                        _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+                      }}
+                      value={reason?.learner_enrollment_details}
+                      onChange={(e) => {
+                        setReason({ ...reason, learner_enrollment_details: e });
+                      }}
                     />
                   </VStack>
                 </ValidationBox>
@@ -498,10 +520,25 @@ const Body = ({ data, children }) => {
 const TextInfo = ({ data, _box, arr }) => {
   const { t } = useTranslation();
   return arr.map((e) => (
-    <Stack key={e.label} pb="2" {..._box}>
-      <AdminTypo.H4 color={"light.400"}>{t(e?.label || "-")}</AdminTypo.H4>
-      {e?.value || <AdminTypo.H5>{data?.[e?.keyArr] || "-"}</AdminTypo.H5>}
-    </Stack>
+    <HStack
+      borderBottomWidth={1}
+      borderColor={"grayInLight"}
+      key={e.label}
+      py="2"
+      alignItems={"center"}
+      {..._box}
+    >
+      <AdminTypo.H4 width={"150px"} color={"light.400"}>
+        {t(e?.label || "-")}
+      </AdminTypo.H4>
+      {e?.value ? (
+        <VStack width={"150px"}>{e?.value} </VStack>
+      ) : (
+        <VStack>
+          <AdminTypo.H5>{data?.[e?.keyArr] || "-"}</AdminTypo.H5>
+        </VStack>
+      )}
+    </HStack>
   ));
 };
 
