@@ -59,6 +59,7 @@ export default function AddressEdit({ ip }) {
       village: finalData?.village,
       grampanchayat:
         finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
+      pincode: finalData?.pincode == "null" ? "" : finalData?.pincode,
     });
     const obj = {
       edit_req_for_context: "users",
@@ -353,7 +354,6 @@ export default function AddressEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-
     if (id === "root_state") {
       await setDistric({
         schemaData: schema,
@@ -396,6 +396,16 @@ export default function AddressEdit({ ip }) {
         const newErrors = {
           address: {
             __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    if (id === "root_pincode") {
+      if (data?.pincode?.toString()?.length !== 6 && data?.pincode) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
           },
         };
         setErrors(newErrors);
