@@ -946,7 +946,7 @@
   "PHOTO": "Photo",
   "PHOTOS": "Photos",
   "PINCODE": "Pincode",
-  "PINCODE_ERROR": "Pincode should be of 6 digits",
+  "PINCODE_ERROR": "Pincode should be 6 digits",
   "PLEASE_ADD_ORIGINAL_RELATED_MATERIAL": "Please add origami-related materials to the fit. Colored paper, scissors, glue, etc.",
   "PLEASE_CHECK_THE_FIELDS_TO_GIVE_ACCESS": "Select the fields for give edit access",
   "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA": "Please clean your camera lense,ensure adequate light and take a picture with steady camera",

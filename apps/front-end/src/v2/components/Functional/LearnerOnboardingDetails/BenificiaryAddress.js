@@ -263,7 +263,6 @@ export default function BenificiaryAddress() {
                   ) : (
                     "-"
                   )}
-                  {console.log("pincode", benificiary?.pincode)}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
