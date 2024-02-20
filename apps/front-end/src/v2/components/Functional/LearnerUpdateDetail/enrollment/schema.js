@@ -9,6 +9,7 @@ export default {
         "enrollment_status",
         "enrolled_for_board",
         "enrollment_number",
+        "enrollment_mobile_no",
         "subjects",
         "enrollment_date",
         "payment_receipt_document_id",
@@ -31,6 +32,14 @@ export default {
           label: "ENROLLMENT_NUMBER",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
+        },
+        enrollmentlabelMobile: {
+          type: "string",
+        },
+        enrollment_mobile_no: {
+          type: "string",
+          title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
 
         enrollment_date: {
