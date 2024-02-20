@@ -1415,5 +1415,10 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "WRONG_ENTRY": "गलत प्रविष्टि",
+  "NOT_ELIGIBLE": "पात्र नहीं",
+  "NOT_TARGET_GROUP": "लक्षित समूह नहीं",
+  "BEHAVIOUR_ISSUES": "व्यवहार संबंधी समस्याएं",
+  "NOT_INTERESTED": "दिलचस्पी नहीं है "
 }
