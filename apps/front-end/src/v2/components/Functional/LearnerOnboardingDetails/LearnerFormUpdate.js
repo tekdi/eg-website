@@ -13,6 +13,7 @@ import {
   H1,
   IconByName,
   H2,
+  H3,
   BodyMedium,
   benificiaryRegistoryService,
   enumRegistryService,
@@ -857,6 +858,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           <H1 color="red.1000">{t("ADD_AG_PROFILE_PHOTO")}</H1>
+          <H3 color="red.1000">{t("ADD_AG_PROFILE_PHOTO_INSTRUCTION")}</H3>
 
           <Button
             variant={"primary"}
