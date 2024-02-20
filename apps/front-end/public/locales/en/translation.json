@@ -1418,5 +1418,10 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "WRONG_ENTRY": "Wrong entry",
+  "NOT_ELIGIBLE": "Not eligible",
+  "NOT_TARGET_GROUP": "Not target group",
+  "BEHAVIOUR_ISSUES": "Behaviour issues",
+  "NOT_INTERESTED": "Not interested"
 }
