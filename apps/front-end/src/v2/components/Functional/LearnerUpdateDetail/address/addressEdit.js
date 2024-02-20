@@ -46,7 +46,6 @@ export default function AddressEdit({ ip }) {
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
-    console.log("qqqq_data", qData);
     const finalData = qData?.result;
     const { lat, long } = finalData;
     let programSelected = jsonParse(localStorage.getItem("program"));
@@ -355,9 +354,6 @@ export default function AddressEdit({ ip }) {
     setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    console.log("data", data);
-    console.log("newData", newData);
-
     if (id === "root_state") {
       await setDistric({
         schemaData: schema,
