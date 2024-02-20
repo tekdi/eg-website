@@ -833,6 +833,7 @@
   "MISSILINEOUS_SUCCESS_MESSAGE": "Miscellaneous Activities Saved Successfully",
   "MOBILE_NO": "Mobile No",
   "MOBILE_NUMBER": "Mobile Number",
+  "ENROLLMENT_MOBILE_NUMBER": "Enrollment Mobile Number *",
   "MOBILE_NUMBER_ALREADY_EXISTS": "Mobile number already exists",
   "MOBILE_NUMBER_IS_NOT_LINKED_TO_AADHAAR_CARD": "Mobile Number is not linked to Aadhaar Card",
   "MOBILE_PHONE": "Mobile phone",
