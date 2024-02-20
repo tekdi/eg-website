@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
@@ -27,6 +27,7 @@ import {
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
@@ -39,7 +40,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     "enrollment_status",
     "enrolled_for_board",
     "enrollment_number",
-    "enrollment_aadhaar_no",
+    // "enrollment_aadhaar_no",
     "enrollment_date",
     "subjects",
     "payment_receipt_document_id",
@@ -73,7 +74,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             "enrollment_number",
             "enrollment_date",
             "subjects",
-            "enrollment_aadhaar_no",
+            // "enrollment_aadhaar_no",
             "payment_receipt_document_id",
           ].includes(item)
       );
@@ -159,21 +160,21 @@ export default function EnrollmentForm() {
   const { t } = useTranslation();
   const { step, id } = useParams();
   const userId = id;
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [fixedSchema, setFixedSchema] = React.useState({});
-  const [benificiary, setBenificiary] = React.useState({});
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [notMatched, setNotMatched] = React.useState();
-  const [loading, setLoading] = React.useState(false);
-  const [btnLoading, setBtnLoading] = React.useState(false);
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [fixedSchema, setFixedSchema] = useState({});
+  const [benificiary, setBenificiary] = useState({});
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [notMatched, setNotMatched] = useState();
+  const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
 
-  const [uiSchema, setUiSchema] = React.useState({
+  const [uiSchema, setUiSchema] = useState({
     subjects: {
       "ui:widget": "checkboxes",
     },
@@ -275,14 +276,14 @@ export default function EnrollmentForm() {
   const validate = (data, key) => {
     let error = {};
     switch (key) {
-      case "enrollment_aadhaar_no":
-        if (
-          data.enrollment_aadhaar_no &&
-          `${data?.enrollment_aadhaar_no}` !== `${benificiary?.aadhar_no}`
-        ) {
-          error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
-        }
-        break;
+      // case "enrollment_aadhaar_no":
+      //   if (
+      //     data.enrollment_aadhaar_no &&
+      //     `${data?.enrollment_aadhaar_no}` !== `${benificiary?.aadhar_no}`
+      //   ) {
+      //     error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
+      //   }
+      //   break;
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
           error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
@@ -307,7 +308,7 @@ export default function EnrollmentForm() {
     return err;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
     const newStep = step || newSteps[0];
@@ -315,7 +316,7 @@ export default function EnrollmentForm() {
     setPages(newSteps);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (page) {
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
@@ -451,21 +452,21 @@ export default function EnrollmentForm() {
         setErrors();
         break;
 
-      case "root_enrollment_aadhaar_no":
-        const result = validate(data, "enrollment_aadhaar_no");
-        if (result?.enrollment_aadhaar_no) {
-          setErrors({
-            ...errors,
-            enrollment_aadhaar_no: {
-              __errors: [result?.enrollment_aadhaar_no],
-            },
-          });
-        } else {
-          let { enrollment_aadhaar_no, ...otherError } = errors || {};
-          setErrors(otherError);
-        }
+      // case "root_enrollment_aadhaar_no":
+      //   const result = validate(data, "enrollment_aadhaar_no");
+      //   if (result?.enrollment_aadhaar_no) {
+      //     setErrors({
+      //       ...errors,
+      //       enrollment_aadhaar_no: {
+      //         __errors: [result?.enrollment_aadhaar_no],
+      //       },
+      //     });
+      //   } else {
+      //     let { enrollment_aadhaar_no, ...otherError } = errors || {};
+      //     setErrors(otherError);
+      //   }
 
-        break;
+      //   break;
       case "root_enrollment_dob":
         const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
         if (age?.enrollment_dob) {
@@ -518,9 +519,7 @@ export default function EnrollmentForm() {
       }
     }
     if (keys?.length > 0) {
-      const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
-        (e) => keys.includes(e)
-      );
+      const errorData = ["enrollment_number"].filter((e) => keys.includes(e));
       if (errorData.length > 0) {
         if (
           errorData.includes("enrollment_number") &&
@@ -561,7 +560,11 @@ export default function EnrollmentForm() {
     }
     setBtnLoading(false);
   };
-  if (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified") {
+  if (
+    ["enrolled_ip_verified", "registered_in_camp"].includes(
+      benificiary?.program_beneficiaries?.status
+    )
+  ) {
     return (
       <Layout
         loading={loading}
@@ -644,11 +647,11 @@ export default function EnrollmentForm() {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {notMatched?.includes("enrollment_aadhaar_no") && (
+              {/* {notMatched?.includes("enrollment_aadhaar_no") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
-              )}
+              )} */}
 
               {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
@@ -690,3 +693,7 @@ const AlertCustom = ({ alert }) => (
     </HStack>
   </Alert>
 );
+
+AlertCustom.propTypes = {
+  alert: PropTypes.string,
+};

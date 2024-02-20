@@ -1,15 +1,15 @@
 name: Deploy to UAT S3 Bucket
-# on: 
-#   push: 
-#     tags:
-#        - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
-#        - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
-#        - 'v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+'           
-#        - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
-on:
-  push:
-    branches:
-      - release-1.8.0
+on: 
+  push: 
+    tags:
+       - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
+       - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
+       - 'v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+'           
+       - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
+# on:
+#   push:
+#     branches:
+#       - release-1.8.0
 
 defaults:
   run:

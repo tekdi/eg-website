@@ -137,7 +137,6 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const handleRowClick = (row) => {
     navigate(`/admin/camps/${row.id}`);
   };
-
   return (
     <Layout
       test={Width}
@@ -183,38 +182,39 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
         <Box flex={[5, 5, 4]}>
           <ScrollView>
             <HStack pb="2">
-              {campFilterStatus?.map((item) => {
-                return (
-                  <AdminTypo.H6
-                    key={"table"}
-                    color={
-                      filter?.status == t(item?.status)
-                        ? "textMaroonColor.600"
-                        : ""
-                    }
-                    bold={filter?.status == t(item?.status)}
-                    cursor={"pointer"}
-                    mx={3}
-                    onPress={() => {
-                      setFilter({ ...filter, status: item?.status, page: 1 });
-                    }}
-                  >
-                    {item.status === "all" ? (
-                      <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
-                    ) : (
-                      <GetEnumValue
-                        t={t}
-                        enumType={"GROUPS_STATUS"}
-                        enumOptionValue={item?.status}
-                        enumApiData={enumOptions}
-                      />
-                    )}
-                    {filter?.status == t(item?.status)
-                      ? `(${paginationTotalRows})` + " "
-                      : " "}
-                  </AdminTypo.H6>
-                );
-              })}
+              {Array?.isArray(campFilterStatus) &&
+                campFilterStatus?.map((item) => {
+                  return (
+                    <AdminTypo.H6
+                      key={"table"}
+                      color={
+                        filter?.status == t(item?.status)
+                          ? "textMaroonColor.600"
+                          : ""
+                      }
+                      bold={filter?.status == t(item?.status)}
+                      cursor={"pointer"}
+                      mx={3}
+                      onPress={() => {
+                        setFilter({ ...filter, status: item?.status, page: 1 });
+                      }}
+                    >
+                      {item.status === "all" ? (
+                        <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                      ) : (
+                        <GetEnumValue
+                          t={t}
+                          enumType={"GROUPS_STATUS"}
+                          enumOptionValue={item?.status}
+                          enumApiData={enumOptions}
+                        />
+                      )}
+                      {filter?.status == t(item?.status)
+                        ? `(${paginationTotalRows})` + " "
+                        : " "}
+                    </AdminTypo.H6>
+                  );
+                })}
             </HStack>
             <Box roundedBottom={"2xl"}>
               <DataTable

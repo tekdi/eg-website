@@ -124,7 +124,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
           >
             {t("MANDATORY")}
           </FrontEndTypo.H3>
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
+          {/* <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
             <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("JAN_AADHAAR_CARD")}
             </FrontEndTypo.H3>
@@ -187,7 +187,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                 );
               })}
             </Select>
-          </HStack>
+          </HStack> */}
 
           <HStack
             mt={8}

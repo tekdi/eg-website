@@ -747,10 +747,14 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         form_data.append(key, item[key]);
       }
 
-      const uploadDoc = await uploadRegistryService.uploadFile(form_data);
-      if (uploadDoc) {
-        setIsButtonLoading(false);
-        navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
+      try {
+        const uploadDoc = await uploadRegistryService.uploadFile(form_data);
+        if (uploadDoc) {
+          setIsButtonLoading(false);
+          navigate(`/`);
+        }
+      } catch (error) {
+        console.error("Upload failed:", error);
       }
     }
   };
@@ -806,7 +810,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             variant={"secondary"}
             leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
             onPress={(e) => {
-              navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
+              navigate(`/`);
             }}
           >
             {t("SKIP")}
@@ -892,7 +896,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
               variant={"secondary"}
               leftIcon={<IconByName name="CameraLineIcon" isDisabled />}
               onPress={(e) => {
-                navigate(`/beneficiary/${userId}/3`, { state: { id: userId } });
+                navigate(`/`);
               }}
             >
               {t("SKIP")}
