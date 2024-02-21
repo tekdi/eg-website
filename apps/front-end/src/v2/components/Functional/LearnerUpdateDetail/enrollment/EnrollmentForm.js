@@ -457,6 +457,7 @@ export default function EnrollmentForm() {
       case "root_enrolled_for_board":
         if (data.enrollment_status === "enrolled") {
           setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
+          newData = { ...newData, subjects: [] };
         }
         break;
 
