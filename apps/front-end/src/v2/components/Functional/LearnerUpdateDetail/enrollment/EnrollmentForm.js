@@ -31,7 +31,7 @@ import PropTypes from "prop-types";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   const properties = schema1.properties;
-  const constantSchema = properties[page];
+  const constantSchema = fixedSchema;
   const { enrollment_status, payment_receipt_document_id } =
     fixedSchema?.properties || {};
   let newSchema = {};
@@ -52,7 +52,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
   });
 
   switch (data?.enrollment_status) {
-    case "not_enrolled":
+    case "ready_to_enroll":
       newSchema = {
         ...constantSchema,
         properties: {
@@ -132,9 +132,7 @@ const getSubjects = async (schemaData, value, page) => {
     const { subjects } = constantSchema?.properties || {};
     const { payment_receipt_document_id, ...properties } =
       schemaData.properties;
-    let { data } = await enumRegistryService.getSubjects({
-      board: value,
-    });
+    let data = await enumRegistryService.subjectsList(value);
     let newSchema = getOptions(
       {
         ...schemaData,
@@ -146,9 +144,9 @@ const getSubjects = async (schemaData, value, page) => {
       },
       {
         key: "subjects",
-        arr: data || [],
+        arr: data?.subjects || [],
         title: "name",
-        value: "id",
+        value: "subject_id",
       }
     );
     return newSchema;
@@ -250,7 +248,11 @@ export default function EnrollmentForm() {
   };
 
   const onPressBackButton = async () => {
-    await nextPreviewStep("p");
+    if (page === "edit_enrollement_details") {
+      await nextPreviewStep("p");
+    } else {
+      navigate(`/beneficiary/${userId}`);
+    }
   };
 
   const getEnrollmentStatus = async (schemaData) => {
@@ -270,6 +272,7 @@ export default function EnrollmentForm() {
         ),
       },
     });
+
     return getOptions(newSchema, {
       key: "enrollment_status",
       arr: list,
@@ -281,14 +284,13 @@ export default function EnrollmentForm() {
   const validate = (data, key) => {
     let error = {};
     switch (key) {
-      // case "enrollment_aadhaar_no":
-      //   if (
-      //     data.enrollment_aadhaar_no &&
-      //     `${data?.enrollment_aadhaar_no}` !== `${benificiary?.aadhar_no}`
-      //   ) {
-      //     error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
-      //   }
-      //   break;
+      case "enrollment_mobile_no":
+        const mobile = data?.enrollment_mobile_no;
+        const regex = /^([+]\d{2})?\d{10}$/;
+        if (!mobile || !mobile?.match(regex)) {
+          error = { [key]: t("REQUIRED_MESSAGE") };
+        }
+        break;
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
           error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
@@ -330,10 +332,18 @@ export default function EnrollmentForm() {
 
       if (page === "edit_enrollement") {
         const newSchema = await getEnrollmentStatus(constantSchema);
-        setFixedSchema(newSchema);
+        let boardList = await enumRegistryService.boardList();
+        let BoardSchema = getOptions(newSchema, {
+          key: "enrolled_for_board",
+          arr: boardList?.boards,
+          title: "name",
+          value: "id",
+        });
+
+        setFixedSchema(BoardSchema);
         const updatedSchema = await setSchemaByStatus(
           program_beneficiaries,
-          newSchema,
+          BoardSchema,
           page
         );
         setSchema(updatedSchema?.newSchema);
@@ -447,6 +457,7 @@ export default function EnrollmentForm() {
       case "root_enrolled_for_board":
         if (data.enrollment_status === "enrolled") {
           setSchema(await getSubjects(schema, data?.enrolled_for_board, page));
+          newData = { ...newData, subjects: [] };
         }
         break;
 
