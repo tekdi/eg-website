@@ -24,8 +24,6 @@ export default {
           type: "string",
           label: "BOARD_OF_ENROLLMENT",
           format: "radio",
-          enumNames: ["RSOS", "NIOS"], //title
-          enum: ["rsos", "nios"], //values
         },
         enrollment_number: {
           type: "string",
