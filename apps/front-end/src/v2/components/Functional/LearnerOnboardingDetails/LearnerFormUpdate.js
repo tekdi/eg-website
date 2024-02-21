@@ -13,6 +13,7 @@ import {
   H1,
   IconByName,
   H2,
+  H3,
   BodyMedium,
   benificiaryRegistoryService,
   enumRegistryService,
@@ -78,6 +79,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         village: result?.village,
         grampanchayat:
           result?.grampanchayat == "null" ? "" : result?.grampanchayat,
+        pincode: result?.pincode == "null" ? "" : result?.pincode,
         marital_status: result?.extended_users?.marital_status,
         social_category: result?.extended_users?.social_category,
         type_of_learner: result?.core_beneficiaries?.type_of_learner,
@@ -223,6 +225,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     if (schema?.properties?.district) {
       let programSelected = jsonParse(localStorage.getItem("program"));
       const qData = await geolocationRegistryService.getStates();
+
       let newSchema = schema;
       if (schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
@@ -637,6 +640,16 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         setErrors(newErrors);
       }
     }
+    if (id === "root_pincode") {
+      if (data?.pincode?.toString()?.length !== 6 && data?.pincode) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
 
     if (data?.previous_school_type === "never_studied") {
       if (data?.type_of_learner === "dropout") {
@@ -857,6 +870,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       >
         <VStack py={6} px={4} mb={5} space="6">
           <H1 color="red.1000">{t("ADD_AG_PROFILE_PHOTO")}</H1>
+          <H3 color="red.1000">{t("ADD_AG_PROFILE_PHOTO_INSTRUCTION")}</H3>
 
           <Button
             variant={"primary"}

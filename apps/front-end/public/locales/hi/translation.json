@@ -43,6 +43,7 @@
   "ADD_AADHAAR_NUMBER_ERROR_MESSAGE": "सबसे पहले अपना आधार संख्या दर्ज करें और फिर आधार संख्या केवाईसी पर आगे बढ़ें।",
   "ADD_ADDRESS": "पता जोड़ें",
   "ADD_AG_PROFILE_PHOTO": "शिक्षार्थी की प्रोफाइल फोटो जोड़ें",
+  "ADD_AG_PROFILE_PHOTO_INSTRUCTION": "फोटो स्पष्ट होनी चाहिए, पूरा चेहरा, सामने का दृश्य और आंखें खुली होनी चाहिए।",
   "Add_AGS_PROFILE": "शिक्षार्थी का प्रोफाइल जोड़ें",
   "ADD_AN_AG": "शिक्षार्थी जोड़ें",
   "ADD_AN_AG_LEARNER": "एक शिक्षार्थी जोड़ें",
@@ -1094,6 +1095,7 @@
   "REQUESTING_FOR_CHANGE_MESSAGE": "उन फ़ील्ड्स का चयन करें जिनके लिए संपादन पहुँच प्रदान की जानी है",
   "REQUIRED_MESSAGE": "वैध जानकारी दर्ज करें",
   "REQUIRED_MESSAGE_ENROLLED_FOR_BOARD": "कृपया एक रजिस्ट्रेशन बोर्ड चुनें।",
+  "READY_TO_ENROLL": "नामांकन के लिए तैयार",
   "REQUIRED_MESSAGE_ENROLLMENT_DATE": "नामांकन की तारीख अनिवार्य है",
   "REQUIRED_MESSAGE_ENROLLMENT_NOT_A_NUMBER": "नामांकन संख्या सिर्फ संख्या होनी चाहिए",
   "REQUIRED_MESSAGE_ENROLLMENT_NUMBER": "कृपया एक वैध रजिस्ट्रेशन संख्या दर्ज करें। ",
@@ -1418,5 +1420,10 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "WRONG_ENTRY": "गलत प्रविष्टि",
+  "NOT_ELIGIBLE": "पात्र नहीं",
+  "NOT_TARGET_GROUP": "लक्षित समूह नहीं",
+  "BEHAVIOUR_ISSUES": "व्यवहार संबंधी समस्याएं",
+  "NOT_INTERESTED": "दिलचस्पी नहीं है "
 }
