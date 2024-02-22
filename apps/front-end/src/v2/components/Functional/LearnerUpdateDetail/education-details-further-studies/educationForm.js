@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -16,37 +16,40 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import {
+  widgets,
   TitleFieldTemplate,
   DescriptionFieldTemplate,
   FieldTemplate,
   ObjectFieldTemplate,
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
-  CustomR,
-  select,
+  onError,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
+import moment from "moment";
 
 // App
 export default function App({ onClick, id }) {
   const userId = id;
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState();
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [page, setPage] = useState();
+  const [schema, setSchema] = useState({});
+  const [fixedSchema, setFixedSchema] = useState({});
+  const formRef = useRef();
+  const [formData, setFormData] = useState();
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [yearsRange, setYearsRange] = useState([1994, moment().year()]);
+
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
   const { form_step_number } = {};
   if (form_step_number && parseInt(form_step_number) >= 13) {
     navigate("/dashboard");
   }
-  const [fields, setFields] = React.useState([]);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [fields, setFields] = useState([]);
+  const [isDisable, setIsDisable] = useState(false);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(userId);
     let last_standard_of_education =
       qData?.result?.core_beneficiaries?.last_standard_of_education;
@@ -58,6 +61,10 @@ export default function App({ onClick, id }) {
     let previous_school_type =
       qData?.result?.core_beneficiaries?.previous_school_type;
     let learning_level = qData?.result?.program_beneficiaries?.learning_level;
+    let education_10th_date =
+      qData?.result?.core_beneficiaries?.education_10th_date;
+    let education_10th_exam_year =
+      qData?.result?.core_beneficiaries?.education_10th_exam_year;
 
     setFormData({
       ...formData,
@@ -67,6 +74,8 @@ export default function App({ onClick, id }) {
       last_standard_of_education: last_standard_of_education,
       previous_school_type: previous_school_type,
       learning_level: learning_level,
+      education_10th_date: education_10th_date,
+      education_10th_exam_year: education_10th_exam_year,
     });
     const obj = {
       edit_req_for_context: "users",
@@ -81,116 +90,89 @@ export default function App({ onClick, id }) {
     setFields(field || []);
   }, []);
 
-  React.useEffect(async () => {
+  const uiSchema = {
+    alreadyOpenLabel: {
+      "ui:widget": "AlreadyOpenLabelWidget",
+    },
+    education_10th_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+        format: "DMY",
+      },
+    },
+  };
+
+  useEffect(async () => {
     const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
-    let newSchema = schema;
-    if (schema?.["properties"]?.["type_of_learner"]) {
-      newSchema = getOptions(newSchema, {
-        key: "type_of_learner",
-        arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
-        title: "title",
-        value: "value",
-      });
+    const propertiesNew = schema1.properties;
+    const newSteps = Object.keys(propertiesNew);
+    let newSchema = propertiesNew[newSteps[0]];
 
-      newSchema = getOptions(newSchema, {
-        key: "last_standard_of_education_year",
-        arr: lastYear,
-        title: "value",
-        value: "value",
-      });
+    newSchema = getOptions(newSchema, {
+      key: "type_of_learner",
+      arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
+      title: "title",
+      value: "value",
+    });
 
-      newSchema = getOptions(newSchema, {
-        key: "last_standard_of_education",
-        arr: ListOfEnum?.data?.LAST_STANDARD_OF_EDUCATION,
-        title: "title",
-        value: "value",
-      });
+    newSchema = getOptions(newSchema, {
+      key: "last_standard_of_education_year",
+      arr: lastYear,
+      title: "value",
+      value: "value",
+    });
+    newSchema = getOptions(newSchema, {
+      key: "education_10th_exam_year",
+      arr: lastYear,
+      title: "value",
+      value: "value",
+    });
 
-      newSchema = getOptions(newSchema, {
-        key: "reason_of_leaving_education",
-        arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
-        title: t("title"),
-        value: "value",
-      });
+    newSchema = getOptions(newSchema, {
+      key: "last_standard_of_education",
+      arr: ListOfEnum?.data?.LAST_STANDARD_OF_EDUCATION,
+      title: "title",
+      value: "value",
+    });
 
-      newSchema = getOptions(newSchema, {
-        key: "previous_school_type",
-        arr: ListOfEnum?.data?.PREVIOUS_SCHOOL_TYPE,
-        title: t("title"),
-        value: "value",
-      });
+    newSchema = getOptions(newSchema, {
+      key: "reason_of_leaving_education",
+      arr: ListOfEnum?.data?.REASON_OF_LEAVING_EDUCATION,
+      title: t("title"),
+      value: "value",
+    });
 
-      newSchema = getOptions(newSchema, {
-        key: "learning_level",
-        arr: ListOfEnum?.data?.BENEFICIARY_LEARNING_LEVEL,
-        title: t("title"),
-        value: "value",
-      });
-    }
-    setSchemaData(newSchema);
-  }, [formData]);
+    newSchema = getOptions(newSchema, {
+      key: "previous_school_type",
+      arr: ListOfEnum?.data?.PREVIOUS_SCHOOL_TYPE,
+      title: t("title"),
+      value: "value",
+    });
+
+    newSchema = getOptions(newSchema, {
+      key: "learning_level",
+      arr: ListOfEnum?.data?.BENEFICIARY_LEARNING_LEVEL,
+      title: t("title"),
+      value: "value",
+    });
+
+    setPage(newSteps[0]);
+    const {
+      alreadyOpenLabel,
+      education_10th_date,
+      education_10th_exam_year,
+      ...properties
+    } = newSchema?.properties || {};
+    setSchemaData({ ...newSchema, properties });
+    setFixedSchema(newSchema);
+  }, []);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/educationdetails`);
-  };
-
-  const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
-    const index = pages.indexOf(page);
-    const properties = schema1.properties;
-    if (index !== undefined) {
-      let nextIndex = "";
-      if (pageStape.toLowerCase() === "n") {
-        nextIndex = pages[index + 1];
-      } else {
-        nextIndex = pages[index - 1];
-      }
-      if (nextIndex !== undefined) {
-        setPage(nextIndex);
-        setSchemaData(properties[nextIndex]);
-      } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "13" });
-        setPage("upload");
-      } else {
-        return true;
-      }
-    }
-  };
-
-  const setStep = async (pageNumber = "") => {
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      if (pageNumber !== "") {
-        if (page !== pageNumber) {
-          setPage(pageNumber);
-          setSchemaData(properties[pageNumber]);
-        }
-      } else {
-        nextPreviewStep();
-      }
-    }
-  };
-
-  React.useEffect(() => {
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      setPage(newSteps[0]);
-      setSchemaData(properties[newSteps[0]]);
-      setPages(newSteps);
-    }
-  }, []);
-
-  const goErrorPage = (key) => {
-    if (key) {
-      pages.forEach((e) => {
-        const data = schema1["properties"][e]["properties"][key];
-        if (data) {
-          setStep(e);
-        }
-      });
-    }
   };
 
   const transformErrors = (errors, uiSchema) => {
@@ -215,60 +197,51 @@ export default function App({ onClick, id }) {
     setErrors({});
     const newData = { ...formData, ...data };
     setFormData(newData);
+    if (newData?.type_of_learner === "school_dropout") {
+      const {
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = fixedSchema?.properties || {};
+      setSchemaData({ ...fixedSchema, properties });
+    } else if (newData?.type_of_learner === "never_enrolled") {
+      const {
+        last_standard_of_education,
+        last_standard_of_education_year,
+        previous_school_type,
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = fixedSchema?.properties || {};
+      const required = fixedSchema?.required.filter((item) =>
+        [
+          "type_of_learner",
+          "learning_level",
+          "reason_of_leaving_education",
+        ].includes(item)
+      );
 
-    if (newData?.type_of_learner === "never_enrolled") {
-      setErrors({});
-      if (newData?.last_standard_of_education !== "na") {
-        const newErrors = {
-          last_standard_of_education: {
-            __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
-          },
-        };
-
-        setErrors(newErrors);
-      } else if (newData?.last_standard_of_education_year !== "NA") {
-        const newErrors = {
-          last_standard_of_education_year: {
-            __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
-          },
-        };
-        setErrors(newErrors);
-      } else if (newData?.previous_school_type !== "na") {
-        const newErrors = {
-          previous_school_type: {
-            __errors: [t("SELECT_MESSAGE_NEVER_ENROLLED")],
-          },
-        };
-        setErrors(newErrors);
-      } else {
-        const newErrors = {};
-        setErrors(newErrors);
-      }
-    } else if (newData?.type_of_learner === "dropout") {
-      setErrors({});
-      if (newData?.previous_school_type === "never_studied") {
-        const newErrors = {
-          previous_school_type: {
-            __errors: [t("SELECT_MESSAGE_DROPOUT")],
-          },
-        };
-        setErrors(newErrors);
-      } else {
-        const newErrors = {};
-        setErrors(newErrors);
-      }
+      setSchemaData({ ...fixedSchema, properties, required });
+    } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
+      const { education_10th_date, education_10th_exam_year, ...properties } =
+        fixedSchema?.properties || {};
+      setSchemaData({ ...fixedSchema, properties });
+    } else if (newData?.type_of_learner === "already_open_school_syc") {
+      const { alreadyOpenLabel, education_10th_exam_year, ...properties } =
+        fixedSchema?.properties || {};
+      setSchemaData({ ...fixedSchema, properties });
+    } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
+      const { alreadyOpenLabel, education_10th_date, ...properties } =
+        fixedSchema?.properties || {};
+      setSchemaData({ ...fixedSchema, properties });
     } else {
       const newErrors = {};
       setErrors(newErrors);
     }
   };
 
-  const onError = (data) => {
-    if (data[0]) {
-      const key = data[0]?.property?.slice(1);
-      goErrorPage(key);
-    }
-  };
   const onSubmit = async (data) => {
     setIsDisable(true);
     if (!Object.keys(errors).length) {
@@ -308,7 +281,6 @@ export default function App({ onClick, id }) {
           <Form
             key={lang}
             ref={formRef}
-            widgets={{ select, CustomR }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -324,6 +296,8 @@ export default function App({ onClick, id }) {
               validator,
               schema: schema || {},
               formData,
+              widgets,
+              uiSchema,
               onChange,
               onError,
               transformErrors,

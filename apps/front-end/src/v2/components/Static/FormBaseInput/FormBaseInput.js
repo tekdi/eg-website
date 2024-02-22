@@ -73,6 +73,14 @@ export function EnrollmentLabelMobileWidget() {
     </>
   );
 }
+export function AlreadyOpenLabelWidget() {
+  const { t } = useTranslation();
+  return (
+    <Text color="textMaroonColor.400" mb={1}>
+      {t("ALREADY_OPEN_LABEL")}
+    </Text>
+  );
+}
 
 export function LabelAddressWidget() {
   const { t } = useTranslation();
@@ -825,6 +833,7 @@ const widgets = {
   LabelNameWidget,
   LabelMobileWidget,
   EnrollmentLabelMobileWidget,
+  AlreadyOpenLabelWidget,
   LabelAddressWidget,
   LabelVerifyNameWidget,
   MobileNumberReadOnly,
