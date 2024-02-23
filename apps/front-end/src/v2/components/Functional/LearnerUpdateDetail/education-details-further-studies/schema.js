@@ -53,7 +53,7 @@ export default {
         education_10th_exam_year: {
           type: "string",
           format: "select",
-          label: "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+          title: "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
         },
 
         learning_level: {

@@ -38,7 +38,10 @@ export default function App({ onClick, id }) {
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState();
-  const [yearsRange, setYearsRange] = useState([1994, moment().year()]);
+  const [yearsRange, setYearsRange] = useState([
+    moment().year() - 30,
+    moment().year(),
+  ]);
 
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
@@ -229,12 +232,23 @@ export default function App({ onClick, id }) {
         fixedSchema?.properties || {};
       setSchemaData({ ...fixedSchema, properties });
     } else if (newData?.type_of_learner === "already_open_school_syc") {
-      const { alreadyOpenLabel, education_10th_exam_year, ...properties } =
-        fixedSchema?.properties || {};
+      const {
+        alreadyOpenLabel,
+        last_standard_of_education,
+        last_standard_of_education_year,
+        education_10th_exam_year,
+        ...properties
+      } = fixedSchema?.properties || {};
       setSchemaData({ ...fixedSchema, properties });
     } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
-      const { alreadyOpenLabel, education_10th_date, ...properties } =
-        fixedSchema?.properties || {};
+      const {
+        last_standard_of_education,
+        last_standard_of_education_year,
+        previous_school_type,
+        alreadyOpenLabel,
+        education_10th_date,
+        ...properties
+      } = fixedSchema?.properties || {};
       setSchemaData({ ...fixedSchema, properties });
     } else {
       const newErrors = {};

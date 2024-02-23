@@ -174,98 +174,118 @@ export default function BenificiaryEducation() {
                   )}
                 </FrontEndTypo.H3>
               </HStack>
+              {["school_dropout", "already_enrolled_in_open_school"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) && (
+                <HStack
+                  space={2}
+                  alignItems="Center"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
+                  <FrontEndTypo.H3
+                    color="textGreyColor.50"
+                    fontWeight="400"
+                    flex="3"
+                    pb="2"
+                  >
+                    {t("LAST_STANDARD_OF_EDUCATION")}
+                  </FrontEndTypo.H3>
+
+                  <FrontEndTypo.H3
+                    color="textGreyColor.800"
+                    fontWeight="400"
+                    flex="4"
+                  >
+                    {benificiary?.core_beneficiaries
+                      ?.last_standard_of_education ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"LAST_STANDARD_OF_EDUCATION"}
+                        enumOptionValue={
+                          benificiary?.core_beneficiaries
+                            ?.last_standard_of_education
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </FrontEndTypo.H3>
+                </HStack>
+              )}
+
+              {["school_dropout", "already_enrolled_in_open_school"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) && (
+                <HStack
+                  space={2}
+                  alignItems="Center"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
+                  <FrontEndTypo.H3
+                    color="textGreyColor.50"
+                    fontWeight="400"
+                    flex="3"
+                    pb="2"
+                  >
+                    {t("LAST_YEAR_OF_EDUCATION")}
+                  </FrontEndTypo.H3>
+
+                  <FrontEndTypo.H3
+                    color="textGreyColor.800"
+                    fontWeight="400"
+                    flex="4"
+                  >
+                    {benificiary?.core_beneficiaries
+                      ?.last_standard_of_education_year
+                      ? benificiary?.core_beneficiaries
+                          ?.last_standard_of_education_year
+                      : "-"}
+                  </FrontEndTypo.H3>
+                </HStack>
+              )}
+
+              {[
+                "school_dropout",
+                "already_open_school_syc",
+                "already_enrolled_in_open_school",
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) && (
+                <HStack
+                  space={2}
+                  alignItems="Center"
+                  borderBottomWidth="1px"
+                  borderBottomColor="appliedColor"
+                >
+                  <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
+                    {t("PREVIOUS_SCHOOL_TYPE")}
+                  </FrontEndTypo.H3>
+
+                  <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
+                    {benificiary?.core_beneficiaries?.previous_school_type ? (
+                      <GetEnumValue
+                        t={t}
+                        enumType={"PREVIOUS_SCHOOL_TYPE"}
+                        enumOptionValue={
+                          benificiary?.core_beneficiaries?.previous_school_type
+                        }
+                        enumApiData={enumOptions}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </FrontEndTypo.H3>
+                </HStack>
+              )}
+
               <HStack
                 space={2}
                 alignItems="Center"
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
+                paddingBottom={4}
               >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("LAST_STANDARD_OF_EDUCATION")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries
-                    ?.last_standard_of_education ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"LAST_STANDARD_OF_EDUCATION"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries
-                          ?.last_standard_of_education
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("LAST_YEAR_OF_EDUCATION")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries
-                    ?.last_standard_of_education_year
-                    ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education_year
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("PREVIOUS_SCHOOL_TYPE")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
-                  {benificiary?.core_beneficiaries?.previous_school_type ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"PREVIOUS_SCHOOL_TYPE"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries?.previous_school_type
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack space={2} alignItems="Center">
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
                   {t("REASON_FOR_LEAVING")}
                 </FrontEndTypo.H3>
@@ -291,6 +311,47 @@ export default function BenificiaryEducation() {
                   )}
                 </FrontEndTypo.H3>
               </HStack>
+
+              {["already_open_school_syc"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) && (
+                <HStack space={2} alignItems="Center">
+                  <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
+                    {t("REGISTERED_IN_TENTH_DATE")}
+                  </FrontEndTypo.H3>
+
+                  <FrontEndTypo.H3
+                    color="textGreyColor.800"
+                    fontWeight="400"
+                    flex="4"
+                  >
+                    {benificiary?.core_beneficiaries?.education_10th_date
+                      ? benificiary?.core_beneficiaries?.education_10th_date
+                      : "-"}
+                  </FrontEndTypo.H3>
+                </HStack>
+              )}
+
+              {["stream_2_mainstream_syc"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) && (
+                <HStack space={2} alignItems="Center">
+                  <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
+                    {t("IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM")}
+                  </FrontEndTypo.H3>
+
+                  <FrontEndTypo.H3
+                    color="textGreyColor.800"
+                    fontWeight="400"
+                    flex="4"
+                  >
+                    {benificiary?.core_beneficiaries?.education_10th_exam_year
+                      ? benificiary?.core_beneficiaries
+                          ?.education_10th_exam_year
+                      : "-"}
+                  </FrontEndTypo.H3>
+                </HStack>
+              )}
             </VStack>
           </VStack>
           <VStack
