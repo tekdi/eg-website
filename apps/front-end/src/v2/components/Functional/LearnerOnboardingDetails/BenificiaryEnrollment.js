@@ -17,6 +17,7 @@ export default function BenificiaryEnrollment() {
   const { id } = useParams();
   const [benificiary, setbenificiary] = useState();
   const [enumOptions, setEnumOptions] = useState({});
+  const [boardName, setBoardName] = useState({});
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ export default function BenificiaryEnrollment() {
 
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
+    const value = result?.result?.program_beneficiaries?.enrolled_for_board;
+    const boardName = await enumRegistryService.boardName(value);
+    setBoardName(boardName?.name);
     setbenificiary(result?.result);
     setLoading(false);
   };
@@ -57,6 +61,7 @@ export default function BenificiaryEnrollment() {
         _box: { bg: "white" },
       }}
     >
+      {console.log(schema1?.properties["edit_enrollement"])}
       <VStack p="5" space={4}>
         <EnrollmentMessage
           status={benificiary?.program_beneficiaries?.status}
@@ -79,7 +84,7 @@ export default function BenificiaryEnrollment() {
           <ItemComponent
             title={t("ENROLLMENT_DETAILS")}
             schema={schema1?.properties["edit_enrollement"]}
-            notShow={["subjects"]}
+            notShow={["subjects", "enrollmentlabelMobile"]}
             item={{
               ...benificiary?.program_beneficiaries,
               enrollment_date: benificiary?.program_beneficiaries
@@ -106,9 +111,7 @@ export default function BenificiaryEnrollment() {
                 <GetEnumValue
                   t={t}
                   enumType={"ENROLLED_FOR_BOARD"}
-                  enumOptionValue={
-                    benificiary?.program_beneficiaries?.enrolled_for_board
-                  }
+                  enumOptionValue={boardName}
                   enumApiData={enumOptions}
                 />
               ) : (
@@ -133,7 +136,7 @@ export default function BenificiaryEnrollment() {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
               : {})}
-            {...(onEditFunc() || {})}
+            // {...(onEditFunc() || {})}
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -44,21 +44,25 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [loading, setLoading] = React.useState(true);
   const [openModal, setOpenModal] = React.useState(false);
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [boardName, setBoardName] = useState({});
 
   const profileDetails = React.useCallback(async () => {
     const { result } = await benificiaryRegistoryService.getOne(id);
+    const value = result?.program_beneficiaries?.enrolled_for_board;
     setData(result);
-    const { data: newData } = await enumRegistryService.getSubjects({
-      board: result?.program_beneficiaries?.enrolled_for_board,
-    });
-
+    // const { data: newData } = await enumRegistryService.getSubjects({
+    //   board: result?.program_beneficiaries?.enrolled_for_board,
+    // });
+    const { subjects } = await enumRegistryService.subjectsList(value);
+    const boardName = await enumRegistryService.boardName(value);
+    setBoardName(boardName?.name);
     const newResult = await uploadRegistryService.getOne({
       document_id: result?.program_beneficiaries?.payment_receipt_document_id,
     });
     setReceiptUrl(newResult);
     setFileType(newResult?.key?.split(".").pop());
     const subject = jsonParse(result?.program_beneficiaries.subjects, []);
-    setSubjects(newData?.filter((e) => subject?.includes(`${e.id}`)));
+    setSubjects(subjects?.filter((e) => subject?.includes(`${e.subject_id}`)));
     setLoading(false);
   }, [id]);
 
@@ -141,6 +145,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   <TextInfo
                     _box={{ pr: "2", alignItems: "center" }}
                     data={data?.program_beneficiaries}
+                    board={boardName}
                     arr={[
                       {
                         label: "ENROLLMENT_STATUS",
@@ -517,7 +522,7 @@ const Body = ({ data, children }) => {
   }
 };
 
-const TextInfo = ({ data, _box, arr }) => {
+const TextInfo = ({ data, _box, arr, board }) => {
   const { t } = useTranslation();
   return arr.map((e) => (
     <HStack
@@ -535,7 +540,9 @@ const TextInfo = ({ data, _box, arr }) => {
         <VStack width={"150px"}>{e?.value} </VStack>
       ) : (
         <VStack>
-          <AdminTypo.H5>{data?.[e?.keyArr] || "-"}</AdminTypo.H5>
+          <AdminTypo.H5>
+            {e?.label === "ENROLLMENT_BOARD" ? board : data?.[e?.keyArr] || "-"}
+          </AdminTypo.H5>
         </VStack>
       )}
     </HStack>
