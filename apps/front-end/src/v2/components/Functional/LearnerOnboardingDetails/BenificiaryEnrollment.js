@@ -33,8 +33,10 @@ export default function BenificiaryEnrollment() {
   const agDetails = async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     const value = result?.result?.program_beneficiaries?.enrolled_for_board;
-    const boardName = await enumRegistryService.boardName(value);
-    setBoardName(boardName?.name);
+    if (value) {
+      const boardName = await enumRegistryService.boardName(value);
+      setBoardName(boardName?.name);
+    }
     setbenificiary(result?.result);
     setLoading(false);
   };
@@ -61,7 +63,6 @@ export default function BenificiaryEnrollment() {
         _box: { bg: "white" },
       }}
     >
-      {console.log(schema1?.properties["edit_enrollement"])}
       <VStack p="5" space={4}>
         <EnrollmentMessage
           status={benificiary?.program_beneficiaries?.status}
@@ -136,7 +137,7 @@ export default function BenificiaryEnrollment() {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
               : {})}
-            // {...(onEditFunc() || {})}
+            {...(onEditFunc() || {})}
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}

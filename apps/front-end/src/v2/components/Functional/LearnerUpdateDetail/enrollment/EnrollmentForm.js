@@ -352,7 +352,10 @@ export default function EnrollmentForm() {
           Object.keys(updatedSchema?.newSchema?.properties)
         );
 
-        setFormData(newdata);
+        setFormData({
+          ...newdata,
+          enrolled_for_board: newdata?.enrolled_for_board?.toString(),
+        });
       } else {
         setSchema(constantSchema);
         let newdata = filterObject(
