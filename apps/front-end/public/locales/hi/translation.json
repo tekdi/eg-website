@@ -1443,5 +1443,6 @@
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
   "ORIENTATION_SCHEDULED": "ओरिएंटेशन निर्धारित किया गया है",
   "REMOVE_SELECTED": "चयनित को हटाएँ",
-  "SAVE_EVENT": "ईवेंट सेव करें"
+  "SAVE_EVENT": "ईवेंट सेव करें",
+  "LEARNER_ATTENDANCE_MESSAGE": "क्या आज विद्यार्थी मौजूद हैं?"
 }

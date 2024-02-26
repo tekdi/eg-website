@@ -1444,5 +1444,6 @@
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
   "ORIENTATION_SCHEDULED": "Orientation Scheduled",
   "REMOVE_SELECTED": "Remove Selected",
-  "SAVE_EVENT": "Save Event"
+  "SAVE_EVENT": "Save Event",
+  "LEARNER_ATTENDANCE_MESSAGE": "Are learners present today?"
 }
