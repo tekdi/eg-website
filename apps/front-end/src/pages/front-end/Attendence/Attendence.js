@@ -29,7 +29,8 @@ import {
   Badge,
   Input,
 } from "native-base";
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
@@ -40,6 +41,7 @@ import Clipboard from "component/Clipboard";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { debounce } from "lodash";
+import { memo } from "react";
 
 const customStyles = {
   headCells: {
@@ -180,10 +182,10 @@ const scheduleCandidates = (t, days, certificateDownload) => {
   ];
 };
 
-const RenderAttendanceColumn = React.memo(({ row }) => {
-  const [attendance, setAttendance] = React.useState();
-  const [locationData, setLocationData] = React.useState("");
-  const [isDisabledAttBtn, setIsDisabledAttBtn] = React.useState();
+const RenderAttendanceColumn = memo(({ row }) => {
+  const [attendance, setAttendance] = useState();
+  const [locationData, setLocationData] = useState("");
+  const [isDisabledAttBtn, setIsDisabledAttBtn] = useState();
   const { id } = useParams();
 
   const getLocation = async () => {
@@ -200,7 +202,7 @@ const RenderAttendanceColumn = React.memo(({ row }) => {
     setLocationData({ latitude: latitude, longitude: longitude });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchAttendance = async () => {
       const newAttendance = row?.attendances?.find((e) => {
         const format = "YYYY-MM-DD";
@@ -265,28 +267,28 @@ export default function Attendence({ footerLinks }) {
   const [width, Height] = useWindowSize();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [users, setUsers] = React.useState([]);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [refAppBar, setRefAppBar] = React.useState();
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const [locationData, setLocationData] = React.useState("");
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [event, setEvent] = React.useState("");
-  const [loading, setLoading] = React.useState(true);
-  const formRef = React.useRef();
-  const [error, setError] = React.useState("");
-  const [formData, setFormData] = React.useState({});
-  const [actualDates, setActualDates] = React.useState([]);
-  const [showModal, setShowModal] = React.useState(false);
-  const [userData, setUserData] = React.useState({});
-  const [facilitator, setFacilitator] = React.useState();
-  const [inputValue, setInputValue] = React.useState();
-  const [cameraFile, setCameraFile] = React.useState();
-  const [certificateHtml, setCertificateHtml] = React.useState();
-  const reportTemplateRef = React.useRef(null);
-  const [filter, setFilter] = React.useState({});
-  const [isLoadingBtn, setIsLoadingBtn] = React.useState(false);
+  const [users, setUsers] = useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [refAppBar, setRefAppBar] = useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [locationData, setLocationData] = useState("");
+  const [cameraModal, setCameraModal] = useState(false);
+  const [cameraUrl, setCameraUrl] = useState();
+  const [event, setEvent] = useState("");
+  const [loading, setLoading] = useState(true);
+  const formRef = useRef();
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({});
+  const [actualDates, setActualDates] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [userData, setUserData] = useState({});
+  const [facilitator, setFacilitator] = useState();
+  const [inputValue, setInputValue] = useState();
+  const [cameraFile, setCameraFile] = useState();
+  const [certificateHtml, setCertificateHtml] = useState();
+  const reportTemplateRef = useRef(null);
+  const [filter, setFilter] = useState({});
+  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
@@ -316,7 +318,7 @@ export default function Attendence({ footerLinks }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getLocation();
   }, []);
 
@@ -398,11 +400,11 @@ export default function Attendence({ footerLinks }) {
     setUsers(result?.data || []);
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     await getUsers();
   }, [filter]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     const eventResult = await eventService.getEventListById({ id });
     setEvent(eventResult?.event);
@@ -412,9 +414,9 @@ export default function Attendence({ footerLinks }) {
         {
           name: t("MARK_ATTENDANCE"),
           selector: (row) => (
-            <React.Suspense fallback="...">
+            <Suspense fallback="...">
               <RenderAttendanceColumn {...{ row }} />
-            </React.Suspense>
+            </Suspense>
           ),
           sortable: false,
           attr: "marks",
@@ -432,7 +434,7 @@ export default function Attendence({ footerLinks }) {
       const dates = datesD?.map((e, i) => ({
         name: t(moment(e).format("DD-MMM-YYYY")),
         selector: (row) => (
-          <React.Suspense fallback="...">
+          <Suspense fallback="...">
             <RenderAttendanceColumn
               row={{
                 ...row,
@@ -440,7 +442,7 @@ export default function Attendence({ footerLinks }) {
                 presentDate: `${moment(e).format("YYYY-MM-DD")}`,
               }}
             />
-          </React.Suspense>
+          </Suspense>
         ),
         sortable: false,
         attr: "marks",
@@ -491,7 +493,7 @@ export default function Attendence({ footerLinks }) {
     setInputValue(inputValues);
   };
 
-  const debouncedHandleInputChange = React.useCallback(
+  const debouncedHandleInputChange = useCallback(
     debounce(handleInputChange, 1000),
     []
   );
@@ -500,10 +502,7 @@ export default function Attendence({ footerLinks }) {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   const handleAddParticipant = async (type) => {
     setIsLoadingBtn(true);
@@ -535,9 +534,8 @@ export default function Attendence({ footerLinks }) {
     return (
       <Box>
         {
-          <React.Suspense fallback={<Loading />}>
+          <Suspense fallback={<Loading />}>
             <Camera
-         
               headerComponent={
                 <VStack bg="black" width="94%" pl="4">
                   <AdminTypo.H6 color="white" bold>
@@ -629,7 +627,7 @@ export default function Attendence({ footerLinks }) {
                 },
               }}
             />
-          </React.Suspense>
+          </Suspense>
         }
       </Box>
     );
@@ -637,56 +635,42 @@ export default function Attendence({ footerLinks }) {
 
   return (
     <Layout
-      width
       _appBar={{
         isShowNotificationButton: true,
       }}
-      _subHeader={{
-        bg: "white",
-        pt: "30px",
-        pb: "0px",
-      }}
       _sidebar={footerLinks}
-      loading={loading}
+      // loading={loading}
     >
-      <ScrollView
-        maxH={Height - refAppBar?.clientHeight}
-        minH={Height - refAppBar?.clientHeight}
-      >
-        <Box flex={1} bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5}>
-          <VStack>
-            <HStack justifyContent={"space-between"}>
-              <HStack space={2}>
-                <IconByName isDisabled name="Home4LineIcon" />
-                <AdminTypo.H4
-                  onPress={() => {
-                    navigate("/admin");
-                  }}
-                >
-                  {t("HOME")}
-                </AdminTypo.H4>
-                <IconByName isDisabled name="ArrowRightSLineIcon" />
-                <AdminTypo.H4 bold>{t("PRERAK_ORIENTATION")}</AdminTypo.H4>
-              </HStack>
+      <VStack p={4}>
+        <VStack space={8}>
+          <HStack justifyContent={"space-between"}>
+            <HStack space={2}>
+              <IconByName isDisabled name="Home4LineIcon" />
+              <AdminTypo.H4
+                onPress={() => {
+                  navigate("/admin");
+                }}
+              >
+                {t("HOME")}
+              </AdminTypo.H4>
+              <IconByName isDisabled name="ArrowRightSLineIcon" />
+              <AdminTypo.H4 bold>{t("PRERAK_ORIENTATION")}</AdminTypo.H4>
             </HStack>
-            <Box bgColor="bgpink" borderRadius={"10px"} py="3" mt="8">
-              <VStack m={"15px"}>
-                <HStack justifyContent={"space-between"}>
-                  <AdminTypo.H5 bold>
-                    {event?.name ? event?.name : event?.type}
-                  </AdminTypo.H5>
-                </HStack>
-
-                <HStack space={"3"} alignItems={"center"} flexWrap={"wrap"}>
+          </HStack>
+          <Box bg="timeLineBg" rounded={"xl"} p={4}>
+            <VStack>
+              <HStack space={10} alignItems={"center"} flexWrap={"wrap"}>
+                <AdminTypo.H6 bold>{t("ORIENTATION_SCHEDULED")}</AdminTypo.H6>
+                <HStack space={2} alignItems={"center"}>
                   <IconByName
                     name="CalendarLineIcon"
                     color="textGreyColor.800"
-                    _icon={{ size: "15" }}
+                    _icon={{ size: "18" }}
                   />
                   <AdminTypo.H7 bold color="textGreyColor.800" space="1">
                     {event?.start_date
                       ? moment(event?.start_date).format("MMM DD, Y")
-                      : ""}
+                      : "-"}
                   </AdminTypo.H7>
                   <AdminTypo.H7 bold color="textGreyColor.800">
                     {event?.start_time
@@ -697,555 +681,550 @@ export default function Attendence({ footerLinks }) {
                   <AdminTypo.H7 bold color="textGreyColor.800">
                     {event?.end_date
                       ? moment(event?.end_date).format("MMM DD, Y")
-                      : ""}
+                      : "-"}
                   </AdminTypo.H7>
                   <AdminTypo.H7 bold color="textGreyColor.800">
                     {event?.end_time
                       ? moment(event?.end_time, "HH:mm:ssZ").format("hh:mm A")
                       : "-"}
-                    {/* 16th April, 11:00 to 12:00 */}
                   </AdminTypo.H7>
-                  <IconByName
-                    name="MapPinLineIcon"
-                    color="textGreyColor.800"
-                    _icon={{ size: "15" }}
-                  />
-                  <AdminTypo.H6>{event?.location}</AdminTypo.H6>
+                </HStack>
+                <HStack space={4} alignItems={"center"}>
                   <IconByName
                     name="UserLineIcon"
                     color="textGreyColor.800"
-                    _icon={{ size: "15" }}
+                    _icon={{ size: "18" }}
                   />
-                  <AdminTypo.H6>{t("MASTER_TRAINER")} -</AdminTypo.H6>
-                  <Box
-                    bgColor="white"
-                    alignItems={"center"}
-                    borderRadius={"10px"}
-                  >
-                    <Badge alignSelf="center" bg="white" borderRadius="5px">
-                      {event?.master_trainer ? event?.master_trainer : ""}
-                    </Badge>
-                  </Box>
+                  <AdminTypo.H7 bold>{t("MASTER_TRAINER")} -</AdminTypo.H7>
+                  <Badge alignSelf="center" bg="white" borderRadius="5px">
+                    {event?.master_trainer ? event?.master_trainer : ""}
+                  </Badge>
                 </HStack>
-              </VStack>
-            </Box>
-            <Stack mt={"20px"} space={"3"} py="2">
-              <HStack space={"4"} direction={["column", "column", "row"]}>
-                <HStack>
-                  <IconByName isDisabled name="UserLineIcon" color="gray" />
-                  <AdminTypo.H4 bold>
-                    {t("CANDIDATES")} {users?.length}
-                  </AdminTypo.H4>
-                </HStack>
-                <HStack justifyContent={"space-between"} space={10}>
-                  <AdminTypo.Secondarybutton
-                    onPress={(e) => {
-                      setShowModal(true);
-                      setFacilitatorProfile();
-                    }}
-                    endIcon={
-                      <IconByName name="AddFillIcon" _icon={{ size: "15" }} />
-                    }
-                  >
-                    {t("ADD_PARTICIPANTS")}
-                  </AdminTypo.Secondarybutton>
-                  <Input
-                    // value={filter?.search}
-                    maxLength={12}
-                    name="numberInput"
-                    placeholder={t("SEARCH")}
-                    variant="outline"
-                    onChange={debouncedHandleSearch}
-                  />
-                </HStack>
+                <AdminTypo.Secondarybutton
+                  onPress={() => navigate(`/admin/event/${id}/edit`)}
+                >
+                  {t("EDIT")}
+                </AdminTypo.Secondarybutton>
               </HStack>
-            </Stack>
-            <Modal
-              avoidKeyboard
-              size="xl"
-              isOpen={showModal}
-              onClose={() => handleShowModal(false)}
-            >
-              <Modal.Content>
-                <Modal.Header textAlign={"Center"}>
-                  <AdminTypo.H4 color="textMaroonColor.500">
-                    {t("ADD_PARTICIPANTS")}
+            </VStack>
+          </Box>
+          <Stack>
+            <HStack alignItems={"center"} justifyContent={"space-between"}>
+              <HStack alignItems={"center"} space={6}>
+                <HStack space={3}>
+                  <IconByName isDisabled name="GroupLineIcon" />
+                  <AdminTypo.H4 bold>
+                    {t("CANDIDATES")} ({users?.length})
                   </AdminTypo.H4>
-                </Modal.Header>
-                <Modal.Body>
-                  {error && (
-                    <AdminTypo.H4 style={{ color: "red" }}>
-                      {error}
-                    </AdminTypo.H4>
-                  )}
-                  {!facilitator?.id ? (
-                    <HStack
-                      alignItems={"center"}
-                      justifyContent={"space-evenly"}
-                    >
-                      {t("USER_ID")}:
-                      <Input
-                        maxLength={12}
-                        name="numberInput"
-                        onChange={debouncedHandleInputChange}
-                      />
+                </HStack>
+                <AdminTypo.Secondarybutton
+                  onPress={(e) => {
+                    navigate(`/admin/event/${id}/candidate`);
+                    // setShowModal(true);
+                    // setFacilitatorProfile();
+                  }}
+                  endIcon={
+                    <IconByName name="AddFillIcon" _icon={{ size: "15" }} />
+                  }
+                >
+                  {t("ADD_PARTICIPANTS")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+              <Input
+                // value={filter?.search}
+                maxLength={12}
+                name="numberInput"
+                placeholder={t("SEARCH")}
+                variant="outline"
+                onChange={debouncedHandleSearch}
+              />
+            </HStack>
+            <ScrollView
+              maxH={Height - refAppBar?.clientHeight}
+              minH={Height - refAppBar?.clientHeight}
+            >
+              <DataTable
+                columns={[
+                  ...scheduleCandidates(t, actualDates, certificateDownload),
+                ]}
+                key={users}
+                // filter={filter}
+                data={users}
+                subHeader
+                persistTableHead
+                progressPending={loading}
+                customStyles={customStyles}
+                pagination
+                paginationServer
+                paginationTotalRows={paginationTotalRows}
+                paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+                paginationPerPage={filter?.limit ? filter?.limit : 6}
+                paginationDefaultPage={filter?.page}
+                onChangeRowsPerPage={useCallback(
+                  (e) => {
+                    setFilter({ ...filter, limit: e, page: 1 });
+                  },
+                  [filter]
+                )}
+                onChangePage={useCallback(
+                  (e) => {
+                    setFilter({ ...filter, page: e });
+                  },
+                  [filter]
+                )}
+              />
+            </ScrollView>
+          </Stack>
+          <Modal
+            avoidKeyboard
+            size="xl"
+            isOpen={showModal}
+            onClose={() => handleShowModal(false)}
+          >
+            <Modal.Content>
+              <Modal.Header textAlign={"Center"}>
+                <AdminTypo.H4 color="textMaroonColor.500">
+                  {t("ADD_PARTICIPANTS")}
+                </AdminTypo.H4>
+              </Modal.Header>
+              <Modal.Body>
+                {error && (
+                  <AdminTypo.H4 style={{ color: "red" }}>{error}</AdminTypo.H4>
+                )}
+                {!facilitator?.id ? (
+                  <HStack alignItems={"center"} justifyContent={"space-evenly"}>
+                    {t("USER_ID")}:
+                    <Input
+                      maxLength={12}
+                      name="numberInput"
+                      onChange={debouncedHandleInputChange}
+                    />
+                  </HStack>
+                ) : (
+                  <VStack flex={1} space={"5"} p="3" mb="5">
+                    <HStack alignItems={"center"} space="1" pt="3">
+                      <IconByName name="UserLineIcon" size="md" />
+                      <AdminTypo.H4
+                        color="textGreyColor.800"
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                      >
+                        {facilitator?.first_name} {facilitator?.last_name}
+                      </AdminTypo.H4>
+                      <IconByName size="sm" name="ArrowRightSLineIcon" />
+                      <Clipboard text={facilitator?.id}>
+                        <Chip
+                          textAlign="center"
+                          lineHeight="15px"
+                          label={facilitator?.id}
+                        />
+                      </Clipboard>
                     </HStack>
-                  ) : (
-                    <VStack flex={1} space={"5"} p="3" mb="5">
-                      <HStack alignItems={"center"} space="1" pt="3">
-                        <IconByName name="UserLineIcon" size="md" />
-                        <AdminTypo.H4
-                          color="textGreyColor.800"
-                          whiteSpace="nowrap"
-                          overflow="hidden"
-                          textOverflow="ellipsis"
+                    <HStack justifyContent={"space-between"} flexWrap="wrap">
+                      <VStack space="4" flexWrap="wrap">
+                        <ChipStatus status={facilitator?.status} />
+                        <HStack
+                          bg="textMaroonColor.600"
+                          rounded={"md"}
+                          alignItems="center"
+                          p="2"
                         >
-                          {facilitator?.first_name} {facilitator?.last_name}
-                        </AdminTypo.H4>
-                        <IconByName size="sm" name="ArrowRightSLineIcon" />
-                        <Clipboard text={facilitator?.id}>
-                          <Chip
-                            textAlign="center"
-                            lineHeight="15px"
-                            label={facilitator?.id}
+                          <IconByName
+                            _icon={{ size: "20px" }}
+                            name="CellphoneLineIcon"
+                            color="white"
                           />
-                        </Clipboard>
+                          <AdminTypo.H6 color="white" bold>
+                            {facilitator?.mobile}
+                          </AdminTypo.H6>
+                        </HStack>
+                        <HStack
+                          bg="textMaroonColor.600"
+                          rounded={"md"}
+                          p="2"
+                          alignItems="center"
+                          space="2"
+                        >
+                          <IconByName
+                            _icon={{ size: "20px" }}
+                            name="MapPinLineIcon"
+                            color="white"
+                          />
+                          <AdminTypo.H6 color="white" bold>
+                            {[
+                              facilitator?.state,
+                              facilitator?.district,
+                              facilitator?.block,
+                              facilitator?.village,
+                              facilitator?.grampanchayat,
+                            ]
+                              .filter((e) => e)
+                              .join(", ")}
+                          </AdminTypo.H6>
+                        </HStack>
+                      </VStack>
+                      <HStack justifyContent="center">
+                        {facilitator?.profile_photo_1?.name ? (
+                          <ImageView
+                            source={{
+                              uri: facilitator?.profile_photo_1?.name,
+                            }}
+                            alt="profile photo"
+                            width={"100px"}
+                            height={"100px"}
+                          />
+                        ) : (
+                          <IconByName
+                            name="AccountCircleLineIcon"
+                            color="white"
+                            _icon={{ size: "100px" }}
+                          />
+                        )}
                       </HStack>
-                      <HStack justifyContent={"space-between"} flexWrap="wrap">
-                        <VStack space="4" flexWrap="wrap">
-                          <ChipStatus status={facilitator?.status} />
-                          <HStack
-                            bg="textMaroonColor.600"
-                            rounded={"md"}
-                            alignItems="center"
-                            p="2"
+                    </HStack>
+                  </VStack>
+                )}
+              </Modal.Body>
+              <Modal.Footer>
+                <HStack justifyContent={"space-between"} width={"100%"}>
+                  {facilitator?.id && (
+                    <AdminTypo.PrimaryButton
+                      isLoading={isLoadingBtn}
+                      shadow="BlueFillShadow"
+                      onPress={async (e) =>
+                        await handleAddParticipant("confirm")
+                      }
+                    >
+                      {t("CONFIRM")}
+                    </AdminTypo.PrimaryButton>
+                  )}
+                  <AdminTypo.Secondarybutton
+                    isLoading={isLoadingBtn}
+                    onPress={() => handleShowModal(false)}
+                  >
+                    {t("CANCEL")}
+                  </AdminTypo.Secondarybutton>
+                  {!facilitator?.id && (
+                    <AdminTypo.PrimaryButton
+                      isLoading={isLoadingBtn}
+                      onPress={handleAddParticipant}
+                    >
+                      {t("Submit")}
+                    </AdminTypo.PrimaryButton>
+                  )}
+                </HStack>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+
+          {/* delete modal */}
+
+          <Modal
+            isOpen={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            size="sm"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Body p="1" bg="white">
+                <AdminTypo.H2
+                  textAlign="center"
+                  pt="2"
+                  color="textGreyColor.500"
+                >
+                  {t("DELETE_EVENT")}
+                </AdminTypo.H2>
+
+                <VStack space={5}>
+                  <HStack
+                    alignItems="center"
+                    space={4}
+                    mt="5"
+                    pt="4"
+                    borderTopWidth="1px"
+                    bg="white"
+                    borderTopColor="appliedColor"
+                    justifyContent="center"
+                  >
+                    <AdminTypo.Secondarybutton
+                      shadow="BlueOutlineShadow"
+                      onPress={() => {
+                        setShowDeleteModal(false);
+                      }}
+                    >
+                      {t("NO")}
+                    </AdminTypo.Secondarybutton>
+                    <AdminTypo.PrimaryButton
+                      px="8"
+                      shadow="BlueFillShadow"
+                      onPress={() => deleteCurrentEventById()}
+                    >
+                      {t("YES")}
+                    </AdminTypo.PrimaryButton>
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+
+          <Modal
+            isOpen={formData?.id}
+            onClose={() => {
+              setFormData();
+            }}
+            size="xl"
+          >
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Body p="1" pb="0" bg="white">
+                <AdminTypo.H2
+                  textAlign="center"
+                  pt="2"
+                  color="textGreyColor.500"
+                >
+                  {t("EDIT_DETAILS")}
+                </AdminTypo.H2>
+                <VStack space="5">
+                  <HStack space="5" pl="2" alignItems="center">
+                    {formData?.profile_url ? (
+                      <Avatar
+                        source={{
+                          uri: formData?.profile_url,
+                        }}
+                        // alt="Alternate Text"
+                        width={"35px"}
+                        height={"35px"}
+                      />
+                    ) : (
+                      <IconByName
+                        name="AccountCircleLineIcon"
+                        color="textGreyColor.800"
+                        _icon={{ size: "40" }}
+                      />
+                    )}
+                    <AdminTypo.H4 color="textGreyColor.800">
+                      {formData?.user?.first_name +
+                        " " +
+                        formData?.user?.last_name}
+                    </AdminTypo.H4>
+                  </HStack>
+
+                  <HStack alignItems="center" space={2}>
+                    <VStack p="3" space="5" width="100%">
+                      <HStack
+                        alignItems="center"
+                        space={"2"}
+                        pb="3"
+                        borderBottomWidth="1px"
+                        bg="white"
+                        borderBottomColor="appliedColor"
+                      >
+                        <IconByName
+                          name="VidiconLineIcon"
+                          color="textGreyColor.800"
+                          _icon={{ size: "20" }}
+                          px="2"
+                        />
+
+                        <AdminTypo.H6 color="textGreyColor.100" pr="6">
+                          {t("EVENT_TYPE")}
+                        </AdminTypo.H6>
+                        <HStack alignItems="center" space={"2"}>
+                          <AdminTypo.H5>
+                            {event?.name ? event?.name : event?.type}
+                          </AdminTypo.H5>
+                        </HStack>
+                      </HStack>
+                      <HStack
+                        alignItems="center"
+                        space={"2"}
+                        pb="3"
+                        borderBottomWidth="1px"
+                        bg="white"
+                        borderBottomColor="appliedColor"
+                      >
+                        <IconByName
+                          name="MapPinLineIcon"
+                          color="textGreyColor.800"
+                          _icon={{ size: "20" }}
+                          px="2"
+                        />
+
+                        <AdminTypo.H6 color="textGreyColor.100">
+                          {t("MARK_ATTENDANCE")}
+                        </AdminTypo.H6>
+                        <HStack alignItems="center" space={"2"} p="1">
+                          <Radio.Group
+                            flexDirection={"row"}
+                            fontSize="10px"
+                            gap={"2"}
+                            name="myRadioGroup"
+                            accessibilityLabel="favorite number"
+                            value={
+                              formData?.status !== "present"
+                                ? "absent"
+                                : "present"
+                            }
                           >
-                            <IconByName
-                              _icon={{ size: "20px" }}
-                              name="CellphoneLineIcon"
-                              color="white"
-                            />
-                            <AdminTypo.H6 color="white" bold>
-                              {facilitator?.mobile}
-                            </AdminTypo.H6>
-                          </HStack>
-                          <HStack
-                            bg="textMaroonColor.600"
-                            rounded={"md"}
-                            p="2"
-                            alignItems="center"
-                            space="2"
-                          >
-                            <IconByName
-                              _icon={{ size: "20px" }}
-                              name="MapPinLineIcon"
-                              color="white"
-                            />
-                            <AdminTypo.H6 color="white" bold>
-                              {[
-                                facilitator?.state,
-                                facilitator?.district,
-                                facilitator?.block,
-                                facilitator?.village,
-                                facilitator?.grampanchayat,
-                              ]
-                                .filter((e) => e)
-                                .join(", ")}
-                            </AdminTypo.H6>
-                          </HStack>
-                        </VStack>
-                        <HStack justifyContent="center">
-                          {facilitator?.profile_photo_1?.name ? (
-                            <ImageView
-                              source={{
-                                uri: facilitator?.profile_photo_1?.name,
-                              }}
-                              alt="profile photo"
-                              width={"100px"}
-                              height={"100px"}
-                            />
+                            <Radio
+                              value="present"
+                              my={1}
+                              color="textGreyColor.800"
+                              fontSize="10px"
+                            >
+                              <AdminTypo.H6 color="textGreyColor.800" pl="2">
+                                {t("PRESENT")}
+                              </AdminTypo.H6>
+                            </Radio>
+
+                            <Radio
+                              value="absent"
+                              my={1}
+                              ml="2"
+                              color="textGreyColor.800"
+                              fontSize="sm"
+                            >
+                              <AdminTypo.H6 color="textGreyColor.800" pl="2">
+                                {t("ABSENT")}
+                              </AdminTypo.H6>
+                            </Radio>
+                          </Radio.Group>
+                        </HStack>
+                      </HStack>
+
+                      <HStack
+                        alignItems="center"
+                        space={"2"}
+                        pb="3"
+                        borderBottomWidth="1px"
+                        bg="white"
+                        borderBottomColor="appliedColor"
+                      >
+                        <IconByName
+                          name="CheckboxCircleLineIcon"
+                          color="textGreyColor.800"
+                          _icon={{ size: "20" }}
+                          px="2"
+                        />
+                        <AdminTypo.H6 color="textGreyColor.100">
+                          {t("COMPLETE_AADHAR_KYC")}
+                        </AdminTypo.H6>
+                        <HStack alignItems="center" space={"2"} p="1">
+                          {formData?.user?.aadhar_verified !== null &&
+                          formData?.user?.aadhar_verified !== "pending" &&
+                          formData?.user?.aadhar_verified !== "in_progress" ? (
+                            <AdminTypo.H3 style={{ color: "green" }}>
+                              {t("YES")} (
+                              {formData?.user?.aadhaar_verification_mode !==
+                              null
+                                ? formData?.user?.aadhaar_verification_mode
+                                : ""}
+                              )
+                            </AdminTypo.H3>
                           ) : (
-                            <IconByName
-                              name="AccountCircleLineIcon"
-                              color="white"
-                              _icon={{ size: "100px" }}
-                            />
+                            <HStack space="3">
+                              <AdminTypo.H5 style={{ color: "red" }}>
+                                {formData?.user?.aadhar_verified ===
+                                "in_progress"
+                                  ? t("AADHAR_KYC_IN_PROGRESS")
+                                  : formData?.user?.aadhar_verified ===
+                                    "pending"
+                                  ? t("AADHAR_KYC_PENDING")
+                                  : t("NO")}
+                              </AdminTypo.H5>
+                              <FrontEndTypo.Secondarysmallbutton
+                                background="red.300"
+                                children={t("AADHAAR_EKYC")}
+                                onPress={() => {
+                                  navigate(
+                                    `/aadhaar-kyc/${formData?.user_id}`,
+                                    {
+                                      state: `/attendence/${formData?.context_id}`,
+                                    }
+                                  );
+                                }}
+                              />
+                            </HStack>
                           )}
                         </HStack>
                       </HStack>
-                    </VStack>
-                  )}
-                </Modal.Body>
-                <Modal.Footer>
-                  <HStack justifyContent={"space-between"} width={"100%"}>
-                    {facilitator?.id && (
-                      <AdminTypo.PrimaryButton
-                        isLoading={isLoadingBtn}
-                        shadow="BlueFillShadow"
-                        onPress={async (e) =>
-                          await handleAddParticipant("confirm")
-                        }
-                      >
-                        {t("CONFIRM")}
-                      </AdminTypo.PrimaryButton>
-                    )}
-                    <AdminTypo.Secondarybutton
-                      isLoading={isLoadingBtn}
-                      onPress={() => handleShowModal(false)}
-                    >
-                      {t("CANCEL")}
-                    </AdminTypo.Secondarybutton>
-                    {!facilitator?.id && (
-                      <AdminTypo.PrimaryButton
-                        isLoading={isLoadingBtn}
-                        onPress={handleAddParticipant}
-                      >
-                        {t("Submit")}
-                      </AdminTypo.PrimaryButton>
-                    )}
-                  </HStack>
-                </Modal.Footer>
-              </Modal.Content>
-            </Modal>
-
-            {/* delete modal */}
-
-            <Modal
-              isOpen={showDeleteModal}
-              onClose={() => setShowDeleteModal(false)}
-              size="sm"
-            >
-              <Modal.Content>
-                <Modal.CloseButton />
-                <Modal.Body p="1" bg="white">
-                  <AdminTypo.H2
-                    textAlign="center"
-                    pt="2"
-                    color="textGreyColor.500"
-                  >
-                    {t("DELETE_EVENT")}
-                  </AdminTypo.H2>
-
-                  <VStack space={5}>
-                    <HStack
-                      alignItems="center"
-                      space={4}
-                      mt="5"
-                      pt="4"
-                      borderTopWidth="1px"
-                      bg="white"
-                      borderTopColor="appliedColor"
-                      justifyContent="center"
-                    >
-                      <AdminTypo.Secondarybutton
-                        shadow="BlueOutlineShadow"
-                        onPress={() => {
-                          setShowDeleteModal(false);
-                        }}
-                      >
-                        {t("NO")}
-                      </AdminTypo.Secondarybutton>
-                      <AdminTypo.PrimaryButton
-                        px="8"
-                        shadow="BlueFillShadow"
-                        onPress={() => deleteCurrentEventById()}
-                      >
-                        {t("YES")}
-                      </AdminTypo.PrimaryButton>
-                    </HStack>
-                  </VStack>
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
-
-            <Modal
-              isOpen={formData?.id}
-              onClose={() => {
-                setFormData();
-              }}
-              size="xl"
-            >
-              <Modal.Content>
-                <Modal.CloseButton />
-                <Modal.Body p="1" pb="0" bg="white">
-                  <AdminTypo.H2
-                    textAlign="center"
-                    pt="2"
-                    color="textGreyColor.500"
-                  >
-                    {t("EDIT_DETAILS")}
-                  </AdminTypo.H2>
-                  <VStack space="5">
-                    <HStack space="5" pl="2" alignItems="center">
-                      {formData?.profile_url ? (
-                        <Avatar
-                          source={{
-                            uri: formData?.profile_url,
-                          }}
-                          // alt="Alternate Text"
-                          width={"35px"}
-                          height={"35px"}
-                        />
-                      ) : (
-                        <IconByName
-                          name="AccountCircleLineIcon"
-                          color="textGreyColor.800"
-                          _icon={{ size: "40" }}
-                        />
-                      )}
-                      <AdminTypo.H4 color="textGreyColor.800">
-                        {formData?.user?.first_name +
-                          " " +
-                          formData?.user?.last_name}
-                      </AdminTypo.H4>
-                    </HStack>
-
-                    <HStack alignItems="center" space={2}>
-                      <VStack p="3" space="5" width="100%">
-                        <HStack
-                          alignItems="center"
-                          space={"2"}
-                          pb="3"
-                          borderBottomWidth="1px"
-                          bg="white"
-                          borderBottomColor="appliedColor"
+                      <VStack space={5}>
+                        <Form
+                          schema={schema}
+                          ref={formRef}
+                          uiSchema={uiSchema}
+                          formData={formData || {}}
+                          validator={validator}
+                          onChange={handleFormChange}
+                          onSubmit={onSubmit}
                         >
-                          <IconByName
-                            name="VidiconLineIcon"
-                            color="textGreyColor.800"
-                            _icon={{ size: "20" }}
-                            px="2"
-                          />
-
-                          <AdminTypo.H6 color="textGreyColor.100" pr="6">
-                            {t("EVENT_TYPE")}
-                          </AdminTypo.H6>
-                          <HStack alignItems="center" space={"2"}>
-                            <AdminTypo.H5>
-                              {event?.name ? event?.name : event?.type}
-                            </AdminTypo.H5>
-                          </HStack>
-                        </HStack>
-                        <HStack
-                          alignItems="center"
-                          space={"2"}
-                          pb="3"
-                          borderBottomWidth="1px"
-                          bg="white"
-                          borderBottomColor="appliedColor"
-                        >
-                          <IconByName
-                            name="MapPinLineIcon"
-                            color="textGreyColor.800"
-                            _icon={{ size: "20" }}
-                            px="2"
-                          />
-
-                          <AdminTypo.H6 color="textGreyColor.100">
-                            {t("MARK_ATTENDANCE")}
-                          </AdminTypo.H6>
-                          <HStack alignItems="center" space={"2"} p="1">
-                            <Radio.Group
-                              flexDirection={"row"}
-                              fontSize="10px"
-                              gap={"2"}
-                              name="myRadioGroup"
-                              accessibilityLabel="favorite number"
-                              value={
-                                formData?.status !== "present"
-                                  ? "absent"
-                                  : "present"
-                              }
-                            >
-                              <Radio
-                                value="present"
-                                my={1}
-                                color="textGreyColor.800"
-                                fontSize="10px"
-                              >
-                                <AdminTypo.H6 color="textGreyColor.800" pl="2">
-                                  {t("PRESENT")}
-                                </AdminTypo.H6>
-                              </Radio>
-
-                              <Radio
-                                value="absent"
-                                my={1}
-                                ml="2"
-                                color="textGreyColor.800"
-                                fontSize="sm"
-                              >
-                                <AdminTypo.H6 color="textGreyColor.800" pl="2">
-                                  {t("ABSENT")}
-                                </AdminTypo.H6>
-                              </Radio>
-                            </Radio.Group>
-                          </HStack>
-                        </HStack>
-
-                        <HStack
-                          alignItems="center"
-                          space={"2"}
-                          pb="3"
-                          borderBottomWidth="1px"
-                          bg="white"
-                          borderBottomColor="appliedColor"
-                        >
-                          <IconByName
-                            name="CheckboxCircleLineIcon"
-                            color="textGreyColor.800"
-                            _icon={{ size: "20" }}
-                            px="2"
-                          />
-                          <AdminTypo.H6 color="textGreyColor.100">
-                            {t("COMPLETE_AADHAR_KYC")}
-                          </AdminTypo.H6>
-                          <HStack alignItems="center" space={"2"} p="1">
-                            {formData?.user?.aadhar_verified !== null &&
-                            formData?.user?.aadhar_verified !== "pending" &&
-                            formData?.user?.aadhar_verified !==
-                              "in_progress" ? (
-                              <AdminTypo.H3 style={{ color: "green" }}>
-                                {t("YES")} (
-                                {formData?.user?.aadhaar_verification_mode !==
-                                null
-                                  ? formData?.user?.aadhaar_verification_mode
-                                  : ""}
-                                )
-                              </AdminTypo.H3>
-                            ) : (
-                              <HStack space="3">
-                                <AdminTypo.H5 style={{ color: "red" }}>
-                                  {formData?.user?.aadhar_verified ===
-                                  "in_progress"
-                                    ? t("AADHAR_KYC_IN_PROGRESS")
-                                    : formData?.user?.aadhar_verified ===
-                                      "pending"
-                                    ? t("AADHAR_KYC_PENDING")
-                                    : t("NO")}
-                                </AdminTypo.H5>
-                                <FrontEndTypo.Secondarysmallbutton
-                                  background="red.300"
-                                  children={t("AADHAAR_EKYC")}
-                                  onPress={() => {
-                                    navigate(
-                                      `/aadhaar-kyc/${formData?.user_id}`,
-                                      {
-                                        state: `/attendence/${formData?.context_id}`,
-                                      }
-                                    );
-                                  }}
-                                />
-                              </HStack>
-                            )}
-                          </HStack>
-                        </HStack>
-                        <VStack space={5}>
-                          <Form
-                            schema={schema}
-                            ref={formRef}
-                            uiSchema={uiSchema}
-                            formData={formData || {}}
-                            validator={validator}
-                            onChange={handleFormChange}
-                            onSubmit={onSubmit}
+                          <HStack
+                            alignItems="center"
+                            space={3}
+                            mt="5"
+                            pt="4"
+                            borderTopWidth="1px"
+                            bg="white"
+                            borderTopColor="appliedColor"
+                            justifyContent={"space-between"}
                           >
-                            <HStack
-                              alignItems="center"
-                              space={3}
-                              mt="5"
-                              pt="4"
-                              borderTopWidth="1px"
-                              bg="white"
-                              borderTopColor="appliedColor"
-                              justifyContent={"space-between"}
+                            <AdminTypo.Secondarybutton
+                              shadow="BlueOutlineShadow"
+                              onPress={() => {
+                                setFormData();
+                              }}
                             >
-                              <AdminTypo.Secondarybutton
-                                shadow="BlueOutlineShadow"
-                                onPress={() => {
-                                  setFormData();
-                                }}
-                              >
-                                {t("CANCEL")}
-                              </AdminTypo.Secondarybutton>
-                              <AdminTypo.PrimaryButton
-                                px="8"
-                                shadow="BlueFillShadow"
-                                onPress={() => onSubmit(formData)}
-                              >
-                                {t("SAVE")}
-                              </AdminTypo.PrimaryButton>
-                            </HStack>
-                          </Form>
-                        </VStack>
+                              {t("CANCEL")}
+                            </AdminTypo.Secondarybutton>
+                            <AdminTypo.PrimaryButton
+                              px="8"
+                              shadow="BlueFillShadow"
+                              onPress={() => onSubmit(formData)}
+                            >
+                              {t("SAVE")}
+                            </AdminTypo.PrimaryButton>
+                          </HStack>
+                        </Form>
                       </VStack>
-                    </HStack>
-                  </VStack>
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
-            <DataTable
-              columns={[
-                ...scheduleCandidates(t, actualDates, certificateDownload),
-              ]}
-              key={users}
-              // filter={filter}
-              data={users}
-              subHeader
-              persistTableHead
-              progressPending={loading}
-              customStyles={customStyles}
-              pagination
-              paginationServer
-              paginationTotalRows={paginationTotalRows}
-              paginationRowsPerPageOptions={[6, 10, 15, 25, 50, 100]}
-              paginationPerPage={filter?.limit ? filter?.limit : 6}
-              paginationDefaultPage={filter?.page}
-              onChangeRowsPerPage={React.useCallback(
-                (e) => {
-                  setFilter({ ...filter, limit: e, page: 1 });
-                },
-                [filter]
-              )}
-              onChangePage={React.useCallback(
-                (e) => {
-                  setFilter({ ...filter, page: e });
-                },
-                [filter]
-              )}
-            />
-          </VStack>
-        </Box>
-      </ScrollView>
-      <Modal isOpen={certificateHtml} size="xl">
-        <Modal.Content>
-          <Modal.Header>
-            <HStack justifyContent={"space-between"} pr="10">
-              <AdminTypo.H1>{t("CERTIFICATION")}</AdminTypo.H1>
-              <AdminTypo.Secondarybutton onPress={() => handleGeneratePdf()}>
-                {t("DOWNLOAD")}
-              </AdminTypo.Secondarybutton>
-              <IconByName
-                name="CloseCircleLineIcon"
-                onPress={(e) => setCertificateHtml()}
-              />
-            </HStack>
-          </Modal.Header>
-          <Modal.Body
-            style={{
-              backgroundColor: "#f5f5f5",
-              width: "297mm",
-              minHeight: "210mm",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            <div ref={reportTemplateRef}>
-              <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
-            </div>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+                    </VStack>
+                  </HStack>
+                </VStack>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        </VStack>
+
+        <Modal isOpen={certificateHtml} size="xl">
+          <Modal.Content>
+            <Modal.Header>
+              <HStack justifyContent={"space-between"} pr="10">
+                <AdminTypo.H1>{t("CERTIFICATION")}</AdminTypo.H1>
+                <AdminTypo.Secondarybutton onPress={() => handleGeneratePdf()}>
+                  {t("DOWNLOAD")}
+                </AdminTypo.Secondarybutton>
+                <IconByName
+                  name="CloseCircleLineIcon"
+                  onPress={(e) => setCertificateHtml()}
+                />
+              </HStack>
+            </Modal.Header>
+            <Modal.Body
+              style={{
+                backgroundColor: "#f5f5f5",
+                width: "297mm",
+                minHeight: "210mm",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <div ref={reportTemplateRef}>
+                <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
+              </div>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      </VStack>
     </Layout>
   );
 }
