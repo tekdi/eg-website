@@ -8,20 +8,22 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function CampExecutionEnd({ facilitator, learnerCount }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [disable, setDisable] = React.useState(true);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const [sessionList, setSessionList] = React.useState(false);
-  const [learnerAttendanceCount, setLearnerAttendanceCount] =
-    React.useState(false);
-  const [todaysActivity, setTodaysActivity] = React.useState();
+  const [disable, setDisable] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [sessionList, setSessionList] = useState(false);
+  const [learnerAttendanceCount, setLearnerAttendanceCount] = useState(false);
+  const [todaysActivity, setTodaysActivity] = useState();
+  const [disableTodayAct, setdisableTodayAct] = useState(true);
 
   const navigate = useNavigate();
 
@@ -33,14 +35,34 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
     const data = await campService.getActivity(obj);
     const activity = data?.data?.camp_days_activities_tracker;
     setTodaysActivity(activity?.[0] || {});
+    const object = {
+      camp_id: Number(id),
+      context_id: activity?.[0]?.id,
+    };
+    const result = await campService.getCampDetailsCount(object);
+    if (result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1) {
+      setdisableTodayAct(true);
+    } else {
+      setLearnerAttendanceCount(true);
+      setdisableTodayAct(false);
+    }
+    if (
+      result?.data?.beneficairesAttendaceCount?.aggregate?.count > 1 &&
+      (result?.data?.misc_activities?.misc_activities?.length > 0 ||
+        result?.data?.today_session_count?.aggregate?.count > 0)
+    ) {
+      setDisable(false);
+    }
+    if (
+      result?.data?.beneficairesAttendaceCount?.aggregate?.count > 1 &&
+      result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1
+    ) {
+      setModalVisible(true);
+    }
   }, []);
 
   const fetchData = useCallback(async () => {
     if (todaysActivity?.id) {
-      const resultAttendance = await campService.CampAttendance({
-        id: todaysActivity?.id,
-      });
-      let attendances = resultAttendance?.data || [];
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
       let sessionListData = false;
@@ -54,31 +76,14 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
           setSessionList(true);
         }
       });
-
-      const faciltatorAttendanceData = attendances?.find((item, index) => {
-        return facilitator?.id === item?.user?.id;
-      });
-
-      if (attendances?.length > learnerCount) {
-        setLearnerAttendanceCount(true);
-      }
-
-      if (
-        attendances?.length > learnerCount &&
-        faciltatorAttendanceData?.id &&
-        (todaysActivity?.misc_activities || sessionListData)
-      ) {
-        setDisable(false);
-      }
     }
     setLoading(false);
   }, [todaysActivity?.id, step, learnerCount, facilitator, id]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  const endCamp = React.useCallback(async () => {
+  const endCamp = useCallback(async () => {
     setDisable(true);
     const obj = {
       id: todaysActivity?.id,
@@ -88,7 +93,7 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
     navigate(`/camps`);
   }, [todaysActivity?.id, navigate]);
 
-  const airplaneImageUri = React.useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
 
   return (
     <Layout
@@ -156,6 +161,7 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
           </HStack>
         </FrontEndTypo.Secondarybutton>
         <FrontEndTypo.Secondarybutton
+          isDisabled={disableTodayAct}
           onPress={() => navigate(`/camps/${id}/campexecution/activities`)}
         >
           <HStack alignItems={"center"} space={3}>
@@ -192,8 +198,35 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      <Modal isOpen={modalVisible} size="xs">
+        <Modal.Content>
+          <Modal.Header alignItems={"center"}>{t("CONFIRMATION")}</Modal.Header>
+          <Modal.Body alignItems={"center"} p="5">
+            <FrontEndTypo.H3>{t("LEARNER_ATTENDANCE_MESSAGE")}</FrontEndTypo.H3>
+          </Modal.Body>
+          <Modal.Footer alignSelf={"center"}>
+            <HStack space={4}>
+              <FrontEndTypo.Secondarybutton onPress={() => navigate(`/`)}>
+                {t("QUIT")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/camps/${id}/campexecution/attendance`);
+                }}
+              >
+                {t("MARK_ATTENDANCE")}
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
 
 export default CampExecutionEnd;
+
+CampExecutionEnd.propTypes = {
+  facilitator: PropTypes.any,
+  learnerCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
