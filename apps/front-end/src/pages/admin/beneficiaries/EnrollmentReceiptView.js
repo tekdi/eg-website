@@ -50,9 +50,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     const { result } = await benificiaryRegistoryService.getOne(id);
     const value = result?.program_beneficiaries?.enrolled_for_board;
     setData(result);
-    // const { data: newData } = await enumRegistryService.getSubjects({
-    //   board: result?.program_beneficiaries?.enrolled_for_board,
-    // });
+
     const { subjects } = await enumRegistryService.subjectsList(value);
     const boardName = await enumRegistryService.boardName(value);
     setBoardName(boardName?.name);
