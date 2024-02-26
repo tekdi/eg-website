@@ -18,6 +18,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
 
   React.useEffect(() => {
     const percentage =
@@ -62,6 +63,8 @@ export default function Profile({ userTokenInfo, footerLinks }) {
         onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
+        lang,
+        setLang,
       }}
       _footer={{ menues: footerLinks }}
     >

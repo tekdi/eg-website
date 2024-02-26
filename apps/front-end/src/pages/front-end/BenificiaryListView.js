@@ -241,6 +241,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [loadingHeight, setLoadingHeight] = React.useState(0);
   const ref = React.useRef(null);
   const fa_id = localStorage.getItem("id");
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
 
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -290,6 +291,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
           setFilter({ ...filter, search: value, page: 1 });
         },
         _box: { bg: "white", shadow: "appBarShadow" },
+        lang,
+        setLang,
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}

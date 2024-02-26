@@ -107,6 +107,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
 
   React.useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
@@ -142,6 +143,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       test={Width}
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
+      _appBar={{
+        lang,
+        setLang,
+      }}
     >
       <HStack
         space={[0, 0, "4"]}

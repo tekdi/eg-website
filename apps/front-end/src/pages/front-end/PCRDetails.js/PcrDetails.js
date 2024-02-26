@@ -80,6 +80,7 @@ const PcrDetails = () => {
   const [pcrCreated, setPcrCreated] = useState();
   const [data, setData] = React.useState({});
   const [isDisable, setIsDisable] = React.useState(false);
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -126,6 +127,8 @@ const PcrDetails = () => {
         onPressBackButton: (e) => {
           navigate(`/beneficiary/${id}/pcrview`);
         },
+        lang,
+        setLang,
       }}
     >
       <ScrollView>

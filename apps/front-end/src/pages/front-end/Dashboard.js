@@ -62,6 +62,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = useState(false);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [lmsDEtails, setLmsDetails] = useState();
   const { id } = userTokenInfo?.authUser || [];
   const [random, setRandom] = useState();
@@ -373,6 +374,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         profile_url: facilitator?.profile_photo_1?.name,
         name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
+        lang,
+        setLang,
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}

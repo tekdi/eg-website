@@ -117,7 +117,8 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [program, setProgram] = useState();
   const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -271,6 +272,10 @@ export default function List({ footerLinks, userTokenInfo }) {
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
       loading={loading}
+      _appBar={{
+        lang,
+        setLang,
+      }}
     >
       <HStack
         space={[0, 0, "2"]}

@@ -70,6 +70,7 @@ export default function Orientation({ footerLinks }) {
   const [academicData, setAcademicData] = React.useState();
   const [programID, setProgramID] = React.useState();
   const [programData, setProgramData] = React.useState([]);
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -368,6 +369,8 @@ export default function Orientation({ footerLinks }) {
       _appBar={{
         isShowNotificationButton: true,
         selectedAcademic: selectedAcademic,
+        lang,
+        setLang,
       }}
       _subHeader={{
         bg: "white",

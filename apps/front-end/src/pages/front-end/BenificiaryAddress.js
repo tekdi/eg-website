@@ -15,6 +15,8 @@ export default function BenificiaryAddress() {
   const [benificiary, setbenificiary] = React.useState();
   const [userId] = React.useState(params?.id);
   const navigate = useNavigate();
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+
   const { t } = useTranslation();
   const [requestData, setRequestData] = React.useState([]);
 
@@ -57,7 +59,9 @@ export default function BenificiaryAddress() {
   };
 
   return (
-    <Layout _appBar={{ name: t("ADDRESS_DETAILS"), onPressBackButton }}>
+    <Layout
+      _appBar={{ name: t("ADDRESS_DETAILS"), onPressBackButton, lang, setLang }}
+    >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
           <VStack

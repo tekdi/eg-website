@@ -12,11 +12,14 @@ export default function PcrView() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
+  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [data, setData] = React.useState({});
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = Array.isArray(result?.data) ? result.data.filter((item) => item.user_id == id) : [];
+    const userData = Array.isArray(result?.data)
+      ? result.data.filter((item) => item.user_id == id)
+      : [];
     setData(userData[0]);
   }, []);
 
@@ -30,6 +33,8 @@ export default function PcrView() {
           navigate(`/beneficiary/profile/${id}`);
         },
         _box: { bg: "white", shadow: "appBarShadow" },
+        lang,
+        setLang,
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
