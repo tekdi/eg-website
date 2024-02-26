@@ -40,6 +40,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
+  const [fixedSchema, setFixedSchema] = React.useState({});
   const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
   const [cameraUrl, setCameraUrl] = React.useState();
@@ -91,9 +92,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         reason_of_leaving_education:
           result?.core_beneficiaries?.reason_of_leaving_education,
         learning_level: result?.program_beneficiaries?.learning_level,
-        learning_motivation: result?.program_beneficiaries?.learning_motivation,
-        type_of_support_needed:
-          result?.program_beneficiaries?.type_of_support_needed,
         learning_motivation: getUniqueArray(
           result?.program_beneficiaries?.learning_motivation
         ),
@@ -116,6 +114,18 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     },
     type_of_support_needed: {
       "ui:widget": "MultiCheck",
+    },
+    alreadyOpenLabel: {
+      "ui:widget": "AlreadyOpenLabelWidget",
+    },
+    education_10th_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+        format: "DMY",
+      },
     },
   };
 
@@ -222,29 +232,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
   };
 
   React.useEffect(async () => {
-    if (schema?.properties?.district) {
-      let programSelected = jsonParse(localStorage.getItem("program"));
-      const qData = await geolocationRegistryService.getStates();
-
-      let newSchema = schema;
-      if (schema["properties"]["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData?.states,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
-      newSchema = await setDistric({
-        schemaData: newSchema,
-        state: programSelected?.state_name,
-        district: formData?.district,
-        block: formData?.block,
-        gramp: formData?.grampanchayat,
-      });
-      setSchema(newSchema);
-    }
-
     const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
 
@@ -291,7 +278,14 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         title: "title",
         value: "value",
       });
-      setSchema(newSchema);
+      const {
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = newSchema?.properties || {};
+      setFixedSchema(newSchema);
+      setSchema({ ...newSchema, properties });
     }
     if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
@@ -327,7 +321,35 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       setSchema(newSchema);
     }
     setLoading(false);
-  }, [page, formData]);
+  }, [page]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      if (schema?.properties?.district) {
+        let programSelected = jsonParse(localStorage.getItem("program"));
+        const qData = await geolocationRegistryService.getStates();
+
+        let newSchema = schema;
+        if (schema["properties"]["state"]) {
+          newSchema = getOptions(newSchema, {
+            key: "state",
+            arr: qData?.states,
+            title: "state_name",
+            value: "state_name",
+          });
+        }
+        newSchema = await setDistric({
+          schemaData: newSchema,
+          state: programSelected?.state_name,
+          district: formData?.district,
+          block: formData?.block,
+          gramp: formData?.grampanchayat,
+        });
+        setSchema(newSchema);
+      }
+    };
+    fetchData();
+  }, [formData]);
 
   // Type Of Student
 
@@ -651,14 +673,60 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       }
     }
 
-    if (data?.previous_school_type === "never_studied") {
-      if (data?.type_of_learner === "dropout") {
-        const newErrors = {
-          type_of_learner: {
-            __errors: [t("SELECT_MESSAGE_DROPOUT")],
-          },
-        };
-        setErrors(newErrors);
+    if (id === "root_type_of_learner") {
+      if (data?.type_of_learner === "school_dropout") {
+        const {
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = fixedSchema?.properties || {};
+        setSchema({ ...fixedSchema, properties });
+      } else if (data?.type_of_learner === "never_enrolled") {
+        const {
+          last_standard_of_education,
+          last_standard_of_education_year,
+          previous_school_type,
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = fixedSchema?.properties || {};
+        const required = fixedSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "learning_level",
+            "reason_of_leaving_education",
+          ].includes(item)
+        );
+
+        setSchema({ ...fixedSchema, properties, required });
+      } else if (data?.type_of_learner === "already_enrolled_in_open_school") {
+        const { education_10th_date, education_10th_exam_year, ...properties } =
+          fixedSchema?.properties || {};
+        setSchema({ ...fixedSchema, properties });
+      } else if (
+        page === "4" &&
+        data?.type_of_learner === "already_open_school_syc"
+      ) {
+        const {
+          alreadyOpenLabel,
+          last_standard_of_education,
+          last_standard_of_education_year,
+          education_10th_exam_year,
+          ...properties
+        } = fixedSchema?.properties || {};
+        setSchema({ ...fixedSchema, properties });
+      } else if (data?.type_of_learner === "stream_2_mainstream_syc") {
+        const {
+          last_standard_of_education,
+          last_standard_of_education_year,
+          previous_school_type,
+          alreadyOpenLabel,
+          education_10th_date,
+          ...properties
+        } = fixedSchema?.properties || {};
+        setSchema({ ...fixedSchema, properties });
       }
     }
   };
