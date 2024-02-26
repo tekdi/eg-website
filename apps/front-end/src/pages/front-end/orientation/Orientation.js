@@ -474,7 +474,7 @@ export default function Orientation({ footerLinks }) {
                 alignContent="center"
                 shadow="BlueOutlineShadow"
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  navigator("/admin/event/create");
                 }}
               >
                 {t("SCHEDULE_EVENT")}
