@@ -52,23 +52,16 @@ const customStyles = {
       color: "#616161",
     },
   },
-  rows: {
-    style: {
-      minH: "45px", // override the row height
-      cursor: "pointer",
-    },
-  },
   cells: {
     style: {
-      padding: "10px 0", // Adjust as needed
-      marginTop: "0", // Remove upper space
+      padding: "10px 5px",
     },
   },
 };
 
 const columns = (t, handleCheckboxChange, selectedRowId) => [
   {
-    name: t("NAME"),
+    name: t("ID"),
     selector: (row) => (
       <HStack alignItems={"center"} space={2}>
         <Checkbox
@@ -76,13 +69,25 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
           onChange={() => handleCheckboxChange(row?.id)}
         />
         <AdminTypo.H7 bold>{row?.id}</AdminTypo.H7>
-        <AdminTypo.H6 textOverflow="ellipsis">
+      </HStack>
+    ),
+    sortable: false,
+    wrap: true,
+    width: "80px",
+    attr: "name",
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space={2}>
+        <AdminTypo.H6 bold textOverflow="ellipsis">
           {row?.first_name + " " + row?.last_name}
         </AdminTypo.H6>
       </HStack>
     ),
     sortable: false,
-    width: "250px",
+    wrap: true,
+    width: "150px",
     attr: "name",
   },
   {
@@ -92,7 +97,7 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
         py="1"
         px="1"
         key={index}
-        status={row?.program_faciltators?.status}
+        status={row?.program_faciltators?.[0]?.status}
       />
     ),
     sortable: false,
@@ -123,20 +128,16 @@ export default function EventHome({ footerLinks }) {
   const formRef = useRef();
   const [errors, setErrors] = useState({});
   const [schema, setSchema] = useState({});
-  const nowDate = new Date();
   const [loading, setLoading] = useState(true);
   const [isListOpen, setIsListOpen] = useState(true);
   const { t } = useTranslation();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [data, setData] = useState();
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
-  const [userIds, setUserIds] = useState({});
   const [district, setDistrict] = useState();
   const [block, setBlock] = useState();
   const [village, setVillage] = useState();
   const [programData, setProgramData] = useState();
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const [isDisabled, setIsDisabled] = useState(true);
   const toast = useToast();
   const navigate = useNavigate();
@@ -151,13 +152,13 @@ export default function EventHome({ footerLinks }) {
   };
 
   useEffect(async () => {
-    const eventResult = await eventService.getEventListById({ id });
-    const { event } = eventResult;
-    setEventDetails(eventResult);
-    const selectedId =
-      eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
-    setSelectedRowIds(selectedId);
     if (id) {
+      const eventResult = await eventService.getEventListById({ id });
+      const { event } = eventResult;
+      setEventDetails(eventResult);
+      const selectedId =
+        eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
+      setSelectedRowIds(selectedId);
       setIsListOpen(false);
       const timeFormat = "HH:mm:ss";
       setFormData({
@@ -249,16 +250,14 @@ export default function EventHome({ footerLinks }) {
       setLoading(true);
       const result =
         await facilitatorRegistryService.getFacilitatorByStatusInOrientation({
-          limit: limit,
-          page: page,
+          ...filter,
           district: filter?.districts?.[0],
           block: filter?.blocks?.[0],
           type: formData?.type || eventDetails?.event?.type,
-          search: filter?.search,
         });
 
       setData(result?.data?.data);
-      setPaginationTotalRows(result?.totalCount);
+      setPaginationTotalRows(result?.data?.totalCount);
       setLoading(false);
     };
 
@@ -493,13 +492,19 @@ export default function EventHome({ footerLinks }) {
       // loading={loading}
     >
       <VStack p={4}>
-        <HStack pt="3" justifyContent={"space-between"}>
-          <HStack alignItems={"center"} space={3}>
+        <HStack
+          pt="3"
+          justifyContent={"space-between"}
+          direction={["column", "row", "row"]}
+          space={2}
+        >
+          <HStack alignItems={"center"} space={2} flexWrap={"wrap"}>
             <IconByName name="home" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">{t("HOME")}</AdminTypo.H1>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
+              p="0"
               onPress={(e) => navigate(`/admin`)}
             />
             <AdminTypo.H1
@@ -562,9 +567,9 @@ export default function EventHome({ footerLinks }) {
           )}
           <VStack
             flex={["auto", "auto", "70"]}
-            display={["none", "none", "flex"]}
+            display={step !== "candidate" && ["none", "none", "flex"]}
             bg={isListOpen ? "zambezi" : "whiteSomke"}
-            p="4"
+            p={[0, 0, "4"]}
             justifyContent={isListOpen && "center"}
           >
             {isListOpen ? (
@@ -575,37 +580,24 @@ export default function EventHome({ footerLinks }) {
               </VStack>
             ) : (
               <VStack background={"whiteSomke"}>
-                <HStack space={4} pb={4}>
+                <HStack
+                  p={[2, 2, 0]}
+                  space={4}
+                  flexWrap={"wrap"}
+                  direction={["column", "column", "column", "row", "row"]}
+                >
                   <Input
                     minH="32px"
                     InputLeftElement={
-                      <IconByName
-                        color="coolGray.500"
-                        name="SearchLineIcon"
-                        isDisabled
-                        pl="2"
-                        // height="2"
-                      />
+                      <IconByName color="coolGray.500" name="SearchLineIcon" />
                     }
                     placeholder={t("SEARCH_BY_NAME")}
                     variant="outline"
                     onChange={debouncedHandleSearch}
                   />
-                  <Stack
-                    style={{
-                      width: "55%",
-                    }}
-                  >
-                    <HStack
-                      style={{
-                        // display: "flex",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                      {/* <AdminTypo.H4>
-                        {filter?.districts ? filter?.districts : t("DISTRICT")}
-                      </AdminTypo.H4> */}
+                  <HStack space={4} alignItems={"center"}>
+                    <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
+                    <HStack space={4} alignItems={"center"}>
                       <District
                         district={district}
                         filter={filter}
@@ -628,7 +620,7 @@ export default function EventHome({ footerLinks }) {
                         />
                       )}
                     </HStack>
-                  </Stack>
+                  </HStack>
                 </HStack>
                 <Stack alignSelf={"end"} pb={2} pr={4}>
                   <AdminTypo.H6 bold color="textBlue.200">
@@ -646,9 +638,6 @@ export default function EventHome({ footerLinks }) {
                   paginationServer
                   onSelectedRowsChange={handleCheckboxChange}
                   paginationTotalRows={paginationTotalRows}
-                  clearSelectedRows={
-                    Object.keys(userIds).length === 0 ? true : false
-                  }
                   onChangeRowsPerPage={(e) => {
                     setFilter({ ...filter, limit: e, page: 1 });
                   }}
@@ -746,7 +735,7 @@ const Village = ({ village, filter, t, setFilter }) => {
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
             <HStack space={4}>
               <AdminTypo.H4>
-                {filter?.villages ? filter?.village : t("VILLAGE")}
+                {filter?.villages ? filter?.village : t("VILLAGE_WARD")}
               </AdminTypo.H4>
               <IconByName name="ArrowDownSLineIcon" />
             </HStack>
