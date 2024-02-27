@@ -760,6 +760,7 @@ export default function Attendence({ footerLinks }) {
                 space={[2, 2, 4]}
                 // direction={["column", "column", "row"]}
                 // alignItems={["", "", "center"]}
+                justifyContent={["space-between"]}
               >
                 <HStack space={[1, 1, 3]}>
                   <IconByName isDisabled name="GroupLineIcon" />
@@ -774,7 +775,7 @@ export default function Attendence({ footerLinks }) {
                     // setFacilitatorProfile();
                   }}
                 >
-                  {t("ADD_PARTICIPANTS")}
+                  {t(width <= 767 ? "ADD_REMOVE" : "ADD_PARTICIPANTS")}
                 </AdminTypo.Secondarybutton>
               </HStack>
               <Input
