@@ -75,7 +75,7 @@ const columns = (t, navigate) => [
     name: t("DISTRICT"),
     selector: (row) => row?.district || "-",
     compact: true,
-    width: "200px",
+    width: "100px",
     center: true,
 
   },
