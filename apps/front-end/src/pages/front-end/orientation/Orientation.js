@@ -232,7 +232,7 @@ export default function Orientation({ footerLinks }) {
     }
   };
   const handleEventClick = async (info) => {
-    navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
+    navigator(`/admin/event/${info?.event?.extendedProps?.event_id}`);
   };
 
   const clearForm = () => {
@@ -404,7 +404,8 @@ export default function Orientation({ footerLinks }) {
             <HStack>
               <Pressable
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  navigator("/admin/event/create");
+                  // setModalVisible(!modalVisible);
                   setFormData({ type: "prerak_orientation" });
                 }}
               >
@@ -487,7 +488,7 @@ export default function Orientation({ footerLinks }) {
                 alignContent="center"
                 shadow="BlueOutlineShadow"
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  navigator("/admin/event/create");
                 }}
               >
                 {t("SCHEDULE_EVENT")}
