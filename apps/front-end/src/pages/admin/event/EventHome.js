@@ -221,6 +221,23 @@ export default function EventHome({ footerLinks }) {
             ...prevSchema?.properties?.type,
             readOnly: true,
           },
+          date: {
+            ...newSchema?.properties?.date,
+            minDate: moment().toDate(),
+            daysDiff: 4,
+          },
+        },
+      }));
+    } else {
+      setSchema((newSchema) => ({
+        ...newSchema,
+        properties: {
+          ...newSchema.properties,
+          date: {
+            ...newSchema?.properties?.date,
+            minDate: moment().toDate(),
+            daysDiff: 4,
+          },
         },
       }));
     }

@@ -1,3 +1,4 @@
+import { jsonParse } from "@shiksha/common-lib";
 import moment from "moment";
 import { useState } from "react";
 import { DateRange } from "react-date-range";
@@ -16,13 +17,21 @@ const formate = (value) => {
 };
 
 function CalenderInput({ schema, value, onChange }) {
+  const { minDate, maxDate, daysDiff } = schema;
+  const [selectedDate, setSelectedDate] = useState();
   const handleSelect1 = ({ selection }) => {
     const data = JSON.stringify(selection || "{}");
     onChange(data);
+    setSelectedDate(selection);
   };
-  console.log(value);
+  const startDate = moment(jsonParse(value)?.startDate || moment().toDate());
+  const maxDateData =
+    maxDate || daysDiff ? startDate.add(daysDiff, "days") : null;
+
   return (
     <DateRange
+      minDate={minDate}
+      maxDate={selectedDate?.startDate && maxDateData.toDate()}
       ranges={[
         {
           startDate: moment().toDate(),
