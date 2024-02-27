@@ -64,20 +64,28 @@ const columns = (t, navigate) => [
       </HStack>
     ),
     attr: "name",
-    width: "150px",
+    width: "250px",
     wrap: true,
     left: true,
     compact: true,
+    // center: true,
+
   },
   {
     name: t("DISTRICT"),
     selector: (row) => row?.district || "-",
     compact: true,
+    width: "200px",
+    center: true,
+
   },
   {
     name: t("BLOCK"),
     selector: (row) => row?.block || "-",
     compact: true,
+    width: "200px",
+    center: true,
+
   },
 
   {
@@ -86,26 +94,30 @@ const columns = (t, navigate) => [
     attr: "mobile",
     wrap: true,
     compact: true,
+    center: true,
+
   },
   {
     name: t("STATUS"),
     selector: (row) => (
       <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
-        <ChipStatus py="0.5" px="1" status={row?.program_faciltators?.status} />
+        <ChipStatus py="1.5" px="1" status={row?.program_faciltators?.status} />
       </Pressable>
     ),
     wrap: true,
     attr: "status",
-    width: "150px",
+    width: "200px",
     compact: true,
+    center: true,
+
   },
   {
     name: (
-      <VStack display="inline-block" width={"100%"}>
+      <VStack display="inline-block" >
         {t("OKYC_VERIFICATION")}
       </VStack>
     ),
-    // wrap: true,
+    wrap: true,
     selector: (row) => {
       return row?.aadhar_verified === "okyc_ip_verified"
         ? t("OKYC_IP_VERIFIED")
@@ -114,10 +126,12 @@ const columns = (t, navigate) => [
         : t("NO");
     },
     compact: true,
-    minWidth: "50px",
+    minWidth: "150px",
+    center: true,
+
   },
   {
-    minWidth: "140px",
+    minWidth: "100px",
     name: t("ACTION"),
     selector: (row) => (
       <Button.Group

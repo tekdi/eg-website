@@ -26,7 +26,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         name: t("LEARNERS_ID"),
         selector: (row) => row?.id,
         wrap: true,
-        width: "95px",
+        width: "100px",
       },
       {
         name: t("LEARNERS_NAME"),
@@ -71,7 +71,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         ),
         attr: "name",
         wrap: true,
-        width: "250px",
+        width: "200px",
       },
       {
         name: t("LEARNERS_AGE"),
@@ -93,10 +93,14 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             }
           }
         },
+        center: true,
+        width: "150px",
       },
       {
         name: t("PRERAK_ID"),
         selector: (row) => row?.program_beneficiaries?.facilitator_id,
+        center: true,
+        width: "150px",
       },
       {
         name: t("PRERAK_NAME"),
@@ -111,7 +115,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
             : "-";
         },
         wrap: true,
-        width: "250px",
+        width: "150px",
       },
       {
         name: t("STATUS"),
@@ -129,6 +133,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         attr: "email",
         wrap: true,
         width: "250px",
+        center: true,
       },
       {
         name: t("ACTION"),
@@ -143,6 +148,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
           </AdminTypo.Secondarybutton>
         ),
         wrap: true,
+        center: true,
       },
     ],
     []
