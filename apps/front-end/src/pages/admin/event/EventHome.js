@@ -19,6 +19,7 @@ import {
   facilitatorRegistryService,
   getOptions,
   eventService,
+  arrList,
 } from "@shiksha/common-lib";
 import {
   Alert,
@@ -308,6 +309,18 @@ export default function EventHome({ footerLinks }) {
     villageData();
   }, [filter?.blocks]);
 
+  useEffect(() => {
+    const persan = arrList(formData, [
+      "type",
+      "name",
+      "master_trainer",
+      "date",
+      "start_time",
+      "end_time",
+    ]);
+    setIsDisabled(persan !== 100);
+  }, [formData]);
+
   const uiSchema = {
     date: {
       "ui:widget": "CalenderInput",
@@ -343,20 +356,19 @@ export default function EventHome({ footerLinks }) {
         setErrors(newErrors);
       }
     }
-
-    if (moment.utc(newData?.start_date) < moment.utc(nowDate)) {
+    if (id === "root_start_time" && formData?.end_time) {
+      if (formData?.start_time > formData?.end_time) {
+        const newErrors = {
+          start_time: {
+            __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    } else if (id === "root_end_time" && formData?.start_time) {
       const newErrors = {
-        start_date: {
-          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_START_DATE")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    if (moment.utc(newData?.end_date) < moment.utc(nowDate)) {
-      const newErrors = {
-        end_date: {
-          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_END_DATE")],
+        end_time: {
+          __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
         },
       };
       setErrors(newErrors);
@@ -506,9 +518,19 @@ export default function EventHome({ footerLinks }) {
             </AdminTypo.Secondarybutton>
           )}
         </HStack>
-        {step !== "candidate" ? (
-          <HStack pt={6} justifyContent={"space-between"}>
-            <VStack width={"28%"} background={"whiteSomke"} p={4}>
+
+        <HStack
+          pt={6}
+          space={4}
+          justifyContent={"space-between"}
+          direction={["column", "column", "row"]}
+        >
+          {step !== "candidate" && (
+            <VStack
+              flex={["auto", "auto", "30"]}
+              background={"whiteSomke"}
+              p={4}
+            >
               <Form
                 ref={formRef}
                 extraErrors={errors}
@@ -527,7 +549,8 @@ export default function EventHome({ footerLinks }) {
                 }}
               >
                 <AdminTypo.PrimaryButton
-                  // isDisabled={isDisabled}
+                  isDisabled={isDisabled}
+                  mt="4"
                   onPress={() => {
                     formRef?.current?.submit();
                   }}
@@ -536,190 +559,125 @@ export default function EventHome({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
               </Form>
             </VStack>
-            <VStack
-              width={"70%"}
-              bg={isListOpen ? "zambezi" : "white"}
-              justifyContent={isListOpen && "center"}
-            >
-              {isListOpen ? (
-                <VStack p={4}>
-                  <AdminTypo.Secondarybutton onPress={handleOpenButtonClick}>
-                    {t("SELECT_CANDIDATE")}
-                  </AdminTypo.Secondarybutton>
-                </VStack>
-              ) : (
-                <VStack background={"whiteSomke"}>
-                  <HStack space={4} pb={4}>
-                    <Input
-                      minH="32px"
-                      InputLeftElement={
-                        <IconByName
-                          color="coolGray.500"
-                          name="SearchLineIcon"
-                          isDisabled
-                          pl="2"
-                          // height="2"
-                        />
-                      }
-                      placeholder={t("SEARCH_BY_NAME")}
-                      variant="outline"
-                      onChange={debouncedHandleSearch}
-                    />
-                    <Stack
+          )}
+          <VStack
+            flex={["auto", "auto", "70"]}
+            display={["none", "none", "flex"]}
+            bg={isListOpen ? "zambezi" : "whiteSomke"}
+            p="4"
+            justifyContent={isListOpen && "center"}
+          >
+            {isListOpen ? (
+              <VStack p={4}>
+                <AdminTypo.Secondarybutton onPress={handleOpenButtonClick}>
+                  {t("SELECT_CANDIDATE")}
+                </AdminTypo.Secondarybutton>
+              </VStack>
+            ) : (
+              <VStack background={"whiteSomke"}>
+                <HStack space={4} pb={4}>
+                  <Input
+                    minH="32px"
+                    InputLeftElement={
+                      <IconByName
+                        color="coolGray.500"
+                        name="SearchLineIcon"
+                        isDisabled
+                        pl="2"
+                        // height="2"
+                      />
+                    }
+                    placeholder={t("SEARCH_BY_NAME")}
+                    variant="outline"
+                    onChange={debouncedHandleSearch}
+                  />
+                  <Stack
+                    style={{
+                      width: "55%",
+                    }}
+                  >
+                    <HStack
                       style={{
-                        width: "55%",
+                        // display: "flex",
+                        justifyContent: "space-around",
                       }}
                     >
-                      <HStack
-                        style={{
-                          // display: "flex",
-                          justifyContent: "space-around",
-                        }}
-                      >
-                        <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                        <AdminTypo.H4>
-                          {filter?.districts
-                            ? filter?.districts
-                            : t("DISTRICT")}
-                        </AdminTypo.H4>
-                        <District district={district} setFilter={setFilter} />
-                        <AdminTypo.H4>
-                          {filter?.blocks ? filter?.blocks : t("BLOCK")}
-                        </AdminTypo.H4>
-                        <Blocks block={block} setFilter={setFilter} />
-                        {programData === "BIHAR" && (
-                          <HStack space={4}>
-                            <AdminTypo.H4>
-                              {filter?.villages
-                                ? filter?.village
-                                : t("VILLAGE")}
-                            </AdminTypo.H4>
-                            <Village village={village} setFilter={setFilter} />
-                          </HStack>
-                        )}
-                      </HStack>
-                    </Stack>
-                  </HStack>
-                  <Stack alignSelf={"end"} pb={2} pr={4}>
-                    <AdminTypo.H6 bold color="textBlue.200">
-                      {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
-                    </AdminTypo.H6>
-                  </Stack>
-                  <DataTable
-                    columns={columns(t, handleCheckboxChange, selectedRowId)}
-                    data={data}
-                    customStyles={customStyles}
-                    persistTableHead
-                    // selectableRows
-                    progressPending={loading}
-                    pagination
-                    paginationServer
-                    onSelectedRowsChange={handleCheckboxChange}
-                    paginationTotalRows={paginationTotalRows}
-                    clearSelectedRows={
-                      Object.keys(userIds).length === 0 ? true : false
-                    }
-                    onChangeRowsPerPage={(e) => {
-                      setFilter({ ...filter, limit: e, page: 1 });
-                    }}
-                    onChangePage={(e) => {
-                      setFilter({ ...filter, page: e });
-                    }}
-                  />
-                </VStack>
-              )}
-            </VStack>
-          </HStack>
-        ) : (
-          <VStack mt={4} p={4} background={"whiteSomke"}>
-            <HStack space={4} pb={4}>
-              <Input
-                minH="32px"
-                InputLeftElement={
-                  <IconByName
-                    color="coolGray.500"
-                    name="SearchLineIcon"
-                    isDisabled
-                    pl="2"
-                    // height="2"
-                  />
-                }
-                placeholder={t("SEARCH_BY_NAME")}
-                variant="outline"
-                onChange={debouncedHandleSearch}
-              />
-              <Stack
-                style={{
-                  width: "55%",
-                }}
-              >
-                <HStack
-                  style={{
-                    // display: "flex",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                  <AdminTypo.H4>
-                    {filter?.districts ? filter?.districts : t("DISTRICT")}
-                  </AdminTypo.H4>
-                  <District district={district} setFilter={setFilter} />
-                  <AdminTypo.H4>
-                    {filter?.blocks ? filter?.blocks : t("BLOCK")}
-                  </AdminTypo.H4>
-                  <Blocks block={block} setFilter={setFilter} />
-                  {programData === "BIHAR" && (
-                    <HStack space={4}>
-                      <AdminTypo.H4>
-                        {filter?.villages ? filter?.village : t("VILLAGE")}
-                      </AdminTypo.H4>
-                      <Village village={village} setFilter={setFilter} />
+                      <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
+                      {/* <AdminTypo.H4>
+                        {filter?.districts ? filter?.districts : t("DISTRICT")}
+                      </AdminTypo.H4> */}
+                      <District
+                        district={district}
+                        filter={filter}
+                        t={t}
+                        setFilter={setFilter}
+                      />
+
+                      <Blocks
+                        block={block}
+                        t={t}
+                        filter={filter}
+                        setFilter={setFilter}
+                      />
+                      {programData === "BIHAR" && (
+                        <Village
+                          village={village}
+                          t={t}
+                          filter={filter}
+                          setFilter={setFilter}
+                        />
+                      )}
                     </HStack>
-                  )}
+                  </Stack>
                 </HStack>
-              </Stack>
-            </HStack>
-            <HStack alignSelf={"end"} space={4} pb={2} pr={4}>
-              <AdminTypo.H6 bold color="textBlue.200">
-                {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
-              </AdminTypo.H6>
-            </HStack>
-            <DataTable
-              columns={columns(t, handleCheckboxChange, selectedRowId)}
-              data={data}
-              customStyles={customStyles}
-              persistTableHead
-              // selectableRows
-              progressPending={loading}
-              pagination
-              paginationServer
-              onSelectedRowsChange={handleCheckboxChange}
-              paginationTotalRows={paginationTotalRows}
-              clearSelectedRows={
-                Object.keys(userIds).length === 0 ? true : false
-              }
-              onChangeRowsPerPage={(e) => {
-                setFilter({ ...filter, limit: e, page: 1 });
-              }}
-              onChangePage={(e) => {
-                setFilter({ ...filter, page: e });
-              }}
-            />
+                <Stack alignSelf={"end"} pb={2} pr={4}>
+                  <AdminTypo.H6 bold color="textBlue.200">
+                    {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
+                  </AdminTypo.H6>
+                </Stack>
+                <DataTable
+                  columns={columns(t, handleCheckboxChange, selectedRowId)}
+                  data={data}
+                  customStyles={customStyles}
+                  persistTableHead
+                  // selectableRows
+                  progressPending={loading}
+                  pagination
+                  paginationServer
+                  onSelectedRowsChange={handleCheckboxChange}
+                  paginationTotalRows={paginationTotalRows}
+                  clearSelectedRows={
+                    Object.keys(userIds).length === 0 ? true : false
+                  }
+                  onChangeRowsPerPage={(e) => {
+                    setFilter({ ...filter, limit: e, page: 1 });
+                  }}
+                  onChangePage={(e) => {
+                    setFilter({ ...filter, page: e });
+                  }}
+                />
+              </VStack>
+            )}
           </VStack>
-        )}
+        </HStack>
       </VStack>
     </Layout>
   );
 }
 
-const District = ({ district, setFilter }) => {
+const District = ({ district, filter, t, setFilter }) => {
   return (
     <Menu
       shadow={2}
       trigger={(triggerProps) => {
         return (
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <IconByName name="ArrowDownSLineIcon" />
+            <HStack space={4}>
+              <AdminTypo.H4>
+                {filter?.districts ? filter?.districts : t("DISTRICT")}
+              </AdminTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Pressable>
         );
       }}
@@ -743,14 +701,19 @@ const District = ({ district, setFilter }) => {
   );
 };
 
-const Blocks = ({ block, setFilter }) => {
+const Blocks = ({ block, filter, t, setFilter }) => {
   return (
     <Menu
       shadow={2}
       trigger={(triggerProps) => {
         return (
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <IconByName name="ArrowDownSLineIcon" />
+            <HStack space={4}>
+              <AdminTypo.H4>
+                {filter?.blocks ? filter?.blocks : t("BLOCK")}
+              </AdminTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Pressable>
         );
       }}
@@ -774,14 +737,19 @@ const Blocks = ({ block, setFilter }) => {
   );
 };
 
-const Village = ({ village, setFilter }) => {
+const Village = ({ village, filter, t, setFilter }) => {
   return (
     <Menu
       shadow={2}
       trigger={(triggerProps) => {
         return (
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <IconByName name="ArrowDownSLineIcon" />
+            <HStack space={4}>
+              <AdminTypo.H4>
+                {filter?.villages ? filter?.village : t("VILLAGE")}
+              </AdminTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Pressable>
         );
       }}
