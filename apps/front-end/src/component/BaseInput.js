@@ -31,6 +31,8 @@ import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 import PropTypes from "prop-types";
+import CalenderInput from "./CalenderInput";
+import Time from "./Time";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
@@ -828,6 +830,8 @@ const widgets = {
   Location,
   StarRating,
   CheckUncheck,
+  CalenderInput,
+  Time,
 };
 
 const templates = {

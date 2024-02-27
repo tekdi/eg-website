@@ -363,3 +363,7 @@ select {
   appearance: none;
   padding: 10px;
 }
+
+.rdrMonth{
+  width: auto !important;
+}

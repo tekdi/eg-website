@@ -80,6 +80,8 @@ const AdharKyc = React.lazy(() =>
 const FileView = React.lazy(() => import("pages/FileView"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
+const EventHome = React.lazy(() => import("pages/admin/event/EventHome"));
+
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
   { path: "/admin/Certification/:id", component: Certification },
@@ -87,7 +89,7 @@ export default [
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: FacilitatorList },
   { path: "/admin", component: Orientation },
-  { path: "/attendence/:id", component: Attendence },
+  { path: "/admin/event/:id", component: Attendence },
   { path: "/admin/learners", component: AdminBeneficiariesList },
   { path: "/admin/reports/:name", component: AdminReports },
   {
@@ -155,6 +157,10 @@ export default [
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
   },
+
+  { path: "/admin/event/create", component: EventHome },
+  { path: "/admin/event/:id", component: EventHome },
+  { path: "/admin/event/:id/:step", component: EventHome },
 
   { path: "*", component: NotFound },
 ];
