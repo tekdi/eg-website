@@ -1,7 +1,6 @@
 import {
   IconByName,
   AdminLayout as Layout,
-  useWindowSize,
   Camera,
   AdminTypo,
   FrontEndTypo,
@@ -29,8 +28,14 @@ import {
   Badge,
   Input,
 } from "native-base";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Suspense } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  Suspense,
+  memo,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Form from "@rjsf/core";
@@ -41,7 +46,7 @@ import Clipboard from "component/Clipboard";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { debounce } from "lodash";
-import { memo } from "react";
+import { useWindowDimensions } from "react-native-web";
 
 const customStyles = {
   headCells: {
@@ -55,7 +60,7 @@ const customStyles = {
   cells: {
     style: {
       justifyContent: "center",
-      padding: "15px 0",
+      padding: "10px 5px",
     },
   },
 };
@@ -130,19 +135,21 @@ const onUpdateOrCreateAttendace = async (row) => {
   }
 };
 
-const scheduleCandidates = (t, days, certificateDownload) => {
-  return [
+const scheduleCandidates = ({ t, days, certificateDownload, width }) => {
+  const data = [
     {
       name: t("ID"),
       selector: (row) => renderIDColumn(row, t),
       sortable: false,
-      attr: "name",
+      attr: "id",
+      width: "50px",
+      wrap: true,
     },
-
     {
       name: t("NAME"),
       selector: (row) => renderNameColumn(row, t),
       sortable: false,
+      wrap: true,
       attr: "name",
     },
     {
@@ -180,6 +187,13 @@ const scheduleCandidates = (t, days, certificateDownload) => {
         ),
     },
   ];
+  if (width <= 767) {
+    return [
+      ...data.filter((e) => [t("NAME"), t("ID")].includes(e.name)),
+      ...days,
+    ];
+  }
+  return data;
 };
 
 const RenderAttendanceColumn = memo(({ row }) => {
@@ -234,7 +248,7 @@ const RenderAttendanceColumn = memo(({ row }) => {
   };
 
   return (
-    <HStack space="2">
+    <HStack space="2" p="1">
       <AdminTypo.H7 fontWeight="400">
         {attendance?.status === "present"
           ? "Present"
@@ -245,7 +259,7 @@ const RenderAttendanceColumn = memo(({ row }) => {
       <Switch
         key={attendance}
         isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
-        offTrackColor="dangerColor"
+        offTrackColor={attendance?.status ? "dangerColor" : "gray.200"}
         onTrackColor="successColor"
         onThumbColor="appliedColor"
         offThumbColor="appliedColor"
@@ -264,16 +278,16 @@ const RenderAttendanceColumn = memo(({ row }) => {
 
 export default function Attendence({ footerLinks }) {
   const { id } = useParams();
-  const [width, Height] = useWindowSize();
+  const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
-  const [refAppBar, setRefAppBar] = useState();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  // const [refAppBar, setRefAppBar] = useState();
+  // const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [locationData, setLocationData] = useState("");
-  const [cameraModal, setCameraModal] = useState(false);
-  const [cameraUrl, setCameraUrl] = useState();
+  // const [cameraModal, setCameraModal] = useState(false);
+  // const [cameraUrl, setCameraUrl] = useState();
   const [event, setEvent] = useState("");
   const [loading, setLoading] = useState(true);
   const formRef = useRef();
@@ -281,10 +295,10 @@ export default function Attendence({ footerLinks }) {
   const [formData, setFormData] = useState({});
   const [actualDates, setActualDates] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [userData, setUserData] = useState({});
+  // const [userData, setUserData] = useState({});
   const [facilitator, setFacilitator] = useState();
   const [inputValue, setInputValue] = useState();
-  const [cameraFile, setCameraFile] = useState();
+  // const [cameraFile, setCameraFile] = useState();
   const [certificateHtml, setCertificateHtml] = useState();
   const reportTemplateRef = useRef(null);
   const [filter, setFilter] = useState({});
@@ -327,13 +341,13 @@ export default function Attendence({ footerLinks }) {
     setFormData({ ...formData, ...data });
   };
 
-  const deleteCurrentEventById = async () => {
-    const result = await eventService.deleteCurrentEvent({ id: id });
-    if (result?.events) {
-      navigate("/admin");
-      setShowDeleteModal(false);
-    }
-  };
+  // const deleteCurrentEventById = async () => {
+  //   const result = await eventService.deleteCurrentEvent({ id: id });
+  //   if (result?.events) {
+  //     navigate("/admin");
+  //     setShowDeleteModal(false);
+  //   }
+  // };
 
   const uiSchema = {
     documents_status: {
@@ -425,78 +439,99 @@ export default function Attendence({ footerLinks }) {
     } else {
       const startMoment = moment(eventResult?.event?.start_date);
       const endMoment = moment(eventResult?.event?.end_date);
-      let datesD = [];
-      while (startMoment.isSameOrBefore(endMoment)) {
-        datesD.push(startMoment.format("DD-MMM-YYYY"));
-        startMoment.add(1, "day");
+      let dates = [];
+      if (width <= 767) {
+        dates = [
+          {
+            name: t(startMoment.format("DD-MMM-YYYY")),
+            selector: (row) => (
+              <Suspense fallback="...">
+                <RenderAttendanceColumn
+                  row={{
+                    ...row,
+                    presentDate: `${startMoment.format("YYYY-MM-DD")}`,
+                  }}
+                />
+              </Suspense>
+            ),
+            sortable: false,
+            attr: "marks",
+          },
+        ];
+      } else {
+        let datesD = [];
+        while (startMoment.isSameOrBefore(endMoment)) {
+          datesD.push(startMoment.format("DD-MMM-YYYY"));
+          startMoment.add(1, "day");
+        }
+        dates = datesD?.map((e, i) => ({
+          name: t(moment(e).format("DD-MMM-YYYY")),
+          selector: (row) => (
+            <Suspense fallback="...">
+              <RenderAttendanceColumn
+                row={{
+                  ...row,
+                  index: i,
+                  presentDate: `${moment(e).format("YYYY-MM-DD")}`,
+                }}
+              />
+            </Suspense>
+          ),
+          sortable: false,
+          wrap: true,
+          attr: "marks",
+        }));
       }
-
-      const dates = datesD?.map((e, i) => ({
-        name: t(moment(e).format("DD-MMM-YYYY")),
-        selector: (row) => (
-          <Suspense fallback="...">
-            <RenderAttendanceColumn
-              row={{
-                ...row,
-                index: i,
-                presentDate: `${moment(e).format("YYYY-MM-DD")}`,
-              }}
-            />
-          </Suspense>
-        ),
-        sortable: false,
-        attr: "marks",
-      }));
       setActualDates(dates);
     }
     setLoading(false);
-  }, []);
+  }, [width]);
 
-  const uploadAttendencePicture = async (e) => {
-    // setError("");
-    if (cameraFile?.key) {
-      const apiResponse = await eventService.updateAttendance({
-        id: userData?.id,
-        status: "present",
-        lat: locationData?.latitude,
-        long: locationData?.longitude,
-        photo_1: cameraFile ? cameraFile?.key : "",
-      });
-      if (apiResponse?.data) {
-        const eventResult = await eventService.getEventListById({ id: id });
-        setUsers(eventResult?.event?.attendances);
-        setEvent(eventResult?.event);
-      }
-    }
-  };
+  // const uploadAttendencePicture = async (e) => {
+  //   // setError("");
+  //   if (cameraFile?.key) {
+  //     const apiResponse = await eventService.updateAttendance({
+  //       id: userData?.id,
+  //       status: "present",
+  //       lat: locationData?.latitude,
+  //       long: locationData?.longitude,
+  //       photo_1: cameraFile ? cameraFile?.key : "",
+  //     });
+  //     if (apiResponse?.data) {
+  //       const eventResult = await eventService.getEventListById({ id: id });
+  //       setUsers(eventResult?.event?.attendances);
+  //       setEvent(eventResult?.event);
+  //     }
+  //   }
+  // };
 
-  const updateUserData = async () => {
-    if (cameraFile?.key) {
-      const apiResponse = await eventService.updateAttendance({
-        id: userData?.id,
-        status: "present",
-        lat: locationData?.latitude,
-        long: locationData?.longitude,
-        photo_1: cameraFile ? cameraFile?.key : "",
-      });
-      if (apiResponse?.data) {
-        const eventResult = await eventService.getEventListById({ id: id });
-        setUsers(eventResult?.event?.attendances);
-        setEvent(eventResult?.event);
-      }
-    } else {
-      setError("Capture Picture First");
-    }
-  };
-  const handleInputChange = (event) => {
-    const inputValues = event.target.value;
-    setInputValue(inputValues);
-  };
+  // const updateUserData = async () => {
+  //   if (cameraFile?.key) {
+  //     const apiResponse = await eventService.updateAttendance({
+  //       id: userData?.id,
+  //       status: "present",
+  //       lat: locationData?.latitude,
+  //       long: locationData?.longitude,
+  //       photo_1: cameraFile ? cameraFile?.key : "",
+  //     });
+  //     if (apiResponse?.data) {
+  //       const eventResult = await eventService.getEventListById({ id: id });
+  //       setUsers(eventResult?.event?.attendances);
+  //       setEvent(eventResult?.event);
+  //     }
+  //   } else {
+  //     setError("Capture Picture First");
+  //   }
+  // };
+  // const handleInputChange = (event) => {
+  //   const inputValues = event.target.value;
+  //   setInputValue(inputValues);
+  // };
 
-  const debouncedHandleInputChange = useCallback(
-    debounce(handleInputChange, 1000),
-    []
-  );
+  // const debouncedHandleInputChange = useCallback(
+  //   debounce(handleInputChange, 1000),
+  //   []
+  // );
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
@@ -504,134 +539,134 @@ export default function Attendence({ footerLinks }) {
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
-  const handleAddParticipant = async (type) => {
-    setIsLoadingBtn(true);
-    if (type === "confirm") {
-      await onUpdateOrCreateAttendace({
-        id: facilitator?.id,
-        event_id: id,
-        locationData,
-      });
-      await getUsers();
-      handleShowModal(false);
-    } else {
-      await getUserData();
-    }
-    setIsLoadingBtn(false);
-  };
+  // const handleAddParticipant = async (type) => {
+  //   setIsLoadingBtn(true);
+  //   if (type === "confirm") {
+  //     await onUpdateOrCreateAttendace({
+  //       id: facilitator?.id,
+  //       event_id: id,
+  //       locationData,
+  //     });
+  //     await getUsers();
+  //     handleShowModal(false);
+  //   } else {
+  //     await getUserData();
+  //   }
+  //   setIsLoadingBtn(false);
+  // };
 
-  const handleShowModal = (boolean) => {
-    if (boolean) {
-      setShowModal(true);
-      setFacilitator();
-    } else {
-      setShowModal(false);
-    }
-    setError();
-  };
+  // const handleShowModal = (boolean) => {
+  //   if (boolean) {
+  //     setShowModal(true);
+  //     setFacilitator();
+  //   } else {
+  //     setShowModal(false);
+  //   }
+  //   setError();
+  // };
 
-  if (userData?.id) {
-    return (
-      <Box>
-        {
-          <Suspense fallback={<Loading />}>
-            <Camera
-              headerComponent={
-                <VStack bg="black" width="94%" pl="4">
-                  <AdminTypo.H6 color="white" bold>
-                    {t("MARK_ATTENDANCE_ORIENTATION")}
-                  </AdminTypo.H6>
-                  <HStack direction={["row", "row", "row"]}>
-                    <AdminTypo.H6 color="white" bold flex="0.3">
-                      {t("PRESENT")} :
-                      {users.filter((e) => e.status === "present").length}
-                    </AdminTypo.H6>
-                    <AdminTypo.H6 color="white" bold flex="0.3">
-                      {t("ABSENT")} :
-                      {users.filter((e) => e.status !== "present").length}
-                    </AdminTypo.H6>
-                  </HStack>
-                  <HStack direction={["row", "row", "row"]}>
-                    <AdminTypo.H6 color="white">
-                      {t("CANDIDATES_NAME")} {userData?.user?.first_name}
-                    </AdminTypo.H6>
-                  </HStack>
-                  <HStack>
-                    <AdminTypo.H6
-                      color="white"
-                      direction={["row", "row", "row"]}
-                    >
-                      {t("CANDIDATES")} - {paginationTotalRows || 0}
-                    </AdminTypo.H6>
-                  </HStack>
-                  <Stack>
-                    <AdminTypo.H6 my="2" color="white">
-                      {t("ATTENDANCE_CAMERA_SUBTITLE")}
-                    </AdminTypo.H6>
-                  </Stack>
-                </VStack>
-              }
-              footerComponent={
-                <HStack space={3} width="100%" justifyContent="space-between">
-                  {error && (
-                    <AdminTypo.H4 style={{ color: "red" }}>
-                      {error}
-                    </AdminTypo.H4>
-                  )}
-                  <AdminTypo.Secondarybutton
-                    shadow="BlueOutlineShadow"
-                    onPress={() => {
-                      updateUserData();
-                      cameraFile ? setUserData() : error;
-                      setCameraFile("");
-                      setCameraUrl();
-                    }}
-                  >
-                    {t("FINISH")}
-                  </AdminTypo.Secondarybutton>
-                  <AdminTypo.Secondarybutton
-                    isDisabled={userData?.index + 1 === users.length}
-                    variant="secondary"
-                    ml="4"
-                    px="5"
-                    onPress={() => {
-                      cameraFile ? uploadAttendencePicture() : error;
-                    }}
-                  >
-                    {t("NEXT")}
-                  </AdminTypo.Secondarybutton>
-                </HStack>
-              }
-              {...{
-                cameraModal,
-                setCameraModal: async (item) => {
-                  setUserData();
-                  setCameraModal(item);
-                },
-                cameraUrl,
-                setCameraUrl: async (url, file) => {
-                  if (file) {
-                    setError("");
-                    let formData = new FormData();
-                    formData.append("file", file);
-                    const uploadDoc = await uploadRegistryService.uploadPicture(
-                      formData
-                    );
-                    if (uploadDoc) {
-                      setCameraFile(uploadDoc);
-                    }
-                    setCameraUrl({ url, file });
-                  } else {
-                    setUserData();
-                  }
-                },
-              }}
-            />
-          </Suspense>
-        }
-      </Box>
-    );
-  }
+  // if (userData?.id) {
+  //   return (
+  //     <Box>
+  //       {
+  //         <Suspense fallback={<Loading />}>
+  //           <Camera
+  //             headerComponent={
+  //               <VStack bg="black" width="94%" pl="4">
+  //                 <AdminTypo.H6 color="white" bold>
+  //                   {t("MARK_ATTENDANCE_ORIENTATION")}
+  //                 </AdminTypo.H6>
+  //                 <HStack direction={["row", "row", "row"]}>
+  //                   <AdminTypo.H6 color="white" bold flex="0.3">
+  //                     {t("PRESENT")} :
+  //                     {users.filter((e) => e.status === "present").length}
+  //                   </AdminTypo.H6>
+  //                   <AdminTypo.H6 color="white" bold flex="0.3">
+  //                     {t("ABSENT")} :
+  //                     {users.filter((e) => e.status !== "present").length}
+  //                   </AdminTypo.H6>
+  //                 </HStack>
+  //                 <HStack direction={["row", "row", "row"]}>
+  //                   <AdminTypo.H6 color="white">
+  //                     {t("CANDIDATES_NAME")} {userData?.user?.first_name}
+  //                   </AdminTypo.H6>
+  //                 </HStack>
+  //                 <HStack>
+  //                   <AdminTypo.H6
+  //                     color="white"
+  //                     direction={["row", "row", "row"]}
+  //                   >
+  //                     {t("CANDIDATES")} - {paginationTotalRows || 0}
+  //                   </AdminTypo.H6>
+  //                 </HStack>
+  //                 <Stack>
+  //                   <AdminTypo.H6 my="2" color="white">
+  //                     {t("ATTENDANCE_CAMERA_SUBTITLE")}
+  //                   </AdminTypo.H6>
+  //                 </Stack>
+  //               </VStack>
+  //             }
+  //             footerComponent={
+  //               <HStack space={3} width="100%" justifyContent="space-between">
+  //                 {error && (
+  //                   <AdminTypo.H4 style={{ color: "red" }}>
+  //                     {error}
+  //                   </AdminTypo.H4>
+  //                 )}
+  //                 <AdminTypo.Secondarybutton
+  //                   shadow="BlueOutlineShadow"
+  //                   onPress={() => {
+  //                     updateUserData();
+  //                     cameraFile ? setUserData() : error;
+  //                     setCameraFile("");
+  //                     setCameraUrl();
+  //                   }}
+  //                 >
+  //                   {t("FINISH")}
+  //                 </AdminTypo.Secondarybutton>
+  //                 <AdminTypo.Secondarybutton
+  //                   isDisabled={userData?.index + 1 === users.length}
+  //                   variant="secondary"
+  //                   ml="4"
+  //                   px="5"
+  //                   onPress={() => {
+  //                     cameraFile ? uploadAttendencePicture() : error;
+  //                   }}
+  //                 >
+  //                   {t("NEXT")}
+  //                 </AdminTypo.Secondarybutton>
+  //               </HStack>
+  //             }
+  //             {...{
+  //               cameraModal,
+  //               setCameraModal: async (item) => {
+  //                 setUserData();
+  //                 setCameraModal(item);
+  //               },
+  //               cameraUrl,
+  //               setCameraUrl: async (url, file) => {
+  //                 if (file) {
+  //                   setError("");
+  //                   let formData = new FormData();
+  //                   formData.append("file", file);
+  //                   const uploadDoc = await uploadRegistryService.uploadPicture(
+  //                     formData
+  //                   );
+  //                   if (uploadDoc) {
+  //                     setCameraFile(uploadDoc);
+  //                   }
+  //                   setCameraUrl({ url, file });
+  //                 } else {
+  //                   setUserData();
+  //                 }
+  //               },
+  //             }}
+  //           />
+  //         </Suspense>
+  //       }
+  //     </Box>
+  //   );
+  // }
 
   return (
     <Layout
@@ -639,10 +674,10 @@ export default function Attendence({ footerLinks }) {
         isShowNotificationButton: true,
       }}
       _sidebar={footerLinks}
-      // loading={loading}
+      loading={loading}
     >
-      <VStack p={4}>
-        <VStack space={8}>
+      <VStack py={4} px={[1, 1, 4]}>
+        <VStack space={[2, 2, 8]}>
           <HStack justifyContent={"space-between"}>
             <HStack space={2}>
               <IconByName isDisabled name="Home4LineIcon" />
@@ -657,17 +692,33 @@ export default function Attendence({ footerLinks }) {
               <AdminTypo.H4 bold>{t("PRERAK_ORIENTATION")}</AdminTypo.H4>
             </HStack>
           </HStack>
-          <Box bg="timeLineBg" rounded={"xl"} p={4}>
-            <VStack>
-              <HStack space={10} alignItems={"center"} flexWrap={"wrap"}>
+          <VStack bg="timeLineBg" rounded={"xl"} p={4}>
+            <Stack
+              space={[2, 2, 10]}
+              direction={["column", "column", "row"]}
+              alignItems={["", "", "center"]}
+              flexWrap="wrap"
+            >
+              <HStack alignItems={"center"} space="1">
+                <IconByName
+                  name="CalendarLineIcon"
+                  color="textGreyColor.800"
+                  _icon={{ size: "18" }}
+                />
                 <AdminTypo.H6 bold>{t("ORIENTATION_SCHEDULED")}</AdminTypo.H6>
-                <HStack space={2} alignItems={"center"}>
+              </HStack>
+              <HStack
+                space={1}
+                direction={["column", "row", "row"]}
+                alignItems={["", "", "center"]}
+              >
+                <HStack alignItems={"center"} space="1">
                   <IconByName
                     name="CalendarLineIcon"
                     color="textGreyColor.800"
                     _icon={{ size: "18" }}
                   />
-                  <AdminTypo.H7 bold color="textGreyColor.800" space="1">
+                  <AdminTypo.H7 bold color="textGreyColor.800">
                     {event?.start_date
                       ? moment(event?.start_date).format("MMM DD, Y")
                       : "-"}
@@ -677,7 +728,9 @@ export default function Attendence({ footerLinks }) {
                       ? moment(event?.start_time, "HH:mm:ssA").format("hh:mm A")
                       : "-"}
                   </AdminTypo.H7>
-                  to
+                </HStack>
+                <HStack alignItems={"center"} space="1">
+                  <AdminTypo.H7 bold>to</AdminTypo.H7>
                   <AdminTypo.H7 bold color="textGreyColor.800">
                     {event?.end_date
                       ? moment(event?.end_date).format("MMM DD, Y")
@@ -689,28 +742,37 @@ export default function Attendence({ footerLinks }) {
                       : "-"}
                   </AdminTypo.H7>
                 </HStack>
-                <HStack space={4} alignItems={"center"}>
-                  <IconByName
-                    name="UserLineIcon"
-                    color="textGreyColor.800"
-                    _icon={{ size: "18" }}
-                  />
-                  <AdminTypo.H7 bold>{t("MASTER_TRAINER")} -</AdminTypo.H7>
-                  <Badge alignSelf="center" bg="white" borderRadius="5px">
-                    {event?.master_trainer ? event?.master_trainer : ""}
-                  </Badge>
-                </HStack>
-                <AdminTypo.Secondarybutton
-                  onPress={() => navigate(`/admin/event/${id}/edit`)}
-                >
-                  {t("EDIT")}
-                </AdminTypo.Secondarybutton>
               </HStack>
-            </VStack>
-          </Box>
-          <Stack>
-            <HStack alignItems={"center"} justifyContent={"space-between"}>
-              <HStack alignItems={"center"} space={6}>
+              <HStack space={1} alignItems={"center"}>
+                <IconByName
+                  name="UserLineIcon"
+                  color="textGreyColor.800"
+                  _icon={{ size: "18" }}
+                />
+                <AdminTypo.H7 bold>{t("MASTER_TRAINER")} -</AdminTypo.H7>
+                <Badge alignSelf="center" bg="white" borderRadius="5px">
+                  {event?.master_trainer ? event?.master_trainer : ""}
+                </Badge>
+              </HStack>
+              <AdminTypo.Secondarybutton
+                onPress={() => navigate(`/admin/event/${id}/edit`)}
+              >
+                {t("EDIT")}
+              </AdminTypo.Secondarybutton>
+            </Stack>
+          </VStack>
+          <Stack space={4}>
+            <HStack
+              justifyContent={"space-between"}
+              direction={["column", "column", "row"]}
+              alignItems={["", "", "center"]}
+              space={4}
+            >
+              <HStack
+                space={4}
+                direction={["column", "column", "row"]}
+                alignItems={["", "", "center"]}
+              >
                 <HStack space={3}>
                   <IconByName isDisabled name="GroupLineIcon" />
                   <AdminTypo.H4 bold>
@@ -739,43 +801,41 @@ export default function Attendence({ footerLinks }) {
                 onChange={debouncedHandleSearch}
               />
             </HStack>
-            <ScrollView
-              maxH={Height - refAppBar?.clientHeight}
-              minH={Height - refAppBar?.clientHeight}
-            >
-              <DataTable
-                columns={[
-                  ...scheduleCandidates(t, actualDates, certificateDownload),
-                ]}
-                key={users}
-                // filter={filter}
-                data={users}
-                subHeader
-                persistTableHead
-                progressPending={loading}
-                customStyles={customStyles}
-                pagination
-                paginationServer
-                paginationTotalRows={paginationTotalRows}
-                paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-                paginationPerPage={filter?.limit ? filter?.limit : 6}
-                paginationDefaultPage={filter?.page}
-                onChangeRowsPerPage={useCallback(
-                  (e) => {
-                    setFilter({ ...filter, limit: e, page: 1 });
-                  },
-                  [filter]
-                )}
-                onChangePage={useCallback(
-                  (e) => {
-                    setFilter({ ...filter, page: e });
-                  },
-                  [filter]
-                )}
-              />
-            </ScrollView>
+            <DataTable
+              columns={[
+                ...scheduleCandidates({
+                  t,
+                  days: actualDates,
+                  certificateDownload,
+                  width,
+                }),
+              ]}
+              key={users + width}
+              data={users}
+              persistTableHead
+              progressPending={loading}
+              customStyles={customStyles}
+              pagination
+              paginationServer
+              paginationTotalRows={paginationTotalRows}
+              paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
+              paginationPerPage={filter?.limit ? filter?.limit : 6}
+              paginationDefaultPage={filter?.page}
+              onChangeRowsPerPage={useCallback(
+                (e) => {
+                  setFilter({ ...filter, limit: e, page: 1 });
+                },
+                [filter]
+              )}
+              onChangePage={useCallback(
+                (e) => {
+                  setFilter({ ...filter, page: e });
+                },
+                [filter]
+              )}
+            />
           </Stack>
-          <Modal
+          {/* <Modal
             avoidKeyboard
             size="xl"
             isOpen={showModal}
@@ -916,11 +976,11 @@ export default function Attendence({ footerLinks }) {
                 </HStack>
               </Modal.Footer>
             </Modal.Content>
-          </Modal>
+          </Modal> */}
 
           {/* delete modal */}
 
-          <Modal
+          {/* <Modal
             isOpen={showDeleteModal}
             onClose={() => setShowDeleteModal(false)}
             size="sm"
@@ -966,7 +1026,7 @@ export default function Attendence({ footerLinks }) {
                 </VStack>
               </Modal.Body>
             </Modal.Content>
-          </Modal>
+          </Modal> */}
 
           <Modal
             isOpen={formData?.id}
