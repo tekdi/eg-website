@@ -539,7 +539,7 @@
   "FACILITATOR_EVENT_TYPE_PCR_TRAINING": "PCR Training",
   "FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING": "Prerak Camp Execution Training",
   "FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING": "Prerak FLN Training",
-  "FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION": "Prerak Orientation",
+  "FACILITATOR_EVENT_TYPE_PRAGATI_ORIENTATION": "Pragati Orientation",
   "FACILITATOR_FULL_TIME": "Full Time",
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "Divorced",
   "FACILITATOR_MARITAL_STATUS_MARRIED": "Married",
@@ -863,6 +863,7 @@
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "School teacher visit",
   "MISCELLANEOUS_ACTIVITIES_STAKEHOLDER_VISIT": "Stakeholder visit",
   "MISSILINEOUS_SUCCESS_MESSAGE": "Miscellaneous Activities Saved Successfully",
+  "MISCELLANEOUS_ACTIVITIES_E_PCP_ACTIVITIES": "E.P.C.P. Activities",
   "MOBILE_NO": "Mobile No",
   "MOBILE_NUMBER": "Mobile Number",
   "MOBILE_NUMBER_ALREADY_EXISTS": "Mobile number already exists",
@@ -1465,5 +1466,7 @@
   "ORIENTATION_SCHEDULED": "Orientation Scheduled",
   "REMOVE_SELECTED": "Remove Selected",
   "SAVE_EVENT": "Save Event",
-  "LEARNER_ATTENDANCE_MESSAGE": "Are learners present today?"
+  "LEARNER_ATTENDANCE_MESSAGE": "Are learners present today?",
+  "DATE": "Date",
+  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "Start time should be greater than end time"
 }

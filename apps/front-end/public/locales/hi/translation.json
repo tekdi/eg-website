@@ -541,7 +541,7 @@
   "FACILITATOR_EVENT_TYPE_PCR_TRAINING": "पी.सी.आर. प्रशिक्षण",
   "FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING": "प्रेरक शिविर क्रियान्वयन प्रशिक्षण",
   "FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING": "प्रेरक FLN प्रशिक्षण",
-  "FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION": "प्रेरक ओरिएंटेशन",
+  "FACILITATOR_EVENT_TYPE_PRAGATI_ORIENTATION": "प्रगति ओरिएंटेशन",
   "FACILITATOR_FULL_TIME": "फुल टाइम",
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "तलाकशुदा",
   "FACILITATOR_MARITAL_STATUS_MARRIED": "शादीशुदा",
@@ -864,6 +864,7 @@
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "स्कूल शिक्षक का दौरा",
   "MISCELLANEOUS_ACTIVITIES_STAKEHOLDER_VISIT": "हितधारक का दौरा;",
   "MISSILINEOUS_SUCCESS_MESSAGE": "विविध गतिविधियाँ सफलतापूर्वक गईं",
+  "MISCELLANEOUS_ACTIVITIES_E_PCP_ACTIVITIES": "ई.पी.सी.पी.गतिविधियाँ",
   "MOBILE_NO": "मोबाइल नंबर",
   "MOBILE_NUMBER": "मोबाइल नंबर",
   "MOBILE_NUMBER_ALREADY_EXISTS": "मोबाइल नंबर पहले से मौजूद है",
@@ -1466,5 +1467,7 @@
   "ORIENTATION_SCHEDULED": "ओरिएंटेशन निर्धारित किया गया है",
   "REMOVE_SELECTED": "चयनित को हटाएँ",
   "SAVE_EVENT": "ईवेंट सेव करें",
-  "LEARNER_ATTENDANCE_MESSAGE": "क्या आज विद्यार्थी मौजूद हैं?"
+  "LEARNER_ATTENDANCE_MESSAGE": "क्या आज विद्यार्थी मौजूद हैं?",
+  "DATE": "तारीख",
+  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "प्रारंभ समय समाप्ति समय से अधिक होना चाहिए।"
 }
