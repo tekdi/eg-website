@@ -161,7 +161,6 @@ export default function AddressEdit({ ip }) {
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
-        console.log(e);
         const data = schema1["properties"]?.[e]["properties"]?.[key];
         if (data) {
           setStep(e);
@@ -439,8 +438,7 @@ export default function AddressEdit({ ip }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        name: t("ADDRESS"),
-
+        name: t("ADDRESS_DETAILS"),
         lang,
         setLang,
       }}
@@ -479,7 +477,15 @@ export default function AddressEdit({ ip }) {
               isDisabled={isDisable}
               mt="3"
               type="submit"
-              onPress={() => formRef?.current?.submit()}
+              onPress={() => {
+                if (formRef.current.validateForm()) {
+                  formRef?.current?.submit();
+                } else {
+                  if (formRef.current.validateForm()) {
+                    formRef?.current?.submit();
+                  }
+                }
+              }}
             >
               {pages[pages?.length - 1] === page && t("SAVE")}
             </FrontEndTypo.Primarybutton>

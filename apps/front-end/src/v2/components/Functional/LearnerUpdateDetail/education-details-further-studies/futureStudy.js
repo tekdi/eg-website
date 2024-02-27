@@ -133,14 +133,12 @@ export default function FutureStudy({ userTokenInfo }) {
           value: "value",
         }),
       });
+
       newSchema = getOptions(newSchema, {
-        key: "aspiration_mapping",
-        extra: getOptions(newSchema["properties"]?.["aspiration_mapping"], {
-          key: "parent_support",
-          arr: career_aspiration.data?.PARENT_SUPPORT,
-          title: "title",
-          value: "value",
-        }),
+        key: "parent_support",
+        arr: career_aspiration?.data?.PARENT_SUPPORT,
+        title: "title",
+        value: "value",
       });
 
       setSchema(newSchema);
@@ -152,6 +150,7 @@ export default function FutureStudy({ userTokenInfo }) {
         career_aspiration_details:
           result?.core_beneficiaries?.career_aspiration_details,
         career_aspiration: result?.core_beneficiaries?.career_aspiration,
+        parent_support: result?.core_beneficiaries?.parent_support,
         aspiration_mapping: {
           learning_motivation: getUniqueArray(
             result?.program_beneficiaries?.learning_motivation
