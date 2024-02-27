@@ -454,6 +454,26 @@ export default function BenificiaryEducation() {
                 borderBottomWidth="1px"
                 borderBottomColor="appliedColor"
               >
+                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
+                  {t("WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES")}
+                </FrontEndTypo.H3>
+
+                <FrontEndTypo.H3
+                  color="textGreyColor.800"
+                  fontWeight="400"
+                  flex="4"
+                >
+                  {benificiary?.core_beneficiaries?.parent_support
+                    ? benificiary?.core_beneficiaries?.parent_support
+                    : "-"}
+                </FrontEndTypo.H3>
+              </HStack>
+              <HStack
+                space={2}
+                alignItems="Center"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"
