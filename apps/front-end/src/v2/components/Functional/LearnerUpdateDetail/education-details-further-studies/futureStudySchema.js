@@ -7,27 +7,30 @@ export default {
       type: "object",
       required: ["aspiration_mapping"],
       properties: {
-        // career_aspiration: {
-        //   minItems: 1,
-        //   type: "string",
-        //   label: "CAREER_ASPIRATION",
-        //   grid: 1,
-        //   format: "RadioBtn",
-        // },
+        career_aspiration: {
+          minItems: 1,
+          type: "string",
+          label: "CAREER_ASPIRATION",
+          grid: 1,
+          format: "RadioBtn",
+        },
 
-        // career_aspiration_details: {
-        //   type: ["string", "null"],
-        //   title: "TELL_IN_DETAIL",
-        // },
+        career_aspiration_details: {
+          type: ["string", "null"],
+          title: "TELL_IN_DETAIL",
+        },
+
+        parent_support: {
+          label: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+          type: "string",
+          grid: 1,
+          format: "RadioBtn",
+        },
 
         aspiration_mapping: {
           type: "object",
           // label: "ASPIRATION_MAPPING",
-          required: [
-            "learning_motivation",
-            "type_of_support_needed",
-            "parent_support",
-          ],
+          required: ["learning_motivation", "type_of_support_needed"],
           properties: {
             learning_motivation: {
               minItems: 1,
@@ -38,12 +41,7 @@ export default {
               format: "MultiCheck",
               uniqueItems: true,
             },
-            parent_support: {
-              label: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
-              type: "string",
-              grid: 1,
-              format: "RadioBtn",
-            },
+
             type_of_support_needed: {
               minItems: 1,
               maxItems: 3,
