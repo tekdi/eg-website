@@ -11,7 +11,6 @@ export default function Time({ value, onChange }) {
         border: "1px solid #bfc9e2",
         borderRadius: "5px",
         height: "28px",
-        marginBottom: "7px",
         padding: "5px",
         position: "relative",
         zIndex: "2",
