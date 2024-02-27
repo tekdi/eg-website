@@ -1450,5 +1450,5 @@
   "SAVE_EVENT": "Save Event",
   "LEARNER_ATTENDANCE_MESSAGE": "Are learners present today?",
   "DATE": "Date",
-  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "Start time should be greater than start time"
+  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "Start time should be greater than end time"
 }

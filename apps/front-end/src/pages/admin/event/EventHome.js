@@ -336,6 +336,33 @@ export default function EventHome({ footerLinks }) {
     },
   };
 
+  const checkValidation = (formData, key = [], returnError = false) => {
+    let erros;
+    if (key.includes("root_start_time") && formData?.end_time) {
+      if (formData?.start_time > formData?.end_time) {
+        const newErrors = {
+          start_time: {
+            __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
+          },
+        };
+        erros = { ...(erros || {}), ...newErrors };
+      }
+    }
+    if (key.includes("root_end_time") && formData?.start_time) {
+      const newErrors = {
+        end_time: {
+          __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
+        },
+      };
+      erros = { ...(erros || {}), ...newErrors };
+    }
+    if (returnError) {
+      return erros;
+    } else {
+      setErrors(erros);
+    }
+  };
+  console.log(errors);
   const onChange = async (data, id) => {
     setErrors({});
     const newData = data.formData;
@@ -355,80 +382,76 @@ export default function EventHome({ footerLinks }) {
         setErrors(newErrors);
       }
     }
-    if (id === "root_start_time" && formData?.end_time) {
-      if (formData?.start_time > formData?.end_time) {
-        const newErrors = {
-          start_time: {
-            __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
-          },
-        };
-        setErrors(newErrors);
-      }
-    } else if (id === "root_end_time" && formData?.start_time) {
-      const newErrors = {
-        end_time: {
-          __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
-        },
-      };
-      setErrors(newErrors);
+    if (id === "root_start_time") {
+      checkValidation(newData, [id]);
+    } else if (id === "root_end_time") {
+      checkValidation(newData, [id]);
     }
   };
 
   const onSubmit = async (data) => {
     let newFormData = data?.formData;
+    const resultValidation = checkValidation(
+      newFormData,
+      ["root_start_time", "root_end_time"],
+      true
+    );
+    if (!resultValidation) {
+      if (Object.keys(errors).length === 0) {
+        setIsDisabled(true);
+        setFormData(newFormData);
+        const { startDate, endDate } = JSON.parse(newFormData.date || "{}");
+        const obj = {
+          ...newFormData,
+          start_date: moment(startDate).format("YYYY-MM-DD"),
+          end_date: moment(endDate).format("YYYY-MM-DD"),
+          attendees: selectedRowId,
+        };
+        if (step === "edit") {
+          const data = await eventService.updateEvent(id, obj);
+          if (data?.success === true) {
+            setIsDisabled(false);
+            navigate(`/admin/event/${data?.data?.events?.id}`);
+          }
+        } else {
+          const apiResponse = await eventService.createNewEvent(obj);
+          if (apiResponse?.success === true) {
+            setIsDisabled(false);
+            toast.show({
+              render: () => {
+                return (
+                  <Alert status="success" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{t("EVENT_CREATED_SUCCESSFULLY")}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                );
+              },
+            });
 
-    if (Object.keys(errors).length === 0) {
-      setIsDisabled(true);
-      setFormData(newFormData);
-      const { startDate, endDate } = JSON.parse(newFormData.date || "{}");
-      const obj = {
-        ...newFormData,
-        start_date: moment(startDate).format("YYYY-MM-DD"),
-        end_date: moment(endDate).format("YYYY-MM-DD"),
-        attendees: selectedRowId,
-      };
-      if (step === "edit") {
-        const data = await eventService.updateEvent(id, obj);
-        if (data?.success === true) {
-          setIsDisabled(false);
-          navigate(`/admin/event/${data?.data?.events?.id}`);
+            navigate(`/admin`);
+          } else {
+            toast.show({
+              render: () => {
+                return (
+                  <Alert status="error" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{apiResponse?.message}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                );
+              },
+            });
+          }
         }
       } else {
-        const apiResponse = await eventService.createNewEvent(obj);
-        if (apiResponse?.success === true) {
-          setIsDisabled(false);
-          toast.show({
-            render: () => {
-              return (
-                <Alert status="success" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{t("EVENT_CREATED_SUCCESSFULLY")}</BodyMedium>
-                  </HStack>
-                </Alert>
-              );
-            },
-          });
-
-          navigate(`/admin`);
-        } else {
-          toast.show({
-            render: () => {
-              return (
-                <Alert status="error" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{apiResponse?.message}</BodyMedium>
-                  </HStack>
-                </Alert>
-              );
-            },
-          });
-        }
+        setIsDisabled(false);
+        alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
       }
     } else {
-      setIsDisabled(false);
-      alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
+      setErrors(resultValidation);
     }
   };
 
