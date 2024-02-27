@@ -17,7 +17,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
   const [fields, setFields] = React.useState([]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "");
 
   React.useEffect(() => {
     facilitatorDetails();

@@ -70,7 +70,7 @@ export default function Orientation({ footerLinks }) {
   const [academicData, setAcademicData] = React.useState();
   const [programID, setProgramID] = React.useState();
   const [programData, setProgramData] = React.useState([]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "");
 
   React.useEffect(() => {
     const fetchData = async () => {

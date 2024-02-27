@@ -43,7 +43,7 @@ export default function BenificiaryProfileView(props) {
   const [reasonValue, setReasonValue] = React.useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
   const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
   const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
 

@@ -41,7 +41,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const [communityLength, setCommunityLength] = useState(0);
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
 
   useEffect(async () => {
     const result = await campService.campNonRegisteredUser();

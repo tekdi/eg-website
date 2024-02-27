@@ -62,11 +62,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = useState(false);
-  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [lmsDEtails, setLmsDetails] = useState();
   const { id } = userTokenInfo?.authUser || [];
   const [random, setRandom] = useState();
   const [events, setEvents] = useState("");
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "");
+
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 

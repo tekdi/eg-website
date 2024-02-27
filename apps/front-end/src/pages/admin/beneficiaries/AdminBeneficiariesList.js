@@ -46,7 +46,7 @@ export default function AdminHome({ footerLinks }) {
 
   const [data, setData] = React.useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
 
   const dropDown = React.useCallback((triggerProps, t) => {
     return (

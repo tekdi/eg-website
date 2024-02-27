@@ -12,7 +12,7 @@ export default function PcrView() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "");
   const [data, setData] = React.useState({});
 
   React.useEffect(async () => {

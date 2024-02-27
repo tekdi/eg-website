@@ -107,7 +107,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
 
   React.useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);

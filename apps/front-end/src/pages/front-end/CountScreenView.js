@@ -8,7 +8,7 @@ import { HStack, VStack } from "native-base";
 import React from "react";
 
 export default function TableView({ footerLinks }) {
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
 
   React.useEffect(async () => {
     const selectStatus = await benificiaryRegistoryService.getStatusList();

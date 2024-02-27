@@ -241,7 +241,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
   const [loadingHeight, setLoadingHeight] = React.useState(0);
   const ref = React.useRef(null);
   const fa_id = localStorage.getItem("id");
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
 
   React.useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();

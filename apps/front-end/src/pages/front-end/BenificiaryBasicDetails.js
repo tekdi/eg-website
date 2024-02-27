@@ -19,7 +19,7 @@ export default function BenificiaryBasicDetails() {
   const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [requestData, setRequestData] = React.useState([]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {

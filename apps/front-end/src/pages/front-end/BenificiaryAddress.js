@@ -15,7 +15,7 @@ export default function BenificiaryAddress() {
   const [benificiary, setbenificiary] = React.useState();
   const [userId] = React.useState(params?.id);
   const navigate = useNavigate();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
 
   const { t } = useTranslation();
   const [requestData, setRequestData] = React.useState([]);

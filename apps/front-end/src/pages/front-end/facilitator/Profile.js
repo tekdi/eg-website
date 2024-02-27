@@ -18,7 +18,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "");
 
   React.useEffect(() => {
     const percentage =

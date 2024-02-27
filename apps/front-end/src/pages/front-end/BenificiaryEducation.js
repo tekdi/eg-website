@@ -42,7 +42,7 @@ export default function BenificiaryEducation() {
   const [benificiary, setbenificiary] = React.useState();
   const [userId, setUserId] = React.useState(params?.id);
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = React.useState(localStorage.getItem("lang") || "");
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [requestData, setRequestData] = React.useState([]);
