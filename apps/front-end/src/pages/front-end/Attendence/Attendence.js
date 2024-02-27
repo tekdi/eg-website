@@ -1,32 +1,32 @@
 import {
   IconByName,
   AdminLayout as Layout,
-  Camera,
+  // Camera,
   AdminTypo,
-  FrontEndTypo,
-  uploadRegistryService,
+  // FrontEndTypo,
+  // uploadRegistryService,
   eventService,
-  Loading,
+  // Loading,
   attendanceService,
-  facilitatorRegistryService,
-  ImageView,
+  // facilitatorRegistryService,
+  // ImageView,
   testRegistryService,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import Chip, { ChipStatus } from "component/Chip";
+// import Chip, { ChipStatus } from "component/Chip";
 import {
-  Box,
   HStack,
   VStack,
   Text,
   Avatar,
   Modal,
-  ScrollView,
+  // ScrollView,
   Stack,
-  Radio,
+  // Radio,
   Switch,
   Badge,
   Input,
+  Select,
 } from "native-base";
 import React, {
   useCallback,
@@ -38,11 +38,11 @@ import React, {
 } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
-import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
-import schema from "./schema";
+// import Form from "@rjsf/core";
+// import validator from "@rjsf/validator-ajv8";
+// import schema from "./schema";
 import { useTranslation } from "react-i18next";
-import Clipboard from "component/Clipboard";
+// import Clipboard from "component/Clipboard";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { debounce } from "lodash";
@@ -54,12 +54,10 @@ const customStyles = {
       background: "#E0E0E0",
       fontSize: "14px",
       color: "#616161",
-      justifyContent: "center",
     },
   },
   cells: {
     style: {
-      justifyContent: "center",
       padding: "10px 5px",
     },
   },
@@ -257,7 +255,7 @@ const RenderAttendanceColumn = memo(({ row }) => {
           : "Mark"}
       </AdminTypo.H7>
       <Switch
-        key={attendance}
+        key={attendance + attendance?.status}
         isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
         offTrackColor={attendance?.status ? "dangerColor" : "gray.200"}
         onTrackColor="successColor"
@@ -290,19 +288,20 @@ export default function Attendence({ footerLinks }) {
   // const [cameraUrl, setCameraUrl] = useState();
   const [event, setEvent] = useState("");
   const [loading, setLoading] = useState(true);
-  const formRef = useRef();
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({});
+  // const formRef = useRef();
+  // const [error, setError] = useState("");
+  // const [formData, setFormData] = useState({});
   const [actualDates, setActualDates] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
   // const [userData, setUserData] = useState({});
-  const [facilitator, setFacilitator] = useState();
-  const [inputValue, setInputValue] = useState();
+  // const [facilitator, setFacilitator] = useState();
+  // const [inputValue, setInputValue] = useState();
   // const [cameraFile, setCameraFile] = useState();
   const [certificateHtml, setCertificateHtml] = useState();
   const reportTemplateRef = useRef(null);
   const [filter, setFilter] = useState({});
-  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
+  // const [isLoadingBtn, setIsLoadingBtn] = useState(false);
+  const [eventDates, setEventDates] = useState([]);
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
@@ -320,26 +319,26 @@ export default function Attendence({ footerLinks }) {
     });
   };
 
-  const getUserData = async () => {
-    const result = await facilitatorRegistryService.getOne({
-      id: inputValue,
-    });
-    if (result?.id) {
-      setError();
-      setFacilitator(result);
-    } else {
-      setError("User Data not found");
-    }
-  };
+  // const getUserData = async () => {
+  //   const result = await facilitatorRegistryService.getOne({
+  //     id: inputValue,
+  //   });
+  //   if (result?.id) {
+  //     setError();
+  //     setFacilitator(result);
+  //   } else {
+  //     setError("User Data not found");
+  //   }
+  // };
 
   useEffect(() => {
     getLocation();
   }, []);
 
-  const handleFormChange = (props) => {
-    const data = props?.formData;
-    setFormData({ ...formData, ...data });
-  };
+  // const handleFormChange = (props) => {
+  //   const data = props?.formData;
+  //   setFormData({ ...formData, ...data });
+  // };
 
   // const deleteCurrentEventById = async () => {
   //   const result = await eventService.deleteCurrentEvent({ id: id });
@@ -349,30 +348,30 @@ export default function Attendence({ footerLinks }) {
   //   }
   // };
 
-  const uiSchema = {
-    documents_status: {
-      "ui:widget": "checkboxes",
-      "ui:options": {
-        inline: true,
-      },
-    },
-  };
+  // const uiSchema = {
+  //   documents_status: {
+  //     "ui:widget": "checkboxes",
+  //     "ui:options": {
+  //       inline: true,
+  //     },
+  //   },
+  // };
 
-  const onSubmit = async (data) => {
-    const apiResponse = await eventService.editAttendanceDocumentList({
-      id: formData?.user_id,
-      page_type: "documents_checklist",
-      documents_status: data?.documents_status,
-    });
-    if (apiResponse?.status === 200) {
-      setFormData();
-    }
-    if (apiResponse?.status === 200) {
-      const eventResult = await eventService.getEventListById({ id: id });
-      setUsers(eventResult?.event?.attendances);
-      setEvent(eventResult?.event);
-    }
-  };
+  // const onSubmit = async (data) => {
+  //   const apiResponse = await eventService.editAttendanceDocumentList({
+  //     id: formData?.user_id,
+  //     page_type: "documents_checklist",
+  //     documents_status: data?.documents_status,
+  //   });
+  //   if (apiResponse?.status === 200) {
+  //     setFormData();
+  //   }
+  //   if (apiResponse?.status === 200) {
+  //     const eventResult = await eventService.getEventListById({ id: id });
+  //     setUsers(eventResult?.event?.attendances);
+  //     setEvent(eventResult?.event);
+  //   }
+  // };
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -418,6 +417,27 @@ export default function Attendence({ footerLinks }) {
     await getUsers();
   }, [filter]);
 
+  const setDate = (datesD) => {
+    const dates = datesD?.map((e, i) => ({
+      name: t(moment(e).format("DD-MMM-YYYY")),
+      selector: (row) => (
+        <Suspense fallback="...">
+          <RenderAttendanceColumn
+            row={{
+              ...row,
+              index: i,
+              presentDate: `${moment(e).format("YYYY-MM-DD")}`,
+            }}
+          />
+        </Suspense>
+      ),
+      sortable: false,
+      wrap: true,
+      attr: "marks",
+    }));
+    setActualDates(dates);
+  };
+
   useEffect(async () => {
     setLoading(true);
     const eventResult = await eventService.getEventListById({ id });
@@ -439,50 +459,18 @@ export default function Attendence({ footerLinks }) {
     } else {
       const startMoment = moment(eventResult?.event?.start_date);
       const endMoment = moment(eventResult?.event?.end_date);
-      let dates = [];
-      if (width <= 767) {
-        dates = [
-          {
-            name: t(startMoment.format("DD-MMM-YYYY")),
-            selector: (row) => (
-              <Suspense fallback="...">
-                <RenderAttendanceColumn
-                  row={{
-                    ...row,
-                    presentDate: `${startMoment.format("YYYY-MM-DD")}`,
-                  }}
-                />
-              </Suspense>
-            ),
-            sortable: false,
-            attr: "marks",
-          },
-        ];
-      } else {
-        let datesD = [];
-        while (startMoment.isSameOrBefore(endMoment)) {
-          datesD.push(startMoment.format("DD-MMM-YYYY"));
-          startMoment.add(1, "day");
-        }
-        dates = datesD?.map((e, i) => ({
-          name: t(moment(e).format("DD-MMM-YYYY")),
-          selector: (row) => (
-            <Suspense fallback="...">
-              <RenderAttendanceColumn
-                row={{
-                  ...row,
-                  index: i,
-                  presentDate: `${moment(e).format("YYYY-MM-DD")}`,
-                }}
-              />
-            </Suspense>
-          ),
-          sortable: false,
-          wrap: true,
-          attr: "marks",
-        }));
+      let datesD = [];
+      while (startMoment.isSameOrBefore(endMoment)) {
+        datesD.push(startMoment.format("DD-MMM-YYYY"));
+        startMoment.add(1, "day");
       }
-      setActualDates(dates);
+
+      if (width <= 767) {
+        setEventDates(datesD);
+        setDate(datesD?.[0] ? [datesD?.[0]] : []);
+      } else {
+        setDate(datesD);
+      }
     }
     setLoading(false);
   }, [width]);
@@ -677,7 +665,7 @@ export default function Attendence({ footerLinks }) {
       loading={loading}
     >
       <VStack py={4} px={[1, 1, 4]}>
-        <VStack space={[2, 2, 8]}>
+        <VStack space={[6, 6, 8]}>
           <HStack justifyContent={"space-between"}>
             <HStack space={2}>
               <IconByName isDisabled name="Home4LineIcon" />
@@ -769,11 +757,11 @@ export default function Attendence({ footerLinks }) {
               space={4}
             >
               <HStack
-                space={4}
-                direction={["column", "column", "row"]}
-                alignItems={["", "", "center"]}
+                space={[2, 2, 4]}
+                // direction={["column", "column", "row"]}
+                // alignItems={["", "", "center"]}
               >
-                <HStack space={3}>
+                <HStack space={[1, 1, 3]}>
                   <IconByName isDisabled name="GroupLineIcon" />
                   <AdminTypo.H4 bold>
                     {t("CANDIDATES")} ({users?.length})
@@ -785,9 +773,6 @@ export default function Attendence({ footerLinks }) {
                     // setShowModal(true);
                     // setFacilitatorProfile();
                   }}
-                  endIcon={
-                    <IconByName name="AddFillIcon" _icon={{ size: "15" }} />
-                  }
                 >
                   {t("ADD_PARTICIPANTS")}
                 </AdminTypo.Secondarybutton>
@@ -799,7 +784,28 @@ export default function Attendence({ footerLinks }) {
                 placeholder={t("SEARCH")}
                 variant="outline"
                 onChange={debouncedHandleSearch}
+                minH={[9]}
               />
+              {width <= 767 && (
+                <HStack alignItems={"center"} space="1">
+                  <AdminTypo.H4 flex="5">{t("ATTENDANCE_FOR")}: </AdminTypo.H4>
+                  <Select
+                    minH={[9]}
+                    maxH={[9]}
+                    flex="7"
+                    accessibilityLabel={t("ATTENDANCE_FOR")}
+                    placeholder={t("ATTENDANCE_FOR")}
+                    selectedValue={actualDates?.[0]?.name || ""}
+                    onValueChange={(itemValue) =>
+                      setDate(itemValue ? [itemValue] : [])
+                    }
+                  >
+                    {eventDates?.map((e) => (
+                      <Select.Item label={e} value={e} key={e} />
+                    ))}
+                  </Select>
+                </HStack>
+              )}
             </HStack>
             <DataTable
               columns={[
@@ -1028,7 +1034,7 @@ export default function Attendence({ footerLinks }) {
             </Modal.Content>
           </Modal> */}
 
-          <Modal
+          {/* <Modal
             isOpen={formData?.id}
             onClose={() => {
               setFormData();
@@ -1252,7 +1258,7 @@ export default function Attendence({ footerLinks }) {
                 </VStack>
               </Modal.Body>
             </Modal.Content>
-          </Modal>
+          </Modal> */}
         </VStack>
 
         <Modal isOpen={certificateHtml} size="xl">
