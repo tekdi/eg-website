@@ -50,7 +50,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
     const allValuesMatch = Object.values(status).every(
       (value) => value === "not_applicable" || value === "complete"
     );
-    if (keysLength === 12 && allValuesMatch) {
+    if (keysLength === 10 && allValuesMatch) {
       setCheckList(true);
     } else {
       setCheckList(false);
