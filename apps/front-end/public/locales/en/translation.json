@@ -1468,5 +1468,7 @@
   "SAVE_EVENT": "Save Event",
   "LEARNER_ATTENDANCE_MESSAGE": "Are learners present today?",
   "DATE": "Date",
-  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "Start time should be greater than end time"
+  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "Start time should be greater than end time",
+  "ATTENDANCE_FUTURE_DATE_ERROR_MESSAGE": "Marking attenadce for future date not allow",
+  "ATTENDANCE_PAST_DATE_ERROR_MESSAGE": "Marking attenadce for past date not allow"
 }

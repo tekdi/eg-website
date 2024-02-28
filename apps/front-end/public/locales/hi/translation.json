@@ -1469,5 +1469,7 @@
   "SAVE_EVENT": "ईवेंट सेव करें",
   "LEARNER_ATTENDANCE_MESSAGE": "क्या आज विद्यार्थी मौजूद हैं?",
   "DATE": "तारीख",
-  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "प्रारंभ समय समाप्ति समय से अधिक होना चाहिए।"
+  "START_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "प्रारंभ समय समाप्ति समय से अधिक होना चाहिए।",
+  "ATTENDANCE_FUTURE_DATE_ERROR_MESSAGE": "भविष्य की तारीख के लिए एटेनाडेस को चिह्नित करने की अनुमति नहीं है",
+  "ATTENDANCE_PAST_DATE_ERROR_MESSAGE": "पिछली तारीख के लिए क्षीणता को चिह्नित करने की अनुमति नहीं है"
 }

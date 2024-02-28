@@ -195,7 +195,7 @@ export default function EventHome({ footerLinks }) {
     let newSchema = Schema;
     newSchema = getOptions(newSchema, {
       key: "type",
-      arr: result?.data?.FACILITATOR_EVENT_TYPE.map((e) => ({
+      arr: result?.data?.FACILITATOR_EVENT_TYPE?.map((e) => ({
         ...e,
         title: t(e.title),
       })),
@@ -204,7 +204,7 @@ export default function EventHome({ footerLinks }) {
     });
     newSchema = getOptions(newSchema, {
       key: "name",
-      arr: result?.data?.EVENT_BATCH_NAME.map((e) => ({
+      arr: result?.data?.EVENT_BATCH_NAME?.map((e) => ({
         ...e,
         title: t(e.title),
       })),
@@ -336,10 +336,10 @@ export default function EventHome({ footerLinks }) {
     },
   };
 
-  const checkValidation = (formData, key = [], returnError = false) => {
+  const checkValidation = (newFormData, key = [], returnError = false) => {
     let erros;
-    if (key.includes("root_start_time") && formData?.end_time) {
-      if (formData?.start_time > formData?.end_time) {
+    if (key.includes("root_start_time") && newFormData?.end_time) {
+      if (newFormData?.start_time > newFormData?.end_time) {
         const newErrors = {
           start_time: {
             __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
@@ -348,13 +348,15 @@ export default function EventHome({ footerLinks }) {
         erros = { ...(erros || {}), ...newErrors };
       }
     }
-    if (key.includes("root_end_time") && formData?.start_time) {
-      const newErrors = {
-        end_time: {
-          __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
-        },
-      };
-      erros = { ...(erros || {}), ...newErrors };
+    if (key.includes("root_end_time") && newFormData?.start_time) {
+      if (newFormData?.start_time > newFormData?.end_time) {
+        const newErrors = {
+          end_time: {
+            __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
+          },
+        };
+        erros = { ...(erros || {}), ...newErrors };
+      }
     }
     if (returnError) {
       return erros;
@@ -456,7 +458,7 @@ export default function EventHome({ footerLinks }) {
   };
 
   const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
+    return errors?.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
@@ -695,8 +697,8 @@ const District = ({ district, filter, t, setFilter }) => {
       }}
     >
       {district &&
-        district.map &&
-        district.map((e) => (
+        district?.map &&
+        district?.map((e) => (
           <Menu.Item
             key={e?.district_id}
             onPress={() =>
