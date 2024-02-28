@@ -27,6 +27,7 @@ import {
   Badge,
   Input,
   Select,
+  Alert,
 } from "native-base";
 import React, {
   useCallback,
@@ -194,11 +195,13 @@ const scheduleCandidates = ({ t, days, certificateDownload, width }) => {
   return data;
 };
 
-const RenderAttendanceColumn = memo(({ row }) => {
+const RenderAttendanceColumn = memo(({ row, event }) => {
   const [attendance, setAttendance] = useState();
   const [locationData, setLocationData] = useState("");
   const [isDisabledAttBtn, setIsDisabledAttBtn] = useState();
   const { id } = useParams();
+  const [error, setError] = useState();
+  const { t } = useTranslation();
 
   const getLocation = async () => {
     if (navigator.geolocation) {
@@ -255,7 +258,7 @@ const RenderAttendanceColumn = memo(({ row }) => {
           : "Mark"}
       </AdminTypo.H7>
       <Switch
-        key={attendance + attendance?.status}
+        key={attendance?.status + error}
         isDisabled={isDisabledAttBtn === `${row.id}-${row.presentDate}`}
         offTrackColor={attendance?.status ? "dangerColor" : "gray.200"}
         onTrackColor="successColor"
@@ -263,13 +266,57 @@ const RenderAttendanceColumn = memo(({ row }) => {
         offThumbColor="appliedColor"
         defaultIsChecked={attendance?.status === "present"}
         onValueChange={async (e) => {
-          const attendance_status = e ? "present" : "absent";
-          await onSwitchToggle({
-            ...row,
-            attendance_status,
-          });
+          const { presentDate } = row;
+          const format = "YYYY-MM-DD HH:mm";
+          const currentDate = moment();
+          const startDate = moment(
+            `${event?.start_date} ${event?.start_time}`,
+            format
+          );
+          const endDate = moment(
+            `${event?.end_date} ${event?.end_time}`,
+            format
+          );
+
+          const newPresentDate = moment(
+            `${presentDate} ${moment().format("HH:mm")}`,
+            format
+          );
+          if (startDate.isSameOrAfter(currentDate)) {
+            setError(t("ATTENDANCE_FUTURE_DATE_ERROR_MESSAGE"));
+          } else if (endDate.isSameOrBefore(currentDate)) {
+            setError(t("ATTENDANCE_PAST_DATE_ERROR_MESSAGE"));
+          } else if (newPresentDate.isSameOrBefore(currentDate)) {
+            const attendance_status = e ? "present" : "absent";
+            await onSwitchToggle({
+              ...row,
+              attendance_status,
+            });
+          } else {
+            setError(t("ATTENDANCE_FUTURE_DATE_ERROR_MESSAGE"));
+          }
         }}
       />
+      <Modal isOpen={error} size="lg">
+        <Modal.Content>
+          <Modal.Body p="5">
+            <IconByName
+              position="absolute"
+              top="0"
+              right="0"
+              zIndex="1"
+              name="CloseCircleLineIcon"
+              onPress={(e) => setError()}
+            />
+            <Alert status="warning" alignItems={"start"}>
+              <HStack alignItems="center" space="2">
+                <Alert.Icon />
+                {error}
+              </HStack>
+            </Alert>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </HStack>
   );
 });
@@ -417,27 +464,6 @@ export default function Attendence({ footerLinks }) {
     await getUsers();
   }, [filter]);
 
-  const setDate = (datesD) => {
-    const dates = datesD?.map((e, i) => ({
-      name: t(moment(e).format("DD-MMM-YYYY")),
-      selector: (row) => (
-        <Suspense fallback="...">
-          <RenderAttendanceColumn
-            row={{
-              ...row,
-              index: i,
-              presentDate: `${moment(e).format("YYYY-MM-DD")}`,
-            }}
-          />
-        </Suspense>
-      ),
-      sortable: false,
-      wrap: true,
-      attr: "marks",
-    }));
-    setActualDates(dates);
-  };
-
   useEffect(async () => {
     setLoading(true);
     const eventResult = await eventService.getEventListById({ id });
@@ -449,7 +475,7 @@ export default function Attendence({ footerLinks }) {
           name: t("MARK_ATTENDANCE"),
           selector: (row) => (
             <Suspense fallback="...">
-              <RenderAttendanceColumn {...{ row }} />
+              <RenderAttendanceColumn {...{ row, event }} />
             </Suspense>
           ),
           sortable: false,
@@ -467,14 +493,36 @@ export default function Attendence({ footerLinks }) {
 
       if (width <= 767) {
         setEventDates(datesD);
-        setDate(datesD?.[0] ? [datesD?.[0]] : []);
+        setDate(datesD?.[0] ? [datesD?.[0]] : [], eventResult?.event);
       } else {
-        setDate(datesD);
+        setDate(datesD, eventResult?.event);
       }
     }
     setLoading(false);
   }, [width]);
 
+  const setDate = (datesD, eventData) => {
+    console.log(event);
+    const dates = datesD?.map((e, i) => ({
+      name: t(moment(e).format("DD-MMM-YYYY")),
+      selector: (row) => (
+        <Suspense fallback="...">
+          <RenderAttendanceColumn
+            row={{
+              ...row,
+              index: i,
+              presentDate: `${moment(e).format("YYYY-MM-DD")}`,
+            }}
+            event={eventData}
+          />
+        </Suspense>
+      ),
+      sortable: false,
+      wrap: true,
+      attr: "marks",
+    }));
+    setActualDates(dates);
+  };
   // const uploadAttendencePicture = async (e) => {
   //   // setError("");
   //   if (cameraFile?.key) {
@@ -798,7 +846,7 @@ export default function Attendence({ footerLinks }) {
                     placeholder={t("ATTENDANCE_FOR")}
                     selectedValue={actualDates?.[0]?.name || ""}
                     onValueChange={(itemValue) =>
-                      setDate(itemValue ? [itemValue] : [])
+                      setDate(itemValue ? [itemValue] : [], event)
                     }
                   >
                     {eventDates?.map((e) => (
