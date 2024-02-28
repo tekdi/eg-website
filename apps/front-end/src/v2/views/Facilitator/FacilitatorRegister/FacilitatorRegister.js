@@ -27,7 +27,7 @@ function FacilitatorRegister() {
   const [currentForm, setCurrentForm] = useState(0);
   const [registerFormData, setRegisterFormData] = useState({});
 
-  //data variables
+  //data variable
   const [id, setId] = useState("");
   const [ip, setIp] = useState(null);
   const [cohortId, setCohortId] = useState("");
