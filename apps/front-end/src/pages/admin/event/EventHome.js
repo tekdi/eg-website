@@ -336,10 +336,10 @@ export default function EventHome({ footerLinks }) {
     },
   };
 
-  const checkValidation = (formData, key = [], returnError = false) => {
+  const checkValidation = (newFormData, key = [], returnError = false) => {
     let erros;
-    if (key.includes("root_start_time") && formData?.end_time) {
-      if (formData?.start_time > formData?.end_time) {
+    if (key.includes("root_start_time") && newFormData?.end_time) {
+      if (newFormData?.start_time > newFormData?.end_time) {
         const newErrors = {
           start_time: {
             __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
@@ -348,15 +348,15 @@ export default function EventHome({ footerLinks }) {
         erros = { ...(erros || {}), ...newErrors };
       }
     }
-    if (key.includes("root_end_time") && formData?.start_time) {
-      if (formData?.start_time > formData?.end_time) {
+    if (key.includes("root_end_time") && newFormData?.start_time) {
+      if (newFormData?.start_time > newFormData?.end_time) {
         const newErrors = {
           end_time: {
             __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
           },
         };
+        erros = { ...(erros || {}), ...newErrors };
       }
-      erros = { ...(erros || {}), ...newErrors };
     }
     if (returnError) {
       return erros;
