@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  HStack,
+  Image,
+  Modal,
+  VStack,
+  AspectRatio,
+} from "native-base";
 import {
   Layout,
   enumRegistryService,
@@ -264,11 +272,25 @@ export default function EnrollmentForm() {
         userId,
         document_type: "enrollment_receipt",
         iconComponent: (
+          // <AspectRatio
+          //   ratio={{
+          //     base: 9 / 16,
+          //     // md: 9 / 10,
+          //   }}
+          //   height={{
+          //     base: 200,
+          //     md: 200,
+          //   }}
+          // >
           <Image
             source={{ uri: "/payment-receipt.jpeg" }}
             size="200"
+            height={"25vh"}
+            width={"80vw"}
+            maxWidth={300}
             alt="background image"
           />
+          // </AspectRatio>
         ),
       },
     });
