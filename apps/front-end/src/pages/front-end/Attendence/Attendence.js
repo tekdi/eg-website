@@ -165,12 +165,15 @@ const scheduleCandidates = (t, days, certificateDownload) => {
       name: t("STATUS"),
       selector: (row) =>
         row?.lms_test_trackings?.[0]?.certificate_status === true ? (
-          <AdminTypo.Secondarybutton
-            my="3"
-            onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
-          >
-            {t("DOWNLOAD")}
-          </AdminTypo.Secondarybutton>
+          // <AdminTypo.Secondarybutton
+          //   my="3"
+          //   onPress={() => certificateDownload(row.lms_test_trackings?.[0])}
+          // >
+          //   {t("DOWNLOAD")}
+          // </AdminTypo.Secondarybutton>
+          <AdminTypo.H6 bold color="success.500">
+            {t("PASS")}
+          </AdminTypo.H6>
         ) : row?.lms_test_trackings?.[0]?.certificate_status === false ? (
           <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
         ) : (
@@ -537,7 +540,6 @@ export default function Attendence({ footerLinks }) {
         {
           <React.Suspense fallback={<Loading />}>
             <Camera
-         
               headerComponent={
                 <VStack bg="black" width="94%" pl="4">
                   <AdminTypo.H6 color="white" bold>

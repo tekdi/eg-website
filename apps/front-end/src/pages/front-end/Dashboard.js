@@ -155,18 +155,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [academicYear]);
 
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      const getCertificate = await testRegistryService.getCertificate({
-        id,
-      });
-      if (getCertificate?.data?.length > 0) {
-        setLmsDetails(getCertificate?.data?.[0]);
-      }
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     // ...async operations
+  //     const getCertificate = await testRegistryService.getCertificate({
+  //       id,
+  //     });
+  //     if (getCertificate?.data?.length > 0) {
+  //       setLmsDetails(getCertificate?.data?.[0]);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -467,12 +467,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       lmsDEtails?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
-                        {lmsDEtails.score + "%"}
+                        {lmsDEtails?.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {lmsDEtails.score + "%"}
+                        {lmsDEtails.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
@@ -523,10 +523,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
-                          navigate(`/certificate`);
+                          navigate(`/results`);
                         }}
                       >
-                        {t("VIEW_CERTIFICATE")}
+                        {t("VIEW_RESULTS")}
                       </FrontEndTypo.DefaultButton>
                     )}
                   </HStack>
