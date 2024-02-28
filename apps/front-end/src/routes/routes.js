@@ -279,7 +279,7 @@ export default [
     component: PcrView,
   },
   { path: "/profile", component: Profile },
-  { path: "/certificate", component: Certificate },
+  { path: "/results", component: Certificate },
   /*{ path: "/profile/edit/array-form/:type", component: ArrayForm },*/
   /*{ path: "/profile/edit/:step", component: EditForm },*/
   {
