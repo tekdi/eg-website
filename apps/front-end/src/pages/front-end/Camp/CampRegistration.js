@@ -8,7 +8,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { HStack, Pressable, Image, Avatar, Alert, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -27,16 +27,16 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const camp_id = useParams();
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(true);
-  const [campLocation, setCampLocation] = React.useState();
-  const [campVenue, setCampVenue] = React.useState();
-  const [campStatus, setCampStatus] = React.useState();
-  const [facilities, setFacilities] = React.useState();
-  const [kit, setKit] = React.useState();
-  const [kitarr, setKitarr] = React.useState([]);
-  const [consent, setConsent] = React.useState("amber.300");
-  const [campDetails, setCampDetails] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [loading, setLoading] = useState(true);
+  const [campLocation, setCampLocation] = useState();
+  const [campVenue, setCampVenue] = useState();
+  const [campStatus, setCampStatus] = useState();
+  const [facilities, setFacilities] = useState();
+  const [kit, setKit] = useState();
+  const [kitarr, setKitarr] = useState([]);
+  const [consent, setConsent] = useState("amber.300");
+  const [campDetails, setCampDetails] = useState();
+  const [isDisable, setIsDisable] = useState(false);
 
   const navdata = [
     {
@@ -84,7 +84,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     },
   ];
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     const result = await campService.getCampDetails(camp_id);
     setCampDetails(result?.data);
@@ -130,9 +130,9 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
-      ["registered", "camp_ip_verified"].includes(campStatus) ||
+      ["registered", "inactive", "camp_ip_verified"].includes(campStatus) ||
       !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
         (name) =>
           navdata.some(
@@ -150,8 +150,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     navigate("/camps");
   };
 
-  const disableEdit = () =>
-    ["camp_ip_verified"].includes(campStatus) ? false : true;
+  const disableEdit = (extra = []) =>
+    ["camp_ip_verified", ...extra].includes(campStatus) ? false : true;
 
   const SubmitCampRegistration = async () => {
     setIsDisable(true);
@@ -230,7 +230,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
               NavName={item?.Name}
               step={item?.step}
               color={item?.color}
-              disableEdit={disableEdit()}
+              disableEdit={disableEdit(["inactive"])}
             />
           );
         })}

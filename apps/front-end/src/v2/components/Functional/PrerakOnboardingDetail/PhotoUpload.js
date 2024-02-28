@@ -28,6 +28,7 @@ export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
       <VStack space={2}>
         <FileUpload
           schema={{
+            dimensionsValidation: { width: 1024, height: 768 },
             label: `ADD_FRONT_VIEW_${page}`,
             document_type: "profile_photo",
             document_sub_type: `profile_photo_${page}`,
