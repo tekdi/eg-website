@@ -27,7 +27,7 @@ export default {
         },
         enrollment_number: {
           type: "string",
-          label: "ENROLLMENT_NUMBER",
+          label: "APPLICATION_ID",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
@@ -42,7 +42,7 @@ export default {
 
         enrollment_date: {
           type: "string",
-          label: "ENROLLMENT_DATE",
+          label: "FEES_PAID_DATE",
           format: "DMY",
         },
         subjects: {
@@ -56,8 +56,8 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "PAYMENT_RECEIPT",
-          description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
+          label: "APPLICATION_RECEIPT",
+          description: "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
           uploadTitle: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
           type: ["string", "number"],
           format: "FileUpload",
