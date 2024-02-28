@@ -27,6 +27,10 @@ import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 import accessControl from "./AccessControl.js";
 import AadhaarNumberValidation from "./AadhaarNumberValidation.js";
+import {
+  setIndexedDBItem,
+  getIndexedDBItem,
+} from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -53,6 +57,35 @@ export default function PrerakOnboardingForm({
   const [otpButton, setOtpButton] = useState(false);
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
+
+  //offline
+
+  const [storedData, setStoredData] = useState("");
+  useEffect(() => {
+    // Fetch data from IndexedDB when the component mounts
+    fetchDataFromIndexedDB();
+  }, []);
+
+  const fetchDataFromIndexedDB = async () => {
+    try {
+      const data = await getIndexedDBItem("exampleKey");
+      if (data) {
+        setStoredData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching data from IndexedDB:", error);
+    }
+  };
+
+  const saveDataToIndexedDB = async () => {
+    const newData = "Hello, IndexedDB!"; // Your data to be stored
+    try {
+      await setIndexedDBItem("exampleKey", newData);
+      setStoredData(newData);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
 
   useEffect(() => {
     setLang(localStorage.getItem("lang"));
