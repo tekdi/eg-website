@@ -1193,14 +1193,35 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
               transformErrors,
             }}
           >
-            <FrontEndTypo.Primarybutton
-              mt="3"
-              type="submit"
-              isLoading={isButtonLoading}
-              onPress={() => formRef?.current?.submit()}
-            >
-              {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
-            </FrontEndTypo.Primarybutton>
+            {page == 2 ? (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                type="submit"
+                isLoading={isButtonLoading}
+                onPress={() => {
+                  if (formRef.current.validateForm()) {
+                    formRef?.current?.submit();
+                  } else {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    }
+                  }
+                }}
+              >
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            ) : (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                type="submit"
+                isLoading={isButtonLoading}
+                onPress={() => {
+                  formRef?.current?.submit();
+                }}
+              >
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            )}
           </Form>
         ) : (
           <React.Fragment />
