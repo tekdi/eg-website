@@ -56,9 +56,9 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "APPLICATION_RECEIPT",
+          label: "",
           description: "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
-          uploadTitle: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
+          uploadTitle: "",
           type: ["string", "number"],
           format: "FileUpload",
         },

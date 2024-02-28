@@ -68,7 +68,7 @@ export function EnrollmentLabelMobileWidget() {
         {t("ENROLLMENT_MOBILE_NO")}
       </FrontEndTypo.H2>
       <Text color="textMaroonColor.400" mb={1}>
-        {t("AS_PER_ENROLLMENT_APPLICATION")}
+        {t("AS_PER_APPLICATION_RECEIPT")}
       </Text>
     </>
   );

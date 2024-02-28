@@ -57,7 +57,7 @@ export default {
         payment_receipt_document_id: {
           label: "PAYMENT_RECEIPT",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
+          uploadTitle: "",
           type: ["string", "number"],
           format: "FileUpload",
         },
