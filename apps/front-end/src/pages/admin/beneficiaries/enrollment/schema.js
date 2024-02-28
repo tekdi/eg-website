@@ -64,7 +64,7 @@ export default {
       },
     },
     edit_enrollement_details: {
-      title: "ENROLLMENT_RECEIPT",
+      title: "ENROLLMENT_RECEIPT_DETAILS",
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
       properties: {

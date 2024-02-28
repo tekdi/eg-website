@@ -65,7 +65,7 @@ export default {
       },
     },
     edit_enrollement_details: {
-      title: "ENROLLMENT_RECEIPT",
+      title: "ENROLLMENT_RECEIPT_DETAILS",
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
       properties: {
@@ -74,7 +74,7 @@ export default {
           title: "FIRST_NAME",
           label: "FIRST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          description: "AS_PER_ENROLLMENT_RECEIPT",
+          description: "AS_PER_APPLICATION_RECEIPT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],
