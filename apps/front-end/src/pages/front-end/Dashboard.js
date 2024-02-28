@@ -467,12 +467,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       lmsDEtails?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
-                        {lmsDEtails.score + "%"}
+                        {lmsDEtails?.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {lmsDEtails.score + "%"}
+                        {lmsDEtails.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
                     ) : lmsDEtails?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
