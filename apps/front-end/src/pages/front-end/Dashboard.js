@@ -155,18 +155,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [academicYear]);
 
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      const getCertificate = await testRegistryService.getCertificate({
-        id,
-      });
-      if (getCertificate?.data?.length > 0) {
-        setLmsDetails(getCertificate?.data?.[0]);
-      }
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     // ...async operations
+  //     const getCertificate = await testRegistryService.getCertificate({
+  //       id,
+  //     });
+  //     if (getCertificate?.data?.length > 0) {
+  //       setLmsDetails(getCertificate?.data?.[0]);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -523,10 +523,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
-                          navigate(`/certificate`);
+                          navigate(`/results`);
                         }}
                       >
-                        {t("VIEW_CERTIFICATE")}
+                        {t("VIEW_RESULTS")}
                       </FrontEndTypo.DefaultButton>
                     )}
                   </HStack>
