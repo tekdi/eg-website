@@ -5,13 +5,14 @@ import {
   CardComponent,
   campService,
 } from "@shiksha/common-lib";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { VStack, HStack, Pressable, Stack, Alert } from "native-base";
 
 import TimePicker from "rc-time-picker";
 import "rc-time-picker/assets/index.css";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 export default function CampSetting({ footerLinks }) {
   const weeks = [
@@ -24,11 +25,11 @@ export default function CampSetting({ footerLinks }) {
     "WEEK_SATURDAY",
   ];
   const camp_id = useParams();
-  const [selectedDays, setSelectedDays] = React.useState("");
-  const [selectedStartTime, setSelectedStartTime] = React.useState();
-  const [selectedEndTime, setSelectedEndTime] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
-  const [error, setError] = React.useState();
+  const [selectedDays, setSelectedDays] = useState("");
+  const [selectedStartTime, setSelectedStartTime] = useState();
+  const [selectedEndTime, setSelectedEndTime] = useState();
+  const [isDisable, setIsDisable] = useState(false);
+  const [error, setError] = useState();
 
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ export default function CampSetting({ footerLinks }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const data = await campService.getCampDetails(camp_id);
     const camp = data?.data;
     setSelectedStartTime(camp?.preferred_start_time);
@@ -62,7 +63,7 @@ export default function CampSetting({ footerLinks }) {
     if (!selectedStartTime || !selectedEndTime) {
       setError("REQUIRED_MESSAGE");
       setIsDisable(false);
-    } else if (END_TIME < START_TIME) {
+    } else if (START_TIME >= END_TIME) {
       setError("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME");
       setIsDisable(false);
     } else {
@@ -173,3 +174,7 @@ export default function CampSetting({ footerLinks }) {
     </Layout>
   );
 }
+
+CampSetting.propTypes = {
+  footerLinks: PropTypes.any,
+};

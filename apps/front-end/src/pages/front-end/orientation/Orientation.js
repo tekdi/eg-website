@@ -232,7 +232,7 @@ export default function Orientation({ footerLinks }) {
     }
   };
   const handleEventClick = async (info) => {
-    navigator(`/attendence/${info?.event?.extendedProps?.event_id}`);
+    navigator(`/admin/event/${info?.event?.extendedProps?.event_id}`);
   };
 
   const clearForm = () => {
@@ -336,8 +336,21 @@ export default function Orientation({ footerLinks }) {
   };
 
   const cohortData = React.useCallback(async () => {
+    setLoading(true);
     const data = await cohortService.getAcademicYear();
+    const academicYearparseData = data?.data?.[0];
+    if (data?.data?.length < 2) {
+      setModal(false);
+      const programData = await cohortService.getPrograms(
+        academicYearparseData?.academic_year_id
+      );
+      const parseData = programData?.data?.[0];
+      setSelectedAcademicYear(academicYearparseData);
+      setSelectedProgramId(parseData);
+      setSelectedAcademic({ parseData, academicYearparseData });
+    }
     setAcademicData(data?.data);
+    setLoading(false);
   }, [modalVisible]);
 
   React.useEffect(() => {
@@ -375,6 +388,7 @@ export default function Orientation({ footerLinks }) {
         pb: "0px",
       }}
       _sidebar={footerLinks}
+      loading={loading}
     >
       {loading ? (
         <Loading />
@@ -390,7 +404,8 @@ export default function Orientation({ footerLinks }) {
             <HStack>
               <Pressable
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  navigator("/admin/event/create");
+                  // setModalVisible(!modalVisible);
                   setFormData({ type: "prerak_orientation" });
                 }}
               >
@@ -473,7 +488,7 @@ export default function Orientation({ footerLinks }) {
                 alignContent="center"
                 shadow="BlueOutlineShadow"
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  navigator("/admin/event/create");
                 }}
               >
                 {t("SCHEDULE_EVENT")}

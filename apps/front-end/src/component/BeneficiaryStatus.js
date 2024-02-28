@@ -1,7 +1,8 @@
 import { Box, Text } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 export default function Chip({
   label,
@@ -33,7 +34,14 @@ export default function Chip({
     </Box>
   );
 }
-
+Chip.propTypes = {
+  label: PropTypes.string,
+  children: PropTypes.node,
+  is_duplicate: PropTypes.bool,
+  is_deactivated: PropTypes.bool,
+  isActive: PropTypes.bool,
+  _text: PropTypes.any,
+};
 // ChipStatus
 export function ChipStatus({
   status,
@@ -44,12 +52,12 @@ export function ChipStatus({
   is_deactivated,
   ...props
 }) {
-  const [color, setColor] = React.useState("identifiedColor");
-  const [textColor, setTextColor] = React.useState("black");
-  const [newStatus, setNewStatus] = React.useState(status);
+  const [color, setColor] = useState("identifiedColor");
+  const [textColor, setTextColor] = useState("black");
+  const [newStatus, setNewStatus] = useState(status);
   const { t } = useTranslation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     switch (status ? status?.toLowerCase() : statusCount?.toLowerCase()) {
       case "rejected":
         setNewStatus(t("REJECTED"));
@@ -81,11 +89,11 @@ export function ChipStatus({
         setTextColor("textMaroonColor.500");
         setColor("textMaroonColor.50");
         break;
-      case "pragati_syc":
-        setNewStatus(t("BENEFICIARY_STATUS_PRAGATI_SYC"));
-        setTextColor("textMaroonColor.500");
-        setColor("textMaroonColor.50");
-        break;
+      // case "pragati_syc":
+      //   setNewStatus(t("BENEFICIARY_STATUS_PRAGATI_SYC"));
+      //   setTextColor("textMaroonColor.500");
+      //   setColor("textMaroonColor.50");
+      //   break;
       case "enrolled":
         setNewStatus(t("ENROLLED"));
         setTextColor("#fff");
@@ -111,11 +119,11 @@ export function ChipStatus({
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
-      case "not_enrolled":
-        setNewStatus(t("BENEFICIARY_STATUS_NOT_ENROLLED"));
-        setTextColor("textMaroonColor.400");
-        setColor("textMaroonColor.100");
-        break;
+      // case "not_enrolled":
+      //   setNewStatus(t("BENEFICIARY_STATUS_NOT_ENROLLED"));
+      //   setTextColor("textMaroonColor.400");
+      //   setColor("textMaroonColor.100");
+      //   break;
       case "enrollment_awaited":
         setNewStatus(t("BENEFICIARY_STATUS_ENROLLMENT_AWAITED"));
         setTextColor("textMaroonColor.400");
@@ -172,3 +180,11 @@ export function ChipStatus({
     />
   );
 }
+ChipStatus.propTypes = {
+  status: PropTypes.string,
+  statusCount: PropTypes.any,
+  sufix: PropTypes.any,
+  prefix: PropTypes.any,
+  is_duplicate: PropTypes.bool,
+  is_deactivated: PropTypes.bool,
+};

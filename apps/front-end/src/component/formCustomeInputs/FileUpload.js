@@ -5,7 +5,7 @@ import {
   uploadRegistryService,
 } from "@shiksha/common-lib";
 import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 
@@ -20,13 +20,14 @@ const FileUpload = ({ value, onChange, schema }) => {
     iconComponent,
     width,
     height,
+    dimensionsValidation,
   } = schema || {};
 
-  const uplodInputRef = React.useRef();
-  const [loading, setLoading] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [errors, setErrors] = React.useState({});
-  const [file, setFile] = React.useState();
+  const uplodInputRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [errors, setErrors] = useState();
+  const [file, setFile] = useState();
   const { t } = useTranslation();
   const uploadProfile = async (file) => {
     setLoading(true);
@@ -57,30 +58,67 @@ const FileUpload = ({ value, onChange, schema }) => {
   };
 
   const handleFileInputChange = async (e) => {
-    let file = e.target.files[0];
-    if (file["type"] === "application/pdf") {
-      uploadProfile(file);
-    } else if (file && file.size <= 1048576 * 10) {
-      if (file instanceof File) {
-        const maxWidthOrHeight = Math.max(width || 1280, height || 740);
-        const compressedImage = await imageCompression(file, {
-          maxSizeMB: 0.1,
-          maxWidthOrHeight,
-          useWebWorker: true,
-        });
-
-        const uploadFile = new File([compressedImage], file.name, {
-          type: file.type,
-        });
-
-        uploadProfile(uploadFile);
+    setErrors(); // Clear any previous errors
+    const file = e.target.files[0];
+    if (file && file.size <= 1024 * 1024 * 9.5) {
+      if (file.type === "application/pdf") {
+        uploadProfile(file);
+      } else if (dimensionsValidation) {
+        // Read the compressed image to get its dimensions
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const imageWidth = img.naturalWidth;
+            const imageHeight = img.naturalHeight;
+            // Validate dimensions (adjust as needed)
+            let isHori = false;
+            if (img.naturalWidth > img.naturalHeight) {
+              isHori = true;
+            }
+            if (
+              (isHori &&
+                (imageWidth < dimensionsValidation?.width ||
+                  imageHeight < dimensionsValidation?.height)) ||
+              (!isHori &&
+                (imageWidth < dimensionsValidation?.height ||
+                  imageHeight < dimensionsValidation?.width))
+            ) {
+              setErrors(
+                ` ${imageWidth} X ${imageHeight} ${t(
+                  "IMAGE_DIMENSIONS_MESSAGE"
+                )}`
+              );
+            } else {
+              uplaodFile(file);
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
       } else {
-        setErrors({ fileSize: t("FILE_SIZE") });
+        uplaodFile(file);
       }
+    } else {
+      setErrors(t("FILE_SIZE"));
     }
   };
 
-  React.useEffect(() => {
+  const uplaodFile = async (file) => {
+    const maxWidthOrHeight = Math.max(width || 1024, height || 768);
+    // Compress the image
+    const compressedImage = await imageCompression(file, {
+      maxSizeMB: 0.1,
+      maxWidthOrHeight,
+      useWebWorker: true,
+    });
+    const uploadFile = new File([compressedImage], file.name, {
+      type: file.type,
+    });
+    uploadProfile(uploadFile);
+  };
+
+  useEffect(() => {
     setFile(value);
   }, [value]);
 
@@ -158,15 +196,13 @@ const FileUpload = ({ value, onChange, schema }) => {
             <HStack alignItems="center" space="2">
               <IconByName name="Upload2FillIcon" isDisabled color="gray.800" />
               <FrontEndTypo.H2 textAlign="center" color="gray.800">
-                {t(uploadTitle ? uploadTitle : label ? label : title)}
+                {t(uploadTitle || label || title)}
               </FrontEndTypo.H2>
             </HStack>
           </Pressable>
         </Box>
       )}
-      {errors?.fileSize && (
-        <FrontEndTypo.H2 color="red.400">{errors?.fileSize}</FrontEndTypo.H2>
-      )}
+      {errors && <FrontEndTypo.H2 color="red.400">{errors}</FrontEndTypo.H2>}
     </VStack>
   );
 };
