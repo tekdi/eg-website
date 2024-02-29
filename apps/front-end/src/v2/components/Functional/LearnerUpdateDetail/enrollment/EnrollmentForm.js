@@ -272,25 +272,14 @@ export default function EnrollmentForm() {
         userId,
         document_type: "enrollment_receipt",
         iconComponent: (
-          // <AspectRatio
-          //   ratio={{
-          //     base: 9 / 16,
-          //     // md: 9 / 10,
-          //   }}
-          //   height={{
-          //     base: 200,
-          //     md: 200,
-          //   }}
-          // >
           <Image
             source={{ uri: "/payment-receipt.jpeg" }}
             size="200"
-            height={"25vh"}
-            width={"80vw"}
-            maxWidth={300}
+            height={"20vh"}   
+            width={"70vw"}
+            maxWidth={400}
             alt="background image"
           />
-          // </AspectRatio>
         ),
       },
     });
