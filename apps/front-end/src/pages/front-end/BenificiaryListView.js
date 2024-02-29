@@ -6,21 +6,20 @@ import {
   benificiaryRegistoryService,
   FrontEndTypo,
   SelectStyle,
-  ImageView,
   Loading,
   CardComponent,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable } from "native-base";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChipStatus } from "component/BeneficiaryStatus";
+import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
-import Chip from "component/Chip";
+import PropTypes from "prop-types";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
-  const [reason, setReason] = React.useState({});
-  React.useEffect(() => {
+  const [reason, setReason] = useState({});
+  useEffect(() => {
     if (
       program_beneficiaries?.enrollment_verification_status ===
       "change_required"
@@ -67,13 +66,6 @@ const List = ({ data }) => {
             _header={{ px: "0", pt: "0" }}
             _body={{ px: "0", pb: "0" }}
             _vstack={{ p: 0, space: 0, flex: 1 }}
-            title={
-              <VStack alignItems="center" flex={1} p="1">
-                <Clipboard text={item?.id}>
-                  <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
-                </Clipboard>
-              </VStack>
-            }
           >
             <Pressable
               onPress={async () => {
@@ -84,23 +76,13 @@ const List = ({ data }) => {
             >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="Center" flex={[1, 2, 4]}>
-                  {item?.profile_photo_1?.id ? (
-                    <ImageView
-                      source={{
-                        document_id: item?.profile_photo_1?.id,
-                      }}
-                      alt="Alternate Text"
-                      width={"45px"}
-                      height={"45px"}
-                    />
-                  ) : (
-                    <IconByName
-                      isDisabled
-                      name="AccountCircleLineIcon"
-                      color="gray.300"
-                      _icon={{ size: "45px" }}
-                    />
-                  )}
+                  <VStack alignItems="center" p="1">
+                    <Chip>
+                      <Clipboard text={item?.id}>
+                        <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
+                      </Clipboard>
+                    </Chip>
+                  </VStack>
                   <VStack
                     pl="2"
                     flex="1"
@@ -229,27 +211,27 @@ const styles = {
   },
 };
 
-export default function PrerakListView({ userTokenInfo, footerLinks }) {
-  const [facilitator, setFacilitator] = React.useState({});
+export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
+  const [facilitator, setFacilitator] = useState({});
   const navigate = useNavigate();
-  const [filter, setFilter] = React.useState({ limit: 6 });
-  const [data, setData] = React.useState([]);
-  const [selectStatus, setSelectStatus] = React.useState([]);
-  const [loadingList, setLoadingList] = React.useState(true);
-  const [hasMore, setHasMore] = React.useState(true);
-  const [bodyHeight, setBodyHeight] = React.useState(0);
-  const [loadingHeight, setLoadingHeight] = React.useState(0);
-  const ref = React.useRef(null);
+  const [filter, setFilter] = useState({ limit: 6 });
+  const [data, setData] = useState([]);
+  const [selectStatus, setSelectStatus] = useState([]);
+  const [loadingList, setLoadingList] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [bodyHeight, setBodyHeight] = useState(0);
+  const [loadingHeight, setLoadingHeight] = useState(0);
+  const ref = useRef(null);
   const fa_id = localStorage.getItem("id");
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
     if (data.length > 0) {
       setSelectStatus(data);
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
       setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
     } else {
@@ -257,7 +239,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     }
   }, [bodyHeight, ref]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const { currentPage, totalPages, error, ...result } =
       await benificiaryRegistoryService.getBeneficiariesList(filter);
     if (!error) {
@@ -273,7 +255,7 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     setLoadingList(false);
   }, [filter]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (userTokenInfo) {
       const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
       setFacilitator(fa_data);
@@ -414,3 +396,8 @@ export default function PrerakListView({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+BenificiaryListView.PropTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};
