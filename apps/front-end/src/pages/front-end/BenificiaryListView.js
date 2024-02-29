@@ -63,8 +63,7 @@ const List = ({ data }) => {
         data?.map((item) => (
           <CardComponent
             key={item?.id}
-            _header={{ px: "0", pt: "0" }}
-            _body={{ px: "0", pb: "0" }}
+            _body={{ px: "3", py: "3" }}
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
             <Pressable
@@ -72,7 +71,6 @@ const List = ({ data }) => {
                 navigate(`/beneficiary/${item?.id}`);
               }}
               flex={1}
-              p="4"
             >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="Center" flex={[1, 2, 4]}>
@@ -132,46 +130,48 @@ const List = ({ data }) => {
                 </VStack>
               </HStack>
             </Pressable>
-            <VStack bg="white" pl="2" mr="2">
+            <VStack bg="white" alignItems={"end"}>
               {item?.program_beneficiaries?.status === "identified" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450">
-                    {t("COMPLETE_THE_DOCUMENTATION")}
-                  </FrontEndTypo.H4>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    py="0"
-                    onPress={() => {
-                      navigate(`/beneficiary/${item?.id}/docschecklist`);
-                    }}
-                  />
-                </HStack>
+                <Pressable
+                  onPress={() => {
+                    navigate(`/beneficiary/${item?.id}/docschecklist`);
+                  }}
+                >
+                  <HStack color="blueText.450" alignItems="center">
+                    <FrontEndTypo.H4 color="blueText.450">
+                      {t("COMPLETE_THE_DOCUMENTATION")}
+                    </FrontEndTypo.H4>
+                    <IconByName name="ArrowRightSLineIcon" py="0" />
+                  </HStack>
+                </Pressable>
               )}
               {item?.program_beneficiaries?.status === "enrollment_pending" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450">
-                    {t("CONTINUE_ENROLLMENT")}
-                  </FrontEndTypo.H4>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={() => {
-                      navigate(`/beneficiary/${item?.id}/docschecklist`);
-                    }}
-                  />
-                </HStack>
+                <Pressable
+                  onPress={() => {
+                    navigate(`/beneficiary/${item?.id}/docschecklist`);
+                  }}
+                >
+                  <HStack color="blueText.450" alignItems="center">
+                    <FrontEndTypo.H4 color="blueText.450">
+                      {t("CONTINUE_ENROLLMENT")}
+                    </FrontEndTypo.H4>
+                    <IconByName name="ArrowRightSLineIcon" />
+                  </HStack>
+                </Pressable>
               )}
               {item?.program_beneficiaries?.status === "ready_to_enroll" && (
-                <HStack color="blueText.450" alignItems="center">
-                  <FrontEndTypo.H4 color="blueText.450">
-                    {t("ENTER_THE_ENROLLMENT_DETAILS")}
-                  </FrontEndTypo.H4>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={() => {
-                      navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
-                    }}
-                  />
-                </HStack>
+                <Pressable
+                  onPress={() => {
+                    navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
+                  }}
+                >
+                  <HStack color="blueText.450" alignItems="center">
+                    <FrontEndTypo.H4 color="blueText.450">
+                      {t("ENTER_THE_ENROLLMENT_DETAILS")}
+                    </FrontEndTypo.H4>
+                    <IconByName name="ArrowRightSLineIcon" />
+                  </HStack>
+                </Pressable>
               )}
               {["duplicated", "enrolled_ip_verified"]?.includes(
                 item?.program_beneficiaries?.status
