@@ -26,16 +26,14 @@ import {
   Alert,
   Modal,
   CloseIcon,
-  Menu,
-  Pressable,
   Select,
-  BodyLarge,
   CheckIcon,
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 const styles = {
   inforBox: {
@@ -56,18 +54,18 @@ const styles = {
 
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
-  const [facilitator, setFacilitator] = React.useState({ notLoaded: true });
-  const [certificateData, setCertificateData] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
+  const [facilitator, setFacilitator] = useState({ notLoaded: true });
+  const [certificateData, setCertificateData] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [progress, setProgress] = React.useState(0);
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [progress, setProgress] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
-  const [isEventActive, setIsEventActive] = React.useState(false);
-  const [lmsDEtails, setLmsDetails] = React.useState();
+  const [isEventActive, setIsEventActive] = useState(false);
+  const [lmsDEtails, setLmsDetails] = useState();
   const { id } = userTokenInfo?.authUser || [];
-  const [random, setRandom] = React.useState();
-  const [events, setEvents] = React.useState("");
+  const [random, setRandom] = useState();
+  const [events, setEvents] = useState("");
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
@@ -157,7 +155,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [academicYear]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       // ...async operations
       const getCertificate = await testRegistryService.getCertificate({
@@ -170,7 +168,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       if (!facilitator?.notLoaded === true) {
         // ...async operations
@@ -591,7 +589,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
-            <Stack p="5">
+            <Stack p="5" space={4}>
               {[undefined].includes(facilitator?.aadhar_no) && (
                 <Stack space="3">
                   <Alert status="warning" alignItems={"start"}>
@@ -942,4 +940,8 @@ const InfoBox = ({ status, progress }) => {
   }
 
   return infoBox;
+};
+Dashboard.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
 };

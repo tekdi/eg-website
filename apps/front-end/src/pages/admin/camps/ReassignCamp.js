@@ -171,7 +171,6 @@ export default function ReassignCamp({ footerLinks, userTokenInfo }) {
 
   useEffect(async () => {
     let newFilter = filter;
-    await benificiaryRegistoryService.getOne(user_id);
     const qData = await campService.getCampList(newFilter);
     const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
     setCampData(filtered);

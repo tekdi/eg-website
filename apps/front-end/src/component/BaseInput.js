@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -30,6 +30,9 @@ import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
+import PropTypes from "prop-types";
+import CalenderInput from "./CalenderInput";
+import Time from "./Time";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
@@ -48,6 +51,12 @@ export function AddButton({ icon, iconType, ...btnProps }) {
   );
 }
 
+AddButton.propTypes = {
+  icon: PropTypes.any,
+  iconType: PropTypes.any,
+  btnProps: PropTypes.any,
+};
+
 // rjsf custom RemoveButton for ArrayFieldTemplate use in all form
 export function RemoveButton({ icon, iconType, ...btnProps }) {
   const { t } = useTranslation();
@@ -60,6 +69,11 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
   );
 }
 
+RemoveButton.propTypes = {
+  icon: PropTypes.any,
+  iconType: PropTypes.any,
+  btnProps: PropTypes.any,
+};
 // rjsf custom TitleFieldTemplate title field layout Template use in all form
 export const TitleFieldTemplate = ({ id, required, title }) => {
   const { t } = useTranslation();
@@ -72,7 +86,11 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
     </VStack>
   );
 };
-
+TitleFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  required: PropTypes.bool,
+  title: PropTypes.any,
+};
 // rjsf custom DescriptionFieldTemplate field layout Template use in all form
 export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
@@ -84,10 +102,13 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
     </VStack>
   );
 };
-
+DescriptionFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  description: PropTypes.any,
+};
 // rjsf custom ArrayFieldTemplate Array layout Template use in all form
 export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
-  const [isShow, setIsShow] = React.useState("");
+  const [isShow, setIsShow] = useState("");
   const { title } = schema;
   const { t } = useTranslation();
   let addBtn = "";
@@ -172,6 +193,11 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   );
 };
 
+ArrayFieldTemplate.propTypes = {
+  schema: PropTypes.any,
+  items: PropTypes.any,
+  formData: PropTypes.any,
+};
 // rjsf custom FieldTemplate field layout Template use in all form
 export const FieldTemplate = ({
   id,
@@ -217,7 +243,17 @@ export const FieldTemplate = ({
     </VStack>
   );
 };
-
+FieldTemplate.propTypes = {
+  id: PropTypes.any,
+  style: PropTypes.any,
+  label: PropTypes.any,
+  help: PropTypes.any,
+  required: PropTypes.bool,
+  description: PropTypes.any,
+  errors: PropTypes.any,
+  children: PropTypes.node,
+  schema: PropTypes.any,
+};
 // rjsf custom ObjectFieldTemplate object field layout Template use in all form
 export const ObjectFieldTemplate = (props) => {
   return (
@@ -236,7 +272,7 @@ export const ObjectFieldTemplate = (props) => {
 };
 
 export const ArrayFieldTitleTemplate = (props) => {
-  return <React.Fragment />;
+  return <Fragment />;
 };
 
 // rjsf custom CustomRadioBtn as CustomR field
@@ -259,7 +295,13 @@ export const CustomR = ({
     />
   );
 };
-
+CustomR.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
+  schema: PropTypes.any,
+};
 // rjsf custom RadioBtn field
 export const RadioBtn = ({
   options,
@@ -320,6 +362,14 @@ export const RadioBtn = ({
   );
 };
 
+RadioBtn.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
+  schema: PropTypes.any,
+  directionColumn: PropTypes.any,
+};
 // rjsf custom Aadhaar field
 export const Aadhaar = (props) => {
   const { t } = useTranslation();
@@ -423,9 +473,15 @@ export const select = ({ options, value, onChange, required, schema }) => {
     </FormControl>
   );
 };
-
+select.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
+  schema: PropTypes.any,
+};
 // rjsf custom readOnly field
-export const ReadOnly = ({ value, onChange, required, schema }) => {
+export const ReadOnly = ({ value, required, schema }) => {
   const { title } = schema || {};
   const { t } = useTranslation();
   return (
@@ -449,8 +505,12 @@ export const ReadOnly = ({ value, onChange, required, schema }) => {
     </HStack>
   );
 };
-
-export const Location = ({ value, onChange, required, schema }) => {
+ReadOnly.propTypes = {
+  value: PropTypes.any,
+  required: PropTypes.bool,
+  schema: PropTypes.any,
+};
+export const Location = ({ value, onChange, schema }) => {
   const { lat, long } = schema || {};
   const { t } = useTranslation();
   const [latData, longData, error] = useLocationData() || [];
@@ -459,7 +519,7 @@ export const Location = ({ value, onChange, required, schema }) => {
     onChange({ [lat]: latData, [long]: longData });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!(value?.[lat] && value?.[long])) {
       updateValue();
     }
@@ -483,6 +543,11 @@ export const Location = ({ value, onChange, required, schema }) => {
       <Button onPress={updateValue}>{t("UPDATE")}</Button>
     </HStack>
   );
+};
+Location.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  schema: PropTypes.any,
 };
 
 // rjsf custom HFieldTemplate title layout Template use in orientation
@@ -539,7 +604,17 @@ export const HFieldTemplate = ({
     </HStack>
   );
 };
-
+HFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  style: PropTypes.any,
+  label: PropTypes.any,
+  help: PropTypes.any,
+  description: PropTypes.any,
+  errors: PropTypes.any,
+  required: PropTypes.bool,
+  schema: PropTypes.any,
+  children: PropTypes.node,
+};
 // rjsf custom MultiCheck field
 export const MultiCheck = ({
   options,
@@ -622,6 +697,13 @@ export const MultiCheck = ({
     </FormControl>
   );
 };
+MultiCheck.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  schema: PropTypes.any,
+  required: PropTypes.bool,
+};
 
 // select between 2 values radio button (yes or no)
 const CheckUncheck = ({ required, schema, value, onChange }) => {
@@ -653,17 +735,15 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
     </HStack>
   );
 };
-
+CheckUncheck.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  schema: PropTypes.any,
+  required: PropTypes.bool,
+};
 // rjsf custom textarea field
-const Textarea = ({
-  schema,
-  options,
-  value,
-  onChange,
-  required,
-  isInvalid,
-}) => {
-  const [isFocus, setIsfocus] = React.useState(false);
+const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
+  const [isFocus, setIsfocus] = useState(false);
   const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
   return (
@@ -723,7 +803,13 @@ const Textarea = ({
     </FormControl>
   );
 };
-
+Textarea.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  schema: PropTypes.any,
+  required: PropTypes.bool,
+  isInvalid: PropTypes.any,
+};
 const validator = customizeValidator({
   customFormats: {
     MobileNumber: /^[6-9]\d{8}9$/,
@@ -744,6 +830,8 @@ const widgets = {
   Location,
   StarRating,
   CheckUncheck,
+  CalenderInput,
+  Time,
 };
 
 const templates = {

@@ -40,7 +40,7 @@ export default function App({ footerLinks }) {
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState();
   const [lang, setLang] = useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isEdit] = useState(true);
@@ -536,58 +536,67 @@ export default function App({ footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
-      loading={loading}
+      loading={loading || !campDetails?.group?.status}
     >
-      <Box py={6} px={4} mb={5}>
-        {alert && (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        )}
-        {page && page !== "" && (
-          <Form
-            key={schema}
-            ref={formRef}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              widgets,
-              templates,
-              validator,
-              schema: schema || {},
-              formData,
-              customValidate,
-              onChange,
-              onSubmit,
-              onError,
-              transformErrors: (errors) => transformErrors(errors, schema, t),
-            }}
-          >
-            <Box>
-              <FrontEndTypo.Primarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(false)}
-              >
-                {t("SAVE_AND_NEXT")}
-              </FrontEndTypo.Primarybutton>
-              <FrontEndTypo.Secondarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(true)}
-              >
-                {t("SAVE_AND_CAMP_PROFILE")}
-              </FrontEndTypo.Secondarybutton>
-            </Box>
-          </Form>
-        )}
-      </Box>
+      {["camp_ip_verified", "inactive"].includes(campDetails?.group?.status) ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <FrontEndTypo.H3>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H3>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {alert && (
+            <Alert status="warning" alignItems={"start"} mb="3">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <FrontEndTypo.H2>{alert}</FrontEndTypo.H2>
+              </HStack>
+            </Alert>
+          )}
+          {page && page !== "" && (
+            <Form
+              key={schema}
+              ref={formRef}
+              extraErrors={errors}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                widgets,
+                templates,
+                validator,
+                schema: schema || {},
+                formData,
+                customValidate,
+                onChange,
+                onSubmit,
+                onError,
+                transformErrors: (errors) => transformErrors(errors, schema, t),
+              }}
+            >
+              <Box>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("SAVE_AND_NEXT")}
+                </FrontEndTypo.Primarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("SAVE_AND_CAMP_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
+            </Form>
+          )}
+        </Box>
+      )}
     </Layout>
   );
 }

@@ -25,7 +25,6 @@ import {
   urlData,
   getOptions,
   getSelectedProgramId,
-  tableCustomStyles,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -53,91 +52,75 @@ const uiSchema = {
   },
 };
 
+const schemat = {
+  type: "object",
+  properties: {
+    district: {
+      type: "array",
+      title: "DISTRICT",
+      grid: 1,
+      _hstack: {
+        maxH: 135,
+        overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
+      },
+      items: {
+        type: "string",
+      },
+      uniqueItems: true,
+    },
+    block: {
+      type: "array",
+      title: "BLOCKS",
+      grid: 1,
+      _hstack: {
+        maxH: 130,
+        overflowY: "scroll",
+        borderBottomColor: "bgGreyColor.200",
+        borderBottomWidth: "2px",
+      },
+      items: {
+        type: "string",
+        enum: [],
+      },
+      uniqueItems: true,
+    },
+    status: {
+      type: "array",
+      title: "STATUS",
+      grid: 1,
+      _hstack: {
+        maxH: 130,
+        overflowY: "scroll",
+      },
+      items: {
+        type: "string",
+      },
+      uniqueItems: true,
+    },
+  },
+};
 export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
   const [schema, setSchema] = useState();
   const [filter, setFilter] = useState({});
   const [loading, setLoading] = useState(true);
-  const [facilitaorStatus, setFacilitaorStatus] = useState();
+  const [tableLoading, setTableLoading] = useState(true);
   const [modal, setModal] = useState(false);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [enumOptions, setEnumOptions] = useState({});
   const [program, setProgram] = useState();
   const [academicYear, setAcademicYear] = useState();
-
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
 
   const handleOpenButtonClick = () => {
-    setDrawerOpen((prevState) => !prevState);
-  };
-
-  const schemat = {
-    type: "object",
-    properties: {
-      district: {
-        type: "array",
-        title: t("DISTRICT"),
-        grid: 1,
-        _hstack: {
-          maxH: 135,
-          overflowY: "scroll",
-          borderBottomColor: "bgGreyColor.200",
-          borderBottomWidth: "2px",
-        },
-        items: {
-          type: "string",
-        },
-        uniqueItems: true,
-      },
-      block: {
-        type: "array",
-        title: t("BLOCKS"),
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-          borderBottomColor: "bgGreyColor.200",
-          borderBottomWidth: "2px",
-        },
-        items: {
-          type: "string",
-        },
-        uniqueItems: true,
-      },
-      qualificationIds: {
-        type: "array",
-        title: t("QUALIFICATION"),
-        grid: 1,
-        _hstack: {
-          maxH: 135,
-          overflowY: "scroll",
-          borderBottomColor: "bgGreyColor.200",
-          borderBottomWidth: "2px",
-        },
-        items: {
-          type: "string",
-        },
-        uniqueItems: true,
-      },
-      status: {
-        type: "array",
-        title: "STATUS",
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-        },
-        items: {
-          type: "string",
-        },
-        uniqueItems: true,
-      },
-    },
+    setIsDrawerOpen((prevState) => !prevState);
   };
 
   useEffect(() => {
@@ -150,20 +133,10 @@ export default function List({ footerLinks, userTokenInfo }) {
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
-      const result = await enumRegistryService.statuswiseCount();
-      setFacilitaorStatus(result);
       const data = await enumRegistryService.listOfEnum();
       setEnumOptions(data?.data ? data?.data : {});
 
-      const getQualification =
-        await facilitatorRegistryService.getQualificationAll();
       let newSchema = getOptions(schemat, {
-        key: "qualificationIds",
-        arr: getQualification,
-        title: "name",
-        value: "id",
-      });
-      newSchema = getOptions(schemat, {
         key: "status",
         arr: data?.data?.FACILITATOR_STATUS,
         title: "title",
@@ -182,9 +155,9 @@ export default function List({ footerLinks, userTokenInfo }) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchBlocks = async () => {
-      if (schema && filter?.district?.length > 0) {
+  const fetchBlocks = useCallback(async () => {
+    if (schema) {
+      if (filter?.district?.length > 0) {
         const blockData = await geolocationRegistryService.getMultipleBlocks({
           districts: filter?.district,
         });
@@ -195,20 +168,37 @@ export default function List({ footerLinks, userTokenInfo }) {
           value: "block_name",
         });
         setSchema(newSchema);
+      } else {
+        const newSchema = {
+          ...schema,
+          properties: {
+            ...schema.properties,
+            block: schemat?.properties?.block || {},
+          },
+        };
+        setSchema(newSchema);
       }
-    };
+    }
+  }, [filter?.district]);
+
+  useEffect(() => {
     fetchBlocks();
   }, [filter?.district]);
 
   useEffect(() => {
     const fetchFilteredData = async () => {
-      const result = await facilitatorRegistryService.filter({
-        ...filter,
-        limit: filter?.limit || 10,
-      });
+      if (urlFilterApply) {
+        setTableLoading(true);
+        const result = await facilitatorRegistryService.filter({
+          ...filter,
+          limit: filter?.limit || 10,
+        });
 
-      setData(result.data?.data);
-      setPaginationTotalRows(result?.data?.totalCount || 0);
+        setData(result.data?.data);
+        setPaginationTotalRows(result?.data?.totalCount || 0);
+
+        setTableLoading(false);
+      }
     };
 
     fetchFilteredData();
@@ -229,10 +219,10 @@ export default function List({ footerLinks, userTokenInfo }) {
   );
 
   useEffect(() => {
-    const arr = ["district", "block", "qualificationIds", "status"];
+    const arr = ["district", "block", "status"];
     const data = urlData(arr);
-
     if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
+    setUrlFilterApply(true);
   }, []);
 
   const onChange = useCallback(
@@ -240,11 +230,10 @@ export default function List({ footerLinks, userTokenInfo }) {
       const {
         district: newDistrict,
         block: newBlock,
-        qualificationIds: newQualificationIds,
         status: newStatus,
       } = data?.formData || {};
-      const { district, block, ...remainData } = filter || {};
-      setFilterObject({
+      const { district, block, status, ...remainData } = filter || {};
+      const finalFilter = {
         ...remainData,
         ...(newDistrict && newDistrict?.length > 0
           ? {
@@ -252,15 +241,11 @@ export default function List({ footerLinks, userTokenInfo }) {
               ...(newBlock?.length > 0 ? { block: newBlock } : {}),
             }
           : {}),
-        ...(newQualificationIds && newQualificationIds?.length > 0
-          ? { qualificationIds: newQualificationIds }
-          : {}),
-        ...(newStatus && newStatus?.length > 0
-          ? { status: newStatus }
-          : { status: [] }),
-      });
+        ...(newStatus && newStatus?.length > 0 ? { status: newStatus } : {}),
+      };
+      setFilterObject(finalFilter);
     },
-    [filter, setFilterObject]
+    [filter]
   );
 
   const clearFilter = useCallback(() => {
@@ -278,11 +263,11 @@ export default function List({ footerLinks, userTokenInfo }) {
     },
     [filter]
   );
-
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout
+      widthApp={width}
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
       loading={loading}
@@ -290,11 +275,10 @@ export default function List({ footerLinks, userTokenInfo }) {
       <HStack
         space={[0, 0, "2"]}
         p="2"
-        my="1"
-        mb="3"
         justifyContent="space-between"
         flexWrap="wrap"
         gridGap="2"
+        ref={ref}
       >
         <HStack
           justifyContent={"space-between"}
@@ -439,13 +423,19 @@ export default function List({ footerLinks, userTokenInfo }) {
                     </HStack>
                     <Button variant="link" pt="3" onPress={clearFilter}>
                       <AdminTypo.H6 color="blueText.400" underline bold>
-                        {t("CLEAR_FILTER")}
+                        {t("CLEAR_FILTER")}(
+                        {
+                          Object.keys(filter || {}).filter(
+                            (e) => !["limit", "page"].includes(e)
+                          ).length
+                        }
+                        )
                       </AdminTypo.H6>
                     </Button>
                   </HStack>
                   <Box p={[0, 0, 3]} pr="3">
                     <Form
-                      schema={schema}
+                      schema={schema || {}}
                       uiSchema={uiSchema}
                       onChange={onChange}
                       validator={validator}
@@ -471,11 +461,7 @@ export default function List({ footerLinks, userTokenInfo }) {
           rounded={"xs"}
           height={"50px"}
           bg={
-            filter?.district ||
-            filter?.state ||
-            filter?.block ||
-            filter?.qualificationIds ||
-            filter?.status
+            filter?.district || filter?.state || filter?.block || filter?.status
               ? "textRed.400"
               : "#E0E0E0"
           }
@@ -488,7 +474,6 @@ export default function List({ footerLinks, userTokenInfo }) {
               filter?.state ||
               filter?.district ||
               filter?.block ||
-              filter?.qualificationIds ||
               filter?.status
                 ? "white"
                 : "black"
@@ -502,15 +487,15 @@ export default function List({ footerLinks, userTokenInfo }) {
             maxH={Height - refAppBar?.clientHeight - 72}
             minH={Height - refAppBar?.clientHeight - 72}
           >
-            <Box roundedBottom={"2xl"} pl="0" py={6} px={4} mb={5}>
+            <Box roundedBottom={"2xl"} pl="0" px={4}>
               <Table
-                customStyles={tableCustomStyles}
+                height={Height - refAppBar?.clientHeight}
                 filter={filter}
                 setFilter={setFilterObject}
                 facilitator={userTokenInfo?.authUser}
                 paginationTotalRows={paginationTotalRows}
                 data={data}
-                loading={loading}
+                loading={tableLoading}
                 enumOptions={enumOptions}
               />
             </Box>

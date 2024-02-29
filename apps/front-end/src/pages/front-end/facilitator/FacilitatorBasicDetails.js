@@ -11,7 +11,7 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import ProfilePhoto from "./ProfilePhoto";
+import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
 
 export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [facilitator, setFacilitator] = React.useState();

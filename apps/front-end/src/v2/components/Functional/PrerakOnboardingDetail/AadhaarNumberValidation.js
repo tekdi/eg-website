@@ -62,15 +62,12 @@ function validate(array) {
 }
 
 function AadhaarNumberValidation({ aadhaar }) {
-  if (aadhaar.length != 12) {
+  if (!aadhaar || aadhaar.length !== 12 || !aadhaar.match(/^\d+$/)) {
     return "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER";
   }
-  if (aadhaar.match(/[^$,.\d]/)) {
-    return "AADHAAR_FIRST_NUMBER_SHOULD_BE_GREATER_THAN_1_AND_12_DIGIT_VALID_NUMBER";
-  }
-  const aadhaarArray = aadhaar.split("");
+  const aadhaarArray = aadhaar?.split("");
 
-  const toCheckChecksum = aadhaarArray.pop();
+  const toCheckChecksum = aadhaarArray?.pop();
 
   if (generate(aadhaarArray) === parseInt(toCheckChecksum, 10)) {
     return false;

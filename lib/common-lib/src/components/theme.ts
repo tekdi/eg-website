@@ -735,13 +735,16 @@ const DEFAULT_THEME = {
       700: '#0F6C41'
     },
     textBlue: {
-      100: '#a8e3fd'
+      100: '#a8e3fd',
+      200:'#0038FF'
     },
     text: {
       100: '#a8e3fd'
     },
+    zambezi:'#5A5A5A',
     timeLineBg: '#FFE0E1',
-    greenIconColor: '#008C0E'
+    greenIconColor: '#008C0E',
+    whiteSomke:'#F9F9F9'
   }
 }
 

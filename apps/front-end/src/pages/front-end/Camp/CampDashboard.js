@@ -9,7 +9,6 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import AadhaarNumberValidation from "component/AadhaarNumberValidation";
 import {
   HStack,
   VStack,
@@ -18,33 +17,33 @@ import {
   Avatar,
   Alert,
   Modal,
+  Stack,
 } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import Chip from "component/BeneficiaryStatus";
 
+const campSettingData = (item) => {
+  return (
+    item?.preferred_start_time === null &&
+    item?.preferred_end_time === null &&
+    item?.week_off === null
+  );
+};
 export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(true);
-  const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
-  const [campList, setCampList] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState();
-  const [communityLength, setCommunityLength] = React.useState(0);
-  const [ipStatus, setIpStatus] = React.useState();
-  const [modal, setModal] = React.useState(false);
-  const [campId, setCampId] = React.useState("");
-  const [campSelected, setCampSelected] = React.useState("");
-  const [campSetting, setCampSetting] = React.useState("");
-  const campSettingData = () => {
-    return (
-      campSetting.preferred_start_time &&
-      campSetting.preferred_end_time &&
-      campSetting.week_off == null
-    );
-  };
+  const [loading, setLoading] = useState(true);
+  const [nonRegisteredUser, setNonRegisteredUser] = useState([]);
+  const [campList, setCampList] = useState();
+  const [enumOptions, setEnumOptions] = useState();
+  const [communityLength, setCommunityLength] = useState(0);
+  const [ipStatus, setIpStatus] = useState();
+  const [campSelected, setCampSelected] = useState("");
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
     const campList = await campService.campList();
     const enums = await enumRegistryService.listOfEnum();
@@ -61,7 +60,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data?.camps);
     setLoading(false);
-    setCampSetting(campList.data?.camps[0]);
   }, []);
 
   return (
@@ -137,9 +135,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                       <Pressable
                         key={item}
                         onPress={() => {
-                          setModal(true);
-                          setCampId(item?.id);
-                          setCampSelected(item?.group?.status);
+                          setCampSelected(item);
                         }}
                         bg="boxBackgroundColour.100"
                         shadow="AlertShadow"
@@ -151,7 +147,10 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                           alignItems={"center"}
                           justifyContent={"space-between"}
                         >
-                          <VStack>
+                          <Chip rounded="full" alignItems={"center"}>
+                            {item?.id}
+                          </Chip>
+                          <VStack flex={"0.9"}>
                             <FrontEndTypo.H3>
                               {`${t("CAMP")} ${String(index).padStart(2, "0")}`}
                             </FrontEndTypo.H3>
@@ -263,8 +262,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         </VStack>
       </VStack>
       <Modal
-        isOpen={modal}
-        onClose={() => setModal(false)}
+        isOpen={campSelected}
+        onClose={() => setCampSelected()}
         safeAreaTop={true}
         size="xl"
       >
@@ -275,21 +274,23 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
               <FrontEndTypo.Primarybutton
                 m="2"
                 onPress={() => {
-                  navigate(`/camps/${campId}`);
+                  navigate(`/camps/${campSelected?.id}`);
                 }}
               >
                 {t("CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
-              {["registered", "camp_ip_verified"].includes(campSelected) && (
-                <React.Fragment>
+              {["registered", "camp_ip_verified"].includes(
+                campSelected?.group?.status
+              ) && (
+                <Stack space={4}>
                   <FrontEndTypo.Secondarybutton
                     onPress={() => {
-                      navigate(`/camps/${campId}/settings`);
+                      navigate(`/camps/${campSelected?.id}/settings`);
                     }}
                   >
                     {t("CAMP_SETTINGS")}
                   </FrontEndTypo.Secondarybutton>
-                  {campSettingData() ? (
+                  {campSettingData(campSelected) ? (
                     <Alert mt={4} status="warning">
                       <HStack space={2}>
                         <Alert.Icon />
@@ -301,13 +302,13 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                   ) : (
                     <FrontEndTypo.Primarybutton
                       onPress={() => {
-                        navigate(`/camps/${campId}/campexecution`);
+                        navigate(`/camps/${campSelected?.id}/campexecution`);
                       }}
                     >
                       {t("CAMP_EXECUTION")}
                     </FrontEndTypo.Primarybutton>
                   )}
-                </React.Fragment>
+                </Stack>
               )}
             </VStack>
           </Modal.Body>
@@ -316,3 +317,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+CampDashboard.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};
