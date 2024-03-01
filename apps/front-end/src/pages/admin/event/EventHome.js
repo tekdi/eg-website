@@ -225,8 +225,8 @@ export default function EventHome({ footerLinks }) {
           },
           date: {
             ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            daysDiff: 4,
+            // minDate: moment().toDate(),
+            // daysDiff: 4,
           },
         },
       }));
@@ -358,19 +358,47 @@ export default function EventHome({ footerLinks }) {
         erros = { ...(erros || {}), ...newErrors };
       }
     }
+    if (key.includes("root_date") && newFormData?.startDate) {
+      const obj = jsonParse(newData?.date);
+      const startDate = moment(obj.startDate, "YYYY-MM-DD");
+      const endDate = moment(obj.endDate, "YYYY-MM-DD");
+      const differenceInDays = endDate.diff(startDate, "days");
+      if (differenceInDays > 4) {
+        const newErrors = {
+          date: {
+            __errors: [t("SELECT_DATE_ERROR_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     if (returnError) {
       return erros;
     } else {
       setErrors(erros);
     }
   };
-  console.log(errors);
+
   const onChange = async (data, id) => {
     setErrors({});
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
     if (id === "root_type") {
       setSelectedRowIds([]);
+    }
+
+    const obj = jsonParse(newData?.date);
+    const startDate = moment(obj.startDate, "YYYY-MM-DD");
+    const endDate = moment(obj.endDate, "YYYY-MM-DD");
+    const differenceInDays = endDate.diff(startDate, "days");
+    if (differenceInDays > 4) {
+      const newErrors = {
+        date: {
+          __errors: [t("SELECT_DATE_ERROR_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
     }
     if (newData?.end_date) {
       if (
@@ -395,9 +423,10 @@ export default function EventHome({ footerLinks }) {
     let newFormData = data?.formData;
     const resultValidation = checkValidation(
       newFormData,
-      ["root_start_time", "root_end_time"],
+      ["root_date", "root_start_time", "root_end_time"],
       true
     );
+
     if (!resultValidation) {
       if (Object.keys(errors).length === 0) {
         setIsDisabled(true);
