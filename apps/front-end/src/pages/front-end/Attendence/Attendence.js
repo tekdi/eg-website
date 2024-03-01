@@ -774,7 +774,7 @@ export default function Attendence({ footerLinks }) {
                   </AdminTypo.H7>
                   <AdminTypo.H7 bold color="textGreyColor.800">
                     {event?.end_time
-                      ? moment(event?.end_time, "HH:mm:ssZ").format("hh:mm A")
+                      ? moment(event?.end_time, "HH:mm:ssA").format("hh:mm A")
                       : "-"}
                   </AdminTypo.H7>
                 </HStack>
