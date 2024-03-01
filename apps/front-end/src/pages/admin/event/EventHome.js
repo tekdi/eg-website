@@ -228,37 +228,30 @@ export default function EventHome({ footerLinks }) {
       value: "value",
     });
 
-    setSchema(newSchema);
-
-    if (step === "edit") {
-      setSchema((prevSchema) => ({
-        ...prevSchema,
-        properties: {
-          ...prevSchema.properties,
-          type: {
-            ...prevSchema?.properties?.type,
-            readOnly: true,
-          },
-          date: {
-            ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            // daysDiff: 4,
-          },
+    newSchema = {
+      ...newSchema,
+      properties: {
+        ...newSchema.properties,
+        date: {
+          ...newSchema?.properties?.date,
+          minDate: moment().toDate(),
+          // daysDiff: 4,
         },
-      }));
-    } else {
-      setSchema((newSchema) => ({
+      },
+    };
+    if (step === "edit") {
+      newSchema = {
         ...newSchema,
         properties: {
           ...newSchema.properties,
-          date: {
-            ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            // daysDiff: 4,
+          type: {
+            ...newSchema.properties.type,
+            readOnly: true,
           },
         },
-      }));
+      };
     }
+    setSchema(newSchema);
   }, []);
 
   useEffect(() => {
@@ -453,6 +446,13 @@ export default function EventHome({ footerLinks }) {
 
             navigate(`/admin`);
           } else {
+            console.log(apiResponse);
+            const newErrors = {
+              name: {
+                __errors: [t(apiResponse?.message)],
+              },
+            };
+            setErrors(newErrors);
             toast.show({
               render: () => {
                 return (
@@ -469,7 +469,6 @@ export default function EventHome({ footerLinks }) {
         }
       } else {
         setIsDisabled(false);
-        alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
       }
     } else {
       setErrors(resultValidation);
