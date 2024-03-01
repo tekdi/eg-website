@@ -418,7 +418,7 @@ export default function EventHome({ footerLinks }) {
     );
 
     if (!resultValidation) {
-      if (Object.keys(errors).length === 0) {
+      if (Object.keys(errors || {}).length === 0) {
         setIsDisabled(true);
         setFormData(newFormData);
         const { startDate, endDate } = JSON.parse(newFormData.date || "{}");
