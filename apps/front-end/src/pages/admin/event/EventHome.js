@@ -124,6 +124,22 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
     attr: "city",
   },
 ];
+
+const uiSchema = {
+  date: {
+    "ui:widget": "CalenderInput",
+    // "ui:widget": "alt-datetime",
+    // "ui:options": {
+    //   hideNowButton: true,
+    //   hideClearButton: true,
+    //   yearsRange: [2023, 2030],
+    // },
+  },
+  time: {
+    "ui:widget": "Time",
+    // "ui:widget": "hidden",
+  },
+};
 export default function EventHome({ footerLinks }) {
   const formRef = useRef();
   const [errors, setErrors] = useState({});
@@ -212,37 +228,30 @@ export default function EventHome({ footerLinks }) {
       value: "value",
     });
 
-    setSchema(newSchema);
-
-    if (step === "edit") {
-      setSchema((prevSchema) => ({
-        ...prevSchema,
-        properties: {
-          ...prevSchema.properties,
-          type: {
-            ...prevSchema?.properties?.type,
-            readOnly: true,
-          },
-          date: {
-            ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            daysDiff: 4,
-          },
+    newSchema = {
+      ...newSchema,
+      properties: {
+        ...newSchema.properties,
+        date: {
+          ...newSchema?.properties?.date,
+          minDate: moment().toDate(),
+          // daysDiff: 4,
         },
-      }));
-    } else {
-      setSchema((newSchema) => ({
+      },
+    };
+    if (step === "edit") {
+      newSchema = {
         ...newSchema,
         properties: {
           ...newSchema.properties,
-          date: {
-            ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            daysDiff: 4,
+          type: {
+            ...newSchema.properties.type,
+            readOnly: true,
           },
         },
-      }));
+      };
     }
+    setSchema(newSchema);
   }, []);
 
   useEffect(() => {
@@ -320,24 +329,8 @@ export default function EventHome({ footerLinks }) {
     setIsDisabled(persan !== 100);
   }, [formData]);
 
-  const uiSchema = {
-    date: {
-      "ui:widget": "CalenderInput",
-      // "ui:widget": "alt-datetime",
-      // "ui:options": {
-      //   hideNowButton: true,
-      //   hideClearButton: true,
-      //   yearsRange: [2023, 2030],
-      // },
-    },
-    time: {
-      "ui:widget": "Time",
-      // "ui:widget": "hidden",
-    },
-  };
-
   const checkValidation = (newFormData, key = [], returnError = false) => {
-    let erros;
+    let errorsObj;
     if (key.includes("root_start_time") && newFormData?.end_time) {
       if (newFormData?.start_time > newFormData?.end_time) {
         const newErrors = {
@@ -345,7 +338,7 @@ export default function EventHome({ footerLinks }) {
             __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
           },
         };
-        erros = { ...(erros || {}), ...newErrors };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
       }
     }
     if (key.includes("root_end_time") && newFormData?.start_time) {
@@ -355,16 +348,32 @@ export default function EventHome({ footerLinks }) {
             __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
           },
         };
-        erros = { ...(erros || {}), ...newErrors };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
       }
     }
+
+    if (key.includes("root_date")) {
+      const obj = jsonParse(newFormData?.date);
+      const startDate = moment(obj.startDate, "YYYY-MM-DD");
+      const endDate = moment(obj.endDate, "YYYY-MM-DD");
+      const differenceInDays = endDate.diff(startDate, "days");
+      if (differenceInDays > 4) {
+        const newErrors = {
+          date: {
+            __errors: [t("SELECT_DATE_ERROR_MESSAGE")],
+          },
+        };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
+      }
+    }
+
     if (returnError) {
-      return erros;
+      return errorsObj;
     } else {
-      setErrors(erros);
+      setErrors(errorsObj);
     }
   };
-  console.log(errors);
+
   const onChange = async (data, id) => {
     setErrors({});
     const newData = data.formData;
@@ -388,6 +397,8 @@ export default function EventHome({ footerLinks }) {
       checkValidation(newData, [id]);
     } else if (id === "root_end_time") {
       checkValidation(newData, [id]);
+    } else if (id === "root_date") {
+      checkValidation(newData, [id]);
     }
   };
 
@@ -395,11 +406,12 @@ export default function EventHome({ footerLinks }) {
     let newFormData = data?.formData;
     const resultValidation = checkValidation(
       newFormData,
-      ["root_start_time", "root_end_time"],
+      ["root_date", "root_start_time", "root_end_time"],
       true
     );
+
     if (!resultValidation) {
-      if (Object.keys(errors).length === 0) {
+      if (Object.keys(errors || {}).length === 0) {
         setIsDisabled(true);
         setFormData(newFormData);
         const { startDate, endDate } = JSON.parse(newFormData.date || "{}");
@@ -434,6 +446,13 @@ export default function EventHome({ footerLinks }) {
 
             navigate(`/admin`);
           } else {
+            console.log(apiResponse);
+            const newErrors = {
+              name: {
+                __errors: [t(apiResponse?.message)],
+              },
+            };
+            setErrors(newErrors);
             toast.show({
               render: () => {
                 return (
@@ -450,7 +469,6 @@ export default function EventHome({ footerLinks }) {
         }
       } else {
         setIsDisabled(false);
-        alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
       }
     } else {
       setErrors(resultValidation);
