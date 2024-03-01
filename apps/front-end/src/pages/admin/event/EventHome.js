@@ -124,6 +124,22 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
     attr: "city",
   },
 ];
+
+const uiSchema = {
+  date: {
+    "ui:widget": "CalenderInput",
+    // "ui:widget": "alt-datetime",
+    // "ui:options": {
+    //   hideNowButton: true,
+    //   hideClearButton: true,
+    //   yearsRange: [2023, 2030],
+    // },
+  },
+  time: {
+    "ui:widget": "Time",
+    // "ui:widget": "hidden",
+  },
+};
 export default function EventHome({ footerLinks }) {
   const formRef = useRef();
   const [errors, setErrors] = useState({});
@@ -320,24 +336,8 @@ export default function EventHome({ footerLinks }) {
     setIsDisabled(persan !== 100);
   }, [formData]);
 
-  const uiSchema = {
-    date: {
-      "ui:widget": "CalenderInput",
-      // "ui:widget": "alt-datetime",
-      // "ui:options": {
-      //   hideNowButton: true,
-      //   hideClearButton: true,
-      //   yearsRange: [2023, 2030],
-      // },
-    },
-    time: {
-      "ui:widget": "Time",
-      // "ui:widget": "hidden",
-    },
-  };
-
   const checkValidation = (newFormData, key = [], returnError = false) => {
-    let erros;
+    let errorsObj;
     if (key.includes("root_start_time") && newFormData?.end_time) {
       if (newFormData?.start_time > newFormData?.end_time) {
         const newErrors = {
@@ -345,7 +345,7 @@ export default function EventHome({ footerLinks }) {
             __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
           },
         };
-        erros = { ...(erros || {}), ...newErrors };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
       }
     }
     if (key.includes("root_end_time") && newFormData?.start_time) {
@@ -355,11 +355,12 @@ export default function EventHome({ footerLinks }) {
             __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
           },
         };
-        erros = { ...(erros || {}), ...newErrors };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
       }
     }
-    if (key.includes("root_date") && newFormData?.startDate) {
-      const obj = jsonParse(newData?.date);
+
+    if (key.includes("root_date")) {
+      const obj = jsonParse(newFormData?.date);
       const startDate = moment(obj.startDate, "YYYY-MM-DD");
       const endDate = moment(obj.endDate, "YYYY-MM-DD");
       const differenceInDays = endDate.diff(startDate, "days");
@@ -369,14 +370,14 @@ export default function EventHome({ footerLinks }) {
             __errors: [t("SELECT_DATE_ERROR_MESSAGE")],
           },
         };
-        setErrors(newErrors);
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
       }
     }
 
     if (returnError) {
-      return erros;
+      return errorsObj;
     } else {
-      setErrors(erros);
+      setErrors(errorsObj);
     }
   };
 
@@ -386,19 +387,6 @@ export default function EventHome({ footerLinks }) {
     setFormData({ ...formData, ...newData });
     if (id === "root_type") {
       setSelectedRowIds([]);
-    }
-
-    const obj = jsonParse(newData?.date);
-    const startDate = moment(obj.startDate, "YYYY-MM-DD");
-    const endDate = moment(obj.endDate, "YYYY-MM-DD");
-    const differenceInDays = endDate.diff(startDate, "days");
-    if (differenceInDays > 4) {
-      const newErrors = {
-        date: {
-          __errors: [t("SELECT_DATE_ERROR_MESSAGE")],
-        },
-      };
-      setErrors(newErrors);
     }
     if (newData?.end_date) {
       if (
@@ -415,6 +403,8 @@ export default function EventHome({ footerLinks }) {
     if (id === "root_start_time") {
       checkValidation(newData, [id]);
     } else if (id === "root_end_time") {
+      checkValidation(newData, [id]);
+    } else if (id === "root_date") {
       checkValidation(newData, [id]);
     }
   };
