@@ -225,7 +225,7 @@ export default function EventHome({ footerLinks }) {
           },
           date: {
             ...newSchema?.properties?.date,
-            // minDate: moment().toDate(),
+            minDate: moment().toDate(),
             // daysDiff: 4,
           },
         },
@@ -238,7 +238,7 @@ export default function EventHome({ footerLinks }) {
           date: {
             ...newSchema?.properties?.date,
             minDate: moment().toDate(),
-            daysDiff: 4,
+            // daysDiff: 4,
           },
         },
       }));

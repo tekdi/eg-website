@@ -25,13 +25,13 @@ function CalenderInput({ schema, value, onChange }) {
     setSelectedDate(selection);
   };
   const startDate = moment(jsonParse(value)?.startDate || moment().toDate());
-  // const maxDateData =
-  //   maxDate || daysDiff ? startDate.add(daysDiff, "days") : null;
+  const maxDateData =
+    maxDate || daysDiff ? startDate.add(daysDiff, "days") : null;
 
   return (
     <DateRange
       minDate={minDate}
-      // maxDate={selectedDate?.startDate && maxDateData.toDate()}
+      maxDate={selectedDate?.startDate && maxDateData?.toDate()}
       ranges={[
         {
           startDate: moment().toDate(),
