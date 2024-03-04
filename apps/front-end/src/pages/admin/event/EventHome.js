@@ -698,17 +698,9 @@ export default function EventHome({ footerLinks }) {
 }
 
 const District = ({ district, filter, t, setFilter }) => {
-  const handleSelectAll = (key) => {
-    if (key === "district") {
-      const { districts, blocks, village, ...data } = filter;
-      setFilter(data);
-    } else if (key === "block") {
-      const { blocks, village, ...data } = filter;
-      setFilter(data);
-    } else if (key === "village") {
-      const { village, ...data } = filter;
-      setFilter(data);
-    }
+  const handleSelectAll = () => {
+    const { districts, blocks, village, ...data } = filter;
+    setFilter(data);
   };
 
   return (
@@ -727,7 +719,7 @@ const District = ({ district, filter, t, setFilter }) => {
         );
       }}
     >
-      <Menu.Item key="selectAll" onPress={(e) => handleSelectAll("district")}>
+      <Menu.Item key="selectAll" onPress={handleSelectAll}>
         Select All
       </Menu.Item>
       {district &&
@@ -749,17 +741,9 @@ const District = ({ district, filter, t, setFilter }) => {
   );
 };
 const Blocks = ({ block, filter, t, setFilter }) => {
-  const handleSelectAll = (key) => {
-    if (key === "district") {
-      const { districts, blocks, village, ...data } = filter;
-      setFilter(data);
-    } else if (key === "block") {
-      const { blocks, village, ...data } = filter;
-      setFilter(data);
-    } else if (key === "village") {
-      const { village, ...data } = filter;
-      setFilter(data);
-    }
+  const handleSelectAll = () => {
+    const { blocks, village, ...data } = filter;
+    setFilter(data);
   };
   return (
     <Menu
@@ -777,7 +761,7 @@ const Blocks = ({ block, filter, t, setFilter }) => {
         );
       }}
     >
-      <Menu.Item key="selectAll" onPress={(e) => handleSelectAll("block")}>
+      <Menu.Item key="selectAll" onPress={handleSelectAll}>
         Select All
       </Menu.Item>
       {block &&
@@ -800,17 +784,9 @@ const Blocks = ({ block, filter, t, setFilter }) => {
 };
 
 const Village = ({ village, filter, t, setFilter }) => {
-  const handleSelectAll = (key) => {
-    if (key === "district") {
-      const { districts, blocks, village, ...data } = filter;
-      setFilter(data);
-    } else if (key === "block") {
-      const { blocks, village, ...data } = filter;
-      setFilter(data);
-    } else if (key === "village") {
-      const { village, ...data } = filter;
-      setFilter(data);
-    }
+  const handleSelectAll = () => {
+    const { village, ...data } = filter;
+    setFilter(data);
   };
   return (
     <Menu
@@ -828,7 +804,7 @@ const Village = ({ village, filter, t, setFilter }) => {
         );
       }}
     >
-      <Menu.Item key="selectAll" onPress={(e) => handleSelectAll("village")}>
+      <Menu.Item key="selectAll" onPress={handleSelectAll}>
         Select All
       </Menu.Item>
       {village?.map((e) => (
