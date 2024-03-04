@@ -20,6 +20,7 @@ import {
   templates,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
+import PrerakOnboardingPayload from "./PrerakOnboardingPayload.js";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -42,6 +43,9 @@ export default function PrerakOnboardingArrayForm({
   const [keys, setKeys] = useState([]);
   const [labels, setLabels] = useState([]);
   const [enumObj, setEnumObj] = useState();
+  const [payload, setPayload] = useState({});
+  const [payloadLoading, setPayloadLoading] = useState(false);
+
   const stepLabel =
     type === "reference_details"
       ? "REFERENCE_DETAILS"
@@ -299,6 +303,17 @@ export default function PrerakOnboardingArrayForm({
         ...Object.keys(schema?.properties),
         "arr_id",
       ]);
+      const payload = {
+        ...newdata,
+        page_type:
+          type === "reference_details"
+            ? "reference_details"
+            : "work_experience_details",
+        type,
+      };
+      // PrerakOnboardingPayload({ payload });
+      setPayloadLoading(true);
+      setPayload(payload);
       await formSubmitUpdate({
         ...newdata,
         page_type:
@@ -308,6 +323,7 @@ export default function PrerakOnboardingArrayForm({
         type,
       });
       setAddMore(false);
+      setPayloadLoading(true);
     }
   };
 
@@ -344,6 +360,8 @@ export default function PrerakOnboardingArrayForm({
 
   return (
     <>
+      {payloadLoading && <PrerakOnboardingPayload payload={payload} />}
+
       {["quit"].includes(facilitator?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>

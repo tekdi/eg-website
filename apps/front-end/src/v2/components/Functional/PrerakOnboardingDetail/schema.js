@@ -168,6 +168,7 @@ export default {
         designation: {
           type: "string",
           title: "DESIGNATION",
+          format: "select",
         },
         contact_number: {
           type: "number",
@@ -210,7 +211,7 @@ export default {
           label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
           document_type: "highest_qualification_document",
           type: ["string", "number"],
-          format: "FileUpload",
+          format: "FileUploadNew",
         },
         qualification_ids: {
           type: "array",

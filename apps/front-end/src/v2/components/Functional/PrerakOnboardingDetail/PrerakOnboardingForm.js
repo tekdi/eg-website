@@ -30,6 +30,8 @@ import {
   setIndexedDBItem,
   getIndexedDBItem,
 } from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
+import PrerakOnboardingPayload from "./PrerakOnboardingPayload.js";
+import PrerakMainPayload, { MainFunction } from "./PrerakMainPayload.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -56,6 +58,8 @@ export default function PrerakOnboardingForm({
   const [otpButton, setOtpButton] = useState(false);
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
+  const [payload, setPayload] = useState({});
+  const [payloadLoading, setPayloadLoading] = useState(false);
 
   //offline
 
@@ -171,7 +175,7 @@ export default function PrerakOnboardingForm({
     };
 
     fetchData();
-  }, [step, qualifications]);
+  }, [step, page, qualifications]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -325,6 +329,7 @@ export default function PrerakOnboardingForm({
             title: "title",
             value: "value",
           });
+          setSchemaData(newSchema);
         }
         if (schema?.["properties"]?.["marital_status"]) {
           newSchema = getOptions(newSchema, {
@@ -371,6 +376,7 @@ export default function PrerakOnboardingForm({
     formData?.block,
     formData?.grampanchayat,
     formData?.village,
+    formData?.designation,
   ]);
 
   useEffect(() => {
@@ -505,7 +511,7 @@ export default function PrerakOnboardingForm({
       setLoading(true);
       const result = await facilitatorRegistryService.profileStapeUpdate({
         ...data,
-        page_type: step,
+        // page_type: step,
         ...(overide || {}),
         id: id,
       });
@@ -957,6 +963,8 @@ export default function PrerakOnboardingForm({
         {},
         ""
       );
+      setPayloadLoading(true);
+      setPayload({ ...newdata, page_type: step });
 
       await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {
@@ -964,6 +972,7 @@ export default function PrerakOnboardingForm({
       } else {
         navigatePage("/profile", "");
       }
+      setPayloadLoading(false);
     }
   };
   if (page === "upload") {
@@ -993,6 +1002,7 @@ export default function PrerakOnboardingForm({
   };
   return (
     <Box py={6} px={4} mb={5}>
+      {payloadLoading && <PrerakOnboardingPayload payload={payload} />}
       {alert && (
         <Alert status="warning" alignItems={"start"} mb="3">
           <HStack alignItems="center" space="2" color>
