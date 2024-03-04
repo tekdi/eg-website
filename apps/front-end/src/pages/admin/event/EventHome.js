@@ -19,6 +19,7 @@ import {
   facilitatorRegistryService,
   getOptions,
   eventService,
+  arrList,
 } from "@shiksha/common-lib";
 import {
   Alert,
@@ -51,23 +52,16 @@ const customStyles = {
       color: "#616161",
     },
   },
-  rows: {
-    style: {
-      minH: "45px", // override the row height
-      cursor: "pointer",
-    },
-  },
   cells: {
     style: {
-      padding: "10px 0", // Adjust as needed
-      marginTop: "0", // Remove upper space
+      padding: "10px 5px",
     },
   },
 };
 
 const columns = (t, handleCheckboxChange, selectedRowId) => [
   {
-    name: t("NAME"),
+    name: t("ID"),
     selector: (row) => (
       <HStack alignItems={"center"} space={2}>
         <Checkbox
@@ -75,13 +69,25 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
           onChange={() => handleCheckboxChange(row?.id)}
         />
         <AdminTypo.H7 bold>{row?.id}</AdminTypo.H7>
-        <AdminTypo.H6 textOverflow="ellipsis">
+      </HStack>
+    ),
+    sortable: false,
+    wrap: true,
+    width: "80px",
+    attr: "name",
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (
+      <HStack alignItems={"center"} space={2}>
+        <AdminTypo.H6 bold textOverflow="ellipsis">
           {row?.first_name + " " + row?.last_name}
         </AdminTypo.H6>
       </HStack>
     ),
     sortable: false,
-    width: "250px",
+    wrap: true,
+    width: "150px",
     attr: "name",
   },
   {
@@ -91,7 +97,7 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
         py="1"
         px="1"
         key={index}
-        status={row?.program_faciltators?.status}
+        status={row?.program_faciltators?.[0]?.status}
       />
     ),
     sortable: false,
@@ -118,24 +124,36 @@ const columns = (t, handleCheckboxChange, selectedRowId) => [
     attr: "city",
   },
 ];
+
+const uiSchema = {
+  date: {
+    "ui:widget": "CalenderInput",
+    // "ui:widget": "alt-datetime",
+    // "ui:options": {
+    //   hideNowButton: true,
+    //   hideClearButton: true,
+    //   yearsRange: [2023, 2030],
+    // },
+  },
+  time: {
+    "ui:widget": "Time",
+    // "ui:widget": "hidden",
+  },
+};
 export default function EventHome({ footerLinks }) {
   const formRef = useRef();
   const [errors, setErrors] = useState({});
   const [schema, setSchema] = useState({});
-  const nowDate = new Date();
   const [loading, setLoading] = useState(true);
   const [isListOpen, setIsListOpen] = useState(true);
   const { t } = useTranslation();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [data, setData] = useState();
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
-  const [userIds, setUserIds] = useState({});
   const [district, setDistrict] = useState();
   const [block, setBlock] = useState();
   const [village, setVillage] = useState();
   const [programData, setProgramData] = useState();
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const [isDisabled, setIsDisabled] = useState(true);
   const toast = useToast();
   const navigate = useNavigate();
@@ -150,13 +168,13 @@ export default function EventHome({ footerLinks }) {
   };
 
   useEffect(async () => {
-    const eventResult = await eventService.getEventListById({ id });
-    const { event } = eventResult;
-    setEventDetails(eventResult);
-    const selectedId =
-      eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
-    setSelectedRowIds(selectedId);
     if (id) {
+      const eventResult = await eventService.getEventListById({ id });
+      const { event } = eventResult;
+      setEventDetails(eventResult);
+      const selectedId =
+        eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
+      setSelectedRowIds(selectedId);
       setIsListOpen(false);
       const timeFormat = "HH:mm:ss";
       setFormData({
@@ -193,7 +211,7 @@ export default function EventHome({ footerLinks }) {
     let newSchema = Schema;
     newSchema = getOptions(newSchema, {
       key: "type",
-      arr: result?.data?.FACILITATOR_EVENT_TYPE.map((e) => ({
+      arr: result?.data?.FACILITATOR_EVENT_TYPE?.map((e) => ({
         ...e,
         title: t(e.title),
       })),
@@ -202,7 +220,7 @@ export default function EventHome({ footerLinks }) {
     });
     newSchema = getOptions(newSchema, {
       key: "name",
-      arr: result?.data?.EVENT_BATCH_NAME.map((e) => ({
+      arr: result?.data?.EVENT_BATCH_NAME?.map((e) => ({
         ...e,
         title: t(e.title),
       })),
@@ -210,37 +228,30 @@ export default function EventHome({ footerLinks }) {
       value: "value",
     });
 
-    setSchema(newSchema);
-
-    if (step === "edit") {
-      setSchema((prevSchema) => ({
-        ...prevSchema,
-        properties: {
-          ...prevSchema.properties,
-          type: {
-            ...prevSchema?.properties?.type,
-            readOnly: true,
-          },
-          date: {
-            ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            daysDiff: 4,
-          },
+    newSchema = {
+      ...newSchema,
+      properties: {
+        ...newSchema.properties,
+        date: {
+          ...newSchema?.properties?.date,
+          minDate: moment().toDate(),
+          // daysDiff: 4,
         },
-      }));
-    } else {
-      setSchema((newSchema) => ({
+      },
+    };
+    if (step === "edit") {
+      newSchema = {
         ...newSchema,
         properties: {
           ...newSchema.properties,
-          date: {
-            ...newSchema?.properties?.date,
-            minDate: moment().toDate(),
-            daysDiff: 4,
+          type: {
+            ...newSchema.properties.type,
+            readOnly: true,
           },
         },
-      }));
+      };
     }
+    setSchema(newSchema);
   }, []);
 
   useEffect(() => {
@@ -248,16 +259,14 @@ export default function EventHome({ footerLinks }) {
       setLoading(true);
       const result =
         await facilitatorRegistryService.getFacilitatorByStatusInOrientation({
-          limit: limit,
-          page: page,
+          ...filter,
           district: filter?.districts?.[0],
           block: filter?.blocks?.[0],
           type: formData?.type || eventDetails?.event?.type,
-          search: filter?.search,
         });
 
       setData(result?.data?.data);
-      setPaginationTotalRows(result?.totalCount);
+      setPaginationTotalRows(result?.data?.totalCount);
       setLoading(false);
     };
 
@@ -308,20 +317,61 @@ export default function EventHome({ footerLinks }) {
     villageData();
   }, [filter?.blocks]);
 
-  const uiSchema = {
-    date: {
-      "ui:widget": "CalenderInput",
-      // "ui:widget": "alt-datetime",
-      // "ui:options": {
-      //   hideNowButton: true,
-      //   hideClearButton: true,
-      //   yearsRange: [2023, 2030],
-      // },
-    },
-    time: {
-      "ui:widget": "Time",
-      // "ui:widget": "hidden",
-    },
+  useEffect(() => {
+    const persan = arrList(formData, [
+      "type",
+      "name",
+      "master_trainer",
+      "date",
+      "start_time",
+      "end_time",
+    ]);
+    setIsDisabled(persan !== 100);
+  }, [formData]);
+
+  const checkValidation = (newFormData, key = [], returnError = false) => {
+    let errorsObj;
+    if (key.includes("root_start_time") && newFormData?.end_time) {
+      if (newFormData?.start_time > newFormData?.end_time) {
+        const newErrors = {
+          start_time: {
+            __errors: [t("START_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
+          },
+        };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
+      }
+    }
+    if (key.includes("root_end_time") && newFormData?.start_time) {
+      if (newFormData?.start_time > newFormData?.end_time) {
+        const newErrors = {
+          end_time: {
+            __errors: [t("END_TIME_SHOULD_BE_GREATER_THAN_START_TIME")],
+          },
+        };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
+      }
+    }
+
+    if (key.includes("root_date")) {
+      const obj = jsonParse(newFormData?.date);
+      const startDate = moment(obj.startDate, "YYYY-MM-DD");
+      const endDate = moment(obj.endDate, "YYYY-MM-DD");
+      const differenceInDays = endDate.diff(startDate, "days");
+      if (differenceInDays > 4) {
+        const newErrors = {
+          date: {
+            __errors: [t("SELECT_DATE_ERROR_MESSAGE")],
+          },
+        };
+        errorsObj = { ...(errorsObj || {}), ...newErrors };
+      }
+    }
+
+    if (returnError) {
+      return errorsObj;
+    } else {
+      setErrors(errorsObj);
+    }
   };
 
   const onChange = async (data, id) => {
@@ -343,86 +393,90 @@ export default function EventHome({ footerLinks }) {
         setErrors(newErrors);
       }
     }
-
-    if (moment.utc(newData?.start_date) < moment.utc(nowDate)) {
-      const newErrors = {
-        start_date: {
-          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_START_DATE")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    if (moment.utc(newData?.end_date) < moment.utc(nowDate)) {
-      const newErrors = {
-        end_date: {
-          __errors: [t("EVENT_CREATE_BACK_DATES_NOT_ALLOWED_END_DATE")],
-        },
-      };
-      setErrors(newErrors);
+    if (id === "root_start_time") {
+      checkValidation(newData, [id]);
+    } else if (id === "root_end_time") {
+      checkValidation(newData, [id]);
+    } else if (id === "root_date") {
+      checkValidation(newData, [id]);
     }
   };
 
   const onSubmit = async (data) => {
     let newFormData = data?.formData;
+    const resultValidation = checkValidation(
+      newFormData,
+      ["root_date", "root_start_time", "root_end_time"],
+      true
+    );
 
-    if (Object.keys(errors).length === 0) {
-      setIsDisabled(true);
-      setFormData(newFormData);
-      const { startDate, endDate } = JSON.parse(newFormData.date || "{}");
-      const obj = {
-        ...newFormData,
-        start_date: moment(startDate).format("YYYY-MM-DD"),
-        end_date: moment(endDate).format("YYYY-MM-DD"),
-        attendees: selectedRowId,
-      };
-      if (step === "edit") {
-        const data = await eventService.updateEvent(id, obj);
-        if (data?.success === true) {
-          setIsDisabled(false);
-          navigate(`/admin/event/${data?.data?.events?.id}`);
+    if (!resultValidation) {
+      if (Object.keys(errors || {}).length === 0) {
+        setIsDisabled(true);
+        setFormData(newFormData);
+        const { startDate, endDate } = JSON.parse(newFormData.date || "{}");
+        const obj = {
+          ...newFormData,
+          start_date: moment(startDate).format("YYYY-MM-DD"),
+          end_date: moment(endDate).format("YYYY-MM-DD"),
+          attendees: selectedRowId,
+        };
+        if (step === "edit") {
+          const data = await eventService.updateEvent(id, obj);
+          if (data?.success === true) {
+            setIsDisabled(false);
+            navigate(`/admin/event/${data?.data?.events?.id}`);
+          }
+        } else {
+          const apiResponse = await eventService.createNewEvent(obj);
+          if (apiResponse?.success === true) {
+            setIsDisabled(false);
+            toast.show({
+              render: () => {
+                return (
+                  <Alert status="success" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{t("EVENT_CREATED_SUCCESSFULLY")}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                );
+              },
+            });
+
+            navigate(`/admin`);
+          } else {
+            console.log(apiResponse);
+            const newErrors = {
+              name: {
+                __errors: [t(apiResponse?.message)],
+              },
+            };
+            setErrors(newErrors);
+            toast.show({
+              render: () => {
+                return (
+                  <Alert status="error" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{apiResponse?.message}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                );
+              },
+            });
+          }
         }
       } else {
-        const apiResponse = await eventService.createNewEvent(obj);
-        if (apiResponse?.success === true) {
-          setIsDisabled(false);
-          toast.show({
-            render: () => {
-              return (
-                <Alert status="success" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{t("EVENT_CREATED_SUCCESSFULLY")}</BodyMedium>
-                  </HStack>
-                </Alert>
-              );
-            },
-          });
-
-          navigate(`/admin`);
-        } else {
-          toast.show({
-            render: () => {
-              return (
-                <Alert status="error" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{apiResponse?.message}</BodyMedium>
-                  </HStack>
-                </Alert>
-              );
-            },
-          });
-        }
+        setIsDisabled(false);
       }
     } else {
-      setIsDisabled(false);
-      alert(t("EVENT_CREATE_CORRECT_DATA_MESSAGE"));
+      setErrors(resultValidation);
     }
   };
 
   const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
+    return errors?.map((error) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
@@ -481,13 +535,19 @@ export default function EventHome({ footerLinks }) {
       // loading={loading}
     >
       <VStack p={4}>
-        <HStack pt="3" justifyContent={"space-between"}>
-          <HStack alignItems={"center"} space={3}>
+        <HStack
+          pt="3"
+          justifyContent={"space-between"}
+          direction={["column", "row", "row"]}
+          space={2}
+        >
+          <HStack alignItems={"center"} space={2} flexWrap={"wrap"}>
             <IconByName name="home" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">{t("HOME")}</AdminTypo.H1>
             <IconByName
               size="sm"
               name="ArrowRightSLineIcon"
+              p="0"
               onPress={(e) => navigate(`/admin`)}
             />
             <AdminTypo.H1
@@ -506,9 +566,19 @@ export default function EventHome({ footerLinks }) {
             </AdminTypo.Secondarybutton>
           )}
         </HStack>
-        {step !== "candidate" ? (
-          <HStack pt={6} justifyContent={"space-between"}>
-            <VStack width={"28%"} background={"whiteSomke"} p={4}>
+
+        <HStack
+          pt={6}
+          space={4}
+          justifyContent={"space-between"}
+          direction={["column", "column", "row"]}
+        >
+          {step !== "candidate" && (
+            <VStack
+              flex={["auto", "auto", "30"]}
+              background={"whiteSomke"}
+              p={4}
+            >
               <Form
                 ref={formRef}
                 extraErrors={errors}
@@ -527,7 +597,8 @@ export default function EventHome({ footerLinks }) {
                 }}
               >
                 <AdminTypo.PrimaryButton
-                  // isDisabled={isDisabled}
+                  isDisabled={isDisabled}
+                  mt="4"
                   onPress={() => {
                     formRef?.current?.submit();
                   }}
@@ -536,197 +607,116 @@ export default function EventHome({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
               </Form>
             </VStack>
-            <VStack
-              width={"70%"}
-              bg={isListOpen ? "zambezi" : "white"}
-              justifyContent={isListOpen && "center"}
-            >
-              {isListOpen ? (
-                <VStack p={4}>
-                  <AdminTypo.Secondarybutton onPress={handleOpenButtonClick}>
-                    {t("SELECT_CANDIDATE")}
-                  </AdminTypo.Secondarybutton>
-                </VStack>
-              ) : (
-                <VStack background={"whiteSomke"}>
-                  <HStack space={4} pb={4}>
-                    <Input
-                      minH="32px"
-                      InputLeftElement={
-                        <IconByName
-                          color="coolGray.500"
-                          name="SearchLineIcon"
-                          isDisabled
-                          pl="2"
-                          // height="2"
-                        />
-                      }
-                      placeholder={t("SEARCH_BY_NAME")}
-                      variant="outline"
-                      onChange={debouncedHandleSearch}
-                    />
-                    <Stack
-                      style={{
-                        width: "55%",
-                      }}
-                    >
-                      <HStack
-                        style={{
-                          // display: "flex",
-                          justifyContent: "space-around",
-                        }}
-                      >
-                        <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                        <AdminTypo.H4>
-                          {filter?.districts
-                            ? filter?.districts
-                            : t("DISTRICT")}
-                        </AdminTypo.H4>
-                        <District district={district} setFilter={setFilter} />
-                        <AdminTypo.H4>
-                          {filter?.blocks ? filter?.blocks : t("BLOCK")}
-                        </AdminTypo.H4>
-                        <Blocks block={block} setFilter={setFilter} />
-                        {programData === "BIHAR" && (
-                          <HStack space={4}>
-                            <AdminTypo.H4>
-                              {filter?.villages
-                                ? filter?.village
-                                : t("VILLAGE")}
-                            </AdminTypo.H4>
-                            <Village village={village} setFilter={setFilter} />
-                          </HStack>
-                        )}
-                      </HStack>
-                    </Stack>
-                  </HStack>
-                  <Stack alignSelf={"end"} pb={2} pr={4}>
-                    <AdminTypo.H6 bold color="textBlue.200">
-                      {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
-                    </AdminTypo.H6>
-                  </Stack>
-                  <DataTable
-                    columns={columns(t, handleCheckboxChange, selectedRowId)}
-                    data={data}
-                    customStyles={customStyles}
-                    persistTableHead
-                    // selectableRows
-                    progressPending={loading}
-                    pagination
-                    paginationServer
-                    onSelectedRowsChange={handleCheckboxChange}
-                    paginationTotalRows={paginationTotalRows}
-                    clearSelectedRows={
-                      Object.keys(userIds).length === 0 ? true : false
-                    }
-                    onChangeRowsPerPage={(e) => {
-                      setFilter({ ...filter, limit: e, page: 1 });
-                    }}
-                    onChangePage={(e) => {
-                      setFilter({ ...filter, page: e });
-                    }}
-                  />
-                </VStack>
-              )}
-            </VStack>
-          </HStack>
-        ) : (
-          <VStack mt={4} p={4} background={"whiteSomke"}>
-            <HStack space={4} pb={4}>
-              <Input
-                minH="32px"
-                InputLeftElement={
-                  <IconByName
-                    color="coolGray.500"
-                    name="SearchLineIcon"
-                    isDisabled
-                    pl="2"
-                    // height="2"
-                  />
-                }
-                placeholder={t("SEARCH_BY_NAME")}
-                variant="outline"
-                onChange={debouncedHandleSearch}
-              />
-              <Stack
-                style={{
-                  width: "55%",
-                }}
-              >
+          )}
+          <VStack
+            flex={["auto", "auto", "70"]}
+            display={step !== "candidate" && ["none", "none", "flex"]}
+            bg={isListOpen ? "zambezi" : "whiteSomke"}
+            p={[0, 0, "4"]}
+            justifyContent={isListOpen && "center"}
+          >
+            {isListOpen ? (
+              <VStack p={4}>
+                <AdminTypo.Secondarybutton onPress={handleOpenButtonClick}>
+                  {t("SELECT_CANDIDATE")}
+                </AdminTypo.Secondarybutton>
+              </VStack>
+            ) : (
+              <VStack background={"whiteSomke"}>
                 <HStack
-                  style={{
-                    // display: "flex",
-                    justifyContent: "space-around",
-                  }}
+                  p={[2, 2, 0]}
+                  space={4}
+                  flexWrap={"wrap"}
+                  direction={["column", "column", "column", "row", "row"]}
                 >
-                  <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                  <AdminTypo.H4>
-                    {filter?.districts ? filter?.districts : t("DISTRICT")}
-                  </AdminTypo.H4>
-                  <District district={district} setFilter={setFilter} />
-                  <AdminTypo.H4>
-                    {filter?.blocks ? filter?.blocks : t("BLOCK")}
-                  </AdminTypo.H4>
-                  <Blocks block={block} setFilter={setFilter} />
-                  {programData === "BIHAR" && (
-                    <HStack space={4}>
-                      <AdminTypo.H4>
-                        {filter?.villages ? filter?.village : t("VILLAGE")}
-                      </AdminTypo.H4>
-                      <Village village={village} setFilter={setFilter} />
+                  <Input
+                    minH="32px"
+                    InputLeftElement={
+                      <IconByName color="coolGray.500" name="SearchLineIcon" />
+                    }
+                    placeholder={t("SEARCH_BY_NAME")}
+                    variant="outline"
+                    onChange={debouncedHandleSearch}
+                  />
+                  <HStack space={4} alignItems={"center"}>
+                    <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
+                    <HStack space={4} alignItems={"center"}>
+                      <District
+                        district={district}
+                        filter={filter}
+                        t={t}
+                        setFilter={setFilter}
+                      />
+
+                      <Blocks
+                        block={block}
+                        t={t}
+                        filter={filter}
+                        setFilter={setFilter}
+                      />
+                      {programData === "BIHAR" && (
+                        <Village
+                          village={village}
+                          t={t}
+                          filter={filter}
+                          setFilter={setFilter}
+                        />
+                      )}
                     </HStack>
-                  )}
+                  </HStack>
                 </HStack>
-              </Stack>
-            </HStack>
-            <HStack alignSelf={"end"} space={4} pb={2} pr={4}>
-              <AdminTypo.H6 bold color="textBlue.200">
-                {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
-              </AdminTypo.H6>
-            </HStack>
-            <DataTable
-              columns={columns(t, handleCheckboxChange, selectedRowId)}
-              data={data}
-              customStyles={customStyles}
-              persistTableHead
-              // selectableRows
-              progressPending={loading}
-              pagination
-              paginationServer
-              onSelectedRowsChange={handleCheckboxChange}
-              paginationTotalRows={paginationTotalRows}
-              clearSelectedRows={
-                Object.keys(userIds).length === 0 ? true : false
-              }
-              onChangeRowsPerPage={(e) => {
-                setFilter({ ...filter, limit: e, page: 1 });
-              }}
-              onChangePage={(e) => {
-                setFilter({ ...filter, page: e });
-              }}
-            />
+                <Stack alignSelf={"end"} pb={2} pr={4}>
+                  <AdminTypo.H6 bold color="textBlue.200">
+                    {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
+                  </AdminTypo.H6>
+                </Stack>
+                <DataTable
+                  columns={columns(t, handleCheckboxChange, selectedRowId)}
+                  data={data}
+                  customStyles={customStyles}
+                  persistTableHead
+                  // selectableRows
+                  progressPending={loading}
+                  pagination
+                  paginationServer
+                  onSelectedRowsChange={handleCheckboxChange}
+                  paginationTotalRows={paginationTotalRows}
+                  onChangeRowsPerPage={(e) => {
+                    setFilter({ ...filter, limit: e, page: 1 });
+                  }}
+                  onChangePage={(e) => {
+                    setFilter({ ...filter, page: e });
+                  }}
+                />
+              </VStack>
+            )}
           </VStack>
-        )}
+        </HStack>
       </VStack>
     </Layout>
   );
 }
 
-const District = ({ district, setFilter }) => {
+const District = ({ district, filter, t, setFilter }) => {
   return (
     <Menu
       shadow={2}
       trigger={(triggerProps) => {
         return (
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <IconByName name="ArrowDownSLineIcon" />
+            <HStack space={4}>
+              <AdminTypo.H4>
+                {filter?.districts ? filter?.districts : t("DISTRICT")}
+              </AdminTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Pressable>
         );
       }}
     >
       {district &&
-        district.map &&
-        district.map((e) => (
+        district?.map &&
+        district?.map((e) => (
           <Menu.Item
             key={e?.district_id}
             onPress={() =>
@@ -743,14 +733,19 @@ const District = ({ district, setFilter }) => {
   );
 };
 
-const Blocks = ({ block, setFilter }) => {
+const Blocks = ({ block, filter, t, setFilter }) => {
   return (
     <Menu
       shadow={2}
       trigger={(triggerProps) => {
         return (
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <IconByName name="ArrowDownSLineIcon" />
+            <HStack space={4}>
+              <AdminTypo.H4>
+                {filter?.blocks ? filter?.blocks : t("BLOCK")}
+              </AdminTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Pressable>
         );
       }}
@@ -774,14 +769,19 @@ const Blocks = ({ block, setFilter }) => {
   );
 };
 
-const Village = ({ village, setFilter }) => {
+const Village = ({ village, filter, t, setFilter }) => {
   return (
     <Menu
       shadow={2}
       trigger={(triggerProps) => {
         return (
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <IconByName name="ArrowDownSLineIcon" />
+            <HStack space={4}>
+              <AdminTypo.H4>
+                {filter?.villages ? filter?.village : t("VILLAGE_WARD")}
+              </AdminTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Pressable>
         );
       }}

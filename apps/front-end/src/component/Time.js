@@ -16,7 +16,6 @@ export default function Time({ value, onChange }) {
         zIndex: "2",
         background: "transparent",
         width: "100%",
-        marginBottom: "30px",
       }}
       type="time"
       onChange={handleTimeChange}

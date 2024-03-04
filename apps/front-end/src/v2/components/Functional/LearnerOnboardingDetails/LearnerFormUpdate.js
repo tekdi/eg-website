@@ -278,14 +278,109 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         title: "title",
         value: "value",
       });
-      const {
-        alreadyOpenLabel,
-        education_10th_date,
-        education_10th_exam_year,
-        ...properties
-      } = newSchema?.properties || {};
+      newSchema = getOptions(newSchema, {
+        key: "education_10th_exam_year",
+        arr: lastYear,
+        title: "value",
+        value: "value",
+      });
       setFixedSchema(newSchema);
-      setSchema({ ...newSchema, properties });
+
+      if (formData?.type_of_learner === "school_dropout") {
+        const {
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = newSchema?.properties || {};
+        const required = newSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "last_standard_of_education",
+            "last_standard_of_education_year",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...newSchema, properties, required });
+      } else if (formData?.type_of_learner === "never_enrolled") {
+        const {
+          last_standard_of_education,
+          last_standard_of_education_year,
+          previous_school_type,
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = newSchema?.properties || {};
+        const required = newSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "learning_level",
+            "reason_of_leaving_education",
+          ].includes(item)
+        );
+
+        setSchema({ ...newSchema, properties, required });
+      } else if (
+        formData?.type_of_learner === "already_enrolled_in_open_school"
+      ) {
+        const { education_10th_date, education_10th_exam_year, ...properties } =
+          newSchema?.properties || {};
+        const required = newSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "last_standard_of_education",
+            "last_standard_of_education_year",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...newSchema, properties, required });
+      } else if (
+        page === "4" &&
+        formData?.type_of_learner === "already_open_school_syc"
+      ) {
+        const {
+          alreadyOpenLabel,
+          last_standard_of_education,
+          last_standard_of_education_year,
+          education_10th_exam_year,
+          ...properties
+        } = newSchema?.properties || {};
+        const required = newSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "education_10th_date",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...newSchema, properties, required });
+      } else if (formData?.type_of_learner === "stream_2_mainstream_syc") {
+        const {
+          last_standard_of_education,
+          last_standard_of_education_year,
+          previous_school_type,
+          alreadyOpenLabel,
+          education_10th_date,
+          ...properties
+        } = newSchema?.properties || {};
+        const required = newSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "reason_of_leaving_education",
+            "education_10th_exam_year",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...newSchema, properties, required });
+      } else {
+        setSchema(newSchema);
+      }
     }
     if (schema?.["properties"]?.["marital_status"]) {
       newSchema = getOptions(newSchema, {
@@ -483,7 +578,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       }
       setSchema(newSchema);
     }
-    formData;
     return newSchema;
   };
 
@@ -681,7 +775,17 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
           education_10th_exam_year,
           ...properties
         } = fixedSchema?.properties || {};
-        setSchema({ ...fixedSchema, properties });
+        const required = fixedSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "last_standard_of_education",
+            "last_standard_of_education_year",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...fixedSchema, properties, required });
       } else if (data?.type_of_learner === "never_enrolled") {
         const {
           last_standard_of_education,
@@ -704,7 +808,17 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       } else if (data?.type_of_learner === "already_enrolled_in_open_school") {
         const { education_10th_date, education_10th_exam_year, ...properties } =
           fixedSchema?.properties || {};
-        setSchema({ ...fixedSchema, properties });
+        const required = fixedSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "last_standard_of_education",
+            "last_standard_of_education_year",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...fixedSchema, properties, required });
       } else if (
         page === "4" &&
         data?.type_of_learner === "already_open_school_syc"
@@ -716,7 +830,16 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
           education_10th_exam_year,
           ...properties
         } = fixedSchema?.properties || {};
-        setSchema({ ...fixedSchema, properties });
+        const required = fixedSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "education_10th_date",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...fixedSchema, properties, required });
       } else if (data?.type_of_learner === "stream_2_mainstream_syc") {
         const {
           last_standard_of_education,
@@ -726,7 +849,33 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
           education_10th_date,
           ...properties
         } = fixedSchema?.properties || {};
-        setSchema({ ...fixedSchema, properties });
+        const required = fixedSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "reason_of_leaving_education",
+            "education_10th_exam_year",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...fixedSchema, properties, required });
+      }
+      if (
+        newData?.last_standard_of_education ||
+        newData?.last_standard_of_education_year ||
+        newData?.previous_school_type ||
+        newData?.reason_of_leaving_education ||
+        newData?.education_10th_exam_year ||
+        newData?.education_10th_date
+      ) {
+        setFormData({
+          ...newData,
+          last_standard_of_education: undefined,
+          last_standard_of_education_year: undefined,
+          previous_school_type: undefined,
+          reason_of_leaving_education: undefined,
+          education_10th_exam_year: undefined,
+          education_10th_date: undefined,
+        });
       }
     }
   };
@@ -1044,14 +1193,35 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
               transformErrors,
             }}
           >
-            <FrontEndTypo.Primarybutton
-              mt="3"
-              type="submit"
-              isLoading={isButtonLoading}
-              onPress={() => formRef?.current?.submit()}
-            >
-              {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
-            </FrontEndTypo.Primarybutton>
+            {page == 2 ? (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                type="submit"
+                isLoading={isButtonLoading}
+                onPress={() => {
+                  if (formRef.current.validateForm()) {
+                    formRef?.current?.submit();
+                  } else {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    }
+                  }
+                }}
+              >
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            ) : (
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                type="submit"
+                isLoading={isButtonLoading}
+                onPress={() => {
+                  formRef?.current?.submit();
+                }}
+              >
+                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            )}
           </Form>
         ) : (
           <React.Fragment />
