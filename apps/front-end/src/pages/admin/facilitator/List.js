@@ -101,7 +101,7 @@ const schemat = {
     },
   },
 };
-export default function List({ footerLinks, userTokenInfo }) {
+export default function List({ footerLinks, userTokenInfo, _layout }) {
   const { t } = useTranslation();
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
@@ -271,6 +271,7 @@ export default function List({ footerLinks, userTokenInfo }) {
       getRefAppBar={(e) => setRefAppBar(e)}
       _sidebar={footerLinks}
       loading={loading}
+      {..._layout}
     >
       <HStack
         space={[0, 0, "2"]}
