@@ -17,6 +17,7 @@ import {
   getOnboardingMobile,
   setSelectedAcademicYear,
   getSelectedProgramId,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -33,6 +34,10 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import {
+  getIndexedDBItem,
+  setIndexedDBItem,
+} from "../../../src/v2/utils/Helper/JSHelper";
 import PropTypes from "prop-types";
 
 const styles = {
@@ -80,6 +85,74 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+
+  //store common api indexed db based on internet connection - start
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
+  const [firstFetch, setFirstFetchTime] = useState(false);
+
+  const saveDataToIndexedDB = async () => {
+    try {
+      const [ListOfEnum, qualification] = await Promise.all([
+        enumRegistryService.listOfEnum(),
+        enumRegistryService.getQualificationAll(),
+        // enumRegistryService.userInfo(),
+      ]);
+      await Promise.all([
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("qualification", qualification),
+        // setIndexedDBItem("users-info", userInfo),
+      ]);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
+
+  const setlastFetchTimeToIndexedDB = async () => {
+    try {
+      const currentTime = moment().toISOString();
+      await setIndexedDBItem("lastFetchTime", currentTime);
+    } catch (error) {
+      console.error("Error setting last login time to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await checkFirstFetchStatus();
+      if (firstFetch && isOnline) {
+        await saveDataToIndexedDB();
+      }
+    };
+    fetchData();
+  }, [firstFetch, isOnline]);
+
+  useEffect(() => {
+    setlastFetchTimeToIndexedDB();
+  }, []);
+
+  const checkFirstFetchStatus = async () => {
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const isLessThan30Minutes =
+      lastFetchTime && moment().diff(lastFetchTime, "minutes") <= 30;
+    setFirstFetchTime(isLessThan30Minutes);
+  };
+
+  //end
 
   useEffect(() => {
     async function fetchData() {

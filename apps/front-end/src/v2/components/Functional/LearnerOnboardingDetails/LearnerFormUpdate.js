@@ -22,7 +22,6 @@ import {
   Loading,
   getUniqueArray,
   jsonParse,
-  H3,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
