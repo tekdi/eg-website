@@ -49,3 +49,21 @@ export async function getIndexedDBItem(key) {
     return null;
   }
 }
+export async function checkEnumListPresent(key) {
+  try {
+    const enums = await getIndexedDBItem("enums");
+    return !!enums;
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return null;
+  }
+}
+export async function checkQulificationPresent(key) {
+  try {
+    const qualification = await getIndexedDBItem("qualification");
+    return !!qualification;
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return null;
+  }
+}
