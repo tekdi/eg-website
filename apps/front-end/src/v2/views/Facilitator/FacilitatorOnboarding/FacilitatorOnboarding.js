@@ -170,7 +170,7 @@ function FacilitatorOnboarding() {
   useEffect(() => {
     const online = () => setIsOnline(true);
     const offline = () => setIsOnline(false);
-    checkDataIsPresent();
+
     window.addEventListener("online", online, false);
     window.addEventListener("offline", offline, false);
 
@@ -179,6 +179,10 @@ function FacilitatorOnboarding() {
       window.removeEventListener("offline", offline);
     };
   }, []);
+
+  useEffect(() => {
+    checkDataIsPresent();
+  }, [step]);
 
   const checkDataIsPresent = async () => {
     const enumList = await checkEnumListPresent();
