@@ -90,7 +90,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
-  const [firstFetch, setFirstFetchTime] = useState(false);
+  const [timeExpired, setTimeExpired] = useState(false);
 
   const saveDataToIndexedDB = async () => {
     try {
@@ -111,8 +111,17 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const setlastFetchTimeToIndexedDB = async () => {
     try {
+      const lastFetchTime = await getIndexedDBItem("lastFetchTime");
       const currentTime = moment().toISOString();
-      await setIndexedDBItem("lastFetchTime", currentTime);
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= 5) {
+        setTimeExpired(true);
+      }
+      if (!lastFetchTime || timeExpired) {
+        setIndexedDBItem("lastFetchTime", currentTime);
+      }
     } catch (error) {
       console.error("Error setting last login time to IndexedDB:", error);
     }
@@ -133,24 +142,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      await checkFirstFetchStatus();
-      if (firstFetch && isOnline) {
+      const enums = await getIndexedDBItem("enums");
+      const qualification = await getIndexedDBItem("qualification");
+      if (isOnline && (!enums || !qualification || timeExpired)) {
         await saveDataToIndexedDB();
       }
     };
     fetchData();
-  }, [firstFetch, isOnline]);
+  }, [timeExpired, isOnline]);
 
   useEffect(() => {
     setlastFetchTimeToIndexedDB();
   }, []);
-
-  const checkFirstFetchStatus = async () => {
-    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
-    const isLessThan30Minutes =
-      lastFetchTime && moment().diff(lastFetchTime, "minutes") <= 30;
-    setFirstFetchTime(isLessThan30Minutes);
-  };
 
   //end
 
