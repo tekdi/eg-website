@@ -12,11 +12,15 @@ export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
 
   React.useEffect(() => {
     if (page >= 4) {
-      if (!aadhar_no || aadhar_no === "") {
-        navigatePage(`/profile/edit/aadhaar_details`, "aadhaar_details");
-      } else {
-        navigatePage(`/profile`, "");
-      }
+      // Uncomment if Aadhaar is required.
+
+      // if (!aadhar_no || aadhar_no === "") {
+      //   navigatePage(`/profile/edit/aadhaar_details`, "aadhaar_details");
+      // } else {
+      //   navigatePage(`/profile`, "");
+      // }
+
+      navigatePage(`/profile`, "");
     }
   }, [page, formData]);
 
