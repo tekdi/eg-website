@@ -58,7 +58,7 @@ export default {
         payment_receipt_document_id: {
           label: "APPLICATION_RECEIPT",
           description: "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
-          uploadTitle: "",
+          uploadTitle: " ",
           type: ["string", "number"],
           format: "FileUpload",
         },
