@@ -124,6 +124,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Online Data Fetch Time Interval
+      const timeInterval = 30;
       const enums = await getIndexedDBItem("enums");
       const qualification = await getIndexedDBItem("qualification");
       const lastFetchTime = await getIndexedDBItem("lastFetchTime");
@@ -132,7 +134,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         const timeDiff = moment
           .duration(moment().diff(lastFetchTime))
           .asMinutes();
-        if (timeDiff >= 5) {
+        if (timeDiff >= timeInterval) {
           timeExpired = true;
         }
       }
