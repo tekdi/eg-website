@@ -525,7 +525,13 @@ export default function Orientation({ footerLinks }) {
                     allDay: false,
                     title:
                       item?.name !== null
-                        ? `${item?.name + " " + item?.master_trainer}`
+                        ? `#${
+                            item?.id +
+                            " " +
+                            item?.name +
+                            " " +
+                            item?.master_trainer
+                          }`
                         : item?.type,
                     start: moment(item?.start_date).format("YYYY-MM-DD")
                       ? `${moment(item?.start_date).format("YYYY-MM-DD")} ${
