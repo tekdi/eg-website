@@ -90,7 +90,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
-  const [timeExpired, setTimeExpired] = useState(false);
 
   const saveDataToIndexedDB = async () => {
     try {
@@ -99,31 +98,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         enumRegistryService.getQualificationAll(),
         // enumRegistryService.userInfo(),
       ]);
+      const currentTime = moment().toString();
       await Promise.all([
         setIndexedDBItem("enums", ListOfEnum.data),
         setIndexedDBItem("qualification", qualification),
-        // setIndexedDBItem("users-info", userInfo),
+        setIndexedDBItem("lastFetchTime", currentTime),
       ]);
     } catch (error) {
       console.error("Error saving data to IndexedDB:", error);
-    }
-  };
-
-  const setlastFetchTimeToIndexedDB = async () => {
-    try {
-      const lastFetchTime = await getIndexedDBItem("lastFetchTime");
-      const currentTime = moment().toISOString();
-      const timeDiff = moment
-        .duration(moment().diff(lastFetchTime))
-        .asMinutes();
-      if (timeDiff >= 5) {
-        setTimeExpired(true);
-      }
-      if (!lastFetchTime || timeExpired) {
-        setIndexedDBItem("lastFetchTime", currentTime);
-      }
-    } catch (error) {
-      console.error("Error setting last login time to IndexedDB:", error);
     }
   };
 
@@ -144,16 +126,25 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const fetchData = async () => {
       const enums = await getIndexedDBItem("enums");
       const qualification = await getIndexedDBItem("qualification");
-      if (isOnline && (!enums || !qualification || timeExpired)) {
+      const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+      let timeExpired = false;
+      if (lastFetchTime) {
+        const timeDiff = moment
+          .duration(moment().diff(lastFetchTime))
+          .asMinutes();
+        if (timeDiff >= 5) {
+          timeExpired = true;
+        }
+      }
+      if (
+        isOnline &&
+        (!enums || !qualification || timeExpired || !lastFetchTime)
+      ) {
         await saveDataToIndexedDB();
       }
     };
     fetchData();
-  }, [timeExpired, isOnline]);
-
-  useEffect(() => {
-    setlastFetchTimeToIndexedDB();
-  }, []);
+  }, [isOnline]);
 
   //end
 
