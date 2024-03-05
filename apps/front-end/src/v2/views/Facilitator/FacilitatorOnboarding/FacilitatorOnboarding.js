@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import { HStack, VStack, Modal, Alert, Text } from "native-base";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout";
 import NoInternetScreen from "v2/components/Static/NoInternetScreen/NoInternetScreen";
 import Loader from "v2/components/Static/Loader/Loader";
@@ -8,9 +9,15 @@ import {
   getTokernUserInfo,
   facilitatorRegistryService,
   logout,
+  BodyMedium,
+  FrontEndTypo,
 } from "@shiksha/common-lib";
 import PrerakOnboardingForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingForm";
 import PrerakOnboardingArrayForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingArrayForm";
+import {
+  checkEnumListPresent,
+  checkQulificationPresent,
+} from "v2/utils/Helper/JSHelper";
 function FacilitatorOnboarding() {
   const { step, photoNo } = useParams();
   const navigate = useNavigate();
@@ -158,11 +165,12 @@ function FacilitatorOnboarding() {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const online = () => setIsOnline(true);
     const offline = () => setIsOnline(false);
-
+    checkDataIsPresent();
     window.addEventListener("online", online, false);
     window.addEventListener("offline", offline, false);
 
@@ -172,19 +180,44 @@ function FacilitatorOnboarding() {
     };
   }, []);
 
+  const checkDataIsPresent = async () => {
+    const enumList = await checkEnumListPresent();
+    const qulification = await checkQulificationPresent();
+    if (!enumList || !qulification) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
+    }
+  };
+
   return (
     <>
-      {!isOnline ? (
-        <PageLayout
-          t={t}
-          isPageMiddle={true}
-          customComponent={<NoInternetScreen t={t} />}
-        />
-      ) : isLoading ? (
+      {isLoading ? (
         <PageLayout t={t} isPageMiddle={true} customComponent={<Loader />} />
       ) : (
         Show_Edit_details()
       )}
+      <Modal isOpen={modalVisible} avoidKeyboard size="xl">
+        <Modal.Content>
+          <Modal.Body>
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{t("PLEASE_TURN_ON_YOUR_INTERNET")}</BodyMedium>
+              </HStack>
+            </Alert>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"center"} alignItems={"center"}>
+            <FrontEndTypo.Primarybutton
+              onPress={() => {
+                navigate("/");
+              }}
+            >
+              {t("CONFIRM")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </>
   );
 }
