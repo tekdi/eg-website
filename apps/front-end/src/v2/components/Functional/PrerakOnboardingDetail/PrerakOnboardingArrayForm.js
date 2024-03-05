@@ -20,6 +20,7 @@ import {
   templates,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
+import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -133,9 +134,9 @@ export default function PrerakOnboardingArrayForm({
         setLabels(newLabels);
         setKeys(newKeys);
 
-        const ListOfEnum = await enumRegistryService.listOfEnum();
+        const ListOfEnum = await getIndexedDBItem("enums");
         if (!ListOfEnum?.error) {
-          setEnumObj(ListOfEnum?.data);
+          setEnumObj(ListOfEnum);
         }
       }
 
