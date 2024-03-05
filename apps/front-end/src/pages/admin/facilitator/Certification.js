@@ -43,12 +43,15 @@ const columns = (t, certificateDownload) => [
     name: t("STATUS"),
     selector: (row) =>
       row.certificate_status === true ? (
-        <AdminTypo.Secondarybutton
-          my="3"
-          onPress={() => certificateDownload(row)}
-        >
-          {t("DOWNLOAD")}
-        </AdminTypo.Secondarybutton>
+        // <AdminTypo.Secondarybutton
+        //   my="3"
+        //   onPress={() => certificateDownload(row)}
+        // >
+        //   {t("DOWNLOAD")}
+        // </AdminTypo.Secondarybutton>
+        <AdminTypo.H6 bold color="success.500">
+          {t("PASS")}
+        </AdminTypo.H6>
       ) : row.certificate_status === false ? (
         <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
       ) : (
@@ -78,7 +81,7 @@ export default function Certification({ footerLinks }) {
     });
   }, []);
 
- const certificateDownload = React.useCallback(async (data) => {
+  const certificateDownload = React.useCallback(async (data) => {
     const result = await testRegistryService.postCertificates(data);
     setDownCertificate(result?.data?.[0]?.certificate_html);
   }, []);
@@ -101,10 +104,10 @@ export default function Certification({ footerLinks }) {
     fetchData();
   }, [id]);
 
-  const columnsMemoized = React.useMemo(() => columns(t, certificateDownload), [
-    t,
-    certificateDownload,
-  ]);
+  const columnsMemoized = React.useMemo(
+    () => columns(t, certificateDownload),
+    [t, certificateDownload]
+  );
 
   return (
     <Layout _sidebar={footerLinks}>
