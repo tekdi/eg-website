@@ -99,9 +99,10 @@ export default function PrerakOnboardingForm({
         if (id) {
           const result = await facilitatorRegistryService.getOne({ id });
           setFacilitator(result);
-          const ListOfEnum = await enumRegistryService.listOfEnum();
+          const ListOfEnum = await getIndexedDBItem("enums");
+          // const ListOfEnum = await enumRegistryService.listOfEnum();
           if (!ListOfEnum?.error) {
-            setEnumObj(ListOfEnum?.data);
+            setEnumObj(ListOfEnum);
           }
           if (step === "qualification_details") {
             updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
@@ -176,7 +177,7 @@ export default function PrerakOnboardingForm({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const qData = await facilitatorRegistryService.getQualificationAll();
+        const qData = await getIndexedDBItem("qualification");
         setQualifications(qData);
       } catch (error) {
         console.log(error);
