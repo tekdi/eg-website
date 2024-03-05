@@ -94,15 +94,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const saveDataToIndexedDB = async () => {
     try {
-      const [ListOfEnum, qualification, userInfo] = await Promise.all([
+      const [ListOfEnum, qualification] = await Promise.all([
         enumRegistryService.listOfEnum(),
         enumRegistryService.getQualificationAll(),
-        enumRegistryService.userInfo(),
+        // enumRegistryService.userInfo(),
       ]);
       await Promise.all([
         setIndexedDBItem("enums", ListOfEnum.data),
         setIndexedDBItem("qualification", qualification),
-        setIndexedDBItem("users-info", userInfo),
+        // setIndexedDBItem("users-info", userInfo),
       ]);
     } catch (error) {
       console.error("Error saving data to IndexedDB:", error);
