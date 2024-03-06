@@ -8,7 +8,7 @@ const PoDuplicateView = React.lazy(() =>
 const FileView = React.lazy(() => import("pages/FileView"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
-// const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
+const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
 const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
 // const CampViewDetails = lazy(() => import("pages/admin/PoAdmin/Camp/View"));
 // const LearnerViewDetails = lazy(() =>
@@ -25,10 +25,10 @@ export default [
   //   path: "/poadmin/facilitator/:id",
   //   component: PrerakViewDetails,
   // },
-  // {
-  //   path: "/poadmin/camps",
-  //   component: CampListing,
-  // },
+  {
+    path: "/poadmin/camps",
+    component: CampListing,
+  },
   // {
   //   path: "/poadmin/camps/:id",
   //   component: CampViewDetails,
