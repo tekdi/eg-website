@@ -18,6 +18,7 @@ import {
   setSelectedAcademicYear,
   getSelectedProgramId,
   enumRegistryService,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -39,6 +40,11 @@ import {
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
 import PropTypes from "prop-types";
+import {
+  checkPrerakOfflineTimeInterval,
+  setIpUserInfo,
+  setPrerakOfflineInfo,
+} from "v2/utils/SyncHelper/SyncHelper";
 
 const styles = {
   inforBox: {
@@ -129,6 +135,37 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   }, []);
 
   useEffect(() => {
+    checkTime();
+  }, [isOnline]);
+
+  const checkTime = async () => {
+    const GetSyncTime = await getIndexedDBItem("GetSyncTime");
+    const offlinePrerakData = await getIndexedDBItem(`${fa_id}_Get`);
+    const IpUserInfo = await getIndexedDBItem(`${fa_id}_Ip_User_Info`);
+    const timeExpired = await checkPrerakOfflineTimeInterval();
+    let academic_Id = await getSelectedAcademicYear();
+
+    if (
+      isOnline &&
+      academic_Id &&
+      (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo)
+    ) {
+      await setPrerakOfflineInfo(fa_id);
+      await setIpUserInfo(id);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await setPrerakOfflineInfo(fa_id);
+    };
+
+    if (academicYear) {
+      fetchData();
+    }
+  }, [academicYear]);
+
+  useEffect(() => {
     const fetchData = async () => {
       await checkDataToIndex();
     };
@@ -178,8 +215,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         //do page load first operation
         //get user info
         if (userTokenInfo) {
-          const fa_data = await facilitatorRegistryService.getInfo();
-          setFacilitator(fa_data);
+          const IpUserInfo = await getIndexedDBItem(`${fa_id}_Ip_User_Info`);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
         }
         setLoading(false);
         //end do page load first operation
@@ -289,6 +331,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           setCohortData(onboardingURLData?.cohortData);
           setProgramData(onboardingURLData?.programData);
           //get program id and store in localstorage
+
           const user_program_id = facilitator?.program_faciltators?.program_id;
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
