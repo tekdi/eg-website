@@ -28,6 +28,9 @@ export function setLanguage(code) {
 export function getLanguage() {
   return localStorage.getItem("lang");
 }
+export function getUserId() {
+  return localStorage.getItem("id");
+}
 
 export default getWindowSize;
 

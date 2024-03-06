@@ -18,7 +18,10 @@ import {
   checkEditRequestPresent,
   checkEnumListPresent,
   checkQulificationPresent,
+  getIndexedDBItem,
+  getUserId,
 } from "v2/utils/Helper/JSHelper";
+import { checkIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 function FacilitatorOnboarding() {
   const { step, photoNo } = useParams();
   const navigate = useNavigate();
@@ -43,17 +46,22 @@ function FacilitatorOnboarding() {
         //do page load first operation
         setIsloading(true);
         if (token) {
-          const tokenData = getTokernUserInfo();
-          const { hasura } = tokenData?.resource_access || {};
-          const { status, ...user } =
-            await facilitatorRegistryService.getInfo();
-          if (`${status}` === "401") {
-            logout();
-            window.location.reload();
+          const IsPresent = await checkDataIsPresent();
+          if (!IsPresent) {
+            const tokenData = getTokernUserInfo();
+            const { hasura } = tokenData?.resource_access || {};
+            const id = getUserId();
+            const { status, ...user } = await getIndexedDBItem(
+              `${id}_Ip_User_Info`
+            );
+
+            if (`${status}` === "401") {
+              logout();
+              window.location.reload();
+            }
+            setUserTokenInfo({ ...tokenData, authUser: user });
+            setuserid(id);
           }
-          setUserTokenInfo({ ...tokenData, authUser: user });
-          const { id } = user;
-          setuserid(id);
         }
         setIsloading(false);
         //end do page load first operation
@@ -189,10 +197,13 @@ function FacilitatorOnboarding() {
     const enumList = await checkEnumListPresent();
     const qulification = await checkQulificationPresent();
     const editRequest = await checkEditRequestPresent();
-    if (!enumList || !qulification || !editRequest) {
+    const IpUserInfo = await checkIpUserInfo(getUserId());
+    if (!enumList || !qulification || !editRequest || !IpUserInfo) {
       setModalVisible(true);
+      return true;
     } else {
       setModalVisible(false);
+      return false;
     }
   };
 
