@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     edit_enrollement: {
-      title: "Enrollmenttt",
+      title: "Please Enroll",
       type: "object",
       required: [
         "enrollment_status",
