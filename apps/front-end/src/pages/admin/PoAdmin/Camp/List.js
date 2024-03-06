@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { PoAdminLayout } from "@shiksha/common-lib";
 import CampHome from "pages/admin/camps/CampHome";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -20,6 +19,7 @@ import {
   Pressable,
 } from "native-base";
 import {
+  PoAdminLayout,
   AdminTypo,
   IconByName,
   AdminLayout as Layout,

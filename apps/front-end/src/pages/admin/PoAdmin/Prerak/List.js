@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { PoAdminLayout } from "@shiksha/common-lib";
 import List from "pages/admin/facilitator/List";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
@@ -20,6 +19,7 @@ import {
   Stack,
 } from "native-base";
 import {
+  PoAdminLayout,
   getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
