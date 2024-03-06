@@ -45,7 +45,6 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
-import PropTypes from "prop-types";
 
 const columns = (t) => [
   {
@@ -166,7 +165,7 @@ const addressFieldsArray = [
     value: "grampanchayat",
   },
 ];
-function View({ footerLinks }) {
+function View() {
   const [modalVisible, setModalVisible] = useState(false);
   const [EditButton, setEditButton] = useState(false);
   const [selectData, setselectData] = useState([]);
@@ -1950,8 +1949,6 @@ function View({ footerLinks }) {
     </PoAdminLayout>
   );
 }
-
-View.propTypes = {};
 
 const BeneficiaryJourney = ({
   data,

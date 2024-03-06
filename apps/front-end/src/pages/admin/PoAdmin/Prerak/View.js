@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useState, memo, lazy } from "react";
 import {
   IconByName,
-  AdminLayout as Layout,
   facilitatorRegistryService,
   Loading,
   t,
@@ -128,9 +127,8 @@ const columns = (t) => [
   },
 ];
 
-function View({ footerLinks }) {
+function View() {
   const toast = useToast();
-
   const { id } = useParams();
   const [data, setData] = useState();
   const [modalVisible, setModalVisible] = useState(false);

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   IconByName,
-  AdminLayout as Layout,
   AdminTypo,
   campService,
   CardComponent,
@@ -31,7 +30,6 @@ import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
-import PropTypes from "prop-types";
 
 const ConsentForm = ({ consentData, row, t }) => {
   let learnerConsentData = Array.isArray(consentData)
@@ -190,7 +188,7 @@ const ActionButton = ({ row, t }) => {
   );
 };
 
-function View({ footerLinks, userTokenInfo }) {
+function View() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -658,7 +656,5 @@ function View({ footerLinks, userTokenInfo }) {
     </PoAdminLayout>
   );
 }
-
-View.propTypes = {};
 
 export default View;

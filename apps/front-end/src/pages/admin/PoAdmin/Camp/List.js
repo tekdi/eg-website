@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import CampHome from "pages/admin/camps/CampHome";
 import Form from "@rjsf/core";
@@ -99,31 +99,31 @@ const columns = (t, navigate) => [
 
 function CampList({ userTokenInfo }) {
   const { t } = useTranslation();
-  const [filter, setFilter] = React.useState({ limit: 10 });
+  const [filter, setFilter] = useState({ limit: 10 });
   const [Width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
   const navigate = useNavigate();
-  const [data, setData] = React.useState([]);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
-  const [campFilterStatus, setCampFilterStatus] = React.useState([]);
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [data, setData] = useState([]);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
+  const [campFilterStatus, setCampFilterStatus] = useState([]);
+  const [enumOptions, setEnumOptions] = useState({});
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await enumRegistryService.getStatuswiseCount();
     setCampFilterStatus(result);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let newFilter = filter;
     if (urlFilterApply) {
       if (filter?.status === "all") {
@@ -140,7 +140,7 @@ function CampList({ userTokenInfo }) {
     navigate(`/admin/camps/${row.id}`);
   };
   return (
-    <PoAdminLayout>
+    <PoAdminLayout getRefAppBar={(e) => setRefAppBar(e)}>
       <HStack
         space={[0, 0, "4"]}
         p="2"
@@ -265,10 +265,10 @@ CampHome.propTypes = {
 
 export const Filter = ({ filter, setFilter }) => {
   const { t } = useTranslation();
-  const [getDistrictsAll, setGetDistrictsAll] = React.useState();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
-  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
-  const [facilitator, setFacilitator] = React.useState([]);
+  const [getDistrictsAll, setGetDistrictsAll] = useState();
+  const [getBlocksAll, setGetBlocksAll] = useState();
+  const [facilitatorFilter, setFacilitatorFilter] = useState({});
+  const [facilitator, setFacilitator] = useState([]);
 
   const setFilterObject = (data) => {
     const { facilitator: newFacilitator, ...otherData } = data;
@@ -295,10 +295,7 @@ export const Filter = ({ filter, setFilter }) => {
     });
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   const schema = {
     type: "object",
@@ -347,7 +344,7 @@ export const Filter = ({ filter, setFilter }) => {
     },
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
       let name = programResult?.state_name;
@@ -362,7 +359,7 @@ export const Filter = ({ filter, setFilter }) => {
     fetchData();
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let blockData = [];
     if (filter?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -372,7 +369,7 @@ export const Filter = ({ filter, setFilter }) => {
     setGetBlocksAll(blockData);
   }, [filter?.district]);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     async (data) => {
       const { district: newDistrict, block: newBlock } = data?.formData || {};
       const { district, block, ...remainData } = filter || {};
@@ -394,7 +391,7 @@ export const Filter = ({ filter, setFilter }) => {
     setFilterObject({});
     setFacilitatorFilter({});
   };
-  React.useEffect(async () => {
+  useEffect(async () => {
     const { error, ...result } = await facilitatorRegistryService.searchByCamp(
       facilitatorFilter
     );
