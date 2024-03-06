@@ -190,12 +190,9 @@ export default function PrerakOnboardingForm({
 
   const getEditAccess = async () => {
     const id = userid;
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
+
     try {
-      const result = await facilitatorRegistryService.getEditRequests(obj);
+      const result = await getIndexedDBItem("editRequest");
       let field;
       const parseField = result?.data?.[0]?.fields;
       if (parseField && typeof parseField === "string") {

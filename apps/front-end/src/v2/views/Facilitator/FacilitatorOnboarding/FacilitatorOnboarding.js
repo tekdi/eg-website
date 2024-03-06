@@ -15,6 +15,7 @@ import {
 import PrerakOnboardingForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingForm";
 import PrerakOnboardingArrayForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingArrayForm";
 import {
+  checkEditRequestPresent,
   checkEnumListPresent,
   checkQulificationPresent,
 } from "v2/utils/Helper/JSHelper";
@@ -187,7 +188,8 @@ function FacilitatorOnboarding() {
   const checkDataIsPresent = async () => {
     const enumList = await checkEnumListPresent();
     const qulification = await checkQulificationPresent();
-    if (!enumList || !qulification) {
+    const editRequest = await checkEditRequestPresent();
+    if (!enumList || !qulification || !editRequest) {
       setModalVisible(true);
     } else {
       setModalVisible(false);
