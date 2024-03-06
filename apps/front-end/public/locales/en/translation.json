@@ -1060,6 +1060,7 @@
   "REASON_OF_DUPLICATION": "Reason of Duplication",
   "REASSIGN": "Reassign",
   "REASSIGN_CAMP": "Reassign To Camp",
+  "REASSIGNE_CAMP":"Reassign Camp",
   "REASSIGN_LEARNERS": "Reassign Learner's",
   "REASSIGN_MSG": "Are you sure you want to reassign the camp?",
   "REFERENCE": "Reference",
