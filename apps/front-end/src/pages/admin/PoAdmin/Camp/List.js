@@ -22,7 +22,6 @@ import {
   PoAdminLayout,
   AdminTypo,
   IconByName,
-  AdminLayout as Layout,
   campService,
   useWindowSize,
   geolocationRegistryService,

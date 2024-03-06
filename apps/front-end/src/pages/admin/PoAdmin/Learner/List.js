@@ -12,12 +12,9 @@ import { useNavigate } from "react-router-dom";
 import {
   PoAdminLayout,
   getSelectedAcademicYear,
-  eventService,
   setSelectedAcademicYear,
   setSelectedProgramId,
   cohortService,
-  getSelectedOrgId,
-  jsonParse,
   IconByName,
   // AdminLayout as Layout,
   useWindowSize,
@@ -31,7 +28,6 @@ import {
   getSelectedProgramId,
   setSelectedOrgId,
 } from "@shiksha/common-lib";
-import AdminHome from "pages/admin/beneficiaries/AdminBeneficiariesList";
 import {
   Select,
   Modal,

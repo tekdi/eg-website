@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import List from "pages/admin/facilitator/List";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -22,7 +21,6 @@ import {
   PoAdminLayout,
   getSelectedAcademicYear,
   IconByName,
-  AdminLayout as Layout,
   useWindowSize,
   AdminTypo,
   geolocationRegistryService,
@@ -120,7 +118,7 @@ function PrerakList({ userTokenInfo }) {
   const [program, setProgram] = useState();
   const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -504,6 +502,6 @@ function PrerakList({ userTokenInfo }) {
   );
 }
 
-PrerakList.propTypes = {};
+PrerakList.propTypes = { userTokenInfo: PropTypes.any };
 
 export default PrerakList;
