@@ -79,3 +79,16 @@ export async function checkEditRequestPresent(key) {
     return null;
   }
 }
+
+export const fetchImageAsBlob = async (url) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Failed to fetch PDF");
+    }
+    const blob = await response.blob();
+    return blob;
+  } catch (error) {
+    console.error("Error fetching or converting the PDF:", error);
+  }
+};
