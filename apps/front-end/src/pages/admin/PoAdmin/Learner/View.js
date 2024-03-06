@@ -263,14 +263,17 @@ function View() {
     }
   }, [contextId]);
 
-  useEffect(async () => {
-    let data = {
-      edit_page_type: "document_status",
-      documents_status: status,
+  useEffect(() => {
+    const updateStatus = async () => {
+      let data = {
+        edit_page_type: "document_status",
+        documents_status: status,
+      };
+      if (Object.keys(status).length > 0) {
+        await benificiaryRegistoryService.getStatusUpdate(id, data);
+      }
     };
-    if (Object.keys(status).length > 0) {
-      await benificiaryRegistoryService.getStatusUpdate(id, data);
-    }
+    updateStatus();
   }, [status]);
 
   useEffect(() => {

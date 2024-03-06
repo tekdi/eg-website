@@ -17,12 +17,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   // facilitator pagination
 
-  useEffect(async () => {
-    const dupliData =
-      await benificiaryRegistoryService.getDuplicateBeneficiariesList(filter);
-    setPaginationTotalRows(dupliData?.count || 0);
-    setduplicateData(dupliData?.data);
-    setLoading(false);
+  useEffect(() => {
+    const updatedData = async () => {
+      const dupliData =
+        await benificiaryRegistoryService.getDuplicateBeneficiariesList(filter);
+      setPaginationTotalRows(dupliData?.count || 0);
+      setduplicateData(dupliData?.data);
+      setLoading(false);
+    };
+    updatedData();
   }, [filter]);
 
   return (
