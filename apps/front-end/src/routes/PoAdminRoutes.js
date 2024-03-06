@@ -9,7 +9,7 @@ const FileView = React.lazy(() => import("pages/FileView"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
 // const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
-// const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
+const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
 // const CampViewDetails = lazy(() => import("pages/admin/PoAdmin/Camp/View"));
 // const LearnerViewDetails = lazy(() =>
 //   import("pages/admin/PoAdmin/Learner/View")
@@ -18,7 +18,7 @@ const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
 
 export default [
   {
-    path: "/poadmin/facilitator",
+    path: "/poadmin/facilitators",
     component: PrerakListing,
   },
   // {
@@ -33,12 +33,12 @@ export default [
   //   path: "/poadmin/camps/:id",
   //   component: CampViewDetails,
   // },
+  {
+    path: "/poadmin/learners",
+    component: LearnerListing,
+  },
   // {
-  //   path: "/poadmin/learner",
-  //   component: LearnerListing,
-  // },
-  // {
-  //   path: "/poadmin/learner/:id",
+  //   path: "/poadmin/learners/:id",
   //   component: LearnerViewDetails,
   // },
   { path: "/poadmin", component: PoAdminHome },
