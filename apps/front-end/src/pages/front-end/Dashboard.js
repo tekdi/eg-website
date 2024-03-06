@@ -92,10 +92,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   );
 
   const saveDataToIndexedDB = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
     try {
-      const [ListOfEnum, qualification] = await Promise.all([
+      const [ListOfEnum, qualification, editRequest] = await Promise.all([
         enumRegistryService.listOfEnum(),
         enumRegistryService.getQualificationAll(),
+        facilitatorRegistryService.getEditRequests(obj),
         // enumRegistryService.userInfo(),
       ]);
       const currentTime = moment().toString();
@@ -103,6 +108,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         setIndexedDBItem("enums", ListOfEnum.data),
         setIndexedDBItem("qualification", qualification),
         setIndexedDBItem("lastFetchTime", currentTime),
+        setIndexedDBItem("editRequest", editRequest),
       ]);
     } catch (error) {
       console.error("Error saving data to IndexedDB:", error);
@@ -124,29 +130,40 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Online Data Fetch Time Interval
-      const timeInterval = 30;
-      const enums = await getIndexedDBItem("enums");
-      const qualification = await getIndexedDBItem("qualification");
-      const lastFetchTime = await getIndexedDBItem("lastFetchTime");
-      let timeExpired = false;
-      if (lastFetchTime) {
-        const timeDiff = moment
-          .duration(moment().diff(lastFetchTime))
-          .asMinutes();
-        if (timeDiff >= timeInterval) {
-          timeExpired = true;
-        }
-      }
-      if (
-        isOnline &&
-        (!enums || !qualification || timeExpired || !lastFetchTime)
-      ) {
-        await saveDataToIndexedDB();
-      }
+      await checkDataToIndex();
     };
+
     fetchData();
   }, [isOnline]);
+
+  const checkDataToIndex = async () => {
+    // Online Data Fetch Time Interval
+    const timeInterval = 30;
+    const enums = await getIndexedDBItem("enums");
+    const qualification = await getIndexedDBItem("qualification");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const editRequest = await getIndexedDBItem("editRequest");
+    let timeExpired = false;
+    if (lastFetchTime) {
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= timeInterval) {
+        timeExpired = true;
+      }
+    }
+    if (
+      isOnline &&
+      (!enums ||
+        !qualification ||
+        !editRequest ||
+        timeExpired ||
+        !lastFetchTime ||
+        editRequest?.status === 400)
+    ) {
+      await saveDataToIndexedDB();
+    }
+  };
 
   //end
 
@@ -373,6 +390,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const selectAcademicYear = async () => {
     setSelectCohortForm(false);
+    await checkDataToIndex();
   };
 
   const removeRegisterExist = async () => {
@@ -425,6 +443,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       localStorage.setItem("loadCohort", "yes");
       if (user_cohort_list?.data.length == 1) {
         setSelectCohortForm(false);
+        await checkDataToIndex();
       } else {
         setSelectCohortForm(true);
       }

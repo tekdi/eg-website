@@ -67,3 +67,12 @@ export async function checkQulificationPresent(key) {
     return null;
   }
 }
+export async function checkEditRequestPresent(key) {
+  try {
+    const editRequest = await getIndexedDBItem("editRequest");
+    return !!editRequest;
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return null;
+  }
+}
