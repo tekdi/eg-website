@@ -80,15 +80,15 @@ export async function checkEditRequestPresent(key) {
   }
 }
 
-export const fetchImageAsBlob = async (url) => {
+export const fetchFileUrlAsBlob = async (url) => {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("Failed to fetch PDF");
+      throw new Error("Failed to fetch file");
     }
     const blob = await response.blob();
     return blob;
   } catch (error) {
-    console.error("Error fetching or converting the PDF:", error);
+    console.error("Error fetching or converting the file:", error);
   }
 };
