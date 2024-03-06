@@ -1,4 +1,3 @@
-import { PoAdminLayout } from "@shiksha/common-lib";
 import React, { lazy } from "react";
 
 const NotFound = React.lazy(() => import("pages/NotFound"));
@@ -8,17 +7,40 @@ const PoDuplicateView = React.lazy(() =>
 );
 const FileView = React.lazy(() => import("pages/FileView"));
 const Assessment = React.lazy(() => import("component/Assessment"));
-const PrerakList = lazy(() => import("pages/admin/facilitator/List"));
-
-const prerakListO = ({ userTokenInfo }) => {
-  return (
-    <PoAdminLayout>
-      <PrerakList {...{ userTokenInfo, _layout: { withoutLayout: true } }} />
-    </PoAdminLayout>
-  );
-};
+const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
+const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
+const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
+const CampViewDetails = lazy(() => import("pages/admin/PoAdmin/Camp/View"));
+const LearnerViewDetails = lazy(() =>
+  import("pages/admin/PoAdmin/Learner/View")
+);
+const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
 
 export default [
+  {
+    path: "/poadmin/facilitator",
+    component: PrerakListing,
+  },
+  {
+    path: "/poadmin/facilitator/:id",
+    component: PrerakViewDetails,
+  },
+  {
+    path: "/poadmin/camps",
+    component: CampListing,
+  },
+  {
+    path: "/poadmin/camps/:id",
+    component: CampViewDetails,
+  },
+  {
+    path: "/poadmin/learner",
+    component: LearnerListing,
+  },
+  {
+    path: "/poadmin/learner/:id",
+    component: LearnerViewDetails,
+  },
   { path: "/poadmin", component: PoAdminHome },
   {
     path: "/file/:id/view",
@@ -28,16 +50,11 @@ export default [
     path: "/poadmin/learners/duplicates/:aadhaarNo",
     component: PoDuplicateView,
   },
-  { path: "/", component: PoAdminHome },
+  { path: "/", component: LearnerListing },
 
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
   },
-  {
-    path: "/poadmin/facilitator",
-    component: prerakListO,
-  },
-
   { path: "*", component: NotFound },
 ];
