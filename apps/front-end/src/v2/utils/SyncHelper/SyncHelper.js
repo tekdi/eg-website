@@ -48,3 +48,43 @@ export async function checkIpUserInfo(id) {
     return null;
   }
 }
+
+export async function updateOnlyChangedProperties(MainObj, UpdateObj) {
+  const NewObject = { ...MainObj };
+
+  for (const key in UpdateObj) {
+    if (UpdateObj.hasOwnProperty(key)) {
+      if (
+        typeof UpdateObj[key] === "object" &&
+        !Array.isArray(UpdateObj[key])
+      ) {
+        NewObject[key] = await updateOnlyChangedProperties(
+          MainObj[key],
+          UpdateObj[key]
+        );
+      } else if (Array.isArray(UpdateObj[key])) {
+        if (MainObj[key] && Array.isArray(MainObj[key])) {
+          NewObject[key] = await Promise.all(
+            MainObj[key].map(async (item, index) => {
+              if (UpdateObj[key][index]) {
+                return await updateOnlyChangedProperties(
+                  item,
+                  UpdateObj[key][index]
+                );
+              }
+              return item;
+            })
+          );
+        } else {
+          NewObject[key] = UpdateObj[key];
+        }
+      } else {
+        if (MainObj[key] !== UpdateObj[key]) {
+          NewObject[key] = UpdateObj[key];
+        }
+      }
+    }
+  }
+
+  return NewObject;
+}
