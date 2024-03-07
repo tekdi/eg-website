@@ -123,12 +123,11 @@ function PrerakList({ userTokenInfo }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      // const programResult = await getSelectedProgramId();
-      // console.log({ programResult });
-      // let academic_Id = await getSelectedAcademicYear();
-      // setAcademicYear(academic_Id);
-      // setProgram(programResult);
-      let name = "RAJASTHAN";
+      const programResult = await getSelectedProgramId();
+      let name = programResult?.program?.state?.state_name;
+      let academic_Id = await getSelectedAcademicYear();
+      setAcademicYear(academic_Id);
+      setProgram(programResult);
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
