@@ -44,7 +44,7 @@ import {
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { debounce, uniq, uniqBy } from "lodash";
-import Table from "../../beneficiaries/AdminBeneficiariesListTable";
+import Table from "./Table";
 import { MultiCheck } from "../../../../component/BaseInput";
 
 function LearnerList({ userTokenInfo }) {
@@ -71,53 +71,12 @@ function LearnerList({ userTokenInfo }) {
   useEffect(() => {
     const fetchData = async () => {
       let academic_Id = await getSelectedAcademicYear();
-      console.log({ academic_Id });
       if (academic_Id) {
         setModal(false);
       }
     };
     fetchData();
   }, []);
-
-  const dropDown = useCallback((triggerProps, t) => {
-    return (
-      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-        <HStack
-          rounded={"full"}
-          background="white"
-          shadow="BlueOutlineShadow"
-          borderRadius="full"
-          borderWidth="1px"
-          borderColor="blueText.400"
-          p="2"
-          space={4}
-        >
-          <AdminTypo.H5>{t("EXPORT")}</AdminTypo.H5>
-          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
-        </HStack>
-      </Pressable>
-    );
-  }, []);
-
-  const actiondropDown = (triggerProps, t) => {
-    return (
-      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-        <HStack
-          rounded={"full"}
-          background="white"
-          shadow="BlueOutlineShadow"
-          borderRadius="full"
-          borderWidth="1px"
-          borderColor="blueText.400"
-          p="2"
-          space={4}
-        >
-          <AdminTypo.H5>{t("ACTIONS")}</AdminTypo.H5>
-          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
-        </HStack>
-      </Pressable>
-    );
-  };
 
   useEffect(async () => {
     if (urlFilterApply) {
@@ -138,25 +97,6 @@ function LearnerList({ userTokenInfo }) {
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
-
-  const exportBeneficiaryCSV = useCallback(async () => {
-    await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
-  }, [filter]);
-
-  const exportSubjectCSV = useCallback(async () => {
-    await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
-  }, [filter]);
-
-  const setMenu = useCallback(
-    (e) => {
-      if (e === "export_subject") {
-        exportSubjectCSV();
-      } else {
-        exportBeneficiaryCSV();
-      }
-    },
-    [exportBeneficiaryCSV, exportSubjectCSV]
-  );
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
@@ -188,19 +128,22 @@ function LearnerList({ userTokenInfo }) {
   const handleAcademicYearChange = async (itemValue) => {
     setCohortValue({ ...cohortValue, academic_year_id: itemValue });
     const uData = uniqBy(cohortData || [], (e) => e.program_id);
-    // console.log(cohortData, itemValue, uData);
     setProgramData(uData);
   };
 
   const handleProgramChange = (itemValue) => {
-    setCohortValue({ ...cohortValue, program_id: itemValue });
+    const data = JSON.parse(itemValue);
+    setCohortValue({ ...cohortValue, data });
   };
 
   const handleCohortSubmit = () => {
     setSelectedAcademicYear({
       academic_year_id: cohortValue?.academic_year_id,
     });
-    setSelectedProgramId({ program_id: cohortValue?.program_id });
+    setSelectedProgramId({
+      ...cohortValue?.data,
+      program_id: cohortValue?.data?.program_id,
+    });
     setSelectedOrgId({ org_id: cohortValue?.org_id });
     setModal(false);
   };
@@ -214,85 +157,42 @@ function LearnerList({ userTokenInfo }) {
     fetchData();
   }, []);
   return (
-    <PoAdminLayout>
+    <PoAdminLayout getRefAppBar={(e) => setRefAppBar(e)}>
       <HStack
         space={[0, 0, "2"]}
         p="2"
         my="1"
         mb="3"
         justifyContent="space-between"
+        alignItems="center"
         flexWrap="wrap"
         gridGap="2"
         ref={refSubHeader}
       >
-        <HStack justifyContent="space-between" alignItems="center" space={2}>
+        <HStack alignItems="center" space={2}>
           <IconByName name="GraduationCap" />
           <AdminTypo.H4 bold>{t("All_AG_LEARNERS")}</AdminTypo.H4>
         </HStack>
-        <Input
-          size={"xs"}
-          minH="42px"
-          maxH="42px"
-          ml="20px"
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-              // height="2"
-            />
-          }
-          placeholder={t("SEARCH_BY_LEARNER_NAME")}
-          variant="outline"
-          onChange={debouncedHandleSearch}
-        />
-        <HStack>
-          <HStack mr="4">
-            <Menu
-              w="190"
-              placement="bottom right"
-              trigger={(triggerProps) => dropDown(triggerProps, t)}
-            >
-              <Menu.Item onPress={(item) => setMenu("export_learner")}>
-                {t("LEARNERS_LIST")}
-              </Menu.Item>
-              <Menu.Item onPress={(item) => setMenu("export_subject")}>
-                {t("LEARNERS_SUBJECT_CSV")}
-              </Menu.Item>
-            </Menu>
-          </HStack>
-          <HStack>
-            <Menu
-              w="190"
-              placement="bottom right"
-              trigger={(triggerProps) => actiondropDown(triggerProps, t)}
-            >
-              <Menu.Item
-                onPress={() => {
-                  navigate("/admin/learners/enrollmentVerificationList");
-                }}
-              >
-                {t("ENROLLMENT_VERIFICATION")}
-              </Menu.Item>
-              <Menu.Item
-                onPress={() => {
-                  navigate("/admin/learners/duplicates");
-                }}
-              >
-                {t("RESOLVE_DUPLICATION")}
-              </Menu.Item>
-              <Menu.Item
-                onPress={() => {
-                  navigate("/admin/learners/reassignList");
-                }}
-              >
-                {t("REASSIGN_LEARNERS")}
-              </Menu.Item>
-            </Menu>
-          </HStack>
+        <HStack justifyContent="center" alignItems="center" flex="1">
+          <Input
+            size={"xs"}
+            minH="42px"
+            maxH="42px"
+            InputLeftElement={
+              <IconByName
+                color="coolGray.500"
+                name="SearchLineIcon"
+                isDisabled
+                pl="2"
+              />
+            }
+            placeholder={t("SEARCH_BY_LEARNER_NAME")}
+            variant="outline"
+            onChange={debouncedHandleSearch}
+          />
         </HStack>
       </HStack>
+
       <HStack flex={[5, 5, 4]}>
         <Box
           flex={[2, 2, 1]}
@@ -424,7 +324,6 @@ function LearnerList({ userTokenInfo }) {
                 justifyContent={"space-between"}
               >
                 <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
-
                 <Select
                   selectedValue={cohortValue?.program_id}
                   minWidth="200"
@@ -441,14 +340,14 @@ function LearnerList({ userTokenInfo }) {
                     return (
                       <Select.Item
                         key={item.id}
-                        label={item?.program?.name}
-                        value={item?.program_id}
+                        label={item?.program?.state?.state_name}
+                        value={JSON.stringify(item)}
                       />
                     );
                   })}
                 </Select>
               </HStack>
-              {cohortValue?.program_id && (
+              {cohortValue?.data?.program_id && (
                 <VStack alignItems={"center"}>
                   <AdminTypo.Dangerbutton onPress={handleCohortSubmit}>
                     {t("CONTINUE")}
@@ -543,7 +442,7 @@ export const Filter = ({ filter, setFilter }) => {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let name = programResult?.state_name;
+      let name = programResult?.program?.state?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });

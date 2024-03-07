@@ -11,9 +11,9 @@ const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
 const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
 const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
 // const CampViewDetails = lazy(() => import("pages/admin/PoAdmin/Camp/View"));
-// const LearnerViewDetails = lazy(() =>
-//   import("pages/admin/PoAdmin/Learner/View")
-// );
+const LearnerViewDetails = lazy(() =>
+  import("pages/admin/PoAdmin/Learner/View")
+);
 // const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
 
 export default [
@@ -37,10 +37,10 @@ export default [
     path: "/poadmin/learners",
     component: LearnerListing,
   },
-  // {
-  //   path: "/poadmin/learners/:id",
-  //   component: LearnerViewDetails,
-  // },
+  {
+    path: "/poadmin/learners/:id",
+    component: LearnerViewDetails,
+  },
   { path: "/poadmin", component: PoAdminHome },
   {
     path: "/file/:id/view",
