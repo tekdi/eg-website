@@ -19,6 +19,7 @@ const getHeaders = async () => {
   }}
 });
   return data
+  
 }
 
 export async function get(url: string, headers: any = {}) {
