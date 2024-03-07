@@ -48,3 +48,17 @@ export async function checkIpUserInfo(id) {
     return null;
   }
 }
+
+export async function getUserInfo(id) {
+  try {
+    const getUserInfo = await getIndexedDBItem(`${id}_Get`);
+    if (getUserInfo) {
+      return getUserInfo;
+    } else {
+      return {};
+    }
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return {};
+  }
+}
