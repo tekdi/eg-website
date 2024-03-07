@@ -2,10 +2,9 @@ import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import Table from "../../facilitator/Table";
+import Table from "./Table";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../../component/BaseInput";
-import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
 import {
   Box,
@@ -14,12 +13,10 @@ import {
   ScrollView,
   Button,
   Input,
-  Modal,
   Stack,
 } from "native-base";
 import {
   PoAdminLayout,
-  getSelectedAcademicYear,
   IconByName,
   useWindowSize,
   AdminTypo,
@@ -111,7 +108,6 @@ function PrerakList({ userTokenInfo }) {
   const [filter, setFilter] = useState({});
   const [loading, setLoading] = useState(true);
   const [tableLoading, setTableLoading] = useState(true);
-  const [modal, setModal] = useState(false);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [enumOptions, setEnumOptions] = useState({});
@@ -126,11 +122,12 @@ function PrerakList({ userTokenInfo }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const programResult = await getSelectedProgramId();
-      let academic_Id = await getSelectedAcademicYear();
-      setAcademicYear(academic_Id);
-      setProgram(programResult);
-      let name = programResult?.state_name;
+      // const programResult = await getSelectedProgramId();
+      // console.log({ programResult });
+      // let academic_Id = await getSelectedAcademicYear();
+      // setAcademicYear(academic_Id);
+      // setProgram(programResult);
+      let name = "RAJASTHAN";
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
@@ -254,10 +251,6 @@ function PrerakList({ userTokenInfo }) {
     setFilterObject({});
   }, [setFilterObject]);
 
-  const exportPrerakCSV = async () => {
-    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
-  };
-
   const handleSearch = useCallback(
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
@@ -267,24 +260,18 @@ function PrerakList({ userTokenInfo }) {
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
-    <PoAdminLayout>
-      <HStack
-        space={[0, 0, "2"]}
-        p="2"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        gridGap="2"
-        ref={ref}
-      >
+    <PoAdminLayout _sidebar={setRefAppBar}>
+      <Box mt={4} position="relative">
         <HStack
-          justifyContent={"space-between"}
-          space={"4"}
+          justifyContent="start"
           alignItems="center"
+          space="2"
+          position="absolute"
+          left="0"
+          top="0"
         >
-          <HStack justifyContent="space-between" alignItems="center" space="2">
-            <IconByName name="GroupLineIcon" size="md" />
-            <AdminTypo.H4 bold> {t("ALL_PRERAKS")}</AdminTypo.H4>
-          </HStack>
+          <IconByName name="GroupLineIcon" size="md" />
+          <AdminTypo.H4 bold>{t("ALL_PRERAKS")}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}
@@ -302,82 +289,11 @@ function PrerakList({ userTokenInfo }) {
           placeholder={t("SEARCH_BY_PRERAK_NAME")}
           variant="outline"
           onChange={debouncedHandleSearch}
+          textAlign="center"
+          mx="auto"
         />
+      </Box>
 
-        <HStack height={"5vh"} space={2}>
-          <AdminTypo.Secondarybutton
-            onPress={() => {
-              exportPrerakCSV();
-            }}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("EXPORT")}
-          </AdminTypo.Secondarybutton>
-          <AdminTypo.Secondarybutton
-            onPress={() => setModal(true)}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("SEND_AN_INVITE")}
-          </AdminTypo.Secondarybutton>
-
-          <Modal
-            isOpen={modal}
-            onClose={() => setModal(false)}
-            safeAreaTop={true}
-            size="xl"
-          >
-            <Modal.Content>
-              <Modal.CloseButton />
-              <Modal.Header p="5" borderBottomWidth="0">
-                <AdminTypo.H3 textAlign="center" color="textMaroonColor.600">
-                  {t("SEND_AN_INVITE")}
-                </AdminTypo.H3>
-              </Modal.Header>
-              <Modal.Body p="5" pb="10">
-                <VStack space="5">
-                  <HStack
-                    space="5"
-                    borderBottomWidth={1}
-                    borderBottomColor="gray.300"
-                    pb="5"
-                  >
-                    <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
-                    <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users?.[0]?.organisation_id}&cohort_id=${academicYear?.academic_year_id}&program_id=${program?.program_id}`}
-                    >
-                      <HStack space="3">
-                        <IconByName
-                          name="FileCopyLineIcon"
-                          isDisabled
-                          rounded="full"
-                          color="blue.300"
-                        />
-                        <AdminTypo.H3 color="blue.300">
-                          {t("CLICK_HERE_TO_COPY_THE_LINK")}
-                        </AdminTypo.H3>
-                      </HStack>
-                    </Clipboard>
-                  </HStack>
-                </VStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-        </HStack>
-      </HStack>
       <HStack ml="-1">
         <Stack style={{ position: "relative", overflowX: "hidden" }}>
           <Stack
