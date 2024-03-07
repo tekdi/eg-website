@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import CampHome from "pages/admin/camps/CampHome";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck } from "../../../../component/BaseInput";
@@ -74,7 +73,7 @@ const columns = (t, navigate) => [
   {
     name: t("CAMP_STATUS"),
     selector: (row) => (
-      <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
+      <Pressable onPress={() => navigate(`/poadmin/camps/${row.id}`)}>
         <CampChipStatus status={row?.group?.status} />
       </Pressable>
     ),
@@ -87,7 +86,7 @@ const columns = (t, navigate) => [
     selector: (row) => (
       <AdminTypo.Secondarybutton
         my="3"
-        onPress={() => navigate(`/admin/camps/${row.id}`)}
+        onPress={() => navigate(`/poadmin/camps/${row.id}`)}
       >
         {t("VIEW")}
       </AdminTypo.Secondarybutton>
@@ -137,7 +136,7 @@ function CampList({ userTokenInfo }) {
   }, [filter]);
 
   const handleRowClick = (row) => {
-    navigate(`/admin/camps/${row.id}`);
+    navigate(`/poadmin/camps/${row.id}`);
   };
   return (
     <PoAdminLayout getRefAppBar={(e) => setRefAppBar(e)}>
@@ -256,9 +255,7 @@ function CampList({ userTokenInfo }) {
   );
 }
 
-CampList.propTypes = {};
-
-CampHome.propTypes = {
+CampList.propTypes = {
   userTokenInfo: PropTypes.any,
   _layout: PropTypes.any,
 };
@@ -347,7 +344,7 @@ export const Filter = ({ filter, setFilter }) => {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let name = programResult?.state_name;
+      let name = programResult?.program?.state?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
