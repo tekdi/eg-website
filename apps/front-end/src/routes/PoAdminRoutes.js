@@ -14,17 +14,22 @@ const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
 const LearnerViewDetails = lazy(() =>
   import("pages/admin/PoAdmin/Learner/View")
 );
-// const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
+const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
+const PoProfileDetails = lazy(() => import("pages/admin/PoAdmin/Profile"));
 
 export default [
+  {
+    path: "/poadmin/profile",
+    component: PoProfileDetails,
+  },
   {
     path: "/poadmin/facilitators",
     component: PrerakListing,
   },
-  // {
-  //   path: "/poadmin/facilitator/:id",
-  //   component: PrerakViewDetails,
-  // },
+  {
+    path: "/poadmin/facilitators/:id",
+    component: PrerakViewDetails,
+  },
   {
     path: "/poadmin/camps",
     component: CampListing,

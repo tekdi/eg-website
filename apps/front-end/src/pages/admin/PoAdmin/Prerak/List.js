@@ -27,6 +27,7 @@ import {
   urlData,
   getOptions,
   getSelectedProgramId,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 
 const uiSchema = {
