@@ -17,6 +17,8 @@ const LearnerViewDetails = lazy(() =>
 const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
 const PoProfileDetails = lazy(() => import("pages/admin/PoAdmin/Profile"));
 
+const Home = lazy(() => import("pages/admin/PoAdmin/Home/Home"));
+
 export default [
   {
     path: "/poadmin/profile",
@@ -55,7 +57,7 @@ export default [
     path: "/poadmin/learners/duplicates/:aadhaarNo",
     component: PoDuplicateView,
   },
-  { path: "/", component: PoAdminHome },
+  { path: "/", component: Home },
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,

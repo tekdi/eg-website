@@ -12,11 +12,7 @@ import { useNavigate } from "react-router-dom";
 import {
   PoAdminLayout,
   getSelectedAcademicYear,
-  setSelectedAcademicYear,
-  setSelectedProgramId,
-  cohortService,
   IconByName,
-  // AdminLayout as Layout,
   useWindowSize,
   benificiaryRegistoryService,
   AdminTypo,
@@ -26,12 +22,8 @@ import {
   urlData,
   tableCustomStyles,
   getSelectedProgramId,
-  setSelectedOrgId,
 } from "@shiksha/common-lib";
 import {
-  Select,
-  Modal,
-  CheckIcon,
   Box,
   HStack,
   VStack,
@@ -39,8 +31,6 @@ import {
   Button,
   Input,
   Text,
-  Menu,
-  Pressable,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { debounce, uniq, uniqBy } from "lodash";
@@ -59,24 +49,6 @@ function LearnerList({ userTokenInfo }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
-
-  // cohort modal
-  const [modal, setModal] = useState(true);
-  const [orgData, setOrgData] = useState();
-  const [cohortData, setCohortData] = useState();
-  const [academicData, setAcademicData] = useState();
-  const [programData, setProgramData] = useState();
-  const [cohortValue, setCohortValue] = useState();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let academic_Id = await getSelectedAcademicYear();
-      if (academic_Id) {
-        setModal(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(async () => {
     if (urlFilterApply) {
@@ -104,58 +76,6 @@ function LearnerList({ userTokenInfo }) {
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
-  const getCohortData = useCallback(async () => {
-    setLoading(true);
-    const result = await cohortService.getOrganisationId();
-    setOrgData(result?.data);
-    setLoading(false);
-  }, [modal]);
-
-  useEffect(() => {
-    getCohortData();
-  }, [modal]);
-
-  const handleOrgChange = async (itemValue) => {
-    setCohortValue({ ...cohortValue, org_id: itemValue });
-    const data = await cohortService.getPoAcademicYear({
-      organisation_id: itemValue,
-    });
-    setCohortData(data?.data);
-    const uData = uniqBy(data?.data || [], (e) => e.academic_year_id);
-    setAcademicData(uData);
-  };
-
-  const handleAcademicYearChange = async (itemValue) => {
-    setCohortValue({ ...cohortValue, academic_year_id: itemValue });
-    const uData = uniqBy(cohortData || [], (e) => e.program_id);
-    setProgramData(uData);
-  };
-
-  const handleProgramChange = (itemValue) => {
-    const data = JSON.parse(itemValue);
-    setCohortValue({ ...cohortValue, data });
-  };
-
-  const handleCohortSubmit = () => {
-    setSelectedAcademicYear({
-      academic_year_id: cohortValue?.academic_year_id,
-    });
-    setSelectedProgramId({
-      ...cohortValue?.data,
-      program_id: cohortValue?.data?.program_id,
-    });
-    setSelectedOrgId({ org_id: cohortValue?.org_id });
-    setModal(false);
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      let academic_Id = await getSelectedAcademicYear();
-      if (academic_Id) {
-        setModal(false);
-      }
-    };
-    fetchData();
-  }, []);
   return (
     <PoAdminLayout getRefAppBar={(e) => setRefAppBar(e)}>
       <HStack
@@ -238,126 +158,6 @@ function LearnerList({ userTokenInfo }) {
           </ScrollView>
         </Box>
       </HStack>
-      <Modal isOpen={modal} safeAreaTop={true} size="xl">
-        <Modal.Content>
-          <Modal.Header p="5" borderBottomWidth="0">
-            <AdminTypo.H3 textAlign="center" color="black">
-              {t("SELECT_YOUR_COHORT")}
-            </AdminTypo.H3>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <HStack
-                space="5"
-                borderBottomWidth={1}
-                borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <AdminTypo.H4> {t("ORGANISATION")}</AdminTypo.H4>
-                <Select
-                  selectedValue={cohortValue?.org_id}
-                  minWidth="200"
-                  accessibilityLabel="Choose Service"
-                  placeholder={t("SELECT")}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) => handleOrgChange(itemValue)}
-                >
-                  {orgData?.map((item) => {
-                    return (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.name}
-                        value={`${item?.id}`}
-                      />
-                    );
-                  })}
-                </Select>
-              </HStack>
-              <HStack
-                space="5"
-                borderBottomWidth={1}
-                borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <AdminTypo.H4> {t("ACADEMIC_YEAR")}</AdminTypo.H4>
-
-                <Select
-                  selectedValue={cohortValue?.academic_year_id}
-                  minWidth="200"
-                  accessibilityLabel="Choose Service"
-                  placeholder={t("SELECT")}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) =>
-                    handleAcademicYearChange(itemValue)
-                  }
-                >
-                  {academicData?.map((item) => {
-                    return (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.academic_year?.name}
-                        value={`${item?.academic_year_id}`}
-                        // value={JSON.stringify(item)}
-                      />
-                    );
-                  })}
-                </Select>
-              </HStack>
-              <HStack
-                space="5"
-                borderBottomWidth={1}
-                borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
-                <Select
-                  selectedValue={cohortValue?.program_id}
-                  minWidth="200"
-                  accessibilityLabel="Choose Service"
-                  placeholder={t("SELECT")}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) => handleProgramChange(itemValue)}
-                >
-                  {programData?.map((item) => {
-                    return (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.program?.state?.state_name}
-                        value={JSON.stringify(item)}
-                      />
-                    );
-                  })}
-                </Select>
-              </HStack>
-              {cohortValue?.data?.program_id && (
-                <VStack alignItems={"center"}>
-                  <AdminTypo.Dangerbutton onPress={handleCohortSubmit}>
-                    {t("CONTINUE")}
-                  </AdminTypo.Dangerbutton>
-                </VStack>
-              )}
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </PoAdminLayout>
   );
 }
