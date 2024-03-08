@@ -1,12 +1,13 @@
-import React, { lazy } from "react";
+import { lazy } from "react";
 
-const NotFound = React.lazy(() => import("pages/NotFound"));
-const PoAdminHome = React.lazy(() => import("pages/admin/PoAdmin/PoAdminHome"));
-const PoDuplicateView = React.lazy(() =>
+const NotFound = lazy(() => import("pages/NotFound"));
+const PoAdminHome = lazy(() => import("pages/admin/PoAdmin/PoAdminHome"));
+const PoDuplicateView = lazy(() =>
   import("pages/admin/PoAdmin/PoDuplicateView")
 );
-const FileView = React.lazy(() => import("pages/FileView"));
-const Assessment = React.lazy(() => import("component/Assessment"));
+const IPList = lazy(() => import("pages/admin/PoAdmin/IP/List"));
+const FileView = lazy(() => import("pages/FileView"));
+const Assessment = lazy(() => import("component/Assessment"));
 const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
 const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
 const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
@@ -23,6 +24,10 @@ export default [
   {
     path: "/poadmin/profile",
     component: PoProfileDetails,
+  },
+  {
+    path: "/poadmin/ips",
+    component: IPList,
   },
   {
     path: "/poadmin/facilitators",
