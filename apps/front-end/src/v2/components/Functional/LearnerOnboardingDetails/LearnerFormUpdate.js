@@ -80,7 +80,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         village: result?.village,
         grampanchayat:
           result?.grampanchayat == "null" ? "" : result?.grampanchayat,
-        pincode: result?.pincode == "null" ? "" : result?.pincode,
+        pincode: result?.pincode || undefined,
         marital_status: result?.extended_users?.marital_status,
         social_category: result?.extended_users?.social_category,
         type_of_learner: result?.core_beneficiaries?.type_of_learner,
@@ -286,25 +286,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       });
       setFixedSchema(newSchema);
 
-      if (formData?.type_of_learner === "school_dropout") {
-        const {
-          alreadyOpenLabel,
-          education_10th_date,
-          education_10th_exam_year,
-          ...properties
-        } = newSchema?.properties || {};
-        const required = newSchema?.required?.filter((item) =>
-          [
-            "type_of_learner",
-            "last_standard_of_education",
-            "last_standard_of_education_year",
-            "previous_school_type",
-            "reason_of_leaving_education",
-            "learning_level",
-          ].includes(item)
-        );
-        setSchema({ ...newSchema, properties, required });
-      } else if (formData?.type_of_learner === "never_enrolled") {
+      if (formData?.type_of_learner === "never_enrolled") {
         const {
           last_standard_of_education,
           last_standard_of_education_year,
@@ -379,7 +361,23 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         );
         setSchema({ ...newSchema, properties, required });
       } else {
-        setSchema(newSchema);
+        const {
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = newSchema?.properties || {};
+        const required = newSchema?.required?.filter((item) =>
+          [
+            "type_of_learner",
+            "last_standard_of_education",
+            "last_standard_of_education_year",
+            "previous_school_type",
+            "reason_of_leaving_education",
+            "learning_level",
+          ].includes(item)
+        );
+        setSchema({ ...newSchema, properties, required });
       }
     }
     if (schema?.["properties"]?.["marital_status"]) {
