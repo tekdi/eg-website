@@ -207,7 +207,18 @@ export default function App({ onClick, id }) {
         education_10th_exam_year,
         ...properties
       } = fixedSchema?.properties || {};
-      setSchemaData({ ...fixedSchema, properties });
+      // Filter required fields for "school_dropout" to ensure form relevance
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "last_standard_of_education",
+          "last_standard_of_education_year",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "never_enrolled") {
       const {
         last_standard_of_education,
@@ -230,7 +241,19 @@ export default function App({ onClick, id }) {
     } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
       const { education_10th_date, education_10th_exam_year, ...properties } =
         fixedSchema?.properties || {};
-      setSchemaData({ ...fixedSchema, properties });
+      // Adjust required fields for learners already enrolled in open school
+
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "last_standard_of_education",
+          "last_standard_of_education_year",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "already_open_school_syc") {
       const {
         alreadyOpenLabel,
@@ -239,7 +262,18 @@ export default function App({ onClick, id }) {
         education_10th_exam_year,
         ...properties
       } = fixedSchema?.properties || {};
-      setSchemaData({ ...fixedSchema, properties });
+      // Set required fields for "already_open_school_syc" to match specific needs
+
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "education_10th_date",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
       const {
         last_standard_of_education,
@@ -249,7 +283,17 @@ export default function App({ onClick, id }) {
         education_10th_date,
         ...properties
       } = fixedSchema?.properties || {};
-      setSchemaData({ ...fixedSchema, properties });
+      // Customize required fields for "stream_2_mainstream_syc" learners
+
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "reason_of_leaving_education",
+          "education_10th_exam_year",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchemaData({ ...fixedSchema, properties, required });
     } else {
       const newErrors = {};
       setErrors(newErrors);

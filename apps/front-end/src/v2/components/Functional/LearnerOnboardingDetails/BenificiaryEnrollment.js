@@ -46,12 +46,10 @@ export default function BenificiaryEnrollment() {
   }, []);
 
   const onEditFunc = () => {
-    if (
+    return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" &&
       benificiary?.program_beneficiaries?.status !== "registered_in_camp"
-    ) {
-      return { onEdit: navigate(`/beneficiary/edit/${id}/enrollment-details`) };
-    }
+    );
   };
   return (
     <Layout
@@ -137,7 +135,11 @@ export default function BenificiaryEnrollment() {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
               : {})}
-            {...(onEditFunc() || {})}
+            onEdit={
+              onEditFunc()
+                ? (e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)
+                : false
+            }
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}
