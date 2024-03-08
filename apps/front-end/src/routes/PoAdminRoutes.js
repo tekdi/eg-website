@@ -10,7 +10,7 @@ const Assessment = React.lazy(() => import("component/Assessment"));
 const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
 const CampListing = lazy(() => import("pages/admin/PoAdmin/Camp/List"));
 const LearnerListing = lazy(() => import("pages/admin/PoAdmin/Learner/List"));
-// const CampViewDetails = lazy(() => import("pages/admin/PoAdmin/Camp/View"));
+const CampViewDetails = lazy(() => import("pages/admin/PoAdmin/Camp/View"));
 const LearnerViewDetails = lazy(() =>
   import("pages/admin/PoAdmin/Learner/View")
 );
@@ -34,10 +34,10 @@ export default [
     path: "/poadmin/camps",
     component: CampListing,
   },
-  // {
-  //   path: "/poadmin/camps/:id",
-  //   component: CampViewDetails,
-  // },
+  {
+    path: "/poadmin/camps/:id",
+    component: CampViewDetails,
+  },
   {
     path: "/poadmin/learners",
     component: LearnerListing,
