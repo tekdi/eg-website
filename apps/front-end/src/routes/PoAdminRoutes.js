@@ -19,6 +19,7 @@ const LearnerViewDetails = lazy(() =>
 const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
 const PoProfileDetails = lazy(() => import("pages/admin/PoAdmin/Profile"));
 const Home = lazy(() => import("pages/admin/PoAdmin/Home/Home"));
+const UserList = lazy(() => import("pages/admin/PoAdmin/IP/UserList"));
 
 export default [
   {
@@ -70,6 +71,10 @@ export default [
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
+  },
+  {
+    path: "/poadmin/ips/:id/list",
+    component: UserList,
   },
   { path: "*", component: NotFound },
 ];
