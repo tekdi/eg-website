@@ -32,7 +32,7 @@ function FacilitatorOnboarding() {
         setCountLoad(1);
       }
       if (countLoad == 1) {
-        //do page load first operation
+        //do page load first operatio
         setIsloading(true);
         if (token) {
           const tokenData = getTokernUserInfo();
