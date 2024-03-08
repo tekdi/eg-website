@@ -3,7 +3,6 @@ import {
   IconByName,
   PoAdminLayout,
   organisationService,
-  tableCustomStyles,
 } from "@shiksha/common-lib";
 import { HStack, Input, VStack } from "native-base";
 import React, {
@@ -16,6 +15,29 @@ import React, {
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+
+export const CustomStyles = {
+  rows: {
+    style: {
+      minHeight: "72px",
+    },
+  },
+  headCells: {
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+};
 
 const columns = (t, navigate) => [
   {
@@ -56,9 +78,9 @@ const columns = (t, navigate) => [
     selector: (row) => (
       <AdminTypo.Secondarybutton
         background="white"
-        px="1.5"
-        my="1"
-        h="6"
+        px="3"
+        my="2"
+        h="8"
         onPress={() => {
           navigate(`/poadmin/ips/${row?.id}`);
         }}
@@ -110,6 +132,12 @@ export default function List() {
     }
   };
 
+  const handleRowClick = useCallback(
+    (row) => {
+      navigate(`/poadmin/ips/${row?.id}`);
+    },
+    [navigate]
+  );
   return (
     <PoAdminLayout {...{ loading }}>
       <VStack p="4" space={4}>
@@ -155,7 +183,7 @@ export default function List() {
         </HStack>
         <DataTable
           customStyles={{
-            ...tableCustomStyles,
+            ...CustomStyles,
             rows: {
               style: {
                 minHeight: "20px", // override the row height
@@ -187,6 +215,7 @@ export default function List() {
             },
             [setFilter, filter]
           )}
+          onRowClicked={handleRowClick}
         />
       </VStack>
     </PoAdminLayout>
