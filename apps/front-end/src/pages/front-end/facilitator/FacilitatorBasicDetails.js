@@ -12,6 +12,7 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
+import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
 
 export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [facilitator, setFacilitator] = React.useState();
@@ -25,8 +26,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const facilitatorDetails = async () => {
     const { id } = userTokenInfo?.authUser || {};
-    const result = await facilitatorRegistryService.getOne({ id });
-
+    const result = await getIndexedDBItem(`${id}_Get`);
     setFacilitator(result);
   };
 
@@ -36,7 +36,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
-    const result = await facilitatorRegistryService.getEditRequests(obj);
+    const result = await getIndexedDBItem(`editRequest`);
+    console.log({ result });
     let field;
     const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
@@ -47,8 +48,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const isProfileEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("profile_photo_1") ||
           fields.includes("profile_photo_2") ||
           fields.includes("profile_photo_3")))
@@ -57,8 +58,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const isNameEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("first_name") ||
           fields.includes("middle_name") ||
           fields.includes("last_name") ||
@@ -68,15 +69,15 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const isContactEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("device_ownership") || fields.includes("device_type")))
     );
   };
   const isAddressEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("district") || fields.includes("block")))
     );
   };
@@ -88,7 +89,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
         onPressBackButton: (e) => navigate(`/profile`),
       }}
     >
-      {["quit"].includes(facilitator?.status) ? (
+      {["quit"].includes(facilitator?.program_faciltators?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -99,17 +100,27 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
         <VStack paddingBottom="64px" bg="bgGreyColor.200">
           <VStack p="4" space="24px">
             <ProfilePhoto
-              profile_photo_1={facilitator?.profile_photo_1}
-              profile_photo_2={facilitator?.profile_photo_2}
-              profile_photo_3={facilitator?.profile_photo_3}
+              profile_photo_1={facilitator?.users?.profile_photo_1}
+              profile_photo_2={facilitator?.users?.profile_photo_2}
+              profile_photo_3={facilitator?.users?.profile_photo_3}
               isProfileEdit={isProfileEdit()}
             />
             <VStack>
               <HStack justifyContent="space-between" alignItems="Center">
                 <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
-                  {`${facilitator?.first_name ? facilitator?.first_name : ""} ${
-                    facilitator?.middle_name ? facilitator?.middle_name : ""
-                  } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
+                  {`${
+                    facilitator?.users?.first_name
+                      ? facilitator?.users?.first_name
+                      : ""
+                  } ${
+                    facilitator?.users?.middle_name
+                      ? facilitator?.users?.middle_name
+                      : ""
+                  } ${
+                    facilitator?.users?.last_name
+                      ? facilitator?.users?.last_name
+                      : ""
+                  }`}
                 </FrontEndTypo.H1>
 
                 {isNameEdit() && (
@@ -126,9 +137,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               <HStack alignItems="Center">
                 <IconByName name="Cake2LineIcon" color="iconColor.300" />
                 <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                  {facilitator?.dob &&
-                  moment(facilitator?.dob, "YYYY-MM-DD", true).isValid()
-                    ? moment(facilitator?.dob).format("DD/MM/YYYY")
+                  {facilitator?.users?.dob &&
+                  moment(facilitator?.users?.dob, "YYYY-MM-DD", true).isValid()
+                    ? moment(facilitator?.users?.dob).format("DD/MM/YYYY")
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -143,7 +154,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 { name: "SmartphoneLineIcon", color: "iconColor.100" },
                 { name: "MailLineIcon", color: "iconColor.100" },
               ]}
-              item={facilitator}
+              item={facilitator?.users}
               arr={["mobile", "alternative_mobile_number", "email_id"]}
               onEdit={
                 isContactEdit()
@@ -159,11 +170,11 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               label={["HOME"]}
               item={{
                 home: [
-                  facilitator?.state,
-                  facilitator?.district,
-                  facilitator?.block,
-                  facilitator?.village,
-                  facilitator?.grampanchayat,
+                  facilitator?.users?.state,
+                  facilitator?.users?.district,
+                  facilitator?.users?.block,
+                  facilitator?.users?.village,
+                  facilitator?.users?.grampanchayat,
                 ]
                   .filter((e) => e)
                   .join(", "),
@@ -180,8 +191,18 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               _hstack={{ borderBottomWidth: 0 }}
               title={t("PERSONAL_DETAILS")}
               label={["Gender", "Social Category", "Martial Status"]}
-              item={facilitator}
-              arr={["gender", "social_category", "marital_status"]}
+              // item={facilitator}
+              // arr={["gender", "social_category", "marital_status"]}
+              item={{
+                home: [
+                  facilitator?.users?.gender,
+                  facilitator?.extended_users?.social_category,
+                  facilitator?.extended_users?.marital_status,
+                ]
+                  .filter((e) => e)
+                  .join(", "),
+              }}
+              arr={["home"]}
               onEdit={(e) => navigate(`/profile/edit/personal_details`)}
             />
             <CardComponent

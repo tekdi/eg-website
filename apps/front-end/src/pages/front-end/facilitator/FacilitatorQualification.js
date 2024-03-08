@@ -13,6 +13,7 @@ import {
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
+import { getIndexedDBItem } from "v2/utils/Helper/JSHelper";
 
 export default function FacilitatorQualification({ userTokenInfo }) {
   const [facilitator, setfacilitator] = React.useState();
@@ -24,7 +25,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
 
   React.useEffect(async () => {
     const { id } = userTokenInfo?.authUser;
-    const result = await facilitatorRegistryService.getOne({ id });
+    const result = await getIndexedDBItem(`${id}_Get`);
     setfacilitator(result);
     setQualification(result?.qualifications ? result?.qualifications : {});
   }, []);
@@ -32,12 +33,12 @@ export default function FacilitatorQualification({ userTokenInfo }) {
   React.useEffect(() => {
     let isMounted = true;
     const fetchEnumData = async () => {
-      const data = await enumRegistryService.listOfEnum();
-      if (isMounted) setEnumOptions(data?.data ? data?.data : {});
+      const data = await getIndexedDBItem(`enums`);
+      if (isMounted) setEnumOptions(data || {});
     };
 
     const fetchQualificationData = async () => {
-      const qua = await facilitatorRegistryService.getQualificationAll();
+      const qua = await getIndexedDBItem(`qualification`);
       if (isMounted) setQua(qua);
     };
 
@@ -55,7 +56,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
         : "[]"
     );
     if (Array.isArray(qua) && Array.isArray(ids)) {
-      const arr = qua.filter((item) => ids.includes(item.id));
+      const arr = qua.filter((item) => ids.includes(item.id.toString()));
       setQualifications(arr);
     }
   }, [qua, facilitator]);
@@ -75,7 +76,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      {["quit"].includes(facilitator?.status) ? (
+      {["quit"].includes(facilitator?.program_faciltators?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -178,7 +179,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
                     <ImageView
                       text={t("LINK")}
                       source={{
-                        document_id: qualification?.document_reference?.id,
+                        document_id: qualification?.documents?.document_id,
                       }}
                     />
                   </FrontEndTypo.H3>
