@@ -1,12 +1,20 @@
 import { facilitatorRegistryService } from "@shiksha/common-lib";
-import { getIndexedDBItem, setIndexedDBItem } from "../Helper/JSHelper";
+import {
+  getHeaderDetails,
+  getIndexedDBItem,
+  setIndexedDBItem,
+} from "../Helper/JSHelper";
 import moment from "moment";
 
 export async function setPrerakOfflineInfo(id) {
   try {
     const currentTime = moment().toString();
     const data = await facilitatorRegistryService.getPrerakOfflineInfo();
-    setIndexedDBItem(`${id}_Get`, data?.data);
+    let commonHeader = await getHeaderDetails();
+    setIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`,
+      data?.data
+    );
     setIndexedDBItem("GetSyncTime", currentTime);
   } catch (error) {
     console.error("Error setting IndexedDB item:", error);
@@ -16,11 +24,28 @@ export async function setIpUserInfo(id) {
   try {
     const currentTime = moment().toString();
     const data = await facilitatorRegistryService.getInfo();
-    setIndexedDBItem(`${id}_Ip_User_Info`, data);
-    setIndexedDBItem("GetSyncTime", currentTime);
+    let commonHeader = await getHeaderDetails();
+    if (commonHeader?.program_id && commonHeader?.academic_year_id) {
+      setIndexedDBItem(
+        `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`,
+        data
+      );
+      setIndexedDBItem("GetSyncTime", currentTime);
+    }
     return data;
   } catch (error) {
     console.error("Error setting IndexedDB item:", error);
+  }
+}
+export async function getIpUserInfo(id) {
+  try {
+    let commonHeader = await getHeaderDetails();
+    let ip_user_info = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`
+    );
+    return ip_user_info;
+  } catch (error) {
+    return null;
   }
 }
 
@@ -41,7 +66,22 @@ export async function checkPrerakOfflineTimeInterval() {
 
 export async function checkIpUserInfo(id) {
   try {
-    const editRequest = await getIndexedDBItem(`${id}_Ip_User_Info`);
+    let commonHeader = await getHeaderDetails();
+    const editRequest = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`
+    );
+    return !!editRequest;
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return null;
+  }
+}
+export async function checkGetUserInfo(id) {
+  try {
+    let commonHeader = await getHeaderDetails();
+    const editRequest = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
+    );
     return !!editRequest;
   } catch (error) {
     console.error("Error getting IndexedDB item:", error);
@@ -49,7 +89,48 @@ export async function checkIpUserInfo(id) {
   }
 }
 
-export async function updateOnlyChangedProperties(MainObj, UpdateObj) {
+export async function getUserInfo(id) {
+  try {
+    let commonHeader = await getHeaderDetails();
+    const getUserInfo = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
+    );
+    if (getUserInfo) {
+      return getUserInfo;
+    } else {
+      return {};
+    }
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return {};
+  }
+}
+export async function getUserInfoNull(id) {
+  try {
+    let commonHeader = await getHeaderDetails();
+    const getUserInfo = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
+    );
+    return getUserInfo;
+  } catch (error) {
+    return null;
+  }
+}
+export async function getUserUpdatedInfo(id) {
+  try {
+    const getUserInfo = await getIndexedDBItem(`${id}_Update`);
+    if (getUserInfo) {
+      return getUserInfo;
+    } else {
+      return {};
+    }
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return {};
+  }
+}
+
+export async function getOnlyChanged(MainObj, UpdateObj) {
   const NewObject = {};
 
   for (const key in UpdateObj) {
@@ -58,7 +139,7 @@ export async function updateOnlyChangedProperties(MainObj, UpdateObj) {
         typeof UpdateObj[key] === "object" &&
         !Array.isArray(UpdateObj[key])
       ) {
-        const updatedSubObject = await updateOnlyChangedProperties(
+        const updatedSubObject = await getOnlyChanged(
           MainObj[key],
           UpdateObj[key]
         );
@@ -99,6 +180,39 @@ export async function updateOnlyChangedProperties(MainObj, UpdateObj) {
         ...UpdateObj[key],
       ];
       NewObject[key] = mergedArray;
+    }
+  }
+
+  return NewObject;
+}
+export async function mergeOnlyChanged(MainObj, UpdateObj) {
+  const NewObject = { ...MainObj };
+
+  for (const key in UpdateObj) {
+    if (UpdateObj.hasOwnProperty(key)) {
+      if (
+        typeof UpdateObj[key] === "object" &&
+        !Array.isArray(UpdateObj[key])
+      ) {
+        NewObject[key] = await mergeOnlyChanged(MainObj[key], UpdateObj[key]);
+      } else if (Array.isArray(UpdateObj[key])) {
+        if (MainObj[key] && Array.isArray(MainObj[key])) {
+          NewObject[key] = await Promise.all(
+            MainObj[key].map(async (item, index) => {
+              if (UpdateObj[key][index]) {
+                return await mergeOnlyChanged(item, UpdateObj[key][index]);
+              }
+              return item;
+            })
+          );
+        } else {
+          NewObject[key] = UpdateObj[key];
+        }
+      } else {
+        if (MainObj[key] !== UpdateObj[key]) {
+          NewObject[key] = UpdateObj[key];
+        }
+      }
     }
   }
 

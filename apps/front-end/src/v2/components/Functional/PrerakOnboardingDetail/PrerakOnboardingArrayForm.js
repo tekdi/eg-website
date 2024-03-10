@@ -21,6 +21,7 @@ import {
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -149,7 +150,13 @@ export default function PrerakOnboardingArrayForm({
   const getData = async () => {
     const id = userid;
     if (id) {
-      const result = await facilitatorRegistryService.getOne({ id });
+      //get online data
+      //const result = await facilitatorRegistryService.getOne({ id });
+
+      //get offline data
+      const result = await getOnboardingData(id);
+      console.log(result);
+
       setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);

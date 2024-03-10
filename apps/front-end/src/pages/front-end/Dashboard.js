@@ -42,6 +42,8 @@ import {
 import PropTypes from "prop-types";
 import {
   checkPrerakOfflineTimeInterval,
+  getIpUserInfo,
+  getUserInfoNull,
   setIpUserInfo,
   setPrerakOfflineInfo,
 } from "v2/utils/SyncHelper/SyncHelper";
@@ -135,29 +137,32 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   }, []);
 
   useEffect(() => {
-    checkTime();
+    const fetchData = async () => {
+      await checkUserToIndex();
+    };
+
+    fetchData();
   }, [isOnline]);
 
-  const checkTime = async () => {
+  const checkUserToIndex = async () => {
     const GetSyncTime = await getIndexedDBItem("GetSyncTime");
-    const offlinePrerakData = await getIndexedDBItem(`${fa_id}_Get`);
-    const IpUserInfo = await getIndexedDBItem(`${fa_id}_Ip_User_Info`);
+    const offlinePrerakData = await getUserInfoNull(fa_id);
+    const IpUserInfo = await getIpUserInfo(fa_id);
     const timeExpired = await checkPrerakOfflineTimeInterval();
     let academic_Id = await getSelectedAcademicYear();
-
     if (
       isOnline &&
       academic_Id &&
       (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo)
     ) {
+      await setIpUserInfo(fa_id);
       await setPrerakOfflineInfo(fa_id);
-      await setIpUserInfo(id);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      await setPrerakOfflineInfo(fa_id);
+      await checkUserToIndex();
     };
 
     if (academicYear) {
@@ -215,7 +220,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         //do page load first operation
         //get user info
         if (userTokenInfo) {
-          const IpUserInfo = await getIndexedDBItem(`${fa_id}_Ip_User_Info`);
+          const IpUserInfo = await getIpUserInfo(fa_id);
           let ipUserData = IpUserInfo;
           if (isOnline && !IpUserInfo) {
             ipUserData = await setIpUserInfo(fa_id);
@@ -434,6 +439,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const selectAcademicYear = async () => {
     setSelectCohortForm(false);
     await checkDataToIndex();
+    await checkUserToIndex();
   };
 
   const removeRegisterExist = async () => {
@@ -487,6 +493,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       if (user_cohort_list?.data.length == 1) {
         setSelectCohortForm(false);
         await checkDataToIndex();
+        await checkUserToIndex();
       } else {
         setSelectCohortForm(true);
       }

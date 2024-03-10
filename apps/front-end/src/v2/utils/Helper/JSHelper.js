@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect } from "react";
 import { changeLanguage } from "i18next";
 import { get, set } from "idb-keyval";
+import { getSelectedAcademicYear, getSelectedProgramId } from "@shiksha/common-lib";
 
 export function getWindowSize(maxWidth = "1080") {
   const [size, setSize] = useState([]);
@@ -92,3 +93,22 @@ export const fetchFileUrlAsBlob = async (url) => {
     console.error("Error fetching or converting the file:", error);
   }
 };
+
+export const getHeaderDetails = async () => {
+  let commonHeader = {}
+  let academic_year_id = null
+  let program_id = null
+  try {
+    let academic_year = await getSelectedAcademicYear()
+    academic_year_id = academic_year?.academic_year_id
+  } catch (e) {}
+  try {
+    let program = await getSelectedProgramId()
+    program_id = program?.program_id
+  } catch (e) {}
+  commonHeader = {
+    academic_year_id: academic_year_id,
+    program_id: program_id
+  }
+  return commonHeader
+}
