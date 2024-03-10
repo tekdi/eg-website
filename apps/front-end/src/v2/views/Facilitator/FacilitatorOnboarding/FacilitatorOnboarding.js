@@ -21,7 +21,11 @@ import {
   getIndexedDBItem,
   getUserId,
 } from "v2/utils/Helper/JSHelper";
-import { checkIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import {
+  checkIpUserInfo,
+  checkGetUserInfo,
+  getIpUserInfo,
+} from "v2/utils/SyncHelper/SyncHelper";
 function FacilitatorOnboarding() {
   const { step, photoNo } = useParams();
   const navigate = useNavigate();
@@ -51,10 +55,7 @@ function FacilitatorOnboarding() {
             const tokenData = getTokernUserInfo();
             const { hasura } = tokenData?.resource_access || {};
             const id = getUserId();
-            const { status, ...user } = await getIndexedDBItem(
-              `${id}_Ip_User_Info`
-            );
-
+            const { status, ...user } = await getIpUserInfo(id);
             if (`${status}` === "401") {
               logout();
               window.location.reload();
@@ -198,7 +199,14 @@ function FacilitatorOnboarding() {
     const qulification = await checkQulificationPresent();
     const editRequest = await checkEditRequestPresent();
     const IpUserInfo = await checkIpUserInfo(getUserId());
-    if (!enumList || !qulification || !editRequest || !IpUserInfo) {
+    const GetUserInfo = await checkGetUserInfo(getUserId());
+    if (
+      !enumList ||
+      !qulification ||
+      !editRequest ||
+      !IpUserInfo ||
+      !GetUserInfo
+    ) {
       setModalVisible(true);
       return true;
     } else {
