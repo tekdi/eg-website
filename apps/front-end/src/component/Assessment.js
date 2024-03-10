@@ -41,9 +41,11 @@ function Player({ setAlert }) {
 
   React.useEffect(async () => {
     const getCertificate = await testRegistryService.getCertificate({ id });
-    if (getCertificate?.data?.length > 0) {
+    const data = getCertificate?.data?.filter(
+      (e) => e?.events?.filter((i) => i.id == context_id).length > 0
+    );
+    if (data?.length > 0) {
       setModalVisible2(true);
-      return;
     }
   }, []);
 
