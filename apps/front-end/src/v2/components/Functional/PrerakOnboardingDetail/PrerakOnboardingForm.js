@@ -110,7 +110,9 @@ export default function PrerakOnboardingForm({
             };
             setFormData({
               ...newData,
-              has_diploma: result?.core_faciltator?.has_diploma || undefined,
+              has_diploma: result?.core_faciltator?.has_diploma
+                ? result?.core_faciltator?.has_diploma
+                : false, // || undefined,
               diploma_details:
                 result?.core_faciltator?.diploma_details || undefined,
             });
