@@ -100,9 +100,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
         <VStack paddingBottom="64px" bg="bgGreyColor.200">
           <VStack p="4" space="24px">
             <ProfilePhoto
-              profile_photo_1={facilitator?.users?.profile_photo_1}
-              profile_photo_2={facilitator?.users?.profile_photo_2}
-              profile_photo_3={facilitator?.users?.profile_photo_3}
+              profile_photo_1={facilitator?.profile_photo_1}
+              profile_photo_2={facilitator?.profile_photo_2}
+              profile_photo_3={facilitator?.profile_photo_3}
               isProfileEdit={isProfileEdit()}
             />
             <VStack>

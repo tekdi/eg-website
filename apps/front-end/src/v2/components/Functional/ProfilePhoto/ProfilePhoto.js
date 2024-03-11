@@ -25,11 +25,11 @@ export default function ProfilePhoto({
           />
         )}
 
-        {profile_photo_1?.documents?.document_id ? (
+        {profile_photo_1?.id ? (
           <ImageView
             w="120"
             h="120"
-            source={{ document_id: profile_photo_1?.documents?.document_id }}
+            source={{ document_id: profile_photo_1?.id }}
           />
         ) : (
           <IconByName
@@ -45,13 +45,13 @@ export default function ProfilePhoto({
       <HStack alignItems="center" space="6">
         {[profile_photo_1, profile_photo_2, profile_photo_3].map(
           (photo) =>
-            photo?.documents?.document_id && (
+            photo?.id && (
               <ImageView
                 key={photo}
                 w="60"
                 h="60"
                 source={{
-                  document_id: photo?.documents?.document_id,
+                  document_id: photo?.id,
                 }}
               />
             )
