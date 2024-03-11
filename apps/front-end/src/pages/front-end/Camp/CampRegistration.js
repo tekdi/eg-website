@@ -150,8 +150,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     navigate("/camps");
   };
 
-  const disableEdit = () =>
-    ["camp_ip_verified"].includes(campStatus) ? false : true;
+  const disableEdit = (extra = []) =>
+    ["camp_ip_verified", ...extra].includes(campStatus) ? false : true;
 
   const SubmitCampRegistration = async () => {
     setIsDisable(true);
@@ -230,7 +230,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
               NavName={item?.Name}
               step={item?.step}
               color={item?.color}
-              disableEdit={disableEdit()}
+              disableEdit={disableEdit(["inactive"])}
             />
           );
         })}

@@ -89,11 +89,11 @@ export function ChipStatus({
         setTextColor("textMaroonColor.500");
         setColor("textMaroonColor.50");
         break;
-      case "pragati_syc":
-        setNewStatus(t("BENEFICIARY_STATUS_PRAGATI_SYC"));
-        setTextColor("textMaroonColor.500");
-        setColor("textMaroonColor.50");
-        break;
+      // case "pragati_syc":
+      //   setNewStatus(t("BENEFICIARY_STATUS_PRAGATI_SYC"));
+      //   setTextColor("textMaroonColor.500");
+      //   setColor("textMaroonColor.50");
+      //   break;
       case "enrolled":
         setNewStatus(t("ENROLLED"));
         setTextColor("#fff");
@@ -119,11 +119,11 @@ export function ChipStatus({
         setTextColor("textMaroonColor.400");
         setColor("textMaroonColor.100");
         break;
-      case "not_enrolled":
-        setNewStatus(t("BENEFICIARY_STATUS_NOT_ENROLLED"));
-        setTextColor("textMaroonColor.400");
-        setColor("textMaroonColor.100");
-        break;
+      // case "not_enrolled":
+      //   setNewStatus(t("BENEFICIARY_STATUS_NOT_ENROLLED"));
+      //   setTextColor("textMaroonColor.400");
+      //   setColor("textMaroonColor.100");
+      //   break;
       case "enrollment_awaited":
         setNewStatus(t("BENEFICIARY_STATUS_ENROLLMENT_AWAITED"));
         setTextColor("textMaroonColor.400");

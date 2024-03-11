@@ -174,7 +174,7 @@ const columns = (t, navigate) => [
               navigate(`/admin/Certification/${row?.id}`);
             }}
           >
-            {t("DOWNLOAD_CERTIFICATE")}
+            {t("RESULTS")}
           </Menu.Item>
         </Menu>
       </Button.Group>

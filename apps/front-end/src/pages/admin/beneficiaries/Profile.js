@@ -199,6 +199,7 @@ export default function AgAdminProfile({ footerLinks }) {
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
+  const [boardName, setBoardName] = useState({});
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -283,18 +284,19 @@ export default function AgAdminProfile({ footerLinks }) {
     try {
       setLoading(true);
       let newData = await benificiaryRegistoryService.getOne(id);
+      const value = newData?.result?.program_beneficiaries?.enrolled_for_board;
+      const boardName = await enumRegistryService.boardName(value);
+      setBoardName(boardName?.name);
       setData(newData?.result);
       setAadhaarValue(newData?.result?.aadhar_no);
       const subjectId = jsonParse(
         newData?.result?.program_beneficiaries?.subjects
       );
       if (subjectId?.length > 0) {
-        let subjectResult = await enumRegistryService.getSubjects({
-          board: newData?.result?.program_beneficiaries?.enrolled_for_board,
-        });
+        let subjectResult = await enumRegistryService.subjectsList(value);
         const subjectNames = subjectId.map((id) => {
-          const matchingSubject = subjectResult?.data?.find(
-            (subject) => subject.id === parseInt(id)
+          const matchingSubject = subjectResult?.subjects?.find(
+            (subject) => subject.subject_id === parseInt(id)
           );
           return matchingSubject ? matchingSubject.name : "Subject not found";
         });
@@ -434,7 +436,7 @@ export default function AgAdminProfile({ footerLinks }) {
       case "enrolled":
       case "approved_ip":
       case "registered_in_camp":
-      case "pragati_syc":
+      // case "pragati_syc":
       case "activate":
       case "enrolled_ip_verified":
       case null:
@@ -474,7 +476,7 @@ export default function AgAdminProfile({ footerLinks }) {
       case "enrolled":
       case "approved_ip":
       case "registered_in_camp":
-      case "pragati_syc":
+      // case "pragati_syc":
       case "activate":
       case "enrolled_ip_verified":
       case null:
@@ -1488,7 +1490,7 @@ export default function AgAdminProfile({ footerLinks }) {
                           bold
                         >
                           {data?.program_beneficiaries?.enrolled_for_board
-                            ? data?.program_beneficiaries?.enrolled_for_board
+                            ? boardName
                             : "-"}
                         </AdminTypo.H5>
                       </HStack>

@@ -2,7 +2,7 @@ name: Deploy to DEV S3
 on:
   push:
     branches:
-      - release-1.5.13
+      - release-2.0.0
 
 defaults:
   run:
