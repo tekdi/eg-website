@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     edit_enrollement: {
-      title: "Please Enroll",
+      title: "ENROLLMENT_DETAILS",
       type: "object",
       required: [
         "enrollment_status",
@@ -28,7 +28,7 @@ export default {
         enrollment_number: {
           type: "string",
           label: "APPLICATION_ID",
-          regex: /^\d{0,11}$/,
+          regex: /^\d{1,11}$/,
           _input: { keyboardType: "numeric" },
         },
         enrollmentlabelMobile: {
