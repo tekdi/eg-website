@@ -30,6 +30,7 @@ import {
   setIndexedDBItem,
   getIndexedDBItem,
 } from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -57,35 +58,6 @@ export default function PrerakOnboardingForm({
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
 
-  //offline
-
-  const [storedData, setStoredData] = useState("");
-  useEffect(() => {
-    // Fetch data from IndexedDB when the component mounts
-    fetchDataFromIndexedDB();
-  }, []);
-
-  const fetchDataFromIndexedDB = async () => {
-    try {
-      const data = await getIndexedDBItem("exampleKey");
-      if (data) {
-        setStoredData(data);
-      }
-    } catch (error) {
-      console.error("Error fetching data from IndexedDB:", error);
-    }
-  };
-
-  const saveDataToIndexedDB = async () => {
-    const newData = "Hello, IndexedDB!"; // Your data to be stored
-    try {
-      await setIndexedDBItem("exampleKey", newData);
-      setStoredData(newData);
-    } catch (error) {
-      console.error("Error saving data to IndexedDB:", error);
-    }
-  };
-
   useEffect(() => {
     setLang(localStorage.getItem("lang"));
   }, []);
@@ -97,7 +69,13 @@ export default function PrerakOnboardingForm({
       try {
         const id = userid;
         if (id) {
-          const result = await facilitatorRegistryService.getOne({ id });
+          //get online data
+          //const result = await facilitatorRegistryService.getOne({ id });
+
+          //get offline data
+          const result = await getOnboardingData(id);
+          console.log(result);
+
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
           // const ListOfEnum = await enumRegistryService.listOfEnum();
@@ -132,7 +110,9 @@ export default function PrerakOnboardingForm({
             };
             setFormData({
               ...newData,
-              has_diploma: result?.core_faciltator?.has_diploma || undefined,
+              has_diploma: result?.core_faciltator?.has_diploma
+                ? result?.core_faciltator?.has_diploma
+                : false, // || undefined,
               diploma_details:
                 result?.core_faciltator?.diploma_details || undefined,
             });
