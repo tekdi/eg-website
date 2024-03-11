@@ -143,11 +143,8 @@ function checkValidServiceWorker(swUrl, config) {
             window.location.reload();
           });
         });
-      } else {
-        // Exclude HTML files from checking
-        if (!swUrl.endsWith(".html")) {
-          registerValidSW(swUrl, config);
-        }
+      } else if (!swUrl.endsWith(".html")) {
+        registerValidSW(swUrl, config);
       }
     })
     .catch(() => {
