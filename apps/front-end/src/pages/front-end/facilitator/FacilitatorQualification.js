@@ -14,6 +14,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper";
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 export default function FacilitatorQualification({ userTokenInfo }) {
   const [facilitator, setfacilitator] = React.useState();
@@ -25,7 +26,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
 
   React.useEffect(async () => {
     const { id } = userTokenInfo?.authUser;
-    const result = await getIndexedDBItem(`${id}_Get`);
+    const result = await getOnboardingData(id);
     setfacilitator(result);
     setQualification(result?.qualifications ? result?.qualifications : {});
   }, []);
@@ -51,12 +52,10 @@ export default function FacilitatorQualification({ userTokenInfo }) {
 
   React.useEffect(async () => {
     const ids = JSON.parse(
-      facilitator?.program_faciltators?.qualification_ids
-        ? facilitator?.program_faciltators?.qualification_ids
-        : "[]"
+      facilitator?.qualification_ids ? facilitator?.qualification_ids : "[]"
     );
     if (Array.isArray(qua) && Array.isArray(ids)) {
-      const arr = qua.filter((item) => ids.includes(item.id.toString()));
+      const arr = qua.filter((item) => ids.includes(item.id));
       setQualifications(arr);
     }
   }, [qua, facilitator]);
@@ -76,7 +75,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      {["quit"].includes(facilitator?.program_faciltators?.status) ? (
+      {["quit"].includes(facilitator?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -179,7 +178,8 @@ export default function FacilitatorQualification({ userTokenInfo }) {
                     <ImageView
                       text={t("LINK")}
                       source={{
-                        document_id: qualification?.documents?.document_id,
+                        document_id:
+                          qualification?.qualification_reference_document_id,
                       }}
                     />
                   </FrontEndTypo.H3>

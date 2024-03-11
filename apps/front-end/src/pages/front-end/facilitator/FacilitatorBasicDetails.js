@@ -13,6 +13,7 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 
 export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [facilitator, setFacilitator] = React.useState();
@@ -26,7 +27,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const facilitatorDetails = async () => {
     const { id } = userTokenInfo?.authUser || {};
-    const result = await getIndexedDBItem(`${id}_Get`);
+    const result = await getOnboardingData(id);
     setFacilitator(result);
   };
 
@@ -37,7 +38,6 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
       edit_req_for_context_id: id,
     };
     const result = await getIndexedDBItem(`editRequest`);
-    console.log({ result });
     let field;
     const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
@@ -108,19 +108,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
             <VStack>
               <HStack justifyContent="space-between" alignItems="Center">
                 <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
-                  {`${
-                    facilitator?.users?.first_name
-                      ? facilitator?.users?.first_name
-                      : ""
-                  } ${
-                    facilitator?.users?.middle_name
-                      ? facilitator?.users?.middle_name
-                      : ""
-                  } ${
-                    facilitator?.users?.last_name
-                      ? facilitator?.users?.last_name
-                      : ""
-                  }`}
+                  {`${facilitator?.first_name ? facilitator?.first_name : ""} ${
+                    facilitator?.middle_name ? facilitator?.middle_name : ""
+                  } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
                 </FrontEndTypo.H1>
 
                 {isNameEdit() && (
@@ -137,9 +127,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               <HStack alignItems="Center">
                 <IconByName name="Cake2LineIcon" color="iconColor.300" />
                 <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                  {facilitator?.users?.dob &&
-                  moment(facilitator?.users?.dob, "YYYY-MM-DD", true).isValid()
-                    ? moment(facilitator?.users?.dob).format("DD/MM/YYYY")
+                  {facilitator?.dob &&
+                  moment(facilitator?.dob, "YYYY-MM-DD", true).isValid()
+                    ? moment(facilitator?.dob).format("DD/MM/YYYY")
                     : "-"}
                 </FrontEndTypo.H3>
               </HStack>
@@ -154,7 +144,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 { name: "SmartphoneLineIcon", color: "iconColor.100" },
                 { name: "MailLineIcon", color: "iconColor.100" },
               ]}
-              item={facilitator?.users}
+              item={facilitator}
               arr={["mobile", "alternative_mobile_number", "email_id"]}
               onEdit={
                 isContactEdit()
@@ -170,11 +160,11 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               label={["HOME"]}
               item={{
                 home: [
-                  facilitator?.users?.state,
-                  facilitator?.users?.district,
-                  facilitator?.users?.block,
-                  facilitator?.users?.village,
-                  facilitator?.users?.grampanchayat,
+                  facilitator?.state,
+                  facilitator?.district,
+                  facilitator?.block,
+                  facilitator?.village,
+                  facilitator?.grampanchayat,
                 ]
                   .filter((e) => e)
                   .join(", "),
@@ -191,18 +181,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               _hstack={{ borderBottomWidth: 0 }}
               title={t("PERSONAL_DETAILS")}
               label={["Gender", "Social Category", "Martial Status"]}
-              // item={facilitator}
-              // arr={["gender", "social_category", "marital_status"]}
-              item={{
-                home: [
-                  facilitator?.users?.gender,
-                  facilitator?.extended_users?.social_category,
-                  facilitator?.extended_users?.marital_status,
-                ]
-                  .filter((e) => e)
-                  .join(", "),
-              }}
-              arr={["home"]}
+              item={facilitator}
+              arr={["gender", "social_category", "marital_status"]}
               onEdit={(e) => navigate(`/profile/edit/personal_details`)}
             />
             <CardComponent

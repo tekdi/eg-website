@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { objProps } from "@shiksha/common-lib";
-import { getIndexedDBItem } from "v2/utils/Helper/JSHelper";
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
@@ -22,57 +22,35 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
   React.useEffect(() => {
     const percentage =
+      arrList(res, [
+        "device_ownership",
+        "mobile",
+        "device_type",
+        "gender",
+        "marital_status",
+        "social_category",
+        "name",
+        "contact_number",
+        "availability",
+      ]) +
       arrList(
         {
           ...res,
-          device_ownership: facilitator?.core_faciltator?.device_ownership,
-          mobile: facilitator?.users?.mobile,
-          device_type: facilitator?.core_faciltator?.device_type,
-          gender: facilitator?.users?.gender,
-          marital_status: facilitator?.extended_users?.marital_status,
-          social_category: facilitator?.extended_users?.social_category,
-          first_name: facilitator?.users?.first_name,
-          alternative_mobile_number:
-            facilitator?.users?.alternative_mobile_number,
-          availability: facilitator?.program_faciltators?.availability,
-        },
-        [
-          "device_ownership",
-          "mobile",
-          "device_type",
-          "gender",
-          "marital_status",
-          "social_category",
-          "name",
-          "contact_number",
-          "availability",
-        ]
-      ) +
-      arrList(
-        {
-          ...res,
-          qualification_ids:
-            facilitator?.program_faciltators?.qualification_ids,
           qua_name: facilitator?.qualifications?.qualification_master?.name,
         },
         ["qualification_ids", "qua_name"]
       ) +
-      arrList(
-        {
-          ...res,
-          aadhar_no: facilitator?.users?.aadhar_no,
-          aadhaar_verification_mode:
-            facilitator?.users?.aadhaar_verification_mode,
-          aadhar_verified: facilitator?.users?.aadhar_verified,
-        },
-        ["aadhar_no", "aadhaar_verification_mode", "aadhar_verified"]
-      );
+      arrList(res, [
+        "aadhar_no",
+        "aadhaar_verification_mode",
+        "aadhar_verified",
+      ]);
     setProgress(percentage);
     setLoading(false);
   }, [facilitator]);
 
   React.useEffect(async () => {
-    const result = await getIndexedDBItem(`${id}_Get`);
+    const result = await getOnboardingData(id);
     setFacilitator(result);
   }, []);
 
@@ -91,7 +69,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       <VStack bg="bgGreyColor.200" pb="10">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <FrontEndTypo.H1 color="textMaroonColor.400" pt="5" bold>
-            {t("WELCOME")} {facilitator?.users?.first_name}
+            {t("WELCOME")} {facilitator?.first_name}
           </FrontEndTypo.H1>
 
           <Box paddingBottom="20px">
@@ -113,9 +91,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("BASIC_DETAILS")}
                 </FrontEndTypo.H3>
-                {!["quit"].includes(
-                  facilitator?.program_faciltators?.status
-                ) && (
+                {!["quit"].includes(facilitator?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
@@ -127,36 +103,17 @@ export default function Profile({ userTokenInfo, footerLinks }) {
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(
-                    {
-                      ...res,
-                      device_ownership:
-                        facilitator?.core_faciltator?.device_ownership,
-                      mobile: facilitator?.users?.mobile,
-                      device_type: facilitator?.core_faciltator?.device_type,
-                      gender: facilitator?.users?.gender,
-                      marital_status:
-                        facilitator?.extended_users?.marital_status,
-                      social_category:
-                        facilitator?.extended_users?.social_category,
-                      first_name: facilitator?.users?.first_name,
-                      alternative_mobile_number:
-                        facilitator?.users?.alternative_mobile_number,
-                      availability:
-                        facilitator?.program_faciltators?.availability,
-                    },
-                    [
-                      "device_ownership",
-                      "mobile",
-                      "device_type",
-                      "gender",
-                      "marital_status",
-                      "social_category",
-                      "first_name",
-                      "alternative_mobile_number",
-                      "availability",
-                    ]
-                  )}
+                  value={arrList(res, [
+                    "device_ownership",
+                    "mobile",
+                    "device_type",
+                    "gender",
+                    "marital_status",
+                    "social_category",
+                    "name",
+                    "contact_number",
+                    "availability",
+                  ])}
                   size="xs"
                   colorScheme="red"
                 />
@@ -180,8 +137,6 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   value={arrList(
                     {
                       ...res,
-                      qualification_ids:
-                        facilitator?.program_faciltators?.qualification_ids,
                       qua_name:
                         facilitator?.qualifications?.qualification_master?.name,
                     },
@@ -200,9 +155,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("QUALIFICATION_DETAILS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {!["quit"].includes(
-                    facilitator?.program_faciltators?.status
-                  ) && (
+                  {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
@@ -225,9 +178,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("VOLUNTEER_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {!["quit"].includes(
-                    facilitator?.program_faciltators?.status
-                  ) && (
+                  {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
@@ -252,9 +203,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("WORK_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  {!["quit"].includes(
-                    facilitator?.program_faciltators?.status
-                  ) && (
+                  {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
                       color="textMaroonColor.400"
@@ -280,36 +229,23 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
-                {!["quit"].includes(
-                  facilitator?.program_faciltators?.status
-                ) && (
+                {!["quit"].includes(facilitator?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
                     onPress={(e) => {
-                      navigate(
-                        `/profile/${facilitator?.users?.id}/aadhaardetails`
-                      );
+                      navigate(`/profile/${facilitator?.id}/aadhaardetails`);
                     }}
                   />
                 )}
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(
-                    {
-                      ...res,
-                      aadhar_no: facilitator?.users?.aadhar_no,
-                      aadhaar_verification_mode:
-                        facilitator?.users?.aadhaar_verification_mode,
-                      aadhar_verified: facilitator?.users?.aadhar_verified,
-                    },
-                    [
-                      "aadhar_no",
-                      "aadhaar_verification_mode",
-                      "aadhar_verified",
-                    ]
-                  )}
+                  value={arrList(res, [
+                    "aadhar_no",
+                    "aadhaar_verification_mode",
+                    "aadhar_verified",
+                  ])}
                   size="xs"
                   colorScheme="red"
                 />
