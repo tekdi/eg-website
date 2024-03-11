@@ -19,7 +19,7 @@ function View(props) {
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const data = await organisationService.getDetailsOfIP({ id });
+    const data = await organisationService.getDetailsOfOrg({ id });
     setData(data?.data?.[0]);
   }, []);
 
@@ -46,7 +46,7 @@ function View(props) {
             textOverflow="ellipsis"
             bold
           >
-            {data?.first_name} {data?.last_name}
+            {data?.name}
           </AdminTypo.H4>
           <IconByName
             size="sm"
@@ -55,7 +55,6 @@ function View(props) {
           />
           <Chip textAlign="center" lineHeight="15px" label={data?.id} />
         </HStack>
-
         <VStack>
           <HStack justifyContent="space-between">
             <VStack w="100%" pl={2} pr={4}>
@@ -66,8 +65,8 @@ function View(props) {
                 _hstack={{ borderBottomWidth: 0, p: 1 }}
                 item={data}
                 title={t("BASIC_DETAILS")}
-                label={["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "MOBILE_NO"]}
-                arr={["first_name", "middle_name", "last_name", "mobile"]}
+                label={["NAME", "MOBILE_NO", "CONTACT_PERSON"]}
+                arr={["name", "mobile", "contact_person"]}
                 buttonText={<AdminTypo.H5>User list</AdminTypo.H5>}
                 _buttonStyle={{ py: "2" }}
                 onButtonClick={handleButtonClick}
