@@ -69,7 +69,6 @@ const columns = (t, navigate) => [
     left: true,
     compact: true,
     // center: true,
-
   },
   {
     name: t("DISTRICT"),
@@ -77,7 +76,6 @@ const columns = (t, navigate) => [
     compact: true,
     width: "100px",
     center: true,
-
   },
   {
     name: t("BLOCK"),
@@ -85,7 +83,6 @@ const columns = (t, navigate) => [
     compact: true,
     width: "200px",
     center: true,
-
   },
 
   {
@@ -95,7 +92,6 @@ const columns = (t, navigate) => [
     wrap: true,
     compact: true,
     center: true,
-
   },
   {
     name: t("STATUS"),
@@ -109,14 +105,9 @@ const columns = (t, navigate) => [
     width: "200px",
     compact: true,
     center: true,
-
   },
   {
-    name: (
-      <VStack display="inline-block" >
-        {t("OKYC_VERIFICATION")}
-      </VStack>
-    ),
+    name: <VStack display="inline-block">{t("OKYC_VERIFICATION")}</VStack>,
     wrap: true,
     selector: (row) => {
       return row?.aadhar_verified === "okyc_ip_verified"
@@ -128,7 +119,6 @@ const columns = (t, navigate) => [
     compact: true,
     minWidth: "150px",
     center: true,
-
   },
   {
     minWidth: "100px",
@@ -247,7 +237,7 @@ function Table({
           ...tableCustomStyles,
           rows: {
             style: {
-              minHeight: "20px", // override the row height
+              minHeight: "20px",
               cursor: "pointer",
             },
           },

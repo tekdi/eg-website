@@ -192,7 +192,7 @@ export default function List({ footerLinks, userTokenInfo }) {
         setTableLoading(true);
         const result = await facilitatorRegistryService.filter({
           ...filter,
-          limit: filter?.limit || 10,
+          limit: filter?.limit || 15,
         });
 
         setData(result.data?.data);
