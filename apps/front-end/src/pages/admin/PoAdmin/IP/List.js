@@ -4,6 +4,7 @@ import {
   PoAdminLayout,
   organisationService,
 } from "@shiksha/common-lib";
+import { debounce } from "lodash";
 import { HStack, Input, VStack } from "native-base";
 import React, {
   useCallback,
@@ -113,9 +114,8 @@ export default function List() {
           ...filter,
         });
         setOrganisations(data.data);
-        setPaginationTotalRows(
-          data?.data?.totalCount ? data?.data?.totalCount : 0
-        );
+
+        setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
       fetch();
@@ -132,12 +132,21 @@ export default function List() {
     }
   };
 
+  const handleSearch = useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
   const handleRowClick = useCallback(
     (row) => {
       navigate(`/poadmin/ips/${row?.id}`);
     },
     [navigate]
   );
+
   return (
     <PoAdminLayout {...{ loading }}>
       <VStack p="4" space={4}>
@@ -178,8 +187,13 @@ export default function List() {
             }
             placeholder={t("SEARCH_BY_IP_NAME")}
             variant="outline"
-            //   onChange={debouncedHandleSearch}
+            onChange={debouncedHandleSearch}
           />
+          <AdminTypo.PrimaryButton
+            onPress={(e) => navigate("/poadmin/ips/create")}
+          >
+            {t("ADD_A_IP")}
+          </AdminTypo.PrimaryButton>
         </HStack>
         <DataTable
           customStyles={{
