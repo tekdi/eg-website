@@ -30,6 +30,7 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
+import PrerakFileUpload from "./formCustomeInputs/PrerakFileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
@@ -108,6 +109,15 @@ export function LabelVerifyNameWidget() {
       </Text>
     </>
   );
+}
+
+export function convertImageToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 }
 
 // rjsf custom BaseInputTemplate for all text field use in all form
@@ -823,6 +833,7 @@ const widgets = {
   Textarea,
   CustomOTPBox,
   FileUpload,
+  PrerakFileUpload,
   MobileNumber,
   MultiCheck,
   ReadOnly,
@@ -922,6 +933,7 @@ export {
   templates,
   CustomOTPBox,
   FileUpload,
+  PrerakFileUpload,
   validator,
   MobileNumber,
   MobileNumberReadOnly,

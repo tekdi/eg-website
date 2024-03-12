@@ -210,7 +210,7 @@ export default {
           label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
           document_type: "highest_qualification_document",
           type: ["string", "number"],
-          format: "FileUpload",
+          format: "PrerakFileUpload",
         },
         qualification_ids: {
           type: "array",

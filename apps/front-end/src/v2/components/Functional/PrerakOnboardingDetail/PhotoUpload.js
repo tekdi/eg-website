@@ -4,6 +4,7 @@ import { FrontEndTypo } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
+import { PrerakFileUpload } from "v2/components/Static/FormBaseInput/FormBaseInput";
 
 export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
         {t("ADD_ID_PHOTOS")}
       </FrontEndTypo.H2>
       <VStack space={2}>
-        <FileUpload
+        <PrerakFileUpload
           schema={{
             dimensionsValidation: { width: 1024, height: 768 },
             label: `ADD_FRONT_VIEW_${page}`,
