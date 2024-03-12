@@ -3,7 +3,7 @@ export default {
   type: "step",
   properties: {
     edit_enrollement: {
-      title: "Service worker Test",
+      title: "Service worker Test 2",
       type: "object",
       required: [
         "enrollment_status",
@@ -27,7 +27,7 @@ export default {
         },
         enrollment_number: {
           type: "string",
-          label: "APPLICATION_ID",
+          label: "ENROLLMENT_NUMBER",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
@@ -42,7 +42,7 @@ export default {
 
         enrollment_date: {
           type: "string",
-          label: "FEES_PAID_DATE",
+          label: "ENROLLMENT_DATE",
           format: "DMY",
         },
         subjects: {
@@ -56,16 +56,16 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "APPLICATION_RECEIPT",
-          description: "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
-          uploadTitle: " ",
+          label: "PAYMENT_RECEIPT",
+          description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
+          uploadTitle: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
           type: ["string", "number"],
           format: "FileUpload",
         },
       },
     },
     edit_enrollement_details: {
-      title: "ENROLLMENT_RECEIPT_DETAILS",
+      title: "ENROLLMENT_RECEIPT",
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
       properties: {
@@ -74,7 +74,7 @@ export default {
           title: "FIRST_NAME",
           label: "FIRST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          description: "AS_PER_APPLICATION_RECEIPT",
+          description: "AS_PER_ENROLLMENT_RECEIPT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],
