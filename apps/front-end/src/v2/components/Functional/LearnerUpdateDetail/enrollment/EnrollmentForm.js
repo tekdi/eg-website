@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
+import {
+  Alert,
+  Box,
+  HStack,
+  Image,
+  Modal,
+  VStack,
+  AspectRatio,
+} from "native-base";
 import {
   Layout,
   enumRegistryService,
@@ -267,6 +275,9 @@ export default function EnrollmentForm() {
           <Image
             source={{ uri: "/payment-receipt.jpeg" }}
             size="200"
+            height={"20vh"}   
+            width={"70vw"}
+            maxWidth={400}
             alt="background image"
           />
         ),
