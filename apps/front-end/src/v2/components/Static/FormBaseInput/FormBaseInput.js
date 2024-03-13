@@ -30,7 +30,7 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
-import PrerakFileUpload from "./formCustomeInputs/PrerakFileUpload";
+import OfflineFileUpload from "./formCustomeInputs/OfflineFileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
@@ -833,7 +833,7 @@ const widgets = {
   Textarea,
   CustomOTPBox,
   FileUpload,
-  PrerakFileUpload,
+  OfflineFileUpload,
   MobileNumber,
   MultiCheck,
   ReadOnly,
@@ -933,7 +933,7 @@ export {
   templates,
   CustomOTPBox,
   FileUpload,
-  PrerakFileUpload,
+  OfflineFileUpload,
   validator,
   MobileNumber,
   MobileNumberReadOnly,

@@ -64,7 +64,7 @@ export default {
             document_id: {
               title: "UPLOAD_YOUR_DOCUMENT",
               type: ["string", "number", "null"],
-              format: "PrerakFileUpload",
+              format: "OfflineFileUpload",
             },
           },
         },

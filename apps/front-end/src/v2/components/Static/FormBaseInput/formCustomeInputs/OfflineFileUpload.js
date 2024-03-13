@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 import { convertImageToBase64 } from "../FormBaseInput";
 
-const PrerakFileUpload = ({ value, onChange, schema }) => {
+const OfflineFileUpload = ({ value, onChange, schema }) => {
   const {
     label,
     title,
@@ -212,4 +212,4 @@ const PrerakFileUpload = ({ value, onChange, schema }) => {
   );
 };
 
-export default PrerakFileUpload;
+export default OfflineFileUpload;
