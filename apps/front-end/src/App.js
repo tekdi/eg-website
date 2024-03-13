@@ -31,16 +31,20 @@ function App() {
       const tokenData = getTokernUserInfo();
       const { hasura } = tokenData?.resource_access || {};
       const fa_id = getUserId();
-      const { academic_year_id } = await getSelectedAcademicYear();
-      const { program_id } = await getSelectedProgramId();
-      const IpUserInfo = await getIndexedDBItem(
-        `${fa_id}_${program_id}_${academic_year_id}_Ip_User_Info`
-      );
       let user;
-      if (!IpUserInfo) {
+      try {
+        const { academic_year_id } = await getSelectedAcademicYear();
+        const { program_id } = await getSelectedProgramId();
+        const IpUserInfo = await getIndexedDBItem(
+          `${fa_id}_${program_id}_${academic_year_id}_Ip_User_Info`
+        );
+        if (!IpUserInfo) {
+          user = await facilitatorRegistryService.getInfo();
+        } else {
+          user = IpUserInfo;
+        }
+      } catch (e) {
         user = await facilitatorRegistryService.getInfo();
-      } else {
-        user = IpUserInfo;
       }
 
       setUserTokenInfo({ ...tokenData, authUser: user });

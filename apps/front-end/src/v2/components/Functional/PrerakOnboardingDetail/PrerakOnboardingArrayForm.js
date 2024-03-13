@@ -329,6 +329,17 @@ export default function PrerakOnboardingArrayForm({
         ...newdata,
         type,
       });
+      //get offline data
+      const result = await getOnboardingData(userid);
+      console.log("getOnboardingData", result);
+      setfacilitator(result);
+      if (type === "reference_details") {
+        setData(result?.references);
+      } else if (type === "vo_experience") {
+        setData(result?.vo_experience);
+      } else if (type === "experience") {
+        setData(result?.experience);
+      }
       setAddMore(false);
     }
   };

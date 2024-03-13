@@ -225,39 +225,35 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
 
   return NewObject;
 }
-export async function mergeOnlyChanged(MainObj, UpdateObj) {
-  try {
-    const NewObject = { ...MainObj };
+/*export async function mergeOnlyChanged(MainObj, UpdateObj) {
+  const NewObject = { ...MainObj };
 
-    for (const key in UpdateObj) {
-      if (UpdateObj.hasOwnProperty(key)) {
-        if (
-          typeof UpdateObj[key] === "object" &&
-          !Array.isArray(UpdateObj[key])
-        ) {
-          NewObject[key] = await mergeOnlyChanged(MainObj[key], UpdateObj[key]);
-        } else if (Array.isArray(UpdateObj[key])) {
-          if (MainObj[key] && Array.isArray(MainObj[key])) {
-            NewObject[key] = await Promise.all(
-              MainObj[key].map(async (item, index) => {
-                if (UpdateObj[key][index]) {
-                  return await mergeOnlyChanged(item, UpdateObj[key][index]);
-                }
-                return item;
-              })
-            );
-          } else {
-            NewObject[key] = UpdateObj[key];
-          }
+  for (const key in UpdateObj) {
+    if (UpdateObj.hasOwnProperty(key)) {
+      if (
+        typeof UpdateObj[key] === "object" &&
+        !Array.isArray(UpdateObj[key])
+      ) {
+        NewObject[key] = await mergeOnlyChanged(MainObj[key], UpdateObj[key]);
+      } else if (Array.isArray(UpdateObj[key])) {
+        if (MainObj[key] && Array.isArray(MainObj[key])) {
+          NewObject[key] = await Promise.all(
+            MainObj[key].map(async (item, index) => {
+              if (UpdateObj[key][index]) {
+                return await mergeOnlyChanged(item, UpdateObj[key][index]);
+              }
+              return item;
+            })
+          );
         } else {
-          if (MainObj[key] !== UpdateObj[key]) {
-            NewObject[key] = UpdateObj[key];
-          }
+          NewObject[key] = UpdateObj[key];
+        }
+      } else {
+        if (MainObj[key] !== UpdateObj[key]) {
+          NewObject[key] = UpdateObj[key];
         }
       }
     }
-  } catch (e) {
-    console.log("error test", e);
   }
 
   //experience add
@@ -268,4 +264,25 @@ export async function mergeOnlyChanged(MainObj, UpdateObj) {
   } catch (e) {}
 
   return NewObject;
+}*/
+
+export async function mergeOnlyChanged(obj1, obj2) {
+  const merged = { ...obj1 };
+
+  for (const key in obj2) {
+    if (obj2.hasOwnProperty(key)) {
+      if (typeof obj2[key] === "object" && !Array.isArray(obj2[key])) {
+        // If the value is an object, recursively merge it
+        merged[key] = await mergeOnlyChanged(obj1[key] || {}, obj2[key]);
+      } else if (Array.isArray(obj2[key])) {
+        // If the value is an array, concatenate or replace it
+        merged[key] = obj1[key] ? obj1[key].concat(obj2[key]) : obj2[key];
+      } else {
+        // Otherwise, simply assign the value
+        merged[key] = obj2[key];
+      }
+    }
+  }
+
+  return merged;
 }

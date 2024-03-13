@@ -242,6 +242,7 @@ export default function PrerakOnboardingForm({
   };
 
   const setSchemaData = (newSchema) => {
+    //window.alert(JSON.stringify(newSchema));
     setSchema(accessControl(newSchema, fields));
   };
 
@@ -300,33 +301,42 @@ export default function PrerakOnboardingForm({
           }
         }
         if (schema?.properties?.designation) {
+          //get local enum
+          const ListOfEnum = await getIndexedDBItem("enums");
+    
           newSchema = getOptions(newSchema, {
             key: "designation",
-            arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
+            arr: ListOfEnum?.FACILITATOR_REFERENCE_DESIGNATION,
             title: "title",
             value: "value",
           });
         }
         if (schema?.["properties"]?.["marital_status"]) {
+          //get local enum
+          const ListOfEnum = await getIndexedDBItem("enums");
+    
           newSchema = getOptions(newSchema, {
             key: "social_category",
-            arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
+            arr: ListOfEnum?.FACILITATOR_SOCIAL_STATUS,
             title: "title",
             value: "value",
           });
 
           newSchema = getOptions(newSchema, {
             key: "marital_status",
-            arr: enumObj?.MARITAL_STATUS,
+            arr: ListOfEnum?.MARITAL_STATUS,
             title: "title",
             value: "value",
           });
         }
 
         if (schema?.["properties"]?.["device_type"]) {
+          //get local enum
+          const ListOfEnum = await getIndexedDBItem("enums");
+    
           newSchema = getOptions(newSchema, {
             key: "device_type",
-            arr: enumObj?.MOBILE_TYPE,
+            arr: ListOfEnum?.MOBILE_TYPE,
             title: "title",
             value: "value",
           });
