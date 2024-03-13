@@ -226,34 +226,38 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
   return NewObject;
 }
 export async function mergeOnlyChanged(MainObj, UpdateObj) {
-  const NewObject = { ...MainObj };
+  try {
+    const NewObject = { ...MainObj };
 
-  for (const key in UpdateObj) {
-    if (UpdateObj.hasOwnProperty(key)) {
-      if (
-        typeof UpdateObj[key] === "object" &&
-        !Array.isArray(UpdateObj[key])
-      ) {
-        NewObject[key] = await mergeOnlyChanged(MainObj[key], UpdateObj[key]);
-      } else if (Array.isArray(UpdateObj[key])) {
-        if (MainObj[key] && Array.isArray(MainObj[key])) {
-          NewObject[key] = await Promise.all(
-            MainObj[key].map(async (item, index) => {
-              if (UpdateObj[key][index]) {
-                return await mergeOnlyChanged(item, UpdateObj[key][index]);
-              }
-              return item;
-            })
-          );
+    for (const key in UpdateObj) {
+      if (UpdateObj.hasOwnProperty(key)) {
+        if (
+          typeof UpdateObj[key] === "object" &&
+          !Array.isArray(UpdateObj[key])
+        ) {
+          NewObject[key] = await mergeOnlyChanged(MainObj[key], UpdateObj[key]);
+        } else if (Array.isArray(UpdateObj[key])) {
+          if (MainObj[key] && Array.isArray(MainObj[key])) {
+            NewObject[key] = await Promise.all(
+              MainObj[key].map(async (item, index) => {
+                if (UpdateObj[key][index]) {
+                  return await mergeOnlyChanged(item, UpdateObj[key][index]);
+                }
+                return item;
+              })
+            );
+          } else {
+            NewObject[key] = UpdateObj[key];
+          }
         } else {
-          NewObject[key] = UpdateObj[key];
-        }
-      } else {
-        if (MainObj[key] !== UpdateObj[key]) {
-          NewObject[key] = UpdateObj[key];
+          if (MainObj[key] !== UpdateObj[key]) {
+            NewObject[key] = UpdateObj[key];
+          }
         }
       }
     }
+  } catch (e) {
+    console.log("error test", e);
   }
 
   //experience add

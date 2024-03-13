@@ -272,9 +272,16 @@ export async function updateOnboardingData(id, onboardingData) {
     qualifications: qualifications,
   };
   console.log("temp_update_obj", temp_update_obj);
-  let userMergedInfo = await mergeOnlyChanged(userUpdatedInfo, temp_update_obj);
-  console.log("userMergedInfo", userMergedInfo);
-
-  //set prerak update object
-  await setPrerakUpdateInfo(id, userMergedInfo);
+  //update in system
+  try {
+    let userMergedInfo = await mergeOnlyChanged(
+      userUpdatedInfo,
+      temp_update_obj
+    );
+    console.log("userMergedInfo", userMergedInfo);
+    //set prerak update object
+    await setPrerakUpdateInfo(id, userMergedInfo);
+  } catch (e) {
+    console.log("error", e);
+  }
 }
