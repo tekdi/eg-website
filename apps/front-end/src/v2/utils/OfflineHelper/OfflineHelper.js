@@ -3,6 +3,7 @@ import {
   getUserUpdatedInfo,
   getOnlyChanged,
   mergeOnlyChanged,
+  setPrerakUpdateInfo,
 } from "../SyncHelper/SyncHelper";
 
 export async function getOnboardingData(id) {
@@ -12,7 +13,7 @@ export async function getOnboardingData(id) {
     let userMergedInfo = await mergeOnlyChanged(userInfo, userUpdatedInfo);
     /*console.log(userInfo);
     console.log(userUpdatedInfo);
-    console.log(userMergedInfo);*/
+    console.log("userMergedInfo", userMergedInfo);*/
     //preprocess data
     //qualification id
     let qualification_id_arr = null;
@@ -30,6 +31,7 @@ export async function getOnboardingData(id) {
     let experience = [];
     try {
       let experience_obj = userMergedInfo?.experience;
+      //console.log("experience_obj", experience_obj);
       //console.log("experience_obj.length", experience_obj.length);
       if (experience_obj) {
         for (let i = 0; i < experience_obj.length; i++) {
@@ -147,4 +149,132 @@ export async function getOnboardingData(id) {
   }
 }
 
-export async function updateOnboardingData(id) {}
+export async function updateOnboardingData(id, onboardingData) {
+  let users = new Object();
+  let core_faciltator = new Object();
+  let extended_users = new Object();
+  let references = new Object();
+  let program_faciltators = new Object();
+  let experience = [];
+  let qualifications = new Object();
+  console.log("onboardingData", onboardingData);
+  //step 1 basic_details
+  onboardingData?.first_name
+    ? (users.first_name = onboardingData.first_name)
+    : null;
+  onboardingData?.last_name
+    ? (users.last_name = onboardingData.last_name)
+    : null;
+  onboardingData?.middle_name
+    ? (users.middle_name = onboardingData.middle_name)
+    : null;
+  onboardingData?.dob ? (users.dob = onboardingData.dob) : null;
+  //step 2 contact_details
+  onboardingData?.mobile ? (users.mobile = onboardingData.mobile) : null;
+  onboardingData?.email_id ? (users.email_id = onboardingData.email_id) : null;
+  onboardingData?.device_type
+    ? (core_faciltator.device_type = onboardingData.device_type)
+    : null;
+  onboardingData?.device_ownership
+    ? (core_faciltator.device_ownership = onboardingData.device_ownership)
+    : null;
+  onboardingData?.alternative_mobile_number
+    ? (users.alternative_mobile_number =
+        onboardingData.alternative_mobile_number)
+    : null;
+  onboardingData?.alternative_mobile_number
+    ? (users.alternative_mobile_number =
+        onboardingData.alternative_mobile_number)
+    : null;
+  //step 3 address_details
+  onboardingData?.block ? (users.block = onboardingData.block) : null;
+  onboardingData?.district ? (users.district = onboardingData.district) : null;
+  onboardingData?.grampanchayat
+    ? (users.grampanchayat = onboardingData.grampanchayat)
+    : null;
+  onboardingData?.pincode ? (users.pincode = onboardingData.pincode) : null;
+  onboardingData?.state ? (users.state = onboardingData.state) : null;
+  onboardingData?.village ? (users.village = onboardingData.village) : null;
+  //step 4 personal_details
+  onboardingData?.gender ? (users.gender = onboardingData.gender) : null;
+  onboardingData?.marital_status
+    ? (extended_users.marital_status = onboardingData.marital_status)
+    : null;
+  onboardingData?.social_category
+    ? (extended_users.social_category = onboardingData.social_category)
+    : null;
+  //step 5 reference_details
+  onboardingData?.contact_number
+    ? (references.contact_number = onboardingData.contact_number)
+    : null;
+  onboardingData?.designation
+    ? (references.designation = onboardingData.designation)
+    : null;
+  onboardingData?.name ? (references.name = onboardingData.name) : null;
+  //step 6 work_availability_details
+  onboardingData?.availability
+    ? (program_faciltators.availability = onboardingData.availability)
+    : null;
+  //step 7 work_experience_details vo_experience //step 8 work_experience_details experience
+  onboardingData?.role_title
+    ? experience.push({
+        id: null,
+        type: onboardingData?.type,
+        role_title: onboardingData?.role_title,
+        organization: onboardingData?.organization,
+        description: onboardingData?.description,
+        experience_in_years: onboardingData?.experience_in_years,
+        related_to_teaching: onboardingData?.related_to_teaching,
+        references: {
+          id: null,
+          name: onboardingData?.reference_details?.name,
+          contact_number: onboardingData?.reference_details?.contact_number,
+          type_of_document: onboardingData?.reference_details?.type_of_document,
+        },
+      })
+    : null;
+  //step 9 qualification_details
+  onboardingData?.qualification_master_id
+    ? (qualifications.qualification_master_id =
+        onboardingData.qualification_master_id)
+    : null;
+  onboardingData?.qualification_reference_document_id
+    ? (qualifications.qualification_reference_document_id =
+        onboardingData.qualification_reference_document_id)
+    : null;
+  onboardingData?.qualification_ids
+    ? (program_faciltators.qualification_ids = JSON.stringify(
+        onboardingData.qualification_ids
+      ))
+    : null;
+  onboardingData?.has_diploma
+    ? (core_faciltator.has_diploma = onboardingData.has_diploma)
+    : (core_faciltator.has_diploma = false);
+  onboardingData?.has_diploma
+    ? onboardingData?.diploma_details
+      ? (core_faciltator.diploma_details = onboardingData.diploma_details)
+      : null
+    : (core_faciltator.diploma_details = "");
+  //step 10 profile photo 1
+  //step 11 profile photo 2
+  //step 12 profile photo 3
+  //merge two arrays
+  let userUpdatedInfo = await getUserUpdatedInfo(id);
+  console.log("userUpdatedInfo", userUpdatedInfo);
+  //generate final object
+  let temp_update_obj = {
+    users: users,
+    core_faciltator: core_faciltator,
+    extended_users: extended_users,
+    references: references,
+    program_faciltators: program_faciltators,
+    experience: experience,
+    qualifications: qualifications,
+  };
+  console.log("temp_update_obj", temp_update_obj);
+  let userMergedInfo = await mergeOnlyChanged(userUpdatedInfo, temp_update_obj);
+  console.log("userMergedInfo", userMergedInfo);
+
+  //set prerak update object
+  await setPrerakUpdateInfo(id, userMergedInfo);
+}

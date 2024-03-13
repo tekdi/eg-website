@@ -21,7 +21,14 @@ import {
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
-import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
+import {
+  getOnboardingData,
+  updateOnboardingData,
+} from "v2/utils/OfflineHelper/OfflineHelper.js";
+import {
+  mergeAndUpdate,
+  mergeOnlyChanged,
+} from "v2/utils/SyncHelper/SyncHelper.js";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -155,7 +162,7 @@ export default function PrerakOnboardingArrayForm({
 
       //get offline data
       const result = await getOnboardingData(id);
-      console.log(result);
+      console.log("getOnboardingData", result);
 
       setfacilitator(result);
       if (type === "reference_details") {
@@ -307,12 +314,19 @@ export default function PrerakOnboardingArrayForm({
         ...Object.keys(schema?.properties),
         "arr_id",
       ]);
-      await formSubmitUpdate({
+
+      //online data submit
+      /*await formSubmitUpdate({
         ...newdata,
         page_type:
           type === "reference_details"
             ? "reference_details"
             : "work_experience_details",
+        type,
+      });*/
+      //offline data submit
+      await updateOnboardingData(userid, {
+        ...newdata,
         type,
       });
       setAddMore(false);
