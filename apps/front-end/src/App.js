@@ -7,6 +7,8 @@ import {
   facilitatorRegistryService,
   setLocalUser,
   logout,
+  getSelectedAcademicYear,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 
 import guestRoutes from "./routes/guestRoutes";
@@ -29,7 +31,12 @@ function App() {
       const tokenData = getTokernUserInfo();
       const { hasura } = tokenData?.resource_access || {};
       const fa_id = getUserId();
-      const IpUserInfo = await getIndexedDBItem(`${fa_id}_Ip_User_Info`);
+      const { academic_year_id } = await getSelectedAcademicYear();
+      const { program_id } = await getSelectedProgramId();
+      console.log({ academic_year_id, program_id });
+      const IpUserInfo = await getIndexedDBItem(
+        `${fa_id}_${program_id}_${academic_year_id}_Ip_User_Info`
+      );
       let user;
       if (!IpUserInfo) {
         user = await facilitatorRegistryService.getInfo();
