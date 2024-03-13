@@ -30,7 +30,10 @@ import {
   setIndexedDBItem,
   getIndexedDBItem,
 } from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
-import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
+import {
+  getOnboardingData,
+  updateOnboardingData,
+} from "v2/utils/OfflineHelper/OfflineHelper.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -74,7 +77,7 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-          console.log(result);
+          console.log("form offline data", result);
 
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
@@ -935,8 +938,13 @@ export default function PrerakOnboardingForm({
         {},
         ""
       );
+      //console.log("new updated Form Data", newdata);
 
-      await formSubmitUpdate(newdata);
+      //online data submit
+      //await formSubmitUpdate(newdata);
+
+      //offline data submit
+      await updateOnboardingData(userid, newdata);
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {

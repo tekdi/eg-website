@@ -20,6 +20,19 @@ export async function setPrerakOfflineInfo(id) {
     console.error("Error setting IndexedDB item:", error);
   }
 }
+export async function setPrerakUpdateInfo(id, data) {
+  try {
+    const currentTime = moment().toString();
+    let commonHeader = await getHeaderDetails();
+    setIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`,
+      data
+    );
+    setIndexedDBItem("UpdateSyncTime", currentTime);
+  } catch (error) {
+    console.error("Error setting IndexedDB item:", error);
+  }
+}
 export async function setIpUserInfo(id) {
   try {
     const currentTime = moment().toString();
@@ -88,6 +101,18 @@ export async function checkGetUserInfo(id) {
     return null;
   }
 }
+export async function checkGetUserUpdateInfo(id) {
+  try {
+    let commonHeader = await getHeaderDetails();
+    const editRequest = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`
+    );
+    return !!editRequest;
+  } catch (error) {
+    console.error("Error getting IndexedDB item:", error);
+    return null;
+  }
+}
 
 export async function getUserInfo(id) {
   try {
@@ -116,9 +141,13 @@ export async function getUserInfoNull(id) {
     return null;
   }
 }
+
 export async function getUserUpdatedInfo(id) {
   try {
-    const getUserInfo = await getIndexedDBItem(`${id}_Update`);
+    let commonHeader = await getHeaderDetails();
+    const getUserInfo = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`
+    );
     if (getUserInfo) {
       return getUserInfo;
     } else {
@@ -127,6 +156,17 @@ export async function getUserUpdatedInfo(id) {
   } catch (error) {
     console.error("Error getting IndexedDB item:", error);
     return {};
+  }
+}
+export async function getUserUpdatedInfoNull(id) {
+  try {
+    let commonHeader = await getHeaderDetails();
+    const getUserInfo = await getIndexedDBItem(
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`
+    );
+    return getUserInfo;
+  } catch (error) {
+    return null;
   }
 }
 
@@ -215,6 +255,13 @@ export async function mergeOnlyChanged(MainObj, UpdateObj) {
       }
     }
   }
+
+  //experience add
+  try {
+    var finalObj = MainObj?.experience.concat(UpdateObj?.experience);
+    //console.log("finalObj", finalObj);
+    NewObject.experience = finalObj;
+  } catch (e) {}
 
   return NewObject;
 }
