@@ -33,7 +33,6 @@ function App() {
       const fa_id = getUserId();
       const { academic_year_id } = await getSelectedAcademicYear();
       const { program_id } = await getSelectedProgramId();
-      console.log({ academic_year_id, program_id });
       const IpUserInfo = await getIndexedDBItem(
         `${fa_id}_${program_id}_${academic_year_id}_Ip_User_Info`
       );
