@@ -12,6 +12,8 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
+import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 
 export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [facilitator, setFacilitator] = React.useState();
@@ -25,8 +27,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const facilitatorDetails = async () => {
     const { id } = userTokenInfo?.authUser || {};
-    const result = await facilitatorRegistryService.getOne({ id });
-
+    const result = await getOnboardingData(id);
     setFacilitator(result);
   };
 
@@ -36,7 +37,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
     };
-    const result = await facilitatorRegistryService.getEditRequests(obj);
+    const result = await getIndexedDBItem(`editRequest`);
     let field;
     const parseField = result?.data?.[0]?.fields;
     if (parseField && typeof parseField === "string") {
@@ -47,8 +48,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const isProfileEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("profile_photo_1") ||
           fields.includes("profile_photo_2") ||
           fields.includes("profile_photo_3")))
@@ -57,8 +58,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const isNameEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("first_name") ||
           fields.includes("middle_name") ||
           fields.includes("last_name") ||
@@ -68,15 +69,15 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   const isContactEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("device_ownership") || fields.includes("device_type")))
     );
   };
   const isAddressEdit = () => {
     return !!(
-      facilitator?.status !== "enrolled_ip_verified" ||
-      (facilitator?.status === "enrolled_ip_verified" &&
+      facilitator?.program_faciltators?.status !== "enrolled_ip_verified" ||
+      (facilitator?.program_faciltators?.status === "enrolled_ip_verified" &&
         (fields.includes("district") || fields.includes("block")))
     );
   };
@@ -88,7 +89,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
         onPressBackButton: (e) => navigate(`/profile`),
       }}
     >
-      {["quit"].includes(facilitator?.status) ? (
+      {["quit"].includes(facilitator?.program_faciltators?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />

@@ -106,6 +106,7 @@ export async function getOnboardingData(id) {
       //step 6 work_availability_details
       program_faciltators: {
         availability: userMergedInfo?.program_faciltators?.availability,
+        status: userMergedInfo?.program_faciltators?.status,
         //step 9 qualification_details
         qualification_ids: qualification_id_arr,
       },
@@ -120,6 +121,8 @@ export async function getOnboardingData(id) {
           userMergedInfo?.qualifications?.qualification_master_id,
         qualification_reference_document_id:
           userMergedInfo?.qualifications?.qualification_reference_document_id,
+        qualification_master:
+          userMergedInfo?.qualifications?.qualification_master,
       },
       qualification_ids: qualification_id_arr,
       core_faciltator: {
@@ -131,6 +134,12 @@ export async function getOnboardingData(id) {
       //step 10 profile photo 1
       //step 11 profile photo 2
       //step 12 profile photo 3
+      //Aadhaar_Details
+      aadhaar_verification_mode:
+        userMergedInfo?.users?.aadhaar_verification_mode,
+      aadhar_no: userMergedInfo?.users?.aadhar_no,
+      aadhar_token: userMergedInfo?.users?.aadhar_token,
+      aadhar_verified: userMergedInfo?.users?.aadhar_verified,
     };
 
     return format_result;
