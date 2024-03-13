@@ -74,7 +74,6 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-          console.log(result);
 
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
