@@ -379,6 +379,7 @@
   "CREATE_BENEFICIARIES": "Create Beneficiaries",
   "CREATE_CAMP": "Create Camp",
   "CREATE_IP": "Create IP (organisation)",
+  "ADD_EXISTING_IP": "Add Existing IP (organisation)",
   "CREATIVE": "Creative",
   "CURRENT_PRERAK": "Current Prerak Name",
   "DASHBOARD": "Dashboard",
@@ -711,7 +712,7 @@
   "INVITATION_LINK": "Invitation Link",
   "INVITE_STATUS": "Invite Status",
   "IP_ID": "IP Id",
-  "IP_NAME": "IP Name",
+  "USER_NAME": "User Name",
   "IPHONE": "Iphone",
   "IS_THE_JOB_RELATED_TO_TEACHING": "Is the experience described above related to teaching ?",
   "IS_THE_KIT_USEFUL": "Is the material available in the Pragati Kit sufficient as per the learners of the camp?",
@@ -1479,5 +1480,15 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
+  "CONTACT_PERSON_MOBILE": "Contact Person Mobile",
+  "IP_ADDRESS": "Address",
+  "LEARNER_TARGET": "Learner Target",
+  "DOCUMENT_DETAILS": "Document Details",
+  "ADD_NEW_IP_USER": "Add New Ip User",
+  "IP_TEAM_LIST": "Ip Team List",
+  "USER_ROLE": "User role",
+  "IP/ORGANISATION_LIST": "IP/Organisation List",
+  "IP_NAME": "IP Name",
+  "EXISTING_IP_USER": "Existing IP User"
 }

@@ -31,6 +31,7 @@ function Home() {
   const [orgData, setOrgData] = useState();
   const [cohortData, setCohortData] = useState();
   const [academicData, setAcademicData] = useState();
+  const [academicYearData, setAcademicYearData] = useState();
   const [programData, setProgramData] = useState();
   const [cohortValue, setCohortValue] = useState();
   const [loading, setLoading] = useState(true);
@@ -81,13 +82,23 @@ function Home() {
     setSelectedAcademicYear({
       academic_year_id: cohortValue?.academic_year_id,
     });
-    setSelectedProgramId({
-      ...cohortValue?.data,
-      program_id: cohortValue?.data?.program_id,
-    });
-    setSelectedOrgId({ org_id: cohortValue?.org_id });
+    // setSelectedProgramId({
+    //   ...cohortValue?.data,
+    //   program_id: cohortValue?.data?.program_id,
+    // });
+    // setSelectedOrgId({ org_id: cohortValue?.org_id });
     setModal(false);
   };
+
+  const handleAcademicYearData = (itemValue) => {
+    setCohortValue({ ...cohortValue, academic_year_id: itemValue });
+  };
+  useEffect(async () => {
+    const data = await cohortService.getUpdatedAcademicYearList();
+    setAcademicYearData(data?.data);
+  }, []);
+
+  console.log(academicYearData);
   return (
     <PoAdminLayout>
       <VStack
@@ -98,6 +109,25 @@ function Home() {
         p={4}
       >
         <HStack direction={["column", "column", "row"]} space={8}>
+          <Pressable
+            onPress={() => {
+              navigate("/poadmin/ips");
+            }}
+          >
+            <BoxBlue
+              width={"250px"}
+              height={"200px"}
+              justifyContent="center"
+              pl="3"
+            >
+              <VStack alignItems={"center"}>
+                <IconByName name="GroupLineIcon" />
+                <AdminTypo.H6 bold pt="4">
+                  {t("IP")}
+                </AdminTypo.H6>
+              </VStack>
+            </BoxBlue>
+          </Pressable>
           <Pressable
             onPress={() => {
               navigate("/poadmin/facilitators");
@@ -166,7 +196,7 @@ function Home() {
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              <HStack
+              {/* <HStack
                 space="5"
                 borderBottomWidth={1}
                 borderBottomColor="gray.300"
@@ -197,7 +227,7 @@ function Home() {
                     );
                   })}
                 </Select>
-              </HStack>
+              </HStack> */}
               <HStack
                 space="5"
                 borderBottomWidth={1}
@@ -219,22 +249,21 @@ function Home() {
                   }}
                   mt={1}
                   onValueChange={(itemValue) =>
-                    handleAcademicYearChange(itemValue)
+                    handleAcademicYearData(itemValue)
                   }
                 >
-                  {academicData?.map((item) => {
-                    return (
+                  {Array.isArray(academicYearData) &&
+                    academicYearData.map((item) => (
                       <Select.Item
                         key={item.id}
-                        label={item?.academic_year?.name}
-                        value={`${item?.academic_year_id}`}
+                        label={item?.name}
+                        value={`${item?.id}`}
                         // value={JSON.stringify(item)}
                       />
-                    );
-                  })}
+                    ))}
                 </Select>
               </HStack>
-              <HStack
+              {/* <HStack
                 space="5"
                 borderBottomWidth={1}
                 borderBottomColor="gray.300"
@@ -265,8 +294,8 @@ function Home() {
                     );
                   })}
                 </Select>
-              </HStack>
-              {cohortValue?.data?.program_id && (
+              </HStack> */}
+              {cohortValue?.academic_year_id && (
                 <VStack alignItems={"center"}>
                   <AdminTypo.Dangerbutton onPress={handleCohortSubmit}>
                     {t("CONTINUE")}
