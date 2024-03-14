@@ -1199,6 +1199,7 @@
   "SEARCH_BY_LEARNER_NAME": "शिक्षार्थी के नाम से खोजें",
   "SEARCH_BY_NAME": "नाम द्वारा खोजें",
   "SEARCH_BY_PRERAK_NAME": "प्रेरक के नाम से खोजें",
+  "SELECT_MIN_MAX_ERROR":"कृपया न्युनतम 1 और अधिकतम 3 विकल्पो का चयन करे",
   "SELECT": "चुनें",
   "SELECT_ACADEMIC_YEAR": "शैक्षणिक वर्ष चुनें",
   "SELECT_ALL": "सबका चयन करें",
