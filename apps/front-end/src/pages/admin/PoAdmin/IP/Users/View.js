@@ -71,11 +71,20 @@ function View(props) {
               "IP_ID",
               "FIRST_NAME",
               "LAST_NAME",
+              "USERNAME",
               "ROLE",
               "STATE",
               "MOBILE_NUMBER",
             ]}
-            arr={["id", "first_name", "last_name", "role", "state", "mobile"]}
+            arr={[
+              "id",
+              "first_name",
+              "last_name",
+              "username",
+              "role",
+              "state",
+              "mobile",
+            ]}
           />
         </VStack>
       </VStack>

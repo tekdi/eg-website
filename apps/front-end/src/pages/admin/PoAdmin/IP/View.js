@@ -58,6 +58,11 @@ const columns = (t) => [
     wrap: true,
   },
   {
+    name: t("USERNAME"),
+    selector: (row) => (row?.username ? row?.username : "-"),
+    wrap: true,
+  },
+  {
     name: t("ROLE"),
     selector: (row) =>
       row?.program_users?.[0]?.role_slug
@@ -228,11 +233,6 @@ const DataList = memo(() => {
         <AdminTypo.H6 bold color={"textGreyColor.500"}>
           {t("IP_TEAM_LIST")}
         </AdminTypo.H6>
-        {/* <AdminTypo.Secondarybutton
-          onPress={() => navigate(`/poadmin/ips/${id}/user-create`)}
-        >
-          {t("ADD_NEW_IP_USER")}
-        </AdminTypo.Secondarybutton> */}
         <Menu
           w="160"
           trigger={(triggerProps) => (
@@ -253,11 +253,11 @@ const DataList = memo(() => {
                 <IconByName
                   color="black"
                   _icon={{ size: "18px" }}
-                  name="AddBoxLineIcon"
+                  name="AddLineIcon"
                 />
               }
             >
-              {t("ADD_A_IP")}
+              {t("ADD_IP_USER")}
             </Button>
           )}
         >
