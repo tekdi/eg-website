@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
 import {
   PoAdminLayout,
   IconByName,
   AdminTypo,
   organisationService,
+  getOptions,
+  cohortService,
 } from "@shiksha/common-lib";
 import { VStack, HStack, Button } from "native-base";
 import Form from "@rjsf/core";
@@ -15,37 +16,49 @@ import { useTranslation } from "react-i18next";
 
 const Schema = {
   type: "object",
-  required: ["ip_id", "first_name", "role", "mobile_number"],
+  required: [
+    "organisation_id",
+    "doc_per_cohort_id",
+    "doc_quarterly_id",
+    "doc_per_monthly_id",
+    "learner_target",
+  ],
   properties: {
-    ip_id: {
-      type: "string",
-      title: "IP_ID",
-      readOnly: true,
-    },
     state: {
       type: "string",
       title: "STATE",
       readOnly: true,
     },
-    first_name: {
+    organisation_id: {
       type: "string",
-      title: "FIRST_NAME",
-      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-    },
-    last_name: {
-      type: "string",
-      title: "LAST_NAME",
-      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-    },
-    role: {
-      type: "string",
-      title: "USER_ROLE",
+      title: "NAME",
       format: "select",
+      // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    mobile_number: {
-      type: "string",
-      title: "MOBILE_NUMBER",
-      format: "MobileNumber",
+    learner_target: {
+      type: "number",
+      title: "LEARNERS_TARGET",
+    },
+    doc_per_cohort_id: {
+      label: "DUE_DILIGENCE_SIGNED_PROPOSAL",
+      uploadTitle: "DUE_DILIGENCE_SIGNED_PROPOSAL",
+      type: ["string", "number", "null"],
+      document_type: "existing_ip",
+      format: "FileUpload",
+    },
+    doc_quarterly_id: {
+      label: "QUARTELY_CA_CERTIFIED",
+      uploadTitle: "QUARTELY_CA_CERTIFIED",
+      type: ["string", "number", "null"],
+      document_type: "existing_ip",
+      format: "FileUpload",
+    },
+    doc_per_monthly_id: {
+      label: "MONTHLY_UTILIZATION",
+      uploadTitle: "MONTHLY_UTILIZATION",
+      type: ["string", "number", "null"],
+      document_type: "existing_ip",
+      format: "FileUpload",
     },
   },
 };
@@ -53,17 +66,56 @@ const Schema = {
 function ExistingIpForm() {
   const formRef = useRef();
   const [schema, setSchema] = useState(Schema);
-  const [dataIp, setDataIp] = useState();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation();
 
+  useEffect(async () => {
+    let newSchema = Schema;
+    if (Schema?.properties?.organisation_id) {
+      const result = await organisationService.getExistingIpList();
+      if (Schema["properties"]["organisation_id"]) {
+        newSchema = getOptions(newSchema, {
+          key: "organisation_id",
+          arr: result?.data,
+          title: "name",
+          value: "id",
+        });
+      }
+    }
+    if (Schema.properties.state) {
+      const localData = JSON.parse(localStorage.getItem("program"));
+      newSchema = {
+        ...newSchema,
+        properties: {
+          ...newSchema.properties,
+          state: {
+            ...newSchema.properties.state,
+            default: `${localData?.program_id}`,
+          },
+        },
+      };
+      const { data } = await cohortService.getProgramList();
+      const newData = data.map((e) => ({
+        ...e,
+        state_name: `${e?.state?.state_name}`,
+      }));
+      newSchema = getOptions(newSchema, {
+        key: "state",
+        arr: newData,
+        title: "state_name",
+        value: "id",
+      });
+    }
+    setSchema(newSchema);
+  }, []);
+
   const onSubmit = async (data) => {
     setLoading(true);
-    const newData = data.formData;
-    const result = await organisationService.createOrg(newData);
+    const newData = data?.formData;
+    const result = await organisationService.addExistingIP(newData);
     if (!result.error) {
       navigate("/poadmin/ips");
     } else {
@@ -102,39 +154,37 @@ function ExistingIpForm() {
               widgets,
               templates,
               validator,
-              // onSubmit,
+              onSubmit,
             }}
           >
             <Button display={"none"} type="submit"></Button>
-            <HStack pt={6} space={6} alignSelf={"center"}>
-              <AdminTypo.Secondarybutton
-                icon={
-                  <IconByName
-                    color="black"
-                    _icon={{ size: "18px" }}
-                    name="DeleteBinLineIcon"
-                  />
-                }
-                onPress={(e) => navigate(`/poadmin/ips/${id}`)}
-              >
-                {t("CANCEL")}
-              </AdminTypo.Secondarybutton>
-              <AdminTypo.Dangerbutton
-                isLoading={loading}
-                onPress={() => {
-                  formRef?.current?.submit();
-                }}
-              >
-                {t("SAVE")}
-              </AdminTypo.Dangerbutton>
-            </HStack>
           </Form>
+          <HStack pt={6} space={6} alignSelf={"center"}>
+            <AdminTypo.Secondarybutton
+              icon={
+                <IconByName
+                  color="black"
+                  _icon={{ size: "18px" }}
+                  name="DeleteBinLineIcon"
+                />
+              }
+              onPress={(e) => navigate(`/poadmin/ips`)}
+            >
+              {t("CANCEL")}
+            </AdminTypo.Secondarybutton>
+            <AdminTypo.Dangerbutton
+              isLoading={loading}
+              onPress={() => {
+                formRef?.current?.submit();
+              }}
+            >
+              {t("SAVE")}
+            </AdminTypo.Dangerbutton>
+          </HStack>
         </VStack>
       </VStack>
     </PoAdminLayout>
   );
 }
-
-ExistingIpForm.propTypes = {};
 
 export default ExistingIpForm;
