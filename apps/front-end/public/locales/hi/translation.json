@@ -1495,5 +1495,9 @@
   "USER_ROLE": "उपयोगकर्ता भूमिका",
   "IP/ORGANISATION_LIST": "IP/संगठन सूची",
   "IP_NAME": "IP नाम",
-  "EXISTING_IP_USER": "मौजूदा IP उपयोगकर्ता"
+  "EXISTING_IP_USER": "मौजूदा IP उपयोगकर्ता",
+  "LEARNERS_TARGET": "शिक्षार्थियों का लक्ष्य",
+  "DUE_DILIGENCE_SIGNED_PROPOSAL": "उचित परिश्रम , हस्ताक्षरित प्रस्ताव",
+  "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
+  "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र"
 }
