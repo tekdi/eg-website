@@ -1,17 +1,34 @@
 import axios from 'axios'
-import {
+import {getSelectedOrgId,
   getSelectedAcademicYear,
   getSelectedProgramId
 } from '../components/helper'
 
-export async function get(url: string, headers: any = {}) {
+const getHeaders = async () => {
   let commonHeader: any = await addCommonHeader()
+  const keys = Object.keys(commonHeader)
+ let data = {};
+ keys.forEach(key => {
+  if(commonHeader?.[key]) {
+  if(key === "org_id") {
+   data = {...data,'x-ip-org-id': commonHeader?.[key]}
+  } else if(key === "program_id") {
+      data = {...data,'x-program-id': commonHeader?.[key]}     
+  } else if(key === "academic_year_id") {
+    data = {...data,'x-academic-year-id': commonHeader?.[key]}     
+  }}
+});
+  return data
+  
+}
+
+export async function get(url: string, headers: any = {}) {
+  let commonHeader: any = await getHeaders()
   return await axios.get(url, {
     ...headers,
     headers: {
       ...headers?.headers,
-      'x-academic-year-id': commonHeader?.academic_year_id,
-      'x-program-id': commonHeader?.program_id
+     ...commonHeader
     }
   })
 }
@@ -22,50 +39,46 @@ export async function post(
   headers: any = {},
   onUploadProgress: any = {}
 ) {
-  let commonHeader: any = await addCommonHeader()
+  let commonHeader: any = await getHeaders()
   return await axios.post(url, body, {
     ...headers,
     headers: {
       ...headers?.headers,
-      'x-academic-year-id': commonHeader?.academic_year_id,
-      'x-program-id': commonHeader?.program_id
+      ...commonHeader
     },
     onUploadProgress
   })
 }
 
 export async function update(url: string, body: any, headers: any = {}) {
-  let commonHeader: any = await addCommonHeader()
+  let commonHeader: any = await getHeaders()
   return await axios.put(url, body, {
     ...headers,
     headers: {
       ...headers?.headers,
-      'x-academic-year-id': commonHeader?.academic_year_id,
-      'x-program-id': commonHeader?.program_id
+      ...commonHeader
     }
   })
 }
 
 export async function destroy(url: string, body: any, headers: any = {}) {
-  let commonHeader: any = await addCommonHeader()
+  let commonHeader: any = await getHeaders()
   return await axios.delete(url, {
     headers: {
       ...headers?.headers,
-      'x-academic-year-id': commonHeader?.academic_year_id,
-      'x-program-id': commonHeader?.program_id
+      ...commonHeader
     },
     data: body
   })
 }
 
 export async function patch(url: string, body: any, headers: any = {}) {
-  let commonHeader: any = await addCommonHeader()
+  let commonHeader: any = await getHeaders()
   return await axios.patch(url, body, {
     ...headers,
     headers: {
       ...headers?.headers,
-      'x-academic-year-id': commonHeader?.academic_year_id,
-      'x-program-id': commonHeader?.program_id
+      ...commonHeader
     }
   })
 }
@@ -83,6 +96,7 @@ const addCommonHeader = async () => {
   let commonHeader = {}
   let academic_year_id = null
   let program_id = null
+  let org_id = null
   try {
     let academic_year = await getSelectedAcademicYear()
     academic_year_id = academic_year?.academic_year_id
@@ -91,9 +105,14 @@ const addCommonHeader = async () => {
     let program = await getSelectedProgramId()
     program_id = program?.program_id
   } catch (e) {}
+  try {
+    let org = await getSelectedOrgId()
+    org_id = org?.org_id
+  } catch (e) {}
   commonHeader = {
     academic_year_id: academic_year_id,
-    program_id: program_id
+    program_id: program_id,
+    org_id
   }
   return commonHeader
 }
